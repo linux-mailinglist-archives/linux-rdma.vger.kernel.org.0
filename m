@@ -1,93 +1,93 @@
-Return-Path: <linux-rdma+bounces-20919-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20920-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QIWzCTA1C2qgEgUAu9opvQ
-	(envelope-from <linux-rdma+bounces-20919-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 17:50:08 +0200
+	id gJBRDHo1C2qgEgUAu9opvQ
+	(envelope-from <linux-rdma+bounces-20920-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 17:51:22 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C9D25704CA
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 17:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 39B05570515
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 17:51:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 8AB263021B68
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 15:48:11 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 9902C30265D7
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 15:48:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E278148C41B;
-	Mon, 18 May 2026 15:47:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53B1A4779BB;
+	Mon, 18 May 2026 15:47:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="b7tXS3Hx"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="UZJYEnLR"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f228.google.com (mail-pl1-f228.google.com [209.85.214.228])
+Received: from mail-oi1-f225.google.com (mail-oi1-f225.google.com [209.85.167.225])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC08E370D63
-	for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 15:47:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.228
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43C1E2D0C98
+	for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 15:47:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.225
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779119230; cv=none; b=t80pZTkEcNAc1oeCiLbbySyXSZKzMTQ5a91nF4yATmQBdp6CC9is9DN00ahZGkvBnE2Od0yvVqGUO93wm2uzHQkoH6vs680TYnJcAtgYcxKuX/6/7gLeVrRVgb5+Eocmk+LGuO9t4HLo19heUqxjVAs8Jq1lx6zs3W0Hsih6uuw=
+	t=1779119235; cv=none; b=d9wRxq6ptKsszelU2zeUt4MLjq3qajHyueQO1VCpc71xcmE3qsYeufvFDq+JOTgTpmDJOuJPfjaJTS/k8JNJRh6FvuT7nHJkcjVWdNSpLnL9V62u1G4H+MGm/nJlcC/EhzwH5z4WHY6ME4PECnPgJP26r0zGOqC3XVW1AD9ZqWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779119230; c=relaxed/simple;
-	bh=ywzOCWxdvCHvCjMdFj3myQHz6aAOarwACMoljeznHzk=;
+	s=arc-20240116; t=1779119235; c=relaxed/simple;
+	bh=KozjCnmDyh00wXXAvAiMXzO/C4dPtgJ2UhJzj6Qr230=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gVhRw6N7tbxd7JtG9XHDH251dZxoTQuOuhxzy1wikdZihXOefKGeBLMLel1SBnQrSlHdLhyH/AbjnbieGqi2VBNFPP8LStytGLXnGSy88HisIOJv0OGjByFJDurgJ4O8cqlbMuMubgt/RuTEvCfrxGE8+mDNxE44/iU76FvCeSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=b7tXS3Hx; arc=none smtp.client-ip=209.85.214.228
+	 MIME-Version; b=rmZhRz29Ke9/qBVVTQPoMoOeWig7ba5E5fJY7m4HDCm3UM8v1H6+kXrlhlvjHRItS2wWLB5J1CtFfrkrysetn88Idal9k5Tlh9zHaIqZ90i+7a9CZ08Iofv5X3ZHYnX88uwCVKYjO1AufTbGxYs1gQjh6gxwbrao9cdfSSqls3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=UZJYEnLR; arc=none smtp.client-ip=209.85.167.225
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f228.google.com with SMTP id d9443c01a7336-2ba856db1c0so18502365ad.3
-        for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 08:47:04 -0700 (PDT)
+Received: by mail-oi1-f225.google.com with SMTP id 5614622812f47-484d3c0855aso559310b6e.3
+        for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 08:47:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779119220; x=1779724020;
+        d=1e100.net; s=20251104; t=1779119223; x=1779724023;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:dkim-signature:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4YZztpL0TodEzzK65k+7saogZn2KkDHLiGIEeRdXBxg=;
-        b=Ix6mywbNb4oqQLDzpJQR2Da2zlHZpZRjuQ+v9mdroqjuB0luHBuX5Rxzu/h3HEukbA
-         572tyiLEcdvrClK3xYmKloixGWMRIJ/7kJ5RzHn6FxTE9BlTAxSQUOKIw+PpoxbrZq0A
-         UEJKlJdjyuTXa0JEoqrTzHclHMui/NUOR/I25qAMNZex1wRhdad3c1cqLUmu2MiKwNwS
-         z/hlSxUTOglROD8uKonBTA0zhptMMFyb0DQn2ic6NWpWmos0/j6OmKDjMHXn2QyU+ljQ
-         zByXMLCzd8nDtFViD+gpfI37R9d1GiyeGJpJWVcnbIgXVQbXHy8jV/LblUpsU9EjbUVH
-         BnuA==
-X-Gm-Message-State: AOJu0YyXi305WChrJr3axFZks3fYMm2XIm5rH6S3TmIs2J9GoZFx5Su9
-	p9tiTYbAiSJLR7b7dEGk4fIc+A+vyhNz0bdbGcHPMFVU8cBs9R8gYcKC6JRYV+Gt7ZUoueoIpcn
-	Tyevje8jPsyFqiQOoW1Gc+oqUKzp+xMAbkRQFhOgFyKW3DpzHHnPH0Jr9QZBKEZBig1Qx5WJXuf
-	nL5hgpg5A3v8hfuz8moIKj2rq1i5xMskQi9tqqGKMpflfkA4nDN+qsa9ncaSfM49qcabwiwxdVb
-	m9/zmelQkfZazSrtktNYDoZznaO
-X-Gm-Gg: Acq92OGtFgvFNGac03ZfrkKMCap4NKJ3C/7RGUUC6dWk4Z5vrpwrEQGpqRndwKHhlZP
-	TxRnheFFqzE00y3Z2GYKzZKNkLBRrgMn2RDwyMzLXQTo5Edik1bIm95yv5CCdZfqcl5kAe8thLS
-	3oZvBTh/4BJuXWHdcTqivZi1T0j4GeWk/RrezS89Ju2OaRnlfBL2LdYHVazIxoRqUUlZt6CDs6O
-	6rTLYajf+F97p9YsT8Ww4Y/aSDqWxVwK9ivAZ79wx3gpS7HUdYQE5qzUN0gfOBBKYxTseKDwEaT
-	/OOHnSBmNGItd5ekVzEv1nbUPv7hPlygnFdYh/U+TBQ85pHvrXiqK9JF5G/inXP4eM0fU2Lg2OS
-	BxtXMjiNj7QIy7m7DxgyAB7raahmo0kyytuWwVVgKMydxOmKLcIk8POh/pzpuTY0SXAsYMrCFhF
-	LFEvPaXys87cshNTqPfD0I8LIPf69yxHvqT6k9QCuYmBCBdYlXafYuwubOZIxdn4gTTnm5
-X-Received: by 2002:a17:902:cf09:b0:2bd:3d5b:e87c with SMTP id d9443c01a7336-2bd7e8f183bmr181400415ad.37.1779119219989;
-        Mon, 18 May 2026 08:46:59 -0700 (PDT)
+        bh=Oyg8SngrjQiQb/ZJedYuFylnSvfHgQI1cpjrRp8UOOQ=;
+        b=Ty7nPhOB3q1Vt3B74Xskfm10req9nQminu6F/kBRWhml0Ky+G2HwgDIdpPQErK/1/c
+         TDRa4H8Uy9aVeVxvP8i4yfv2bYfej44KW+EIuz+th4WsVwqyIrsKqZE5foMu4ptvYmZM
+         CBTtLKQ370JCm6nITVtNASGt/MAO6ixAXMQdl4ome/A+X0XvhBFXwqfE8gjY8UvjGu/s
+         rD9pKSzGVGaJoprwglqP0lM/0Mpd2mO3UrWvBR+rlhNuuMFnFlggvN7htPqC0nV7uSVx
+         SmTuhLxNVYfiUFNshjAbHftsr//JF6sgjPiitn1999V/xQfsfj5eKqYyuXyGcj1VS/aa
+         BiZQ==
+X-Gm-Message-State: AOJu0YyXo0jCDkXli1e8Yl8CF5zxctGnIm0vZ23QR0XPLSNIGu2WP+92
+	I8Hq2inE3nCl0mHZjKQgZ9hGy305sKNvtAeJwUbG/+NSPqxCaIq3sBp38Wtl7SNLjUeVAVPjxnY
+	CR+1vGgZLErQ+t/mLy8721Ltkb0ODGXiJUc7iql/hxa11R2LQ8W8KtGJl8F1rfkVN9ZETylMjlB
+	2dUAjRXeZCC4bpoWEWXsh5mVIAPtQXepR9ejndjeGW6BN8ZM/ZHI2s10qnY31wkj4ZtULFHGyyU
+	XG7x4ZL5QfpINicBDJ2f4ofXtLR
+X-Gm-Gg: Acq92OGcAWXQNYyHxA8Q3DBf0cV7iK9gaPKp0Z7iciLuv9+kEVvvxNz2N0tVcYXCnUv
+	XJW8LmKktuFC+dPFuu4le2TRvW9G4ujs5NJkMEfv4Fjf9j00XTpsw9pWU3zG9lSNyVUVFpJk2Vp
+	q41gRegc6/MJMNUttnHafBSJGRvf5dxFOCDmwYZ8SDgV5fMLbdG+FbgEfJ9h7rSfx4CnWbk12ow
+	rWZ832WcPsB8toWSBUnWWrDwjFMLQRQbRO8GKBKY4OAOYPFwoXAYCREBFZduIFgaTMTuM95ipu7
+	/6ClX+RMIvgZ7bJU6Qd0jDnV+yK6Ss6deTzJi2K55yV7CsyiRcpiFn2JXBlLLqp/0tpsYqTC31A
+	KkV1TGGl738rUf98uJSlD1daAnSIu6O3CCz5qROKob5hl/Xf7t8a4tf0UNn29DExgoNEFT73x7U
+	y5oROnmCooS3drlUYT3I9Gv0c3fkKCGsEOmhH/jXoJ+t2mnqyHtx5FGTJQRfU3ZTM69cTq
+X-Received: by 2002:a05:6820:3103:b0:69b:5486:e85 with SMTP id 006d021491bc7-69c9bfd479emr9651227eaf.36.1779119222836;
+        Mon, 18 May 2026 08:47:02 -0700 (PDT)
 Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-16.dlp.protect.broadcom.com. [144.49.247.16])
-        by smtp-relay.gmail.com with ESMTPS id d9443c01a7336-2bd5ced1174sm11293825ad.28.2026.05.18.08.46.59
+        by smtp-relay.gmail.com with ESMTPS id 006d021491bc7-69d045db4besm551042eaf.3.2026.05.18.08.47.02
         for <linux-rdma@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 May 2026 08:46:59 -0700 (PDT)
+        Mon, 18 May 2026 08:47:02 -0700 (PDT)
 X-Relaying-Domain: broadcom.com
 X-CFilter-Loop: Reflected
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-2b2e8bba2e6so37471055ad.1
-        for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 08:46:58 -0700 (PDT)
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-2ba3245a43dso26910145ad.0
+        for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 08:47:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1779119218; x=1779724018; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1779119221; x=1779724021; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4YZztpL0TodEzzK65k+7saogZn2KkDHLiGIEeRdXBxg=;
-        b=b7tXS3HxsBE/UTYz/1GoGJzUz5EAhO0smbcJvbNuH9CZWYy5qozmEKHbDxGVRgseCg
-         XZbaO4Xzp4aolj8Xsyk5oiuIb8X5Bb9RO1edgVPNb7yyC87B3VNEPLp0WqB7FOKooddm
-         E05DXAktlDY9aW3IC/fiGOf1N8V68Oof00FSU=
-X-Received: by 2002:a17:903:11cf:b0:2bd:bd27:e234 with SMTP id d9443c01a7336-2bdbd27e463mr89335965ad.21.1779119218087;
-        Mon, 18 May 2026 08:46:58 -0700 (PDT)
-X-Received: by 2002:a17:903:11cf:b0:2bd:bd27:e234 with SMTP id d9443c01a7336-2bdbd27e463mr89335715ad.21.1779119217546;
-        Mon, 18 May 2026 08:46:57 -0700 (PDT)
+        bh=Oyg8SngrjQiQb/ZJedYuFylnSvfHgQI1cpjrRp8UOOQ=;
+        b=UZJYEnLRXVb/hgtJyfSJZ2ATtuZ8C1v5kjrxShMVMehLHOTy/DWUBh3+Yp640BhvsM
+         reib6OpyE3rG/zg+PxWvaqvIFXspVs3EYvg6njbKgmf2Cp9HF6pHQoo8NCGbqdxeg6wI
+         jZinardHVijHeBM8edx64IJdxcxQul8ENU+Yc=
+X-Received: by 2002:a17:902:76cb:b0:2ae:ba5f:3ac3 with SMTP id d9443c01a7336-2bd7e78576cmr131288605ad.2.1779119221298;
+        Mon, 18 May 2026 08:47:01 -0700 (PDT)
+X-Received: by 2002:a17:902:76cb:b0:2ae:ba5f:3ac3 with SMTP id d9443c01a7336-2bd7e78576cmr131288495ad.2.1779119220804;
+        Mon, 18 May 2026 08:47:00 -0700 (PDT)
 Received: from dhcp-10-123-156-119.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2bd5d2360e8sm163954285ad.82.2026.05.18.08.46.54
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2bd5d2360e8sm163954285ad.82.2026.05.18.08.46.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 May 2026 08:46:56 -0700 (PDT)
+        Mon, 18 May 2026 08:47:00 -0700 (PDT)
 From: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
@@ -96,9 +96,9 @@ Cc: linux-rdma@vger.kernel.org,
 	selvin.xavier@broadcom.com,
 	kalesh-anakkur.purayil@broadcom.com,
 	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Subject: [PATCH rdma-next v6 6/9] RDMA/bnxt_re: Enhance dbr usecnt logic in doorbell uapis
-Date: Mon, 18 May 2026 21:07:18 +0530
-Message-ID: <20260518153721.183749-7-sriharsha.basavapatna@broadcom.com>
+Subject: [PATCH rdma-next v6 7/9] RDMA/bnxt_re: Enhance dpi lifecycle logic in doorbell uapis
+Date: Mon, 18 May 2026 21:07:19 +0530
+Message-ID: <20260518153721.183749-8-sriharsha.basavapatna@broadcom.com>
 X-Mailer: git-send-email 2.51.2.636.ga99f379adf
 In-Reply-To: <20260518153721.183749-1-sriharsha.basavapatna@broadcom.com>
 References: <20260518153721.183749-1-sriharsha.basavapatna@broadcom.com>
@@ -121,7 +121,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20919-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20920-lists,linux-rdma=lfdr.de];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,broadcom.com:email,broadcom.com:mid,broadcom.com:dkim];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
@@ -136,86 +136,86 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 2C9D25704CA
+X-Rspamd-Queue-Id: 39B05570515
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-The current logic in the doorbell cleanup function is not
-sufficient for a change in a subsequent patch, that fails
-doorbell remove operation in some conditions. The cleanup
-should facilitate freeing of the dbr object when the caller
-may not retry the teardown operation (implicit teardown:
-process-exit/driver-removal).
+If the DPI is freed when the dbr object is freed, but if the
+process has not unmapped the page yet, then the DPI slot could
+get reallocated to another process while the original process
+still has it mapped. To prevent this, save the DPI info in the
+mmap entry during dbr allocation and free the DPI slot from
+bnxt_re_mmap_free(), which enures that there are no references
+to it.
 
-Extend this counter to use kref mechanism so that the dbr
-object gets freed (via kref callback) when there are no more
-references to it, rather than directly freeing it in the
-cleanup uapi.
+This change is needed to support doorbell allocation to QPs
+in the next patch.
 
 Signed-off-by: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
 Reviewed-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/ib_verbs.h |  3 ++-
- drivers/infiniband/hw/bnxt_re/uapi.c     | 16 +++++++++++++---
- 2 files changed, 15 insertions(+), 4 deletions(-)
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c |  4 ++++
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h |  1 +
+ drivers/infiniband/hw/bnxt_re/uapi.c     | 12 ++++++++++--
+ 3 files changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-index 08f71a94d55d..13dac48ed453 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-@@ -167,7 +167,7 @@ struct bnxt_re_dbr_obj {
- 	struct bnxt_re_dev *rdev;
- 	struct bnxt_qplib_dpi dpi;
- 	struct bnxt_re_user_mmap_entry *entry;
--	atomic_t usecnt; /* QPs using this dbr */
-+	struct kref usecnt; /* 1 (uobject) + n (QPs using this dbr) */
- };
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index 9fd85d81bcea..b8e46feafee7 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -4943,6 +4943,10 @@ void bnxt_re_mmap_free(struct rdma_user_mmap_entry *rdma_entry)
+ 	bnxt_entry = container_of(rdma_entry, struct bnxt_re_user_mmap_entry,
+ 				  rdma_entry);
  
- struct bnxt_re_flow {
-@@ -308,4 +308,5 @@ void bnxt_re_unlock_cqs(struct bnxt_re_qp *qp, unsigned long flags);
- struct bnxt_re_user_mmap_entry*
- bnxt_re_mmap_entry_insert(struct bnxt_re_ucontext *uctx, u64 mem_offset,
- 			  enum bnxt_re_mmap_flag mmap_flag, u64 *offset);
-+void bnxt_re_dbr_kref_release(struct kref *ref);
- #endif /* __BNXT_RE_IB_VERBS_H__ */
-diff --git a/drivers/infiniband/hw/bnxt_re/uapi.c b/drivers/infiniband/hw/bnxt_re/uapi.c
-index 3eaee7101615..b8fc8bfba2ad 100644
---- a/drivers/infiniband/hw/bnxt_re/uapi.c
-+++ b/drivers/infiniband/hw/bnxt_re/uapi.c
-@@ -369,6 +369,7 @@ static int UVERBS_HANDLER(BNXT_RE_METHOD_DBR_ALLOC)(struct uverbs_attr_bundle *a
- 	}
- 
- 	obj->rdev = rdev;
-+	kref_init(&obj->usecnt);
- 	uobj->object = obj;
- 	uverbs_finalize_uobj_create(attrs, BNXT_RE_ALLOC_DBR_HANDLE);
- 
-@@ -391,15 +392,24 @@ static int UVERBS_HANDLER(BNXT_RE_METHOD_DBR_ALLOC)(struct uverbs_attr_bundle *a
- 	return ret;
++	if (bnxt_entry->mmap_flag == BNXT_RE_MMAP_UC_DB && bnxt_entry->uctx)
++		bnxt_qplib_free_uc_dpi(&bnxt_entry->uctx->rdev->qplib_res,
++				       &bnxt_entry->dpi);
++
+ 	kfree(bnxt_entry);
  }
  
-+void bnxt_re_dbr_kref_release(struct kref *ref)
-+{
-+	struct bnxt_re_dbr_obj *obj =
-+		container_of(ref, struct bnxt_re_dbr_obj, usecnt);
-+	struct bnxt_re_dev *rdev = obj->rdev;
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+index 13dac48ed453..1caef68a5c38 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+@@ -161,6 +161,7 @@ struct bnxt_re_user_mmap_entry {
+ 	struct bnxt_re_ucontext *uctx;
+ 	u64 mem_offset;
+ 	u8 mmap_flag;
++	struct bnxt_qplib_dpi dpi;
+ };
+ 
+ struct bnxt_re_dbr_obj {
+diff --git a/drivers/infiniband/hw/bnxt_re/uapi.c b/drivers/infiniband/hw/bnxt_re/uapi.c
+index b8fc8bfba2ad..866df9206f5a 100644
+--- a/drivers/infiniband/hw/bnxt_re/uapi.c
++++ b/drivers/infiniband/hw/bnxt_re/uapi.c
+@@ -368,6 +368,12 @@ static int UVERBS_HANDLER(BNXT_RE_METHOD_DBR_ALLOC)(struct uverbs_attr_bundle *a
+ 		goto free_dpi;
+ 	}
+ 
++	/* Save DPI info to the mmap entry so that bnxt_re_mmap_free()
++	 * can free the DPI slot only after the last reference to the
++	 * mmap entry is released.
++	 */
++	obj->entry->dpi = *dpi;
 +
-+	rdma_user_mmap_entry_remove(&obj->entry->rdma_entry);
-+	bnxt_qplib_free_uc_dpi(&rdev->qplib_res, &obj->dpi);
-+	kfree(obj);
-+}
-+
- static int bnxt_re_dbr_cleanup(struct ib_uobject *uobject,
- 			       enum rdma_remove_reason why,
- 			       struct uverbs_attr_bundle *attrs)
+ 	obj->rdev = rdev;
+ 	kref_init(&obj->usecnt);
+ 	uobj->object = obj;
+@@ -396,10 +402,12 @@ void bnxt_re_dbr_kref_release(struct kref *ref)
  {
- 	struct bnxt_re_dbr_obj *obj = uobject->object;
+ 	struct bnxt_re_dbr_obj *obj =
+ 		container_of(ref, struct bnxt_re_dbr_obj, usecnt);
 -	struct bnxt_re_dev *rdev = obj->rdev;
  
--	rdma_user_mmap_entry_remove(&obj->entry->rdma_entry);
++	/* Drop the driver's reference to the mmap entry (_remove()).
++	 * The DPI slot gets freed from bnxt_re_mmap_free() only
++	 * when there's no VMA mapping reference to it.
++	 */
+ 	rdma_user_mmap_entry_remove(&obj->entry->rdma_entry);
 -	bnxt_qplib_free_uc_dpi(&rdev->qplib_res, &obj->dpi);
-+	kref_put(&obj->usecnt, bnxt_re_dbr_kref_release);
- 	return 0;
+ 	kfree(obj);
  }
  
 -- 
