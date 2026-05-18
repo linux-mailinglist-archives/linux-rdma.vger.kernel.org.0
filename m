@@ -1,86 +1,86 @@
-Return-Path: <linux-rdma+bounces-20884-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20885-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aSrYOD29CmoE7QQAu9opvQ
-	(envelope-from <linux-rdma+bounces-20884-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 09:18:21 +0200
+	id cCfpM3m9Cmrb7AQAu9opvQ
+	(envelope-from <linux-rdma+bounces-20885-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 09:19:21 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53B00567534
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 09:18:21 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93826567594
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 09:19:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7A1C43046DC2
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 07:16:01 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 009563054236
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 07:16:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E843A3CFF61;
-	Mon, 18 May 2026 07:15:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB7A3CCFD9;
+	Mon, 18 May 2026 07:16:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="tYPjrz1Q"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Fa6DKQK8"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012064.outbound.protection.outlook.com [40.107.209.64])
+Received: from BN8PR05CU002.outbound.protection.outlook.com (mail-eastus2azon11011025.outbound.protection.outlook.com [52.101.57.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F5B52777FC;
-	Mon, 18 May 2026 07:15:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A89127453;
+	Mon, 18 May 2026 07:15:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.57.25
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779088555; cv=fail; b=KUqtbdmhGP5Ei1eA0YKrLEHMlTdyV5/DAb9gIQhpb/LlWdtrKgERYhJfLyje/hU0t1tbA3bchw75Naj61lcvjNLuO7ysIrAA8Hq6aGgio/7ywue6/NTPSzI8FAo6OffhlAex2foPZb+BaVN8GJkT9PqloyF/h9dqPfpJareoppQ=
+	t=1779088561; cv=fail; b=pknxhOUxcSYSHU6K5plUsq7cO2NbaSjy5PWnC83kHLRbeSZ9u9mf4aBrACwEL8CTyy5oTMgeKWI3veRa5jfqrJJ4L4RH4bQsngDfylmVsRaWQ7DnTw8Ab02imZue8FsW9MP2lBMttNW8xpccm5hRAYShDVVVi+lUz3UcDc5oQGs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779088555; c=relaxed/simple;
-	bh=dmlHeHL3Vzwqv3Pn5dynHIgWA43cpXX22f9yw+PrbfE=;
+	s=arc-20240116; t=1779088561; c=relaxed/simple;
+	bh=FJ6bNCM82zoO7lIe7vpOQAMzjmUIXErxyMPLeIIyudg=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Jc1zDvM+qZvJrmzPlc0EDjwfNw69moSY3FTJ2f/Rv9o9hmBOgZDddAEZojdUdqhaEU7Q8sQG/Bcm7hF0Kdm0dvsGwYwzt92c/g1hVCLYRZA4yNsM52I9DxmiuizqOJpAFEXirDtK1nQWfquseKxhRX3T7TYYtOwg09rbecErtiw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=tYPjrz1Q; arc=fail smtp.client-ip=40.107.209.64
+	 MIME-Version:Content-Type; b=O0LYE0ZBmjrDxC2/3Ai/OzUfP8nrqtPs5IuRNX39GfUUguDYYFAJL91f5KGELyPJ+wVtig9LVU/k+B5k+6pn5m2LHEqZODATdV6r7t7BF1/Jsk0oRjLzrbc2xl6vaUajzLIBkUSkobTYBxGfjJD3kflotsrzdEjpnpaZ//O7wKI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Fa6DKQK8; arc=fail smtp.client-ip=52.101.57.25
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Q2fq7Tlz/ZkO8AdF1C7vTUAl1EbtKkVtuSS09DPgClJBSCAZ9yLARLOd4octH7zyGAM92zKE+omRoLA40My/1ozS9eW+CgCaBEddlsKqr4H6baJtaXk0ROYbGbLwKfcUOc7agKA7sidzpKI4uGmz38bcIRKREt9psyVndc6Cx9hqGqtFc4k0MWbwOBA40o6veM0oLX0GR4ZLakazaC4fyz8S/ybislf0Mia7kHYEhYKvGTFClaVuO1DklTQQ6IstOXL50/XM4djkcOzUh3TnzO0a41ZLgj+zI3VzGOWqjlkoCnaWta2BLq3XKu1zWuvowxpG6Z8hBYAxJFWu9g9vgQ==
+ b=JjR2FDHCsTpMugkCROrpLwbArjUAKwwsDO0EQ+QKAKje8cBynHpRUj/ZRln8jbc5DJ5a0Ef5zhQ21jJM/HKLo3VNd7BOj8aaTK/O110QY0SCRx6oOj5Sg7enybDOApdT7djLUxQEmOA80AG/7N+AhK/nuQW7VDgzBdLXTRm3qKdr+bXdlYh0pVda5tBla3ocvyGfcUxiN5FmjwzGlEQs81loLKFEzbvLh/JrOUVk5+3bCssE0AJpSVdIfF3DsZN5pjOXdKe14DmHrOBx8T0hJmj//Vkzeb5s8bO5XsNTpAxFLyzIe0KOI4Mt/SoStHnWUJP8eXLLK0a0Tgs1JAdbMw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=k//5NYtzwYj9LoHrlzJhqgt85UtgcgQD4sdpBuoEwRQ=;
- b=SXnUfA2rCJnw0STKLds/sfji8+Uyd7Ewzm4/1LrZ0FyTx0M3HAh970LUSv0zaHvCHqzHcuTGcxjOv/oahLtF+jnZMDZjewvifjWVm009QuQRqJ6tY1AumzbCCfWzr0oKjlKrEF9m18/mGMMIwFTOLwXvzifE+rLoMHUwHTQWXJQKFsxs5X/gYCd7WwDfKH7t3pe3M3W6WPzUk9RfEs9+KK1/P6zjGgx26FqNdhUrl4NxBfsutHzwGvSf3UH3j4xfBmTZJr3JWkXdf/niJV0vOOEqkRI3ZdzLERXcCPD+mNCcLLxiodT3nIcqfd6sLFbVn14AgcBsSyszaJnypfcO2Q==
+ bh=WquzEuT3uild5hfbMR7BosqzCK7/3Xcu7d7smLcN4/w=;
+ b=FTM9UEU+qf/7mmZh/YkO+Ynhdmi8fKJPXwUBDMFf9KT1icza0UyJ5GJtm+DwuTXSvZL/wLtwJ+zWbTCRM3WoMpwy9YlJQA46vXZTCOG/FqB4+ttaLH/j/r1c4wmMiLOHNvCbwg7GWC3RP5SLMyNbveoaClTfESuE6j19O57+NhKmcUqrOD7VIED16g1vDVxAyvEVCUDET+TRSBQpkOIaktWEmPaZEcSd1bxrgUggwHeeGk1qyDWkGybOUW/TzGW0kE+yHhss8O/STZOUEU0fS7oMmFhlqqL/vGNoq0wHREdfRiXHiuy3+oLwLo1rxtNl7/F4GCO7T4ojZCruzqQfkw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ 216.228.118.232) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k//5NYtzwYj9LoHrlzJhqgt85UtgcgQD4sdpBuoEwRQ=;
- b=tYPjrz1QbUaCWEKG4nBEciW0uIQnsoejQLCkkTx9S6cvPjVpoz3z21BxCjRnauYS6B7TNJ6pJrdor2Wn7t35oDSTKDCanuZLDSHppeUmRDja9y5ZQowfOL4o7qzSG5uvwaEcSl6wjgJIRstcXY/29McFDaJyf51yxOnvt95N5uQnhlU1NsQmTw/695o+xYQo0u7Gj9s9/01I9Qbu0zzcjc7Xq+DmZf0YgEvqMArsLf5rDK/UPqS0ikHv0sQYmMPyvcrDFj2wRxg004we+ctwEQyse9UGAEqy/8rvGDrDXZeCC0unoWVcHddAviC4Kzdd0MzweA4CFca1OXiDvugY0g==
-Received: from BL1PR13CA0030.namprd13.prod.outlook.com (2603:10b6:208:256::35)
- by LV3PR12MB9214.namprd12.prod.outlook.com (2603:10b6:408:1a4::18) with
+ bh=WquzEuT3uild5hfbMR7BosqzCK7/3Xcu7d7smLcN4/w=;
+ b=Fa6DKQK8S2rbN2VUChYrENXXwzGCjt1Xh6gxe+SJBcfsKbAMMHymEWsA3um2LjCa1k2CSpaaohJCXkVvemXKCA6DKDG99jGGpwiq4yQls1ykXvLknUptC70seOdgliqxV4vymM2SoeEa2m3kK+ahrtmODKYksj5ZoQb+oB6gEv8lTi64sw3Nfv3yPC01IFKBheDkA+UDoEjkViFa24AUJ82/AzZe67A7abFE0AgCKimZ+QhJg/6P0OEa9AgrJjWgCLg/p9ENXdlFcLciNjqv1ndIg2fpdQ3dUYj1IUTukwkwX9JHGCJm+UdPFo7Iwa33uEo7+9JZeoBFICm/khOw3A==
+Received: from CH0P221CA0044.NAMP221.PROD.OUTLOOK.COM (2603:10b6:610:11d::27)
+ by LV3PR12MB9331.namprd12.prod.outlook.com (2603:10b6:408:219::21) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.25.24; Mon, 18 May
- 2026 07:15:46 +0000
-Received: from BN3PEPF0000B374.namprd21.prod.outlook.com
- (2603:10b6:208:256:cafe::8d) by BL1PR13CA0030.outlook.office365.com
- (2603:10b6:208:256::35) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.48.12 via Frontend Transport; Mon, 18
- May 2026 07:15:45 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ 2026 07:15:53 +0000
+Received: from CH1PEPF0000AD7F.namprd04.prod.outlook.com
+ (2603:10b6:610:11d:cafe::c1) by CH0P221CA0044.outlook.office365.com
+ (2603:10b6:610:11d::27) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.25.23 via Frontend Transport; Mon, 18
+ May 2026 07:15:53 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- BN3PEPF0000B374.mail.protection.outlook.com (10.167.243.171) with Microsoft
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ CH1PEPF0000AD7F.mail.protection.outlook.com (10.167.244.88) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.71.0 via Frontend Transport; Mon, 18 May 2026 07:15:45 +0000
+ 15.21.48.11 via Frontend Transport; Mon, 18 May 2026 07:15:53 +0000
 Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 18 May
- 2026 00:15:30 -0700
+ 2026 00:15:35 -0700
 Received: from drhqmail201.nvidia.com (10.126.190.180) by
  drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.20; Mon, 18 May 2026 00:15:30 -0700
+ 15.2.2562.20; Mon, 18 May 2026 00:15:34 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
  (10.126.190.180) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
- Transport; Mon, 18 May 2026 00:15:26 -0700
+ Transport; Mon, 18 May 2026 00:15:30 -0700
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -91,9 +91,9 @@ CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
 	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Dragos Tatulea
 	<dtatulea@nvidia.com>, Simon Horman <horms@kernel.org>
-Subject: [PATCH net-next V2 7/8] net/mlx5: Use vport helper for IPsec eswitch set caps
-Date: Mon, 18 May 2026 10:13:55 +0300
-Message-ID: <20260518071356.345723-8-tariqt@nvidia.com>
+Subject: [PATCH net-next V2 8/8] net/mlx5: Generalize enable/disable HCA for any PF vport
+Date: Mon, 18 May 2026 10:13:56 +0300
+Message-ID: <20260518071356.345723-9-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20260518071356.345723-1-tariqt@nvidia.com>
 References: <20260518071356.345723-1-tariqt@nvidia.com>
@@ -108,31 +108,31 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN3PEPF0000B374:EE_|LV3PR12MB9214:EE_
-X-MS-Office365-Filtering-Correlation-Id: 36feebdf-eb15-4b97-020e-08deb4ad47c0
+X-MS-TrafficTypeDiagnostic: CH1PEPF0000AD7F:EE_|LV3PR12MB9331:EE_
+X-MS-Office365-Filtering-Correlation-Id: a4f78031-10b5-41dd-52e8-08deb4ad4c44
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|7416014|36860700016|1800799024|82310400026|22082099003|18002099003|56012099003|3023799003|11063799003;
+	BCL:0;ARA:13230040|376014|82310400026|1800799024|36860700016|7416014|56012099003|22082099003|18002099003|11063799003;
 X-Microsoft-Antispam-Message-Info:
-	PZXT0cSiiFnSTx14Tgnj7VXMFCOJn7ZB3fSVsfq4xCcwDFVDdj/JX20iT353GTCOoTt/U6A8iXMlnxkW7zLd2a2yy6LxMZX+XV4no57148VVRG0q0txyTrPNCYJHvm8ea/a7ZxYLpx96LfG3o05qJqh5ZheMyhOL4Kev/lILzAPnUbLSLY6o9+jOgB8lT9YoG0QO9vRtmrm2pggJXptfucvmnBAE1Z4RkOXsJvlxdJ6puNs1WXIMtkoAvI3j+klVrUriUuErVUkxLQ0qThFo73/KEA75MtR3BK1a4n5RcaUpD50o4Np7q7ee+vpe7ztyt1cYjUWgyCYX9xYFi5WNX1q4Qet2+mqYQFBLw/P5N+j//4oNx3cOcpMpJxhc4VDOneVbK+gHkNMVddle4/rVA71T0ylZeHbiUSMSbCpTckWhzLOGlVWLyiIEywxGrpjuPoV+MscZxX0mzJMAK7C2yqVAI4+jjca9N97SKeh0AQZG5/aNfD6mKOqdnweh5KEWd7iBSv+N8wYdSynDLEM722TDgTMpeK8gNQeH4mszXTvBnl/5rB74nMmVB+0eFgIAxdyq065bsb9lkXVIR0/0aAkcj8bpo0XeJ9Hf+p1uT05X5qFZikQfKPF+uNZ5Jcy52fINmiJjKxOqgGcgahTptvhnszOBXIySY+tP5wqNauhEGXfoZ//mVidzFlMo5QnNE/9cnRlV8nNCOdvJrG4G9JVVCleqqHY/tETe76nBvxc=
+	PmRRD8+Q6KAQDO11s74b8hCSS6yUKCoWwQP4JunIBQAQmVfFGpziEf0ROjxnpklAqsmcJH2wYHFUUlN6S/UKBpaT9ua4yhdYLRNXplGkNC4mM2kX2IPSbq0pTQBuznYDp64jNhCWAMS1dlxY4xjjCA9M3CjPY8oaOJja9XA/Gy0ZCoewRL9nGUmevrK7ozYFL0wgSmHtu1CiEpXlLDPSCJlrZ0I/fkUPCBRrIEmJQ0YuqoIYl5646O5vtDr4lnPwkn3UwWzCPWtMWNQDXZ+aupmXCryeFDTTtL2OsBlBDOgmFGMJ2WnfSgUkETeZamC95QTrcYKrYVaWEmt66LSSmbnXQM5ok5gbkBL5IHWn/8HPbG5aBP1PToAkjHqzvWU1RuBMVYlObzXr8AkRBDdAaFrV7AGMvxnV0sO/pDhwopbqxyAWV760tYUwiJYYNxiiUs8UoGiL/FiLdf6SdniABsH+5DvqOIDVhYdjJ/J/P8kDbfIcAvt8XRq1Az1RpYeXxzaQKI8h0XfbKbBzznaxFaInhxx7YUhddqDGtd5c/kbvRd+ktKVEMVLb7mWRe9NTId5zbV3b9HY4jLVYzp6IIqSRZ5RGmGH5/GxwF+PABPiClmG2I65dG7oFeObYy2j4bY4AzVVZSiJUYuGiLSVUE2NjuqU6EdDZc4iY4PaT0pguNW0S55TMtGWzPmQLQVSS2HGHQWriegTaaVRlDywPAh7AogT2zXNG9FYXvSLo974=
 X-Forefront-Antispam-Report:
-	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(7416014)(36860700016)(1800799024)(82310400026)(22082099003)(18002099003)(56012099003)(3023799003)(11063799003);DIR:OUT;SFP:1101;
+	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(82310400026)(1800799024)(36860700016)(7416014)(56012099003)(22082099003)(18002099003)(11063799003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	fdGIyNjB9mzw9LVW+zE/HuvkVwWfCmQof7AEcj1dbiMDTBfV3U4nMSI/kwjU9G5TUGj1ryf4wY0xuK0aEo66d1t67DqITg8g4V/pKGg0nOf0Y1/lp+cWXHZJerO1/NSZZg21/mnk+U2vgFWOHGHXD0jxY06shB7DoambZEm0F3pRrSibrc843qbXcyNMfQ3EOJl68KFG9maBzpaY1d8qMYDiVEfXKbC2/7UQSKwz3tvvLS44AIJh+P/FmaShf4PqlZ+EBy8SQrCa/fZnHX6wvEstA14fG9nQJYZ92NROX8BdMxf/52AkzHtZoQcm8RdmcbtL8k+JBB5rcdLCAcENH3fQRKofj/aZwnT8Q1435Y98EOfyaSewnTNsvrEJ+/dpDM4/FGinLUGcU1uArDla3f6XuvwJzVSPDMc16Ki6hexeu81jJ1rF769vXIXrRTZi
+	OYqzEoEITqGiGYk6iti5epi2l1S7WiJE0HMwvcqJzPz3lI2RNONKZKlwTRon1Qntz1thtGQvo36oHc6qwJJSd6tphY3ud0QhZjt7ExyOgDkjdQddrnYJV5IEa3xnIiwI+orP0RfPSfYgrsadMWkkKCiOT3F6mjXhh1BFlgrarvE8S0oFdRsyr1iChEctWijQ/sSIJ0/igIHE8xsUD/cE4mjW7zB9+EeRUnlwltg0T338o44z37IVBdyi4E1cWkBBiXJM0bWTj502BOOi9SY3VFbv4W5cGp5LUJSxpUlioN/uIkETk0qe6d0eGjbYqlWjRAdo4GKg88rtsQ3uuAYK1U1z2bHshmj+4povcPAa06Z48Kn7dL5FWEHSLTpcoW0owN9nYEP6FHHXxPWmpgCz5QprmTUudGLI8TRUF083mw+h4KQLlLJ10L+WeIRjrCtM
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2026 07:15:45.7389
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2026 07:15:53.3636
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 36feebdf-eb15-4b97-020e-08deb4ad47c0
+X-MS-Exchange-CrossTenant-Network-Message-Id: a4f78031-10b5-41dd-52e8-08deb4ad4c44
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BN3PEPF0000B374.namprd21.prod.outlook.com
+	CH1PEPF0000AD7F.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9214
-X-Rspamd-Queue-Id: 53B00567534
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9331
+X-Rspamd-Queue-Id: 93826567594
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [2.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -141,7 +141,7 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
 	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -149,7 +149,7 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[17];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-20884-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20885-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
@@ -159,175 +159,194 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,nvidia.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,Nvidia.com:dkim];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCVD_COUNT_SEVEN(0.00)[9]
 X-Rspamd-Action: no action
 
 From: Moshe Shemesh <moshe@nvidia.com>
 
-Use mlx5_vport_set_other_func_cap() and
-mlx5_vport_set_other_func_general_cap() in the IPsec eswitch functions
-instead of open-coding the SET_HCA_CAP command. This removes redundant
-buffer allocation and boilerplate, and also enables vhca_id based
-addressing when supported.
+Refactor the host-PF-specific mlx5_cmd_host_pf_enable/disable_hca()
+into generic mlx5_cmd_pf_enable/disable_hca() that accept a vport
+number. The new functions use vhca_id as function_id when supported.
+
+Similarly, refactor the eswitch layer into generic static helpers
+mlx5_esw_pf_enable/disable_hca() with thin wrappers for the host PF
+case, in preparation for enable_hca on satellite PF vports.
 
 Signed-off-by: Moshe Shemesh <moshe@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- .../ethernet/mellanox/mlx5/core/esw/ipsec.c   | 81 ++++++-------------
- 1 file changed, 23 insertions(+), 58 deletions(-)
+ .../net/ethernet/mellanox/mlx5/core/ecpf.c    | 24 +++++++++++-----
+ .../net/ethernet/mellanox/mlx5/core/ecpf.h    |  4 +--
+ .../net/ethernet/mellanox/mlx5/core/eswitch.c | 28 +++++++++++++------
+ .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  2 ++
+ .../net/ethernet/mellanox/mlx5/core/vport.c   |  4 +--
+ 5 files changed, 42 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/ipsec.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/ipsec.c
-index b830ccd91e62..2b5765ab60d1 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/ipsec.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/ipsec.c
-@@ -81,38 +81,25 @@ int mlx5_esw_ipsec_vf_offload_get(struct mlx5_core_dev *dev, struct mlx5_vport *
- static int esw_ipsec_vf_set_generic(struct mlx5_core_dev *dev, u16 vport_num, bool ipsec_ofld)
- {
- 	int query_sz = MLX5_ST_SZ_BYTES(query_hca_cap_out);
--	int set_sz = MLX5_ST_SZ_BYTES(set_hca_cap_in);
--	void *hca_cap, *query_cap, *cap;
-+	void *query_cap, *hca_caps;
- 	int ret;
- 
- 	if (!MLX5_CAP_GEN(dev, vhca_resource_manager))
- 		return -EOPNOTSUPP;
- 
- 	query_cap = kvzalloc(query_sz, GFP_KERNEL);
--	hca_cap = kvzalloc(set_sz, GFP_KERNEL);
--	if (!hca_cap || !query_cap) {
--		ret = -ENOMEM;
--		goto free;
--	}
-+	if (!query_cap)
-+		return -ENOMEM;
- 
- 	ret = mlx5_vport_get_other_func_general_cap(dev, vport_num, query_cap);
- 	if (ret)
- 		goto free;
- 
--	cap = MLX5_ADDR_OF(set_hca_cap_in, hca_cap, capability);
--	memcpy(cap, MLX5_ADDR_OF(query_hca_cap_out, query_cap, capability),
--	       MLX5_UN_SZ_BYTES(hca_cap_union));
--	MLX5_SET(cmd_hca_cap, cap, ipsec_offload, ipsec_ofld);
-+	hca_caps = MLX5_ADDR_OF(query_hca_cap_out, query_cap, capability);
-+	MLX5_SET(cmd_hca_cap, hca_caps, ipsec_offload, ipsec_ofld);
- 
--	MLX5_SET(set_hca_cap_in, hca_cap, opcode, MLX5_CMD_OP_SET_HCA_CAP);
--	MLX5_SET(set_hca_cap_in, hca_cap, other_function, 1);
--	MLX5_SET(set_hca_cap_in, hca_cap, function_id, vport_num);
--
--	MLX5_SET(set_hca_cap_in, hca_cap, op_mod,
--		 MLX5_SET_HCA_CAP_OP_MOD_GENERAL_DEVICE << 1);
--	ret = mlx5_cmd_exec_in(dev, set_hca_cap, hca_cap);
-+	ret = mlx5_vport_set_other_func_general_cap(dev, hca_caps, vport_num);
- free:
--	kvfree(hca_cap);
- 	kvfree(query_cap);
- 	return ret;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/ecpf.c b/drivers/net/ethernet/mellanox/mlx5/core/ecpf.c
+index 15cb27aea2c9..350c47d3643b 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/ecpf.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/ecpf.c
+@@ -18,25 +18,35 @@ static bool mlx5_ecpf_esw_admins_host_pf(const struct mlx5_core_dev *dev)
+ 	return mlx5_core_is_ecpf_esw_manager(dev);
  }
-@@ -121,49 +108,37 @@ static int esw_ipsec_vf_set_bytype(struct mlx5_core_dev *dev, struct mlx5_vport
- 				   bool enable, enum esw_vport_ipsec_offload type)
+ 
+-int mlx5_cmd_host_pf_enable_hca(struct mlx5_core_dev *dev)
++int mlx5_cmd_pf_enable_hca(struct mlx5_core_dev *dev, u16 vport_num)
  {
- 	int query_sz = MLX5_ST_SZ_BYTES(query_hca_cap_out);
--	int set_sz = MLX5_ST_SZ_BYTES(set_hca_cap_in);
--	void *hca_cap, *query_cap, *cap;
-+	void *query_cap, *hca_caps;
- 	int ret;
+ 	u32 out[MLX5_ST_SZ_DW(enable_hca_out)] = {};
+ 	u32 in[MLX5_ST_SZ_DW(enable_hca_in)]   = {};
++	u16 vhca_id;
  
- 	if (!MLX5_CAP_GEN(dev, vhca_resource_manager))
- 		return -EOPNOTSUPP;
- 
- 	query_cap = kvzalloc(query_sz, GFP_KERNEL);
--	hca_cap = kvzalloc(set_sz, GFP_KERNEL);
--	if (!hca_cap || !query_cap) {
--		ret = -ENOMEM;
--		goto free;
--	}
-+	if (!query_cap)
-+		return -ENOMEM;
- 
- 	ret = mlx5_vport_get_other_func_cap(dev, vport->vport, query_cap, MLX5_CAP_IPSEC);
- 	if (ret)
- 		goto free;
- 
--	cap = MLX5_ADDR_OF(set_hca_cap_in, hca_cap, capability);
--	memcpy(cap, MLX5_ADDR_OF(query_hca_cap_out, query_cap, capability),
--	       MLX5_UN_SZ_BYTES(hca_cap_union));
-+	hca_caps = MLX5_ADDR_OF(query_hca_cap_out, query_cap, capability);
- 
- 	switch (type) {
- 	case MLX5_ESW_VPORT_IPSEC_CRYPTO_OFFLOAD:
--		MLX5_SET(ipsec_cap, cap, ipsec_crypto_offload, enable);
-+		MLX5_SET(ipsec_cap, hca_caps, ipsec_crypto_offload, enable);
- 		break;
- 	case MLX5_ESW_VPORT_IPSEC_PACKET_OFFLOAD:
--		MLX5_SET(ipsec_cap, cap, ipsec_full_offload, enable);
-+		MLX5_SET(ipsec_cap, hca_caps, ipsec_full_offload, enable);
- 		break;
- 	default:
- 		ret = -EOPNOTSUPP;
- 		goto free;
- 	}
- 
--	MLX5_SET(set_hca_cap_in, hca_cap, opcode, MLX5_CMD_OP_SET_HCA_CAP);
--	MLX5_SET(set_hca_cap_in, hca_cap, other_function, 1);
--	MLX5_SET(set_hca_cap_in, hca_cap, function_id, vport->vport);
--
--	MLX5_SET(set_hca_cap_in, hca_cap, op_mod,
--		 MLX5_SET_HCA_CAP_OP_MOD_IPSEC << 1);
--	ret = mlx5_cmd_exec_in(dev, set_hca_cap, hca_cap);
-+	ret = mlx5_vport_set_other_func_cap(dev, hca_caps, vport->vport,
-+					    MLX5_SET_HCA_CAP_OP_MOD_IPSEC);
- free:
--	kvfree(hca_cap);
- 	kvfree(query_cap);
- 	return ret;
+ 	MLX5_SET(enable_hca_in, in, opcode, MLX5_CMD_OP_ENABLE_HCA);
+-	MLX5_SET(enable_hca_in, in, function_id, 0);
+-	MLX5_SET(enable_hca_in, in, embedded_cpu_function, 0);
+-	return mlx5_cmd_exec(dev, &in, sizeof(in), &out, sizeof(out));
++	if (mlx5_vport_use_vhca_id_as_func_id(dev, vport_num, &vhca_id)) {
++		MLX5_SET(enable_hca_in, in, function_id, vhca_id);
++		MLX5_SET(enable_hca_in, in, function_id_type, 1);
++	} else {
++		MLX5_SET(enable_hca_in, in, function_id, vport_num);
++	}
++	return mlx5_cmd_exec(dev, in, sizeof(in), out, sizeof(out));
  }
-@@ -171,34 +146,24 @@ static int esw_ipsec_vf_set_bytype(struct mlx5_core_dev *dev, struct mlx5_vport
- static int esw_ipsec_vf_crypto_aux_caps_set(struct mlx5_core_dev *dev, u16 vport_num, bool enable)
+ 
+-int mlx5_cmd_host_pf_disable_hca(struct mlx5_core_dev *dev)
++int mlx5_cmd_pf_disable_hca(struct mlx5_core_dev *dev, u16 vport_num)
  {
- 	int query_sz = MLX5_ST_SZ_BYTES(query_hca_cap_out);
--	int set_sz = MLX5_ST_SZ_BYTES(set_hca_cap_in);
--	struct mlx5_eswitch *esw = dev->priv.eswitch;
--	void *hca_cap, *query_cap, *cap;
-+	void *query_cap, *hca_caps;
- 	int ret;
+ 	u32 out[MLX5_ST_SZ_DW(disable_hca_out)] = {};
+ 	u32 in[MLX5_ST_SZ_DW(disable_hca_in)]   = {};
++	u16 vhca_id;
  
- 	query_cap = kvzalloc(query_sz, GFP_KERNEL);
--	hca_cap = kvzalloc(set_sz, GFP_KERNEL);
--	if (!hca_cap || !query_cap) {
--		ret = -ENOMEM;
--		goto free;
--	}
-+	if (!query_cap)
-+		return -ENOMEM;
+ 	MLX5_SET(disable_hca_in, in, opcode, MLX5_CMD_OP_DISABLE_HCA);
+-	MLX5_SET(disable_hca_in, in, function_id, 0);
+-	MLX5_SET(disable_hca_in, in, embedded_cpu_function, 0);
++	if (mlx5_vport_use_vhca_id_as_func_id(dev, vport_num, &vhca_id)) {
++		MLX5_SET(disable_hca_in, in, function_id, vhca_id);
++		MLX5_SET(disable_hca_in, in, function_id_type, 1);
++	} else {
++		MLX5_SET(disable_hca_in, in, function_id, vport_num);
++	}
+ 	return mlx5_cmd_exec(dev, in, sizeof(in), out, sizeof(out));
+ }
  
- 	ret = mlx5_vport_get_other_func_cap(dev, vport_num, query_cap, MLX5_CAP_ETHERNET_OFFLOADS);
- 	if (ret)
- 		goto free;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/ecpf.h b/drivers/net/ethernet/mellanox/mlx5/core/ecpf.h
+index 40b6ad76dca6..d9f9a53b019b 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/ecpf.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/ecpf.h
+@@ -17,8 +17,8 @@ bool mlx5_read_embedded_cpu(struct mlx5_core_dev *dev);
+ int mlx5_ec_init(struct mlx5_core_dev *dev);
+ void mlx5_ec_cleanup(struct mlx5_core_dev *dev);
  
--	cap = MLX5_ADDR_OF(set_hca_cap_in, hca_cap, capability);
--	memcpy(cap, MLX5_ADDR_OF(query_hca_cap_out, query_cap, capability),
--	       MLX5_UN_SZ_BYTES(hca_cap_union));
--	MLX5_SET(per_protocol_networking_offload_caps, cap, insert_trailer, enable);
--	MLX5_SET(set_hca_cap_in, hca_cap, opcode, MLX5_CMD_OP_SET_HCA_CAP);
--	MLX5_SET(set_hca_cap_in, hca_cap, other_function, 1);
--	MLX5_SET(set_hca_cap_in, hca_cap, function_id, vport_num);
--	MLX5_SET(set_hca_cap_in, hca_cap, op_mod,
--		 MLX5_SET_HCA_CAP_OP_MOD_ETHERNET_OFFLOADS << 1);
--	ret = mlx5_cmd_exec_in(esw->dev, set_hca_cap, hca_cap);
-+	hca_caps = MLX5_ADDR_OF(query_hca_cap_out, query_cap, capability);
-+	MLX5_SET(per_protocol_networking_offload_caps, hca_caps,
-+		 insert_trailer, enable);
+-int mlx5_cmd_host_pf_enable_hca(struct mlx5_core_dev *dev);
+-int mlx5_cmd_host_pf_disable_hca(struct mlx5_core_dev *dev);
++int mlx5_cmd_pf_enable_hca(struct mlx5_core_dev *dev, u16 vport_num);
++int mlx5_cmd_pf_disable_hca(struct mlx5_core_dev *dev, u16 vport_num);
+ 
+ #else  /* CONFIG_MLX5_ESWITCH */
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+index 9a7de7c9a667..206911817a04 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+@@ -1452,7 +1452,7 @@ static int mlx5_eswitch_load_ec_vf_vports(struct mlx5_eswitch *esw, u16 num_ec_v
+ 	return err;
+ }
+ 
+-int mlx5_esw_host_pf_enable_hca(struct mlx5_core_dev *dev)
++static int mlx5_esw_pf_enable_hca(struct mlx5_core_dev *dev, u16 vport_num)
+ {
+ 	struct mlx5_eswitch *esw = dev->priv.eswitch;
+ 	struct mlx5_vport *vport;
+@@ -1461,15 +1461,15 @@ int mlx5_esw_host_pf_enable_hca(struct mlx5_core_dev *dev)
+ 	if (!mlx5_core_is_ecpf(dev) || !mlx5_esw_allowed(esw))
+ 		return 0;
+ 
+-	vport = mlx5_eswitch_get_vport(esw, MLX5_VPORT_HOST_PF);
++	vport = mlx5_eswitch_get_vport(esw, vport_num);
+ 	if (IS_ERR(vport))
+ 		return PTR_ERR(vport);
+ 
+-	/* Once vport and representor are ready, take out the external host PF
+-	 * out of initializing state. Enabling HCA clears the iser->initializing
+-	 * bit and host PF driver loading can progress.
++	/* Once vport and representor are ready, take the PF out of
++	 * initializing state. Enabling HCA clears the iser->initializing
++	 * bit and PF driver loading can progress.
+ 	 */
+-	err = mlx5_cmd_host_pf_enable_hca(dev);
++	err = mlx5_cmd_pf_enable_hca(dev, vport_num);
+ 	if (err)
+ 		return err;
+ 
+@@ -1478,7 +1478,7 @@ int mlx5_esw_host_pf_enable_hca(struct mlx5_core_dev *dev)
+ 	return 0;
+ }
+ 
+-int mlx5_esw_host_pf_disable_hca(struct mlx5_core_dev *dev)
++static int mlx5_esw_pf_disable_hca(struct mlx5_core_dev *dev, u16 vport_num)
+ {
+ 	struct mlx5_eswitch *esw = dev->priv.eswitch;
+ 	struct mlx5_vport *vport;
+@@ -1487,11 +1487,11 @@ int mlx5_esw_host_pf_disable_hca(struct mlx5_core_dev *dev)
+ 	if (!mlx5_core_is_ecpf(dev) || !mlx5_esw_allowed(esw))
+ 		return 0;
+ 
+-	vport = mlx5_eswitch_get_vport(esw, MLX5_VPORT_HOST_PF);
++	vport = mlx5_eswitch_get_vport(esw, vport_num);
+ 	if (IS_ERR(vport))
+ 		return PTR_ERR(vport);
+ 
+-	err = mlx5_cmd_host_pf_disable_hca(dev);
++	err = mlx5_cmd_pf_disable_hca(dev, vport_num);
+ 	if (err)
+ 		return err;
+ 
+@@ -1500,6 +1500,16 @@ int mlx5_esw_host_pf_disable_hca(struct mlx5_core_dev *dev)
+ 	return 0;
+ }
+ 
++int mlx5_esw_host_pf_enable_hca(struct mlx5_core_dev *dev)
++{
++	return mlx5_esw_pf_enable_hca(dev, MLX5_VPORT_HOST_PF);
++}
 +
-+	ret = mlx5_vport_set_other_func_cap(dev, hca_caps, vport_num,
-+					    MLX5_SET_HCA_CAP_OP_MOD_ETHERNET_OFFLOADS);
- free:
--	kvfree(hca_cap);
- 	kvfree(query_cap);
- 	return ret;
++int mlx5_esw_host_pf_disable_hca(struct mlx5_core_dev *dev)
++{
++	return mlx5_esw_pf_disable_hca(dev, MLX5_VPORT_HOST_PF);
++}
++
+ /* mlx5_eswitch_enable_pf_vf_vports() enables vports of PF, ECPF and VFs
+  * whichever are present on the eswitch.
+  */
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
+index 2eba141bd521..51637e58a48b 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
+@@ -452,6 +452,8 @@ void mlx5_unload_one_light(struct mlx5_core_dev *dev);
+ 
+ void mlx5_query_nic_sw_system_image_guid(struct mlx5_core_dev *mdev, u8 *buf,
+ 					 u8 *len);
++bool mlx5_vport_use_vhca_id_as_func_id(struct mlx5_core_dev *dev,
++				       u16 vport_num, u16 *vhca_id);
+ int mlx5_vport_set_other_func_cap(struct mlx5_core_dev *dev, const void *hca_cap, u16 vport,
+ 				  u16 opmod);
+ #define mlx5_vport_get_other_func_general_cap(dev, vport, out)		\
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/vport.c b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
+index f8e6b1ab7c5c..e0848f4e88dd 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/vport.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
+@@ -1283,8 +1283,8 @@ void mlx5_query_nic_sw_system_image_guid(struct mlx5_core_dev *mdev, u8 *buf,
+ 		buf[(*len)++] = MLX5_CAP_GEN_2(mdev, load_balance_id);
  }
+ 
+-static bool mlx5_vport_use_vhca_id_as_func_id(struct mlx5_core_dev *dev,
+-					      u16 vport_num, u16 *vhca_id)
++bool mlx5_vport_use_vhca_id_as_func_id(struct mlx5_core_dev *dev,
++				       u16 vport_num, u16 *vhca_id)
+ {
+ 	if (!MLX5_CAP_GEN_2(dev, function_id_type_vhca_id))
+ 		return false;
 -- 
 2.44.0
 
