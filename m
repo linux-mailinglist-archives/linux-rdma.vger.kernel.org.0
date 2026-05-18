@@ -1,153 +1,127 @@
-Return-Path: <linux-rdma+bounces-20910-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20911-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oHyWHzMVC2o5/wQAu9opvQ
-	(envelope-from <linux-rdma+bounces-20910-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 15:33:39 +0200
+	id WHQLFBUnC2pAEAUAu9opvQ
+	(envelope-from <linux-rdma+bounces-20911-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 16:49:57 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07EAB56DAF2
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 15:33:38 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D154D56F3BA
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 16:49:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 755013006B2A
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 13:31:00 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2667A3199C2D
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 14:36:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 361BF3EEAED;
-	Mon, 18 May 2026 13:30:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3CEA48096F;
+	Mon, 18 May 2026 14:33:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="foTzNW2d"
+	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="XyDxl5bJ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE7683FF1B4
-	for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 13:30:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8928450909
+	for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 14:33:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.251
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779111059; cv=none; b=P4d9KvTPZs8yVPhNiZT0RE0CLe3giUfd6CYeVEHPCnSWWGtwAbBKSS9dOK7Ax2kzWz4H3NarBPBMOJNOuSAJJQY6iHr8N6hfafZKjTKvxPvpYe7VGGvh70GEr3JdzLijTBxzgacrXlq4DIxT6omev+13VhRnKWKkRs7OgKq90kk=
+	t=1779114827; cv=none; b=dPqacwLc/MumG16cKZdeJv5kwEioURBYcIWmeHNivhC/Z4OgLr3VI02qrt96aaDzBR9+RyqfTgbXkdC1c1KksAaC0AbK8qeHRJPKq7PjyHNkOdafW0cxnQaahr9FX8+dW8wnDGydxqFfPlRdFXaLoeinic8uLfKdm8/GE5K5/fA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779111059; c=relaxed/simple;
-	bh=K7+3DEdyIVkpAkj1WUPRR53zfFegqvKtHC85qqPR9CA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E63meuW25G7ANBG9uvHSrhpyDH976ddNHNqMtCi+7TDQ7/bETpxRkGUzF3iE8khGB7qV2AGhQQ8Zy2H/oXqrOpv7XtcRnOmRVMMQNLzo/VLy3Vfapm5Z36VBXiEnEIPbsnEvL6iSZHDn288/nZ6AInuVIdicw6oqf8dZXr5Zb9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=foTzNW2d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E39F1C2BCB7;
-	Mon, 18 May 2026 13:30:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1779111058;
-	bh=K7+3DEdyIVkpAkj1WUPRR53zfFegqvKtHC85qqPR9CA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=foTzNW2dQUaqMC3E/voXV6FC5uFZT2dYSJi4iaCP6YibdO3tlP4/1eZOKVdkWcu/v
-	 awGkIYXazN4NTDXENsnulwzAjlycSZdIgMlxHE9HOVPb0RyVNlkyYJ0K7ohZCg6xdu
-	 7dTENzttLVYXYUgu6ad/h1fvYMfQkbfTRCqNlnC4D0LWIXXufVXoQL4PWZfwj4DVSD
-	 jHlhbB60MTPQSPqiuGWDsoXrQ8cE87slPDVqZSaXN7Fx/ZPo1g9qn6I8iPvEqeJgmW
-	 nGsb9wKhHbMjKE15F1Uoch49iRByNQln/X6ng9JYaDdcXHfU7haYiPCH70UJfzjbFr
-	 S87xwOFZk1OfA==
-Date: Mon, 18 May 2026 16:30:54 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: linux-rdma@vger.kernel.org, jgg@ziepe.ca, mrgolin@amazon.com,
-	gal.pressman@linux.dev, sleybo@amazon.com, parav@nvidia.com,
-	mbloch@nvidia.com, yanjun.zhu@linux.dev, marco.crivellari@suse.com,
-	roman.gushchin@linux.dev, phaddad@nvidia.com, lirongqing@baidu.com,
-	ynachum@amazon.com, huangjunxian6@hisilicon.com,
-	kalesh-anakkur.purayil@broadcom.com, ohartoov@nvidia.com,
-	michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com,
-	sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com,
-	selvin.xavier@broadcom.com
-Subject: Re: [PATCH rdma-next v5 00/15] RDMA: Introduce generic buffer
- descriptor infrastructure for umem
-Message-ID: <20260518133054.GU33515@unreal>
-References: <20260517063006.2200680-1-jiri@resnulli.us>
+	s=arc-20240116; t=1779114827; c=relaxed/simple;
+	bh=xFY9X2mjVk6W7f9VbEGtWtnzQDtgT8F27rqDcjsh1U4=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=Srod19T0i2JaV9RIiy6ysjU6K9Q1tKN48vzhUjicltAJ3RdL+ecr9ZmeiyHn2as2BQxWMYwnAVf6o+iVbBWCBd4hfZw3YaRsCDpAEPwiGlSHtjf5wbk30U3nsl4bTlDOs28e1srrvdDhOK4YAHxkSNsDZC5S8HvoVwIVbZOxwO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=XyDxl5bJ; arc=none smtp.client-ip=185.125.188.251
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
+Received: from juju-98d295-prod-launchpad-51.localdomain (unknown [10.131.215.15])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id 253D03F1AF
+	for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 14:33:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+	s=20210803; t=1779114817;
+	bh=xFY9X2mjVk6W7f9VbEGtWtnzQDtgT8F27rqDcjsh1U4=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+	 Reply-To;
+	b=XyDxl5bJ5BoY41GyvBSYT//3UWQIieHZ0C39JvKflmVx4eqrsVzdqF0TLnJSPuHE8
+	 7etK9i9xJa2bAeb2i8/p3BAvGmLm/SaLcBF3epr4lblTOubT4k5z2jsKG8aBm4UhLR
+	 oopya2K7shR2FULDKjBnf2LBUPFew7pGeHTTV3F1T3RIoMnHWlIgV9EraS71bwLrfe
+	 /s0CC3S9KL77exuaOqspXB4PbwOZkuTjJXUbW8N1Q1rGsljy49F0YtvUozUolauPfC
+	 7ebw37de99w1aFg+jfkDdgt84HoGXVHjmNmJ6sOuKU2R9PxKZPBhLzdme2lGULlb7/
+	 HTm/9Xz8oMT7g==
+Received: from [10.131.215.15] (localhost [127.0.0.1])
+	by juju-98d295-prod-launchpad-51.localdomain (Postfix) with ESMTP id 0F6A5BD3E2
+	for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 14:33:37 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260517063006.2200680-1-jiri@resnulli.us>
-X-Rspamd-Queue-Id: 07EAB56DAF2
-X-Rspamd-Server: lfdr
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To: Linux RDMA <linux-rdma@vger.kernel.org>
+From: noreply@launchpad.net
+Subject: [recipe build #4041402] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <177911481676.3147202.7045997433300110824.launchpad@juju-98d295-prod-launchpad-51>
+Date: Mon, 18 May 2026 14:33:36 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+Errors-To: noreply@launchpad.net
+Precedence: bulk
+X-Generated-By: Launchpad (canonical.com); Revision="21e17fefcf122f18da93c143f29f40ba940e464c"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: dee7d267b4027f0d257182123c94a514859f246d
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[launchpad.net,none];
 	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[launchpad.net:s=20210803];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TO_DN_ALL(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20911-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20910-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[23];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[launchpad.net:+];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	HAS_REPLYTO(0.00)[noreply@launchpad.net];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FROM_NEQ_ENVFROM(0.00)[noreply@launchpad.net,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	FROM_NO_DN(0.00)[];
+	REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Queue-Id: D154D56F3BA
 X-Rspamd-Action: no action
+X-Rspamd-Server: lfdr
 
-On Sun, May 17, 2026 at 08:29:51AM +0200, Jiri Pirko wrote:
-> From: Jiri Pirko <jiri@nvidia.com>
-> 
-> This patchset introduces a generic buffer descriptor infrastructure
-> for passing memory buffers (dma-buf or user VA) to uverbs commands,
-> and wires it up for CQ and QP creation in the uverbs core, efa, mlx5,
-> bnxt_re and mlx4 drivers.
-> 
-> Instead of adding ad-hoc per-buffer UAPI attributes for each new buffer
-> type, each command declares dedicated UVERBS_ATTR_UMEM attributes that
-> carry one buffer descriptor each. Each descriptor specifies a buffer
-> type, covering both VA and dma-buf. A consumption check ensures
-> userspace and driver agree on which attributes are used.
-> 
-> The patchset:
-> 1-2,4. Plumbing: rename ib_umem_get() to ib_umem_get_va() and re-route
->    it through the new central ib_umem_get(); no behaviour change.
-> 3. Introduces the core buffer descriptor infrastructure and UAPI.
-> 5. Factors out CQ buffer umem processing into a helper.
-> 6. Adds the CQ buffer UMEM attribute and driver wrappers.
-> 7-10. Converts efa, mlx5, bnxt_re and mlx4 to use the new CQ helpers,
->    with drivers taking umem ownership.
-> 11. Removes the legacy umem field from struct ib_cq, now that all
->    drivers use the new helpers.
-> 12. Adds optional whole-QP, RQ and SQ UMEM attributes to QP creation.
-> 13. Converts mlx5 QP creation to use the new attributes.
-> 14-15. Adds mlx5 driver-namespace UMEM attributes for CQ and QP
->    doorbell records.
-> 
-> ---
-> Based on top of: https://lore.kernel.org/all/0-v1-045258567bd6+9fe-ib_uverbs_support_ko_jgg@nvidia.com/
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 3 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/4041402/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-115
 
-The overall approach looks sane to me.
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/4041402
+Your team Linux RDMA is the requester of the build.
 
-I have a few minor comments, mostly related to how I expect the
-ib_umem_get_*() helpers to be used:
-
-1. We should hide the ib_umem_get() function and export only
-   ib_umem_get_va(), ib_umem_get_attr(), and
-   ib_umem_get_attr_or_va(). I do not want to see drivers relying on
-   ib_umem_get() again.
-
-2. Pass a struct uverbs_attr_bundle *attrs instead of struct ib_udata
-   *udata to ib_umem_get().
-
-3. Consider simplifying ib_umem_get() further by passing in the desc.
-   I am not fully convinced it helps, but it could allow handling
-   va_fallback outside of ib_umem_get().
- 
-Thanks
 
