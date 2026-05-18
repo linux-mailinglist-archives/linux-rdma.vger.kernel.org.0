@@ -1,127 +1,156 @@
-Return-Path: <linux-rdma+bounces-20911-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20912-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WHQLFBUnC2pAEAUAu9opvQ
-	(envelope-from <linux-rdma+bounces-20911-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 16:49:57 +0200
+	id yL3OAEIxC2oZEgUAu9opvQ
+	(envelope-from <linux-rdma+bounces-20912-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 17:33:22 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D154D56F3BA
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 16:49:56 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22AFD570086
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 17:33:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2667A3199C2D
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 14:36:13 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 16DBB3046504
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 15:27:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3CEA48096F;
-	Mon, 18 May 2026 14:33:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DED937E2F7;
+	Mon, 18 May 2026 15:27:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="XyDxl5bJ"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="SZJL2Qrw"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8928450909
-	for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 14:33:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.251
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B89137EFFD
+	for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 15:27:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779114827; cv=none; b=dPqacwLc/MumG16cKZdeJv5kwEioURBYcIWmeHNivhC/Z4OgLr3VI02qrt96aaDzBR9+RyqfTgbXkdC1c1KksAaC0AbK8qeHRJPKq7PjyHNkOdafW0cxnQaahr9FX8+dW8wnDGydxqFfPlRdFXaLoeinic8uLfKdm8/GE5K5/fA=
+	t=1779118072; cv=none; b=B9ohfdWFD8JtJwKIWQq/jKwB9XBVTY7FiS1IxdXXiWRn8KtNgJUl+dUFGHb1CTSqNMHwsfdowFlNd6aMxEhE+yHa4nVtyLSgjtFs1jHLftkbFdoHkMAHUSYdhbLK8uTsCHkU90LlDiH7rbDBrSs7adLapzk2yeTpdbGp31ciJNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779114827; c=relaxed/simple;
-	bh=xFY9X2mjVk6W7f9VbEGtWtnzQDtgT8F27rqDcjsh1U4=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=Srod19T0i2JaV9RIiy6ysjU6K9Q1tKN48vzhUjicltAJ3RdL+ecr9ZmeiyHn2as2BQxWMYwnAVf6o+iVbBWCBd4hfZw3YaRsCDpAEPwiGlSHtjf5wbk30U3nsl4bTlDOs28e1srrvdDhOK4YAHxkSNsDZC5S8HvoVwIVbZOxwO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=XyDxl5bJ; arc=none smtp.client-ip=185.125.188.251
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
-Received: from juju-98d295-prod-launchpad-51.localdomain (unknown [10.131.215.15])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id 253D03F1AF
-	for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 14:33:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-	s=20210803; t=1779114817;
-	bh=xFY9X2mjVk6W7f9VbEGtWtnzQDtgT8F27rqDcjsh1U4=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
-	 Reply-To;
-	b=XyDxl5bJ5BoY41GyvBSYT//3UWQIieHZ0C39JvKflmVx4eqrsVzdqF0TLnJSPuHE8
-	 7etK9i9xJa2bAeb2i8/p3BAvGmLm/SaLcBF3epr4lblTOubT4k5z2jsKG8aBm4UhLR
-	 oopya2K7shR2FULDKjBnf2LBUPFew7pGeHTTV3F1T3RIoMnHWlIgV9EraS71bwLrfe
-	 /s0CC3S9KL77exuaOqspXB4PbwOZkuTjJXUbW8N1Q1rGsljy49F0YtvUozUolauPfC
-	 7ebw37de99w1aFg+jfkDdgt84HoGXVHjmNmJ6sOuKU2R9PxKZPBhLzdme2lGULlb7/
-	 HTm/9Xz8oMT7g==
-Received: from [10.131.215.15] (localhost [127.0.0.1])
-	by juju-98d295-prod-launchpad-51.localdomain (Postfix) with ESMTP id 0F6A5BD3E2
-	for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 14:33:37 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1779118072; c=relaxed/simple;
+	bh=YzZiZvWgihco+n7g2MLQYBBVCjH+6tLhbUm7+CnNsAA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bhqIaHdEVsHV/YQwGFJ3IzgcNqM8zBLuqRp7Gsn5XYTstvmtdELLWeR7NovhzLMTQ/eS/xhAWd4v6iT0QGssR3z4ENlJrglH+MEDCJiBSExiRWNByuEeVxXHm1t6yihCFNkITDeYOU74dMuO+bT7J0zWoy14b0AlbQoImGiMM10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=SZJL2Qrw; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-43d76dd4ee8so2087018f8f.2
+        for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 08:27:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1779118065; x=1779722865; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Iwi0S40Msnl4m6DzSeTZ6ftvMS4fxMcOkpbHCcupllI=;
+        b=SZJL2Qrw/rIbw8yxGgrDe9Xm1h74EUHGGinIJbp61nWltp2ZFbz/J3SMFyBT6P//J7
+         XKFyYxbIZ8dWptN6PQjNmnE+xi7L+odxGVowfSLYoDoyEOCsf4GS9jxPjfl2sffqFgZT
+         TaasKcAylcvhsVXwa4f0Smc2JhaXtE9f0Wd05IiBYE18ln4+m5SrLc9RHiIm6mtfj0qP
+         drFifdYibi0Ao6z0HNka/d1GZf3XKxBozICbI80Kw/H0lHq1UF2Yd7WL9LZPqdLsSlxd
+         MilJFLlV4v5ut9NWpPGP4Lti/JL3pWFKw11eqp3frVnhN5uTFklGSQINnueU+wG2zhvD
+         uG1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779118065; x=1779722865;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Iwi0S40Msnl4m6DzSeTZ6ftvMS4fxMcOkpbHCcupllI=;
+        b=V1s3zvMoo+IzArR9aPhW5X67Kf/NVP9SQf0iqYPkeNVmcrhnqLCFx235WXdW0jy1Rj
+         QyfQmEUOnysTTVXUQ+CN4JafEe+TGVTwY8GDSkTtgFYj2FkzIzxCnPdADCyN9NBqX9jo
+         zf3AwUKnb8QSolQGknEkqbtd6e0FJBog3cjKTzWAAiR0eOsd0N/nvEXDlyh+tK8IaUb/
+         +tRufzYlwa6SH/MBRZixlvpeRO0Oy2QERCIfgLg2yQGJo2qOxFEYKV5SHaSICfhQtAQI
+         OC0NViaW2+e3pvCQVxvWv+lr1g8SgAbykiTbS4yndaLf5eI7rqknp5UTGJTLG7RoTKHe
+         Z7Zg==
+X-Gm-Message-State: AOJu0Yz8sgcjF7qamVvYDlCB6IjC5TLea+FJuPCeo3iVJRWO9DkguNLF
+	b7UfSNmxwTkIkxkLeeYy1BlTahEJhuKNC4dICiJMNgi6tqDLM25OF1D+jiSbkD40YVg=
+X-Gm-Gg: Acq92OEgcxXdbHdrh8bv8QLf3mDCd0Ej4goE2/2miPtSGuHMBa+SKaVcwHEgoWAICXu
+	jHJQr45Xo3Jd5venRf3eqd4H6+Tk6JQb4kiNRBMR4yCP12+xDL20Zg2ZpQzA2GfyvJIvOx9+aRW
+	CH+SY3h369TCcNnkecu0kiSVmbpSoOx+pO88GBbo0X9/TAoiGXqfRVAD8ps/Ym/QhEjhlmNT61C
+	BFJIpHGsGCO84eAE2eT3tP6BtD/VC1Q35DRnMTqBTaaf+tQArtpcWwyS2vmLN5rXfpzlaaDXCD4
+	l1I5ps4w9DL/JFsTZLj2NtUiihfuUdLYtT1oeng+RaJdGl8FBZmmIddVv51PIErkf6yAJK9X2Ow
+	wSAWQ5XQLhwbs5BGDBbJZ5GiF21kIrrmZN/hr7LYe5EbFPX8zStHdoJQnIJzlu/HH8fMKvl6eu6
+	psH/22QmAmEa8P2/cmzW696tA4JhOh9vhwoZk=
+X-Received: by 2002:a5d:52cb:0:b0:45e:655d:6f7 with SMTP id ffacd0b85a97d-45e655d0715mr14412831f8f.24.1779118064693;
+        Mon, 18 May 2026 08:27:44 -0700 (PDT)
+Received: from FV6GYCPJ69 ([140.209.217.212])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45da0a17ec2sm35275039f8f.24.2026.05.18.08.27.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2026 08:27:44 -0700 (PDT)
+Date: Mon, 18 May 2026 17:27:41 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Jacob Moroni <jmoroni@google.com>
+Cc: linux-rdma@vger.kernel.org, jgg@ziepe.ca, leon@kernel.org, 
+	mrgolin@amazon.com, gal.pressman@linux.dev, sleybo@amazon.com, parav@nvidia.com, 
+	mbloch@nvidia.com, yanjun.zhu@linux.dev, marco.crivellari@suse.com, 
+	roman.gushchin@linux.dev, phaddad@nvidia.com, lirongqing@baidu.com, ynachum@amazon.com, 
+	huangjunxian6@hisilicon.com, kalesh-anakkur.purayil@broadcom.com, ohartoov@nvidia.com, 
+	michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com, 
+	sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com
+Subject: Re: [PATCH rdma-next v5 03/15] RDMA/core: Introduce generic buffer
+ descriptor infrastructure for umem
+Message-ID: <agsv3fAVpqFdX52y@FV6GYCPJ69>
+References: <20260517063006.2200680-1-jiri@resnulli.us>
+ <20260517063006.2200680-4-jiri@resnulli.us>
+ <CAHYDg1RXDuB91xDUW9cURq3hWfYeWabrBNKfXEZm6aHVbQi+9g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Launchpad-Message-Rationale: Requester @linux-rdma
-X-Launchpad-Message-For: linux-rdma
-X-Launchpad-Notification-Type: recipe-build-status
-X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
-X-Launchpad-Build-State: MANUALDEPWAIT
-To: Linux RDMA <linux-rdma@vger.kernel.org>
-From: noreply@launchpad.net
-Subject: [recipe build #4041402] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
-Message-Id: <177911481676.3147202.7045997433300110824.launchpad@juju-98d295-prod-launchpad-51>
-Date: Mon, 18 May 2026 14:33:36 -0000
-Reply-To: noreply@launchpad.net
-Sender: noreply@launchpad.net
-Errors-To: noreply@launchpad.net
-Precedence: bulk
-X-Generated-By: Launchpad (canonical.com); Revision="21e17fefcf122f18da93c143f29f40ba940e464c"; Instance="launchpad-buildd-manager"
-X-Launchpad-Hash: dee7d267b4027f0d257182123c94a514859f246d
-X-Spamd-Result: default: False [-1.66 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHYDg1RXDuB91xDUW9cURq3hWfYeWabrBNKfXEZm6aHVbQi+9g@mail.gmail.com>
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[launchpad.net,none];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[launchpad.net:s=20210803];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_ALL(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20911-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_ONE(0.00)[1];
+	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[resnulli.us];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[launchpad.net:+];
+	TAGGED_FROM(0.00)[bounces-20912-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[24];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
 	MISSING_XM_UA(0.00)[];
-	HAS_REPLYTO(0.00)[noreply@launchpad.net];
-	RCVD_COUNT_FIVE(0.00)[5];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[noreply@launchpad.net,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCVD_COUNT_FIVE(0.00)[5];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_NO_DN(0.00)[];
-	REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Queue-Id: D154D56F3BA
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,resnulli-us.20251104.gappssmtp.com:dkim]
+X-Rspamd-Queue-Id: 22AFD570086
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
- * State: Dependency wait
- * Recipe: linux-rdma/rdma-core-daily
- * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Distroseries: xenial
- * Duration: 3 minutes
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+recipebuild/4041402/+files/buildlog.txt.gz
- * Upload Log:=20
- * Builder: https://launchpad.net/builders/lcy02-amd64-115
+Mon, May 18, 2026 at 03:04:06PM +0200, jmoroni@google.com wrote:
+>Hi,
+>
+>> +struct ib_umem *ib_umem_get_desc(struct ib_device *device,
+>> +                                const struct ib_uverbs_buffer_desc *desc,
+>> +                                int access)
+>> +{
+>> +       struct ib_umem_dmabuf *umem_dmabuf;
+>> +
+>> +       if (desc->reserved[0] || desc->reserved[1])
+>> +               return ERR_PTR(-EINVAL);
+>> +
+>> +       switch (desc->type) {
+>> +       case IB_UVERBS_BUFFER_TYPE_DMABUF:
+>> +               umem_dmabuf = ib_umem_dmabuf_get_pinned(device, desc->addr,
+>> +                                                       desc->length, desc->fd,
+>> +                                                       access);
+>
+>This all looks good to me. Just thinking out loud...
+>
+>Is there a longer term plan to handle revocable dmabufs on this path and
+>get rid of the separate ib_umem_dmabuf_get methods?
 
---=20
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
-ild/4041402
-Your team Linux RDMA is the requester of the build.
-
+Out of scope now.
 
