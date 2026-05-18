@@ -1,219 +1,260 @@
-Return-Path: <linux-rdma+bounces-20933-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20934-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kExxG2eDC2oZIwUAu9opvQ
-	(envelope-from <linux-rdma+bounces-20933-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 23:23:51 +0200
+	id IAIKOD2GC2p1IwUAu9opvQ
+	(envelope-from <linux-rdma+bounces-20934-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 23:35:57 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00202573C7E
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 23:23:50 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C79D573F1B
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 23:35:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id EC7F13036CC1
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 21:23:47 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6CF7730087BC
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 21:33:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1168399011;
-	Mon, 18 May 2026 21:23:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEDB939A04F;
+	Mon, 18 May 2026 21:33:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BgK8aTPt"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="AMCmSssC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 267A4397338
-	for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 21:23:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 224B5396D19;
+	Mon, 18 May 2026 21:33:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779139424; cv=none; b=Sh6m+z7A2mVjDdrvflXcjscIPjTHBvvRD7aRMNrWbmRd53DNOLE3MWh0HSIvcCjRrTZHjJ6+o4+5E34Nnkgr9ASVe8MgTLeTkFuurbqEGDgJqfxSoU+Qv+ooNdrk+q170ilPc6/OwRKPgEdHGCuyY6iZzNLUIAaHDDEHBrGsZzo=
+	t=1779140014; cv=none; b=AznZQNiFmk6nCFImM6pyXk3u4Lx9XF+UHzb/ExA/7llUXq9IdY+3kCf839k99+iA73T/xv8cYLkgXNbhHr2GQEoSgM5z30uTMz/D2PIZuOXJUzimO5HLxGn8RCTmrBrR8rjVi4Inucj1wDQWIamK0NZX3Sw27u8DAsglGo0tC+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779139424; c=relaxed/simple;
-	bh=r0lg9YRX6xORkZ7Admw+989oxdaqLorvb/Z1s0NxaLc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pxGgUXqVxkkVsJHQSQ2srbT6ac8UJIKlrXFaTU6fCGcNdfqN82PanJaeMOkO3TbSKNdkDpmY52Sri7iDQ6IC3ArmCSNeZmTs6d9uFU6BtSEA91cBwc2AAhRaGnRGG+7aTUfVAKKg4nDIDYqbcr1Ml4u1wBBSAAGmHhat5fDmt7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BgK8aTPt; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-51306c9f2a8so34433931cf.1
-        for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 14:23:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779139422; x=1779744222; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8dlxczQKkS431AlI89XxhX7yrGqU4XUXJdF6JkeyGzM=;
-        b=BgK8aTPto0OtHACqJ95bQkVyQWpwPpSF+dXIfnSK1UWMG9iZHvOH1PfyDBPrxG7vlU
-         jSeTqOBngpNZ8KfOQGR/RJv0vzrOHO6v1CSBtTuTukG5h5wQOg1Vupoxt7QHkNIvUKSy
-         z+c9BIM1i/6pDk1SOi8IBvmc4/Kr7deyPiuAmW0RDwBcUVB4PF1vD3YZJjCvZ/kLZHUK
-         YlhHFpz7EXRO00c7q47ILbgOXm5A4fvtNDPeJPPETJRoUpEMsR4SuBZH6R0JAAnVac8J
-         /EzG62SwVdBFlRmbwTFHByuLbTwjZLeUUC1Dac8qCzRFl0tqw/H6nZ9/9Kb+MoCeUazz
-         gbGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779139422; x=1779744222;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8dlxczQKkS431AlI89XxhX7yrGqU4XUXJdF6JkeyGzM=;
-        b=KJHEfwL/FBDkVHxA+Y8KEF+OgomRKuH8N1aLxpvtpK49hZ8mHsvPqFEBeJjzhk42D5
-         c9Mui4gY5Qj76ZHCI78InyssCt7X27oNF/adWfZM0VUivzZQZjPtHr2oS9ToUPCCWMlB
-         yjcQDAmyxzprsJiiG1ka++fSuMa9wRh8NKZYlqZG2+5PcqKcmiSxTnli4jkPerznfZne
-         IX3PrZ/6zLy5LZvgzECVdf4lSqwm6boxYXAWfpbrGtJF6fbHGx/nQ2K/DeVsXMusDoQE
-         5O/8ygeHK9I9jSbinVmUIhxGRQijiPhQDfL64LD7Zj2fSer34SFedlHpgwCTzcRdNf3i
-         wTbg==
-X-Gm-Message-State: AOJu0YxMiHi0nBMHSIYSESaVEBSc+BeS+HxxY1YYocRrQKyVHXniXjmZ
-	7VnEuFdB2EaT2QtHKA5aakG6+mTFbXk9lkbN2xm6pP9L6t4I+gHgRHZp
-X-Gm-Gg: Acq92OE5KPR9lwDLMAF6sWgr9Z/GsceLUItHOx0GdrXltvmYrisDu1FI3xt8Van4swG
-	g8oekd6ZnG2xpTRBMV7eh8BXQYcwMe1qWAjwVAGmx5kZimG9XDT5XG9MryZYLB5wiZOKs7C6AtY
-	Lf1jcgZ3+V/N+liR9qwTTNKeq+/J43ZVQGyYW9XVwVPYjErExhDrTQ3Q+K9UdeLyeWWGy3MTQ9a
-	6g95s2HA7bLCGFZ1ReAN7ph1L1HTEJ842lYVB9P02qeuXTESWXyfC2cLGYhTQg643a+8G0fVZZt
-	ab7VIn50hj667c6T7EmkderReYCeRMw327ENkrPcdNE5kV9xGcIRZ3l0+eQFchdlqN0xvj6NvoC
-	QInx6dpa3vjxo97KSm4u9t8JbRKoxjANNaLd/STPut/j0K3cLUUb78ujHczZi7gK50eaLwbjT/B
-	k01QodlYu4v98+xM87sUdF/2KhVgYom+veDHzQ7KR5sqQxz428gtAmfEvF8s5FPbO80YzxtOj2y
-	3qd3qvpTPtLqzZ316Le
-X-Received: by 2002:a05:622a:5c0d:b0:50d:72e4:6df9 with SMTP id d75a77b69052e-5165a240d60mr229260081cf.50.1779139421988;
-        Mon, 18 May 2026 14:23:41 -0700 (PDT)
-Received: from server0 (c-68-48-65-54.hsd1.mi.comcast.net. [68.48.65.54])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5164df7bfa7sm138911031cf.21.2026.05.18.14.23.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 May 2026 14:23:41 -0700 (PDT)
-From: Michael Bommarito <michael.bommarito@gmail.com>
-To: Jason Gunthorpe <jgg@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	Vlad Dumitrescu <vdumitrescu@nvidia.com>,
-	Or Har-Toov <ohartoov@nvidia.com>,
-	Bob Pearson <rpearsonhpe@gmail.com>,
-	Sean Hefty <shefty@nvidia.com>,
-	Kees Cook <kees@kernel.org>
-Subject: [PATCH] IB/mad: cap RMPP reassembly window size to bound find_seg_location walk
-Date: Mon, 18 May 2026 17:23:36 -0400
-Message-ID: <20260518212336.337104-1-michael.bommarito@gmail.com>
-X-Mailer: git-send-email 2.53.0
+	s=arc-20240116; t=1779140014; c=relaxed/simple;
+	bh=jm+8XSYDMvSi0eSTW0hiNffY0O5/GrMLm2X7qEh1GeQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UB4vPAipjPLL8W+QRS8qxCZclJ2716/xkEiVLpvBdQU5fM2mMt+Zgs/cvfsclxazuHWsioNaEunQRoTyALQnwI5vjMUm4ATINlOoso+50c7zYeiPTHyFAnW69fFUHzSxVVOAJjLM6+jl39GYVGHSni4+9+uMV7a5uBL1qRHI3KI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=AMCmSssC; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1204)
+	id 2796120B7166; Mon, 18 May 2026 14:33:26 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2796120B7166
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1779140006;
+	bh=OzpN7yYP9aHL5n1nKfsdJpLTuSYn6hCedu5lqH42zIw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AMCmSssCko7dJ3wVbDRNEAWDRlKL/LtcghLRS6ceCmjRe0bHfR+KshONAlQReiXl3
+	 Y7KB9U/oPWzZkmYB8UL7Utt2vLSgAshYCaFf/FBk/vIxP2bUnW+UhwjCDupfHJZxAx
+	 r+eeEiPqyjnVf7fiMLbKq3/fpgX/EXvFNZ5inb4Q=
+Date: Mon, 18 May 2026 14:33:26 -0700
+From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, pabeni@redhat.com, leon@kernel.org,
+	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	stephen@networkplumber.org, jacob.e.keller@intel.com,
+	dipayanroy@microsoft.com, leitao@debian.org, kees@kernel.org,
+	john.fastabend@gmail.com, hawk@kernel.org, bpf@vger.kernel.org,
+	daniel@iogearbox.net, ast@kernel.org, sdf@fomichev.me,
+	yury.norov@gmail.com
+Subject: Re: [PATCH v8 2/2] net: mana: force full-page RX buffers via ethtool
+ private flag
+Message-ID: <aguFpq8+LV+I9oH0@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20260508115100.488506-3-dipayanroy@linux.microsoft.com>
+ <20260512022133.856196-1-kuba@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260512022133.856196-1-kuba@kernel.org>
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,nvidia.com,gmail.com,kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-20933-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20934-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[33];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_COUNT_FIVE(0.00)[5];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[michaelbommarito@gmail.com,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 00202573C7E
+	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid,linux.microsoft.com:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 8C79D573F1B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-A peer on the same InfiniBand subnet or RoCEv2 L2 (or any UDP/4791-
-reachable peer for internet-exposed RoCEv2 ports) can pin a target
-port's IB MAD kworker for milliseconds per low-bandwidth RMPP burst
-by sending an RMPP management transaction with descending segment
-numbers. QP1 GMP traffic is unauthenticated by IBTA spec, so no
-credentials are required. The bug sits on the IB management path
-(QP1 GMP RMPP reassembly), not the RDMA data plane, so RDMA verbs
-throughput is unaffected; deployments that raise recv_queue_size to
-tune management-plane throughput are quadratically more exposed,
-because per-burst cost grows O(F^2) with the configured window.
+On Mon, May 11, 2026 at 07:21:33PM -0700, Jakub Kicinski wrote:
+> This is an AI-generated review of your patch. The human sending this
+> email has considered the AI review valid, or at least plausible.
+> ---
+> net: mana: force full-page RX buffers via ethtool private flag
+> 
+> This patch adds an ethtool private flag "full-page-rx" that forces one
+> RX buffer per page, bypassing the page_pool fragment path, to address
+> a 15-20% throughput regression seen on some 4K PAGE_SIZE ARM64
+> platforms under high connection counts.  Toggling the flag triggers
+> mana_detach() + mana_attach() to apply the new RX buffer layout.
+> 
+> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> > index a28ca461c135..dfd222de11d0 100644
+> > --- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> > +++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> 
+> [ ... ]
+> 
+> > @@ -590,6 +609,88 @@ static int mana_get_link_ksettings(struct net_device *ndev,
+> >  	return 0;
+> >  }
+> >  
+> 
+> [ ... ]
+> 
+> > +static int mana_set_priv_flags(struct net_device *ndev, u32 priv_flags)
+> > +{
+> > +	struct mana_port_context *apc = netdev_priv(ndev);
+> > +	u32 changed = apc->priv_flags ^ priv_flags;
+> > +	u32 old_priv_flags = apc->priv_flags;
+> > +	bool schedule_port_reset = false;
+> > +	int err = 0;
+> > +
+> > +	if (!changed)
+> > +		return 0;
+> > +
+> > +	/* Reject unknown bits */
+> > +	if (priv_flags & ~GENMASK(MANA_PRIV_FLAG_MAX - 1, 0))
+> > +		return -EINVAL;
+> > +
+> > +	if (changed & BIT(MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF)) {
+> > +		apc->priv_flags = priv_flags;
+> > +
+> > +		if (!apc->port_is_up) {
+> > +			/* Port is down, flag updated to apply on next up
+> > +			 * so just return.
+> > +			 */
+> > +			return 0;
+> > +		}
+> > +
+> > +		/* Pre-allocate buffers to prevent failure in mana_attach
+> > +		 * later
+> > +		 */
+> > +		err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
+> > +		if (err) {
+> > +			netdev_err(ndev,
+> > +				   "Insufficient memory for new allocations\n");
+> > +			apc->priv_flags = old_priv_flags;
+> > +			return err;
+> > +		}
+> > +
+> > +		err = mana_detach(ndev, false);
+> > +		if (err) {
+> > +			netdev_err(ndev, "mana_detach failed: %d\n", err);
+> > +			apc->priv_flags = old_priv_flags;
+> > +
+> > +			/* Port is in an inconsistent state. Restore
+> > +			 * 'port_is_up' so that queue reset work handler
+> > +			 * can properly detach and re-attach.
+> > +			 */
+> > +			apc->port_is_up = true;
+> > +			schedule_port_reset = true;
+> > +			goto out;
+> > +		}
+> > +
+> > +		err = mana_attach(ndev);
+> > +		if (err) {
+> > +			netdev_err(ndev, "mana_attach failed: %d\n", err);
+> > +			apc->priv_flags = old_priv_flags;
+> > +
+> > +			/* Restore 'port_is_up' so the reset work handler
+> > +			 * can properly detach/attach. Without this,
+> > +			 * the handler sees port_is_up=false and skips
+> > +			 * queue allocation, leaving the port dead.
+> > +			 */
+> > +			apc->port_is_up = true;
+> > +			schedule_port_reset = true;
+> > +		}
+> > +	}
+> > +
+> > +out:
+> > +	mana_pre_dealloc_rxbufs(apc);
+> > +
+> > +	if (schedule_port_reset)
+> > +		queue_work(apc->ac->per_port_queue_reset_wq,
+> > +			   &apc->queue_reset_work);
+> > +
+> > +	return err;
+> > +}
+> 
+> [High]
+> Can this failure path oops inside the reset work handler?
+> 
+> When mana_attach() fails after mana_detach() has already torn the vport
+> down, apc->tx_qp has been set to NULL by mana_destroy_txq() and apc->rxqs
+> has been cleared by mana_cleanup_port_context().  This code then forces
+> apc->port_is_up back to true and queues apc->queue_reset_work:
+> 
+>     apc->port_is_up = true;
+>     schedule_port_reset = true;
+> 
+> When mana_per_port_queue_reset_work_handler runs it calls
+> mana_detach(ndev, false), which latches port_st_save = port_is_up = true
+> and, because port_st_save is true, invokes mana_dealloc_queues().  The TX
+> drain loop there does:
+> 
+>     txq = &apc->tx_qp[i].txq;
+>     atomic_read(&txq->pending_sends);
+> 
+> with no NULL check on apc->tx_qp, and mana_destroy_vport further down
+> iterates apc->rxqs[rxq_idx] while rxqs is NULL.  Would that produce a
+> NULL pointer dereference in the workqueue worker whenever mana_attach()
+> fails here (for example on an allocation failure in
+> mana_init_port_context or mana_create_txq, or a transient HW command
+> failure in mana_query_vport_cfg / mana_cfg_vport)?
+> 
+> The mana_detach() failure path above (goto out) reaches
+> mana_dealloc_queues() through the same chain and looks to have the same
+> exposure.
+Hi Jakub,
 
-drivers/infiniband/core/mad_rmpp.c::find_seg_location() walks
-rmpp_recv->rmpp_wc->rmpp_list in reverse on every inbound RMPP DATA
-segment to locate the insertion point keyed by segment number. The
-walk is O(N) per insert under spin_lock_irqsave(&rmpp_recv->lock) in
-kworker context, so F adversarially-reordered segments aggregate to
-O(F^2). window_size() returns max(recv_queue.max_active >> 3, 1):
-the IB MAD core default recv_queue_size of 512 yields window=64
-(per-burst cost in the microsecond range), but tuned production
-configs with recv_queue_size=8192 push window to 1024 and let a
-single low-bandwidth burst pin the per-port MAD kworker for several
-milliseconds.
+Thanks for your comments, I have sent a separate fixes series to the
+net tree that fixes the possible NULL pointer derefernce issue and also
+makes the reset handler safe for the case where it runs after a failed
+attach:
+https://lore.kernel.org/all/20260518194654.735580-1-dipayanroy@linux.microsoft.com/
 
-Cap the effective window at IB_MAD_RMPP_MAX_WINDOW = 64 in
-window_size() so admins tuning recv_queue_size for higher RX throughput
-do not enlarge the walker attack surface. Real RMPP transactions in
-the wild (SA queries, perf-counter reads) are well served by a window
-of 64, which is also the IB MAD core default. A structural follow-up
-would convert rmpp_recv->rmpp_wc->rmpp_list to an rb_tree keyed by
-seg_num and lift the cap; that mirrors tcp_data_queue_ofo post-
-CVE-2018-5390. For now the cap suffices.
 
-Fixes: fa619a77046b ("[PATCH] IB: Add RMPP implementation")
-Cc: stable@vger.kernel.org
-Assisted-by: Claude:claude-opus-4-7
-Signed-off-by: Michael Bommarito <michael.bommarito@gmail.com>
----
-I reproduced this under x86_64 QEMU/KVM (4 vCPUs) on v7.1-rc2 with
-CONFIG_RDMA_RXE + CONFIG_INFINIBAND_USER_MAD, a veth pair carrying
-two rdma_rxe links, and raw RoCEv2/UDP/4791 packet injection with
-descending seg_num while holding seg #1. Without the cap, F=1024
-burst produces 1022 paired continue_rmpp invocations whose per-call
-walker duration grows from ~1 us (early, near-empty list) to ~5 us
-(late, ~1000-deep list), a 4x per-call amplification as the queue
-deepens, with aggregate walker time per burst >= 1.5 ms (lower bound,
-ftrace 1 us granularity). With the cap, the same F=1024 burst drops
-to ~0.28 ms aggregate (5.4x reduction); F=32 in-window legitimate
-RMPP still completes normally (30 walker calls, avg 1.5 us, max 3 us).
-tools/testing/selftests/drivers/net/rdma/ carries no RMPP-specific
-selftest in v7.1-rc2 (rdma_rxe self-tests do not exercise QP1 GMP
-RMPP reassembly), so no in-tree selftest delta to report.
+> 
+> For comparison, mana_change_mtu() handles a mana_attach() failure by
+> returning the error without scheduling a reset.  Would a similar
+> treatment here avoid the asynchronous oops, or is there a reason the
+> reset must be scheduled in this specific failure case?
+> -- 
+> pw-bot: cr
 
- drivers/infiniband/core/mad_rmpp.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+The full-page-rx private flag is intended to be driven by a udev rule
+that fires automatically during VM provisioning on affected platforms.
+If there is a transient failure, the VM fails to provision, requiring manual
+intervention.The reset handler retries the attach, giving the port a
+chance to recover to default config autonomously without intervention.
 
-diff --git a/drivers/infiniband/core/mad_rmpp.c b/drivers/infiniband/core/mad_rmpp.c
-index 17c4c52a19e4c..4d55b133c689c 100644
---- a/drivers/infiniband/core/mad_rmpp.c
-+++ b/drivers/infiniband/core/mad_rmpp.c
-@@ -391,9 +391,25 @@ static inline struct ib_mad_recv_buf *get_next_seg(struct list_head *rmpp_list,
- 	return container_of(seg->list.next, struct ib_mad_recv_buf, list);
- }
- 
-+/*
-+ * Cap the per-RMPP-transaction in-flight window. find_seg_location()
-+ * walks the rmpp_recv list reverse to find each insertion point, so the
-+ * aggregate cost across an attacker-paced reordered window is O(N^2)
-+ * under spin_lock_irqsave(&rmpp_recv->lock) in kworker context. The
-+ * default recv_queue_size of 512 yields window=64, which keeps that
-+ * cost in the noise; tuned configurations (recv_queue_size up to 8192)
-+ * push window to 1024 and the per-port kworker measurably stalls under
-+ * a low-bandwidth burst from any unauthenticated peer on QP1 GMP. Cap
-+ * window at IB_MAD_RMPP_MAX_WINDOW so the bug class is structurally
-+ * defused regardless of recv_queue_size tuning.
-+ */
-+#define IB_MAD_RMPP_MAX_WINDOW 64
-+
- static inline int window_size(struct ib_mad_agent_private *agent)
- {
--	return max(agent->qp_info->recv_queue.max_active >> 3, 1);
-+	int wsize = agent->qp_info->recv_queue.max_active >> 3;
-+
-+	return clamp(wsize, 1, IB_MAD_RMPP_MAX_WINDOW);
- }
- 
- static struct ib_mad_recv_buf *find_seg_location(struct list_head *rmpp_list,
--- 
-2.53.0
-
+Regards
+Dipayaan Roy
 
