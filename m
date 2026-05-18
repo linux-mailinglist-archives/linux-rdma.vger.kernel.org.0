@@ -1,221 +1,298 @@
-Return-Path: <linux-rdma+bounces-20872-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20873-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KH8BIEJ7Cmqe1wQAu9opvQ
-	(envelope-from <linux-rdma+bounces-20872-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 04:36:50 +0200
+	id 6IohFg+ECmqv2AQAu9opvQ
+	(envelope-from <linux-rdma+bounces-20873-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 05:14:23 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFAA2565208
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 04:36:49 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id B16DB56559C
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 05:14:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id F16993009998
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 02:36:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 767CF300DF5A
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 03:14:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8E002264C7;
-	Mon, 18 May 2026 02:36:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26F7834D3BE;
+	Mon, 18 May 2026 03:14:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kdEmqrPv"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B73A917DFE7
-	for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 02:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5533726B973
+	for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 03:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779071805; cv=none; b=SEG43VhJ+TvR56Gr2wnQsTDpwT5FMtZEO7IA4CwxGK5ffgKlXu8JwsbRelajYEbgIKoekBhM8B9ZDQ/hOzRmHLdmyWUAqsUewrjrnanWdwtJ3bMOmH/6pxngK+v3UkLTeNSl5CEJYN8+seMbN5/iepTS9JQGW9FzwEPpPjX3dNo=
+	t=1779074059; cv=none; b=HADc5ca/X24TyGtlXrZGzEvM1qL/96ucOB6BwyaNtWuhO3RAv6mlh/hbBaQYh/ARD3GXWmWMTcO0VLkwJy408j/7JgexDoHo89q8ngjaB89ZZBoyGREWtToHwKJuGzQuC2HiVjPvDob4mcC2AYJjy3T3z9SCYjDFZ6Pe5iWd0jQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779071805; c=relaxed/simple;
-	bh=XKiJKVFxjTiyvPvHS/CS16I/+h+7wGXboAm17SypzjQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MremG5E5Io0+3O9OtgH5Rhpk+tUkJmtazznBj0IENeD+Dq7YDwl9W1UQalGkPVfi7dCKBb82zUG9XK1eA7X5VGG5jEYQlmVsQ1lda4Cx1xDq8baxa9xIlamVQe8X8dQQ1v5OFVXczTOzvWr7m8wpXTNHePzq3sZfMNw3VD4kq+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 63f16a98526211f1aa26b74ffac11d73-20260518
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:5f5f1c75-b5e7-4b45-8f74-9ea5edf4f766,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:10
-X-CID-INFO: VERSION:1.3.12,REQID:5f5f1c75-b5e7-4b45-8f74-9ea5edf4f766,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-	elease,TS:10
-X-CID-META: VersionHash:e7bac3a,CLOUDID:65f82eb1df9a0239de1b456fcdc91b64,BulkI
-	D:260517183253IRROVRYW,BulkQuantity:2,Recheck:0,SF:10|64|66|78|80|81|82|83
-	|102|127|841|865|898,TC:nil,Content:0|15|52,EDM:-3,IP:-2,URL:0,File:nil,RT
-	:nil,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:
-	0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: 63f16a98526211f1aa26b74ffac11d73-20260518
-X-User: zhaochenguang@kylinos.cn
-Received: from [192.168.111.102] [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <zhaochenguang@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_128_GCM_SHA256 128/128)
-	with ESMTP id 1894424987; Mon, 18 May 2026 10:36:36 +0800
-Message-ID: <a7c17297-6c80-48c1-aa8c-c729afc84f30@kylinos.cn>
-Date: Mon, 18 May 2026 10:36:57 +0800
+	s=arc-20240116; t=1779074059; c=relaxed/simple;
+	bh=0jK1ZOoR8XXVo7+7ZvEf12IhCsGgcOvuMa7xU2rmZb8=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=em8RAhpyjzvisBE9ZyddkmJphwoie8myzKPsWxLNV2C3O1F7qvo5ZaEYm+RISERb4+BAabJEmbjHwJwUyYh2CtcYPkndXZ7PLjrpXPNYDb7ewbjh0wqorKsJeZmDeZsdLg2OSMp4Zt5pmO0FY1vvckufYWlQehZXgh55ewVexAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kdEmqrPv; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1779074058; x=1810610058;
+  h=date:from:to:cc:subject:message-id;
+  bh=0jK1ZOoR8XXVo7+7ZvEf12IhCsGgcOvuMa7xU2rmZb8=;
+  b=kdEmqrPvapv6Zg9IiwN38aOyvwDffqFiXJzTmHDYZIKWUoi++f7WY7Mh
+   69LkpGFGDtJaQP5OlHJnKCdMw5+lCaIDfiWy7q+cVKUyL67F4ZV/MtYml
+   K11IYQfhH1lrmtNVb57pMWEmS87OcRdcpvTNxq9mWAJQESBOsmYbxQjhD
+   xB4d6t443zpQwzpNPJuHV/1qzZujQKaku/nDzHg40g/LIH8iDhFZPaeaH
+   Y4uyajAp1/IGByLZAOcCtpS11o9+kxVmJrrtk8D4q+jTVmVovr/4O8378
+   fQfhdCxYSSrFcuG2s9S5XVxxwWRW4q+qcY3/3wKqKboVClA9YFqWZM3Gg
+   Q==;
+X-CSE-ConnectionGUID: QA+4aLUnTa6MnYZMXNKjVg==
+X-CSE-MsgGUID: 5Qg32t5hQRaHILDev6uDSQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11789"; a="82485428"
+X-IronPort-AV: E=Sophos;i="6.23,241,1770624000"; 
+   d="scan'208";a="82485428"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2026 20:14:17 -0700
+X-CSE-ConnectionGUID: cSV0NU99Th2xFtbZU2PQiw==
+X-CSE-MsgGUID: k7DlwepASrSg5quglgn/TA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,241,1770624000"; 
+   d="scan'208";a="243286530"
+Received: from lkp-server01.sh.intel.com (HELO d94e5e629b2d) ([10.239.97.150])
+  by orviesa003.jf.intel.com with ESMTP; 17 May 2026 20:14:16 -0700
+Received: from kbuild by d94e5e629b2d with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1wOoQn-000000002IY-0629;
+	Mon, 18 May 2026 03:14:13 +0000
+Date: Mon, 18 May 2026 11:14:03 +0800
+From: kernel test robot <lkp@intel.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Doug Ledford <dledford@redhat.com>,
+ Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [rdma:for-next] BUILD SUCCESS
+ f5cb0630444b7353c8c471b52e006b90fa6d5aa1
+Message-ID: <202605181152.sELelCjW-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] IB/cache: Check GID table references before attempting
- deletion
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Kees Cook <kees@kernel.org>,
- Etienne AUJAMES <eaujames@ddn.com>, zhenwei pi <zhenwei.pi@linux.dev>,
- Jiri Pirko <jiri@resnulli.us>, Maor Gottlieb <maorg@nvidia.com>,
- linux-rdma@vger.kernel.org
-References: <20260513080707.3929955-1-zhaochenguang@kylinos.cn>
- <20260517103240.GC33515@unreal>
-Content-Language: en-US
-From: Chenguang Zhao <zhaochenguang@kylinos.cn>
-In-Reply-To: <20260517103240.GC33515@unreal>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: EFAA2565208
+X-Rspamd-Queue-Id: B16DB56559C
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email,kylinos.cn:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	R_DKIM_NA(0.00)[];
-	DMARC_NA(0.00)[kylinos.cn];
-	FROM_NEQ_ENVFROM(0.00)[zhaochenguang@kylinos.cn,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20872-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[]
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20873-lists,linux-rdma=lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_THREE(0.00)[4];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[intel.com:+];
+	RCVD_COUNT_FIVE(0.00)[6];
+	TAGGED_RCPT(0.00)[linux-rdma,lists];
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,intel.com:mid,intel.com:dkim]
 X-Rspamd-Action: no action
 
-      After calling kref_put(&entry->kref) in put_gid_entry_locked(), the reference count does not drop to zero. 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+branch HEAD: f5cb0630444b7353c8c471b52e006b90fa6d5aa1  RDMA: Replace memset with = {} pattern for ib_respond_udata()
 
-This is because the GID entry is still held by NFS via call paths such as
+elapsed time: 726m
 
-cma_acquire_dev_by_src_ip() -> cma_validate_port() -> rdma_find_gid_by_port() -> get_gid_entry().
+configs tested: 171
+configs skipped: 11
 
-Consequently, the GID entry cannot be freed. Meanwhile, the corresponding GID has already been removed 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-from hardware/driver layer via ib_dev->ops.del_gid(). Subsequent ifup attempts keep inserting new entries
+tested configs:
+alpha                             allnoconfig    gcc-15.2.0
+alpha                            allyesconfig    gcc-15.2.0
+alpha                               defconfig    gcc-15.2.0
+arc                              allmodconfig    gcc-15.2.0
+arc                               allnoconfig    gcc-15.2.0
+arc                              allyesconfig    gcc-15.2.0
+arc                                 defconfig    gcc-15.2.0
+arc                            randconfig-001    gcc-8.5.0
+arc                   randconfig-001-20260518    gcc-9.5.0
+arc                            randconfig-002    gcc-8.5.0
+arc                   randconfig-002-20260518    gcc-8.5.0
+arm                              alldefconfig    gcc-15.2.0
+arm                               allnoconfig    clang-23
+arm                              allyesconfig    gcc-15.2.0
+arm                                 defconfig    clang-23
+arm                            randconfig-001    gcc-8.5.0
+arm                   randconfig-001-20260518    clang-23
+arm                            randconfig-002    gcc-11.5.0
+arm                   randconfig-002-20260518    gcc-8.5.0
+arm                            randconfig-003    clang-20
+arm                   randconfig-003-20260518    gcc-8.5.0
+arm                            randconfig-004    gcc-14.3.0
+arm                   randconfig-004-20260518    gcc-10.5.0
+arm64                            allmodconfig    clang-19
+arm64                             allnoconfig    gcc-15.2.0
+arm64                               defconfig    gcc-15.2.0
+arm64                 randconfig-001-20260518    clang-17
+arm64                 randconfig-002-20260518    gcc-8.5.0
+arm64                 randconfig-003-20260518    gcc-15.2.0
+arm64                 randconfig-004-20260518    clang-23
+csky                             allmodconfig    gcc-15.2.0
+csky                              allnoconfig    gcc-15.2.0
+csky                                defconfig    gcc-15.2.0
+csky                  randconfig-001-20260518    gcc-15.2.0
+csky                  randconfig-002-20260518    gcc-11.5.0
+hexagon                          allmodconfig    clang-17
+hexagon                           allnoconfig    clang-23
+hexagon                             defconfig    clang-23
+hexagon               randconfig-001-20260518    clang-16
+hexagon               randconfig-002-20260518    clang-23
+i386                             allmodconfig    gcc-14
+i386                              allnoconfig    gcc-14
+i386                             allyesconfig    gcc-14
+i386        buildonly-randconfig-001-20260518    clang-20
+i386        buildonly-randconfig-002-20260518    clang-20
+i386        buildonly-randconfig-003-20260518    gcc-14
+i386        buildonly-randconfig-004-20260518    gcc-14
+i386        buildonly-randconfig-005-20260518    gcc-14
+i386        buildonly-randconfig-006-20260518    clang-20
+i386                                defconfig    clang-20
+i386                  randconfig-001-20260518    clang-20
+i386                  randconfig-002-20260518    gcc-14
+i386                  randconfig-003-20260518    gcc-14
+i386                  randconfig-004-20260518    clang-20
+i386                  randconfig-005-20260518    clang-20
+i386                  randconfig-006-20260518    gcc-13
+i386                  randconfig-007-20260518    clang-20
+i386                  randconfig-011-20260518    gcc-14
+i386                  randconfig-012-20260518    clang-20
+i386                  randconfig-013-20260518    gcc-14
+i386                  randconfig-014-20260518    gcc-14
+i386                  randconfig-015-20260518    clang-20
+i386                  randconfig-016-20260518    gcc-14
+i386                  randconfig-017-20260518    gcc-14
+loongarch                        allmodconfig    clang-19
+loongarch                         allnoconfig    clang-23
+loongarch                           defconfig    clang-19
+loongarch             randconfig-001-20260518    gcc-15.2.0
+loongarch             randconfig-002-20260518    clang-23
+m68k                             allmodconfig    gcc-15.2.0
+m68k                              allnoconfig    gcc-15.2.0
+m68k                             allyesconfig    gcc-15.2.0
+m68k                                defconfig    gcc-15.2.0
+microblaze                        allnoconfig    gcc-15.2.0
+microblaze                       allyesconfig    gcc-15.2.0
+microblaze                          defconfig    gcc-15.2.0
+mips                             allmodconfig    gcc-15.2.0
+mips                              allnoconfig    gcc-15.2.0
+mips                             allyesconfig    gcc-15.2.0
+mips                           ip30_defconfig    gcc-15.2.0
+nios2                            allmodconfig    gcc-11.5.0
+nios2                             allnoconfig    gcc-11.5.0
+nios2                               defconfig    gcc-11.5.0
+nios2                 randconfig-001-20260518    gcc-11.5.0
+nios2                 randconfig-002-20260518    gcc-11.5.0
+openrisc                         allmodconfig    gcc-15.2.0
+openrisc                          allnoconfig    gcc-15.2.0
+openrisc                            defconfig    gcc-15.2.0
+parisc                           allmodconfig    gcc-15.2.0
+parisc                            allnoconfig    gcc-15.2.0
+parisc                           allyesconfig    gcc-15.2.0
+parisc                              defconfig    gcc-15.2.0
+parisc                randconfig-001-20260518    gcc-15.2.0
+parisc                randconfig-002-20260518    gcc-12.5.0
+parisc64                            defconfig    gcc-15.2.0
+powerpc                          allmodconfig    gcc-15.2.0
+powerpc                           allnoconfig    gcc-15.2.0
+powerpc               randconfig-001-20260518    clang-23
+powerpc               randconfig-002-20260518    clang-23
+powerpc64             randconfig-001-20260518    gcc-11.5.0
+powerpc64             randconfig-002-20260518    clang-23
+riscv                            allmodconfig    clang-23
+riscv                             allnoconfig    gcc-15.2.0
+riscv                            allyesconfig    clang-16
+riscv                               defconfig    clang-23
+riscv                 randconfig-001-20260518    clang-23
+riscv                 randconfig-002-20260518    clang-23
+s390                             allmodconfig    clang-18
+s390                              allnoconfig    clang-23
+s390                             allyesconfig    gcc-15.2.0
+s390                                defconfig    clang-23
+s390                           randconfig-001    gcc-11.5.0
+s390                  randconfig-001-20260518    gcc-12.5.0
+s390                  randconfig-002-20260518    gcc-12.5.0
+sh                               allmodconfig    gcc-15.2.0
+sh                                allnoconfig    gcc-15.2.0
+sh                               allyesconfig    gcc-15.2.0
+sh                                  defconfig    gcc-15.2.0
+sh                             randconfig-001    gcc-15.2.0
+sh                    randconfig-001-20260518    gcc-14.3.0
+sh                             randconfig-002    gcc-14.3.0
+sh                    randconfig-002-20260518    gcc-11.5.0
+sparc                             allnoconfig    gcc-15.2.0
+sparc                               defconfig    gcc-15.2.0
+sparc                 randconfig-001-20260518    gcc-15.2.0
+sparc                 randconfig-002-20260518    gcc-15.2.0
+sparc64                          allmodconfig    clang-23
+sparc64                             defconfig    clang-20
+sparc64               randconfig-001-20260518    clang-23
+sparc64               randconfig-002-20260518    clang-23
+um                               allmodconfig    clang-19
+um                                allnoconfig    clang-23
+um                               allyesconfig    gcc-14
+um                                  defconfig    clang-23
+um                             i386_defconfig    gcc-14
+um                    randconfig-001-20260518    clang-16
+um                    randconfig-002-20260518    clang-23
+um                           x86_64_defconfig    clang-23
+x86_64                           allmodconfig    clang-20
+x86_64                            allnoconfig    clang-20
+x86_64                           allyesconfig    clang-20
+x86_64      buildonly-randconfig-001-20260518    clang-20
+x86_64      buildonly-randconfig-002-20260518    clang-20
+x86_64      buildonly-randconfig-003-20260518    clang-20
+x86_64      buildonly-randconfig-004-20260518    gcc-14
+x86_64      buildonly-randconfig-005-20260518    gcc-14
+x86_64      buildonly-randconfig-006-20260518    clang-20
+x86_64                              defconfig    gcc-14
+x86_64                randconfig-001-20260518    gcc-14
+x86_64                randconfig-002-20260518    clang-20
+x86_64                randconfig-003-20260518    gcc-14
+x86_64                randconfig-004-20260518    gcc-14
+x86_64                randconfig-005-20260518    gcc-14
+x86_64                randconfig-006-20260518    gcc-14
+x86_64                randconfig-011-20260518    clang-20
+x86_64                randconfig-012-20260518    clang-20
+x86_64                randconfig-013-20260518    gcc-14
+x86_64                randconfig-014-20260518    clang-20
+x86_64                randconfig-015-20260518    clang-20
+x86_64                randconfig-016-20260518    gcc-14
+x86_64                randconfig-071-20260518    gcc-14
+x86_64                randconfig-072-20260518    gcc-14
+x86_64                randconfig-073-20260518    clang-20
+x86_64                randconfig-074-20260518    clang-20
+x86_64                randconfig-075-20260518    clang-20
+x86_64                randconfig-076-20260518    clang-20
+x86_64                          rhel-9.4-rust    clang-20
+xtensa                            allnoconfig    gcc-15.2.0
+xtensa                           allyesconfig    gcc-15.2.0
+xtensa                randconfig-001-20260518    gcc-12.5.0
+xtensa                randconfig-002-20260518    gcc-9.5.0
 
- into the GID table, and repeated cycles of ifdown and ifup eventually exhaust the entire GID table space.
-
-       To resolve this issue, we add a check before removing GID entries in the driver. We forbid the deletion
-
- operation if entry->kref is not equal to 1 (the initial reference count value). With this constraint, existing 
-
-valid entries will be detected and reused after ifup, avoiding redundant insertion into the GID table.
-
-
-Will GID entry deletion lead to inconsistency between driver and IB/cache layers?
-
-Thanks
-Chenguang
-
-在 2026/5/17 18:32, Leon Romanovsky 写道:
-> On Wed, May 13, 2026 at 04:07:07PM +0800, Chenguang Zhao wrote:
->> In the NFS over RDMA environment, repeatedly performing frequent
->> ifdown/ifup operations on the client may cause df -h to hang.
->> The kernel log reports an error:
->>   __ib_cache_gid_add: unable to add gid
->>   0000:0000:0000:0000:0000:ffff:c0a8:0115 error=-28.
->> Error code -28 indicates the GID table is full.
->> The call stack during ifdown is as follows:
->>   put_gid_entry_locked()
->>   del_gid()
->>   _ib_cache_gid_del()
->>   update_gid()
->>   update_gid_event_work_handler()
->>
->> In put_gid_entry_locked(), kref_put(&entry->kref) does not
->> drop the reference count to zero.
-> Why?
->
->> so free_gid_entry() is never invoked to release the entry. Subsequent ifup
->> attempts keep adding new entries into the GID table,
->> eventually exhausting the table capacity.
-> This behavior is not what we expect from the IB/cache layer.
->
-> Thanks
->
->> To fix this, check whether the GID entry still has
->> outstanding references in del_gid(), and only remove
->> and release the entry when no other references remain.
->>
->> Signed-off-by: Chenguang Zhao <zhaochenguang@kylinos.cn>
->> ---
->>  drivers/infiniband/core/cache.c | 31 +++++++++++++++++++++++++++++++
->>  1 file changed, 31 insertions(+)
->>
->> diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
->> index 647a547e2d7f..c71522fbf89f 100644
->> --- a/drivers/infiniband/core/cache.c
->> +++ b/drivers/infiniband/core/cache.c
->> @@ -596,6 +596,34 @@ int ib_cache_gid_add(struct ib_device *ib_dev, u32 port,
->>  	return __ib_cache_gid_add(ib_dev, port, gid, attr, mask, false);
->>  }
->>  
->> +/**
->> + * gid_table_is_shared - Check if GID table has other reference owners
->> + * @table: GID table to check
->> + * @ix: index of entry
->> + *
->> + * Returns true if the gid table refcount is greater than 1,
->> + */
->> +static bool gid_table_is_shared(struct ib_gid_table *table, int ix)
->> +{
->> +	unsigned int refcount;
->> +	struct ib_gid_table_entry *entry;
->> +
->> +	write_lock_irq(&table->rwlock);
->> +
->> +	entry = table->data_vec[ix];
->> +	refcount = kref_read(&entry->kref);
->> +
->> +	write_unlock_irq(&table->rwlock);
->> +
->> +	if (refcount > 1) {
->> +		pr_debug("%s: The GID table is still referenced and cannot be deleted.\n",
->> +			__func__);
->> +		return true;
->> +	} else {
->> +		return false;
->> +	}
->> +}
->> +
->>  static int
->>  _ib_cache_gid_del(struct ib_device *ib_dev, u32 port,
->>  		  union ib_gid *gid, struct ib_gid_attr *attr,
->> @@ -615,6 +643,9 @@ _ib_cache_gid_del(struct ib_device *ib_dev, u32 port,
->>  		goto out_unlock;
->>  	}
->>  
->> +	if (gid_table_is_shared(table, ix))
->> +		goto out_unlock;
->> +
->>  	del_gid(ib_dev, port, table, ix);
->>  	dispatch_gid_change_event(ib_dev, port);
->>  
->> -- 
->> 2.25.1
->>
->>
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
