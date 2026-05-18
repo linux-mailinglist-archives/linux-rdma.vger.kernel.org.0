@@ -1,173 +1,179 @@
-Return-Path: <linux-rdma+bounces-20857-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20858-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oD1pCQcDCmpkwAQAu9opvQ
-	(envelope-from <linux-rdma+bounces-20857-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 17 May 2026 20:03:51 +0200
+	id OONaDGJqCmp+1AQAu9opvQ
+	(envelope-from <linux-rdma+bounces-20858-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 03:24:50 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 774D6562D7D
-	for <lists+linux-rdma@lfdr.de>; Sun, 17 May 2026 20:03:49 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA24A564BDF
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 03:24:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 93E1F300878C
-	for <lists+linux-rdma@lfdr.de>; Sun, 17 May 2026 18:03:48 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D9F1030028B7
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 01:24:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C1683C65E0;
-	Sun, 17 May 2026 18:03:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D61C20E702;
+	Mon, 18 May 2026 01:24:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="y/fNsf2L"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qfc+vuA7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com [209.85.128.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F2D43B3C17
-	for <linux-rdma@vger.kernel.org>; Sun, 17 May 2026 18:03:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F610EACD;
+	Mon, 18 May 2026 01:24:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779041027; cv=none; b=b26Ptw30DUR/8dnuwRnLEQeAXt68KkRBRV9ViqCg1QOUx/ZywkTARkfV2eqTYXJMuKWypv9UWCVxe+GBYsn9WaREVU25qwR7p6pN8DnnU6p107XdYL+7tdRHKsDzskTXzTouLtzh7GsmduPXkWqAPnDPcYrYSvmJ9KJIXz6PGNI=
+	t=1779067485; cv=none; b=q/aD+EaNCUSZd0oOIVhIzLP0wHdpjrUCjJb3bh+1sujeQnb6Emkg6PYssUSYmtxOZAB6NqLDHnJ6rkKxIfRNXQXBWlDT9LxfHj9ItJ4YnmlzpEvdKZksmwhyJ6yt7rPGuAhSfXjfe3u9wL03RpHYxs0nFTCM5B8JgNMVL+DszWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779041027; c=relaxed/simple;
-	bh=IdvoRQAlkO0FAZ4NLE0UuPNSiFmHLFrzNUsD/aLM49k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=otZDR1qUvcYeSL8ts4P4jSxX3+CEMVRZL34RfQ2JsD6kR/j/TPe32cNsBmw26Dhv949ZTfJH5xFjoCMTOVi7XYCHftYHP07H0f9CC61IxnYVVxIlxYUxFWkw/ezlWfGg3GgY5uOXCBR0TRqCNmZnvOJT/PbrkdhcwuzoyJ0qVWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=y/fNsf2L; arc=none smtp.client-ip=209.85.128.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f66.google.com with SMTP id 5b1f17b1804b1-48a7fe4f40bso18405915e9.0
-        for <linux-rdma@vger.kernel.org>; Sun, 17 May 2026 11:03:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1779041021; x=1779645821; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8b8oejsdlmzvPAGqVmNLcazi/0oxdkSgT6uUc1uw7Pw=;
-        b=y/fNsf2LbpXsd+Pp7irdkAakyE36oSY3WgkaGjHcbmL2qomTiwWI5PM9wZPzZCw2os
-         1ARfoxMDJ2Hyfw+NLYX3nUiNSpl/smR69qx4DLKASr2guhEe5MQKdBkqyYZGRvUiJnl0
-         bVMDKUoumpgc/AyYgWXei+DoywkLTWtLz8D41N7DNhXpW+fOGhx0rlIWVdKlzK/3B6t0
-         dIoPD3HuxwzZtBorxRST/vsP1IJVMVxKIiWI9IJ9XHkFIP5jj2ZVf4VsKO81Q5k2KiWW
-         a0QZWIgFD2zX+EBPZglyjqWw5DFF30q/5Z+iJhIUAMxcbqgFHijWwoQsfA1mKVAMEB7Y
-         ohVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779041021; x=1779645821;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8b8oejsdlmzvPAGqVmNLcazi/0oxdkSgT6uUc1uw7Pw=;
-        b=lwClLJ/p4CuPaLdYW6eLZdMrPTZf6NcnHW/t/8Ux2d/IrChvQg+uRHV2Wnd15qh85m
-         jgkYq1efGGtEB9IH5ljOWcuQPNQAKbVWg56ZbIQt5s9qTABVZFmA4xYD8aiP1MSX3T5u
-         6DhZWkUdfiWYNkrW+a/W1iBXqXEb7pB/SzNrffMM7AyWNie7aPWTAHwA5zPX8BRsfs8j
-         4YhIoL08adufXDHsIfAxCG5iUsKX5c9oo9oFQp30MS+9jNa0vWgZm3mDj0A8x1Q5ZOjX
-         PRDN2z5zVz3lWj+qyaVV/oyhXkmucVIFxf9Cm0/2KymVpACmL0S4tFAncwnm/A7vtAYI
-         gdTQ==
-X-Gm-Message-State: AOJu0YwVUK4xg+05+IL6Rb1bT1y6/HqlCrerq3GbhzdCnWCBe8ek0ZsU
-	vHO6/EthlmIVGlwRs8Xg6RE5Dm0vmOdBuL9R6jORjjGBlL9UkKb0jgYrtYcPQ+u88ZY=
-X-Gm-Gg: Acq92OFlQ7GG35hayVhIA7QUwB6LzoSj9itsvXGqYkF/4BmnGWzhbgZFoBiMJr+/fFX
-	DQAXEmbrPOpdgYf6aNxvYSF/W/s91yOhLl9lksEmNhTCECiHXv15etPhc+ixWmKRcDgwYMUZveg
-	VitoQzwlDC8kc6oe03s+PIdmHvnnfTbnUuQhjGVId7SzssFbfKsFtle2KpxAokd9YxPKzbVugUB
-	dfb3zoJkydrv4eruwDg4bL55QF9NVcKS75juiBjpZcXtePK/0ACi+zAKV+lquOmUnGqotIP4g1v
-	5hr2npP4BA8tMXfVX0nQ9VyEAwKH/3sIrvVPoFGwQqEdnqflP93lTfm2VqMFDHvThTGK1IpfAwH
-	F2NtR5vfO1DQRxpBwgPacD06tzPbt/4L4aAZuvZCqQRfRnG/eaz34wZpTnA472hvefl1FOPqS1+
-	kVhTiusYRp3ojUApRl/H0OXf08KrYLNmKK4VXNsPzHXrE=
-X-Received: by 2002:a05:600c:34cc:b0:48e:635a:18d7 with SMTP id 5b1f17b1804b1-48fe59b047bmr199056875e9.0.1779041021027;
-        Sun, 17 May 2026 11:03:41 -0700 (PDT)
-Received: from FV6GYCPJ69 ([2001:1ae9:6084:ab00:4146:8430:fb4a:baf5])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45da0fe13a7sm32225217f8f.29.2026.05.17.11.03.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 May 2026 11:03:40 -0700 (PDT)
-Date: Sun, 17 May 2026 20:03:38 +0200
-From: Jiri Pirko <jiri@resnulli.us>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: linux-rdma@vger.kernel.org, jgg@ziepe.ca, edwards@nvidia.com, 
-	kees@kernel.org, parav@nvidia.com, mbloch@nvidia.com, yishaih@nvidia.com, 
-	lirongqing@baidu.com, huangjunxian6@hisilicon.com, liuy22@mails.tsinghua.edu.cn, 
-	jmoroni@google.com
-Subject: Re: [PATCH rdma-next v3 2/2] RDMA/umem: block plain userspace memory
- registration under CoCo bounce
-Message-ID: <agoC2SeEe0lC1Jf6@FV6GYCPJ69>
-References: <20260517141311.2409230-1-jiri@resnulli.us>
- <20260517141311.2409230-3-jiri@resnulli.us>
- <20260517161712.GL33515@unreal>
+	s=arc-20240116; t=1779067485; c=relaxed/simple;
+	bh=HADiCZFp1b+AV3mdMhESpYMJ04W5YOpTRltzgqPjiAw=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=GD6vPG2KncKetJAbdxOvQs5CKrDAEGz4jiZ1PEqiKqsPHZTD0o2mv+iTONUyPzSOsBqa3NcXwuvFViqrOz6nXw9Ib1YNdX/NtNWQX4EKsL9WQfsf2fhhjlbO2wpih+24DxOL4Bn7Ykg5xFN+yZofjgZOlrSVrAhhkO4uuCIg0kY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qfc+vuA7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52470C2BCB3;
+	Mon, 18 May 2026 01:24:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1779067484;
+	bh=HADiCZFp1b+AV3mdMhESpYMJ04W5YOpTRltzgqPjiAw=;
+	h=From:To:Subject:Date:From;
+	b=Qfc+vuA7yQSULOtT62DI4oq+a8zuZmVF3jlxK1/IIHDuDcBePNJsRFVY7KV/np3NC
+	 qwDhoJmm4RznHceX/bXfykxq+7nwEQf65deuilOGeOzr/YazdpoQKaHfdFs4PoiPZK
+	 +bsNWlJZZDaqYzRqgx2epgmPglrixW7jiIiuZ0/3T4KfKkH1SE8Plk7WjO7yA2cxnw
+	 S0rfYy0aI+0fhwjrYZz2YrrHv9mkD3hdlUPX35HRuKlDX0TWylssfkmXSyXGfNUJ+b
+	 S4F3rSpwnrmW1XdRtvXBuB070ktLzHeU0pJQOUGF+ETwDxYwXCfPLk322SaiPhl1UX
+	 WTURLsWT4Jhpw==
+From: Allison Henderson <achender@kernel.org>
+To: netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	kuba@kernel.org,
+	horms@kernel.org,
+	linux-rdma@vger.kernel.org,
+	achender@kernel.org,
+	linux-kselftest@vger.kernel.org,
+	shuah@kernel.org
+Subject: [PATCH net-next v3 00/11] selftests: rds: Add ROCE support to rds selftests
+Date: Sun, 17 May 2026 18:24:32 -0700
+Message-Id: <20260518012443.2629206-1-achender@kernel.org>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260517161712.GL33515@unreal>
-X-Rspamd-Queue-Id: 774D6562D7D
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: CA24A564BDF
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[resnulli.us];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20857-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-20858-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	TO_DN_NONE(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-Sun, May 17, 2026 at 06:17:12PM +0200, leon@kernel.org wrote:
->On Sun, May 17, 2026 at 04:13:11PM +0200, Jiri Pirko wrote:
->> From: Jiri Pirko <jiri@nvidia.com>
->> 
->> When a device requires DMA bounce buffering inside a Confidential
->> Computing guest, __ib_umem_get_va() cannot work. The DMA mapping layer
->> redirects all mappings through swiotlb bounce buffers, so the device
->> receives DMA addresses pointing to bounce buffer memory rather than
->> the user's pages. Since RDMA devices access registered memory directly
->> without CPU involvement, there is no opportunity for swiotlb to
->> synchronize between the bounce buffer and the original pages.
->> 
->> The registration would already fail later on, since the umem mapping
->> is requested with DMA_ATTR_REQUIRE_COHERENT and gets rejected under
->> is_swiotlb_force_bounce() with -EIO. Fail early with -EOPNOTSUPP
->> instead, so the user gets a specific error code to react to.
->> 
->> Signed-off-by: Jiri Pirko <jiri@nvidia.com>
->> ---
->> v1->v2:
->> - updated patch description with mention of DMA_ATTR_REQUIRE_COHERENT
->> ---
->>  drivers/infiniband/core/umem.c | 3 +++
->>  1 file changed, 3 insertions(+)
->> 
->> diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
->> index eb1de32bab9d..b32bc2a5d7d0 100644
->> --- a/drivers/infiniband/core/umem.c
->> +++ b/drivers/infiniband/core/umem.c
->> @@ -167,6 +167,9 @@ static struct ib_umem *__ib_umem_get_va(struct ib_device *device,
->>  	int pinned, ret;
->>  	unsigned int gup_flags = FOLL_LONGTERM;
->>  
->> +	if (device->cc_dma_bounce)
->> +		return ERR_PTR(-EOPNOTSUPP);
->> +
->
->The series looks reasonable, but I cannot apply it yet because  
->`__ib_umem_get_va()` has not been merged.
+Currently the rds selftests only tests the tcp transport.  This means
+most of rds_rdma.ko has no testing coverage.  This series refactors the
+rds self tests to add an rdma option when running tests.  When used,
+the test creates a pair of ROCE interfaces to run the payloads through.
 
-Correct. Cover letter says:
-based on top of:
-https://lore.kernel.org/all/20260517063006.2200680-1-jiri@resnulli.us/
+Most of this set is refactoring the existing test.py module.  Since most
+of this code is one long procedure, it is difficult to modularize it
+without creating a lot of pylint complaints about lengthy functions
+with too many variables or branches.  
+
+Patch 1 fixes an RDS-IB shutdown hang exposed by the new ROCE selftests
+in patches 10/11. The next seven patches break down test.py into helper
+functions.  After we have modularized the send/recv packet logic, we
+introduce the new ROCE equivalent network configurations, add the new
+command line flags to build and run the test with rdma support.
+
+Questions, comments and feedback appreciated!
+
+Thanks everyone!
+Allison
+
+Change Log
+v2:
+   [PATCH net-next v1 1/9] selftests: rds: Capitalize ret global in test.py
+      Dropped
+
+   [PATCH net-next v2 4/9] selftests: rds: Add helper function recv_burst() in test.py
+      Pylint nits
+
+   [PATCH net-next v2 6/9] selftests: rds: Add helper function snd_rcv_packets() in test.py
+      Pylint nits
+
+   [PATCH net-next v2 7/9] selftests: rds: Register network teardown via atexi
+      NEW
+      Registers network config cleanup function teardown_tcp() with atexi
+
+   [PATCH net-next v2 8/9] selftests: rds: Add ROCE support to test.py
+      Pylint nits
+      Added rdma network teardown cleanup on atexit
+      Fixed test result reporting with dynamic per-transport reporting
+
+v3:
+   [PATCH net-next v3 1/11] net/rds: Don't sleep inside rds_ib_conn_path_shutdown
+      NEW
+
+   [PATCH net-next v3 08/11] selftests: rds: Handle errors in netns_socket
+      NEW
+
+   [PATCH net-next v3 10/11] selftests: rds: Add ROCE support to test.py
+      Sashiko complaint: expand snd_rcv_packets docstring
+      Sashiko complaint: properly close sockets when test completes
+      Sashiko complaint: collect pcaps per rdma iface
+      Sashiko complaint: only teardown rdma net configs when -T rdma is used
+      Sashiko complaint: cancel timeout before reporting test results
+
+   [PATCH net-next v3 11/11] selftests: rds: Add ROCE support to run.sh
+      Sashiko complaint: Update test.py usage and README with -T usage
+
+Allison Henderson (11):
+  net/rds: Don't sleep inside rds_ib_conn_path_shutdown
+  selftests: rds: Add helper function setup_tcp() in test.py
+  selftests: rds: Add helper function check_info() in test.py
+  selftests: rds: Add helper function send_burst() in test.py
+  selftests: rds: Add helper function recv_burst() in test.py
+  selftests: rds: Add helper function verify_hashes() in test.py
+  selftests: rds: Add helper function snd_rcv_packets() in test.py
+  selftests: rds: Handle errors in netns_socket
+  selftests: rds: Register network teardown via atexit
+  selftests: rds: Add ROCE support to test.py
+  selftests: rds: Add ROCE support to run.sh
+
+ net/rds/ib_cm.c                            |  25 +-
+ tools/testing/selftests/net/rds/README.txt |  29 +-
+ tools/testing/selftests/net/rds/config.sh  |  15 +-
+ tools/testing/selftests/net/rds/run.sh     |  53 +-
+ tools/testing/selftests/net/rds/test.py    | 631 ++++++++++++++-------
+ 5 files changed, 529 insertions(+), 224 deletions(-)
+
+-- 
+2.25.1
+
 
