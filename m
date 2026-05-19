@@ -1,446 +1,265 @@
-Return-Path: <linux-rdma+bounces-20949-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20950-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yHGSGpXMC2rLNwUAu9opvQ
-	(envelope-from <linux-rdma+bounces-20949-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 04:36:05 +0200
+	id SLk5M2T+C2qrTAUAu9opvQ
+	(envelope-from <linux-rdma+bounces-20950-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 08:08:36 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id C740D576757
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 04:36:03 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7742D577BF2
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 08:08:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id AC1E030185B6
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 02:36:02 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CAF19301D6A0
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 06:07:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD3983191D0;
-	Tue, 19 May 2026 02:35:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 337E337AA94;
+	Tue, 19 May 2026 06:07:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="T57Rc85d"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="JqJmJ/Y6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6E1530FC1C
-	for <linux-rdma@vger.kernel.org>; Tue, 19 May 2026 02:35:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B50F633345A;
+	Tue, 19 May 2026 06:07:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779158159; cv=none; b=RNNQSpa5VwiCehv7yCqx8z60pvMs+NUVNtF2JNFGVKZZXjvV6asVP5EFuROGnG2PwIhqN3ZgnUy5SWr/QFysdygKeVBARUgql2LaVWWXKUc89IRm1B5J1Z2WSxlO0gaDcVgRZXIi57Jb47AvZS4Y1Eft435PVO0eX+sqcWvTTG0=
+	t=1779170879; cv=none; b=tyQYNN8zNO/aWBMTVYS8/R7ewITvqoOTDZFAOSZT27dqPgDjktzBdYpcLxwMzaqt567ETuDmqXEY7y1BUWNKrdu1o/XG4wptqtvQFHoQ8UbZ37SLmso4m9W17kUSjba2ASydKUVt5SMb/0yMdLtytkfLSYUgqvG18SXQceJMm9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779158159; c=relaxed/simple;
-	bh=tpcfz1G1enh7ii59UybfN8Nz1ummZSHRtt22KJZcn18=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BWq4NVhZQ5vIn1QRKZ4s7KiL780Lpg+RAYcUpG0f1Gh2KzsC1HVt9DRxHk32QlMh7NUeLs/0BMbPYYvv2V7FVU+XIOHwYCGtqKZ5UjpHCjyp0KJVvTPvZDQk9aPzyj4w/OJHsRLnGHC0TEbqoRR3w6rIBylPV/rqmBR+ZtyDpTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=T57Rc85d; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1779158153;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=d7dZdadA4GeD8kJ/5jRM8nceYpcqzVLA7ykVR/uUChw=;
-	b=T57Rc85dZJdirmJqMl1EeIlunBvCm4pzAhPDUIEyV/UgmYaRYYC00vuJCVsFYtnRhVul44
-	nej3TPfhIq5++zmAi4ky/qFvVp6yML6OiQDuslQxPMa9HmikFoqTcJyfSlxfK6Qzfv0mx7
-	zWUtSSqN/WYpT12IlO12aMovLHqZ7X4=
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-To: zyjzyj2000@gmail.com,
-	jgg@ziepe.ca,
-	leon@kernel.org,
-	linux-rdma@vger.kernel.org,
-	yanjun.zhu@linux.dev
-Cc: syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
-Subject: [PATCH v2 1/1] RDMA/rxe: Fix Use-After-Free problem in rxe_net_del
-Date: Tue, 19 May 2026 04:35:41 +0200
-Message-ID: <20260519023541.8594-1-yanjun.zhu@linux.dev>
+	s=arc-20240116; t=1779170879; c=relaxed/simple;
+	bh=PZndKE+k5QGC8aLpPQMN1H7BjKRFK23i1VvVtQVRyTE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TV8gCfuY026bF6lDJlcS0BkQLW1H8PF6WIw/LTei0Ky/IHYGeX2aMZuO+EpZN9WQVItN0v769VqBa1YftE2bpo7lzdLVyYKh/IYBJBP9jpQFgU2makTxV7cjnoGDNFj4dKU2CjEohpwZD3ZqYsp1FEoyaRUG3jjSmqqxyMYPAAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=JqJmJ/Y6; arc=none smtp.client-ip=115.124.30.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1779170865; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=rK/MNzc7TgF79y6vUvuw5P/fnsxLJQlPVnDjCHUzi7k=;
+	b=JqJmJ/Y6hEKRoXVia4v7r6Gxgm7rVstruzpnzhK4Fpb3CV3ajdpi/QeNaksOqURcfRTOOWyBe7C+5xSaOSJUEFl+1sjoL5PVp1UAqDGfcbXPw47PoCFPMSoP8ioAhdyKToGsu3Ae2AWXL54ESqiRq62vSPhhFkv91dJEI/nth8I=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R721e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037009110;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0X3EVwCV_1779170864;
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0X3EVwCV_1779170864 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Tue, 19 May 2026 14:07:44 +0800
+Date: Tue, 19 May 2026 14:07:44 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com    >
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: alibuda@linux.alibaba.com, davem@davemloft.net,
+	dust.li@linux.alibaba.com, edumazet@google.com, kuba@kernel.org,
+	sidraya@linux.ibm.com, wenjia@linux.ibm.com, mjambigi@linux.ibm.com,
+	horms@kernel.org, tonylu@linux.alibaba.com, guwen@linux.alibaba.com,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+	oliver.yang@linux.alibaba.com, pasic@linux.ibm.com
+Subject: Re: [PATCH net-next 2/2] net/smc: reduce TX slot contention with
+ exclusive wait
+Message-ID: <20260519060744.GA7104@j66a10360.sqa.eu95>
+References: <20260508063718.101622-3-alibuda@linux.alibaba.com>
+ <20260512082643.89020-1-pabeni@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+In-Reply-To: <20260512082643.89020-1-pabeni@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spamd-Result: default: False [-9.16 / 15.00];
+	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,kernel.org,vger.kernel.org,linux.dev];
-	TAGGED_FROM(0.00)[bounces-20949-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[18];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	TO_DN_NONE(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,d8f76778263ab65c2b21];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,appspotmail.com:email]
-X-Rspamd-Queue-Id: C740D576757
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[alibuda@linux.alibaba.com,linux-rdma@vger.kernel.org];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linux.dev:url,linux.alibaba.com:dkim];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20950-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[linux.alibaba.com:+]
+X-Rspamd-Queue-Id: 7742D577BF2
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-syzbot reported a general protection fault (KASAN: null-ptr-deref) in
-kernel_sock_shutdown() called during the software RoCE (rxe) link
-deletion path (rxe_dellink -> rxe_net_del).
+On Tue, May 12, 2026 at 10:26:43AM +0200, Paolo Abeni wrote:
+> From: AI Reviewer <ai@example.com>
+> 
+> This is an AI-generated review of your patch. The human sending this
+> email has considered the AI review valid, or at least plausible.
+> Full review at: https://netdev-ai.bots.linux.dev/sashiko/
+> ---
+> net/smc: reduce TX slot contention with exclusive wait
+> 
+> This patch replaces the non-exclusive wait_event_interruptible_timeout()
+> in smc_wr_tx_get_free_slot() with an open-coded exclusive wait loop via
+> prepare_to_wait_exclusive(), so wake_up() on a freed TX slot wakes only
+> a single waiter instead of the entire wait queue.
+> 
+> > diff --git a/net/smc/smc_wr.c b/net/smc/smc_wr.c
+> > index 48037a3d97a3..0a6f2befb0e2 100644
+> > --- a/net/smc/smc_wr.c
+> > +++ b/net/smc/smc_wr.c
+> > @@ -171,17 +173,27 @@ int smc_wr_tx_get_free_slot(struct smc_link *link,
+> >  		if (rc)
+> >  			return rc;
+> >  	} else {
+> > -		rc = wait_event_interruptible_timeout(
+> > -			link->wr_tx_wait,
+> > -			!smc_link_sendable(link) ||
+> > -			lgr->terminating ||
+> > -			(smc_wr_tx_get_free_slot_index(link, &idx) != -EBUSY),
+> > -			SMC_WR_TX_WAIT_FREE_SLOT_TIME);
+> > -		if (!rc) {
+> > -			/* timeout - terminate link */
+> > -			smcr_link_down_cond_sched(link);
+> > -			return -EPIPE;
+> > +		rc = 0;
+> > +		for (;;) {
+> > +			prepare_to_wait_exclusive(&link->wr_tx_wait, &wait,
+> > +						  TASK_INTERRUPTIBLE);
+> > +			if (!smc_link_sendable(link) || lgr->terminating ||
+> > +			    smc_wr_tx_get_free_slot_index(link, &idx) != -EBUSY)
+> > +				break;
+> > +			timeout = schedule_timeout(timeout);
+> > +			if (!timeout) {
+> > +				/* timeout - terminate link */
+> > +				smcr_link_down_cond_sched(link);
+> > +				break;
+> > +			}
+> > +			if (signal_pending(current)) {
+> > +				rc = -ERESTARTSYS;
+> > +				break;
+> > +			}
+> 
+> [High]
+> With exclusive waiters, wake_up() on link->wr_tx_wait wakes only one
+> task per freed slot. If that waiter is about to exit via the
+> signal_pending() branch, can the freed slot be lost to the remaining
+> sleepers?
+> 
+> Consider two exclusive waiters A and B asleep in schedule_timeout():
+> 
+>   1. smc_wr_tx_put_slot() -> wake_up(&link->wr_tx_wait) is effectively
+>      __wake_up(..., nr_exclusive=1).  default_wake_function makes A
+>      runnable, autoremove_wake_function pulls A off the queue, and
+>      __wake_up_common stops -- B is not woken.
+> 
+>   2. A signal is delivered to A before it actually runs.  Because A is
+>      already TASK_RUNNING, signal_wake_up only sets TIF_SIGPENDING.
+> 
+>   3. A returns from schedule_timeout() with timeout > 0, so the
+>      !timeout branch is skipped.  signal_pending(current) is true, so
+>      the loop sets rc = -ERESTARTSYS and breaks without re-testing
+>      smc_wr_tx_get_free_slot_index() and without issuing any wake_up()
+>      on the way out.
+> 
+>   4. B stays asleep on the wait queue even though the wr_tx_mask bit
+>      for the freed slot is still available.  With no further
+>      completions, B sleeps until the full SMC_WR_TX_WAIT_FREE_SLOT_TIME
+>      expires, at which point smcr_link_down_cond_sched() tears down an
+>      otherwise healthy link.
+> 
+> The previous wait_event_interruptible_timeout() was non-exclusive, so
+> every waiter was woken on each wake_up() and re-evaluated the
+> condition, which avoided this class of lost-wakeup.
+> 
+> Should the signal path re-check the slot condition before returning,
+> or issue a wake_up() on exit so another exclusive waiter gets a chance
+> at the slot?
+> 
 
-The call trace is as below:
-"
-rdma_rxe: rxe_newlink: failed to add lo
-Oops: gen[  127.022080][ T5982] Oops: general protection fault, probably for non-canonical address 0xdffffc0000000004: 0000 [#1] SMP KASAN PTI
-KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
-CPU: 1 UID: 0 PID: 5982 Comm: syz.3.20 Not tainted syzkaller #0 PREEMPT_{RT,(full)}
-...
-Call Trace:
- <TASK>
- udp_tunnel_sock_release+0x6d/0x80 net/ipv4/udp_tunnel_core.c:197
- rxe_release_udp_tunnel drivers/infiniband/sw/rxe/rxe_net.c:294 [inline]
- rxe_sock_put drivers/infiniband/sw/rxe/rxe_net.c:639 [inline]
- rxe_net_del+0xfb/0x290 drivers/infiniband/sw/rxe/rxe_net.c:660
- rxe_dellink+0x15/0x20 drivers/infiniband/sw/rxe/rxe.c:254
- nldev_dellink+0x304/0x3d0 drivers/infiniband/core/nldev.c:1849
- rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:-1 [inline]
- rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
- rdma_nl_rcv+0x6d7/0xa10 drivers/infiniband/core/netlink.c:259
- netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
- netlink_unicast+0x780/0x920 net/netlink/af_netlink.c:1345
- netlink_sendmsg+0x813/0xb40 net/netlink/af_netlink.c:1895
- sock_sendmsg_nosec+0x112/0x150 net/socket.c:797
- __sock_sendmsg net/socket.c:812 [inline]
- ____sys_sendmsg+0x55c/0x870 net/socket.c:2716
- ___sys_sendmsg+0x2a5/0x360 net/socket.c:2770
- __sys_sendmsg net/socket.c:2802 [inline]
- __do_sys_sendmsg net/socket.c:2807 [inline]
- __se_sys_sendmsg net/socket.c:2805 [inline]
- __x64_sys_sendmsg+0x1c3/0x2a0 net/socket.c:2805
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x15f/0xf80 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f89172fcdd9
-RSP: 002b:00007ffe8bf8c018 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f8917575fa0 RCX: 00007f89172fcdd9
-RDX: 0000000000000000 RSI: 00002000000002c0 RDI: 0000000000000006
-RBP: 00007f8917392d69 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f8917575fac R14: 00007f8917575fa0 R15: 00007f8917575fa0
- </TASK>
-"
+Thanks for the review, all three points are valid.
 
-The root cause is a TOCTOU (Time-of-Check to Time-of-Use) race condition
-in rxe_net_del(). Previously, the function fetched the socket pointer
-via rxe_ns_pernet_sk4/6() outside the critical section, and then
-acquired the lock to release it via rxe_sock_put().
+[High] & [Low]: Both resolved by a unified re-check after finish_wait():
+if no slot was acquired in the loop (due to signal or timeout),
+re-evaluate the condition one final time. If a slot is now available,
+claim it and proceed. No wake_up() is needed on exit — the teardown path
+already does wake_up_all when the link goes down, and waking the next
+waiter when no slot exists is pointless.
 
-In a highly concurrent teardown environment, another thread could close
-and clear the pernet socket after it was fetched but before the lock
-was acquired. This causes rxe_sock_put() to operate on a dangling or
-already cleared socket pointer, leading to a NULL pointer dereference
-when kernel_sock_shutdown() attempts to access sock->sk.
+> [Medium]
+> The commit message says this is a contention optimization and that
+> "teardown behavior is unchanged", but does it also change the errno
+> returned to callers on signal delivery?
+> 
+> Before this patch, wait_event_interruptible_timeout() returned
+> -ERESTARTSYS on signal; that value is non-zero, so the old if (!rc)
+> branch was skipped, control fell through to the trailing
+> if (idx == link->wr_tx_cnt) return -EPIPE, and callers saw -EPIPE.
+> 
+> After the patch, the signal path does:
+> 
+>     if (signal_pending(current)) {
+>         rc = -ERESTARTSYS;
+>         break;
+>     }
+>     ...
+>     finish_wait(&link->wr_tx_wait, &wait);
+>     if (rc)
+>         return rc;
+> 
+> so -ERESTARTSYS propagates up through smc_cdc_get_free_slot() (which
+> only remaps rc to -EPIPE when conn->killed is set),
+> smcr_cdc_get_slot_and_msg_send(), smc_cdc_get_slot_and_msg_send() and
+> smc_tx_sendmsg(), meaning userspace sees syscall restart / -EINTR
+> instead of -EPIPE.
+> 
+> Note that the sibling smc_wr_reg_send() in the same file explicitly
+> converts -ERESTARTSYS to -EINTR.  Should this return-code change be
+> called out in the commit message (and possibly split out), given that
+> the stated intent of the patch is purely to reduce contention?
 
-Fix this by introducing a dedicated, per-netns mutex 'release_lock'
-and extending its scope. The socket pointers are now fetched, checked,
-and released entirely within the same locked critical section. This
-ensures the atomicity of the socket lookup and teardown sequence.
+Agreed. I'll keep the return code as -EPIPE to match the original behavior, so
+this patch remains a pure contention optimization with no semantic
+change.
 
-Since new mutex lock is introduced, remove the unnecessary rcu locks.
 
-Reported-by: syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=d8f76778263ab65c2b21
-Fixes: f1327abd6abe ("RDMA/rxe: Support RDMA link creation and destruction per net namespace")
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
-V1 -> V2: Remove the unnecessary rcu locks, following Leon's advice.
----
- drivers/infiniband/sw/rxe/rxe_net.c | 49 +++++++++++++++++++-----
- drivers/infiniband/sw/rxe/rxe_ns.c  | 58 ++++++++++++++++-------------
- drivers/infiniband/sw/rxe/rxe_ns.h  |  3 ++
- 3 files changed, 74 insertions(+), 36 deletions(-)
+> [Low]
+> On timeout expiry the new loop takes the teardown path without
+> re-testing whether a slot became available:
+> 
+> > +			timeout = schedule_timeout(timeout);
+> > +			if (!timeout) {
+> > +				/* timeout - terminate link */
+> > +				smcr_link_down_cond_sched(link);
+> > +				break;
+> > +			}
+> 
+> The old wait_event_interruptible_timeout() expansion re-evaluated the
+> condition via ___wait_cond_timeout after schedule_timeout() returned
+> 0, so a wake_up() racing with timer expiry could still report success
+> and let smc_wr_tx_get_free_slot_index() claim the slot.
+> 
+> In the narrow race where a slot is freed at the same instant the
+> timer fires, does this now tear the link down even though a slot was
+> actually available?
+> 
+> >  		}
+> > +		finish_wait(&link->wr_tx_wait, &wait);
+> > +		if (rc)
+> > +			return rc;
+> >  		if (idx == link->wr_tx_cnt)
+> >  			return -EPIPE;
+> >  	}
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index 50a2cb5405e2..0bf5b0eabc7b 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -135,13 +135,21 @@ static struct dst_entry *rxe_find_route6(struct rxe_qp *qp,
- {
- 	struct dst_entry *ndst;
- 	struct flowi6 fl6 = {};
-+	struct sock *sk;
- 
- 	fl6.flowi6_oif = ndev->ifindex;
- 	memcpy(&fl6.saddr, saddr, sizeof(*saddr));
- 	memcpy(&fl6.daddr, daddr, sizeof(*daddr));
- 	fl6.flowi6_proto = IPPROTO_UDP;
- 
--	ndst = ip6_dst_lookup_flow(net, rxe_ns_pernet_sk6(net), &fl6, NULL);
-+	rxe_ns_lock(net);
-+	sk = rxe_ns_pernet_sk6(net);
-+	if (sk)
-+		sock_hold(sk);
-+	rxe_ns_unlock(net);
-+
-+	ndst = ip6_dst_lookup_flow(net, sk, &fl6, NULL);
-+	sock_put(sk);
- 	if (IS_ERR(ndst)) {
- 		rxe_dbg_qp(qp, "no route to %pI6\n", daddr);
- 		return NULL;
-@@ -655,6 +663,8 @@ void rxe_net_del(struct ib_device *dev)
- 
- 	net = dev_net(ndev);
- 
-+	rxe_ns_lock(net);
-+
- 	sk = rxe_ns_pernet_sk4(net);
- 	if (sk)
- 		rxe_sock_put(sk, rxe_ns_pernet_set_sk4, net);
-@@ -663,6 +673,8 @@ void rxe_net_del(struct ib_device *dev)
- 	if (sk)
- 		rxe_sock_put(sk, rxe_ns_pernet_set_sk6, net);
- 
-+	rxe_ns_unlock(net);
-+
- 	dev_put(ndev);
- }
- 
-@@ -754,52 +766,67 @@ static struct notifier_block rxe_net_notifier = {
- 
- static int rxe_net_ipv4_init(struct net *net)
- {
--	struct sock *sk;
- 	struct socket *sock;
-+	struct sock *sk;
-+	int ret = 0;
- 
-+	rxe_ns_lock(net);
- 	sk = rxe_ns_pernet_sk4(net);
- 	if (sk) {
- 		sock_hold(sk);
--		return 0;
-+		ret = 0;
-+		goto out_unlock;
- 	}
- 
- 	sock = rxe_setup_udp_tunnel(net, htons(ROCE_V2_UDP_DPORT), false);
- 	if (IS_ERR(sock)) {
- 		pr_err("Failed to create IPv4 UDP tunnel\n");
--		return -1;
-+		ret = -1;
-+		goto out_unlock;
- 	}
-+
- 	rxe_ns_pernet_set_sk4(net, sock->sk);
- 
--	return 0;
-+out_unlock:
-+	rxe_ns_unlock(net);
-+	return ret;
- }
- 
- static int rxe_net_ipv6_init(struct net *net)
- {
-+	int ret = 0;
- #if IS_ENABLED(CONFIG_IPV6)
--	struct sock *sk;
- 	struct socket *sock;
-+	struct sock *sk;
- 
-+	rxe_ns_lock(net);
- 	sk = rxe_ns_pernet_sk6(net);
- 	if (sk) {
- 		sock_hold(sk);
--		return 0;
-+		ret = 0;
-+		goto out_unlock;
- 	}
- 
- 	sock = rxe_setup_udp_tunnel(net, htons(ROCE_V2_UDP_DPORT), true);
- 	if (PTR_ERR(sock) == -EAFNOSUPPORT) {
- 		pr_warn("IPv6 is not supported, can not create a UDPv6 socket\n");
--		return 0;
-+		ret = 0;
-+		goto out_unlock;
- 	}
- 
- 	if (IS_ERR(sock)) {
- 		pr_err("Failed to create IPv6 UDP tunnel\n");
--		return -1;
-+		ret = -1;
-+		goto out_unlock;
- 	}
- 
- 	rxe_ns_pernet_set_sk6(net, sock->sk);
- 
-+out_unlock:
-+	rxe_ns_unlock(net);
-+
- #endif
--	return 0;
-+	return ret;
- }
- 
- int rxe_register_notifier(void)
-@@ -840,9 +867,11 @@ int rxe_net_init(struct net_device *ndev)
- 
- err_out:
- 	/* If ipv6 error, release ipv4 resource */
-+	rxe_ns_lock(net);
- 	sk = rxe_ns_pernet_sk4(net);
- 	if (sk)
- 		rxe_sock_put(sk, rxe_ns_pernet_set_sk4, net);
-+	rxe_ns_unlock(net);
- 
- 	return err;
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_ns.c b/drivers/infiniband/sw/rxe/rxe_ns.c
-index 8b9d734229b2..744a3d16f963 100644
---- a/drivers/infiniband/sw/rxe/rxe_ns.c
-+++ b/drivers/infiniband/sw/rxe/rxe_ns.c
-@@ -14,8 +14,9 @@
-  * Per network namespace data
-  */
- struct rxe_ns_sock {
--	struct sock __rcu *rxe_sk4;
--	struct sock __rcu *rxe_sk6;
-+	struct sock	*rxe_sk4;
-+	struct sock	*rxe_sk6;
-+	struct mutex	ns_mutex_lock;
- };
- 
- /*
-@@ -31,10 +32,26 @@ static int rxe_ns_init(struct net *net)
- 	/* defer socket create in the namespace to the first
- 	 * device create.
- 	 */
-+	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
- 
-+	mutex_init(&ns_sk->ns_mutex_lock);
- 	return 0;
- }
- 
-+void rxe_ns_lock(struct net *net)
-+{
-+	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
-+
-+	mutex_lock(&ns_sk->ns_mutex_lock);
-+}
-+
-+void rxe_ns_unlock(struct net *net)
-+{
-+	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
-+
-+	mutex_unlock(&ns_sk->ns_mutex_lock);
-+}
-+
- static void rxe_ns_exit(struct net *net)
- {
- 	/* called when the network namespace is removed
-@@ -42,23 +59,24 @@ static void rxe_ns_exit(struct net *net)
- 	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
- 	struct sock *sk;
- 
--	rcu_read_lock();
--	sk = rcu_dereference(ns_sk->rxe_sk4);
--	rcu_read_unlock();
-+	rxe_ns_lock(net);
-+	sk = ns_sk->rxe_sk4;
- 	if (sk) {
--		rcu_assign_pointer(ns_sk->rxe_sk4, NULL);
-+		ns_sk->rxe_sk4 = NULL;
- 		udp_tunnel_sock_release(sk->sk_socket);
- 	}
- 
- #if IS_ENABLED(CONFIG_IPV6)
--	rcu_read_lock();
--	sk = rcu_dereference(ns_sk->rxe_sk6);
--	rcu_read_unlock();
-+	sk = ns_sk->rxe_sk6;
- 	if (sk) {
--		rcu_assign_pointer(ns_sk->rxe_sk6, NULL);
-+		ns_sk->rxe_sk6 = NULL;
- 		udp_tunnel_sock_release(sk->sk_socket);
- 	}
- #endif
-+
-+	rxe_ns_unlock(net);
-+
-+	mutex_destroy(&ns_sk->ns_mutex_lock);
- }
- 
- /*
-@@ -74,42 +92,30 @@ static struct pernet_operations rxe_net_ops = {
- struct sock *rxe_ns_pernet_sk4(struct net *net)
- {
- 	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
--	struct sock *sk;
--
--	rcu_read_lock();
--	sk = rcu_dereference(ns_sk->rxe_sk4);
--	rcu_read_unlock();
- 
--	return sk;
-+	return ns_sk->rxe_sk4;
- }
- 
- void rxe_ns_pernet_set_sk4(struct net *net, struct sock *sk)
- {
- 	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
- 
--	rcu_assign_pointer(ns_sk->rxe_sk4, sk);
--	synchronize_rcu();
-+	ns_sk->rxe_sk4 = sk;
- }
- 
- #if IS_ENABLED(CONFIG_IPV6)
- struct sock *rxe_ns_pernet_sk6(struct net *net)
- {
- 	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
--	struct sock *sk;
--
--	rcu_read_lock();
--	sk = rcu_dereference(ns_sk->rxe_sk6);
--	rcu_read_unlock();
- 
--	return sk;
-+	return ns_sk->rxe_sk6;
- }
- 
- void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk)
- {
- 	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
- 
--	rcu_assign_pointer(ns_sk->rxe_sk6, sk);
--	synchronize_rcu();
-+	ns_sk->rxe_sk6 = sk;
- }
- #endif /* IPV6 */
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_ns.h b/drivers/infiniband/sw/rxe/rxe_ns.h
-index 4da2709e6b71..e6cc6b5a4806 100644
---- a/drivers/infiniband/sw/rxe/rxe_ns.h
-+++ b/drivers/infiniband/sw/rxe/rxe_ns.h
-@@ -20,6 +20,9 @@ static inline void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk)
- }
- #endif /* IPv6 */
- 
-+void rxe_ns_lock(struct net *net);
-+void rxe_ns_unlock(struct net *net);
-+
- int rxe_namespace_init(void);
- void rxe_namespace_exit(void);
- 
--- 
-2.43.0
+D. Wythe
 
+> -- 
+> This is an AI-generated review.
 
