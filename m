@@ -1,166 +1,326 @@
-Return-Path: <linux-rdma+bounces-20962-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20963-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WFOVMltmDGpXggUAu9opvQ
-	(envelope-from <linux-rdma+bounces-20962-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 15:32:11 +0200
+	id ADRUNklnDGpXggUAu9opvQ
+	(envelope-from <linux-rdma+bounces-20963-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 15:36:09 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FEE257FB66
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 15:32:11 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4836557FCAF
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 15:36:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 859FD300F5D7
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 13:27:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 60BA33112B88
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 13:29:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F040E409637;
-	Tue, 19 May 2026 13:27:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF13348C4E;
+	Tue, 19 May 2026 13:29:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="max1Z3zo"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gHkztFiA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 402C7409609
-	for <linux-rdma@vger.kernel.org>; Tue, 19 May 2026 13:27:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C789434041F
+	for <linux-rdma@vger.kernel.org>; Tue, 19 May 2026 13:29:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779197253; cv=none; b=pzK47KDybEeS/ZQ+UmOMuNjJG1lIMQYTXwAM1YmMab47t41CHd5vD155vyie76JMvVxSYsEE9r97cPuxnuDkcYNFlMmPW1APyJm4/seY2QZ1AHIOaYlAIX62F75Dv1/Au39PcGDlf+KQqVdkycbOQd+RMtOUuudvQ8CzLqT7NuM=
+	t=1779197343; cv=none; b=APhN5N25jXt/A5STGYiGn9J15YaaODt8MBE6E7kSXg+whEWZ3Ww6jD39DVi+dGWEMH6Npl+zdMs/mBwvoWaStWUftGNJUvpCiGfAoOLOXWqKP1bgioVG+oHDQV4SaT4EpIhyLzo/8SUZze3e+3uvGO3TTxAByBRnQfBgzbaVEws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779197253; c=relaxed/simple;
-	bh=1w6l7ohmykBbCMduSELIgBOmqzpHylfRMz4JZAMEyO8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sRu9S8FFKL0XnpY1hyTGuJjBlwzvwLrlF+1+RTCDWfG13b+DGvo4U9hHxx1FYcTN2d/6LWV1xkR8uBdzoFw8G8Po2JpBbt12bp0KrWOsbGyxOpK/iJsylHbIG2MZJ1cDiZHfZtqoPJ+OKXMkC8D0cLAJtu+nhNlqDSTKw7MqsTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=max1Z3zo; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-90fc979d84cso231883585a.1
-        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2026 06:27:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1779197251; x=1779802051; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8L3kU+Izm/bkBdprDuHGma+6ktvuwtCY+aTmGowXgj8=;
-        b=max1Z3zom+e8dvtsKbV89WqNMaGn41u+vbKmThdDYQp4zavXBbv4Q75o3tasPvVlrk
-         fn83G5Ll+149r/W+5CtYGlU/HqTuawNQNA/gebAGLjHJpMl75rC4owY/+jnOLvzEvmAV
-         U/BGzK9ES19l2ies9oUh0Q1IBxoghe0N0CZVZGMyMPry1ovOXnjUYXDU8KZHm/CvyvUA
-         McA5P3ejcxDZ8BLqks9rfdkaeBSdPKHu8SJ5x0yW5di8x4HSHZ8KlNlfiIroW6ZOPWGC
-         jR/M7/eD7RZSWlxPPy4+XoMsu+aRBV1w6S3088DNOp7IsAMWzsxrbnnm6rM897TD9hzm
-         t/zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779197251; x=1779802051;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8L3kU+Izm/bkBdprDuHGma+6ktvuwtCY+aTmGowXgj8=;
-        b=qxyxw1kEpVw5hhdxZWAkoRtN/x+EKdxtnoBN81mSlZCkJInpRGru5+KfXMmislVM3x
-         rbdxW5Fh06q0u2K5Uz3gz790T2cjqLEhSf4tjz0UAuZeM0FKvnu46fFlFwd/ko8Gc9UO
-         5J0H4EuipzKNfIAiHwAW3P2sZyFdrgl0r72SVsEGCLFeDiE4yo1qRcB3kIYa2Ekuz1fh
-         DdxqmiCdcPeGqvpDclfyN2CJ1/UJBRzZTG3s9/9GJUVLtfBmkepLAaCddr/ZUhUl43r+
-         rFAnZ7IMPIfQ0k8U/lhjfN69wzmEr6gnrC7NNYsIn1CynEYp6DPF8LUoDDqmDxNyoz0M
-         WfIg==
-X-Forwarded-Encrypted: i=1; AFNElJ/7RTFxkJxUy1KUCg+m8b1WqU8jAFVDTJyQaOMamk2M7HGFnRaaHXICEuUOYeGovPD05X1Mtg6ZW3uw@vger.kernel.org
-X-Gm-Message-State: AOJu0YyLAWSkhE/vkw4p4kU/QYM+0IL/uUgivZgLu6SKq8HH9rWoHcd6
-	ye47n66d0VfO0eCoGmH3KREGZ6U+sCuhAbTVEJh2LQtOHmbJPkEOl1EOJ63qXY4rqtg=
-X-Gm-Gg: Acq92OEuIXKBIJKKp0yeIX4I5aiP+2pRproCOOWwKY4V2sZNhZu3J3LrJ6GvqlVPjYy
-	CM8XcnM01VHEZldQKAin9N03HeduPpBBDw9l+4gl0k4HYQ8BpA8+s1EFNoeMa7s3eyuy7+mIala
-	Ij07LsxBZ9hibrW9idGTISErFVHfGKbdt/49Pgx0hEz7OhNbJh5Tt/0kkiBhLCJmPRxZ90OSrsz
-	UCB/2agtUhpiaOKJsFW6t+Y6pSXF4sPMBR/CJAeW6e57sxKu5rziBXmPcL5injFmF2ErffjYcXn
-	PIxcQU2QuDo9KRfkk6ZLKIecq0i073ndFgK0pcBqbY0EVkd2Zh8OjcMd7ijsBBjqbQUZo04mcyn
-	hRgSWP+SrJdlqKZHfcanqxsI90mkNnqNRiLYhANKviPy+7vsBE6B7elwV3tFQ0EOsXcggwK4THD
-	jZKZrjOZrj1ulWEYqb1Smq0krvLjTDva5a0z1tqenA7InJ0zmkgBa75+THQADn+3vW2WDvgCtSH
-	076lw==
-X-Received: by 2002:a05:620a:1a2a:b0:8de:c429:552d with SMTP id af79cd13be357-911cda50c27mr3032778685a.20.1779197251042;
-        Tue, 19 May 2026 06:27:31 -0700 (PDT)
-Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-910ba943761sm1849573485a.11.2026.05.19.06.27.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2026 06:27:30 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1wPKTq-0000000EuR3-0LFm;
-	Tue, 19 May 2026 10:27:30 -0300
-Date: Tue, 19 May 2026 10:27:30 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Cc: leon@kernel.org, linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
-	kalesh-anakkur.purayil@broadcom.com
-Subject: Re: [PATCH rdma-next v6 7/9] RDMA/bnxt_re: Enhance dpi lifecycle
- logic in doorbell uapis
-Message-ID: <20260519132730.GZ7702@ziepe.ca>
-References: <20260518153721.183749-1-sriharsha.basavapatna@broadcom.com>
- <20260518153721.183749-8-sriharsha.basavapatna@broadcom.com>
- <CAHHeUGWK_2RNG=CaHTnNh2JeAXa9mcTam6p_7Qp6eG+6Nip+_w@mail.gmail.com>
- <20260519124600.GX7702@ziepe.ca>
- <CAHHeUGWpp8n1dHAu=MfYiLhntzK=PtvNyRBHhD0W9KkthEgYUw@mail.gmail.com>
+	s=arc-20240116; t=1779197343; c=relaxed/simple;
+	bh=aUfCvghQl/ZChtCIkP6PVkVCfuJMS0qHqltd5CaS2eE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=L0z4L8oXLej1N1yZ1g6hCvZXVGyH27sxSLijDU6ZgDp5IX7n4y+fqtQnk2DlVWGXLvDoH8RKL0rN7JhNfnTA/VdeOVrAv3Cq2eAVo/uvc5C0HzqlBy3hHEXntxgwvt4DGyvHSh/SasvZKiDWLhTM5fLPId5bswFAHME+7hlqgM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gHkztFiA; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1779197340;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5HemROw5eZfm9qZYYG1ru2tUaiNrpeY5fpyXTbpzGJg=;
+	b=gHkztFiAOqvN2S1Dvx22X3PdD0yTfcgypvWfbD4VMTSiVWFB7vMguls566KgLadO85wKTJ
+	FkjkcjqM166Lr6lq/2MPGNZJUZn3ynQMqyBPG1DgrFwhSoePXZTRdHv1Lntoq8cQ3c4tes
+	rLEOl6FwFCm5hRgaQQ61SKuZmG2N5AA=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-676-zyPlOsJ4OdyVjgvMp6zDBg-1; Tue,
+ 19 May 2026 09:28:57 -0400
+X-MC-Unique: zyPlOsJ4OdyVjgvMp6zDBg-1
+X-Mimecast-MFC-AGG-ID: zyPlOsJ4OdyVjgvMp6zDBg_1779197330
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 855521956054;
+	Tue, 19 May 2026 13:28:50 +0000 (UTC)
+Received: from gerbillo.redhat.com (unknown [10.44.33.47])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 21A5F19560A2;
+	Tue, 19 May 2026 13:28:44 +0000 (UTC)
+From: Paolo Abeni <pabeni@redhat.com>
+To: longli@microsoft.com
+Cc: kotaranov@microsoft.com,
+	kuba@kernel.org,
+	davem@davemloft.net,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	andrew+netdev@lunn.ch,
+	jgg@ziepe.ca,
+	leon@kernel.org,
+	haiyangz@microsoft.com,
+	kys@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	shradhagupta@linux.microsoft.com,
+	horms@kernel.org,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v10 1/6] net: mana: Create separate EQs for each vPort
+Date: Tue, 19 May 2026 15:28:25 +0200
+Message-ID: <20260519132825.172490-1-pabeni@redhat.com>
+In-Reply-To: <20260515040508.491748-2-longli@microsoft.com>
+References: <20260515040508.491748-2-longli@microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHHeUGWpp8n1dHAu=MfYiLhntzK=PtvNyRBHhD0W9KkthEgYUw@mail.gmail.com>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20962-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[ziepe.ca];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCPT_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-20963-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pabeni@redhat.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,ziepe.ca:mid,ziepe.ca:dkim]
-X-Rspamd-Queue-Id: 2FEE257FB66
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	TO_DN_NONE(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linux.dev:url]
+X-Rspamd-Queue-Id: 4836557FCAF
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, May 19, 2026 at 06:50:38PM +0530, Sriharsha Basavapatna wrote:
-> > > ufile_destroy_ucontext(reason == RDMA_REMOVE_DRIVER_REMOVE) -->
-> > > uverbs_user_mmap_disassociate() --> rdma_user_mmap_entry_put() -->
-> > > rdma_user_mmap_entry_free() --> ucontext->device->ops.mmap_free()
-> >
-> > Yes, that's right. The disassociate removes the references from all
-> > the VMAs so it should always eventually call free.
-> Ok, so disassociate() triggers mmap free in the driver while
-> ib_ucontext is still valid, right?  The use-after-free concern raised
-> above, where uctx has been freed, shouldn't occur?
+From: AI Reviewer <ai@example.com>
 
-As far as I can see. At least you would be in good company making this
-assumption...
+This is an AI-generated review of your patch. The human sending this
+email has considered the AI review valid, or at least plausible.
+Full review at: https://netdev-ai.bots.linux.dev/sashiko/
+---
+net: mana: Create separate EQs for each vPort
 
-> > However, it would be best if we didn't have this code in the free
-> > callback at all, ideally the destruction of the object will happen in
-> > the uobject destructor not the mmap free. However, I think we lack the
-> > ability to do that right now.
-> >
-> I had to move it into mmap_free() because a prior concern pointed out
-> that the dpi could be reallocated to another process, while the
-> original process's mmap is still active.  Although the bnxt_re library
-> unmaps first and then destroys the dbr object (i.e in the right
-> sequence), I still tried to address that concern by moving it into
-> mmap free context.
+This patch moves EQ allocation from per-device to per-vPort, exports
+mana_create_eq()/mana_destroy_eq() for use by the RDMA driver, takes
+a vport reference for RSS QPs, and adds cross-port PD-sharing
+rejection for raw QPs along with serialization between
+mana_set_channels() and the RDMA vport configuration.
 
-Yes, we lack the ability to shoot down a single mmap_entry during the
-uboject destruction so it has to work like this :(
+> diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
+> index ac5e75dd3494..f8a9013f0ca3 100644
+> --- a/drivers/infiniband/hw/mana/main.c
+> +++ b/drivers/infiniband/hw/mana/main.c
+> @@ -40,13 +42,27 @@ int mana_ib_cfg_vport(struct mana_ib_dev *dev, u32 port, struct mana_ib_pd *pd,
+>  
+>  	pd->vport_use_count++;
+>  	if (pd->vport_use_count > 1) {
+> +		/* Reject cross-port PD sharing. EQs and vport config
+> +		 * are per-port, so the PD must stay bound to the port
+> +		 * that was configured on the first raw QP creation.
+> +		 */
+> +		if (pd->vport_port != port) {
+> +			pd->vport_use_count--;
+> +			mutex_unlock(&pd->vport_mutex);
+> +			ibdev_dbg(&dev->ib_dev,
+> +				  "PD already bound to port %u\n",
+> +				  pd->vport_port);
+> +			return -EINVAL;
+> +		}
+>  		ibdev_dbg(&dev->ib_dev,
+>  			  "Skip as this PD is already configured vport\n");
+>  		mutex_unlock(&pd->vport_mutex);
+>  		return 0;
+>  	}
+>  
+> -	err = mana_cfg_vport(mpc, pd->pdn, doorbell_id);
+> +	pd->vport_port = port;
+> +
+> +	err = mana_cfg_vport(mpc, pd->pdn, doorbell_id, true);
+>  	if (err) {
+>  		pd->vport_use_count--;
+>  		mutex_unlock(&pd->vport_mutex);
 
-Jason
+[Low]
+In the failure path of mana_ib_cfg_vport(), if mana_cfg_vport() or the
+later mana_create_eq() fails, vport_use_count is rolled back to 0 but
+pd->vport_port keeps the value just written.
+
+Is the contract that pd->vport_port is only meaningful while
+vport_use_count > 0?  That invariant is not documented in the struct
+mana_ib_pd comment, and a future reader who consults pd->vport_port
+without first checking vport_use_count under vport_mutex would see stale
+data.  Would it be worth either resetting pd->vport_port on the rollback
+path or documenting the rule explicitly?
+
+> @@ -55,15 +71,23 @@ int mana_ib_cfg_vport(struct mana_ib_dev *dev, u32 port, struct mana_ib_pd *pd,
+>  		return err;
+>  	}
+>  
+> -	mutex_unlock(&pd->vport_mutex);
+>  
+> -	pd->tx_shortform_allowed = mpc->tx_shortform_allowed;
+> -	pd->tx_vp_offset = mpc->tx_vp_offset;
+> +	err = mana_create_eq(mpc);
+> +	if (err) {
+> +		mana_uncfg_vport(mpc);
+> +		pd->vport_use_count--;
+> +	} else {
+> +		pd->tx_shortform_allowed = mpc->tx_shortform_allowed;
+> +		pd->tx_vp_offset = mpc->tx_vp_offset;
+> +	}
+
+[ ... ]
+
+> diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
+> index 0fbcf449c134..108ec4c5ce51 100644
+> --- a/drivers/infiniband/hw/mana/qp.c
+> +++ b/drivers/infiniband/hw/mana/qp.c
+> @@ -155,6 +156,18 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
+>  
+>  	qp->port = port;
+>  
+> +	/* Take a reference on the vport to ensure EQs outlive this QP.
+> +	 * The vport must already be configured by a raw QP.
+> +	 */
+> +	mutex_lock(&mana_pd->vport_mutex);
+> +	if (!mana_pd->vport_use_count) {
+> +		mutex_unlock(&mana_pd->vport_mutex);
+> +		ret = -EINVAL;
+> +		goto fail;
+> +	}
+> +	mana_pd->vport_use_count++;
+> +	mutex_unlock(&mana_pd->vport_mutex);
+> +
+
+[Critical]
+The cross-port PD-sharing check added to mana_ib_cfg_vport() is not
+mirrored here.  mana_ib_create_qp_rss() takes the user-supplied port
+from ucmd.port and only checks that vport_use_count is non-zero, so the
+RSS path will happily attach to a different port than the one bound to
+the PD by the first raw QP.
+
+If a user creates a raw QP on port A (which sets pd->vport_port=A and
+allocates mpc_A->eqs via mana_create_eq()), then creates an RSS QP on
+the same PD with ucmd.port=B where port B has no Ethernet up and no
+RDMA activity, mpc_B->eqs is NULL.  The subsequent code in this same
+function:
+
+	eq = &mpc->eqs[cq->comp_vector % mpc->num_queues];
+	cq_spec.attached_eq = eq->eq->id;
+
+would then dereference NULL through mpc_B->eqs.
+
+If port B does have Ethernet up, mpc_B->eqs is owned by the Ethernet
+driver and the RSS QP attaches to those EQs.  When the QP is destroyed
+mana_ib_destroy_qp_rss() calls mana_ib_uncfg_vport(mdev, pd, qp->port=B),
+and once pd->vport_use_count reaches 0 mana_ib_uncfg_vport() will run
+mana_destroy_eq(mpc_B) on Ethernet's live EQs and call mana_uncfg_vport
+on a port whose apc->vport_use_count was never incremented by this PD,
+tripping the WARN_ON in mana_uncfg_vport() and corrupting Ethernet's
+vport state.  Meanwhile port A's EQs and vport configuration are leaked
+because nothing on this PD will destroy them.
+
+Should mana_ib_create_qp_rss() apply the same pd->vport_port == port
+check that mana_ib_cfg_vport() now performs, before bumping
+vport_use_count?
+
+[Medium]
+The new "vport must already be configured by a raw QP" requirement is a
+visible uAPI change.  Before this patch, EQs were allocated device-wide
+on mana_context at probe time, so an RSS QP could be created without any
+prior raw QP on the PD.  After the patch, applications that legitimately
+use only RSS QPs (RX-only RDMA workloads) will see -EINVAL here unless
+they also create a raw QP first.
+
+Was breaking the RSS-only case considered, and would lazy EQ creation on
+the first QP regardless of type be feasible to avoid the
+incompatibility?
+
+>  	for (i = 0; i < ind_tbl_size; i++) {
+>  		struct mana_obj_spec wq_spec = {};
+>  		struct mana_obj_spec cq_spec = {};
+> @@ -171,13 +184,13 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
+>  		cq_spec.gdma_region = cq->queue.gdma_region;
+>  		cq_spec.queue_size = cq->cqe * COMP_ENTRY_SIZE;
+>  		cq_spec.modr_ctx_id = 0;
+> -		eq = &mpc->ac->eqs[cq->comp_vector];
+> +		eq = &mpc->eqs[cq->comp_vector % mpc->num_queues];
+>  		cq_spec.attached_eq = eq->eq->id;
+
+[ ... ]
+
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> index 04350973e19e..4633acc976f0 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> @@ -462,10 +467,22 @@ static int mana_set_channels(struct net_device *ndev,
+>  	unsigned int new_count = channels->combined_count;
+>  	unsigned int old_count = apc->num_queues;
+>  	int err;
+>  
+> +	/* Set channel_changing to block RDMA from grabbing the vport
+> +	 * during the detach/attach window. mana_cfg_vport() checks
+> +	 * this flag under vport_mutex and returns -EBUSY if set.
+> +	 */
+> +	mutex_lock(&apc->vport_mutex);
+> +	if (!apc->port_is_up && apc->vport_use_count) {
+> +		mutex_unlock(&apc->vport_mutex);
+> +		return -EBUSY;
+> +	}
+> +	apc->channel_changing = true;
+> +	mutex_unlock(&apc->vport_mutex);
+
+[Low]
+The commit message says:
+
+    When the port is down, apc->vport_mutex is held for the entire
+    operation since mana_detach()/mana_attach() do not take vport_mutex
+    in that case. When the port is up, Ethernet owns the vport
+    exclusively so no additional locking is needed.
+
+Does this description match the code?  mana_set_channels() drops
+apc->vport_mutex immediately after setting channel_changing=true and
+runs mana_pre_alloc_rxbufs(), mana_detach() and mana_attach() without
+the mutex held, then re-acquires the mutex only at the end to clear the
+flag.
+
+The actual serialization mechanism is the channel_changing boolean
+checked by mana_cfg_vport() under vport_mutex, not a long mutex hold.
+Could the commit message be updated to match the implemented design so
+that future readers do not assume a different invariant?
+-- 
+This is an AI-generated review.
+
 
