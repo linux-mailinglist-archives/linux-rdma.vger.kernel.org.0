@@ -1,144 +1,249 @@
-Return-Path: <linux-rdma+bounces-21000-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21001-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UPhvLt7pDGqapwUAu9opvQ
-	(envelope-from <linux-rdma+bounces-21000-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 00:53:18 +0200
+	id eBKqL+LqDGq9pwUAu9opvQ
+	(envelope-from <linux-rdma+bounces-21001-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 00:57:38 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35C6B585D8F
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 00:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 63C3F585E23
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 00:57:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3D013300DE3A
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 22:53:04 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8A49E3077DCC
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 22:56:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8385B395D87;
-	Tue, 19 May 2026 22:53:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE21A3B6C03;
+	Tue, 19 May 2026 22:56:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="o7ST77MH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CasF50+6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A3D31813A
-	for <linux-rdma@vger.kernel.org>; Tue, 19 May 2026 22:53:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BDB73B9DBA;
+	Tue, 19 May 2026 22:55:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779231183; cv=none; b=BFwDleJQt/+Rv4p5kUS5BG/ne+Z6H5+ITmAR89Xv9bqg4gbeGRzv0WEvP9UScWegt2k5j4Bf51+uJPBVf3qzsNCY4adILExKBt8idlXrEY+Nau8S3HtuvrbxdNN3M8BtGH0l33RjI6EGUhhsZZ6SYIRV+sBZ11ODvdV5JmfCT0k=
+	t=1779231360; cv=none; b=ZNbPYJ7H3dbQGXPD4fayIXOWGxSKald1E8Uopa5VSRqgFKEpy3zK4H3WyK+X2AnNo+BLpX/1z/0K2slxW6RsJP0mPY9Kc9exQfEjb2seMCxTZrYRuV7sKZl+1OdceXoi+q4tWX/cB4j4s4VDSqjvTNH2Te50zZPkrxaot5DWabc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779231183; c=relaxed/simple;
-	bh=R2ChHMZ9xPH65ExK9ZyvrpdtZ7y4rCkF/qmE5Tky2zY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U29MiH334Oj6KueMbx6sj+l8MyZ3CwEL8Fp6v+8B4PnAd4HmbAPj3zO1OSJmIGbmJHuINlVWIV9zeccV/vDHgqrQsfg6R+4rAERISjMc1RpTNiwPNGe0Cn9McjKnR1JS/xrBRty3cpydjeysBCo50pv+bup8p/7OjCtxHB44krs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=o7ST77MH; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-51306c9f2e1so52247721cf.0
-        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2026 15:53:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1779231181; x=1779835981; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2nARFlekHGe+jGktqfgd00vuh00ND4LRreSq73uEZLk=;
-        b=o7ST77MHFOu9fQ0/7CQgFGd24eFhYEOtGbSlcbrTIqjPT3SccrimA6z2hyrFazERco
-         EhcfJXcNytIa9UrDTk6PDOP1rB+XtAKQctVefJpWjDVjkUPyXKBrlA49tdil8SbFXSCD
-         kl2sTzd806xKlMPrDBu6HGsYob7o2XWBwBgS7euDOLiXheF4BmTlpqjoUZjKZxZFd/KN
-         M4yElAeiW7/xDjNMv/hWGzYUjjkayVLs4ZkxbMBwxj9HH0EW11aXlT9of8LyS8lCCV2a
-         dhgawRTd6ahHM2n0XfzuhjRBmhGWdSGxuob+lizNKxvbRuTo71p0qEKNqzQAKtKHeJ2m
-         U8Iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779231181; x=1779835981;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2nARFlekHGe+jGktqfgd00vuh00ND4LRreSq73uEZLk=;
-        b=SHNGJ1tlyH/nj788fVfPgahOJvXyYLEYg1XBI5+e1eElNu+AtpU00rgx5sfLXxo+Mb
-         9VquwBCvg/6mivpFRqCtXkAqMcRnbuxkAYvIsjYRVW2wc/+b47sljvjIqzMhhwmI70Sb
-         ulu5xJS9t9fAuhnmJN9/zS/W3YtQAfTDTAeaEWKIpbceLUGRLqNm+S6z+O1fNAC1xXBn
-         K7Bk93DxSmNez1JH6jClALHwcizuKEnzi0/GcnG32lW2v+lz/CK6RunvNJSa43FTAOS2
-         MOUHqGEQ5wfREBCQPeFNp6JWC9cw0HFZmVu/IFphpL5jb9GjuzuRgAuiMO7mEtkLl+PB
-         bQFQ==
-X-Forwarded-Encrypted: i=1; AFNElJ8SicABFa6eDu/rJTTv63lXqhOfBd3SqCJkFixNOu/1Q5uIjfKNowkp53fuhbeo93n4WZLCdYGPCVXS@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx4yXb4j0qG87IUDotNkahXUxjdIvgAUtK7lxQEnAH4Jy6MmuDP
-	qBQhopH47U82s9+e8LXhWm8iT5JhWkNd6YrHbCR3oheuHzsPTBjiLOyADZKjRlSw6sk=
-X-Gm-Gg: Acq92OGg5lPxw/iBAJft+WpCFgVPCyn6iUQ7DVPH6Jd4T8QdPI+fPLawyKSrMUBFVYe
-	qe6idyiFODuvSxu43ZGEBEBLbO+TxL7NkwYwj7MTBiUsmBRfB11PlaRZkg1EVNTcnqNPnFHWk93
-	7Tro739Zkou2FKbLUJVOTVxodcw+uW/Vmqjr73pQDmVq2U0pCiFL+UcOcMQy6vqP7BM/N34p+zA
-	LSqrthYHKOW7LIJSqQXqEPCftyPRUH5PNCgxxmfi3ek9KrbmDGh154RVUBu9KHJ2toD8aNRSKiD
-	BS0WI567+l8ZcSI+zCo2u36lnGII4C1ZWR214MUS4a55n2m3k+M/DwDFRGwYB24cEaE7mGBPaTf
-	v+rj3af2BLiqvQ8cOe7za+Fp/VDolz4ZSy9kL1E52xx5Dzb2vTFCdtSxW0qBb8RFEPnHICi7M6U
-	juIBt7Z5vJ8typVP36myZmm7pNFgTKBxHTtfLxY10N3a7d3717GwFoTwApFMEEm69dQ/O993koN
-	Q1XPEChUgnATA7O
-X-Received: by 2002:ac8:7d53:0:b0:516:51da:ae52 with SMTP id d75a77b69052e-5165a1e8b62mr293191471cf.33.1779231181072;
-        Tue, 19 May 2026 15:53:01 -0700 (PDT)
-Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5164581aed3sm176686141cf.23.2026.05.19.15.52.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2026 15:53:00 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1wPTJ5-0000000Fym5-0QPM;
-	Tue, 19 May 2026 19:52:59 -0300
-Date: Tue, 19 May 2026 19:52:59 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Leon Romanovsky <leon@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/core: remove extraneous dummy helper functions
-Message-ID: <20260519225259.GR7702@ziepe.ca>
-References: <20260519203629.1341667-1-arnd@kernel.org>
+	s=arc-20240116; t=1779231360; c=relaxed/simple;
+	bh=gkNqQtPBBfKzigAv9GnQJnaep0TyIcROeO0JZFWcTU8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=TJFLwsMwsb0p+FrSHrymIclBaaxGDWsp5Uxo31qKuGnqvLwTY5Aur/D732g/x1I1QXk16iMzGx5Il6LLPHkptyNfL8G4yRUNCVziJsyOcBjn+bzR5UX8wfWlRORwpx97ot9TRbjbjHZIuJaQnkhu87cwk50EWpCnaRW49UzB77w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CasF50+6; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C3171F000E9;
+	Tue, 19 May 2026 22:55:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779231358;
+	bh=ltITWYTpdR14mpIrT86JiPdAjkQfUB2LfX1W0DEFewE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=CasF50+6728DUZsAs2JUV8duNXgCIYKDBtZYvHhY5JxRbZQFbFkvs2A59IR8r463h
+	 oqJ4AoSDTG62xzl2ywsSWiHZBPLr3uDkTNldZkb+XmPAo+GGhp/06V3hX1xEOHvst7
+	 NyPzZjvkjWWeGNHwZ3/iWm9BuBNVWPl2lKblAeAco0zPke4dk87/5hSQ+vv83qqI1l
+	 ZjERkEIMeP51xelD7t+bgcGQfGWiKak/v/foovQPTW0rBId9jtX0PkKMRbly2MN6Mr
+	 by8qZM3BDUHFj4v3Pv1a8YxXHphv52/ENosLHUYSkF5ImDOuDgm+N9YGJfRmF9j0JQ
+	 emmHWTrkImlXA==
+From: Jakub Kicinski <kuba@kernel.org>
+To: dipayanroy@linux.microsoft.com
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	kys@microsoft.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	leon@kernel.org,
+	longli@microsoft.com,
+	kotaranov@microsoft.com,
+	horms@kernel.org,
+	shradhagupta@linux.microsoft.com,
+	ssengar@linux.microsoft.com,
+	ernis@linux.microsoft.com,
+	shirazsaleem@microsoft.com,
+	linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	stephen@networkplumber.org,
+	jacob.e.keller@intel.com,
+	dipayanroy@microsoft.com,
+	leitao@debian.org,
+	kees@kernel.org,
+	john.fastabend@gmail.com,
+	hawk@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	sdf@fomichev.me,
+	yury.norov@gmail.com
+Subject: Re: [PATCH net 1/2] net: mana: Add NULL guards in teardown path to prevent panic on attach failure
+Date: Tue, 19 May 2026 15:55:56 -0700
+Message-ID: <20260519225556.3939204-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260518194654.735580-2-dipayanroy@linux.microsoft.com>
+References: <20260518194654.735580-2-dipayanroy@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260519203629.1341667-1-arnd@kernel.org>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FREEMAIL_CC(0.00)[kernel.org,microsoft.com,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[34];
+	TAGGED_FROM(0.00)[bounces-21001-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	TAGGED_FROM(0.00)[bounces-21000-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[ziepe.ca];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6]
-X-Rspamd-Queue-Id: 35C6B585D8F
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 63C3F585E23
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, May 19, 2026 at 10:36:22PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The _ib_copy_validate_udata_in() and _ib_respond_udata() functions
-> are now defined unconditionally, but there is still a dummy helper
-> definition for them when CONFIG_INFINIBAND_USER_ACCESS is disabled,
-> leading to a build failure:
+This is an AI-generated review of your patch. The human sending this
+email has considered the AI review valid, or at least plausible.
+---
+net: mana: Add NULL guards in teardown path to prevent panic on attach failure
+    
+When queue allocation fails partway through, the error cleanup frees
+and NULLs apc->tx_qp and apc->rxqs. The patch adds NULL guards for these
+pointers in teardown paths such as mana_destroy_vport(), mana_fence_rqs(),
+and mana_dealloc_queues() to prevent NULL pointer dereferences.
 
-Thanks Arnd, Nathan beat you to it:
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> index 9afc786b297a8..9e7e4bf526bf6 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+[ ... ]
+> @@ -2858,13 +2861,16 @@ static void mana_destroy_vport(struct mana_port_context *apc)
+>  	struct mana_rxq *rxq;
+>  	u32 rxq_idx;
+>  
+> -	for (rxq_idx = 0; rxq_idx < apc->num_queues; rxq_idx++) {
+> -		rxq = apc->rxqs[rxq_idx];
+> -		if (!rxq)
+> -			continue;
+> +	if (apc->rxqs) {
+>  
+> -		mana_destroy_rxq(apc, rxq, true);
+> -		apc->rxqs[rxq_idx] = NULL;
+> +		for (rxq_idx = 0; rxq_idx < apc->num_queues; rxq_idx++) {
+> +			rxq = apc->rxqs[rxq_idx];
+> +			if (!rxq)
+> +				continue;
+> +
+> +			mana_destroy_rxq(apc, rxq, true);
+> +			apc->rxqs[rxq_idx] = NULL;
+> +		}
+>  	}
 
-https://lore.kernel.org/all/20260519224911.GP7702@ziepe.ca/
+If the teardown path frees apc->rxqs and sets it to NULL on attach failure,
+how does the interface recover if the user subsequently brings it back up?
 
-Jason
+When mana_open() is invoked, it directly calls mana_alloc_queues(). Inside
+mana_alloc_queues() -> mana_add_rx_queues(), the code does:
+
+    apc->rxqs[i] = rxq;
+
+If apc->rxqs was left as NULL during the teardown, will this cause a NULL
+pointer dereference on the next interface bring-up?
+
+[ ... ]
+> @@ -3287,33 +3294,38 @@ static int mana_dealloc_queues(struct net_device *ndev)
+>  	 * number of queues.
+>  	 */
+>  
+> -	for (i = 0; i < apc->num_queues; i++) {
+> -		txq = &apc->tx_qp[i].txq;
+> -		tsleep = 1000;
+> -		while (atomic_read(&txq->pending_sends) > 0 &&
+> -		       time_before(jiffies, timeout)) {
+> -			usleep_range(tsleep, tsleep + 1000);
+> -			tsleep <<= 1;
+> -		}
+> -		if (atomic_read(&txq->pending_sends)) {
+> -			err = pcie_flr(to_pci_dev(gd->gdma_context->dev));
+> -			if (err) {
+> -				netdev_err(ndev, "flr failed %d with %d pkts pending in txq %u\n",
+> -					   err, atomic_read(&txq->pending_sends),
+> -					   txq->gdma_txq_id);
+> +	if (apc->tx_qp) {
+
+In the error path where queue creation fails partway through, will
+mana_destroy_txq() be called?
+
+If mana_destroy_txq() unconditionally iterates over all apc->num_queues:
+
+    for (i = 0; i < apc->num_queues; i++) {
+        ...
+        mana_destroy_wq_obj(apc, GDMA_SQ, apc->tx_qp[i].tx_object);
+        ...
+
+Will it pass 0 or INVALID_MANA_HANDLE to mana_destroy_wq_obj() for queues
+that were never fully initialized?
+
+Does mana_destroy_wq_obj() send a MANA_DESTROY_WQ_OBJ command to the hardware
+with these uninitialized handles, and could handle 0 corrupt the firmware
+state?
+
+> +		for (i = 0; i < apc->num_queues; i++) {
+> +			txq = &apc->tx_qp[i].txq;
+> +			tsleep = 1000;
+> +			while (atomic_read(&txq->pending_sends) > 0 &&
+> +			       time_before(jiffies, timeout)) {
+> +				usleep_range(tsleep, tsleep + 1000);
+> +				tsleep <<= 1;
+> +			}
+> +			if (atomic_read(&txq->pending_sends)) {
+> +				err =
+> +				    pcie_flr(to_pci_dev(gd->gdma_context->dev));
+
+If pcie_flr() is triggered here, the PCI Function Level Reset wipes the
+internal GDMA state.
+
+Further down in this function, mana_disable_vport_rx(), mana_fence_rqs(),
+and mana_destroy_vport() are called. Will these functions attempt to send
+commands to the now-destroyed GDMA admin queue via mana_send_request() and
+wait for completions?
+
+Could this lead to cascading timeouts since the hardware was just reset and
+cannot process admin commands?
+
+> +				if (err) {
+> +					netdev_err(ndev, "flr failed %d with %d pkts pending in txq %u\n",
+> +						   err,
+> +					    atomic_read(&txq->pending_sends),
+> +					    txq->gdma_txq_id);
+> +				}
+> +				break;
+>  			}
+> -			break;
+>  		}
+-- 
+pw-bot: cr
 
