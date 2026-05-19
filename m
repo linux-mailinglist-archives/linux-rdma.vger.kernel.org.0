@@ -1,131 +1,161 @@
-Return-Path: <linux-rdma+bounces-20969-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20970-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mCWUHJx2DGqihwUAu9opvQ
-	(envelope-from <linux-rdma+bounces-20969-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 16:41:32 +0200
+	id CGBzJHd2DGqihwUAu9opvQ
+	(envelope-from <linux-rdma+bounces-20970-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 16:40:55 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE775580B59
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 16:41:31 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31662580B15
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 16:40:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E19DB302865E
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 14:37:11 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 12B573012B29
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 14:40:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBAC13ED3CC;
-	Tue, 19 May 2026 14:37:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CA524028E4;
+	Tue, 19 May 2026 14:40:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cg/WX+0q"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="XIsKF+5K"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE18A33BBAF;
-	Tue, 19 May 2026 14:37:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94068192D97
+	for <linux-rdma@vger.kernel.org>; Tue, 19 May 2026 14:40:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779201430; cv=none; b=uouh/Qlf1H0EhK/4yNYWUfyY/k0x5c28wiXTPXDvnERFpvS52hJWsciGthuVE7UqZAem94mh/8bp1w4HGm6e6qoxwHmyXy52i27WVmUCuAHgzrgBBv2VKH7H65ot4VMYDA3GWLI1Evz/5QgXUTnjuqUf2OV5UMtzI9hJOOsn7/U=
+	t=1779201652; cv=none; b=U+PtTh9vgOhwoeB30GIEjKvMfWDYk9HajV6XUYVUazb0f3/8o/XoELxUCaw2HFrLgZ3juB6tK+P8w2FWeJ6L7FbmRnjzIpW4BJWdKe1nV81mnQ8NuR+QzIAkN3o+YvgUAadV3Jp/lsZewwqEfdR2I4HrbPbdTnYwaxOzQ3pmIjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779201430; c=relaxed/simple;
-	bh=+a2mLdBcsDsGU+5BGxIWppLWszl9Od7wqmJ0aNKiRJw=;
+	s=arc-20240116; t=1779201652; c=relaxed/simple;
+	bh=Pf48qR6Oir6UXrN9S+EE387hMvS/JCg8jtf4H1qGzh4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D/gLHA81Jmq9z6MZnKD26jih7kH+8oKZY/q9P/Htk+KcCWtWZmD/Mwzh32kXdLA6zTsQ9+h1EqUmyN8EeGw2zZUOhwCp+UpHXXnCBwdlD0sfR82YpGSc/ufkIpIe3uV9TE2DemM8BIU1u/iVtj0uGtx4x2eGjq0UwAGq9fDMgtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cg/WX+0q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C493DC2BCB3;
-	Tue, 19 May 2026 14:37:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1779201430;
-	bh=+a2mLdBcsDsGU+5BGxIWppLWszl9Od7wqmJ0aNKiRJw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Cg/WX+0qLWt63pPbkt2cfcw3AIzRrO06o8o9d85fML38Pdxdw0/9KFC/l+/o4TpCn
-	 C4Msv/nAseZVQNiI36nDHzcjWUXFGroxS6uE1OopMmZh6xfYHlNizSfHYxmI96gL6/
-	 UxxCu4i8s7Z6Xd8wiYd9l0mT9yzKMaLAgpxxwdhyPU1CN+8XMY9E1prY9C6i1SvagB
-	 quWE9mzHgyWNG/LNlRC0jPLCIIaqRvO8RUA7dGtFd1sUZoc1nb8h53zWCia1AYYSlG
-	 W2W6S3mnlWN9SoOIVCeuXAXBdY5ggqq5GDBUkc1si0fj0VeDVmQVAfbO6YumkkhGAZ
-	 pR/mnD6hCdn+A==
-Date: Tue, 19 May 2026 17:37:04 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Max Makarov <makarov@volta.cloud>
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org, saeedm@nvidia.com,
-	tariqt@nvidia.com, mbloch@nvidia.com
-Subject: Re: [QUESTION] mlx5: format_select_dw_8_6_ext capability on
- ConnectX-7
-Message-ID: <20260519143704.GY33515@unreal>
-References: <177912266235.29998.14244693862353385829@volta.cloud>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TUYUwZhB5u6sfnU7jOB0L5ImFDxBMS8X5kZKAi1e+OPwjAOmPeWNQyTS2ZUJDVjash6Eb9fvJvJpnb/DIYpD5yXDKqjo8XLYVDjfwWbBhJ/wbAHZ4knyRe43brwgwFlQBxlUF2p48/aNiPf0ij3wmcuvbweBHWGKsP0KggnedPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=XIsKF+5K; arc=none smtp.client-ip=209.85.219.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-8acb09ddbf6so70526736d6.2
+        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2026 07:40:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1779201650; x=1779806450; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pf48qR6Oir6UXrN9S+EE387hMvS/JCg8jtf4H1qGzh4=;
+        b=XIsKF+5KDOjqfN012VUCVJ4+AzTd6nboF04oLNU6qbI6xfQ9K8GL+eFQv2u7kzhQi4
+         h5E1LbV+WI2La29uyKT0K5lHvCLonO74NxYpWJn+CZ9xoem123/fxl/YD8VHrexUMOH+
+         P5A2DJMXIMJsqNvc+js/Pnu5nvBxqpf030NUM+BPGbQC2bi+mSHrgETgWINZ9sFr9Wd5
+         HSyLHY0fWtRI7cfoIXHLawb+p2vlQ4QU7+8AZDBp9MiQsP1pMRuKh1BTOZmohQUrean2
+         0gKAcBAfAZwFN85ibd2j2ulkSlhojkz6Bi981yt1AaBT0uUt5I8jZl2g+SU4vR2tp6I8
+         2Drw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779201650; x=1779806450;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Pf48qR6Oir6UXrN9S+EE387hMvS/JCg8jtf4H1qGzh4=;
+        b=qRjcIXACq79q19rl7bl5nCqLAedot8KrKZf5VTUeZX1+dQJisFeAx0ZiZZIflG8axK
+         wXiGZLbNfMKAnsuyWe13C/NV4u9dQi3xBlXQGviVswStF5vyw3ELyMMjzkBvSNv3jWAd
+         zx8odUw6Rc/Qk+XdrzilrXMH2NElCpTipvpyxNU5SLLYyxlKgygFmoGHouhH7T8MoSOE
+         97+uqLEMx8JzTAtdVH8+jraUeIbnAnPxcyfgPp29yx8XXsQY7lpv3nzHQhOV9esoFuw4
+         U6nH/us/pJ0sayw5DXSXPseLzMPuEhfnMxRb9lof45D1mQocd6JLO2JN1ve9ZoKr0gCI
+         mY6A==
+X-Forwarded-Encrypted: i=1; AFNElJ/MavcpHTnveEmnPQ/qsqKQ6xJSYP4mEx43cv4Eo4xaOHXomcRKAQeRbVgjZ/9jmRmAFoQzL6LY+NWf@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyz1p0Dqcji+beKPsL40JDFyPxbaGbmOSuKevdjp8gkOEpo+7tm
+	Z1wua6kFkAZAPRk65YQubiqaONKB6hrkqn0HxvgBTJIVnH/aZicn9bsUqDY2mdk5KIE=
+X-Gm-Gg: Acq92OHsfoKRMjz1uPP1zeXSDmzHaEeRPPUW+xFIs78mm/ATIkTnjYpOdzDYNEhkiwV
+	i6uVSZVia/DJxr75bG8AaflbsL6CESY7CMjaW1/YM+t80aw7lsBKZIOyfNbfFK+uhFVeNgTsdPn
+	GJYj//sBZn5b79B2EYhXft7saacOk89UYg8ppXSxXN5bvOFZRbcWWU7Udo3cg//VXJWbFgy0rwv
+	T4U7ozA58MRhcIdOj4CE6jX2KHWmyTsDFWAId2KyZrcnkIDlFXJynh3OER1uyHFFQ+iyVk4qP86
+	PXaRB6ih2BYViIxgtUz9ZpzS3RmQJUTO7T2w67Vr86+G8zKJ6VaAaLqyRK0XCz2F8Vsgq6GWH4k
+	FNT1HKrQwsYrgEjbuNvz2aQCwKLuxR+/GAG7u3tnvi7MaDBWC+8kFCW9zsE7tEv2n1ulnaQteJg
+	taNsbwN96h74/bcJd06gyNKAzOQct1CIf0z7RxplNxRaOjhTVDibyYsF9kkVx8CJCNRAlPxdExA
+	Omb4w==
+X-Received: by 2002:a05:6214:484a:b0:8b6:7f3f:5286 with SMTP id 6a1803df08f44-8ca0f646ef4mr276250086d6.20.1779201650583;
+        Tue, 19 May 2026 07:40:50 -0700 (PDT)
+Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8ca361bcb15sm97839266d6.47.2026.05.19.07.40.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 May 2026 07:40:50 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1wPLcn-0000000F8Ky-2K8T;
+	Tue, 19 May 2026 11:40:49 -0300
+Date: Tue, 19 May 2026 11:40:49 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+Cc: leon@kernel.org, linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
+	kalesh-anakkur.purayil@broadcom.com
+Subject: Re: [PATCH rdma-next v6 7/9] RDMA/bnxt_re: Enhance dpi lifecycle
+ logic in doorbell uapis
+Message-ID: <20260519144049.GF7702@ziepe.ca>
+References: <20260518153721.183749-1-sriharsha.basavapatna@broadcom.com>
+ <20260518153721.183749-8-sriharsha.basavapatna@broadcom.com>
+ <CAHHeUGWK_2RNG=CaHTnNh2JeAXa9mcTam6p_7Qp6eG+6Nip+_w@mail.gmail.com>
+ <20260519124600.GX7702@ziepe.ca>
+ <CAHHeUGWpp8n1dHAu=MfYiLhntzK=PtvNyRBHhD0W9KkthEgYUw@mail.gmail.com>
+ <20260519132730.GZ7702@ziepe.ca>
+ <CAHHeUGUeQssyz2fsb_aOzgi=wu2KaCyRJHU7vBC=wk4XRbpgOQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <177912266235.29998.14244693862353385829@volta.cloud>
+In-Reply-To: <CAHHeUGUeQssyz2fsb_aOzgi=wu2KaCyRJHU7vBC=wk4XRbpgOQ@mail.gmail.com>
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-20970-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20969-lists,linux-rdma=lfdr.de];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[ziepe.ca];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[ziepe.ca:+];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	RCPT_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: DE775580B59
+	RCVD_COUNT_FIVE(0.00)[6];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ziepe.ca:mid,ziepe.ca:dkim]
+X-Rspamd-Queue-Id: 31662580B15
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, May 19, 2026 at 01:44:22AM +0900, Max Makarov wrote:
-> Hi,
-> 
-> Question about the cmd_hca_cap_2.format_select_dw_8_6_ext bit (introduced
-> into mlx5_ifc.h in v6.12-rc1).
-> 
-> On all three of our standalone ConnectX-7 SKUs (PSIDs MT_0000000838,
-> MT_0000000840, MT_0000000892, firmware 28.48.1000) this bit reads as 0 in
-> both GET_CUR and GET_MAX modes. The DPDK code at
-> drivers/net/mlx5/hws/mlx5dr_cmd.c reads it without any device-ID
-> conditional, so it appears to be exclusively firmware-controlled — yet
-> firmware reports 0 across all our CX-7 cards, including the latest
-> public release.
-> 
-> This blocks DOCA Flow CT pipe for IPv6 (which requires the 11-DW jumbo
-> STE format gated by this bit).
-> 
-> Two questions:
-> 
->   1. Is the kernel's filter that rejects SET_HCA_CAP for cap_class != 
->      MLX5_CAP_GENERAL intentional? If so, what's the rationale?
-> 
->   2. From the NVIDIA side: is this capability hardware-fused on standalone
->      CX-7 (BlueField-3 advertises it as 1), or could a future firmware
->      release enable it on CX-7?
+On Tue, May 19, 2026 at 07:29:08PM +0530, Sriharsha Basavapatna wrote:
+> "Does tying the hardware DPI slot lifecycle to the VMA lifecycle allow
+> userspace to exhaust the hardware DPI pool? If a process allocates a
+> DBR object, maps it via mmap(), and then immediately destroys the DBR
+> object, the uverbs object is freed (replenishing the process's general
+> RDMA object quota). Since the active VMA keeps the mmap entry alive,
+> bnxt_re_mmap_free() is not called, and the hardware DPI slot is
+> leaked. Could a user repeat this process to hoard hardware DPI slots
+> until the device's entire DPI table capacity is exhausted?"
 
-Please contact your NVIDIA support representative.
+Yes that's true, but nothing you can do about this without moving the
+lifecycle to the uobject, which we don't have infrastructure for.
 
-Thanks
+> Even without this change, the DBR_ALLOC() uverb allows a process to
+> allocate multiple DPIs (that are meant to be distributed across QPs).
+> We don't want to restrict it. Again here, the library properly handles
+> this by unmapping and destroying each DBR object.
 
-> 
-> Thanks,
-> Max Makarov
-> Volta Cloud
-> 
+Yes, but there is a cgroup limit on the number of uobjs a driver can
+create, so it can be technically limited.
+
+Jason
+
 
