@@ -1,381 +1,469 @@
-Return-Path: <linux-rdma+bounces-20989-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20990-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +KI4HeeVDGq/jQUAu9opvQ
-	(envelope-from <linux-rdma+bounces-20989-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 18:55:03 +0200
+	id SFWfCVeWDGp1jAUAu9opvQ
+	(envelope-from <linux-rdma+bounces-20990-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 18:56:55 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6325582B01
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 18:55:02 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD1D6582B62
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 18:56:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 895CE3019838
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 16:54:53 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 8BB1B3055952
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 16:56:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 063E4367B7A;
-	Tue, 19 May 2026 16:54:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E33014EA397;
+	Tue, 19 May 2026 16:56:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="TyKGqzhS"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="b7LR6Svc"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yx1-f103.google.com (mail-yx1-f103.google.com [74.125.224.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B9A1367B60
-	for <linux-rdma@vger.kernel.org>; Tue, 19 May 2026 16:54:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.103
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779209692; cv=none; b=YLI0MQCb9uBXALaschyS2KcBgCPvZThZufo/zEvaYtrWBMLb4lR3QYU5fOix4dhyunniOnj5DCX0n61syzzV59d6O9dA6phNslVapYEi4LgYRFgq2Vb8Y7bpXDq90zs6cGwPHaAgo+Naz/YFr6C5ZvKbfpK80tgJKy5mM3Sta9E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779209692; c=relaxed/simple;
-	bh=sdK7wAgwdAeacR76rSgu5hnakscrC6p/dsmspW5a5CA=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2C7F367B80
+	for <linux-rdma@vger.kernel.org>; Tue, 19 May 2026 16:56:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.153.30
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779209772; cv=fail; b=RYc25jZ+6JhEbLBU73VpHySPBwJYkxzUuAM2VO+YSz85cAgZcsnpTWkHtFiZD2EqrlR2lmGrJW3tXD7bf0qBnB5GJn5L5XKTRkwM0N/fv8JjtG+S5Ba+2DL8c2GNNM25t3v7FIwMKL9q5R/VfCoszfYUgG14GGIbn6ipjPIJbJA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779209772; c=relaxed/simple;
+	bh=/+rl+zGXxntfm2bGL1v8tsZRWvzSR5a1GeZPV80zZ2E=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=G1ymHldb6OL4c44zgnHjMSbNrskq6WsSIf42Rfdo8v7/Kd641598w7oyK5Jlvdzr/mOHrE1cuY4JdueiYqT/MmbiujWyuNdLCFXzDWzkD3WR29LMxSa6rZVHsemHm0CzMLMGjfCDMu+F0G9klWolaV9oovYTcUz/yxsGycHKCFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=TyKGqzhS; arc=none smtp.client-ip=74.125.224.103
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-yx1-f103.google.com with SMTP id 956f58d0204a3-651d6347a69so5276006d50.0
-        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2026 09:54:51 -0700 (PDT)
+	 To:Cc:Content-Type; b=FaJl+3It3AbERIs3060XWsiim8sDPdmspBfQ8J5jdFTtRENw/1MMSsrk0z/BNh/tfdDgDRVaPZeXs9rmCkYJGQqPZq5MbRrGdFJn1E8h2jS3bXZG+4GZHdOdN7eDkpQdYEJ2+w54eGkc6Ea55h1UeyXCyW6sKjCuy3fjSX7z9ck=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=b7LR6Svc; arc=fail smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 64JDZlKj2072118
+	for <linux-rdma@vger.kernel.org>; Tue, 19 May 2026 09:56:09 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
+	 bh=OJtNZW12z9Y05Vrht3lzMMxtJE0LDmlKnN/pERYf24w=; b=b7LR6SvcC44C
+	UpwxWr7TYF+7fb+Uzzk2ww5cNZ9ld6C00isxqo7ahUos4G4ySo1jKCXpB2Kvk9LE
+	Vc5ab3eqbVVbVgvRv/Cuqh3hqNMpNEkAx65HatqfUBopmFyDqeWWjnXqVkQofFA0
+	F3AEy+31DqwwxGy+ncXGfgAWxcKdSH3ur1f3lNyw317XY//cX7BiE396TU+WLM31
+	sCZ1a0LIOTRtK+anXD+bpch50n9pFuhxOKxtcXU15cZBamh0GVYLn8rF31dXg+9P
+	oFOXOzREYfHk76+VyzzBoRuHef62cW3P6Fh3M7cp3cF16N52lABpWD2/D27H4B7Q
+	C2nac3cq+g==
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4e8rvv9cdb-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <linux-rdma@vger.kernel.org>; Tue, 19 May 2026 09:56:08 -0700 (PDT)
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-439d6202259so7696368fac.1
+        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2026 09:56:08 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1779209768; cv=none;
+        d=google.com; s=arc-20240605;
+        b=FHi8xhZAN8BKDmSoSnEVUYjXKHiqFPaOS0emX/diveWZNK1q0S9WpAZeLHEOTx+BfB
+         7HsTzv1FIaB7IkUAqwPVF9xdVRGW1Lz59SGTGl50KdCb5+qnvxg9DNEGGeFOc0oWhHbn
+         WFFeiJdnHAA99BWxvJiEsNg31WqBIJd8RcpeaQ5JioGfGxTYll/IAVNkfCvWhXu5P9D2
+         n2Vi0iBIeRQubRPsBN7WpAvsDqK7ITcKgyS849qYSqnI8+WJ4EixHI/eQE9hSY3ZZdK3
+         iGOrhsVg0Wv29a2HRkRrjmXUstJX1NXoyF9XhVgZLdMbOXBBAKeffwmB8CyNNnN8AitF
+         2RSg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version;
+        bh=aJk9gSpAyyZLXyKE7r6q+vOPfRd8FFOsqzGXdkoLHG8=;
+        fh=uC9WWn0PwtKSaDIvAdRsi9s/fd9My139s6HwwC/vK2Y=;
+        b=G9BlChhLchbTM70u1crxOZVoBBh93DG8qVtC/w7jKEARIgiACb/HPTq/KEOohMhwam
+         1NstIom6TqtpIU+XcI4bG6EJ0oT3J2TFFTEvohBqiaBdbvAx9m6NpXXbAlzVrzPoSlHo
+         0F/Y9PAerDdsawanVlwOyzFiYCLYQi7UflxrqEHgcLi9FXsz8W/QKVzUNnGCzAyKflRy
+         72BGJ4GEhgp2r3NgL01BhF18pxre53nw0o+4jcOtN5/nca/9/K60lcyR08ghziqyIaY2
+         toGJyj/GJ0++Nds6cm160BZz4qvgBc0HtRnQxPZJZ82AyL8qX0eKHaeHfY7gtdJ87Mr6
+         rllg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779209690; x=1779814490;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NKrNB1uujdPHIe3xG74TIQkvjle2/XZm0csTPwhSGcI=;
-        b=ZGJOBHUrspOtHwSeHvkOfEqoez4f/hexIgTvBwHro8xzmIPjP746P23pUBgyRGpJgz
-         Uz5/T50goNreiC7cHJZ2Vc3pqdNyIhryumMjKgNdWXt3WsP9ty2HR1Nh76qcmtC7TfCO
-         nUncOSVZdMTLYd6yuTrdHBzZ3NAC7auewN2V80jAkegl9tH70PBIme0axa60tVpRfPuu
-         e7gtqpZmOfcEnlwoSEt9tIf43mkLobPLQjQOLDcMeDW2W1eKtO7kysk8XoDNq2o5lmK7
-         g8kndMrgKcLQSH6Cs+pnx2gkebYf4QsrnAWBcegGoHzWMG/R7TyAsCRiZhyyKuUzaEHW
-         HQOg==
-X-Gm-Message-State: AOJu0YygJ0KxmoWSbbs2m0BaliS4z3y8ir2QY3YE0IkQJC/AagiFTU7R
-	qNQeggL/eeZhj8Yz3r8U3RXaIcT104aBookXinNLI3BHGNfUBL40yDzqobx6pVtpOfDNrAe4qTR
-	XVvDF9dP8dY/YP1c0QWVj/21lve9LGlNbEALRylhmxKaLazLfdwWhDdvOm4ef6FKEwmiP9Okviw
-	Fw+VUzRqX6lZoJdRK6f0vl6mzIbeIL31j5QDNuFw/CrUyLoQ5+/w2htscdC/1Reu3a7478UmYre
-	xxVuRU2mgATbmGPLwu4/rwG2F22ZLU=
-X-Gm-Gg: Acq92OGm32+m0lc/na/gr5qWE9O9HhQz82tt4xkpj6cBghG6Jb+StbQou0CHWrpaCSz
-	9FH+md6WqhUZoyfqe1XlsU8VCqHJjtRlRFd0yKlCH/O8cyBg2D4ZaxBkNHXLIZh9Uzcg5Ib0iAB
-	4i/DXmL2p4Rd/xkfPRnPewi80hCalVqbktMUW/Nc/PS9Gnl3bSVFw7HRaFDehykqJiScqpV7hqo
-	0QOzy8O5IskqIO4e8q7foeG3MEO1g/+tbve2bJYStgWfXk1wpd/kNXW95o4cobhfV9NkrXE92Q9
-	lo/GuN/MipgzO0y5W1A4IAgpSAN99C9xVMRfcVZikmgDcdzZAp/w67Gf0QagKLTXyCEjsnJkI2I
-	VT0tBKDyS8T3PLNLK29MB2oBwmRqjGQ6/tqDp2Kl94+znjqXbJpfvEVC920aVQCk/zjc9KBKDDO
-	p5PjYjrn5SVYJCwAhp8V4p1NYckn1CjUPz/+GM7aojfSd21Md1APYjfcU956rCtAXkJMzu
-X-Received: by 2002:a05:690e:140d:b0:650:1c35:6f3d with SMTP id 956f58d0204a3-65e0b05745bmr19572383d50.13.1779209690138;
-        Tue, 19 May 2026 09:54:50 -0700 (PDT)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-21.dlp.protect.broadcom.com. [144.49.247.21])
-        by smtp-relay.gmail.com with ESMTPS id 956f58d0204a3-65e0d892489sm1323068d50.8.2026.05.19.09.54.49
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 May 2026 09:54:50 -0700 (PDT)
-X-Relaying-Domain: broadcom.com
-X-CFilter-Loop: Reflected
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4900f69197fso11529015e9.2
-        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2026 09:54:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1779209688; x=1779814488; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NKrNB1uujdPHIe3xG74TIQkvjle2/XZm0csTPwhSGcI=;
-        b=TyKGqzhSNrXS0W6Go7VqAGsf7WnIc3MxIVgHm+Ave1Hoo9iqlBvsAFTCey9YDHSq14
-         V75bQDq4FHYNVRAN8ZZOq33RnXdQ7SIbZFlB64jaQ14TTUGCyXI85cn8J/654BkwMJVa
-         dJBYEFgVkr9B+lgpSdeyfyLWhPOdaP57nMtwc=
-X-Received: by 2002:a05:600c:5ca:b0:48f:e6de:1cb9 with SMTP id 5b1f17b1804b1-48fe6de1dd2mr197204345e9.19.1779209688534;
-        Tue, 19 May 2026 09:54:48 -0700 (PDT)
-X-Received: by 2002:a05:600c:5ca:b0:48f:e6de:1cb9 with SMTP id
- 5b1f17b1804b1-48fe6de1dd2mr197204105e9.19.1779209688105; Tue, 19 May 2026
- 09:54:48 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1779209768; x=1779814568;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=aJk9gSpAyyZLXyKE7r6q+vOPfRd8FFOsqzGXdkoLHG8=;
+        b=IRbXIG/GLpEsV/S2dNI16zd7U1U3BAzlrR4vxW7Mc+NMdxT2lUSQxbsAbiwlAIgoHG
+         PAxhAX6Jk1+4iwb1oaItw11Czs73ULboa/8wso3PRyncFBUU5uFWe/pYpXG972RN+2Ud
+         nlDFX5X9InUik11lvh3NtJzKfC7dvgHvjIjhbHqOtMCZ57PBvwEIX2rHCVNg9bzyB6K3
+         WUWkJ7E730QjPqK8dEWEKvieEOL5hQJK0qI1OLhNeOPwbHtg0hDXzTl5+W+AullcLnmY
+         04sEdBQ6LBgYx2YLsiE0f4Nz0XTQA1KqEbcBUzYLbebfEBwJ8mNctNwpRea0TWuUmCKn
+         k5fA==
+X-Forwarded-Encrypted: i=1; AFNElJ8fvunhIRm5L+2pki5rktCk1zK3Mels6HHOjY5A47ctvCLme/UK0cpuhZaZYB1kH/Yq6bTLZGKRaDbn@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywpnbx4gpoBUEhvSVOIYEh6HwgOGcTyPPi0G4YKOo/uBXEwe2eQ
+	Kl70Ny7VaH33whbCvL0hdqlJXCTa8Y0LRlOYkKbw1VvLbvsv7OvBU3Svzrk+9Y53LRyXjk0XKd/
+	8QmpTD3Va/2qxi+FMKdQvaAvLimE1mxKH6QYeLBHGWlA1bZowT8W2bCR2QLrsek0z1QqrNo3Xy4
+	4ZgqgO3UmkEgO/+8c+G4A6pcLkx/6gF6Ut7pzn
+X-Gm-Gg: Acq92OG2LvGvYsUga8f92+HBcsH9lNHWZn5p2GVhZwfxIcWIh5tsowPHbjxNquSwIfO
+	mucknWjHb/RZpixcROooHjYQpsEY11JCfNOP2m3S3UhzIkyQu1mCEGpdrwssukUVJ9/UFceSncF
+	vzGut7AoqVFAPqZIxom/+nyG0h5SRCrjexKiCHkjWmTdeugzbmLnHkK22ul3klN4naZRtODnUUB
+	JYWZso1+2X6LR0pE68=
+X-Received: by 2002:a05:6808:3a14:b0:45e:f0af:5148 with SMTP id 5614622812f47-482e572b473mr12912261b6e.30.1779209767836;
+        Tue, 19 May 2026 09:56:07 -0700 (PDT)
+X-Received: by 2002:a05:6808:3a14:b0:45e:f0af:5148 with SMTP id
+ 5614622812f47-482e572b473mr12912231b6e.30.1779209767200; Tue, 19 May 2026
+ 09:56:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260519150041.7251-1-sriharsha.basavapatna@broadcom.com>
-In-Reply-To: <20260519150041.7251-1-sriharsha.basavapatna@broadcom.com>
-From: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Date: Tue, 19 May 2026 22:24:36 +0530
-X-Gm-Features: AVHnY4I4arA5o7p7iw8RcnenHU6_8GIUpyCqohxrVrdmhh-TPnPyNF7eepxeQLc
-Message-ID: <CAHHeUGW4q6bVxHqk+YcTfLc7AEw1k4=m99m-7F1adMoeqgW7sQ@mail.gmail.com>
-Subject: Re: [PATCH rdma-next v7 0/9] RDMA/bnxt_re: Support QP uapi extensions
-To: leon@kernel.org, jgg@ziepe.ca
-Cc: linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com, 
-	selvin.xavier@broadcom.com, kalesh-anakkur.purayil@broadcom.com, 
-	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000007c84eb06522e8923"
-X-Spamd-Result: default: False [-4.26 / 15.00];
-	SIGNED_SMIME(-2.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[broadcom.com,reject];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	R_DKIM_ALLOW(-0.20)[broadcom.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+References: <20260512184755.4137227-1-zhipingz@meta.com> <20260512184755.4137227-2-zhipingz@meta.com>
+ <e6928a10-77b1-4fdf-8bc3-cd0154b4d4c5@huawei.com> <CAH3zFs2W5cB5Jhk8pm9K=O3-DyN3tHm7h5q9Hu26ekV=_gBEvw@mail.gmail.com>
+In-Reply-To: <CAH3zFs2W5cB5Jhk8pm9K=O3-DyN3tHm7h5q9Hu26ekV=_gBEvw@mail.gmail.com>
+From: Zhiping Zhang <zhipingz@meta.com>
+Date: Tue, 19 May 2026 09:55:56 -0700
+X-Gm-Features: AVHnY4II7Geh49KwlOFnaMEUnIiyWZTiYUlxcqTc_0jLUETaJ7j0xzUGRx7Zyn4
+Message-ID: <CAH3zFs0u2j-PdNjmtCuu8rZm5F0aVQYFo3NuSk0ptByUwrz2ng@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] vfio: add dma-buf get_tph callback and DMA_BUF_TPH feature
+To: fengchengwen <fengchengwen@huawei.com>
+Cc: Alex Williamson <alex@shazbot.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        kvm@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-pci@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Keith Busch <kbusch@kernel.org>,
+        Yochai Cohen <yochai@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTE5MDE2OSBTYWx0ZWRfXx5SXT+fGXEvE
+ PFSTCHagUc9vvmv2/y9IeBL6gyvUW/wIwJyypspp4DBev1LIvXWBFtVYu9gSTdG4ZBwl0HYSUfH
+ 12Y8hi+3CIpXNpl/F1aozp8J8afoiO8//y/R8jCoJ1h81oKcUYFPb/QA382C+IgTUuw9pVTFKZ7
+ phmUySLP93RS0P2lPy2FE5hM6w3rIppKvSpnJyNn+6t+uuMdL7MW3BKqevW3phd8G71LSF0ERgY
+ 8oN3jSwS5RSin3uUitxoDZrBGL4POvLwAm/6SYl6sEZtWg4Skihn0hoyn9NGQ6r1ZIhrvoaTp1v
+ gPnthbrpczqLhMoT0fYEszng96f6S0tXKrBgaPckaVsvkRTIfNXOsoQvYoVOGhb7WfLikITssUV
+ aClqxfY71rtrSgbXGh9r/tB0rIGpos530ThtK5vDL+iEERW8TkS7bZfeoZIA7YLxOV5YtTW+rmh
+ NDI7g8XGPgxCf1REfqw==
+X-Authority-Analysis: v=2.4 cv=KfHidwYD c=1 sm=1 tr=0 ts=6a0c9628 cx=c_pps
+ a=Z3eh007fzM5o9awBa1HkYQ==:117 a=IkcTkHD0fZMA:10 a=NGcC8JguVDcA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=7x6HtfJdh03M6CCDgxCd:22 a=wpfVPzegXHpEFt3DAXn9:22
+ a=VabnemYjAAAA:8 a=i0EeH86SAAAA:8 a=Tw_J5DVj0enz2h0_CHoA:9 a=QEXdDO2ut3YA:10
+ a=eBU8X_Hb5SQ8N-bgNfv4:22 a=gKebqoRLp9LExxC7YDUY:22
+X-Proofpoint-ORIG-GUID: m6S7ycbqiGjMevj36tc9rbOQcEDe5yS2
+X-Proofpoint-GUID: m6S7ycbqiGjMevj36tc9rbOQcEDe5yS2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-05-19_04,2026-05-18_01,2025-10-01_01
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[meta.com,reject];
+	R_DKIM_ALLOW(-0.20)[meta.com:s=s2048-2025-q2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20989-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	HAS_ATTACHMENT(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[sriharsha.basavapatna@broadcom.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[broadcom.com:+];
 	RCVD_COUNT_FIVE(0.00)[6];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,mail.gmail.com:mid,meta.com:email,meta.com:dkim,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo];
+	TAGGED_FROM(0.00)[bounces-20990-lists,linux-rdma=lfdr.de];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sashiko.dev:url,broadcom.com:email,broadcom.com:dkim]
-X-Rspamd-Queue-Id: E6325582B01
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[zhipingz@meta.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[meta.com:+]
+X-Rspamd-Queue-Id: DD1D6582B62
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
---0000000000007c84eb06522e8923
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Wed, May 13, 2026 at 11:08=E2=80=AFPM Zhiping Zhang <zhipingz@meta.com> =
+wrote:
+>
+> On Tue, May 12, 2026 at 6:33=E2=80=AFPM fengchengwen <fengchengwen@huawei=
+.com> wrote:
+> >
+> > > >
+> > Hi Zhiping,
+> >
+> > I have several suggestions:
+> >
+> > 1. In struct vfio_device_feature_dma_buf_tph, steering_tag is defined as
+> >    __u16, but PCIe TPH base steering tag is only 8-bit. We can use __u8
+> >    for steering_tag to shrink structure size and reduce reserved paddin=
+g.
+> >
+> > 2. The flags field seems unnecessary. We can use value 0 of steering_tag
+> >    or steering_tag_ext to indicate the corresponding ST entry is not
+> >    available, which simplifies the uAPI design.
+> >
+> > 3. All TPH metadata fields (st, ext st, ph) fit within 32 bits. We can
+> >    wrap them into a union with atomic_t, then use atomic read/write
+> >    instead of memory_lock plus smp_load_acquire/smp_store_release. This
+> >    makes lockless access cleaner and avoids ordering maintenance.
+> >
+> > For details, see the text.
+> >
+>
+>   Hi Feng,
+>
+>   Thanks for the detailed review.
+>
+>   1) Regular TPH uses an 8-bit ST, while Extended TPH uses a 16-bit ST, so
+>   so Extended TPH in Flit mode TLP can carry a 16-bit steering tag in
+> the request.
+>
+>   2) I still think I need an explicit validity indication rather than usi=
+ng
+>   `0` to mean "not present". ST and Extended ST can coexist with
+>   different values (including the value 0).
+>
+>    3) I also do not think packing the fields into `atomic_t` removes the =
+need
+>   for `memory_lock` here, because the write side still needs the lock for
+>   `priv->vdev` ownership/lifetime checks and the dma-buf list/cleanup
+>   paths. Open for discussion, though.
+>
+>   Thanks,
+>   Zhiping
+>
+>
+>
+>
+> > On 5/13/2026 2:47 AM, Zhiping Zhang wrote:
+> > > Add a dma-buf callback that returns raw TPH metadata from the exporter
+> > > so peer devices can reuse the steering tag and processing hint
+> > > associated with a VFIO-exported buffer. Add a new
+> > > VFIO_DEVICE_FEATURE_DMA_BUF_TPH ioctl that takes the fd from
+> > > VFIO_DEVICE_FEATURE_DMA_BUF along with the TPH values, validates the =
+fd
+> > > is a vfio-exported dma-buf belonging to this device, and stores the T=
+PH
+> > > metadata under memory_lock. The existing VFIO_DEVICE_FEATURE_DMA_BUF
+> > > uAPI is unchanged.
+> > >
+> > > 8-bit ST and 16-bit Extended ST are distinct namespaces in the PCIe T=
+PH
+> > > ST table (firmware reports them as separate fields with separate
+> > > validity bits in the ACPI _DSM ST table), so the uAPI carries both
+> > > values along with a flags field that indicates which value(s) are
+> > > valid for this device. The exporter selects the value that matches the
+> > > importer's requested width and returns -EOPNOTSUPP if that width is
+> > > not present, instead of substituting a value across namespaces.
+> > >
+> > > Publish the TPH fields under memory_lock and gate readers on a
+> > > release/acquire on the flags field; this lets get_tph() run lockless
+> > > and avoids inverting the memory_lock -> dma_resv_lock ordering set up
+> > > by vfio_pci_dma_buf_move(). Convert the @revoked bitfield to a plain =
+bool
+> > > so concurrent updates of @revoked (under dma_resv_lock) and the new T=
+PH
+> > > fields (under memory_lock) cannot race on a shared bitfield byte.
+> >
+> > The commit log includes many implementation details, why not remove or =
+simply it.
+> >
 
-On Tue, May 19, 2026 at 8:39=E2=80=AFPM Sriharsha Basavapatna
-<sriharsha.basavapatna@broadcom.com> wrote:
->
-> Hi,
->
-> This patchset adds QP uapi extensions to the bnxt_re driver.
-> This is required by applications that need to manage some of the
-> RDMA HW resources directly and to implement the datapath in the
-> application.
->
-> This series supports application allocated memory for QPs.
-> The application takes into account SQ/RQ ring sizing constraints
-> (extra entries, rounding up etc) while allocating this memory.
-> The driver should avoid duplicating this logic while creating
-> these QPs.
->
-> uAPI changes in this series:
-> - Patch#4: new uapi parameter 'sq_npsn' in bnxt_re_qp_req.
-> - Patch#8: new driver specific attribute 'DBR_HANDLE' for doorbell region=
-.
-> - Patch#9: new comp_mask 'FIXED_QUE_ATTR' in bnxt_re_qp_req.
->
-> Patch#1 Refactor bnxt_re_init_user_qp()
-> Patch#2 Update rq depth for app allocated QPs
-> Patch#3 Update sq depth for app allocated QPs
-> Patch#4 Update msn table size for app allocated QPs
-> Patch#5 Update hwq depth for app allocated QPs
-> Patch#6 Enhance dbr usecnt logic in doorbell uapis
-> Patch#7 Enhance dpi lifecycle logic in doorbell uapis
-> Patch#8 Support doorbells for app allocated QPs
-> Patch#9 Enable app allocated QPs
->
-> Thanks,
-> -Harsha
->
-> ******
->
-> Changes:
->
-> v7:
-> - Fixed an issue reported by Sashiko.
->   - Patch#7:
->     Restrict changes to DPI allocated by DBR_ALLOC(),
->     by using a boolean dpi_valid.
->
-> v6:
-> - Fixed issues reported by Sashiko AI.
-> - Added two new patches: #6 and #7.
-> - Patch#6: Support kref for DBR object (from v5).
-> - Patch#7: DPI lifecycle changes.
-> - Patch#8 (QP-DBR) requires these two patches.
-> - Patch#9:
->   - Commit msg updated: removed unused comp_mask.
->   - ureq->sq_npsn validation (from v5).
-> - Remaining issues are about lack of ureq->sq_slots validation.
->   - Existing code; will be fixed in a subsequent patch series.
->
-> v5:
-> - Fixed issues reported by Sashiko AI.
-> - Patch#1:
->   - No changes.
->   - Issues are about lack of ureq->sq_slots validation.
->   - Existing code; will be fixed in a subsequent patch series.
-> - Patch#2:
->   - Removed unused ureq param in bnxt_re_init_rq_attr().
-> - Patch#4:
->   - Issues are about lack of ureq->sq_npsn validation.
->   - Validation added in Patch#7 fixes these issues.
-> - Patch#5:
->   - Updated to utilize existing code for RQ hwq depth.
-> - Patch#6:
->   - Moved usecnt relase logic to after QP is destroyed in HW.
->   - Avoids race with concurrent dbr destroy.
->   - Updated usecnt from simple atomic to kref based counter.
->   - This handles implicit teardown of dbr.
->   - Added kfree() of dbr.
-> - Patch#7:
->   - Added validation of ureq->sq_npsn.
->   - Removed unused ureq comp_mask: BNXT_RE_QP_REQ_MASK_VAR_WQE_SQ_SLOTS.
->
-> v4:
-> - Rebased to latest for-next tree (Linux 7.1-rc1, commit: 254f49634ee1).
-> - Renamed QP req comp_mask: APP_ALLOCATED_QP_ENABLE -> FIXED_QUE_ATTR.
->
-> v3:
-> - Removed umem patch from the series, that is dependent on uverbs support=
-.
-> - Patch#7: Process DBR_HANDLE attr regardless of app_qp comp_mask.
->
-> v2:
-> - Rebased to umem_list uverbs patch series:
->   https://patchwork.kernel.org/project/linux-rdma/cover/20260325150048.16=
-8341-1-jiri@resnulli.us/
-> - Deleted Patch#9; create_qp_umem devop is not supported.
->
-> v6: https://lore.kernel.org/linux-rdma/20260518153721.183749-1-sriharsha.=
-basavapatna@broadcom.com/
-> v5: https://lore.kernel.org/linux-rdma/20260514162336.72644-1-sriharsha.b=
-asavapatna@broadcom.com/
-> v4: https://lore.kernel.org/linux-rdma/20260508085858.21060-1-sriharsha.b=
-asavapatna@broadcom.com/
-> v3: https://lore.kernel.org/linux-rdma/20260415054957.36745-1-sriharsha.b=
-asavapatna@broadcom.com/
-> v2: https://lore.kernel.org/linux-rdma/20260327091755.47754-1-sriharsha.b=
-asavapatna@broadcom.com/
-> v1: https://lore.kernel.org/linux-rdma/20260320135437.48716-1-sriharsha.b=
-asavapatna@broadcom.com/
->
-> ******
->
-> Sriharsha Basavapatna (9):
->   RDMA/bnxt_re: Refactor bnxt_re_init_user_qp()
->   RDMA/bnxt_re: Update rq depth for app allocated QPs
->   RDMA/bnxt_re: Update sq depth for app allocated QPs
->   RDMA/bnxt_re: Update msn table size for app allocated QPs
->   RDMA/bnxt_re: Update hwq depth for app allocated QPs
->   RDMA/bnxt_re: Enhance dbr usecnt logic in doorbell uapis
->   RDMA/bnxt_re: Enhance dpi lifecycle logic in doorbell uapis
->   RDMA/bnxt_re: Support doorbells for app allocated QPs
->   RDMA/bnxt_re: Enable app allocated QPs
->
->  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 273 +++++++++++++++--------
->  drivers/infiniband/hw/bnxt_re/ib_verbs.h |   6 +-
->  drivers/infiniband/hw/bnxt_re/uapi.c     |  49 +++-
->  include/uapi/rdma/bnxt_re-abi.h          |   7 +-
->  4 files changed, 242 insertions(+), 93 deletions(-)
->
-> --
-> 2.51.2.636.ga99f379adf
->
-Sashiko is reporting 'Failed', I'm not sure why.
-https://sashiko.dev/#/patchset/20260519150041.7251-1-sriharsha.basavapatna%=
-40broadcom.com
-Thanks,
--Harsha
+sure, will do!
 
---0000000000007c84eb06522e8923
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+> > >
+> > > Signed-off-by: Zhiping Zhang <zhipingz@meta.com>
+> > >
+> > > ---
+> > >  drivers/vfio/pci/vfio_pci_core.c   |   3 +
+> > >  drivers/vfio/pci/vfio_pci_dmabuf.c | 113 +++++++++++++++++++++++++++=
++-
+> > >  drivers/vfio/pci/vfio_pci_priv.h   |  11 +++
+> > >  include/linux/dma-buf.h            |  21 ++++++
+> > >  include/uapi/linux/vfio.h          |  35 +++++++++
+> > >  5 files changed, 182 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio=
+_pci_core.c
+> > > index 3f8d093aacf8..94aa6dd95701 100644
+> > > --- a/drivers/vfio/pci/vfio_pci_core.c
+> > > +++ b/drivers/vfio/pci/vfio_pci_core.c
+> > > @@ -1534,6 +1534,9 @@ int vfio_pci_core_ioctl_feature(struct vfio_dev=
+ice *device, u32 flags,
+> > >               return vfio_pci_core_feature_token(vdev, flags, arg, ar=
+gsz);
+> > >       case VFIO_DEVICE_FEATURE_DMA_BUF:
+> > >               return vfio_pci_core_feature_dma_buf(vdev, flags, arg, =
+argsz);
+> > > +     case VFIO_DEVICE_FEATURE_DMA_BUF_TPH:
+> > > +             return vfio_pci_core_feature_dma_buf_tph(vdev, flags, a=
+rg,
+> > > +                                                      argsz);
+> > >       default:
+> > >               return -ENOTTY;
+> > >       }
+> > > diff --git a/drivers/vfio/pci/vfio_pci_dmabuf.c b/drivers/vfio/pci/vf=
+io_pci_dmabuf.c
+> > > index f87fd32e4a01..28247602e359 100644
+> > > --- a/drivers/vfio/pci/vfio_pci_dmabuf.c
+> > > +++ b/drivers/vfio/pci/vfio_pci_dmabuf.c
+> > > @@ -19,7 +19,23 @@ struct vfio_pci_dma_buf {
+> > >       u32 nr_ranges;
+> > >       struct kref kref;
+> > >       struct completion comp;
+> > > -     u8 revoked : 1;
+> > > +     /*
+> > > +      * TPH metadata published by VFIO_DEVICE_FEATURE_DMA_BUF_TPH and
+> > > +      * consumed by the @get_tph dma-buf callback.
+> > > +      *
+> > > +      * @tph_flags is the publish/consume gate: writers populate
+> > > +      * @steering_tag, @steering_tag_ext and @ph first, then store
+> > > +      * @tph_flags with smp_store_release(); readers do
+> > > +      * smp_load_acquire(&tph_flags) before accessing the value fiel=
+ds.
+> > > +      * @tph_flags =3D=3D 0 means "TPH not set". Writers serialize v=
+ia
+> > > +      * vdev->memory_lock; readers are lockless to avoid AB-BA again=
+st
+> > > +      * the dma_resv_lock held by importers.
+> > > +      */
+> > > +     u32 tph_flags;
+> >
+> > As subsequent comments, can proceed without tph_flags
+> >
+> > > +     u16 steering_tag;
+> > > +     u16 steering_tag_ext;
+> > > +     u8 ph;
+> >
+> > struct dma_buf_tph {
+> >         union {
+> >                 atomic_t val;
+> >                 struct {
+> >                         u16 st_ext;
+> >                         u8 st;
+> >                         u8 ph;
+> >                 };
+> >         };
+> > };
+> > Set and get are done with atomic operation, no need for lock
+> >
+> > > +     bool revoked;
+> > >  };
+> > >
+> > >  static int vfio_pci_dma_buf_attach(struct dma_buf *dmabuf,
+> > > @@ -69,6 +85,35 @@ vfio_pci_dma_buf_map(struct dma_buf_attachment *at=
+tachment,
+> > >       return ret;
+> > >  }
+> > >
+> >
+> > ...
+> >
+> > >
+> > > +     /**
+> > > +      * @get_tph:
+> > > +      * @dmabuf: DMA buffer for which to retrieve TPH metadata
+> > > +      * @steering_tag: Returns the raw TPH steering tag for @st_width
+> > > +      * @ph: Returns the TPH processing hint (2-bit value)
+> > > +      * @st_width: Consumer's supported steering tag width in bits (=
+8 or 16)
+> > > +      *
+> > > +      * Return the TPH (TLP Processing Hints) metadata associated wi=
+th this
+> > > +      * DMA buffer for the requested steering-tag width. 8-bit ST an=
+d 16-bit
+> > > +      * Extended ST are distinct namespaces in the PCIe TPH ST table=
+, so the
+> > > +      * exporter must select the value that matches @st_width and mu=
+st not
+> > > +      * substitute one for the other.
+> > > +      *
+> > > +      * Return 0 on success, -EOPNOTSUPP if no metadata is available=
+ for the
+> > > +      * requested width, or -EINVAL if @st_width is not 8 or 16.
+> > > +      *
+> > > +      * This callback is optional.
+> > > +      */
+> > > +     int (*get_tph)(struct dma_buf *dmabuf, u16 *steering_tag, u8 *p=
+h,
+> > > +                    u8 st_width);
+> >
+> > how about rename steering_tag to st?
+> >
 
-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
-tJVewHuOmXgWQxNWV7Oiszu1d9xAcqyj65s1PrEIIaHnxEM3eTK+teecLEy8QymZjjDTrCHg4x36
-2AczdlQAIiq5TSAucGja5VP8g1zTnfL/RAxEZvLS471GABptArolXY2hMVHdVEYcTduZlu8aHARc
-phXveOB5/l3bPqpMVf2aFalv4ab733Aw6cPuQkbtwpMFifp9Y3s/0HGBfADomK4OeDTDJfuvCp8g
-a907E48SjOJBGkh6c6B3ace2XH+CyB7+WBsoK6hsrV5twAXSe7frgP4lN/4Cm2isQl3D7vXM3PBQ
-ddI2aZzmewTfbgZptt4KCUhZh+t7FGB6ZKppQ++Rx0zsGN1s71MtjJnhXvJyPs9UyL1n7KQPTEX/
-07kwIwdMjxC/hpbZmVq0mVccpMy7FYlTuiwFD+TEnhmxGDTVTJ267fcfrySVBHioA7vugeXaX3yL
-SqGQdCWnsz5LyCxWvcfI7zjiXJLwefechLp0LWEBIH5+0fJPB1lfiy1DUutGDJTh9WZHeXfVVFsf
-rSQ3y0VaTqBESMjYsJnFFYQJ9tZJScBluOYacW6gqPGC6EU+bNYC1wpngwVayaQQMIIGszCCBJug
-AwIBAgIMPiCpKhlPGjqoQ++SMA0GCSqGSIb3DQEBCwUAMFIxCzAJBgNVBAYTAkJFMRkwFwYDVQQK
-ExBHbG9iYWxTaWduIG52LXNhMSgwJgYDVQQDEx9HbG9iYWxTaWduIEdDQyBSNiBTTUlNRSBDQSAy
-MDIzMB4XDTI1MDYyMDEzNTQwNVoXDTI3MDYyMTEzNTQwNVowgfIxCzAJBgNVBAYTAlVTMRMwEQYD
-VQQIEwpDYWxpZm9ybmlhMREwDwYDVQQHEwhTYW4gSm9zZTEZMBcGA1UEYRMQTlRSVVMrREUtNjYx
-MDExNzEUMBIGA1UEBBMLQmFzYXZhcGF0bmExEjAQBgNVBCoTCVNyaWhhcnNoYTEWMBQGA1UEChMN
-QlJPQURDT00gSU5DLjErMCkGA1UEAwwic3JpaGFyc2hhLmJhc2F2YXBhdG5hQGJyb2FkY29tLmNv
-bTExMC8GCSqGSIb3DQEJARYic3JpaGFyc2hhLmJhc2F2YXBhdG5hQGJyb2FkY29tLmNvbTCCASIw
-DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKS3kXt4zVFK0i5F3y88WV5rV0rr2S3nOVTaCGMB
-o6Se8pIb2HJcdpQ4rMiJuIRSyG2XDWv6OB+66eM/6cD2oklFcdzpC4/eYOQFWJ/XM8+ms6HT7P5e
-uE7sY6CeUzLzHNjcRwVgZRWlELghY7DIW9fbMzRNDFsbxuIN/7eSofavP1q7PF3+DqhHZpmrVkDu
-vcEBTRZSn8NWZ0Xhy4a+Y3KN2W55hh6pWQWO0lt2TtpyaqYp95egJGqDUPtqydci+qrBzXbL05Q0
-gcK0NfqGJwLsEVqxHwzz/jRrzKBYKQEK4Bpau91oxVGLmxy1nQDiyI1121xyvsJBDctKH245XZkC
-AwEAAaOCAeYwggHiMA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMIGTBggrBgEFBQcBAQSB
-hjCBgzBGBggrBgEFBQcwAoY6aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3Nn
-Y2NyNnNtaW1lY2EyMDIzLmNydDA5BggrBgEFBQcwAYYtaHR0cDovL29jc3AuZ2xvYmFsc2lnbi5j
-b20vZ3NnY2NyNnNtaW1lY2EyMDIzMGUGA1UdIAReMFwwCQYHZ4EMAQUDAzALBgkrBgEEAaAyASgw
-QgYKKwYBBAGgMgoDAjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9y
-ZXBvc2l0b3J5LzBBBgNVHR8EOjA4MDagNKAyhjBodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dz
-Z2NjcjZzbWltZWNhMjAyMy5jcmwwLQYDVR0RBCYwJIEic3JpaGFyc2hhLmJhc2F2YXBhdG5hQGJy
-b2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBQAKTaeXHq6D68tUC3b
-oCOFGLCgkjAdBgNVHQ4EFgQU9Dwqof/Zp1ZdK6zi7XdRGdBWQt0wDQYJKoZIhvcNAQELBQADggIB
-AKzx/6ognUMhNv+rh7iQOeHdGA7WMDixk+zrD7TZL6O5DPqXfFqaTLpswyruTymA3AVxZkMJyF6D
-zOAsRfU23BjVlgC95zl1glr7DorZW7B/CQDwbLHlkFy92Oa3E+gBzwdiDMjnq6tOW5p83zoVqiV4
-qm4OwC9JILEkslV4uZVXHPm5cZoOQURTECE2BN34Qhg5qD3EKYqOTeMVRed1qQiIPqQv1b4xjPVS
-qBwNPl7/4TJGiZGnRB7FsNnNUQRJONnEFifM3KGqjbqA4F8BhLXCYjqtBxxCGA5506StNfsjT8UU
-28E6lcuJXC4hQXau+xXQ5GWqS4ecWwm22FAVy/i8FJVfXPTJnZeixmqaadbIU3fOJs5+XfyNkU2T
-mlCafSr7KgV570M6tITSyminW/7rc8hdznGYypCNa+45JYJTaK4x1+Ejptaxc7TCS12B1zQNCxa7
-AHX5PZra3SpDb7g1p1i1Ax0JVJTkThiCSNDbiauVn7xIJpf+H8HC6O2ddGmtKUxe6NseFnSGJsi6
-7lO/cU+TpduV7w3weUy+nHhp+GsbClfvAGhFAs/GkyONExCwwIEVlFp9Mj5JLAgB+ceMbojBIoaO
-d5rOzdIII5FDwKAAqyjHuniYLrP0xIH4L5kWOAy+LudP4PSze7uAxTiCiSJg5AaNBTa5NuwTnSX6
-MYICVzCCAlMCAQEwYjBSMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEo
-MCYGA1UEAxMfR2xvYmFsU2lnbiBHQ0MgUjYgU01JTUUgQ0EgMjAyMwIMPiCpKhlPGjqoQ++SMA0G
-CWCGSAFlAwQCAQUAoIHHMC8GCSqGSIb3DQEJBDEiBCCLfdn2z0KrYc75nw8ENKYbUgPwT1lB543a
-vdtJzR8KUzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yNjA1MTkx
-NjU0NDhaMFwGCSqGSIb3DQEJDzFPME0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglghkgB
-ZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEF
-AASCAQB0H52kw/RH5mYsf3ArDzc561QqSL2A4dNuNA5il9xpds7nl/VcAVmuMGExBhh3QbmVo5+m
-4CNf+lWxXySui7IS7OLi2h0b17K5gDPP7CbHDvGWKK4brkAoUND7rKlZIL0owQx0eckcH8yvo3gT
-t9xtP1wI+TeQ/NmZ73zmhNV/e4DNkw2FbrO0Bshd78qOK3x94bPMZzecGYNWmcTlc+SUk+nPlxK4
-0hdCxrp30aaeo8zVCl8QAVeLGmZrPh8w3PfLv7VX86SjhfSUacexQEjiMEb3m6iCaX0ruSdVrgc8
-jYbx3NCZ7G2nFqiFPMBZLGYyir44akzrvkotIyb5ZpBr
---0000000000007c84eb06522e8923--
+I'd like to keep "steering_tag" in this signature if you don't mind.
+The verbose name keeps the signature self-documenting.
+
+> > > +
+> > >       /**
+> > >        * @map_dma_buf:
+> > >        *
+> > > diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+> > > index 5de618a3a5ee..53b2bbd9fc1e 100644
+> > > --- a/include/uapi/linux/vfio.h
+> > > +++ b/include/uapi/linux/vfio.h
+> > > @@ -1534,6 +1534,41 @@ struct vfio_device_feature_dma_buf {
+> > >   */
+> > >  #define VFIO_DEVICE_FEATURE_MIG_PRECOPY_INFOv2  12
+> > >
+> > > +/**
+> > > + * Upon VFIO_DEVICE_FEATURE_SET associate TPH (TLP Processing Hints)=
+ metadata
+> > > + * with a vfio-exported dma-buf. The dma-buf must have been created =
+by
+> > > + * VFIO_DEVICE_FEATURE_DMA_BUF on this device.
+> > > + *
+> > > + * dmabuf_fd is the file descriptor returned by VFIO_DEVICE_FEATURE_=
+DMA_BUF.
+> > > + *
+> > > + * 8-bit ST (steering_tag) and 16-bit Extended ST (steering_tag_ext)=
+ are
+> > > + * distinct namespaces in the PCIe TPH ST table; userspace should po=
+pulate
+> > > + * the value(s) it has from the firmware ST table for this device an=
+d set
+> > > + * the matching VFIO_DMA_BUF_TPH_ST / VFIO_DMA_BUF_TPH_ST_EXT bit in=
+ @flags.
+> > > + * An importer requests a specific width and receives the matching v=
+alue;
+> > > + * if the requested width is not present, the importer is told TPH is
+> > > + * unavailable for this dma-buf.
+> > > + *
+> > > + * ph is the 2-bit TLP Processing Hint and must be in the range [0, =
+3].
+> > > + *
+> > > + * The user must set TPH on the dma-buf before the importer consumes=
+ it.
+> > > + *
+> > > + * Return: 0 on success, -errno on failure.
+> >
+> > -1 and errno is set on failure.
+> >
+
+This documents the kernel-side return value;
+the -1 / errno form is what the libc ioctl(2) wrapper presents to userspace.
+
+> > > + */
+> > > +#define VFIO_DEVICE_FEATURE_DMA_BUF_TPH 13
+> > > +
+> > > +#define VFIO_DMA_BUF_TPH_ST          (1 << 0)  /* steering_tag valid=
+ */
+> > > +#define VFIO_DMA_BUF_TPH_ST_EXT              (1 << 1)  /* steering_t=
+ag_ext valid */
+> >
+> > It could be represented by judge whether steering_tag/ext =3D=3D 0
+> >
+> > > +
+> > > +struct vfio_device_feature_dma_buf_tph {
+> > > +     __s32   dmabuf_fd;
+> > > +     __u32   flags;
+> > > +     __u16   steering_tag;
+> > > +     __u16   steering_tag_ext;
+> > > +     __u8    ph;
+> > > +     __u8    reserved[3];
+> >
+> > How about:
+> > struct vfio_device_feature_dma_buf_tph {
+> >         __s32   dmabuf_fd;
+> >         __u16   st_ext;
+> >         __u8    st;
+> >         __u8    ph;
+> > }
+> > If st_ext is not zero means it valid, and also with st field.
+> >
+> > Thanks
+> >
+> > > +};
+> > > +
+> > >  /* -------- API for Type1 VFIO IOMMU -------- */
+> > >
+> > >  /**
+> >
 
