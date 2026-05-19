@@ -1,282 +1,241 @@
-Return-Path: <linux-rdma+bounces-20986-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20987-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4KoqO4iKDGo1iwUAu9opvQ
-	(envelope-from <linux-rdma+bounces-20986-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 18:06:32 +0200
+	id uMNqBauKDGo1iwUAu9opvQ
+	(envelope-from <linux-rdma+bounces-20987-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 18:07:07 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58BDA581F1B
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 18:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 684C8581F29
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 18:07:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 70FAA318BB02
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 15:32:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 396223157925
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 15:51:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E20A02594B9;
-	Tue, 19 May 2026 15:32:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79276371D10;
+	Tue, 19 May 2026 15:50:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="LhwxbXK1"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="O80NOxY1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from CO1PR03CU002.outbound.protection.outlook.com (mail-westus2azon11010027.outbound.protection.outlook.com [52.101.46.27])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BBB21D5170
-	for <linux-rdma@vger.kernel.org>; Tue, 19 May 2026 15:32:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779204761; cv=none; b=GArAVH4pHBYJ/JnrufcajYo7ALsr6iCtp5ZJ28qROB4ywUdqTwoXXRnQghEF6cRxVlwGk629Vxqfz7CxRg6EMm+PbH6Pnqk1Xkw4GlJ5fysksKy96UnxrBI6zMIFIXJPLcwhNMDyzwjBArqr74Oxpi8KiRbqQWIJ/LVBh1EDIkI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779204761; c=relaxed/simple;
-	bh=Ax590YbqXYIAmnaGMKl7FSUvi1v38AH/AztU4zuuBM8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LTXO/a/c84Ext/+i7OJ6hd6UFLKC0mouPltE5p9C/GSRtOz8hhT/jQs96N4ZMShHzgcLKEG+gfDKUfxwuiA1+pMRZDvG3kAgP0UrqwxN9E4up9OqV1nIcanYvH/hDiRpq3JfkHPWA41fm+234meaqrA+spQdGUoLqS1oga60CBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=LhwxbXK1; arc=none smtp.client-ip=209.85.167.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-479d5ff103aso1981882b6e.0
-        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2026 08:32:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1779204759; x=1779809559; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OMgg3DcMPG/CkFUdDvWT7P0SoXNm1HcPg5ezYHCRXcs=;
-        b=LhwxbXK19yCgd8YZ23YM3Z/oBn4nXz/TJLcA+m5W65YjBwhi3iPoEmacQvginZh4+M
-         4bKYxPpxEeiipCJOiUmlGDwFAmt1526G2zAABZ19nR9DnrVowNdEQ59LZEEmrq7fkSSK
-         g7SSotT14tPQnTP3PCebckEsgtmfGuAFkqGqysgkSp7oUi5KUnkWc+Q/AOynwTRP7o8x
-         NeLomN4euX3EB8EvIt/HTh4jSOjRLKMvoCN+knzS3C/UYDJnfVHDEWFL8KQJdWLCERSQ
-         mCHpxCh7gHwcZ2jYUuL1gTBx9kS+UUJh7z1qjr/3A/4DPUUPKZiSMIPoQpIyBwaoNFib
-         H/Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779204759; x=1779809559;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OMgg3DcMPG/CkFUdDvWT7P0SoXNm1HcPg5ezYHCRXcs=;
-        b=j1iQIrdsCZNm3BmOovYLlltA3MfFxStkS6xFnRpKrkgxUSXDnL2/EkUCiVh+H4hulP
-         diTI+Iha31JHHOtMdaMQb8R7v1FMEv0aBeK6XJ7nSEGnonSXOWJw012QaqhLfv9EpnPx
-         HZUDGOuIbDqbEGanfUWOesYSES81C1wcC4AgPxm4rKK2X3esg7wvhRxqLtyC9JmBqy7C
-         7M/8+JjG+OOfM2ey/aqoI+iHnnFY0KrOb2NDIqJZh4hOotcXqCwlUJkTAw63vTUSe0Y/
-         o2CkZbwhypU9HCqnpoBLasEwQ8ACxUX4DxCtuUxQf4hnqiOXMCj2NdZvfXHdPEyIjt8J
-         k7yA==
-X-Forwarded-Encrypted: i=1; AFNElJ9nSNi9GPj2M/2ZMA7SoML/iTjiROkqR8SJOjIsp1q4W7zNkwEezKIidgoC5UQqFfgAKLLUzU6Srd2h@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx4zmt6YO6s8GYtzU1GbG3MqVsmXdWaXiJ/eSjndCNrz6vBDAiN
-	sIu4lBDsEEOtvzGpScuKvJOwLzGGSilf+KFNPCXNpa0F7R7b6ylvA+9Kqz6ZfyxBe18=
-X-Gm-Gg: Acq92OEtQkVYvR/HW4fzIg53OzBScJb93ZOQOMaRh+VmcYmqn5SnZ8sJoOQz/tYLjdh
-	8MOlqWucxlnC3U1N/FL9GD5/M1tUBzhFmyuWP6Zb2KPKnbPa6Y2CJK7etowBLhH7x4yoSIKx4iY
-	PNmXeif4l82ukXk2HTj71+x32dIxagKrOmO9bL9/GtuSppdO3L1t2DhnoP0anS9Q4aR+fQB+D7Q
-	30aEjNJSTf5A6EToahWvq1t0JKIMHJk6VNfz71WoFWCpAzZkMlDXU+x7lPJInt1WWPHO9PEDQuv
-	dTk6/+xOBbax1LBB51lM932iMynVtPhh4zR/Gpu7caVxIl7siBOqTGSix6Iqw0vuD2bAdVzSbu2
-	wadItR0qHPMf4K8WsbzLkGkQvfCa1O3GZBmkR8NXNmGZvZksXHsfmR32uxNqE1LkcGq70jHbVpz
-	xeG8e+19RWSe5ormAgiyw717fpUSFpTw8YX2tVU9kDUnAuuA3X0DwdXOH+xe4o5cuPLsRUYhyKd
-	+n25g==
-X-Received: by 2002:a05:6809:251:10b0:484:c3b5:9b11 with SMTP id 5614622812f47-484c3b5a183mr4889324b6e.36.1779204758974;
-        Tue, 19 May 2026 08:32:38 -0700 (PDT)
-Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5164585cf66sm170094531cf.30.2026.05.19.08.32.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2026 08:32:38 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1wPMQv-0000000FCii-39HS;
-	Tue, 19 May 2026 12:32:37 -0300
-Date: Tue, 19 May 2026 12:32:37 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
-	Mark Bloch <mbloch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH mlx5-next] net/mlx5: Consolidate UAR index to PFN helpers
-Message-ID: <20260519153237.GN7702@ziepe.ca>
-References: <20260519-mlx5-uar-index-v1-1-1027ae724bff@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADA7E33A9FE;
+	Tue, 19 May 2026 15:50:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.46.27
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779205836; cv=fail; b=OVxkph5jJObKrJBal3Uzwgq0HLbEvnalLPuM8mT5Ch5wfwJsc/yMq2fA8WJIdN+7ahJeip/76NB0Cs9BC8f1LUgK20vrL3PJRjYe6gzrq4eRtIvFRIO2kiWCXcxzNYjGum8+cCGwhoJQGsgZch6Aab/DVgiqm9a7pcBLMtwrWUQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779205836; c=relaxed/simple;
+	bh=iWIHShihCdiR+VDMPZe86G60MP0QhKRgopNFQqlSzxw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=T63wKSW1ofSNVD84g+Jr1ngwi1/ZRwpUndc/ytkibd4CTmKaRij4mSdNeVDM+lSrEYQAbBEFZklsl/B6Cv346Y1yTNqF63CnmUKLB+5ZtY8/ceG1vQ7yKSL6e3f9NgvU7kfUj4CPMD6iZCiZMc+sRtXMxz0tGS8yzLz9gjzAu2U=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=O80NOxY1; arc=fail smtp.client-ip=52.101.46.27
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=W4FNnDgdrgGUqiTJoEdQA5XF5QJD1GZShsDlIWyPqqxcDb3bfBfdgppvoxl324g0b0asDlnbs1O3JGmabxFKC8qnkqwdg3jkhW19LyUjz8s5OXuRgMM27Pxb3F41SJ4Sr0MXaUA3jXJWkLzg8OyqrVnJyVIiUqH5P7gODpaYU904L70Kdn1FhHkLuU1DGZHcjHV9cCh2Wzb040NcsxLvHncAe0+yQblNTTW6a9mNQq0tRVtRuTr4y6WEbkdQw17zAKjqlul9Aswu453p2tuJS93Pv+dUSfuqprXe47bmyeSP/3dnOcz9Av0B0bltZDmryJjTegfZjaNrPwQ75bk0aA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HkIXyLuc+NumBxqPFLdaLgJHUnV/o+l10rJjwuo+ESA=;
+ b=k749J5poMJusjMUPLfZmyMZtaNewlNvizTtt63B9Ta9relyWZLTvh295HYg6puU9P29pzB+PSD23vpn2IPfQgrM4wfke6Fhczz7wrEsHOLOTFVOGssZP42AJ4bu+8rqDQrSerJwC907WKOBo+FYJSEgvBRlWDjhEmsjO0nhp8ksy4IHxv8gF4XdznGbS0lh7SRb4H0QJ7OK9NOMUrUaOZCjvNwELxVfi0ypvb1emk8B+bZzE9kLPx/cV6PylPYr6r4ht5IeQwy6UnCNopAtsG4b97/vlVismAENKYRsBVKfUi/uRuNiBqrKIJAGnDodMlzJfP2hnhfqv+4qwK5/fQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HkIXyLuc+NumBxqPFLdaLgJHUnV/o+l10rJjwuo+ESA=;
+ b=O80NOxY1FowRUYvZVcPakIR+PHTyFdQWnl7oUMB5DVrPvE1hdGMQp3uprPNl6XHQ0OsayRh3888+VxSnDXmvmfcihUI+VcFynhSPDlgON/okrDmbkKuyHtiJMb8XfF5oNpNPrOSWWgPM/t/XylI+6ekTcmL/qmv7id8ukgwgDnCtcYsvWpdlx/CpAz9DkRAwad8dJ1TfDuVfKuaie+moB+1kUeMQfksjyIWXLOCbc5PldVq8ksGnUdXmSn5J44keW0DNR9fMuTDOpgs7nhXXAviuZGZk2VLOBAaLrQ6kAli5KHCSxEcc/MbQdCwxMg3TxWIymMgmffjaPd3OUnmWhg==
+Received: from MN0P222CA0026.NAMP222.PROD.OUTLOOK.COM (2603:10b6:208:531::31)
+ by LV5PR12MB9803.namprd12.prod.outlook.com (2603:10b6:408:306::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.25.24; Tue, 19 May
+ 2026 15:50:31 +0000
+Received: from BL02EPF0001A103.namprd05.prod.outlook.com
+ (2603:10b6:208:531:cafe::6a) by MN0P222CA0026.outlook.office365.com
+ (2603:10b6:208:531::31) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.48.14 via Frontend Transport; Tue, 19
+ May 2026 15:50:30 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ BL02EPF0001A103.mail.protection.outlook.com (10.167.241.133) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.48.11 via Frontend Transport; Tue, 19 May 2026 15:50:30 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 19 May
+ 2026 08:50:07 -0700
+Received: from [10.221.212.38] (10.126.230.37) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 19 May
+ 2026 08:50:03 -0700
+Message-ID: <55bc6475-b24b-41a3-8e71-3196236fe627@nvidia.com>
+Date: Tue, 19 May 2026 18:50:00 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260519-mlx5-uar-index-v1-1-1027ae724bff@nvidia.com>
-X-Spamd-Result: default: False [-0.16 / 15.00];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next V2 4/8] net/mlx5: Switch vport HCA cap helpers to
+ kvzalloc
+To: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, "Andrew
+ Lunn" <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>
+CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Mark Bloch <mbloch@nvidia.com>, Akiva Goldberger <agoldberger@nvidia.com>,
+	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Dragos Tatulea
+	<dtatulea@nvidia.com>, Simon Horman <horms@kernel.org>
+References: <20260518071356.345723-1-tariqt@nvidia.com>
+ <20260518071356.345723-5-tariqt@nvidia.com>
+Content-Language: en-US
+From: Moshe Shemesh <moshe@nvidia.com>
+In-Reply-To: <20260518071356.345723-5-tariqt@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL02EPF0001A103:EE_|LV5PR12MB9803:EE_
+X-MS-Office365-Filtering-Correlation-Id: 17b37934-d54c-4a91-4f9e-08deb5be5af3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|7416014|82310400026|376014|1800799024|36860700016|4143699003|18002099003|56012099003|22082099003|11063799006;
+X-Microsoft-Antispam-Message-Info:
+	Q6ZOSBx/R7O8v8lHvmurWDUsU9GaEzpUAPSnBwooQxORVpos9beD/pW7OlmEa0xukGhS9yzgBP1stEzZDsAXDfm6u51MRsTUH+XDmRPxMeXFdjDKTcHx0dN+iaFCvtWq+jSmoz7UhF4IQ3Ct0PAkRdFjYuw/vegprPYrRnneVxLHMMj+XNhV0T+MvC1kbtzFMCUTWFfpeeO2LP+HsdSLE9O66luD7/XVQ1HjNDr2Po/wauycqBLR7eMemK1+NgXFc9BuvHWKQbj4XlJOAzy6g0qn/tS1fgysG6Q6zXh9Dc7Je+ZUyMohC3L2O28amy2eC8GpZnQYJ1o0iqKQ3uxXtGWGYyfyRnJCrAuaFXcFjrA67424ikBndwdPuXtErrMMi2C+ElClw2xn9ZMu+8sJhLMVIPNpzCDWZBvzlAsJE4E0ibWw2xs/jwRuhYQ4+r1eMqK9Ztc/5CnSKTg1EuSI+54EFFSeAYTitEm8M3i6+VgzcflUPisKcPz6ZeKmcjBcgefBU2b10baVImJGKLx04y+GpRfKtjmNdzCRLI8+W9Z8VyvN2jIKDnuUXi0R93Y/9+8n9Odl5x52Pk3afl8uPBvEtIv3dPfRG13kDvRX89ib6wM2b2bHXoxEapJWLJQk2vBXeZ+YI6tVqbVMaa66zV6hnQU59Y09I4YrKttq3HwcJ97taBNvxZp4ci4zQW3pBczfiGHOMGb1X6BB4DYME6R2aWxR2SDsC8aeKdEHZxA=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(7416014)(82310400026)(376014)(1800799024)(36860700016)(4143699003)(18002099003)(56012099003)(22082099003)(11063799006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	vXgDW5mhbGSENTmSBcu+NUIVNtWJRMpHOIHHsvJpXvtA/ryI1sheSdcbyQZp7lFKct/bxZR9hhUmo7syQXopkHQYW5JthqueMXaoZ0xyxJtJ7vxaBQXfOrpJasPgz77Z3PimjuivTlT7iOYkrcs0kx53xKKz7W8+JaPnKxG8nJX1iUfIO+yz2LR3QFkGZEZzpjj3cnC4uESQFKdPpGo8V8wStOW5FQ9i5sy9NgW9yEYEf6RSqMvckjHfUjyJzv4QUVSuaavkbdFwZrl9zrQ16P9rRFr/gCvAls72ulps6wJ+UMEKI9RaEgNlIVg6XHB/CPP6HvdIuh7I0WBsZ5fc3pvyiA0H0Wncg36oUUYmjeZTGx+rDF9sV4AkZGcPoL55IMvGC8RAdz1p2bLtsTrY6qrq9ORskN3mom8odbdwcxU1w2zfu9HPZEUAX2DUm+cT
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2026 15:50:30.5648
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 17b37934-d54c-4a91-4f9e-08deb5be5af3
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL02EPF0001A103.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV5PR12MB9803
+X-Spamd-Result: default: False [1.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20986-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[ziepe.ca];
+	TAGGED_FROM(0.00)[bounces-20987-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:mid,nvidia.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,sashiko.dev:url,Nvidia.com:dkim];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ziepe.ca:mid,ziepe.ca:dkim,nvidia.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 58BDA581F1B
+	FROM_NEQ_ENVFROM(0.00)[moshe@nvidia.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[8]
+X-Rspamd-Queue-Id: 684C8581F29
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, May 19, 2026 at 06:08:18PM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+
+
+On 5/18/2026 10:13 AM, Tariq Toukan wrote:
+> From: Moshe Shemesh <moshe@nvidia.com>
 > 
-> mlx5_core's uar2pfn() and mlx5_ib's uar_index2pfn() compute the same
-> value via slightly different idioms.  Given:
+> mlx5_vport_set_other_func_cap() and mlx5_vport_get_vhca_id() allocate
+> command buffers that embed the HCA capability union, exceeding 4KiB.
+> Use kvzalloc/kvfree so the allocation can fall back to vmalloc when
+> contiguous memory is scarce.
 > 
->   MLX5_ADAPTER_PAGE_SHIFT = 12
->   MLX5_UARS_IN_PAGE       = PAGE_SIZE / MLX5_ADAPTER_PAGE_SIZE
->                           = 1 << (PAGE_SHIFT - 12)
-> 
-> when uar_4k is set, uar2pfn()'s "index >> (PAGE_SHIFT - 12)" reduces to
-> "index / MLX5_UARS_IN_PAGE", which is exactly what uar_index2pfn() does.
-> When uar_4k is clear, both fall through to the identity case.  The same
-> arithmetic is also open-coded a third time in uar_index2paddress(), which
-> just multiplies the result by PAGE_SIZE.
-> 
-> The duplication is historical: uar_index2pfn() landed with the original
-> mlx5_ib driver in 2013 (e126ba97dba9), uar2pfn() was added in 2017
-> (a6d51b68611e) when the bfreg allocator moved into mlx5_core, and no
-> shared header ever exposed the helper.  The two were last touched in
-> parallel by aa8106f137b9 ("net/mlx5: Add explicit bar address field"),
-> confirming they are meant to behave identically.
-> 
-> Replace all three local copies with two static inlines in
-> include/linux/mlx5/driver.h returning phys_addr_t, which is the
-> appropriate type for a value that subsequently feeds ioremap*() and
-> rdma_user_mmap_io().  No functional change.
-> 
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Moshe Shemesh <moshe@nvidia.com>
+> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 > ---
-> mlx5_core's uar2pfn() and mlx5_ib's uar_index2pfn() compute the same
-> value via slightly different idioms. Let's consolidate them.
-> ---
->  drivers/infiniband/hw/mlx5/main.c             | 25 ++-----------------------
->  drivers/net/ethernet/mellanox/mlx5/core/uar.c | 14 +-------------
->  include/linux/mlx5/driver.h                   | 16 ++++++++++++++++
->  3 files changed, 19 insertions(+), 36 deletions(-)
+>   drivers/net/ethernet/mellanox/mlx5/core/vport.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-> index 428811fa805b..e61db29bc166 100644
-> --- a/drivers/infiniband/hw/mlx5/main.c
-> +++ b/drivers/infiniband/hw/mlx5/main.c
-> @@ -2373,27 +2373,6 @@ static void mlx5_ib_dealloc_ucontext(struct ib_ucontext *ibcontext)
->  	}
->  }
->  
-> -static phys_addr_t uar_index2pfn(struct mlx5_ib_dev *dev,
-> -				 int uar_idx)
-> -{
-> -	int fw_uars_per_page;
-> -
-> -	fw_uars_per_page = MLX5_CAP_GEN(dev->mdev, uar_4k) ? MLX5_UARS_IN_PAGE : 1;
-> -
-> -	return (dev->mdev->bar_addr >> PAGE_SHIFT) + uar_idx / fw_uars_per_page;
-> -}
-> -
-> -static u64 uar_index2paddress(struct mlx5_ib_dev *dev,
-> -				 int uar_idx)
-> -{
-> -	unsigned int fw_uars_per_page;
-> -
-> -	fw_uars_per_page = MLX5_CAP_GEN(dev->mdev, uar_4k) ?
-> -				MLX5_UARS_IN_PAGE : 1;
-> -
-> -	return (dev->mdev->bar_addr + (uar_idx / fw_uars_per_page) * PAGE_SIZE);
-> -}
-> -
->  static int get_command(unsigned long offset)
->  {
->  	return (offset >> MLX5_IB_MMAP_CMD_SHIFT) & MLX5_IB_MMAP_CMD_MASK;
-> @@ -2643,7 +2622,7 @@ static int uar_mmap(struct mlx5_ib_dev *dev, enum mlx5_ib_mmap_cmd cmd,
->  		uar_index = bfregi->sys_pages[idx];
->  	}
->  
-> -	pfn = uar_index2pfn(dev, uar_index);
-> +	pfn = mlx5_uar_index_to_pfn(dev->mdev, uar_index);
->  	mlx5_ib_dbg(dev, "uar idx 0x%lx, pfn %pa\n", idx, &pfn);
->
->  	err = rdma_user_mmap_io(&context->ibucontext, vma, pfn, PAGE_SIZE,
-> @@ -4327,7 +4306,7 @@ alloc_uar_entry(struct mlx5_ib_ucontext *c,
->  		goto end;
->  
->  	entry->page_idx = uar_index;
-> -	entry->address = uar_index2paddress(dev, uar_index);
-> +	entry->address = mlx5_uar_index_to_paddr(dev->mdev, uar_index);
->  	if (alloc_type == MLX5_IB_UAPI_UAR_ALLOC_TYPE_BF)
->  		entry->mmap_flag = MLX5_IB_MMAP_TYPE_UAR_WC;
->  	else
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/uar.c b/drivers/net/ethernet/mellanox/mlx5/core/uar.c
-> index 1513112ecec8..a85d8fed1546 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/uar.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/uar.c
-> @@ -66,18 +66,6 @@ static int uars_per_sys_page(struct mlx5_core_dev *mdev)
->  	return 1;
->  }
->  
-> -static u64 uar2pfn(struct mlx5_core_dev *mdev, u32 index)
-> -{
-> -	u32 system_page_index;
-> -
-> -	if (MLX5_CAP_GEN(mdev, uar_4k))
-> -		system_page_index = index >> (PAGE_SHIFT - MLX5_ADAPTER_PAGE_SHIFT);
-> -	else
-> -		system_page_index = index;
-> -
-> -	return (mdev->bar_addr >> PAGE_SHIFT) + system_page_index;
-> -}
-> -
->  static void up_rel_func(struct kref *kref)
->  {
->  	struct mlx5_uars_page *up = container_of(kref, struct mlx5_uars_page, ref_count);
-> @@ -132,7 +120,7 @@ static struct mlx5_uars_page *alloc_uars_page(struct mlx5_core_dev *mdev,
->  		goto error1;
->  	}
->  
-> -	pfn = uar2pfn(mdev, up->index);
-> +	pfn = mlx5_uar_index_to_pfn(mdev, up->index);
->  	if (map_wc) {
->  		up->map = ioremap_wc(pfn << PAGE_SHIFT, PAGE_SIZE);
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/vport.c b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
+> index 4effe37fd455..f8e6b1ab7c5c 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/vport.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
+> @@ -1336,7 +1336,7 @@ int mlx5_vport_get_vhca_id(struct mlx5_core_dev *dev, u16 vport, u16 *vhca_id)
+>   	if (mlx5_esw_vport_vhca_id(dev->priv.eswitch, vport, vhca_id))
+>   		return 0;
+>   
+> -	query_ctx = kzalloc(query_out_sz, GFP_KERNEL);
+> +	query_ctx = kvzalloc(query_out_sz, GFP_KERNEL);
+>   	if (!query_ctx)
+>   		return -ENOMEM;
 
-The only places using PFN here immediately shift it, this should be
-using mlx5_uar_index_to_paddr()
+Sashiko.dev says:
+"
+The commit message notes that these structures exceed 4KiB and are 
+vulnerable to allocation failures under memory fragmentation. Are there 
+other allocations of these same structures that were missed?
+For instance, mlx5_core_get_caps_mode() in main.c allocates 
+query_hca_cap_out with kzalloc(). Since this is on the initialization 
+path for every mlx5 device (including dynamically created SR-IOV VFs), 
+could this fail under fragmentation and prevent VF creation?
+Other locations that still appear to use kzalloc() for these >4KiB 
+structures include devlink configuration paths like 
+mlx5_devlink_port_fn_migratable_set() and 
+mlx5_devlink_port_fn_roce_set() in eswitch_offloads.c and eswitch.c.
+Should these be converted to kvzalloc() as well to prevent similar 
+allocation failures?
+"
 
+As it says, there are more places in the driver, this patch handles it 
+for the vport. I will send cleanup patches for others.
 
-> +static inline phys_addr_t mlx5_uar_index_to_pfn(struct mlx5_core_dev *mdev,
-> +						u32 uar_idx)
-> +{
-> +	u32 fw_uars_per_page = MLX5_CAP_GEN(mdev, uar_4k) ? MLX5_UARS_IN_PAGE : 1;
-> +
-> +	return (mdev->bar_addr >> PAGE_SHIFT) + uar_idx / fw_uars_per_page;
-> +}
-> +
-> +static inline phys_addr_t mlx5_uar_index_to_paddr(struct mlx5_core_dev *mdev,
-> +						  u32 uar_idx)
-> +{
-> +	u32 fw_uars_per_page = MLX5_CAP_GEN(mdev, uar_4k) ? MLX5_UARS_IN_PAGE : 1;
-> +
-> +	return mdev->bar_addr + (uar_idx / fw_uars_per_page) * PAGE_SIZE;
-> +}
+>   
+> @@ -1348,7 +1348,7 @@ int mlx5_vport_get_vhca_id(struct mlx5_core_dev *dev, u16 vport, u16 *vhca_id)
+>   	*vhca_id = MLX5_GET(cmd_hca_cap, hca_caps, vhca_id);
+>   
+>   out_free:
+> -	kfree(query_ctx);
+> +	kvfree(query_ctx);
+>   	return err;
+>   }
+>   EXPORT_SYMBOL_GPL(mlx5_vport_get_vhca_id);
+> @@ -1363,7 +1363,7 @@ int mlx5_vport_set_other_func_cap(struct mlx5_core_dev *dev, const void *hca_cap
+>   	void *set_ctx;
+>   	int ret;
+>   
+> -	set_ctx = kzalloc(set_sz, GFP_KERNEL);
+> +	set_ctx = kvzalloc(set_sz, GFP_KERNEL);
+>   	if (!set_ctx)
+>   		return -ENOMEM;
+>   
+> @@ -1392,6 +1392,6 @@ int mlx5_vport_set_other_func_cap(struct mlx5_core_dev *dev, const void *hca_cap
+>   	MLX5_SET(set_hca_cap_in, set_ctx, function_id, function_id);
+>   	ret = mlx5_cmd_exec_in(dev, set_hca_cap, set_ctx);
+>   
+> -	kfree(set_ctx);
+> +	kvfree(set_ctx);
+>   	return ret;
+>   }
 
-Then there is only one caller of the pfn version in uar_mmap which can
-just be written using phys and open code the >> PAGE_SHIFT
-
-No reason to duplicate this
-
-Jason
 
