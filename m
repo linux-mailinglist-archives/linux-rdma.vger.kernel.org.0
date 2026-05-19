@@ -1,190 +1,209 @@
-Return-Path: <linux-rdma+bounces-20991-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20992-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yBNxMJqrDGrukgUAu9opvQ
-	(envelope-from <linux-rdma+bounces-20991-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 20:27:38 +0200
+	id SGebHh7DDGqJlgUAu9opvQ
+	(envelope-from <linux-rdma+bounces-20992-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 22:07:58 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C85C583A77
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 20:27:38 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA7795847C9
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 22:07:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9B050300917E
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 18:24:43 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 08AC43076176
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 20:05:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7CDE343884;
-	Tue, 19 May 2026 18:24:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D32263B47CF;
+	Tue, 19 May 2026 20:05:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iTUODB/s"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ssMCxKFI"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from CH1PR05CU001.outbound.protection.outlook.com (mail-northcentralusazon11010008.outbound.protection.outlook.com [52.101.193.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ACE6367B92;
-	Tue, 19 May 2026 18:24:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779215082; cv=none; b=GhVg517XC4SE5KQXWrhpvaMvNyqF7DS622ue+Ok46hYfGecrDrNRm+S4lxu6tCp4CXdhuhCTEiBpYurspeThQ9AFmB9XHs9130dzvlCuciQ3bA0pL+Go+03IMrE5zs/eW2d3nI5QStXivCYNqVmMMDdCLyiXJscixlACvsLGuKc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779215082; c=relaxed/simple;
-	bh=cQ+6uBWM5dRHRoMlG9V/IKRjhsGCzxPRH1cApIvtjS8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=uax3tBuF9l6dqxLABfoXNdeizhTzsQ2Vvpr4XtDQIiNLfWAUzcCb7aZOf84wFl1jypxwr9QsOrxmrX4qPlIzNV5r2i38ncQftHqQD7AkfaICc/wiQoR+ZlYjqU9MgXSQ53AHTDt4fAu3VGz4n8IUfb+Dl2LWst1ssrjXuTmGWBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iTUODB/s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42CCDC2BCB3;
-	Tue, 19 May 2026 18:24:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1779215082;
-	bh=cQ+6uBWM5dRHRoMlG9V/IKRjhsGCzxPRH1cApIvtjS8=;
-	h=From:Date:Subject:To:Cc:From;
-	b=iTUODB/shaF1qGLE3AQZnTjxMrsStfRbNfzlqnQi8fxFz2eHUQ29BuDH4hOy5/U8k
-	 Pg2vZmpb9ORaTpI+PmZTUW5aor6cIyh185srrrPhIkoDByIMzGBXB7Zp0kjU4CGpsf
-	 iEdelA9qNR6MFhlsK7JouJ3c8g/WP80Ca1A5yka2WGlcse6NvRFyTvssm03WRgR9m+
-	 xcJF6RFxL5crL+gYNW/GVpUnz0UTPGSoF8FCMbsZgQI74DQGdaY6oGp9jW9NUZB/fv
-	 Ws/7A43Gv0QVyHxoZH0EjI3MZLt5i7ojNhpMaES6cNhlGGN2Zqg7tm9yvT0nE5qOGq
-	 dTQihp3UFRPzA==
-From: Nathan Chancellor <nathan@kernel.org>
-Date: Tue, 19 May 2026 11:24:36 -0700
-Subject: [PATCH] RDMA/core: Remove _ib_copy_validate_udata_in() and
- _ib_respond_udata() stubs
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35EB73B813E;
+	Tue, 19 May 2026 20:05:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.193.8
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779221135; cv=fail; b=JlZZEMOGdrjd8Y8pRh4LQXpGPVHhZV/ApzbO4lhIJkz8BnVW17Udb08TEQsA+iXbgafmF5JehPd7QCiQpSYumJ6gzLZ5O+nW3dwLih6CVuKJa5YRHYQRcKaU3E7BVneA66AgPUuxFDGUP5a/XEmrarG6iCkTBS6ttFxR24GCoqg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779221135; c=relaxed/simple;
+	bh=I2Py4SUCPKlbdgTLhwruqS632kO6DAPTt3uSMB8nsc8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QQGob4YCZjORxvCmJKEISjoNw6/aiajxG1z7xBnKmEOKmb8fsteORXfB2kfS7/82E2rJlPhyKU+leDLLXWy46EbxOv0HDwyk9tqqV1O+FNz6S6GCLwPA8vfvojSuKqKVwLsD6hgvG3WZE0JOyJz5y8Wlag18xuQk+qDPDob6IqI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ssMCxKFI; arc=fail smtp.client-ip=52.101.193.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=migMOO8MgTcC71mbwaqWrlm+/N3UyagkA8zG0upIacyGTPjEn5s/RnWOnED2aOFDDFxGu+p79tL54JxasqsdoyiB3Ex/c/pNtvUHws3RrtQkV7lYTwwy1QgedLosTr4qL168m8FJ17B3gTRpsuDCZkFioXIpuexqgj0rqTz3qPalnljypturIy7hK9Abq9s9qKLOQasy7pIdtLBPWRdgHanVya7eKKIQS0tcDJ3lEmVC1GS2JD6xD6bUdCrnScSdB3InLBPQcAqZdq94PYvK0UoDAYNVMe9hzm7LNzt9isRWkwIlB4f9PsEyNqYKFTjnnpR233IVYURg4Jep6W6qSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NSo1sJG48al/p0RCqat5hrLmREpJK0fHQBw6yYISjDg=;
+ b=NLrgdrJEqoN06jQgs0kFNxBdLmkKbYVzJUplhaNDAFqYjy6OGrmcjI3g8pzWNM7rWkhiDWBbW6LkDcC5afCusZULBo9xo+U/98c+rSz/G3LD3ZFDo0wVWy4BUZvQfgUA9mYvToJqGHJryFIYESgsjqvpF4C4Mey768Tm/2ohiIUpReUeIfsr/Zvx8vjFrG/0vLzpWL5B4c562QLkLh3dF4PyO3Nvc5L1moTCVNlafg5LAi3oJVCxuGf0ouyrdPtYLVSzY1bXxjw0SMDi7jwJ4OU2UILha7ixQjX96539DBdwqVTywXyqiyDquZ+1rXDOGEDmLzwycUOoJ6KdzWtmtQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NSo1sJG48al/p0RCqat5hrLmREpJK0fHQBw6yYISjDg=;
+ b=ssMCxKFIdSP41zt0zK2q9FKPkLnuB4BCkifjN2Gp9OVpu4CFduip0q5rDApH3ai5RUPw3NQa6zrNk4mC49r4tSkigJt70dOqTFwjQSDsPeKSdABsq8FszGOLPURHnCEg49hYimmpwayr9p2xbKoNu0kQ56lW7PjKCN/XByn/YrHREMDjkQcNUffoCw540x+Ryj05S5pYUjbp8IWNtui2LJUUkoiJRUeX0Kait9LoRdyXkemnNcJHJuCvUm/q4dqIOf6ZBRWtoRAM/V+Fe+G10iz46/GS5HxMdoPPIq0B2/DGxydYCVXN+K6R474yJ6aa1OCxjHmY9m+yOjjimc7sZA==
+Received: from SJ0PR05CA0050.namprd05.prod.outlook.com (2603:10b6:a03:33f::25)
+ by PH8PR12MB7277.namprd12.prod.outlook.com (2603:10b6:510:223::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.48.14; Tue, 19 May
+ 2026 20:05:26 +0000
+Received: from MWH0EPF000C6185.namprd02.prod.outlook.com
+ (2603:10b6:a03:33f:cafe::12) by SJ0PR05CA0050.outlook.office365.com
+ (2603:10b6:a03:33f::25) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.48.11 via Frontend Transport; Tue, 19
+ May 2026 20:05:25 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ MWH0EPF000C6185.mail.protection.outlook.com (10.167.249.117) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.48.11 via Frontend Transport; Tue, 19 May 2026 20:05:25 +0000
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 19 May
+ 2026 13:05:03 -0700
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail204.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 19 May
+ 2026 13:05:03 -0700
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.7)
+ with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Tue, 19
+ May 2026 13:04:57 -0700
+From: Tariq Toukan <tariqt@nvidia.com>
+To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>
+CC: Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>, "Jonathan
+ Corbet" <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, "Saeed
+ Mahameed" <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq
+ Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Vlad Dumitrescu
+	<vdumitrescu@nvidia.com>, Aleksandr Loktionov
+	<aleksandr.loktionov@intel.com>, Daniel Zahka <daniel.zahka@gmail.com>,
+	"David Ahern" <dsahern@kernel.org>, Nikolay Aleksandrov
+	<razor@blackwall.org>, <netdev@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>, Gal Pressman
+	<gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, Jiri Pirko
+	<jiri@nvidia.com>
+Subject: [PATCH net-next V2 0/2] devlink: add generic max_sfs parameter and mlx5 support
+Date: Tue, 19 May 2026 23:04:34 +0300
+Message-ID: <20260519200436.353249-1-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260519-rdma-core-fix-ib_udata-redef-errors-v1-1-671bf2697fa5@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yXN7QqCQBCF4VuR+d3AKirYrUTEfpytCXJjRiMQ7
- 72tfj5weM9GBhUYHZuNFC8xKXNFe2go3vx8BUuqps51oxvaiTU9PMei4CxvlnBZk188KxIyQ7W
- ocYiYkov9kMeeaumpqOPfy+n8t63hjrh807TvH+kyCX6HAAAA
-X-Change-ID: 20260519-rdma-core-fix-ib_udata-redef-errors-bce9d0c45f64
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Nathan Chancellor <nathan@kernel.org>
-X-Mailer: b4 0.16-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3873; i=nathan@kernel.org;
- h=from:subject:message-id; bh=cQ+6uBWM5dRHRoMlG9V/IKRjhsGCzxPRH1cApIvtjS8=;
- b=owGbwMvMwCUmm602sfCA1DTG02pJDFk8q15wyz/Z9XH7RA+DbKtiPqdH2+2teGKqM6/NC1izr
- 7k54GNGRykLgxgXg6yYIkv1Y9XjhoZzzjLeODUJZg4rE8gQBi5OAZhIqxTDXwnZlvQ1bfVRSWIV
- Du9X5BlsnVck/Cr65YF9t/o/Mpafu8/wP7G7OHNVXd3skiTer2ve+9V6bCrVsT0548wxtmnPlxy
- TYQcA
-X-Developer-Key: i=nathan@kernel.org; a=openpgp;
- fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000C6185:EE_|PH8PR12MB7277:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8105a6f8-cd2d-4745-d288-08deb5e1f79b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|376014|7416014|82310400026|36860700016|11063799006|13003099007|56012099003|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	jz09JG/OxNhLNN4kViHYUEAikTJ9maSP7Py9mq4KaZ72MgSpi6eBK7AkX3e7oJ9q11sSiTscCkaTVZlL5TbXBcFTQtFurZwJfWftLHQQnPV9R3+gZCVtI1XGO/B1vUSPVOdGEw8aaMQ7g9hS3dKvrEZOgtoYi+aso+89XAsl/tXHxakTz3FfTBqgdNPzBuFd1ddiQzOM+KfG5VAH5D6f4x6Gx8tPCQr3QjXDdPil4WRacqMbC923mJue9TP5RNl9ej/AaWwAIgYVszJetSX9mXBCS+SK9jenMAfRs+DLVOCP9BnyuB6yuTxoe0CQqiKjs/ntvq6eklY8cLE0CAOQ34ypZ2FqrHDyIO+aFnFkO8Mm050xdcnl4Y/MMK/GNVVIyzuF0FF/OSLU9yzmPfOQiRNFuoqkyMj1dBjwZchKB88FQhCjhkLQyPtiX4EZiqgr6doV867351k9cT0dWFWs99qOAU/pXDnWXHWm6NwNyuorValoNGiqrWuFjXb6yWHDpLRBxU49wkpKZ9lmhVF3RKSVPp4MkPr42FEj7CCFrS6t+dEM6LwlnjyzubtM8hdlYG3lYag2OMNStsH0nIlGj9BVcHULKThUzyVFS4mUJiDnssh73AlC5gWBbkMKEzcPg2Y2bj6+okCwvJbWyNMKMW/hcalZekFTzB3vh+aENR90ggrrxVw4YRJmTbVkapaCHHrbRINK4/OXcMp73moRgBT+tlKK0O5/1WiB7gb576A=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(82310400026)(36860700016)(11063799006)(13003099007)(56012099003)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	EN6yehCfTceyAKa89sx/88PwUU0RSltCC+b+JSLqGBRx+6GnCWQ8u26u9qQoiZSaPrRlWM5mNlf8aSVXt9vZQ2+d5cY/Zzp98UlzseCs4mY/Rt68vl1Q7y5F1bBrd7VlDXZh6Gu2byUUCsBlfmy9zOT1ijRnFNgig++5pFL5cs65HrZBKU2jcP15mhtHE0C/cIdWvCxAeV8SFDgkthq1mGawFO2U0SRQnPSJ7aGqOb6mhRlWxhWL05khzZ+rzhhZJ7TrqGRGywMQlbkMESaNK8xfkekAiXywe3z47SO+VoVozTy94fcp/oyXv0GNV57uyXNb4etogK8XMnZwbhBViIw0OVZHvpI7rCSQPR0Rj7Zt78mOr9ToR4M5zYP+O73KXOVCXToniSZdkMb9Y6dufSkrCy9PJGsvEUtfkT36VITFyu4ExMIVV0qJPNzwAGSl
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2026 20:05:25.8776
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8105a6f8-cd2d-4745-d288-08deb5e1f79b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MWH0EPF000C6185.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7277
+X-Spamd-Result: default: False [2.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20991-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	TO_DN_SOME(0.00)[];
+	FREEMAIL_CC(0.00)[resnulli.us,kernel.org,lwn.net,linuxfoundation.org,nvidia.com,intel.com,gmail.com,blackwall.org,vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[25];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_FROM(0.00)[bounces-20992-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[nathan@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_FIVE(0.00)[5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 2C85C583A77
+	FROM_NEQ_ENVFROM(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:mid,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,Nvidia.com:dkim];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[9]
+X-Rspamd-Queue-Id: EA7795847C9
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-After commit 65b044cee9fb ("RDMA/core: Move the _ib_copy_validate_udata*
-functions to ib_core_uverbs"), builds without INFINIBAND_USER_ACCESS
-enabled fail with:
+Hi,
 
-  drivers/infiniband/core/ib_core_uverbs.c:433:5: error: redefinition of '_ib_copy_validate_udata_in'
-    433 | int _ib_copy_validate_udata_in(struct ib_udata *udata, void *req,
-        |     ^~~~~~~~~~~~~~~~~~~~~~~~~~
-  In file included from include/rdma/uverbs_std_types.h:10,
-                   from drivers/infiniband/core/uverbs.h:49,
-                   from drivers/infiniband/core/ib_core_uverbs.c:10:
-  include/rdma/uverbs_ioctl.h:961:19: note: previous definition of '_ib_copy_validate_udata_in' with type 'int(struct ib_udata *, void *, size_t,  size_t)' {aka 'int(struct ib_udata *, void *, long unsigned int,  long unsigned int)'}
-    961 | static inline int _ib_copy_validate_udata_in(struct ib_udata *udata, void *req,
-        |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-  drivers/infiniband/core/ib_core_uverbs.c:483:5: error: redefinition of '_ib_respond_udata'
-    483 | int _ib_respond_udata(struct ib_udata *udata, const void *src, size_t len)
-        |     ^~~~~~~~~~~~~~~~~
-  include/rdma/uverbs_ioctl.h:968:19: note: previous definition of '_ib_respond_udata' with type 'int(struct ib_udata *, const void *, size_t)' {aka 'int(struct ib_udata *, const void *, long unsigned int)'}
-    968 | static inline int _ib_respond_udata(struct ib_udata *udata, const void *src,
-        |                   ^~~~~~~~~~~~~~~~~
+This series by Nikolay introduces a new generic devlink device
+parameter, max_sfs, to control the number of light-weight NIC
+subfunctions (SFs) that can be created on a device.
 
-Remove the stubs and adjust the prototypes for _ib_respond_udata() and
-_ib_copy_validate_udata_in(), as they will always be available when
-INFINIBAND is enabled.
+The first patch adds the generic devlink parameter and infrastructure
+support.
+The second patch implements support for the parameter in the mlx5
+driver.
 
-Fixes: 65b044cee9fb ("RDMA/core: Move the _ib_copy_validate_udata* functions to ib_core_uverbs")
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- include/rdma/uverbs_ioctl.h | 21 ++++-----------------
- 1 file changed, 4 insertions(+), 17 deletions(-)
+With this addition, users can enable or disable SF creation directly via
+devlink, without relying on external vendor-specific tools.
 
-diff --git a/include/rdma/uverbs_ioctl.h b/include/rdma/uverbs_ioctl.h
-index e2af17da3e32..7cbdfc259738 100644
---- a/include/rdma/uverbs_ioctl.h
-+++ b/include/rdma/uverbs_ioctl.h
-@@ -856,6 +856,10 @@ ib_uverbs_get_ucontext(const struct uverbs_attr_bundle *attrs)
- 	return ib_uverbs_get_ucontext_file(attrs->ufile);
- }
- 
-+int _ib_copy_validate_udata_in(struct ib_udata *udata, void *req,
-+			       size_t kernel_size, size_t minimum_size);
-+int _ib_respond_udata(struct ib_udata *udata, const void *src, size_t len);
-+
- #if IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS)
- int uverbs_get_flags64(u64 *to, const struct uverbs_attr_bundle *attrs_bundle,
- 		       size_t idx, u64 allowed_bits);
-@@ -897,10 +901,6 @@ int _uverbs_get_const_unsigned(u64 *to,
- 			       size_t idx, u64 upper_bound, u64 *def_val);
- int uverbs_copy_to_struct_or_zero(const struct uverbs_attr_bundle *bundle,
- 				  size_t idx, const void *from, size_t size);
--
--int _ib_copy_validate_udata_in(struct ib_udata *udata, void *req,
--			       size_t kernel_size, size_t minimum_size);
--int _ib_respond_udata(struct ib_udata *udata, const void *src, size_t len);
- #else
- static inline int
- uverbs_get_flags64(u64 *to, const struct uverbs_attr_bundle *attrs_bundle,
-@@ -957,19 +957,6 @@ _uverbs_get_const_unsigned(u64 *to,
- {
- 	return -EINVAL;
- }
--
--static inline int _ib_copy_validate_udata_in(struct ib_udata *udata, void *req,
--					     size_t kernel_size,
--					     size_t minimum_size)
--{
--	return -EINVAL;
--}
--
--static inline int _ib_respond_udata(struct ib_udata *udata, const void *src,
--				    size_t len)
--{
--	return -EINVAL;
--}
- #endif
- 
- #define uverbs_get_const_signed(_to, _attrs_bundle, _idx)                      \
+Regards,
+Tariq
 
----
-base-commit: 65b044cee9fb117144f11ab68a318d0055cfbc1b
-change-id: 20260519-rdma-core-fix-ib_udata-redef-errors-bce9d0c45f64
+V2:
+- Add missing ` (Aleksandr Loktionov).
+- Add review tag to patch 1.
 
-Best regards,
---  
-Cheers,
-Nathan
+V1:
+https://lore.kernel.org/all/20260517112700.343575-1-tariqt@nvidia.com/
+
+Nikolay Aleksandrov (2):
+  devlink: add generic device max_sfs parameter
+  net/mlx5: implement max_sfs parameter
+
+ .../networking/devlink/devlink-params.rst     |  6 ++
+ Documentation/networking/devlink/mlx5.rst     |  7 +-
+ .../mellanox/mlx5/core/lib/nv_param.c         | 83 ++++++++++++++++++-
+ include/net/devlink.h                         |  4 +
+ net/devlink/param.c                           |  5 ++
+ 5 files changed, 101 insertions(+), 4 deletions(-)
+
+
+base-commit: 9bf93cb2e180a58d5984ba13daee95903ff4fc14
+-- 
+2.44.0
 
 
