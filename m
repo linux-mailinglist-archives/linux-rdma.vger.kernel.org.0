@@ -1,175 +1,158 @@
-Return-Path: <linux-rdma+bounces-21002-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21003-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ECqLCCPrDGq9pwUAu9opvQ
-	(envelope-from <linux-rdma+bounces-21002-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 00:58:43 +0200
+	id cCe6JlT7DGpHqwUAu9opvQ
+	(envelope-from <linux-rdma+bounces-21003-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 02:07:48 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87BF8585E4F
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 00:58:42 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA4C15863B1
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 02:07:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9C77C309AE5A
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2026 22:56:05 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 4EC6F3019472
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 00:07:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0769B3B7750;
-	Tue, 19 May 2026 22:56:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F04A79CD;
+	Wed, 20 May 2026 00:07:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MMfYXFX6"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZEEjXqQe"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F223373C1E;
-	Tue, 19 May 2026 22:56:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 966543FFD
+	for <linux-rdma@vger.kernel.org>; Wed, 20 May 2026 00:07:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779231364; cv=none; b=X/Xki5W9dgynMTFtsEjaYgQkccLs8TZqbhvQ8Zx77y6ShB+xxxZUByawgptxjP1WfkPFqPCLCewmyMJoabw3QO9GBa1LqVPXBUznt4IBC7JBIl9MRXbBCHkxkWeoQzU5RW0J+0lMnF1RlsQ3dk4oiAPJ+LyDTTWA4dOID9kNEBY=
+	t=1779235663; cv=none; b=BmNB7bIzb4SwC9ixnWPnoSt7rtjKZs/FejQ3SkTBPvdx0cPtFJszXQbkXgVj33wJGGy5re3XDFcVDx+EYJu9cUyF0ciSWMzOshqdmEPOUdYjG7mnq8DhQ4/JzsW7/GDoIpAo2GSv359Yam49w3v2RG4FgFXYeYoEe+Q0BXlrPwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779231364; c=relaxed/simple;
-	bh=QM5FMHHm++AknD1r9z3aFr5seHTml9EIHn+s7uS8KwY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rFoJKb+PZ9RefgWln6XaTO9X6PcLaNUZQISORtOcA14o88XFs1kZA3fkzps0lwm9WvVx3nNBKbHxEd6ozzTbARKzUxI3haYfCUGlbLS7sNKYJTb+u8NR4WvNMhYdycr/oKOqwsw2eJ3ckvnnv1raEP1t+2AONj4HZWRZ+88HXw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MMfYXFX6; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C59691F00893;
-	Tue, 19 May 2026 22:55:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779231361;
-	bh=Ju/T6dr7tnzbHkBsBfFbYbB7NVyyfDZAOl1owW3rAJI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=MMfYXFX6PzYqZig4fP7heX9bolmzbam+Ez/+CCI5rJNKvCu76yNTc26XeUeWOfV6f
-	 76yv86BhY4CnUd1d+CF+8MeKTgF8Az6M13Rel7tLRKceUbwzI7ZaZLG7ddC0Sh0O+G
-	 OpGSYA3c7bnMfWd4PozIH6adolxs9O7hCJTeHUE4fTOLSPnhG9c6s0uXmfP1jyy6he
-	 /+5D5p8IgablTI20XeiafXKQ5YsInH/h3vTiwnlHEY5x2livNflhYkggqIBaNFysCb
-	 JfaqpT5w+l7pQqv5v7WiYLodJhRURvpkZq6X7M30GwX47mj9ul446ScUZzCKGziXdu
-	 bNiGRDDDnMRrQ==
-From: Jakub Kicinski <kuba@kernel.org>
-To: dipayanroy@linux.microsoft.com
-Cc: Jakub Kicinski <kuba@kernel.org>,
-	kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	leon@kernel.org,
-	longli@microsoft.com,
-	kotaranov@microsoft.com,
-	horms@kernel.org,
-	shradhagupta@linux.microsoft.com,
-	ssengar@linux.microsoft.com,
-	ernis@linux.microsoft.com,
-	shirazsaleem@microsoft.com,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	stephen@networkplumber.org,
-	jacob.e.keller@intel.com,
-	dipayanroy@microsoft.com,
-	leitao@debian.org,
-	kees@kernel.org,
-	john.fastabend@gmail.com,
-	hawk@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	sdf@fomichev.me,
-	yury.norov@gmail.com
-Subject: Re: [PATCH net 2/2] net: mana: Skip redundant detach in queue reset handler if already detached
-Date: Tue, 19 May 2026 15:55:59 -0700
-Message-ID: <20260519225559.3939235-1-kuba@kernel.org>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260518194654.735580-3-dipayanroy@linux.microsoft.com>
-References: <20260518194654.735580-3-dipayanroy@linux.microsoft.com>
+	s=arc-20240116; t=1779235663; c=relaxed/simple;
+	bh=2FoxEkHUt4qACFP8F93e3ISzMsLxT1o9j0/jALd42lc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kHdtLbXRpfqXUfsm6ET+cZJp1nonyWU5gFyR7co2A7S1d21mJ2EzsRT6RYCmKmAZhXWzupjG4n+z9UzTStwiHPxOC+NgV/ZkWYFFw3xmdwIY6TFmNdpr6Gt2aVKneJ2AtGt8kYD81a/wFf2PRSSsTgt7in8Eh7CBXaoXI/BYHjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZEEjXqQe; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6cb1092d-e3d6-4596-92e3-e0c7030680af@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1779235659;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ci2X4KHTZpQUeGxUn9r9ic3tbMQhgf9+uX56j35MnJA=;
+	b=ZEEjXqQeE8gleOk5Xa2h8TmnYxH6oeWfJcSUYPD85xWgyyQ4zpBFDuTOuB/Aodmvh7neZ/
+	U1aCuLRyv0bJmW1ow1VV8WbeHO/H962Gr0FKO10rEvPRTnC9XA7IZ8aAIMeClbC1YuXV++
+	3YwAOBIIPhudE/D5vWeXpMzM0xUlxko=
+Date: Tue, 19 May 2026 17:07:35 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Subject: Re: [PATCH 0/2] RDMA/rxe: fix shared memory TOCTOU in receive path
+To: Tristan Madani <tristmd@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: Leon Romanovsky <leon@kernel.org>, Zhu Yanjun <zyjzyj2000@gmail.com>,
+ linux-rdma@vger.kernel.org
+References: <20260518215040.1598586-1-tristan@talencesecurity.com>
+ <0ae59679-5cc9-48e4-87e9-63299684acf8@linux.dev>
+ <20260519145610.GA33515@unreal> <20260519150042.GL7702@ziepe.ca>
+ <6a0ce47d.096dab79.284c84.5b30@mx.google.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Yanjun.Zhu" <yanjun.zhu@linux.dev>
+In-Reply-To: <6a0ce47d.096dab79.284c84.5b30@mx.google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[kernel.org,microsoft.com,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[34];
-	TAGGED_FROM(0.00)[bounces-21002-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21003-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,linux.dev];
+	FREEMAIL_CC(0.00)[kernel.org,gmail.com,vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 87BF8585E4F
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,linux.dev:mid,linux.dev:dkim]
+X-Rspamd-Queue-Id: DA4C15863B1
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-This is an AI-generated review of your patch. The human sending this
-email has considered the AI review valid, or at least plausible.
----
-net: mana: Skip redundant detach in queue reset handler if already detached
 
-This commit adds a check for netif_device_present() in the queue reset
-handler. If the device is already detached, it skips the redundant
-mana_detach() call and proceeds directly to mana_attach().
+On 5/19/26 3:30 PM, Tristan Madani wrote:
+> On Tue, 19 May 2026, Jason Gunthorpe wrote:
+>> Simple misbehave is one thing, but if userspace can hack the kernel
+>> and gain control of it through this shared memory then we have to fix
+>> it.
+> The non-SRQ receive path in check_resource() sets qp->resp.wqe
+> directly into the shared mmap buffer:
+>
+>      qp->resp.wqe = queue_head(qp->rq.queue, QUEUE_TYPE_FROM_CLIENT);
+>
+> No copy, no validation of the WQE fields. Every subsequent access
+> to wqe->dma.num_sge, wqe->dma.sge[].lkey, and wqe->dma.sge[].addr
+> reads from memory that userspace can modify concurrently.
+>
+> The concrete problem is in copy_data(), called via send_data_in().
+> It re-reads dma->num_sge from the shared buffer on every loop
+> iteration (the dma->cur_sge >= dma->num_sge bound check), and uses
+> sge->lkey for lookup_mr() and sge->addr to compute the iova for
+> rxe_mr_copy(). A concurrent thread can:
+>
+>    1. Increase num_sge: the sge pointer walks past the WQE's
+>       allocated SGE slots into adjacent queue entries, and the
+>       kernel acts on whatever lkey/addr/length values it finds
+>       there -- all attacker-controlled through the same mmap.
+>
+>    2. Swap sge[].lkey between iterations: redirect the MR lookup
+>       to a different memory region.
+>
+>    3. Modify sge[].addr: shift the write target within the
+>       resolved MR.
+>
+> The data being written is incoming packet payload (attacker-
+> controlled in loopback), direction is RXE_TO_MR_OBJ.
+>
+> The SRQ path already handles this correctly: get_srq_wqe() copies
+> the WQE to kernel memory with memcpy() and validates num_sge
+> against max_sge before use. The comment there says "don't trust
+> user space data". The non-SRQ path has neither the copy nor the
+> validation.
+>
+> The race window is not tight -- the shared pointer is set during
+> RESPST_CHK_RESOURCE and the fields are consumed across CHK_LENGTH
+> and EXECUTE before copy_data() runs.
+>
+> I can provide a reproducer if that helps move the patches forward.
 
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> index 9e7e4bf526bf6..740f3c34db451 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> @@ -316,12 +316,19 @@ static void mana_per_port_queue_reset_work_handler(struct work_struct *work)
-[ ... ]
-> +	/* If already detached (indicates detach succeeded but attach failed
-> +	 * previously). Now skip mana detach and just retry mana_attach.
-> +	 */
-> +	if (!netif_device_present(ndev))
-> +		goto attach;
-> +
->  	err = mana_detach(ndev, false);
+yes. Please provide a reproducer.
 
-The fix here correctly prevents mana_detach() from running on an already
-detached device. However, do identical issues remain in mana_change_mtu(),
-mana_set_channels(), mana_set_ringparam(), and mana_bpf()?
+Thanks,
 
-If mana_attach() previously failed (for example, due to out of memory),
-the port is left with apc->port_is_up = false, but it preserves
-apc->port_st_save = true, and calls netif_device_detach(ndev).
+Zhu Yanjun
 
-If an admin tries to recover the port by retrying a configuration command
-like changing the MTU or attaching XDP, these functions appear to
-unconditionally call mana_detach(ndev, false) without the
-!netif_device_present(ndev) check added here.
-
-Inside mana_detach(), apc->port_st_save = apc->port_is_up executes. Since
-port_is_up is already false, port_st_save is overwritten to false,
-permanently erasing the intent that the port should be up.
-
-The subsequent call to mana_attach() would then see port_st_save == false,
-skip mana_alloc_queues(), set port_is_up = false, and successfully call
-netif_device_attach(ndev).
-
-Would this result in the configuration command returning 0 to userspace
-while the port queues were never allocated, leaving the interface silently
-broken until manually toggled down and up?
+>
+> Tristan
 
