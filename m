@@ -1,266 +1,201 @@
-Return-Path: <linux-rdma+bounces-21058-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21059-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6JGxJLbSDWpP3gUAu9opvQ
-	(envelope-from <linux-rdma+bounces-21058-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 17:26:46 +0200
+	id uOPUKpvkDWpz4gUAu9opvQ
+	(envelope-from <linux-rdma+bounces-21059-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 18:43:07 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 554BE590C98
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 17:26:44 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 149945924F0
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 18:43:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 3A2AB30623F4
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 15:20:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8FD1A321341A
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 15:47:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3CF23E8C67;
-	Wed, 20 May 2026 15:19:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1674E3264EA;
+	Wed, 20 May 2026 15:47:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="dH+cnCMt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="laOD+KBs"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f97.google.com (mail-pj1-f97.google.com [209.85.216.97])
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 626DA3F1AD6
-	for <linux-rdma@vger.kernel.org>; Wed, 20 May 2026 15:19:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 418D330B529
+	for <linux-rdma@vger.kernel.org>; Wed, 20 May 2026 15:47:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779290353; cv=none; b=GEZPmUofmrYR6svEFNi48ugaWWHpwZ5b/tgJ4sxwDTXCx/hz+b8bQ5Qz6RI0gW6riZdCN5pqEIQEsKbrQZgdPfNaLGwko9Y8Q053ZPWUQ2Ucmr2INz53krlzdoDlSTuOnSFxWuHrdejJDcAYJU4Qfw/EbKoWQI9GYIkrpb/BIHE=
+	t=1779292043; cv=none; b=qsRHcvqmZYaEo+ddyv8EQCKOVEoeqFdRjflBLf7noMq1nBDG09zSI0i8FJlSgfD34HOu3l5b6EHeztVwg9KqEf9i+pyVsmbvRFRLtUcWDHzVdnyqwAFIadcUUH5VGJAB3wYlTSJ+3x/f2WZ6GaPohw4mGQCxQjFcurpUJviM6eU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779290353; c=relaxed/simple;
-	bh=ampyUmSjwiYA4WPFRGEIOnd0KP0XYST2aS65XLQ2Q38=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qB2/Z479PqzCsXewrIm9N6FLUc7R8LLhRPV0A9ie0+xioJwOe4hu7mgZ3/utGmkNlKDsqU4Fp4BXyw615y71uT/HwvmASFGroBFTMAnCYOUFUxEUTiTYiN55Zser93SqCQPp8XCZRF33s0WTTSMKLunEeoNqw8gz6X5Y05ArGCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=dH+cnCMt; arc=none smtp.client-ip=209.85.216.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pj1-f97.google.com with SMTP id 98e67ed59e1d1-36a3aff302aso182813a91.1
-        for <linux-rdma@vger.kernel.org>; Wed, 20 May 2026 08:19:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779290352; x=1779895152;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ampyUmSjwiYA4WPFRGEIOnd0KP0XYST2aS65XLQ2Q38=;
-        b=oKGUXG5U6GDNNYx/D7AmGGArMTcF/uvV+LDJnYaClI30aOWgl4ojfx71XUNrncSszs
-         YX/xeLKLwjjasgau0wQQu29iIG6mjG0xy3SN16sY61oiZLxe4dLju7xb1wBhAOBx1GJt
-         yBxCg8WcRYnB4cFQLSmjOrdVHz4aHLBe0IxjUv9G3ny69/HEHLsqeCjYqhxmRob4PxyF
-         jeVgzPO2tp2sDuPwjEDYbSVlz89Q+97NhKAwLv74BHQ3gjS2mMSIWy4pM2g4eDjKXSgW
-         3u6KNDlFiQ7j96d66pN5uLwmjGhvwCt+uA+rWaaRrk4UCW3KVL6a5sH8L/1aXDNJ/mNf
-         BsQw==
-X-Forwarded-Encrypted: i=1; AFNElJ/1OWvjlOSIN95z7bzpkyqOz5ktwD7mBdO5v0OuIeDnR8KTndIlipPvOmjbiVqzBLJNVKMhN1x/9+Bk@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx1PM3EgM5Rs7FLGFeIc62SZ+rktUot9YtrCJ4iFOFDZLI1IQ6b
-	ZLibMIXXg/0Zvqn3fNNkT6n/q/Xn5eOnXkrMGlsgK8elsScG3bTTTuh18LNyoztm1Nyi9e1ABGR
-	ZNkZcWmz3Z1mOLYiv8dz4IiYBNmmHcO5r81FqJxILfvgHPH6gszle+cWcLyNQVeNYR6Kts7J3wq
-	JIz7jU0f06VoD5m4gzw8wY170aJH04pWvrpz1xAqwfnKY9c0vC34Yag4PPS+q/j//DwwtWWu8oL
-	fDEAi06zdj0inqzcEhpvhOHwsg0
-X-Gm-Gg: Acq92OGWQaURQui9zMKu1bjsqzP1jWrmLmyCmAHCrHr/VSA3f9MLMIOfekp6AE6je1k
-	CQxV6J6AFpptJ3DxwXn2hZSgghER7ooIWvBKWVLLd0ANB3d6BbZRRBCIgcSRO/1cOQEUQ0bu42y
-	Q2Drx5Kv/JRnJs6kXoN00l6GG+WUk6mP7TMiA+e0YxNFy/8OScmhRK/4VL70eI+E7LQm6dqPqcU
-	SkXUG+v1SvbP/+wQuvTKWMao6xNWVthdIV5scNAMhZ6xBJr2V142QiHeQ4IXLMWgB6aQNt0mokM
-	y84ju4h5Gf+EZkcrDHoInC5j2eYb40JqSCp+1YCB1hVsumpg0osFtSj3Wy2MTIgXwtZ/tCZAobP
-	yS5uyFMJbxgFgFHmxhzQF+iyXlJH9Zu56rT7F00/B/31j6fRs34M3rKuU4A1dCznP5uqmruO6xd
-	XtZdWK3gd3kWuejDOpJ72LLUqgFyax9wJRzZHDHHHmug6RBxQQURAfy4wKlY6CQ9Zo6Ldm
-X-Received: by 2002:a17:90b:1d84:b0:368:433:b697 with SMTP id 98e67ed59e1d1-36951ca51ecmr23768635a91.19.1779290351500;
-        Wed, 20 May 2026 08:19:11 -0700 (PDT)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-21.dlp.protect.broadcom.com. [144.49.247.21])
-        by smtp-relay.gmail.com with ESMTPS id 98e67ed59e1d1-369517a3d8bsm1297045a91.3.2026.05.20.08.19.10
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 May 2026 08:19:11 -0700 (PDT)
-X-Relaying-Domain: broadcom.com
-X-CFilter-Loop: Reflected
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-48fd3449e6dso30228005e9.3
-        for <linux-rdma@vger.kernel.org>; Wed, 20 May 2026 08:19:10 -0700 (PDT)
+	s=arc-20240116; t=1779292043; c=relaxed/simple;
+	bh=/qBHlQUH0EWQ0nV7VPwajE+a+zB+kJLU/RQ4QphprPM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=p8BvmMwQtWineQTjYQ79gXjwtMYe2epHNotDEPCfSsQtMQtyzVFOYYNbMdlKT3q6aCcQPF791fvhZ1zh88WZk2InR+6WfDSgk9V7vSxdKysNiQi0v4oqRzI16oYVwMUpt48BveIAGAYJENxVKW/sf2w/Jsr7onD47Hd7MUSOZPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=laOD+KBs; arc=none smtp.client-ip=209.85.222.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-9116861f004so1164023185a.3
+        for <linux-rdma@vger.kernel.org>; Wed, 20 May 2026 08:47:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1779290349; x=1779895149; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ampyUmSjwiYA4WPFRGEIOnd0KP0XYST2aS65XLQ2Q38=;
-        b=dH+cnCMtaCD+bglihD7m7A3uBLXtJWqSnkKnoZ/ZJFK5W1GHouSnVqumhxgJvUflBa
-         lX8ndRLl+pObbrx7XCnRR9w1E2+aXuxmvjMI/AsDDff0M+Y2UfxvL2LAuNQMQebQux1Y
-         ciHpa2SvmwcgrozqHaofSEQkvS8GHRbIYdPM0=
-X-Forwarded-Encrypted: i=1; AFNElJ9CPcvosvU7dPM8ViwgqWi++PfxIIG2fcKykX4W+zlyM3AfwapyFrECcI9Negwv6WwIaLVFUk1COutQ@vger.kernel.org
-X-Received: by 2002:a05:600c:1f94:b0:489:1d23:4524 with SMTP id 5b1f17b1804b1-48fe60de736mr360621525e9.5.1779290349218;
-        Wed, 20 May 2026 08:19:09 -0700 (PDT)
-X-Received: by 2002:a05:600c:1f94:b0:489:1d23:4524 with SMTP id
- 5b1f17b1804b1-48fe60de736mr360621085e9.5.1779290348805; Wed, 20 May 2026
- 08:19:08 -0700 (PDT)
+        d=gmail.com; s=20251104; t=1779292041; x=1779896841; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V9E8Z4P+2CqRGClc1by3kV59mWAyA9/b2lfXQSp7x+w=;
+        b=laOD+KBszjtQhcuMJR51d5BRJx5ooqT5L4L4wV418wx+VlypO0x7uGdQF+uYMyyMIP
+         dIMJYGXf4+gSw82pVHU8ZLyvvDZLXfIUKAVwcdTT1GUn2Uajy7doma4j1w1e0ARwySFl
+         k3iJf9N8N+izclFDm/jP8VZgLcTIPEyEkd/FkQo6/Gre8DXwuGc9IdpbcKpNLka1n4Gw
+         BnoLIQU1zGKJWZprAbjRWIclzRsxDAgIQVKMGEFMnARi8oyKDUje4z3M/4+5p9RprFeZ
+         MA/OKaEUK6kFGNZWC0svWH8KZ0CCAm50WkYkYWDBt9y1WQ4cvT+XX3nZvwNPPMaYDRrr
+         Jixw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779292041; x=1779896841;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=V9E8Z4P+2CqRGClc1by3kV59mWAyA9/b2lfXQSp7x+w=;
+        b=c1TaW18XrDvap8L/jMclS3OuIHMHStw7AzcxsslEfKD9ahI3i1nAYKmhz1eaD4DwXV
+         0ZpxnhleJak6HKhFWao622+M2mjwc3vf6gn5vCNOaVpk5IHd+UeHXmLcUmZqbJzrroQW
+         4L/KsuyfUZ47y3s7lruZu+oerqIf+2CIhSkbEtPDeEnF/tS80JUzeTDT1ydQgKSGJlDO
+         gaq6zW2qL3MmeHLVcMsHOHZWTg70gs6HGwIxou7p42rLB0E7xG6EhouuGo87C/xdM6Wb
+         DyGP3rEzmcX723/ERyYHkSDbKYKJ4WdowFb7Ou5zcKyXPNNSvAmrbFW5CzUmyNXhHPh4
+         OpKg==
+X-Gm-Message-State: AOJu0YyieLddusWHOOVpIzdeU3JJTYD6Fd3SbRmt+B0BBPO0eSaJFlRB
+	kJCL2Jo92Ih2MthIdSqZGLBYCf+A2OIIYPMs2jEIGcFJ8K6qa/26V+n2
+X-Gm-Gg: Acq92OGEHHcOJPesvz1h7gYDWStCu7OCa5vTTR5B941KFT8L5IkBEZieOGM7sW1sXne
+	4iS4HI1xYL8q2uBXoWIcEF9Y3vCCqsro0zxBp+6cOHEuYPq3wSqPVbkdF0g0fj12lTsCHvGveFL
+	mM/frY1XFxzRMtT5SfXTeBUenFKzO5ACnYgVoMXdgN2ZyTpKczMRSsXJqtBW8Wu4CBxo4S/ofYL
+	HP+3wvBPsgenzaZIerCIhVqQfDy9b/nhm+fuMVvPH/QbcMXjtNNjhrCbikhmavfmlupH0EKJo3T
+	M7Bvw0gs3/C1lDnTf5XgDo/RBm4Q+mUaQp6Ri7UC4GYJGmZQDVRLKrn6GDNVJJZK0oqrVufgsMb
+	LV0pd6V07yYEtlZfCWFYuRbloQiXN0JXXT5Exz4YLGOi5NWpkpL9WQl4auRND/Olfub/J+gmw5a
+	adV2L+xuA6HD/NjGkEmKJ0+0jEoUWA5o0B0rpyvkQSmiQnEGd7clZGXVanuwYE8AnmVw3LzdKAf
+	gNued3MD5FtAv3AWMtz
+X-Received: by 2002:a05:620a:2890:b0:911:449d:98c0 with SMTP id af79cd13be357-911cdd435cdmr3621704885a.7.1779292040928;
+        Wed, 20 May 2026 08:47:20 -0700 (PDT)
+Received: from server0 (c-68-48-65-54.hsd1.mi.comcast.net. [68.48.65.54])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8ca3618fe0bsm124812016d6.25.2026.05.20.08.47.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2026 08:47:20 -0700 (PDT)
+From: Michael Bommarito <michael.bommarito@gmail.com>
+To: Jason Gunthorpe <jgg@nvidia.com>,
+	Leon Romanovsky <leonro@nvidia.com>
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Vlad Dumitrescu <vdumitrescu@nvidia.com>,
+	Or Har-Toov <ohartoov@nvidia.com>,
+	Bob Pearson <rpearsonhpe@gmail.com>,
+	Sean Hefty <shefty@nvidia.com>,
+	Kees Cook <kees@kernel.org>
+Subject: [PATCH v2] IB/mad: cap RMPP reassembly window size
+Date: Wed, 20 May 2026 11:47:15 -0400
+Message-ID: <20260520154715.1457495-1-michael.bommarito@gmail.com>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260518212336.337104-1-michael.bommarito@gmail.com>
+References: <20260518212336.337104-1-michael.bommarito@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260519150041.7251-1-sriharsha.basavapatna@broadcom.com>
- <CAHHeUGW4q6bVxHqk+YcTfLc7AEw1k4=m99m-7F1adMoeqgW7sQ@mail.gmail.com> <20260520145900.GV7702@ziepe.ca>
-In-Reply-To: <20260520145900.GV7702@ziepe.ca>
-From: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Date: Wed, 20 May 2026 20:48:55 +0530
-X-Gm-Features: AVHnY4KbNZnq42SFOFg_cP_H6iC4CqlBkmxAYscs11BlAN1CHVJk50Ir80El_TA
-Message-ID: <CAHHeUGUHGLjAZ6hG1fs0gY_dYu8ZPBy9U3Ng0SWXQsQni=FdSA@mail.gmail.com>
-Subject: Re: [PATCH rdma-next v7 0/9] RDMA/bnxt_re: Support QP uapi extensions
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: leon@kernel.org, linux-rdma@vger.kernel.org, 
-	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com, 
-	kalesh-anakkur.purayil@broadcom.com, 
-	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000003d786506524151de"
-X-Spamd-Result: default: False [-4.26 / 15.00];
-	SIGNED_SMIME(-2.00)[];
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[broadcom.com,reject];
-	R_DKIM_ALLOW(-0.20)[broadcom.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	HAS_ATTACHMENT(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[broadcom.com:+];
-	TAGGED_FROM(0.00)[bounces-21058-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[vger.kernel.org,nvidia.com,gmail.com,kernel.org];
+	TAGGED_FROM(0.00)[bounces-21059-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[sriharsha.basavapatna@broadcom.com,linux-rdma@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	FROM_NEQ_ENVFROM(0.00)[michaelbommarito@gmail.com,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	FROM_HAS_DN(0.00)[]
-X-Rspamd-Queue-Id: 554BE590C98
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 149945924F0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
---0000000000003d786506524151de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+find_seg_location() inserts reordered RMPP DATA segments into a
+per-transaction list by walking that list in reverse. The walk runs
+under rmpp_recv->lock in the MAD receive worker, so a large receive
+window makes a reversed RMPP burst expensive.
 
-On Wed, May 20, 2026 at 8:29=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrot=
-e:
->
-> On Tue, May 19, 2026 at 10:24:36PM +0530, Sriharsha Basavapatna wrote:
->
-> > Sashiko is reporting 'Failed', I'm not sure why.
-> > https://sashiko.dev/#/patchset/20260519150041.7251-1-sriharsha.basavapa=
-tna%40broadcom.com
->
-> I assume the backend service glitched for a while. Outages seem to be
-> common in the AI services space
->
-> Jason
-Any idea if it will be restarted or what the next step is?
-Thanks,
--Harsha
+The receive window comes from recv_queue.max_active. With the default
+recv_queue_size of 512, the window is 64. Larger tuned queues can raise
+the window to 1024, turning one reordered transaction into repeated
+long list walks and keeping the target port's MAD worker busy for
+milliseconds.
 
---0000000000003d786506524151de
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Cap the RMPP window at 64, matching the current default. This keeps
+existing behavior for default configurations and prevents larger receive
+queues from increasing the worst-case insertion walk.
 
-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
-tJVewHuOmXgWQxNWV7Oiszu1d9xAcqyj65s1PrEIIaHnxEM3eTK+teecLEy8QymZjjDTrCHg4x36
-2AczdlQAIiq5TSAucGja5VP8g1zTnfL/RAxEZvLS471GABptArolXY2hMVHdVEYcTduZlu8aHARc
-phXveOB5/l3bPqpMVf2aFalv4ab733Aw6cPuQkbtwpMFifp9Y3s/0HGBfADomK4OeDTDJfuvCp8g
-a907E48SjOJBGkh6c6B3ace2XH+CyB7+WBsoK6hsrV5twAXSe7frgP4lN/4Cm2isQl3D7vXM3PBQ
-ddI2aZzmewTfbgZptt4KCUhZh+t7FGB6ZKppQ++Rx0zsGN1s71MtjJnhXvJyPs9UyL1n7KQPTEX/
-07kwIwdMjxC/hpbZmVq0mVccpMy7FYlTuiwFD+TEnhmxGDTVTJ267fcfrySVBHioA7vugeXaX3yL
-SqGQdCWnsz5LyCxWvcfI7zjiXJLwefechLp0LWEBIH5+0fJPB1lfiy1DUutGDJTh9WZHeXfVVFsf
-rSQ3y0VaTqBESMjYsJnFFYQJ9tZJScBluOYacW6gqPGC6EU+bNYC1wpngwVayaQQMIIGszCCBJug
-AwIBAgIMPiCpKhlPGjqoQ++SMA0GCSqGSIb3DQEBCwUAMFIxCzAJBgNVBAYTAkJFMRkwFwYDVQQK
-ExBHbG9iYWxTaWduIG52LXNhMSgwJgYDVQQDEx9HbG9iYWxTaWduIEdDQyBSNiBTTUlNRSBDQSAy
-MDIzMB4XDTI1MDYyMDEzNTQwNVoXDTI3MDYyMTEzNTQwNVowgfIxCzAJBgNVBAYTAlVTMRMwEQYD
-VQQIEwpDYWxpZm9ybmlhMREwDwYDVQQHEwhTYW4gSm9zZTEZMBcGA1UEYRMQTlRSVVMrREUtNjYx
-MDExNzEUMBIGA1UEBBMLQmFzYXZhcGF0bmExEjAQBgNVBCoTCVNyaWhhcnNoYTEWMBQGA1UEChMN
-QlJPQURDT00gSU5DLjErMCkGA1UEAwwic3JpaGFyc2hhLmJhc2F2YXBhdG5hQGJyb2FkY29tLmNv
-bTExMC8GCSqGSIb3DQEJARYic3JpaGFyc2hhLmJhc2F2YXBhdG5hQGJyb2FkY29tLmNvbTCCASIw
-DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKS3kXt4zVFK0i5F3y88WV5rV0rr2S3nOVTaCGMB
-o6Se8pIb2HJcdpQ4rMiJuIRSyG2XDWv6OB+66eM/6cD2oklFcdzpC4/eYOQFWJ/XM8+ms6HT7P5e
-uE7sY6CeUzLzHNjcRwVgZRWlELghY7DIW9fbMzRNDFsbxuIN/7eSofavP1q7PF3+DqhHZpmrVkDu
-vcEBTRZSn8NWZ0Xhy4a+Y3KN2W55hh6pWQWO0lt2TtpyaqYp95egJGqDUPtqydci+qrBzXbL05Q0
-gcK0NfqGJwLsEVqxHwzz/jRrzKBYKQEK4Bpau91oxVGLmxy1nQDiyI1121xyvsJBDctKH245XZkC
-AwEAAaOCAeYwggHiMA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMIGTBggrBgEFBQcBAQSB
-hjCBgzBGBggrBgEFBQcwAoY6aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3Nn
-Y2NyNnNtaW1lY2EyMDIzLmNydDA5BggrBgEFBQcwAYYtaHR0cDovL29jc3AuZ2xvYmFsc2lnbi5j
-b20vZ3NnY2NyNnNtaW1lY2EyMDIzMGUGA1UdIAReMFwwCQYHZ4EMAQUDAzALBgkrBgEEAaAyASgw
-QgYKKwYBBAGgMgoDAjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9y
-ZXBvc2l0b3J5LzBBBgNVHR8EOjA4MDagNKAyhjBodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dz
-Z2NjcjZzbWltZWNhMjAyMy5jcmwwLQYDVR0RBCYwJIEic3JpaGFyc2hhLmJhc2F2YXBhdG5hQGJy
-b2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBQAKTaeXHq6D68tUC3b
-oCOFGLCgkjAdBgNVHQ4EFgQU9Dwqof/Zp1ZdK6zi7XdRGdBWQt0wDQYJKoZIhvcNAQELBQADggIB
-AKzx/6ognUMhNv+rh7iQOeHdGA7WMDixk+zrD7TZL6O5DPqXfFqaTLpswyruTymA3AVxZkMJyF6D
-zOAsRfU23BjVlgC95zl1glr7DorZW7B/CQDwbLHlkFy92Oa3E+gBzwdiDMjnq6tOW5p83zoVqiV4
-qm4OwC9JILEkslV4uZVXHPm5cZoOQURTECE2BN34Qhg5qD3EKYqOTeMVRed1qQiIPqQv1b4xjPVS
-qBwNPl7/4TJGiZGnRB7FsNnNUQRJONnEFifM3KGqjbqA4F8BhLXCYjqtBxxCGA5506StNfsjT8UU
-28E6lcuJXC4hQXau+xXQ5GWqS4ecWwm22FAVy/i8FJVfXPTJnZeixmqaadbIU3fOJs5+XfyNkU2T
-mlCafSr7KgV570M6tITSyminW/7rc8hdznGYypCNa+45JYJTaK4x1+Ejptaxc7TCS12B1zQNCxa7
-AHX5PZra3SpDb7g1p1i1Ax0JVJTkThiCSNDbiauVn7xIJpf+H8HC6O2ddGmtKUxe6NseFnSGJsi6
-7lO/cU+TpduV7w3weUy+nHhp+GsbClfvAGhFAs/GkyONExCwwIEVlFp9Mj5JLAgB+ceMbojBIoaO
-d5rOzdIII5FDwKAAqyjHuniYLrP0xIH4L5kWOAy+LudP4PSze7uAxTiCiSJg5AaNBTa5NuwTnSX6
-MYICVzCCAlMCAQEwYjBSMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEo
-MCYGA1UEAxMfR2xvYmFsU2lnbiBHQ0MgUjYgU01JTUUgQ0EgMjAyMwIMPiCpKhlPGjqoQ++SMA0G
-CWCGSAFlAwQCAQUAoIHHMC8GCSqGSIb3DQEJBDEiBCBH+woFR32MS0CDjxoaV8KmcX4LNSu6PbAt
-81ECJ8EC7TAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yNjA1MjAx
-NTE5MDlaMFwGCSqGSIb3DQEJDzFPME0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglghkgB
-ZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEF
-AASCAQAobxwKf9EIK7yr+jn/rm4uXhrvwLM1WaYb+2bB3F6eSAIbnuhyb8rnos3CNyxYsbeFGc+g
-9EeBO9CVll42ZWqPzJqU6RAsSUIBCKy8W4ro1QEa6bQWFr8tuiEzJVwXNjepYm6HgOh3wKt+nHRS
-Q0C5dTRbJMSVhx6SZo/2n2EFAogk+O6nDTqllqxLYcc8BI6LnXhhZdqEsmqmq3x43JEsMbZ5mf9x
-0/aw6E8rvpCwC+HfRxurRBjuMMnSXfYD7aVXlrGbamNR1N/fAUEetIwREki2lRmg+OjNR8VL/wnC
-2f1kDEAgYxW4Lln1TPbZ+ZAapJo8w92CDnMuL5Admv3I
---0000000000003d786506524151de--
+Fixes: fa619a77046b ("[PATCH] IB: Add RMPP implementation")
+Cc: stable@vger.kernel.org
+Assisted-by: Codex:gpt-5-5-xhigh
+Signed-off-by: Michael Bommarito <michael.bommarito@gmail.com>
+---
+Impact: a fabric peer that can send QP1 GMP RMPP DATA segments can keep
+the targeted port's MAD worker busy with reordered RMPP bursts, delaying
+other MAD processing on that port.
+
+I tested this on v7.1-rc2 under x86_64 QEMU/KVM with rxe and raw RoCEv2
+packets carrying descending RMPP segment numbers. With
+recv_queue_size=8192, the unpatched kernel spent at least 1.5 ms per
+F=1024 burst in the insertion walk; the patched kernel dropped the same
+run to about 0.28 ms because segments outside the capped window are
+rejected before the list grows. A normal in-window F=32 RMPP exchange
+still completed; there are no in-tree selftests for QP1 GMP RMPP
+reassembly in tools/testing/selftests/drivers/net/rdma.
+
+Changes in v2:
+- Rewrite the commit message in shorter, plain language.
+- Trim the code comment to the local reason for the cap.
+
+ drivers/infiniband/core/mad_rmpp.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/core/mad_rmpp.c b/drivers/infiniband/core/mad_rmpp.c
+index 17c4c52a19e4c..0db645eb2e29b 100644
+--- a/drivers/infiniband/core/mad_rmpp.c
++++ b/drivers/infiniband/core/mad_rmpp.c
+@@ -391,9 +391,18 @@ static inline struct ib_mad_recv_buf *get_next_seg(struct list_head *rmpp_list,
+ 	return container_of(seg->list.next, struct ib_mad_recv_buf, list);
+ }
+ 
++/*
++ * find_seg_location() is linear in the number of queued segments.
++ * Keep the RMPP window at the default size so a larger receive queue
++ * does not also enlarge the reordered DATA insertion walk.
++ */
++#define IB_MAD_RMPP_MAX_WINDOW 64
++
+ static inline int window_size(struct ib_mad_agent_private *agent)
+ {
+-	return max(agent->qp_info->recv_queue.max_active >> 3, 1);
++	int wsize = agent->qp_info->recv_queue.max_active >> 3;
++
++	return clamp(wsize, 1, IB_MAD_RMPP_MAX_WINDOW);
+ }
+ 
+ static struct ib_mad_recv_buf *find_seg_location(struct list_head *rmpp_list,
+-- 
+2.53.0
 
