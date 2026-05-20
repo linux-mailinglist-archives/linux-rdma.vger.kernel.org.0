@@ -1,58 +1,96 @@
-Return-Path: <linux-rdma+bounces-21032-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21033-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aNW/JfaHDWquygUAu9opvQ
-	(envelope-from <linux-rdma+bounces-21032-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 12:07:50 +0200
+	id 0AreDx+KDWpdygUAu9opvQ
+	(envelope-from <linux-rdma+bounces-21033-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 12:17:03 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42EEF58B5A1
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 12:07:50 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25AFD58B8FC
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 12:17:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 63021303E0DA
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 10:07:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4F666301E222
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 10:11:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38A6F3D3481;
-	Wed, 20 May 2026 10:07:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C12743D47B7;
+	Wed, 20 May 2026 10:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="N5/4JIHS"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="Uxf/QJzL"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05D813D47B2;
-	Wed, 20 May 2026 10:07:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-wm1-f68.google.com (mail-wm1-f68.google.com [209.85.128.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48F333D3CEE
+	for <linux-rdma@vger.kernel.org>; Wed, 20 May 2026 10:11:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779271629; cv=none; b=CTYaJ9plLMPR6LnCd9nNhtfUcKzPl9vaZDUzUy1Qi3XluEtPZj0awzXpx9On9egWCxAQDrrCWuZgKAxzjmVEU4KxcMJescX/HmguBQ0+OPWJGPQtj+RjvJON2Vu+NSQJYPuEuhXwR1HUW9RdNWvusx/r0tuSdhhABA6+Hknf3dI=
+	t=1779271898; cv=none; b=cVRYl8Of6Tiz+1KigWVCJ0sSpY687smWC8rK6ifJnviKzCIVQOlBld2BjWegBjhGOEobD+Tn17oBpU84HxcY3ZQuH14jcjKWsozBoQkuLbwveR1rpa98/oBSsGIwyPJt5bWl9DTeoY9bVOwnSLJdjydl9HDKYpC6Lxaf2CwQPh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779271629; c=relaxed/simple;
-	bh=9PcMChyX4f+GpSW7PESjaDjTWuvfOghf3hFnF/VBGgU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lMKxaRrg10UxsPWWZFzTV1KFzNy23Rbq6mLpDDiKzWw6J1ism1Cq0wWCnbf6YNBrncC10KpuPZod8I9PhhgDudr/7Redy9qqjlo/tyUv4Df/yWWV/O4Sxa+eQWB4jhCKL5zxdcoy8eXLUYxxbVeYmDv4NdReLEKCpVvRiX+tH6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=N5/4JIHS; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1186)
-	id CD85520B7167; Wed, 20 May 2026 03:06:56 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CD85520B7167
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1779271616;
-	bh=wOiwpG2+lFvB4nJUJPU9W/uTBa+0BfNVrzSKfIvl3WQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=N5/4JIHSqb9m9259fZTzKNb4kLgMdFoZuaMpmHuNEV0RnlMwzK9xDeNb25hBELWM9
-	 7qltU+26CLvFHCo08BfIHJXaRuyst9aVq9oBNPB5xMCpYkZziW/dopjm32FS6Baec9
-	 Ni5DxlVOlGYaHTmMe7vAn+BdG0jySGu/92ChUBTo=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	shirazsaleem@microsoft.com,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next v3 1/1] RDMA/mana_ib: UC QP support for UAPI
-Date: Wed, 20 May 2026 03:06:56 -0700
-Message-ID: <20260520100656.875006-1-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 2.43.7
+	s=arc-20240116; t=1779271898; c=relaxed/simple;
+	bh=tWlDC4V7wcI1M8JpHsypvcAIVERg2LZ0+fVZhaD/k4Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sB7BDjCFnum45EjwCJe2qNWW2eSVqaLrJlCdDnOev84cyf6Kt5Qyp1bhQnebiqtl9hslqEV1KHcIjL1TxmwRFcv55ttTZYo3rl8Bh2nSUVIuQ9QjjYWn25Ro39LLVg9UkSUohdo4Egh03+EbvNaepIpKL1yAsi4XGv7w7kBtwpA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=Uxf/QJzL; arc=none smtp.client-ip=209.85.128.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f68.google.com with SMTP id 5b1f17b1804b1-488b0e1b870so68278695e9.2
+        for <linux-rdma@vger.kernel.org>; Wed, 20 May 2026 03:11:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1779271892; x=1779876692; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IldFzI7NSCTQmcpNj4jScQZQq+8zKw/Zhd161WZQRuM=;
+        b=Uxf/QJzL8ArpVszgQh6e1tVmzNvo3wx75tlahYjHVxCEcH3VQwo376QAD8fcEG5SXx
+         BfGlThEMNxqpFllzTeeBYKZBuNg3dW7D3cJE9o0q7aKcj4bg9MwHyD1DaQmkU2b9RZfV
+         ylRsMkamD2mdBrWRQo0KAdtRmsnl/+aDpgucAjR0vpaLLZsJ7IA1/+XYNdZZraUblNHB
+         yBBUzbvPq+Qh4ejkkPNtt8t8YGjA7Gv3+T8zAyZM0nFf0CLJ37+HgStVUmooqC31vpXc
+         5C6bPgIbh9fvMCw4Q9+MLeiMJKqmAYor9CLXbRsRsFvRaNWicblaZ2ekvWRSrfu5POCS
+         PhNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779271892; x=1779876692;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IldFzI7NSCTQmcpNj4jScQZQq+8zKw/Zhd161WZQRuM=;
+        b=BYBqto/EuEQOrFOEfpoAWDobkoUS0re0l9Ruz9btQ3+o5SjBhx0lM4rF1CZiJ7FvGC
+         GzYPr3tN7X7UyQpMQK0Kg4bYFhypfGbqDZGbO4iWrBnGYLQoW6Adh3rlbmFHVe92AAX+
+         FVZQFBVjEjgUsYyUS38fZ5wkACi4tFkb4ZV1O2nXhybs/yT/MejaCW5uprGbUpDk+d48
+         0Sc5MhAmsRFDYqZSar+CF+N6cXaK4xYPMONW1IuxpBeXAGzH62rrR2WkBiUCwJyv35DL
+         vn1RldsCItLls4TI/0fo+ZYncJs81LxPAAclgK0KB4jFAvzMFRjTK4Q/8FFD97JS6i1U
+         2prw==
+X-Gm-Message-State: AOJu0Yx++myMKFPdvNVsouokW6nOodNtNGg60TeQW68LfCLRBYKldVBW
+	Wbp6I2EpC/M9dIvQelBSOrWIEJASvRuTou+CNtRl7YXhvJE96EUbqOAWcF3kqmVsBuYG9lWjKWv
+	wToVbYi3MiNzN
+X-Gm-Gg: Acq92OFJpgP4+HDdQZ3uwU4vED6B2oYO4o4MYO2Ff+A+5Wboq6u8iDV5C/K83DH4LWW
+	QLJQMWZYFTdmTz9h7aitcF+9BfIc09QIZTyhiXELZNFNWjDZVeGD/cZFd3w3oS1h3caPUdY5cWy
+	8rhlvEsLIDzmyY/PGdZrH3o3s7v62HJb607Y85VyuOpjEBCKqUKApRU/rU9dSk2tnzgDmwVR6XB
+	4AHATpB+JGQRiVIpBXm6Ic+D+I4zGopjizTPCMCGm1T0hlXAr1B+SO03CbLg6C5jPjPHA2+FF7w
+	eLk+9DFIo+B4MW7RCSTufnTdJHNZ5wG3VyeV6gnszqC3GUwHYgdc9vxYe0J+GwvMbJIQmrlGVYr
+	DRoTcVkcVknyYcm+MyUr95IkhWfbVfOG2eRTSi4N3+8N9olRZIDPgRy5eePr/Y6+KanzPudr0ZA
+	2o7x7LcptxeolbR8iOUtXCzIHLl9oQoj1uTE+MH1FBO/n4v8J74y0ZEQ==
+X-Received: by 2002:a05:600c:6383:b0:488:c014:34da with SMTP id 5b1f17b1804b1-48fe651690fmr361979235e9.26.1779271892322;
+        Wed, 20 May 2026 03:11:32 -0700 (PDT)
+Received: from localhost ([140.209.217.212])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48feaa2c96csm129371125e9.2.2026.05.20.03.11.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2026 03:11:30 -0700 (PDT)
+From: Jiri Pirko <jiri@resnulli.us>
+To: linux-rdma@vger.kernel.org
+Cc: jgg@ziepe.ca,
+	leon@kernel.org,
+	edwards@nvidia.com,
+	kees@kernel.org,
+	parav@nvidia.com,
+	mbloch@nvidia.com,
+	yishaih@nvidia.com,
+	lirongqing@baidu.com,
+	huangjunxian6@hisilicon.com,
+	liuy22@mails.tsinghua.edu.cn,
+	jmoroni@google.com
+Subject: [PATCH rdma-next v6 00/15] RDMA: Introduce generic buffer descriptor infrastructure for umem
+Date: Wed, 20 May 2026 12:11:14 +0200
+Message-ID: <20260520101129.899464-1-jiri@resnulli.us>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -60,374 +98,148 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-21033-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21032-lists,linux-rdma=lfdr.de];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kotaranov@linux.microsoft.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	DMARC_NA(0.00)[resnulli.us];
+	FROM_HAS_DN(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,linux.microsoft.com:mid,linux.microsoft.com:dkim]
-X-Rspamd-Queue-Id: 42EEF58B5A1
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,nvidia.com:email,resnulli.us:mid,resnulli-us.20251104.gappssmtp.com:dkim]
+X-Rspamd-Queue-Id: 25AFD58B8FC
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
+From: Jiri Pirko <jiri@nvidia.com>
 
-Implement UC QP creation in the RNIC HW for user API. An UC QP is exposed
-as three work queues: send, receive, and memory management. The latter is
-used for bind and invalidate WQEs to support memory windows.
+This patchset introduces a generic buffer descriptor infrastructure
+for passing memory buffers (dma-buf or user VA) to uverbs commands,
+and wires it up for CQ and QP creation in the uverbs core, efa, mlx5,
+bnxt_re and mlx4 drivers.
 
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+Instead of adding ad-hoc per-buffer UAPI attributes for each new buffer
+type, each command declares dedicated UVERBS_ATTR_UMEM attributes that
+carry one buffer descriptor each. Each descriptor specifies a buffer
+type, covering both VA and dma-buf. A consumption check ensures
+userspace and driver agree on which attributes are used.
+
+The patchset:
+1-2,4. Plumbing: rename ib_umem_get() to ib_umem_get_va() and re-route
+   it through ib_umem_get_attr_or_va(); no behaviour change.
+3. Introduces the core buffer descriptor infrastructure and UAPI.
+5. Factors out CQ buffer umem processing into a helper.
+6. Adds the CQ buffer UMEM attribute and driver wrappers.
+7-10. Converts efa, mlx5, bnxt_re and mlx4 to use the new CQ helpers,
+   with drivers taking umem ownership.
+11. Removes the legacy umem field from struct ib_cq, now that all
+   drivers use the new helpers.
+12. Adds optional whole-QP, RQ and SQ UMEM attributes to QP creation.
+13. Converts mlx5 QP creation to use the new attributes.
+14-15. Adds mlx5 driver-namespace UMEM attributes for CQ and QP
+   doorbell records.
+
 ---
-It is a resend of v3
-v3: use new udata helpers
-v2: removed udata check and removed enum from mana-abi.h
- drivers/infiniband/hw/mana/main.c    | 41 ++++++++++++-
- drivers/infiniband/hw/mana/mana_ib.h | 41 ++++++++++++-
- drivers/infiniband/hw/mana/qp.c      | 89 ++++++++++++++++++++++++++--
- include/uapi/rdma/mana-abi.h         | 11 ++++
- 4 files changed, 173 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index ac5e75dd3..42567c30e 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -978,7 +978,46 @@ int mana_ib_gd_create_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp,
- 	return 0;
- }
- 
--int mana_ib_gd_destroy_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
-+int mana_ib_gd_create_uc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp,
-+			    struct ib_qp_init_attr *attr, u32 doorbell, u64 flags)
-+{
-+	struct mana_ib_cq *send_cq = container_of(qp->ibqp.send_cq, struct mana_ib_cq, ibcq);
-+	struct mana_ib_cq *recv_cq = container_of(qp->ibqp.recv_cq, struct mana_ib_cq, ibcq);
-+	struct mana_ib_pd *pd = container_of(qp->ibqp.pd, struct mana_ib_pd, ibpd);
-+	struct gdma_context *gc = mdev_to_gc(mdev);
-+	struct mana_rnic_create_uc_qp_resp resp = {};
-+	struct mana_rnic_create_uc_qp_req req = {};
-+	int err, i;
-+
-+	mana_gd_init_req_hdr(&req.hdr, MANA_IB_CREATE_UC_QP, sizeof(req), sizeof(resp));
-+	req.hdr.dev_id = mdev->gdma_dev->dev_id;
-+	req.adapter = mdev->adapter_handle;
-+	req.pd_handle = pd->pd_handle;
-+	req.send_cq_handle = send_cq->cq_handle;
-+	req.recv_cq_handle = recv_cq->cq_handle;
-+	for (i = 0; i < MANA_UC_QUEUE_TYPE_MAX; i++)
-+		req.dma_region[i] = qp->uc_qp.queues[i].gdma_region;
-+	req.doorbell_page = doorbell;
-+	req.max_send_wr = attr->cap.max_send_wr;
-+	req.max_recv_wr = attr->cap.max_recv_wr;
-+	req.max_send_sge = attr->cap.max_send_sge;
-+	req.max_recv_sge = attr->cap.max_recv_sge;
-+	req.flags = flags;
-+
-+	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-+	if (err)
-+		return err;
-+
-+	qp->qp_handle = resp.qp_handle;
-+	for (i = 0; i < MANA_UC_QUEUE_TYPE_MAX; i++) {
-+		qp->uc_qp.queues[i].id = resp.queue_ids[i];
-+		/* The GDMA regions are now owned by the RNIC QP handle */
-+		qp->uc_qp.queues[i].gdma_region = GDMA_INVALID_DMA_REGION;
-+	}
-+	return 0;
-+}
-+
-+int mana_ib_gd_destroy_rnic_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
- {
- 	struct mana_rnic_destroy_rc_qp_resp resp = {0};
- 	struct mana_rnic_destroy_rc_qp_req req = {0};
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index c9c94e86a..0f21a4b25 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -166,6 +166,17 @@ struct mana_ib_rc_qp {
- 	struct mana_ib_queue queues[MANA_RC_QUEUE_TYPE_MAX];
- };
- 
-+enum mana_uc_queue_type {
-+	MANA_UC_SEND_QUEUE_REQUESTER = 0,
-+	MANA_UC_RECV_QUEUE_RESPONDER,
-+	MANA_UC_SEND_QUEUE_MMQ,
-+	MANA_UC_QUEUE_TYPE_MAX,
-+};
-+
-+struct mana_ib_uc_qp {
-+	struct mana_ib_queue queues[MANA_UC_QUEUE_TYPE_MAX];
-+};
-+
- enum mana_ud_queue_type {
- 	MANA_UD_SEND_QUEUE = 0,
- 	MANA_UD_RECV_QUEUE,
-@@ -184,6 +195,7 @@ struct mana_ib_qp {
- 	union {
- 		struct mana_ib_queue raw_sq;
- 		struct mana_ib_rc_qp rc_qp;
-+		struct mana_ib_uc_qp uc_qp;
- 		struct mana_ib_ud_qp ud_qp;
- 	};
- 
-@@ -221,6 +233,7 @@ enum mana_ib_command_code {
- 	MANA_IB_CREATE_RC_QP    = 0x3000a,
- 	MANA_IB_DESTROY_RC_QP   = 0x3000b,
- 	MANA_IB_SET_QP_STATE	= 0x3000d,
-+	MANA_IB_CREATE_UC_QP    = 0x30020,
- 	MANA_IB_QUERY_VF_COUNTERS = 0x30022,
- 	MANA_IB_QUERY_DEVICE_COUNTERS = 0x30023,
- };
-@@ -380,6 +393,29 @@ struct mana_rnic_destroy_rc_qp_resp {
- 	struct gdma_resp_hdr hdr;
- }; /* HW Data */
- 
-+struct mana_rnic_create_uc_qp_req {
-+	struct gdma_req_hdr hdr;
-+	mana_handle_t adapter;
-+	mana_handle_t pd_handle;
-+	mana_handle_t send_cq_handle;
-+	mana_handle_t recv_cq_handle;
-+	u64 dma_region[MANA_UC_QUEUE_TYPE_MAX];
-+	u64 flags;
-+	u32 doorbell_page;
-+	u32 max_send_wr;
-+	u32 max_recv_wr;
-+	u32 max_send_sge;
-+	u32 max_recv_sge;
-+	u32 reserved;
-+}; /* HW Data */
-+
-+struct mana_rnic_create_uc_qp_resp {
-+	struct gdma_resp_hdr hdr;
-+	mana_handle_t qp_handle;
-+	u32 queue_ids[MANA_UC_QUEUE_TYPE_MAX];
-+	u32 reserved;
-+}; /* HW Data*/
-+
- struct mana_rnic_create_udqp_req {
- 	struct gdma_req_hdr hdr;
- 	mana_handle_t adapter;
-@@ -722,8 +758,9 @@ int mana_ib_gd_destroy_cq(struct mana_ib_dev *mdev, struct mana_ib_cq *cq);
- 
- int mana_ib_gd_create_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp,
- 			    struct ib_qp_init_attr *attr, u32 doorbell, u64 flags);
--int mana_ib_gd_destroy_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp);
--
-+int mana_ib_gd_destroy_rnic_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp);
-+int mana_ib_gd_create_uc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp,
-+			    struct ib_qp_init_attr *attr, u32 doorbell, u64 flags);
- int mana_ib_gd_create_ud_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp,
- 			    struct ib_qp_init_attr *attr, u32 doorbell, u32 type);
- int mana_ib_gd_destroy_ud_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp);
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index 645581359..b13449b48 100644
---- a/drivers/infiniband/hw/mana/qp.c
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -420,13 +420,13 @@ static enum gdma_queue_type mana_ib_queue_type(struct ib_qp_init_attr *attr, u32
- 	return type;
- }
- 
--static int mana_table_store_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
-+static int mana_table_store_rnic_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
- {
- 	return xa_insert_irq(&mdev->qp_table_wq, qp->ibqp.qp_num, qp,
- 			     GFP_KERNEL);
- }
- 
--static void mana_table_remove_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
-+static void mana_table_remove_rnic_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
- {
- 	xa_erase_irq(&mdev->qp_table_wq, qp->ibqp.qp_num);
- }
-@@ -468,7 +468,8 @@ static int mana_table_store_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
- 
- 	switch (qp->ibqp.qp_type) {
- 	case IB_QPT_RC:
--		return mana_table_store_rc_qp(mdev, qp);
-+	case IB_QPT_UC:
-+		return mana_table_store_rnic_qp(mdev, qp);
- 	case IB_QPT_UD:
- 	case IB_QPT_GSI:
- 		return mana_table_store_ud_qp(mdev, qp);
-@@ -485,7 +486,8 @@ static void mana_table_remove_qp(struct mana_ib_dev *mdev,
- {
- 	switch (qp->ibqp.qp_type) {
- 	case IB_QPT_RC:
--		mana_table_remove_rc_qp(mdev, qp);
-+	case IB_QPT_UC:
-+		mana_table_remove_rnic_qp(mdev, qp);
- 		break;
- 	case IB_QPT_UD:
- 	case IB_QPT_GSI:
-@@ -567,13 +569,67 @@ static int mana_ib_create_rc_qp(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	return 0;
- 
- destroy_qp:
--	mana_ib_gd_destroy_rc_qp(mdev, qp);
-+	mana_ib_gd_destroy_rnic_qp(mdev, qp);
- destroy_queues:
- 	while (i-- > 0)
- 		mana_ib_destroy_queue(mdev, &qp->rc_qp.queues[i]);
- 	return err;
- }
- 
-+static int mana_ib_create_uc_qp(struct ib_qp *ibqp, struct ib_pd *ibpd,
-+				struct ib_qp_init_attr *attr, struct ib_udata *udata)
-+{
-+	struct mana_ib_dev *mdev = container_of(ibpd->device, struct mana_ib_dev, ib_dev);
-+	struct mana_ib_qp *qp = container_of(ibqp, struct mana_ib_qp, ibqp);
-+	struct mana_ib_create_uc_qp_resp resp = {};
-+	struct mana_ib_ucontext *mana_ucontext;
-+	struct mana_ib_create_uc_qp ucmd;
-+	u64 flags = 0;
-+	u32 doorbell;
-+	int err, i;
-+
-+	if (!udata)
-+		return -EINVAL;
-+
-+	mana_ucontext = rdma_udata_to_drv_context(udata, struct mana_ib_ucontext, ibucontext);
-+	doorbell = mana_ucontext->doorbell;
-+	err = ib_copy_validate_udata_in(udata, ucmd, reserved);
-+	if (err)
-+		return err;
-+
-+	for (i = 0; i < MANA_UC_QUEUE_TYPE_MAX; ++i) {
-+		err = mana_ib_create_queue(mdev, ucmd.queue_buf[i], ucmd.queue_size[i],
-+					   &qp->uc_qp.queues[i]);
-+		if (err)
-+			goto destroy_queues;
-+	}
-+
-+	err = mana_ib_gd_create_uc_qp(mdev, qp, attr, doorbell, flags);
-+	if (err)
-+		goto destroy_queues;
-+
-+	qp->ibqp.qp_num = qp->uc_qp.queues[MANA_UC_RECV_QUEUE_RESPONDER].id;
-+	qp->port = attr->port_num;
-+
-+	for (i = 0; i < MANA_UC_QUEUE_TYPE_MAX; ++i)
-+		resp.queue_id[i] = qp->uc_qp.queues[i].id;
-+
-+	err = ib_copy_to_udata(udata, &resp, min(sizeof(resp), udata->outlen));
-+	if (err)
-+		goto destroy_qp;
-+
-+	err = mana_table_store_qp(mdev, qp);
-+	if (err)
-+		goto destroy_qp;
-+	return 0;
-+destroy_qp:
-+	mana_ib_gd_destroy_rnic_qp(mdev, qp);
-+destroy_queues:
-+	while (i-- > 0)
-+		mana_ib_destroy_queue(mdev, &qp->uc_qp.queues[i]);
-+	return err;
-+}
-+
- static void mana_add_qp_to_cqs(struct mana_ib_qp *qp)
- {
- 	struct mana_ib_cq *send_cq = container_of(qp->ibqp.send_cq, struct mana_ib_cq, ibcq);
-@@ -685,6 +741,8 @@ int mana_ib_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attr,
- 		return mana_ib_create_qp_raw(ibqp, ibqp->pd, attr, udata);
- 	case IB_QPT_RC:
- 		return mana_ib_create_rc_qp(ibqp, ibqp->pd, attr, udata);
-+	case IB_QPT_UC:
-+		return mana_ib_create_uc_qp(ibqp, ibqp->pd, attr, udata);
- 	case IB_QPT_UD:
- 	case IB_QPT_GSI:
- 		return mana_ib_create_ud_qp(ibqp, ibqp->pd, attr, udata);
-@@ -766,6 +824,7 @@ int mana_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- {
- 	switch (ibqp->qp_type) {
- 	case IB_QPT_RC:
-+	case IB_QPT_UC:
- 	case IB_QPT_UD:
- 	case IB_QPT_GSI:
- 		return mana_ib_gd_modify_qp(ibqp, attr, attr_mask, udata);
-@@ -849,13 +908,29 @@ static int mana_ib_destroy_rc_qp(struct mana_ib_qp *qp, struct ib_udata *udata)
- 	/* Ignore return code as there is not much we can do about it.
- 	 * The error message is printed inside.
- 	 */
--	mana_ib_gd_destroy_rc_qp(mdev, qp);
-+	mana_ib_gd_destroy_rnic_qp(mdev, qp);
- 	for (i = 0; i < MANA_RC_QUEUE_TYPE_MAX; ++i)
- 		mana_ib_destroy_queue(mdev, &qp->rc_qp.queues[i]);
- 
- 	return 0;
- }
- 
-+static int mana_ib_destroy_uc_qp(struct mana_ib_qp *qp, struct ib_udata *udata)
-+{
-+	struct mana_ib_dev *mdev =
-+		container_of(qp->ibqp.device, struct mana_ib_dev, ib_dev);
-+	int i;
-+
-+	mana_table_remove_qp(mdev, qp);
-+	/* Ignore return code as there is not much we can do about it.
-+	 * The error message is printed inside.
-+	 */
-+	mana_ib_gd_destroy_rnic_qp(mdev, qp);
-+	for (i = 0; i < MANA_UC_QUEUE_TYPE_MAX; ++i)
-+		mana_ib_destroy_queue(mdev, &qp->uc_qp.queues[i]);
-+	return 0;
-+}
-+
- static int mana_ib_destroy_ud_qp(struct mana_ib_qp *qp, struct ib_udata *udata)
- {
- 	struct mana_ib_dev *mdev =
-@@ -891,6 +966,8 @@ int mana_ib_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
- 		return mana_ib_destroy_qp_raw(qp, udata);
- 	case IB_QPT_RC:
- 		return mana_ib_destroy_rc_qp(qp, udata);
-+	case IB_QPT_UC:
-+		return mana_ib_destroy_uc_qp(qp, udata);
- 	case IB_QPT_UD:
- 	case IB_QPT_GSI:
- 		return mana_ib_destroy_ud_qp(qp, udata);
-diff --git a/include/uapi/rdma/mana-abi.h b/include/uapi/rdma/mana-abi.h
-index a75bf32b8..f844afb6b 100644
---- a/include/uapi/rdma/mana-abi.h
-+++ b/include/uapi/rdma/mana-abi.h
-@@ -57,6 +57,17 @@ struct mana_ib_create_rc_qp_resp {
- 	__u32 queue_id[4];
- };
- 
-+struct mana_ib_create_uc_qp {
-+	__aligned_u64 queue_buf[3];
-+	__u32 queue_size[3];
-+	__u32 reserved;
-+};
-+
-+struct mana_ib_create_uc_qp_resp {
-+	__u32 queue_id[3];
-+	__u32 reserved;
-+};
-+
- struct mana_ib_create_wq {
- 	__aligned_u64 wq_buf_addr;
- 	__u32 wq_buf_size;
+See individual patches for changelog.
+
+v5: https://lore.kernel.org/all/20260517063006.2200680-1-jiri@resnulli.us/
+v4: https://lore.kernel.org/all/20260507125231.2950751-1-jiri@resnulli.us/
+v3: https://lore.kernel.org/all/20260504135731.2345383-1-jiri@resnulli.us/
+v2: https://lore.kernel.org/all/20260411144915.114571-1-jiri@resnulli.us/
+v1: https://lore.kernel.org/all/20260203085003.71184-1-jiri@resnulli.us/
+
+Note this re-works the original patchset trying to handle this:
+https://lore.kernel.org/all/20260203085003.71184-1-jiri@resnulli.us/
+The code is so much different I'm sending this is a new patchset.
+
+Jiri Pirko (15):
+  RDMA/umem: Rename ib_umem_get() to ib_umem_get_va()
+  RDMA/umem: Split ib_umem_get_va() into a thin wrapper around
+    __ib_umem_get_va()
+  RDMA/core: Introduce generic buffer descriptor infrastructure for umem
+  RDMA/umem: Route ib_umem_get_va() through ib_umem_get_attr_or_va()
+  RDMA/uverbs: Push out CQ buffer umem processing into a helper
+  RDMA/uverbs: Add CQ buffer UMEM attribute and driver helpers
+  RDMA/efa: Use ib_umem_get_cq_buf() for user CQ buffer
+  RDMA/mlx5: Use ib_umem_get_cq_buf_or_va() for user CQ buffer
+  RDMA/bnxt_re: Use ib_umem_get_cq_buf_or_va() for user CQ buffer
+  RDMA/mlx4: Use ib_umem_get_cq_buf() for user CQ buffer
+  RDMA/uverbs: Remove legacy umem field from struct ib_cq
+  RDMA/uverbs: Use UMEM attributes for QP creation
+  RDMA/mlx5: Use UMEM attributes for QP buffers in create_qp
+  RDMA/mlx5: Use UMEM attribute for CQ doorbell record
+  RDMA/mlx5: Use UMEM attribute for QP doorbell record
+
+ drivers/infiniband/core/umem.c                | 336 +++++++++++++++++-
+ drivers/infiniband/core/uverbs_cmd.c          |   1 -
+ drivers/infiniband/core/uverbs_ioctl.c        |  28 ++
+ drivers/infiniband/core/uverbs_std_types_cq.c |  73 +---
+ drivers/infiniband/core/uverbs_std_types_qp.c |   6 +
+ drivers/infiniband/core/verbs.c               |   7 -
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c      |  61 ++--
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h      |   1 +
+ drivers/infiniband/hw/cxgb4/mem.c             |   2 +-
+ drivers/infiniband/hw/efa/efa_verbs.c         |  29 +-
+ drivers/infiniband/hw/erdma/erdma_verbs.c     |   6 +-
+ drivers/infiniband/hw/hns/hns_roce_db.c       |   4 +-
+ drivers/infiniband/hw/hns/hns_roce_mr.c       |   4 +-
+ .../infiniband/hw/ionic/ionic_controlpath.c   |  10 +-
+ drivers/infiniband/hw/irdma/verbs.c           |   4 +-
+ drivers/infiniband/hw/mana/main.c             |   2 +-
+ drivers/infiniband/hw/mana/mr.c               |   2 +-
+ drivers/infiniband/hw/mlx4/cq.c               |  56 +--
+ drivers/infiniband/hw/mlx4/doorbell.c         |   4 +-
+ drivers/infiniband/hw/mlx4/mlx4_ib.h          |   1 +
+ drivers/infiniband/hw/mlx4/mr.c               |   4 +-
+ drivers/infiniband/hw/mlx4/qp.c               |   4 +-
+ drivers/infiniband/hw/mlx4/srq.c              |   2 +-
+ drivers/infiniband/hw/mlx5/cq.c               |  41 ++-
+ drivers/infiniband/hw/mlx5/devx.c             |   2 +-
+ drivers/infiniband/hw/mlx5/doorbell.c         |  93 ++++-
+ drivers/infiniband/hw/mlx5/main.c             |   1 +
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |   6 +-
+ drivers/infiniband/hw/mlx5/mr.c               |   6 +-
+ drivers/infiniband/hw/mlx5/qp.c               |  69 +++-
+ drivers/infiniband/hw/mlx5/srq.c              |   4 +-
+ drivers/infiniband/hw/mthca/mthca_provider.c  |   2 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c   |   2 +-
+ drivers/infiniband/hw/qedr/verbs.c            |  13 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c  |   4 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c  |   2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c  |  10 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_srq.c |   2 +-
+ drivers/infiniband/sw/rdmavt/mr.c             |   2 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c            |   2 +-
+ drivers/infiniband/sw/siw/siw_mem.c           |   4 +-
+ include/rdma/ib_umem.h                        |  71 +++-
+ include/rdma/ib_verbs.h                       |   1 -
+ include/rdma/uverbs_ioctl.h                   |  21 ++
+ include/uapi/rdma/ib_user_ioctl_cmds.h        |   4 +
+ include/uapi/rdma/ib_user_ioctl_verbs.h       |  23 ++
+ include/uapi/rdma/mlx5_user_ioctl_cmds.h      |   5 +
+ 47 files changed, 772 insertions(+), 265 deletions(-)
+
 -- 
-2.43.0
+2.54.0
 
 
