@@ -1,171 +1,433 @@
-Return-Path: <linux-rdma+bounces-21031-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21032-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0CcCMk+DDWoTygUAu9opvQ
-	(envelope-from <linux-rdma+bounces-21031-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 11:47:59 +0200
+	id aNW/JfaHDWquygUAu9opvQ
+	(envelope-from <linux-rdma+bounces-21032-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 12:07:50 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D23758B0DB
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 11:47:59 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42EEF58B5A1
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 12:07:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6F548304E42E
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 09:40:41 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 63021303E0DA
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 10:07:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 498EA3CBE96;
-	Wed, 20 May 2026 09:40:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38A6F3D3481;
+	Wed, 20 May 2026 10:07:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I8IFs78V"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="N5/4JIHS"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 564993C9EF0;
-	Wed, 20 May 2026 09:40:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05D813D47B2;
+	Wed, 20 May 2026 10:07:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779270036; cv=none; b=VSSNWWZfPhUn88vQrS2M/BDqZsqFKreCS00qGR0sbCp9Z5gdrjTlMz0emxmXQiFA1JC4qPlK62SDVJcmcX48ZvkzjCrOk3gnvW2iFgbKGOIKTYQDcco9Zqich0JawGDSXTkTcJ/068jAQBCbYJVgNEKsf4QvDwUvUUm92kN9d0Q=
+	t=1779271629; cv=none; b=CTYaJ9plLMPR6LnCd9nNhtfUcKzPl9vaZDUzUy1Qi3XluEtPZj0awzXpx9On9egWCxAQDrrCWuZgKAxzjmVEU4KxcMJescX/HmguBQ0+OPWJGPQtj+RjvJON2Vu+NSQJYPuEuhXwR1HUW9RdNWvusx/r0tuSdhhABA6+Hknf3dI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779270036; c=relaxed/simple;
-	bh=VRZ71Huu8qSFEboEe06ikz+mahJiBdAa//EOmsH9Cuc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aTCRjc/xBT/RMvMg2CjW/96zn9WORfV1FaA1N4TojaNoYkKmZkT/Jkqun+QH/wryTD0Ge3+vGoVBjaF0s7aH4lIW2KMz0dcvG3WYSCvMEzNaeDnWurZx4F3XuGs9fs6n1hc01t6+J+YQwsVTw4cJHH4L8B05D1L/IRK8vWHv+v4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I8IFs78V; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2AA91F000E9;
-	Wed, 20 May 2026 09:40:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779270033;
-	bh=bmSSRx9MxDeEMTFENIR1UVxoLD5eJs49UhDqZFiJazI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=I8IFs78VJpQKZu0Yyyiq2TGAJy3gG6KZGQYaEvZwSjHt21DXQbWtalRrwkmb9YYjz
-	 Zw95zfFN8wIrw6qkLWeqcLr03DX9gtFzgaR0rfqXnnZYLHXGJLuV6aE3FB5Yp0tadb
-	 2lPGEztfqWIdoLjqXZfbRfsnMQU5CmvAVTISvQDIpVnjf0owc92aRsIEIAd6ynZnxo
-	 Tw/I9qpx3VPlQK17Eoa9lVE797eSDEAkooJ7fh659m5JvWp8wnCRLqX6XE9I3ZQJxm
-	 BR/5zSCwV0XTMjFWUqeiMHJx6Yo/haUDU+4+9+TneC8vrjp0Ld/gbxzFC+ZsXrkMqF
-	 qhp3uVGEbfZow==
-Message-ID: <6edd89b0-68f8-4e28-ba7c-7a5df7f47c01@kernel.org>
-Date: Wed, 20 May 2026 19:40:24 +1000
+	s=arc-20240116; t=1779271629; c=relaxed/simple;
+	bh=9PcMChyX4f+GpSW7PESjaDjTWuvfOghf3hFnF/VBGgU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lMKxaRrg10UxsPWWZFzTV1KFzNy23Rbq6mLpDDiKzWw6J1ism1Cq0wWCnbf6YNBrncC10KpuPZod8I9PhhgDudr/7Redy9qqjlo/tyUv4Df/yWWV/O4Sxa+eQWB4jhCKL5zxdcoy8eXLUYxxbVeYmDv4NdReLEKCpVvRiX+tH6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=N5/4JIHS; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1186)
+	id CD85520B7167; Wed, 20 May 2026 03:06:56 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CD85520B7167
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1779271616;
+	bh=wOiwpG2+lFvB4nJUJPU9W/uTBa+0BfNVrzSKfIvl3WQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=N5/4JIHSqb9m9259fZTzKNb4kLgMdFoZuaMpmHuNEV0RnlMwzK9xDeNb25hBELWM9
+	 7qltU+26CLvFHCo08BfIHJXaRuyst9aVq9oBNPB5xMCpYkZziW/dopjm32FS6Baec9
+	 Ni5DxlVOlGYaHTmMe7vAn+BdG0jySGu/92ChUBTo=
+From: Konstantin Taranov <kotaranov@linux.microsoft.com>
+To: kotaranov@microsoft.com,
+	shirazsaleem@microsoft.com,
+	longli@microsoft.com,
+	jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH rdma-next v3 1/1] RDMA/mana_ib: UC QP support for UAPI
+Date: Wed, 20 May 2026 03:06:56 -0700
+Message-ID: <20260520100656.875006-1-kotaranov@linux.microsoft.com>
+X-Mailer: git-send-email 2.43.7
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH net] selftests: rds: config: disable modules
-Content-Language: fr
-To: Allison Henderson <achender@kernel.org>
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- rds-devel@oss.oracle.com, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Shuah Khan <shuah@kernel.org>
-References: <20260520-net-rds-config-modules-v1-1-2100df02fe9a@kernel.org>
- <8a10cffb9bdde6f90f0fd7b00679755a593f2d6e.camel@kernel.org>
-From: Matthieu Baerts <matttbe@kernel.org>
-Autocrypt: addr=matttbe@kernel.org; keydata=
- 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
- lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
-Organization: NGI0 Core
-In-Reply-To: <8a10cffb9bdde6f90f0fd7b00679755a593f2d6e.camel@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21031-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21032-lists,linux-rdma=lfdr.de];
+	TO_DN_NONE(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	HAS_ORG_HEADER(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[matttbe@kernel.org,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[kotaranov@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[run.sh:url,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linux.dev:url]
-X-Rspamd-Queue-Id: 5D23758B0DB
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,linux.microsoft.com:mid,linux.microsoft.com:dkim]
+X-Rspamd-Queue-Id: 42EEF58B5A1
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi Allison,
+From: Konstantin Taranov <kotaranov@microsoft.com>
 
-On 20/05/2026 14:22, Allison Henderson wrote:
-> On Wed, 2026-05-20 at 11:34 +1000, Matthieu Baerts (NGI0) wrote:
->> The run.sh script explicitly checks that CONFIG_MODULES is disabled.
->>
->> By default, this config option is enabled. Explicitly disable it to be
->> able to run the RDS tests.
->>
->> Note that writing '# CONFIG_(...) is not set' is usually recommended to
->> disable an option in the .config, but it looks like selftests usually
->> set 'CONFIG_(...)=n', which looks clearer.
+Implement UC QP creation in the RNIC HW for user API. An UC QP is exposed
+as three work queues: send, receive, and memory management. The latter is
+used for bind and invalidate WQEs to support memory windows.
 
-(...)
-> The fix looks fine to me.  Thanks for catching this.
-Thank you for the review. Note that NIPA is now validating these tests:
+Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+---
+It is a resend of v3
+v3: use new udata helpers
+v2: removed udata check and removed enum from mana-abi.h
+ drivers/infiniband/hw/mana/main.c    | 41 ++++++++++++-
+ drivers/infiniband/hw/mana/mana_ib.h | 41 ++++++++++++-
+ drivers/infiniband/hw/mana/qp.c      | 89 ++++++++++++++++++++++++++--
+ include/uapi/rdma/mana-abi.h         | 11 ++++
+ 4 files changed, 173 insertions(+), 9 deletions(-)
 
-  https://netdev.bots.linux.dev/contest.html?test=run-sh
-  https://netdev.bots.linux.dev/flakes.html?min-flip=0&tn-needle=run-sh
+diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
+index ac5e75dd3..42567c30e 100644
+--- a/drivers/infiniband/hw/mana/main.c
++++ b/drivers/infiniband/hw/mana/main.c
+@@ -978,7 +978,46 @@ int mana_ib_gd_create_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp,
+ 	return 0;
+ }
+ 
+-int mana_ib_gd_destroy_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
++int mana_ib_gd_create_uc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp,
++			    struct ib_qp_init_attr *attr, u32 doorbell, u64 flags)
++{
++	struct mana_ib_cq *send_cq = container_of(qp->ibqp.send_cq, struct mana_ib_cq, ibcq);
++	struct mana_ib_cq *recv_cq = container_of(qp->ibqp.recv_cq, struct mana_ib_cq, ibcq);
++	struct mana_ib_pd *pd = container_of(qp->ibqp.pd, struct mana_ib_pd, ibpd);
++	struct gdma_context *gc = mdev_to_gc(mdev);
++	struct mana_rnic_create_uc_qp_resp resp = {};
++	struct mana_rnic_create_uc_qp_req req = {};
++	int err, i;
++
++	mana_gd_init_req_hdr(&req.hdr, MANA_IB_CREATE_UC_QP, sizeof(req), sizeof(resp));
++	req.hdr.dev_id = mdev->gdma_dev->dev_id;
++	req.adapter = mdev->adapter_handle;
++	req.pd_handle = pd->pd_handle;
++	req.send_cq_handle = send_cq->cq_handle;
++	req.recv_cq_handle = recv_cq->cq_handle;
++	for (i = 0; i < MANA_UC_QUEUE_TYPE_MAX; i++)
++		req.dma_region[i] = qp->uc_qp.queues[i].gdma_region;
++	req.doorbell_page = doorbell;
++	req.max_send_wr = attr->cap.max_send_wr;
++	req.max_recv_wr = attr->cap.max_recv_wr;
++	req.max_send_sge = attr->cap.max_send_sge;
++	req.max_recv_sge = attr->cap.max_recv_sge;
++	req.flags = flags;
++
++	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
++	if (err)
++		return err;
++
++	qp->qp_handle = resp.qp_handle;
++	for (i = 0; i < MANA_UC_QUEUE_TYPE_MAX; i++) {
++		qp->uc_qp.queues[i].id = resp.queue_ids[i];
++		/* The GDMA regions are now owned by the RNIC QP handle */
++		qp->uc_qp.queues[i].gdma_region = GDMA_INVALID_DMA_REGION;
++	}
++	return 0;
++}
++
++int mana_ib_gd_destroy_rnic_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
+ {
+ 	struct mana_rnic_destroy_rc_qp_resp resp = {0};
+ 	struct mana_rnic_destroy_rc_qp_req req = {0};
+diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
+index c9c94e86a..0f21a4b25 100644
+--- a/drivers/infiniband/hw/mana/mana_ib.h
++++ b/drivers/infiniband/hw/mana/mana_ib.h
+@@ -166,6 +166,17 @@ struct mana_ib_rc_qp {
+ 	struct mana_ib_queue queues[MANA_RC_QUEUE_TYPE_MAX];
+ };
+ 
++enum mana_uc_queue_type {
++	MANA_UC_SEND_QUEUE_REQUESTER = 0,
++	MANA_UC_RECV_QUEUE_RESPONDER,
++	MANA_UC_SEND_QUEUE_MMQ,
++	MANA_UC_QUEUE_TYPE_MAX,
++};
++
++struct mana_ib_uc_qp {
++	struct mana_ib_queue queues[MANA_UC_QUEUE_TYPE_MAX];
++};
++
+ enum mana_ud_queue_type {
+ 	MANA_UD_SEND_QUEUE = 0,
+ 	MANA_UD_RECV_QUEUE,
+@@ -184,6 +195,7 @@ struct mana_ib_qp {
+ 	union {
+ 		struct mana_ib_queue raw_sq;
+ 		struct mana_ib_rc_qp rc_qp;
++		struct mana_ib_uc_qp uc_qp;
+ 		struct mana_ib_ud_qp ud_qp;
+ 	};
+ 
+@@ -221,6 +233,7 @@ enum mana_ib_command_code {
+ 	MANA_IB_CREATE_RC_QP    = 0x3000a,
+ 	MANA_IB_DESTROY_RC_QP   = 0x3000b,
+ 	MANA_IB_SET_QP_STATE	= 0x3000d,
++	MANA_IB_CREATE_UC_QP    = 0x30020,
+ 	MANA_IB_QUERY_VF_COUNTERS = 0x30022,
+ 	MANA_IB_QUERY_DEVICE_COUNTERS = 0x30023,
+ };
+@@ -380,6 +393,29 @@ struct mana_rnic_destroy_rc_qp_resp {
+ 	struct gdma_resp_hdr hdr;
+ }; /* HW Data */
+ 
++struct mana_rnic_create_uc_qp_req {
++	struct gdma_req_hdr hdr;
++	mana_handle_t adapter;
++	mana_handle_t pd_handle;
++	mana_handle_t send_cq_handle;
++	mana_handle_t recv_cq_handle;
++	u64 dma_region[MANA_UC_QUEUE_TYPE_MAX];
++	u64 flags;
++	u32 doorbell_page;
++	u32 max_send_wr;
++	u32 max_recv_wr;
++	u32 max_send_sge;
++	u32 max_recv_sge;
++	u32 reserved;
++}; /* HW Data */
++
++struct mana_rnic_create_uc_qp_resp {
++	struct gdma_resp_hdr hdr;
++	mana_handle_t qp_handle;
++	u32 queue_ids[MANA_UC_QUEUE_TYPE_MAX];
++	u32 reserved;
++}; /* HW Data*/
++
+ struct mana_rnic_create_udqp_req {
+ 	struct gdma_req_hdr hdr;
+ 	mana_handle_t adapter;
+@@ -722,8 +758,9 @@ int mana_ib_gd_destroy_cq(struct mana_ib_dev *mdev, struct mana_ib_cq *cq);
+ 
+ int mana_ib_gd_create_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp,
+ 			    struct ib_qp_init_attr *attr, u32 doorbell, u64 flags);
+-int mana_ib_gd_destroy_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp);
+-
++int mana_ib_gd_destroy_rnic_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp);
++int mana_ib_gd_create_uc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp,
++			    struct ib_qp_init_attr *attr, u32 doorbell, u64 flags);
+ int mana_ib_gd_create_ud_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp,
+ 			    struct ib_qp_init_attr *attr, u32 doorbell, u32 type);
+ int mana_ib_gd_destroy_ud_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp);
+diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
+index 645581359..b13449b48 100644
+--- a/drivers/infiniband/hw/mana/qp.c
++++ b/drivers/infiniband/hw/mana/qp.c
+@@ -420,13 +420,13 @@ static enum gdma_queue_type mana_ib_queue_type(struct ib_qp_init_attr *attr, u32
+ 	return type;
+ }
+ 
+-static int mana_table_store_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
++static int mana_table_store_rnic_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
+ {
+ 	return xa_insert_irq(&mdev->qp_table_wq, qp->ibqp.qp_num, qp,
+ 			     GFP_KERNEL);
+ }
+ 
+-static void mana_table_remove_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
++static void mana_table_remove_rnic_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
+ {
+ 	xa_erase_irq(&mdev->qp_table_wq, qp->ibqp.qp_num);
+ }
+@@ -468,7 +468,8 @@ static int mana_table_store_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
+ 
+ 	switch (qp->ibqp.qp_type) {
+ 	case IB_QPT_RC:
+-		return mana_table_store_rc_qp(mdev, qp);
++	case IB_QPT_UC:
++		return mana_table_store_rnic_qp(mdev, qp);
+ 	case IB_QPT_UD:
+ 	case IB_QPT_GSI:
+ 		return mana_table_store_ud_qp(mdev, qp);
+@@ -485,7 +486,8 @@ static void mana_table_remove_qp(struct mana_ib_dev *mdev,
+ {
+ 	switch (qp->ibqp.qp_type) {
+ 	case IB_QPT_RC:
+-		mana_table_remove_rc_qp(mdev, qp);
++	case IB_QPT_UC:
++		mana_table_remove_rnic_qp(mdev, qp);
+ 		break;
+ 	case IB_QPT_UD:
+ 	case IB_QPT_GSI:
+@@ -567,13 +569,67 @@ static int mana_ib_create_rc_qp(struct ib_qp *ibqp, struct ib_pd *ibpd,
+ 	return 0;
+ 
+ destroy_qp:
+-	mana_ib_gd_destroy_rc_qp(mdev, qp);
++	mana_ib_gd_destroy_rnic_qp(mdev, qp);
+ destroy_queues:
+ 	while (i-- > 0)
+ 		mana_ib_destroy_queue(mdev, &qp->rc_qp.queues[i]);
+ 	return err;
+ }
+ 
++static int mana_ib_create_uc_qp(struct ib_qp *ibqp, struct ib_pd *ibpd,
++				struct ib_qp_init_attr *attr, struct ib_udata *udata)
++{
++	struct mana_ib_dev *mdev = container_of(ibpd->device, struct mana_ib_dev, ib_dev);
++	struct mana_ib_qp *qp = container_of(ibqp, struct mana_ib_qp, ibqp);
++	struct mana_ib_create_uc_qp_resp resp = {};
++	struct mana_ib_ucontext *mana_ucontext;
++	struct mana_ib_create_uc_qp ucmd;
++	u64 flags = 0;
++	u32 doorbell;
++	int err, i;
++
++	if (!udata)
++		return -EINVAL;
++
++	mana_ucontext = rdma_udata_to_drv_context(udata, struct mana_ib_ucontext, ibucontext);
++	doorbell = mana_ucontext->doorbell;
++	err = ib_copy_validate_udata_in(udata, ucmd, reserved);
++	if (err)
++		return err;
++
++	for (i = 0; i < MANA_UC_QUEUE_TYPE_MAX; ++i) {
++		err = mana_ib_create_queue(mdev, ucmd.queue_buf[i], ucmd.queue_size[i],
++					   &qp->uc_qp.queues[i]);
++		if (err)
++			goto destroy_queues;
++	}
++
++	err = mana_ib_gd_create_uc_qp(mdev, qp, attr, doorbell, flags);
++	if (err)
++		goto destroy_queues;
++
++	qp->ibqp.qp_num = qp->uc_qp.queues[MANA_UC_RECV_QUEUE_RESPONDER].id;
++	qp->port = attr->port_num;
++
++	for (i = 0; i < MANA_UC_QUEUE_TYPE_MAX; ++i)
++		resp.queue_id[i] = qp->uc_qp.queues[i].id;
++
++	err = ib_copy_to_udata(udata, &resp, min(sizeof(resp), udata->outlen));
++	if (err)
++		goto destroy_qp;
++
++	err = mana_table_store_qp(mdev, qp);
++	if (err)
++		goto destroy_qp;
++	return 0;
++destroy_qp:
++	mana_ib_gd_destroy_rnic_qp(mdev, qp);
++destroy_queues:
++	while (i-- > 0)
++		mana_ib_destroy_queue(mdev, &qp->uc_qp.queues[i]);
++	return err;
++}
++
+ static void mana_add_qp_to_cqs(struct mana_ib_qp *qp)
+ {
+ 	struct mana_ib_cq *send_cq = container_of(qp->ibqp.send_cq, struct mana_ib_cq, ibcq);
+@@ -685,6 +741,8 @@ int mana_ib_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attr,
+ 		return mana_ib_create_qp_raw(ibqp, ibqp->pd, attr, udata);
+ 	case IB_QPT_RC:
+ 		return mana_ib_create_rc_qp(ibqp, ibqp->pd, attr, udata);
++	case IB_QPT_UC:
++		return mana_ib_create_uc_qp(ibqp, ibqp->pd, attr, udata);
+ 	case IB_QPT_UD:
+ 	case IB_QPT_GSI:
+ 		return mana_ib_create_ud_qp(ibqp, ibqp->pd, attr, udata);
+@@ -766,6 +824,7 @@ int mana_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ {
+ 	switch (ibqp->qp_type) {
+ 	case IB_QPT_RC:
++	case IB_QPT_UC:
+ 	case IB_QPT_UD:
+ 	case IB_QPT_GSI:
+ 		return mana_ib_gd_modify_qp(ibqp, attr, attr_mask, udata);
+@@ -849,13 +908,29 @@ static int mana_ib_destroy_rc_qp(struct mana_ib_qp *qp, struct ib_udata *udata)
+ 	/* Ignore return code as there is not much we can do about it.
+ 	 * The error message is printed inside.
+ 	 */
+-	mana_ib_gd_destroy_rc_qp(mdev, qp);
++	mana_ib_gd_destroy_rnic_qp(mdev, qp);
+ 	for (i = 0; i < MANA_RC_QUEUE_TYPE_MAX; ++i)
+ 		mana_ib_destroy_queue(mdev, &qp->rc_qp.queues[i]);
+ 
+ 	return 0;
+ }
+ 
++static int mana_ib_destroy_uc_qp(struct mana_ib_qp *qp, struct ib_udata *udata)
++{
++	struct mana_ib_dev *mdev =
++		container_of(qp->ibqp.device, struct mana_ib_dev, ib_dev);
++	int i;
++
++	mana_table_remove_qp(mdev, qp);
++	/* Ignore return code as there is not much we can do about it.
++	 * The error message is printed inside.
++	 */
++	mana_ib_gd_destroy_rnic_qp(mdev, qp);
++	for (i = 0; i < MANA_UC_QUEUE_TYPE_MAX; ++i)
++		mana_ib_destroy_queue(mdev, &qp->uc_qp.queues[i]);
++	return 0;
++}
++
+ static int mana_ib_destroy_ud_qp(struct mana_ib_qp *qp, struct ib_udata *udata)
+ {
+ 	struct mana_ib_dev *mdev =
+@@ -891,6 +966,8 @@ int mana_ib_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+ 		return mana_ib_destroy_qp_raw(qp, udata);
+ 	case IB_QPT_RC:
+ 		return mana_ib_destroy_rc_qp(qp, udata);
++	case IB_QPT_UC:
++		return mana_ib_destroy_uc_qp(qp, udata);
+ 	case IB_QPT_UD:
+ 	case IB_QPT_GSI:
+ 		return mana_ib_destroy_ud_qp(qp, udata);
+diff --git a/include/uapi/rdma/mana-abi.h b/include/uapi/rdma/mana-abi.h
+index a75bf32b8..f844afb6b 100644
+--- a/include/uapi/rdma/mana-abi.h
++++ b/include/uapi/rdma/mana-abi.h
+@@ -57,6 +57,17 @@ struct mana_ib_create_rc_qp_resp {
+ 	__u32 queue_id[4];
+ };
+ 
++struct mana_ib_create_uc_qp {
++	__aligned_u64 queue_buf[3];
++	__u32 queue_size[3];
++	__u32 reserved;
++};
++
++struct mana_ib_create_uc_qp_resp {
++	__u32 queue_id[3];
++	__u32 reserved;
++};
++
+ struct mana_ib_create_wq {
+ 	__aligned_u64 wq_buf_addr;
+ 	__u32 wq_buf_size;
+-- 
+2.43.0
 
-Note that it might be good to rename the script name, "run.sh" is a bit
-too generic :)
-
-Cheers,
-Matt
 
