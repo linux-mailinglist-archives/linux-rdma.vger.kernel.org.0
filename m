@@ -1,94 +1,81 @@
-Return-Path: <linux-rdma+bounces-21029-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21030-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CFt3IEKADWosyAUAu9opvQ
-	(envelope-from <linux-rdma+bounces-21029-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 11:34:58 +0200
+	id 0I86OGWBDWrUyQUAu9opvQ
+	(envelope-from <linux-rdma+bounces-21030-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 11:39:49 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0262958ADAC
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 11:34:52 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FF9B58AEE9
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 11:39:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DDF493100AAE
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 09:07:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7569E30620FF
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2026 09:37:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4E73B9DA4;
-	Wed, 20 May 2026 09:07:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7EC03C9EEE;
+	Wed, 20 May 2026 09:37:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="g+8UR267"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TX/RVl0s"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33B583B992A
-	for <linux-rdma@vger.kernel.org>; Wed, 20 May 2026 09:07:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21AE43C9888;
+	Wed, 20 May 2026 09:36:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779268057; cv=none; b=BQozpJunzXz1RqLD99qewfacUxFz4yM4UHy1w3gIkLQ317moyuTSCan7/+1O6FDBg133OlYoKjG1b4+J74mejCfCKuRJLPAubXm1xhAO8Ze210wCf3pLTYRToYWJOSAfoz7QqAvhdOQouKVDHMtACZSPjJSaPEa8RLy+U7mPweY=
+	t=1779269818; cv=none; b=KO2IR6gzE7e36aw3D0cWeFekP5kmvykWAU9OmP5rxf0832WTAtYgdN0Vag6yn66A3UZMdfp004pjNlK8HPADUoB6Stvyp/DTqdqMmdVjYOMHJbpHxHMO7eXH0e2JjzJKv1T3ypFdA85ml7vaft7xilbVJUyl8WcQ/vLu5N5OZIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779268057; c=relaxed/simple;
-	bh=iP5C7imm7fNRAObFMVC95SSs33oFyGPjWCCTSxHdBdI=;
+	s=arc-20240116; t=1779269818; c=relaxed/simple;
+	bh=MKx+Ty10TaoeZJ5q8WkDOwfGzFRcJF9CsGFBUgLYLdg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KpX2KFDCqLJBZVFdH5F5F1e4H0JLTRP1hY5xcSv26snX7vGTeovRQePp7lc1HsY/JJgRZJWlGukXWumPllsdJMs67cxbdwaTMRBOBR3r1ONksHoN6091bF/LLyb8DBjzQjPHydB+XwYp+kit7RojBPEN1iTuuKh1QBHajdm6sAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=g+8UR267; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-48909558b3aso48718895e9.0
-        for <linux-rdma@vger.kernel.org>; Wed, 20 May 2026 02:07:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1779268037; x=1779872837; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gEQMzHcSJK36bYzeEQ132N8lU42RWr9NLa9/kvn6vtk=;
-        b=g+8UR267O7pYor3ZZpXRIWRSU2p3D2951aoanWWJoLeLAsgkIV7rjuw0VFmhg4v4nu
-         MuFydlV1i7tMmmXgoBdtNdePOVwomZ2aRASEJuAoZVXDgkBmYEWFkKV8qU0Ws7ipuqds
-         ZGwhueORCnioqfE9S3f2XFRnmbj4wXxgs+kEBP8C5rrAk477w5urg+Z70+b9CLCAXFwH
-         8CBI+Pdx4lB9QHlczE+Gr5kfVY6+g/VHu0JQwLrPw9IrfprXJnbyPL4fsyFfaBS1YPoc
-         RSNvCvpGn7eQSxlEaK7WRyEabSkIbJijgZ4iqoeOKC1Y6D18ZZxStnEHU8kNoCtgzKf1
-         rFkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779268037; x=1779872837;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gEQMzHcSJK36bYzeEQ132N8lU42RWr9NLa9/kvn6vtk=;
-        b=nhHaNjhitiE1C64M3kjNfwbA1N39dZmZeXZ5RhEnoFGvI5JKtbPUg+TnAYvweqNLbm
-         6dOKNErYepHoFu/4LnWzQla4GnRpYDxRDowHgYd9phHjgthiF2o7pxIxHiOa7AZyX5wq
-         S+Dc6Lr+iFWmnFG4BuPMDNs6u9tZ8o6Y4sD+Uhmab6+NI2WFf6J89SnKWVVt7RWOVd7f
-         xAHksU77JLo2Io706xf92Ur0kz7Hu+SEArBsxUG873vJB00XfpHz6dyvW/8EJAotexaq
-         c6C6HSeqtBBeCst89nvFEToCTMZ73fjbepI6bkSuF+FQEe/rQAMdF9JEZdK2ZykEoAtu
-         4ASA==
-X-Gm-Message-State: AOJu0YxFnmARDnvo9u6B0Wo2Oa2fXfz213V7yO3jtp+sZqUvB/ocIjKk
-	Sx2tszEoGE5tbOerby4w9z5y3O3RZ16EGTZZvfbcGT+FBtXLN0Xi7zdiCN9Lu5qX24M=
-X-Gm-Gg: Acq92OEBgdoOcE+eTffVHc7c0G0mU/ZONniUQRLv7DfKr+rQV6Hl7JIh58feRlQhv6I
-	wlQPorH+u1n190WFAwNdiXhCaomkry3Z2mLV+iGUY+pNC3WDc/bAQpLCvWf+avUhHpXZR21DRyD
-	xpn77nUitK3CQof8CQvmB+yTri/1X5bPF+Gw2Aed8++p6DcRXT+unUlTUGaA3MLidk+ljEtHOS9
-	zdLksrzL4R/eoOROuV8tkEJsRkrO5GfoF73M4YtkLoPQAoKUqmX0bHpf55EPY8Iyr1b0pYNm3Av
-	HCqKzYxVT9RXpnvt7+rbk2Z/lgJ9tdf3huZJ3jmnlJzOWpmhjTTuO8h2wRdD2Bl1WOzGufQswdA
-	TsBHIemkYXtQiSOJP9/RWhmLJHKfWlYfmo8/vN9L0hANl+nx44SsXww9+xrjZLyxuwF9QwrDV2t
-	BeY88K6SdjVetQbSkrIVSCaMJh5hzMkY30XhE6okqq6Po9
-X-Received: by 2002:a05:600d:10:b0:48f:e230:2a21 with SMTP id 5b1f17b1804b1-48fe662fd6bmr295172935e9.32.1779268036624;
-        Wed, 20 May 2026 02:07:16 -0700 (PDT)
-Received: from FV6GYCPJ69 ([77.236.223.163])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48fe5ab527asm429157625e9.11.2026.05.20.02.07.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2026 02:07:15 -0700 (PDT)
-Date: Wed, 20 May 2026 11:07:13 +0200
-From: Jiri Pirko <jiri@resnulli.us>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: linux-rdma@vger.kernel.org, jgg@ziepe.ca, mrgolin@amazon.com, 
-	gal.pressman@linux.dev, sleybo@amazon.com, parav@nvidia.com, mbloch@nvidia.com, 
-	yanjun.zhu@linux.dev, marco.crivellari@suse.com, roman.gushchin@linux.dev, 
-	phaddad@nvidia.com, lirongqing@baidu.com, ynachum@amazon.com, 
-	huangjunxian6@hisilicon.com, kalesh-anakkur.purayil@broadcom.com, ohartoov@nvidia.com, 
-	michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com, 
-	sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com
-Subject: Re: [PATCH rdma-next v5 00/15] RDMA: Introduce generic buffer
- descriptor infrastructure for umem
-Message-ID: <ag15o11ZvBNYqRIC@FV6GYCPJ69>
-References: <20260517063006.2200680-1-jiri@resnulli.us>
- <20260518133054.GU33515@unreal>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bXqXyxfhRM/FRWEhnBr8h7lMLklF31INzxbJeTR2JR+E9xwZecer2nVwN47p90M6sSq+Wf/VWQtlwk4vDUjSrskYahwKepex5OihpCqinrrtEkhlsB8pQs6N4o8An2BpgncRMmS3nUUw9U1H4ZgOIKlC/5+hSxKuRc9YNhXBjbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TX/RVl0s; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1779269814; x=1810805814;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=MKx+Ty10TaoeZJ5q8WkDOwfGzFRcJF9CsGFBUgLYLdg=;
+  b=TX/RVl0stWQkNEymj3Za5b/AERonXgxSKIc4fMUTMttIuOPy+GmtVJ9H
+   ui32rP2xS9t0dqgKiBoLIx1gIvSncgKAr4gjGA15yQQh1PLKmVmZqtyHf
+   IcT1UvcdsAvrvZu7dB63ykv5ISHlCXWqEwFzyB4s3Zj6mW31x01qdrtcG
+   ghJcuaMow2S1knCXMbfW/ne9TgaCoGN+F5BcQ0aJ551jIE8pOn0nREhvu
+   YNxZnTMxa40F98vf9RGec+yH81mniYjJ8wrPMZgqlCBKjeNNnwmyArlt8
+   JU4nEwXkgHCTqa4zhkQw7YfHp7MRcK04uYYKYDaJTsQZSCF/yCPd14ugj
+   g==;
+X-CSE-ConnectionGUID: AqC7veb8Q064/jCKgdW/+A==
+X-CSE-MsgGUID: o7Tc+bnLTGGpTPYI7qpXxA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11791"; a="79310765"
+X-IronPort-AV: E=Sophos;i="6.23,244,1770624000"; 
+   d="scan'208";a="79310765"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2026 02:36:53 -0700
+X-CSE-ConnectionGUID: ZmIhuF4bRAyagXLFbJ3g+Q==
+X-CSE-MsgGUID: j2qBrrkfT1Ou413/Rh0Dww==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,244,1770624000"; 
+   d="scan'208";a="239113754"
+Received: from lkp-server02.sh.intel.com (HELO 30e86e9c1927) ([10.239.97.151])
+  by orviesa006.jf.intel.com with ESMTP; 20 May 2026 02:36:51 -0700
+Received: from kbuild by 30e86e9c1927 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1wPdLf-000000002v7-3LdC;
+	Wed, 20 May 2026 09:36:24 +0000
+Date: Wed, 20 May 2026 17:35:48 +0800
+From: kernel test robot <lkp@intel.com>
+To: Arnd Bergmann <arnd@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Arnd Bergmann <arnd@arndb.de>,
+	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/core: remove extraneous dummy helper functions
+Message-ID: <202605201724.StvoCZ6d-lkp@intel.com>
+References: <20260519203629.1341667-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -97,90 +84,75 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260518133054.GU33515@unreal>
+In-Reply-To: <20260519203629.1341667-1-arnd@kernel.org>
 X-Spamd-Result: default: False [-1.16 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
-	TAGGED_FROM(0.00)[bounces-21029-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[23];
+	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[intel.com:+];
+	TAGGED_FROM(0.00)[bounces-21030-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DMARC_DNSFAIL(0.00)[resnulli.us : query timed out];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 0262958ADAC
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,intel.com:email,intel.com:mid,intel.com:dkim]
+X-Rspamd-Queue-Id: 5FF9B58AEE9
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Mon, May 18, 2026 at 03:30:54PM +0200, leon@kernel.org wrote:
->On Sun, May 17, 2026 at 08:29:51AM +0200, Jiri Pirko wrote:
->> From: Jiri Pirko <jiri@nvidia.com>
->> 
->> This patchset introduces a generic buffer descriptor infrastructure
->> for passing memory buffers (dma-buf or user VA) to uverbs commands,
->> and wires it up for CQ and QP creation in the uverbs core, efa, mlx5,
->> bnxt_re and mlx4 drivers.
->> 
->> Instead of adding ad-hoc per-buffer UAPI attributes for each new buffer
->> type, each command declares dedicated UVERBS_ATTR_UMEM attributes that
->> carry one buffer descriptor each. Each descriptor specifies a buffer
->> type, covering both VA and dma-buf. A consumption check ensures
->> userspace and driver agree on which attributes are used.
->> 
->> The patchset:
->> 1-2,4. Plumbing: rename ib_umem_get() to ib_umem_get_va() and re-route
->>    it through the new central ib_umem_get(); no behaviour change.
->> 3. Introduces the core buffer descriptor infrastructure and UAPI.
->> 5. Factors out CQ buffer umem processing into a helper.
->> 6. Adds the CQ buffer UMEM attribute and driver wrappers.
->> 7-10. Converts efa, mlx5, bnxt_re and mlx4 to use the new CQ helpers,
->>    with drivers taking umem ownership.
->> 11. Removes the legacy umem field from struct ib_cq, now that all
->>    drivers use the new helpers.
->> 12. Adds optional whole-QP, RQ and SQ UMEM attributes to QP creation.
->> 13. Converts mlx5 QP creation to use the new attributes.
->> 14-15. Adds mlx5 driver-namespace UMEM attributes for CQ and QP
->>    doorbell records.
->> 
->> ---
->> Based on top of: https://lore.kernel.org/all/0-v1-045258567bd6+9fe-ib_uverbs_support_ko_jgg@nvidia.com/
->
->The overall approach looks sane to me.
->
->I have a few minor comments, mostly related to how I expect the
->ib_umem_get_*() helpers to be used:
->
->1. We should hide the ib_umem_get() function and export only
->   ib_umem_get_va(), ib_umem_get_attr(), and
->   ib_umem_get_attr_or_va(). I do not want to see drivers relying on
->   ib_umem_get() again.
->
->2. Pass a struct uverbs_attr_bundle *attrs instead of struct ib_udata
->   *udata to ib_umem_get().
->
->3. Consider simplifying ib_umem_get() further by passing in the desc.
->   I am not fully convinced it helps, but it could allow handling
->   va_fallback outside of ib_umem_get().
+Hi Arnd,
 
-Okay, addressing all of that in v6.
+kernel test robot noticed the following build errors:
 
-Thanks!
+[auto build test ERROR on v7.1-rc4]
+[also build test ERROR on linus/master]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Arnd-Bergmann/RDMA-core-remove-extraneous-dummy-helper-functions/20260520-044317
+base:   v7.1-rc4
+patch link:    https://lore.kernel.org/r/20260519203629.1341667-1-arnd%40kernel.org
+patch subject: [PATCH] RDMA/core: remove extraneous dummy helper functions
+config: hexagon-randconfig-002-20260520 (https://download.01.org/0day-ci/archive/20260520/202605201724.StvoCZ6d-lkp@intel.com/config)
+compiler: clang version 23.0.0git (https://github.com/llvm/llvm-project 5bac06718f502014fade905512f1d26d578a18f3)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260520/202605201724.StvoCZ6d-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202605201724.StvoCZ6d-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> ld.lld: error: undefined symbol: _ib_copy_validate_udata_in
+   >>> referenced by siw_verbs.c:1373 (drivers/infiniband/sw/siw/siw_verbs.c:1373)
+   >>>               drivers/infiniband/sw/siw/siw_verbs.o:(siw_reg_user_mr) in archive vmlinux.a
+   >>> referenced by siw_verbs.c:1373 (drivers/infiniband/sw/siw/siw_verbs.c:1373)
+   >>>               drivers/infiniband/sw/siw/siw_verbs.o:(siw_reg_user_mr) in archive vmlinux.a
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for MFD_STMFX
+   Depends on [n]: HAS_IOMEM [=y] && I2C [=y] && OF [=n]
+   Selected by [y]:
+   - PINCTRL_STMFX [=y] && PINCTRL [=y] && I2C [=y] && HAS_IOMEM [=y]
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
