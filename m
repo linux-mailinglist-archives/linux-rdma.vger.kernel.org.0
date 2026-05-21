@@ -1,546 +1,194 @@
-Return-Path: <linux-rdma+bounces-21141-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21142-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6Lf+JDuGD2p0NAYAu9opvQ
-	(envelope-from <linux-rdma+bounces-21141-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 00:24:59 +0200
+	id QEsaMp+ND2pdNQYAu9opvQ
+	(envelope-from <linux-rdma+bounces-21142-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 00:56:31 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC9595AC55A
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 00:24:58 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D30B85AC7CB
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 00:56:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 12769302BDE5
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 May 2026 22:24:47 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id B20B4300B8D3
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 May 2026 22:56:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AD583624B8;
-	Thu, 21 May 2026 22:24:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shazbot.org header.i=@shazbot.org header.b="mqaQyKe6";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="XVeaHwM6"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA85836997A;
+	Thu, 21 May 2026 22:56:23 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f79.google.com (mail-oa1-f79.google.com [209.85.160.79])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2BC1A9B58;
-	Thu, 21 May 2026 22:24:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD72036683B
+	for <linux-rdma@vger.kernel.org>; Thu, 21 May 2026 22:56:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.79
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779402284; cv=none; b=lGwDzrzQ5/yCdEGh6dEmp8iO8qH3csRBaF8ZKhcfgCd/qMXltuSrqol+v/N3Jed9ttmKK46HOfmw1yY+hwzWTThnTxUMqDMGn6sBL3V6a5dKx/K5aYTSTnf6q/Ld4Lesw6HToTCRUPoJVdO/N2wwlx5XP52qAJzfn+6Hu+XTa/U=
+	t=1779404183; cv=none; b=tl3f7qMDevGH3TIDYKeLmunnLIr5d/56fA2Prc+3p+jh8AxoUAosd+35EieQTMpQniBXQZ70f3S8KlecQys8evaoM6IHtmltcelFjby5Li0XluUGcR1fGr2CUCPblB2B2jHCcbvi/aPOu0fLdyfpzjuq1+Jz6qITvqeL9JBd4CQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779402284; c=relaxed/simple;
-	bh=ZkZNySfc+JZP7BIMuTVeYVh1G5jAV5afGX24S+rsrR0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=q+NE3LGmCu7m55GuBreK7AQ2fVEKLhWyszawt8ZdTo7D4XCh2w3hYMEX7xKJ1c5Tkqsbh5+2zh6cczkHEZqNxn8dadpCXWFv1ay+K2sRkwsPdy9uecTT51oXFYcN4k260dRVOhzGFjz9pwcCgaCT/b9SnvsWBH+eSZ6Bh1NrxJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shazbot.org; spf=pass smtp.mailfrom=shazbot.org; dkim=pass (2048-bit key) header.d=shazbot.org header.i=@shazbot.org header.b=mqaQyKe6; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=XVeaHwM6; arc=none smtp.client-ip=202.12.124.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shazbot.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shazbot.org
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfout.stl.internal (Postfix) with ESMTP id 3E7251D00081;
-	Thu, 21 May 2026 18:24:40 -0400 (EDT)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Thu, 21 May 2026 18:24:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shazbot.org; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1779402280;
-	 x=1779488680; bh=7jolSoc5xzaKtei7c0bKGfi2PyAu6NwKiCmKyaxCEFc=; b=
-	mqaQyKe6C3vrBTmWJGh9fVaOWbgoWASNHGrIaJln7nXei7LRICrlbItUiPYkukg1
-	AAbfL4nrYtcsVrohsWB4+Ybsh8WDrmTtIz3tEL2XDIe/XUElNL4d9ap1fGF3NNXz
-	1aPOaWlnUHTK/iQt1ZEfL9DQexG1Yp/GM2ZjQ6jHEdjL66onnxRhKf//1yNBsw0N
-	DdoNbmuWQP2k6sPhOlkReiwx+I0T80Vtq8fSsiKfL0/dV/CY/pgrrl8j7df03nKx
-	fRWKJeDXJz62Y0GhWm1I11hzDW9+cZQ1RUozs3LUyMZj0talAcchAmsCzXX15laj
-	BkffJRDPEkrhpPhjLwLDBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1779402280; x=
-	1779488680; bh=7jolSoc5xzaKtei7c0bKGfi2PyAu6NwKiCmKyaxCEFc=; b=X
-	VeaHwM6BNeAxs5ldFBJ2txxXYsugjwMeP+mZhXhROxAb61Zag7GuW6Kphmj/uhUP
-	qiWW9Zn85/QCQKVRVmvK7bHyTessZ+hE9/MK7v3kjvbn6u5PIlc2xcvE4oKVWnSf
-	W2/QFm6UHjRcbGHpZGPxYL0bfaTuabCle+le9sDlqc/Zcp8BViOLEall91G0xLZk
-	TD5pkJaDvifoa1AeQP3SwmOCn9ZOKvDfKyMCZwXJ0R44VJmxdWJDqKnXBEm3v5bW
-	7cpG6ARCWYDzKFyXJjqQipLX2VoiRv4sXOj6CIE2HfGTB8exPTDYxUfLs8F1/F5s
-	J1xsOoN2QIaNpXLAAUuLg==
-X-ME-Sender: <xms:J4YPaukgnmNTcTKoOkzYsM8x2rn5vEp8nwqga_RzF2hj0c4tQ6koXw>
-    <xme:J4YParCgMRH224NeIWGrVfL4OhR5KDzj25oOxFzxc6_dmuguFwSNQc9GtgJDO9-2o
-    MzfjlT09Ld6d86MGgpKSyqZ0J0gfLC39nDXBoV-QYGCEUOiM0ReYA>
-X-ME-Received: <xmr:J4YPagATKsrXswZA5KNXMLscqcNtCipUACZrGJr0JsvpY0_I0-PeY5DkPqk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgddugeekjedtucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkjghfofggtgfgsehtjeertdertddvnecuhfhrohhmpeetlhgvgicu
-    hghilhhlihgrmhhsohhnuceorghlvgigsehshhgriigsohhtrdhorhhgqeenucggtffrrg
-    htthgvrhhnpedvkeefjeekvdduhfduhfetkedugfduieettedvueekvdehtedvkefgudeg
-    veeuueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grlhgvgiesshhhrgiisghothdrohhrghdpnhgspghrtghpthhtohepudefpdhmohguvgep
-    shhmthhpohhuthdprhgtphhtthhopeiihhhiphhinhhgiiesmhgvthgrrdgtohhmpdhrtg
-    hpthhtohepjhhgghesiihivghpvgdrtggrpdhrtghpthhtoheplhgvohhnsehkvghrnhgv
-    lhdrohhrghdprhgtphhtthhopehhvghlghgrrghssehkvghrnhgvlhdrohhrghdprhgtph
-    htthhopehkvhhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhu
-    gidqrhgumhgrsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugi
-    dqphgtihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehnvghtuggvvhes
-    vhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurhhiqdguvghvvghlsehlih
-    hsthhsrdhfrhgvvgguvghskhhtohhprdhorhhg
-X-ME-Proxy: <xmx:J4YPaiFWGgOh0m_ohvj4pxxN7MaoiPkbDA2d7AdDOQG9jEfGDthQtQ>
-    <xmx:J4YPan7lf-JmCAlDD58VwiWL1wTWROxTIOMOJoVbCRcagAuKJ44PvQ>
-    <xmx:J4YPapRqrG0AHiU9lVPWXVGsjHb7jgK-oW2jejTixHMqwue0izHM4g>
-    <xmx:J4YPai7qVXWjh-eIgNfe_XvB7Dud7ADmdVyKIx3P4tN5XynJDQkyUQ>
-    <xmx:KIYPatD_uSA_QuIg5emqSgilXCTSNWmvMRjt-M012kvAZ13y2vVybVtU>
-Feedback-ID: i03f14258:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 21 May 2026 18:24:38 -0400 (EDT)
-Date: Thu, 21 May 2026 16:24:37 -0600
-From: Alex Williamson <alex@shazbot.org>
-To: Zhiping Zhang <zhipingz@meta.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Bjorn
- Helgaas <helgaas@kernel.org>, <kvm@vger.kernel.org>,
- <linux-rdma@vger.kernel.org>, <linux-pci@vger.kernel.org>,
- <netdev@vger.kernel.org>, <dri-devel@lists.freedesktop.org>, Keith Busch
- <kbusch@kernel.org>, Yochai Cohen <yochai@nvidia.com>, Yishai Hadas
- <yishaih@nvidia.com>, alex@shazbot.org
-Subject: Re: [PATCH v4 1/3] vfio: add dma-buf get_tph callback and
- DMA_BUF_TPH feature
-Message-ID: <20260521162437.406085db@shazbot.org>
-In-Reply-To: <20260521160412.4fa75406@shazbot.org>
-References: <20260519201401.1558410-1-zhipingz@meta.com>
-	<20260519201401.1558410-2-zhipingz@meta.com>
-	<20260521160412.4fa75406@shazbot.org>
-X-Mailer: Claws Mail 4.3.1 (GTK 3.24.51; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1779404183; c=relaxed/simple;
+	bh=woFJNG+AkIhIjdrUa3L5vqm1iAVDH/ulwz2H+d6Dlac=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=EFsCk9fy3Xe1Q/RHBWHNDVF3uHZTMsaU/Wu3i9H09FZiHSL3Ts4k1sasJslqIzbin0qr2LufTBW6Sen+n8LYW4NRqYyP2wvy9odBFXe9P6HWh9Fb1dm3eRHBFyGStuMycQWfJ5LKKLc1gRY2ADLHp5lgA5hHYtYzY/5+uSFNY9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.160.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oa1-f79.google.com with SMTP id 586e51a60fabf-4346755f7dcso12229599fac.3
+        for <linux-rdma@vger.kernel.org>; Thu, 21 May 2026 15:56:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779404181; x=1780008981;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wKcggRR9OaSzW53BRXT7XgtoSulSO0zV7NnoewwOLLk=;
+        b=lSwD0+J20EeDj/MFzhnQP5m37Jum21iv93gIJL2yW7Ui6n9sDmLioRGAcGrfJzsJqi
+         L2KHNVjDSWDqyU76UHT23NLQ+L1aE3OUl8OVyUNicg6QxRmPycTjNdpK74YA6G45Kh/T
+         5eAJ4uLTNEI/Hw/JSPsP0yh5K/nIggetrL3ll5WOmPivy1/inqrARZSWojtNs5rvu7qZ
+         Bu3VthA8NJSwnebGH6CR3VStShMAbVgnDRi/ZBeKyAvJJcvf5TYSaDtkOMgJYaq8pNFj
+         JlyjsNsNcXe/kkBk2ijj78XfwR1kevVFIPfAVt1t5KWrKYRiLM+VjoCYY99QE6p3XrSe
+         pv3w==
+X-Forwarded-Encrypted: i=1; AFNElJ+AC6UeoJIBaWalpsFgtMqCQHtywYMo2wuinlVWIMbkeI7oHXTd2cUYNXRMrgFIKL68+VgvvRpx5OVA@vger.kernel.org
+X-Gm-Message-State: AOJu0YzFEYsqFdtKMpSbEH0r8iCAuDTiElDr4GBjHRy4kk7P5wgSL9nR
+	qkzjBpionaUvonY7y6JL5fRDV7+SV0BUXiBdwGcxjiGDI+/24DU6qpQw6qHGlS0HzUGUIUjbOQc
+	1o/OlFCcWlDQ9EPO0ouiHeLWTMg2YTM/7RTjufzhVFP7UnEZDHlPX+ymKWNs=
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Received: by 2002:a05:6820:998:b0:69d:7dbc:19b1 with SMTP id
+ 006d021491bc7-69d7ed29503mr687622eaf.55.1779404180791; Thu, 21 May 2026
+ 15:56:20 -0700 (PDT)
+Date: Thu, 21 May 2026 15:56:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6a0f8d94.050a0220.6b33c.0000.GAE@google.com>
+Subject: [syzbot] [rds?] KCSAN: data-race in rds_poll / rds_sendmsg
+From: syzbot <syzbot+fbf3648ae7f5bdb05c59@syzkaller.appspotmail.com>
+To: achender@kernel.org, allison.henderson@oracle.com, davem@davemloft.net, 
+	edumazet@google.com, horms@kernel.org, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	netdev@vger.kernel.org, pabeni@redhat.com, rds-devel@oss.oracle.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spamd-Result: default: False [-0.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[shazbot.org,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[shazbot.org:s=fm2,messagingengine.com:s=fm3];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=2e40c0f41e01837e];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	TAGGED_FROM(0.00)[bounces-21141-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[shazbot.org:+,messagingengine.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-21142-lists,linux-rdma=lfdr.de,fbf3648ae7f5bdb05c59];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	SUBJECT_HAS_QUESTION(0.00)[];
+	REDIRECTOR_URL(0.00)[goo.gl];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alex@shazbot.org,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	TO_DN_NONE(0.00)[];
+	R_DKIM_NA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[shazbot.org:email,shazbot.org:mid,shazbot.org:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,meta.com:email,set_tph.ph:url,messagingengine.com:dkim]
-X-Rspamd-Queue-Id: EC9595AC55A
+	DBL_BLOCKED_OPENRESOLVER(0.00)[googlegroups.com:email,appspotmail.com:email,storage.googleapis.com:url]
+X-Rspamd-Queue-Id: D30B85AC7CB
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, 21 May 2026 16:04:12 -0600
-Alex Williamson <alex@shazbot.org> wrote:
+Hello,
 
-> On Tue, 19 May 2026 13:13:49 -0700
-> Zhiping Zhang <zhipingz@meta.com> wrote:
-> 
-> > Add a dma-buf get_tph callback for exporters to return TPH
-> > (TLP Processing Hints) metadata, and add VFIO_DEVICE_FEATURE_DMA_BUF_TPH
-> > so userspace can attach that metadata to a VFIO-exported dma-buf.  
-> 
-> This should be two patches, the first extending the dma-buf framework
-> for the get_tph callback for explicit approval from dma-buf maintainers
-> (who are not even copied here).  The second the vfio-pci implementation
-> of get_tph.
->  
-> > 8-bit ST and 16-bit Extended ST are distinct PCIe TPH namespaces; the
-> > uAPI carries both with explicit validity flags so importers get the
-> > value matching their requested width. SET is write-once per dma-buf;
-> > the existing VFIO_DEVICE_FEATURE_DMA_BUF uAPI is unchanged.  
-> 
-> I didn't see what motivated this write-once change, I thought we
-> understood that it was a userspace problem that the tph values need to
-> be set before providing the dma-buf fd to the importer and that races
-> relative to that are a userspace ordering problem.  Write-once seems
-> unnecessarily restrictive and there's no justification provided here.
->  
-> > Signed-off-by: Zhiping Zhang <zhipingz@meta.com>
-> > ---
-> >  drivers/vfio/pci/vfio_pci_core.c   |   3 +
-> >  drivers/vfio/pci/vfio_pci_dmabuf.c | 134 +++++++++++++++++++++++++++--
-> >  drivers/vfio/pci/vfio_pci_priv.h   |  12 +++
-> >  include/linux/dma-buf.h            |  21 +++++
-> >  include/uapi/linux/vfio.h          |  35 ++++++++
-> >  5 files changed, 198 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-> > index 3f8d093aacf8..94aa6dd95701 100644
-> > --- a/drivers/vfio/pci/vfio_pci_core.c
-> > +++ b/drivers/vfio/pci/vfio_pci_core.c
-> > @@ -1534,6 +1534,9 @@ int vfio_pci_core_ioctl_feature(struct vfio_device *device, u32 flags,
-> >  		return vfio_pci_core_feature_token(vdev, flags, arg, argsz);
-> >  	case VFIO_DEVICE_FEATURE_DMA_BUF:
-> >  		return vfio_pci_core_feature_dma_buf(vdev, flags, arg, argsz);
-> > +	case VFIO_DEVICE_FEATURE_DMA_BUF_TPH:
-> > +		return vfio_pci_core_feature_dma_buf_tph(vdev, flags, arg,
-> > +							 argsz);
-> >  	default:
-> >  		return -ENOTTY;
-> >  	}
-> > diff --git a/drivers/vfio/pci/vfio_pci_dmabuf.c b/drivers/vfio/pci/vfio_pci_dmabuf.c
-> > index f87fd32e4a01..be1c65385670 100644
-> > --- a/drivers/vfio/pci/vfio_pci_dmabuf.c
-> > +++ b/drivers/vfio/pci/vfio_pci_dmabuf.c
-> > @@ -19,7 +19,24 @@ struct vfio_pci_dma_buf {
-> >  	u32 nr_ranges;
-> >  	struct kref kref;
-> >  	struct completion comp;
-> > -	u8 revoked : 1;
-> > +	/*
-> > +	 * TPH metadata published by VFIO_DEVICE_FEATURE_DMA_BUF_TPH and
-> > +	 * consumed by the @get_tph dma-buf callback.
-> > +	 *
-> > +	 * @tph_flags is the publish/consume gate: writers populate
-> > +	 * @steering_tag, @steering_tag_ext and @ph first, then store
-> > +	 * @tph_flags with smp_store_release(); readers do
-> > +	 * smp_load_acquire(&tph_flags) before accessing the value fields.
-> > +	 * @tph_flags == 0 means "TPH not set". Writers publish a non-zero
-> > +	 * value only once per dma-buf and serialize via vdev->memory_lock;
-> > +	 * readers stay lockless to avoid AB-BA against the dma_resv_lock held
-> > +	 * by importers.
-> > +	 */  
-> 
-> Can you outline the ABBA hazard, I'm not seeing it.  You're acquiring
-> memory_lock in the feature SET and dma_resv_lock doesn't appear to be
-> held when calling .get_tph().  There's a lot of lockless complication
-> here balanced on this claim of avoiding a hazard that doesn't appear
-> present.
-> 
-> > +	u32 tph_flags;
-> > +	u16 steering_tag_ext;
-> > +	u8 steering_tag;
-> > +	u8 ph;
-> > +	bool revoked;  
-> 
-> If we still used memory_lock for tph, these could be:
-> 
-> 	u8 tph_st_valid:1; /* memory_lock */
-> 	u8 tph_st_ext_valid:1; /* memory_lock */
-> 	u8 tph_ph:2; /* memory_lock */
-> 	u8 tph_st;
-> 	u16 tph_st_ext;
-> 	u8 revoked:1; /* dma_resv_lock */
-> 
-> The existing change of @revoked from bitfield to bool has no rationale
-> noted for it in the commit log.
+syzbot found the following issue on:
 
-On second thought, what dependency does anything here have on
-memory_lock?  I think we're jumping through hoops to avoid a lock we
-don't even need.  If we just want to serialize SET vs get_tph we could
-have a mutex on the dma-buf structure, or use RCU if we want to manage
-it locklessly and make sure get_tph always sees a fully consistent set
-of values.  Thanks,
+HEAD commit:    e5d505e3664b Merge tag 'trace-v7.1-rc3' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=144d37ba580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2e40c0f41e01837e
+dashboard link: https://syzkaller.appspot.com/bug?extid=fbf3648ae7f5bdb05c59
+compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
 
-Alex
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> >  };
-> >  
-> >  static int vfio_pci_dma_buf_attach(struct dma_buf *dmabuf,
-> > @@ -69,6 +86,36 @@ vfio_pci_dma_buf_map(struct dma_buf_attachment *attachment,
-> >  	return ret;
-> >  }
-> >  
-> > +static int vfio_pci_dma_buf_get_tph(struct dma_buf *dmabuf, u16 *steering_tag,
-> > +				    u8 *ph, u8 st_width)
-> > +{
-> > +	struct vfio_pci_dma_buf *priv = dmabuf->priv;
-> > +	u32 flags;
-> > +
-> > +	/* Pair with the smp_store_release() in VFIO_DEVICE_FEATURE_DMA_BUF_TPH. */
-> > +	flags = smp_load_acquire(&priv->tph_flags);
-> > +	if (!flags)
-> > +		return -EOPNOTSUPP;
-> > +
-> > +	switch (st_width) {
-> > +	case 8:
-> > +		if (!(flags & VFIO_DMA_BUF_TPH_ST))
-> > +			return -EOPNOTSUPP;
-> > +		*steering_tag = priv->steering_tag;
-> > +		break;
-> > +	case 16:
-> > +		if (!(flags & VFIO_DMA_BUF_TPH_ST_EXT))
-> > +			return -EOPNOTSUPP;
-> > +		*steering_tag = priv->steering_tag_ext;
-> > +		break;
-> > +	default:
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	*ph = priv->ph;
-> > +	return 0;
-> > +}
-> > +
-> >  static void vfio_pci_dma_buf_unmap(struct dma_buf_attachment *attachment,
-> >  				   struct sg_table *sgt,
-> >  				   enum dma_data_direction dir)
-> > @@ -84,16 +131,17 @@ static void vfio_pci_dma_buf_unmap(struct dma_buf_attachment *attachment,
-> >  static void vfio_pci_dma_buf_release(struct dma_buf *dmabuf)
-> >  {
-> >  	struct vfio_pci_dma_buf *priv = dmabuf->priv;
-> > +	struct vfio_pci_core_device *vdev = READ_ONCE(priv->vdev);
-> >  
-> >  	/*
-> >  	 * Either this or vfio_pci_dma_buf_cleanup() will remove from the list.
-> >  	 * The refcount prevents both.
-> >  	 */
-> > -	if (priv->vdev) {
-> > -		down_write(&priv->vdev->memory_lock);
-> > +	if (vdev) {
-> > +		down_write(&vdev->memory_lock);
-> >  		list_del_init(&priv->dmabufs_elm);
-> > -		up_write(&priv->vdev->memory_lock);
-> > -		vfio_device_put_registration(&priv->vdev->vdev);
-> > +		up_write(&vdev->memory_lock);
-> > +		vfio_device_put_registration(&vdev->vdev);
-> >  	}
-> >  	kfree(priv->phys_vec);
-> >  	kfree(priv);  
-> 
-> 
-> This seems unnecessary.  I think this is just because priv->vdev is now
-> (unnecessarily) set via WRITE_ONCE, right?  These are very well ordered
-> paths, prior to exposing the dma-buf, while the device is opened, during
-> release, after release. They don't seem to need the READ/WRITE_ONCE
-> treatment.  This looks like noise from trying to make it lockless.
-> 
-> 
-> > @@ -101,6 +149,7 @@ static void vfio_pci_dma_buf_release(struct dma_buf *dmabuf)
-> >  
-> >  static const struct dma_buf_ops vfio_pci_dmabuf_ops = {
-> >  	.attach = vfio_pci_dma_buf_attach,
-> > +	.get_tph = vfio_pci_dma_buf_get_tph,
-> >  	.map_dma_buf = vfio_pci_dma_buf_map,
-> >  	.unmap_dma_buf = vfio_pci_dma_buf_unmap,
-> >  	.release = vfio_pci_dma_buf_release,
-> > @@ -269,7 +318,7 @@ int vfio_pci_core_feature_dma_buf(struct vfio_pci_core_device *vdev, u32 flags,
-> >  		goto err_free_priv;
-> >  	}
-> >  
-> > -	priv->vdev = vdev;
-> > +	WRITE_ONCE(priv->vdev, vdev);
-> >  	priv->nr_ranges = get_dma_buf.nr_ranges;
-> >  	priv->size = length;
-> >  	ret = vdev->pci_ops->get_dmabuf_phys(vdev, &priv->provider,
-> > @@ -331,6 +380,77 @@ int vfio_pci_core_feature_dma_buf(struct vfio_pci_core_device *vdev, u32 flags,
-> >  	return ret;
-> >  }
-> >  
-> > +int vfio_pci_core_feature_dma_buf_tph(struct vfio_pci_core_device *vdev,
-> > +				      u32 flags,
-> > +				      struct vfio_device_feature_dma_buf_tph __user *arg,
-> > +				      size_t argsz)
-> > +{
-> > +	struct vfio_device_feature_dma_buf_tph set_tph;
-> > +	struct vfio_pci_dma_buf *priv;
-> > +	struct dma_buf *dmabuf;
-> > +	int ret;
-> > +
-> > +	ret = vfio_check_feature(flags, argsz, VFIO_DEVICE_FEATURE_SET,
-> > +				 sizeof(set_tph));
-> > +	if (ret != 1)
-> > +		return ret;
-> > +
-> > +	if (copy_from_user(&set_tph, arg, sizeof(set_tph)))
-> > +		return -EFAULT;
-> > +
-> > +	if (set_tph.flags & ~(VFIO_DMA_BUF_TPH_ST | VFIO_DMA_BUF_TPH_ST_EXT))
-> > +		return -EINVAL;
-> > +
-> > +	if (!set_tph.flags)
-> > +		return -EINVAL;
-> > +
-> > +	/* PCIe TLP Processing Hint is a 2-bit field. */
-> > +	if (set_tph.ph & ~0x3)
-> > +		return -EINVAL;
-> > +
-> > +	dmabuf = dma_buf_get(set_tph.dmabuf_fd);
-> > +	if (IS_ERR(dmabuf))
-> > +		return PTR_ERR(dmabuf);
-> > +
-> > +	if (dmabuf->ops != &vfio_pci_dmabuf_ops) {
-> > +		ret = -EINVAL;
-> > +		goto out_put;
-> > +	}
-> > +
-> > +	priv = dmabuf->priv;
-> > +	down_write(&vdev->memory_lock);
-> > +	if (READ_ONCE(priv->vdev) != vdev) {
-> > +		ret = -EINVAL;
-> > +		goto out_unlock;
-> > +	}
-> > +
-> > +	/*
-> > +	 * TPH metadata is write-once per dma-buf so that lockless readers only
-> > +	 * have to observe a single release-published transition from 0 -> flags.
-> > +	 */
-> > +	if (READ_ONCE(priv->tph_flags)) {
-> > +		ret = -EBUSY;
-> > +		goto out_unlock;
-> > +	}
-> > +
-> > +	priv->steering_tag = set_tph.steering_tag;
-> > +	priv->steering_tag_ext = set_tph.steering_tag_ext;
-> > +	priv->ph = set_tph.ph;
-> > +	/*
-> > +	 * Publish the TPH values before the gate flag, so that lockless
-> > +	 * readers in vfio_pci_dma_buf_get_tph() see fully-initialized
-> > +	 * fields once they observe a non-zero tph_flags.
-> > +	 */
-> > +	smp_store_release(&priv->tph_flags, set_tph.flags);
-> > +	ret = 0;
-> > +
-> > +out_unlock:
-> > +	up_write(&vdev->memory_lock);
-> > +out_put:
-> > +	dma_buf_put(dmabuf);
-> > +	return ret;
-> > +}
-> > +
-> >  void vfio_pci_dma_buf_move(struct vfio_pci_core_device *vdev, bool revoked)
-> >  {
-> >  	struct vfio_pci_dma_buf *priv;
-> > @@ -388,7 +508,7 @@ void vfio_pci_dma_buf_cleanup(struct vfio_pci_core_device *vdev)
-> >  
-> >  		dma_resv_lock(priv->dmabuf->resv, NULL);
-> >  		list_del_init(&priv->dmabufs_elm);
-> > -		priv->vdev = NULL;
-> > +		WRITE_ONCE(priv->vdev, NULL);
-> >  		priv->revoked = true;
-> >  		dma_buf_invalidate_mappings(priv->dmabuf);
-> >  		dma_resv_wait_timeout(priv->dmabuf->resv,
-> > diff --git a/drivers/vfio/pci/vfio_pci_priv.h b/drivers/vfio/pci/vfio_pci_priv.h
-> > index fca9d0dfac90..c58f369be4b3 100644
-> > --- a/drivers/vfio/pci/vfio_pci_priv.h
-> > +++ b/drivers/vfio/pci/vfio_pci_priv.h
-> > @@ -118,6 +118,10 @@ static inline bool vfio_pci_is_vga(struct pci_dev *pdev)
-> >  int vfio_pci_core_feature_dma_buf(struct vfio_pci_core_device *vdev, u32 flags,
-> >  				  struct vfio_device_feature_dma_buf __user *arg,
-> >  				  size_t argsz);
-> > +int vfio_pci_core_feature_dma_buf_tph(struct vfio_pci_core_device *vdev,
-> > +				      u32 flags,
-> > +				      struct vfio_device_feature_dma_buf_tph __user *arg,
-> > +				      size_t argsz);
-> >  void vfio_pci_dma_buf_cleanup(struct vfio_pci_core_device *vdev);
-> >  void vfio_pci_dma_buf_move(struct vfio_pci_core_device *vdev, bool revoked);
-> >  #else
-> > @@ -128,6 +132,14 @@ vfio_pci_core_feature_dma_buf(struct vfio_pci_core_device *vdev, u32 flags,
-> >  {
-> >  	return -ENOTTY;
-> >  }
-> > +
-> > +static inline int
-> > +vfio_pci_core_feature_dma_buf_tph(struct vfio_pci_core_device *vdev, u32 flags,
-> > +				  struct vfio_device_feature_dma_buf_tph __user *arg,
-> > +				  size_t argsz)
-> > +{
-> > +	return -ENOTTY;
-> > +}
-> >  static inline void vfio_pci_dma_buf_cleanup(struct vfio_pci_core_device *vdev)
-> >  {
-> >  }
-> > diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-> > index d1203da56fc5..49eb6ad644a2 100644
-> > --- a/include/linux/dma-buf.h
-> > +++ b/include/linux/dma-buf.h
-> > @@ -113,6 +113,27 @@ struct dma_buf_ops {
-> >  	 */
-> >  	void (*unpin)(struct dma_buf_attachment *attach);
-> >  
-> > +	/**
-> > +	 * @get_tph:
-> > +	 * @dmabuf: DMA buffer for which to retrieve TPH metadata
-> > +	 * @steering_tag: Returns the raw TPH steering tag for @st_width
-> > +	 * @ph: Returns the TPH processing hint (2-bit value)
-> > +	 * @st_width: Consumer's supported steering tag width in bits (8 or 16)
-> > +	 *
-> > +	 * Return the TPH (TLP Processing Hints) metadata associated with this
-> > +	 * DMA buffer for the requested steering-tag width. 8-bit ST and 16-bit
-> > +	 * Extended ST are distinct namespaces in the PCIe TPH ST table and may
-> > +	 * both be present with different values, so the exporter must select the
-> > +	 * value that matches @st_width and must not substitute one for the other.
-> > +	 *
-> > +	 * Return 0 on success, -EOPNOTSUPP if no metadata is available for the
-> > +	 * requested width, or -EINVAL if @st_width is not 8 or 16.
-> > +	 *
-> > +	 * This callback is optional.
-> > +	 */
-> > +	int (*get_tph)(struct dma_buf *dmabuf, u16 *steering_tag, u8 *ph,
-> > +		       u8 st_width);
-> > +
-> >  	/**
-> >  	 * @map_dma_buf:
-> >  	 *
-> > diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> > index 5de618a3a5ee..a9cb6cbc6ade 100644
-> > --- a/include/uapi/linux/vfio.h
-> > +++ b/include/uapi/linux/vfio.h
-> > @@ -1534,6 +1534,41 @@ struct vfio_device_feature_dma_buf {
-> >   */
-> >  #define VFIO_DEVICE_FEATURE_MIG_PRECOPY_INFOv2  12
-> >  
-> > +/**
-> > + * Upon VFIO_DEVICE_FEATURE_SET associate TPH (TLP Processing Hints) metadata
-> > + * with a vfio-exported dma-buf. The dma-buf must have been created by
-> > + * VFIO_DEVICE_FEATURE_DMA_BUF on this device.
-> > + *
-> > + * dmabuf_fd is the file descriptor returned by VFIO_DEVICE_FEATURE_DMA_BUF.
-> > + *
-> > + * 8-bit ST (steering_tag) and 16-bit Extended ST (steering_tag_ext) are
-> > + * distinct namespaces in the PCIe TPH ST table and may both be present with
-> > + * different values. Userspace should populate the value(s) it has from the
-> > + * firmware ST table for this device and set the matching VFIO_DMA_BUF_TPH_ST /
-> > + * VFIO_DMA_BUF_TPH_ST_EXT bit in @flags. An importer requests a specific
-> > + * width and receives the matching value; if the requested width is not
-> > + * present, the importer is told TPH is unavailable for this dma-buf.
-> > + *
-> > + * ph is the 2-bit TLP Processing Hint and must be in the range [0, 3].
-> > + *
-> > + * The user must set TPH on the dma-buf before the importer consumes it.
-> > + * TPH metadata is write-once per dma-buf; a second SET returns -EBUSY.
-> > + *
-> > + * Return: 0 on success, -errno on failure.
-> > + */
-> > +#define VFIO_DEVICE_FEATURE_DMA_BUF_TPH 13
-> > +
-> > +#define VFIO_DMA_BUF_TPH_ST		(1 << 0)  /* steering_tag valid */
-> > +#define VFIO_DMA_BUF_TPH_ST_EXT		(1 << 1)  /* steering_tag_ext valid */
-> > +
-> > +struct vfio_device_feature_dma_buf_tph {
-> > +	__s32	dmabuf_fd;
-> > +	__u32	flags;
-> > +	__u8	steering_tag;
-> > +	__u8	ph;
-> > +	__u16	steering_tag_ext;
-> > +};  
-> 
-> Sure is tempting to make the ph field the first 2-bits of u8 flags.
-> Thanks,
-> 
-> Alex
-> 
-> > +
-> >  /* -------- API for Type1 VFIO IOMMU -------- */
-> >  
-> >  /**  
-> 
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/d01e24b29d85/disk-e5d505e3.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/763a9ed109de/vmlinux-e5d505e3.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/aa1f01135fd4/bzImage-e5d505e3.xz
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fbf3648ae7f5bdb05c59@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KCSAN: data-race in rds_poll / rds_sendmsg
+
+write to 0xffff8881054183a4 of 4 bytes by task 9010 on cpu 0:
+ rds_sendmsg+0x1001/0x15b0 net/rds/send.c:1391
+ sock_sendmsg_nosec net/socket.c:787 [inline]
+ __sock_sendmsg net/socket.c:802 [inline]
+ ____sys_sendmsg+0x563/0x5b0 net/socket.c:2698
+ ___sys_sendmsg+0x195/0x1e0 net/socket.c:2752
+ __sys_sendmsg net/socket.c:2784 [inline]
+ __do_sys_sendmsg net/socket.c:2789 [inline]
+ __se_sys_sendmsg net/socket.c:2787 [inline]
+ __x64_sys_sendmsg+0xd4/0x160 net/socket.c:2787
+ x64_sys_call+0x194c/0x3020 arch/x86/include/generated/asm/syscalls_64.h:47
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0x12c/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+read to 0xffff8881054183a4 of 4 bytes by task 9013 on cpu 1:
+ rds_poll+0x9b/0x310 net/rds/af_rds.c:222
+ sock_poll+0x21c/0x240 net/socket.c:1502
+ vfs_poll include/linux/poll.h:82 [inline]
+ __io_arm_poll_handler+0x1ef/0xbf0 io_uring/poll.c:590
+ io_arm_apoll+0x2eb/0x400 io_uring/poll.c:698
+ io_arm_poll_handler+0x12f/0x160 io_uring/poll.c:727
+ io_queue_async+0x25d/0x320 io_uring/io_uring.c:1634
+ io_queue_sqe io_uring/io_uring.c:1660 [inline]
+ io_req_task_submit+0x9b/0xa0 io_uring/io_uring.c:1062
+ io_handle_tw_list+0x1f5/0x230 io_uring/tw.c:72
+ tctx_task_work_run+0x42/0x140 io_uring/tw.c:132
+ tctx_task_work+0x3f/0x80 io_uring/tw.c:150
+ task_work_run+0x130/0x1a0 kernel/task_work.c:233
+ get_signal+0xdea/0xf20 kernel/signal.c:2809
+ arch_do_signal_or_restart+0x96/0x480 arch/x86/kernel/signal.c:337
+ __exit_to_user_mode_loop kernel/entry/common.c:64 [inline]
+ exit_to_user_mode_loop+0x6f/0x820 kernel/entry/common.c:98
+ __exit_to_user_mode_prepare include/linux/irq-entry-common.h:207 [inline]
+ syscall_exit_to_user_mode_prepare include/linux/irq-entry-common.h:230 [inline]
+ syscall_exit_to_user_mode include/linux/entry-common.h:318 [inline]
+ do_syscall_64+0x232/0x3b0 arch/x86/entry/syscall_64.c:100
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+value changed: 0x00000000 -> 0x00000001
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 1 UID: 0 PID: 9013 Comm: syz.7.10555 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/18/2026
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
