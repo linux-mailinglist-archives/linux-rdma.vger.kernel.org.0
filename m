@@ -1,196 +1,263 @@
-Return-Path: <linux-rdma+bounces-21130-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21131-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6NmgEJNCD2qcIQYAu9opvQ
-	(envelope-from <linux-rdma+bounces-21130-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 May 2026 19:36:19 +0200
+	id 2I7WCCRED2r/IQYAu9opvQ
+	(envelope-from <linux-rdma+bounces-21131-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 May 2026 19:43:00 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6361D5AA5B9
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 May 2026 19:36:18 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 863305AA6ED
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 May 2026 19:42:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 131DF3072186
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 May 2026 15:46:29 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id F281132E710A
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 May 2026 16:46:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0992F355F2A;
-	Thu, 21 May 2026 15:46:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E60E7384CFF;
+	Thu, 21 May 2026 16:46:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SnS/4I5+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hAiFXflX"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E088530B508
-	for <linux-rdma@vger.kernel.org>; Thu, 21 May 2026 15:46:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7EBC3815DB
+	for <linux-rdma@vger.kernel.org>; Thu, 21 May 2026 16:46:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779378386; cv=none; b=O5XazWuibp9KzQ4fEO7XvMAwO2wfn0EsdHr1hjdWK/+8mRwsFanBciBz36WWcfrqOE4lDDObr2Xsm82YlcOnahxrveDB6Lg9utHH88UCef0W6uhsTjy+oe65kTrGNUvvV4n3Qg+B40RtxeHUVDS/I0bPUriPuf5yVMfudD4tFpQ=
+	t=1779381999; cv=none; b=FPwZJhJprgLn+lYLDtz7kP/M1lKRxtPY/S9Nut1+QA1Ksoj0VCcVXkE05xCNgqxaNkp+ZM+JDzviQAgqDOlYuRuemGOAE2PFV5mW1OAa1YX+HzgJUGEwWWk25qNnv+xp5ymjIW9pNnnYGz2Wu8n9Jyv40GpFt4NBBGm3JRm0QjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779378386; c=relaxed/simple;
-	bh=jc95M8tf1w7i6e3dGF4eV1p/aNTxU2U9gxoZm7w9/a8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OSgVAO6ORBKtLWQyG+0LmCrURmrN8xEAhI5N1muCDckJoRBE14MwQcwP17UIPnGPdqvw3SER5z9XTXQ52TdStRdN3eUyP70jGBBkhVo5HA0fl1dVaa4hXt5AoJ6yY68ymB+Lic3XhHG2SxeU8LZ6PkqGuHLtEDy6GfoCcWJr9Sc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SnS/4I5+; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ac887af5-3d05-4f5b-910b-a2aa68a9cc7a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1779378372;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lZWk7SbAn/FMyo/jLJJgKY0cR2G1OfggAeZAYnfwfhE=;
-	b=SnS/4I5+JPmj+/LCeKwQUbhw0aHMyVAy5h1VtEsCyXLTF/cTvhYBaH15CpJMXwHhj9Qumh
-	UvQyd5tCfe+CcCC/MDn4H96WpZTkoM+ytCFdzqBgIdSlS/n+dFfIxQkMI4CFuJbrVye+bU
-	hO2nTHirlHucgQBAxK4NOH/QC07cM+k=
-Date: Thu, 21 May 2026 08:46:07 -0700
+	s=arc-20240116; t=1779381999; c=relaxed/simple;
+	bh=55HpdrZ1XWqM3uwC+a47+vakAvshOA/Toys7NpGVJzc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Num88/U3hTEavpzEraO4amto78Q9+7OgCwDNon4YQS3dP0dAYGbwYmHapJlq6YxUdkUhrFZEczzgLT00TOiR67zaLApKFFnPDaIdRZNZW19q2IIQPnjvRjnvci2I7FUKtH74P+QBOxJHpKp1DYoHHdBd1w8LhVyxrgJTwGcjIVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hAiFXflX; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-48e8132c6d0so41746885e9.1
+        for <linux-rdma@vger.kernel.org>; Thu, 21 May 2026 09:46:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1779381995; x=1779986795; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NA/nM16UoxaTsk3A7SWQL7q3HkgK647mNtY2rDcRyyc=;
+        b=hAiFXflXTEbRl6U5Air/vBGryJ1P7DUwv5y5hFcBfrvyOOjvwLAPWk6boHEMfrP+03
+         djrSF/MmhRRc4oKAARffcHojm9lrMfH/yxDwEmaCsT4BFCL3flmfjoZXGq6TFSC3TeHl
+         JsiTufiR6et1mz+pI8XV2U+9x+ymMfxMCAW0bX+y+95+67AVxLZvt8B0iLXkU9d/aiqe
+         9TLZTYgekPiyf54s88p+J1C3j1Lc4MyofWrYIv5jQC1MQsWTxKDTJulTH9sW3bkKM6Er
+         8ENfEnS8Rye+RBlr7U5dk7H7qISkWK2Sz6IRcVfJFcdljcS2gaAHhL/dDTECxI2slWnI
+         yang==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779381995; x=1779986795;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=NA/nM16UoxaTsk3A7SWQL7q3HkgK647mNtY2rDcRyyc=;
+        b=RTV0ZdkYkmvdJEVwt5tbRurTdC+2ltq8X2MGf5w1nX+nsDdoA9raek9oo/w27CqjNS
+         Lak5tZmoRbWpU1qjCEKieBiCZS6BJcAmHI0VEoxFiQjhUphf/M7OTardDx9AbMNCP+fA
+         zjdT5CrF12xqqQFN2aomwm4M1tDpLFlg1O1w1UnzTmgAbTPmHTUABe8IeTTYD9S08kIF
+         5p/XIfF3juOVoifQRkNBVqCCeOC56mZMOvcGicB1HUnq1juRiG/+nKnevhIGHBpyaiTs
+         D+KYwduKUqwg5S7H15SPkIYhnGZbEBhMJjEewFn792F+Wb/VYfScEtBWdDAXTULjq8Am
+         hw3Q==
+X-Forwarded-Encrypted: i=1; AFNElJ+iQ/xh0KoKTKXFOkfzjKLtGkwQy2x43WWyhTN2ZXAoBfdTaqACWpkgg3x7qtDKsEmqS/qh9gkDlik0@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+DweyDCvDB+Dj52ApUX3EK2DmhK37tV8b9IZjxYXlBoGzLLA9
+	mlZSFJQmTs+WXv96LL40uToJ5a9+eY7VB9uHYYN3BFP/J4uKKW7jal1o
+X-Gm-Gg: Acq92OEiNDm4BtcDWzAeYcs3iQQ2wH1CMTUyK0RSb8Uab1CHzDrgTbWkx/z8l2TPHud
+	ZB5+ujoUw/JzQKm4YxbbifVuYtyjn/E/IdK6dsepcw0FNPq4rv0SnCpcrjapSski3A6tch/9m3s
+	v6pH8UC98cgzk+JdImjfWG/G2G/MZp7+3X7eX7w+6Is/WJZeYZNYjkOSkkvK007l22PYdlondnq
+	/IVM7ebyRRgsaBxqEiVbYJo2+BrZMja5cI3PkP98BwSIQkwuAXo0EmPd0Dkeig7693a7Y0hkr0+
+	6ogyf069qcXrlsnpbs7daNGvhmEPCROd0iNFeqS2MGYYZ1mSZJ5BaGVsZ8yN5kQ0w7mDcz/o6z6
+	C8HiUcJ1BDX07keEUl0qGIiJFQI2kBF8VNDqQn7Cyt9JNPG0kSSJgtyYlACcQ7yJQyW5CksKp0n
+	bUP+wTAnz9Ks+kc5vSj46DdTRl/JEeKOnt75zutQp/L4cfMZeNSEcYCEpamluQ+VV7
+X-Received: by 2002:a05:600c:45c6:b0:488:ac01:72de with SMTP id 5b1f17b1804b1-49036033502mr53623425e9.5.1779381994891;
+        Thu, 21 May 2026 09:46:34 -0700 (PDT)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49035ecac15sm31613075e9.6.2026.05.21.09.46.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 May 2026 09:46:34 -0700 (PDT)
+Date: Thu, 21 May 2026 17:46:31 +0100
+From: David Laight <david.laight.linux@gmail.com>
+To: Kees Cook <kees@kernel.org>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, Pengpeng Hou
+ <pengpeng@iscas.ac.cn>, stable@vger.kernel.org, Petr Pavlu
+ <petr.pavlu@suse.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov
+ <anton.ivanov@cambridgegreys.com>, Johannes Berg
+ <johannes@sipsolutions.net>, "Rafael J. Wysocki" <rafael@kernel.org>, Len
+ Brown <lenb@kernel.org>, Corey Minyard <corey@minyard.net>, Gabriel Somlo
+ <somlo@cmu.edu>, "Michael S. Tsirkin" <mst@redhat.com>, Jani Nikula
+ <jani.nikula@linux.intel.com>, Joonas Lahtinen
+ <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>,
+ Tvrtko Ursulin <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>, Bart Van Assche <bvanassche@acm.org>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Laurent
+ Pinchart <laurent.pinchart@ideasonboard.com>, Hans de Goede
+ <hansg@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, Bjorn
+ Helgaas <bhelgaas@google.com>, Hannes Reinecke <hare@suse.de>, "James E.J.
+ Bottomley" <James.Bottomley@HansenPartnership.com>, "Martin K. Petersen"
+ <martin.petersen@oracle.com>, Daniel Lezcano <daniel.lezcano@kernel.org>,
+ Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby
+ <jirislaby@kernel.org>, Alan Stern <stern@rowland.harvard.edu>, Jason Wang
+ <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Eugenio
+ =?UTF-8?B?UMOpcmV6?= <eperezma@redhat.com>, Jason Baron
+ <jbaron@akamai.com>, Jim Cromie <jim.cromie@gmail.com>, Tiwei Bie
+ <tiwei.btw@antgroup.com>, Benjamin Berg <benjamin.berg@intel.com>, Ilpo
+ =?UTF-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>, "David E. Box"
+ <david.e.box@linux.intel.com>, "Maciej W. Rozycki" <macro@orcam.me.uk>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Peter Zijlstra
+ <peterz@infradead.org>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
+ <gor@linux.ibm.com>, Sean Christopherson <seanjc@google.com>, Paolo Bonzini
+ <pbonzini@redhat.com>, Thomas Gleixner <tglx@kernel.org>, Ingo Molnar
+ <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
+ <hpa@zytor.com>, Vinod Koul <vkoul@kernel.org>, Frank Li
+ <Frank.Li@kernel.org>, Daniel Gomez <da.gomez@kernel.org>, Sami Tolvanen
+ <samitolvanen@google.com>, Aaron Tomlin <atomlin@atomlin.com>, Alexander
+ Potapenko <glider@google.com>, Marco Elver <elver@google.com>, Dmitry
+ Vyukov <dvyukov@google.com>, Andrew Morton <akpm@linux-foundation.org>,
+ John Johansen <john.johansen@canonical.com>, Paul Moore
+ <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn"
+ <serge@hallyn.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Georgia Garcia <georgia.garcia@canonical.com>, kvm@vger.kernel.org,
+ dmaengine@vger.kernel.org, linux-modules@vger.kernel.org,
+ kasan-dev@googlegroups.com, linux-mm@kvack.org, apparmor@lists.ubuntu.com,
+ linux-security-module@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-acpi@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
+ qemu-devel@nongnu.org, intel-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-pm@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-serial@vger.kernel.org,
+ linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
+ virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org, netdev@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 01/11] params: bound array element output to the
+ caller's page buffer
+Message-ID: <20260521174631.71a06440@pumpkin>
+In-Reply-To: <20260521133326.2465264-1-kees@kernel.org>
+References: <20260521133315.work.845-kees@kernel.org>
+	<20260521133326.2465264-1-kees@kernel.org>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 0/4] RDMA/rxe: Fix u64 iova-overflow family in
- MR/ODP/RESP/MW paths
-To: Tymbark7372 <tymbark7372@proton.me>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>
-Cc: "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
- "jgg@nvidia.com" <jgg@nvidia.com>, "leonro@nvidia.com" <leonro@nvidia.com>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>
-References: <GmtGfyiQI2c4YxeWS7woOgXgSEajslDC8awnuf_4qoOJJqg9XR_fzYq1AbkS9jp10kWIArTMsMRAu7rg9lgK3nKuWILBpSaJhFV7i_0-yXo=@proton.me>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <GmtGfyiQI2c4YxeWS7woOgXgSEajslDC8awnuf_4qoOJJqg9XR_fzYq1AbkS9jp10kWIArTMsMRAu7rg9lgK3nKuWILBpSaJhFV7i_0-yXo=@proton.me>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21130-lists,linux-rdma=lfdr.de];
-	FREEMAIL_CC(0.00)[gmail.com,nvidia.com,vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,iscas.ac.cn,vger.kernel.org,suse.com,nod.at,cambridgegreys.com,sipsolutions.net,minyard.net,cmu.edu,redhat.com,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,acm.org,ziepe.ca,ideasonboard.com,google.com,suse.de,HansenPartnership.com,oracle.com,arm.com,linuxfoundation.org,rowland.harvard.edu,linux.alibaba.com,akamai.com,antgroup.com,orcam.me.uk,infradead.org,linux.ibm.com,alien8.de,zytor.com,atomlin.com,linux-foundation.org,canonical.com,paul-moore.com,namei.org,hallyn.com,googlegroups.com,kvack.org,lists.ubuntu.com,lists.infradead.org,lists.sourceforge.net,nongnu.org,lists.freedesktop.org,lists.ozlabs.org,lists.one-eyed-alien.net,lists.linux.dev];
+	TAGGED_FROM(0.00)[bounces-21131-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[davidlaightlinux@gmail.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	RCPT_COUNT_GT_50(0.00)[100];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,proton.me:email]
-X-Rspamd-Queue-Id: 6361D5AA5B9
+	NEURAL_HAM(-0.00)[-1.000];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[iscas.ac.cn:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,suse.com:email]
+X-Rspamd-Queue-Id: 863305AA6ED
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-在 2026/5/21 8:39, Tymbark7372 写道:
-> This series fixes a family of u64 overflow bugs in the rxe Soft-RoCE
-> driver.  All four sites share one root cause: addition of an
-> attacker-influenced iova/addr (u64) with an attacker-influenced
-> length/resid (size_t/u32/int promoted to u64), without overflow
-> check, leading to an OOB read/write primitive in the rxe responder
-> workqueue.
-> 
-> I originally reported these to security@kernel.org.  Jason Gunthorpe
-> confirmed that rxe and siw are development-only drivers without
-> embargo handling and asked me to send patches publicly, so this
-> series follows that direction.  security@kernel.org is intentionally
-> not in Cc per Jason's instruction.
-> 
-> Patches:
-> 
->    1/4: rxe_mr.c mr_check_range
->         The USER/MEM_REG case computes iova + length and compares to
->         mr->ibmr.iova + mr->ibmr.length.  Both additions wrap in u64.
->         Use check_add_overflow() for both ends.
-> 
->    2/4: rxe_odp.c rxe_check_pagefault
->         Loop condition addr < iova + length wraps when iova is near
->         U64_MAX and length is positive.  Compute iova_end with
->         check_add_overflow() once and use it in the loop condition.
-> 
->    3/4: rxe_resp.c duplicate_request
->         Third clause iova + resid > res->read.va_org + res->read.length
->         has u64 wrap on both sides.  Use check_add_overflow() for both
->         ends.  (Site A in check_rkey, also in rxe_resp.c, calls into
->         mr_check_range and is closed by patch 1.)
-> 
->    4/4: rxe_mw.c rxe_check_bind_mw
->         Same wrap class as patch 1.  Found by sibling-site grep; not on
->         the OOB-write path of the three primary bugs but a
->         structurally-identical u64 wrap that would let an attacker bind
->         a memory window outside its parent MR's range.
-> 
-> Verification:
-> 
-> Each of the three primary sibling triggers (patches 1, 2, 3) has been
-> exercised on v7.1.0-rc3 + KASAN in QEMU as the OOB-write case.
-> Patches 1 and 3 produce a single-page-fault Oops in rxe_mr_copy after
-> the wrap.  Patch 2 produces a single-page-fault Oops in
-> rxe_odp_mr_copy.  All three are triggered by a single ibv_post_send
-> from an unprivileged local user with /dev/infiniband/uverbs0 open.
-> A working LPE exploit demonstrated end-to-end privilege escalation
-> via the rxe_odp path under the verification config (KASAN dev-build,
-> selinux=0, nokaslr).  Full PoC and writeup were attached to the
-> original security@kernel.org submission.
-> 
-> After applying all four patches, the same triggers no longer fire;
-> the wrap checks correctly reject the attacker iova.  Re-tested in the
-> same QEMU+KASAN configuration.
-> 
-> The trigger PoCs are simple libibverbs programs (one per sibling)
-> that I am happy to provide on request.
-> 
-> Fixes / stable:
-> 
->    1/4: Fixes 8700e3e7c485 ("Soft RoCE driver"), v4.8+
->    2/4: Fixes 2fae67ab63db ("RDMA/rxe: Add support for Send/Recv/Write/Read with ODP"), v6.15+
->    3/4: Fixes 8700e3e7c485 ("Soft RoCE driver"), v4.8+
->    4/4: Fixes 8700e3e7c485 ("Soft RoCE driver"), v4.8+
-> 
-> Pre-f04d5b3d916c LTS branches carry the older wrap form
->    iova > mr->ibmr.iova + mr->ibmr.length - length
-> instead of the current `iova + length > ...` shape.  Patches 1, 3, 4
-> will need a backport variant for those branches; I can provide on
-> request.
-> 
-> Tymbark7372 (4):
->    RDMA/rxe: Fix u64 iova+length overflow in mr_check_range
->    RDMA/rxe: Fix u64 iova+length overflow in rxe_check_pagefault
->    RDMA/rxe: Fix u64 iova+resid overflow in duplicate_request
->    RDMA/rxe: Fix u64 addr+length overflow in rxe_check_bind_mw
+On Thu, 21 May 2026 06:33:14 -0700
+Kees Cook <kees@kernel.org> wrote:
 
-To be honest, please do not send the commits with the attachment.
+> From: Pengpeng Hou <pengpeng@iscas.ac.cn>
+> 
+> param_array_get() appends each element's string representation into the
+> shared sysfs page buffer by passing buffer + off to the element getter.
+> 
+> That works for getters that only write a small bounded string, but
+> param_get_charp() and similar helpers format against PAGE_SIZE from the
+> pointer they receive. Once off is non-zero, an element getter can
+> therefore write past the end of the original sysfs page buffer.
+> 
+> Collect each element into a temporary PAGE_SIZE buffer first and then
+> copy only the remaining space into the caller's page buffer.
 
-Normally, use the command to send several commits: git send-email 
-001xxx.patch 002xxx.patch 003xxx.patch ... --to xxx --to xxx
+Should this be using a 4k buffer on all architectures?
+Initially perhaps just using a different name for the constant until
+all the associated PAGE_SIZE limits have been removed.
 
-Zhu Yanjun
+-- David
 
 > 
->   drivers/infiniband/sw/rxe/rxe_mr.c   | 12 +++++++++---
->   drivers/infiniband/sw/rxe/rxe_odp.c  | 10 ++++++++--
->   drivers/infiniband/sw/rxe/rxe_resp.c | 11 ++++++++---
->   drivers/infiniband/sw/rxe/rxe_mw.c   | 11 ++++++++---
->   4 files changed, 33 insertions(+), 11 deletions(-)
+> Cc: stable@vger.kernel.org
+> Reviewed-by: Petr Pavlu <petr.pavlu@suse.com>
+> Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
+> Signed-off-by: Kees Cook <kees@kernel.org>
+> ---
+>  kernel/params.c | 26 ++++++++++++++++++++------
+>  1 file changed, 20 insertions(+), 6 deletions(-)
 > 
-> --
-> Tymbark7372 <tymbark7372@proton.me>
+> diff --git a/kernel/params.c b/kernel/params.c
+> index 74d620bc2521..752721922a15 100644
+> --- a/kernel/params.c
+> +++ b/kernel/params.c
+> @@ -475,22 +475,36 @@ static int param_array_set(const char *val, const struct kernel_param *kp)
+>  static int param_array_get(char *buffer, const struct kernel_param *kp)
+>  {
+>  	int i, off, ret;
+> +	char *elem_buf;
+>  	const struct kparam_array *arr = kp->arr;
+>  	struct kernel_param p = *kp;
+>  
+> +	elem_buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
+> +	if (!elem_buf)
+> +		return -ENOMEM;
+> +
+>  	for (i = off = 0; i < (arr->num ? *arr->num : arr->max); i++) {
+> -		/* Replace \n with comma */
+> -		if (i)
+> -			buffer[off - 1] = ',';
+>  		p.arg = arr->elem + arr->elemsize * i;
+>  		check_kparam_locked(p.mod);
+> -		ret = arr->ops->get(buffer + off, &p);
+> +		ret = arr->ops->get(elem_buf, &p);
+>  		if (ret < 0)
+> -			return ret;
+> +			goto out;
+> +		ret = min(ret, (int)(PAGE_SIZE - 1 - off));
+> +		if (!ret)
+> +			break;
+> +		/* Replace the previous element's trailing newline with a comma. */
+> +		if (i)
+> +			buffer[off - 1] = ',';
+> +		memcpy(buffer + off, elem_buf, ret);
+>  		off += ret;
+> +		if (off == PAGE_SIZE - 1)
+> +			break;
+>  	}
+>  	buffer[off] = '\0';
+> -	return off;
+> +	ret = off;
+> +out:
+> +	kfree(elem_buf);
+> +	return ret;
+>  }
+>  
+>  static void param_array_free(void *arg)
 
 
