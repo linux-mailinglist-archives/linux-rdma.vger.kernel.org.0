@@ -1,144 +1,184 @@
-Return-Path: <linux-rdma+bounces-21145-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21146-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SA2RNybfD2rQQwYAu9opvQ
-	(envelope-from <linux-rdma+bounces-21145-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 06:44:22 +0200
+	id 2OsnLWDfD2rQQwYAu9opvQ
+	(envelope-from <linux-rdma+bounces-21146-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 06:45:20 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 423B45AEBEF
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 06:44:22 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24BFC5AEC0D
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 06:45:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CC4B6301FF90
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 04:39:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 843363020EB4
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 04:44:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F21F835674D;
-	Fri, 22 May 2026 04:39:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAA8E347515;
+	Fri, 22 May 2026 04:44:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cz+h84c4"
+	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="Z/7pYuXj";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dSFeIUJj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from fhigh-b5-smtp.messagingengine.com (fhigh-b5-smtp.messagingengine.com [202.12.124.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E9527A12F;
-	Fri, 22 May 2026 04:39:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93AC822E3E9;
+	Fri, 22 May 2026 04:44:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779424782; cv=none; b=M3zB0Gq6Okn+ea1qpSz5+xlPkY7eNZt7c2/G7BD0J6jBj/h97/sZfu0eXqJLFpjhhUAOv875kghtncNHWO2mKGp2lYqMKAcNWKBi7XOWRZ7r2T6UBXi21/lI8eN4NHozPFMr9q5rBs2NgRVC3JghoKc7FqCA3hebXRhHEeHof0g=
+	t=1779425087; cv=none; b=Xz1NWy1lJBzFSxh6fCmCltV57tNGwEtymF2aMW29T/irh3tD2h0V0+LmAEt0qHM4ADjHGwi65hBqKNzCWuclzWwC+SOTR/4jjX/Lh5xGmuDVAu0kh/zKkjcDbin/0HNuAzorJ7hXfcs56RR+AGNfIWUO4ttxpD8UGraeuIgqctQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779424782; c=relaxed/simple;
-	bh=C7+YzVYtsz/EZFWqgdGMLr2EyKYkV7ac23n7pAyctBE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=TGrGRApYT9BfzRrFGuqiiS/SARKM/yWTj6kyvQileaEWKtczducC60rvex3SEgIfyTy30ZLvaOOad5TVZ1Qh0fI6WoVk88pNu14hDzaRLTXGbfF1IzXK0CbtbkWSaejB4NIHXm1+9smPyBGOKrgB+IZrXRQGM9tRpx5+5H114Vc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cz+h84c4; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB78F1F00A3D;
-	Fri, 22 May 2026 04:39:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779424781;
-	bh=5LgnvYKTPbZg7JogF97PcfSYs8oii2zGLF8FAHnz2ys=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=Cz+h84c4ZapqclyCiNsbvntPZ4t/NTEe88Kp67BZP4kdPes3UFrl6ApY12biAVQZs
-	 a/uLaNTBJlTstmKWv64EYe1dZ7kc9JxLh0nLmPID7tKPfTRx8nVIrLTnf+07/tKqqX
-	 D/PYvnM5nDXCwLMMg7E/fmST4JmORgpESjG5wUockS1rVQG/s6a90GziX+O7H0jnC9
-	 5n14J26n12t8xHUd4NmrDhlWWeGokROvQxmlUnNDVO64Bu8a7Gr49hWQXRkOQeNCtp
-	 olUxqY1YDaNZ1YuKW7vNOj62nJwJGpuNjWgMLRjLW2s7Y5Az5zcVPLHdcfMijWl7JD
-	 azqc59E4naqUw==
-Message-ID: <732da40e8718513c0f4799fcb93dd8148951a7d7.camel@kernel.org>
-Subject: Re: [PATCH net] selftests: rds: config: disable modules
-From: Allison Henderson <achender@kernel.org>
-To: Jakub Kicinski <kuba@kernel.org>, "Matthieu Baerts (NGI0)"
-	 <matttbe@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>,  Paolo Abeni <pabeni@redhat.com>, Simon Horman
- <horms@kernel.org>, Shuah Khan <shuah@kernel.org>,  netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, 
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Thu, 21 May 2026 21:39:40 -0700
-In-Reply-To: <20260521074212.66205e90@kernel.org>
-References: <20260520-net-rds-config-modules-v1-1-2100df02fe9a@kernel.org>
-	 <20260521074212.66205e90@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.3-0ubuntu1.1 
+	s=arc-20240116; t=1779425087; c=relaxed/simple;
+	bh=A2iwVa+JfXcMyDSVVnLV/EE4aDQxemLxskO2NRdDyIM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RRtmiJNtZiqPPS3F3qv+OGK+VEhQvymFQcBbM9nEfdNXCjgyZ0Q8qenWBxuYK9XnAL9zXkR/LIQNDdMlokWiaw/mcYYTaIsvfXTgBbAMSC0f6BK7NMuhbrY4e55R1Fr6r73VLazdSGSE6Wr29vis13PTpNeZNzZCbWF0ZRdp46Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=Z/7pYuXj; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=dSFeIUJj; arc=none smtp.client-ip=202.12.124.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
+Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 721E27A00A4;
+	Fri, 22 May 2026 00:44:44 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-03.internal (MEProxy); Fri, 22 May 2026 00:44:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1779425084; x=1779511484; bh=9BRLcK4fb6
+	9mi1+15hYmmA6GtamMCSVNkvbyUWdeZRQ=; b=Z/7pYuXjmP9AqfBkbE2Gzoz4Bv
+	BxNjHhbpLf0e3We/omeDLfGyI/Ga6vVx6diWQuVS91Whathb2R0SpDtmg2LtOJin
+	O5QuxMd8BBJ111OIWn7zO9qYV4vbrp5Uc83MgZaClfYBpaJopQm5h0+z4PhbTfRX
+	n2tuzvYl7+cUeRl/uoPtM8U1FwxWblmD8zC3gwuBYXY7rwOnHS3aLVp3zYEqPusE
+	85v5pGB/QMjv0RLhVGg0c9RBu0vM/Hiq1XXjTtElpPiMbDbgest1v1GjfRZQomBv
+	C7pCCmlz+tD1DK8W1dnV2fPJN8wGPgYkZ3/M0WF53pchgMPJ+4mmQvwqD5ZQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1779425084; x=1779511484; bh=9BRLcK4fb69mi1+15hYmmA6GtamMCSVNkvb
+	yUWdeZRQ=; b=dSFeIUJjEObVpZBY5MGP+KximEdJpHhZEP5FM3C5CHdi6i+pH3a
+	oNE6/6cx9reJ2d0aBUwfdU8T7LaTSCrxRboYRB2rsEHqyJhuhbXbtt04J1D2l4EA
+	Fh/F7MMtCt09o2a2QuO8c5rJnGWaEN2evCoirZljFLP5bJ0uWUsfsyMPmrmwUARB
+	S0ZHLj1j2tCBfCxzflt5KZb3yG8M9Nf4xSmyAWRf+UVBz1Bxi007q2uALjR+acaH
+	vIsJcefCqRygw/yhLfnAWthKncd/JuwS4QkCXlaAWFB/h4krUbwluRn9UWq+9xq0
+	HWbAY16EGarhjdst6IufgUq6JTVDMHSiJBw==
+X-ME-Sender: <xms:PN8Pap_gvizK4yX6_O2uvaPp_bXmvaukBH6IWVY9fW3jdBp7uKn5qw>
+    <xme:PN8PakH8EtI2O1OxM4YaE9JgASnxL7wQ_IeL_5uAN1RqyW9vfpdZ9NLb6yIch16-5
+    l27hbGwa9UElIIzId-iIw1R8qTMTWgP91e3eI9iAL1n2l4P>
+X-ME-Received: <xmr:PN8PajTvk-eowh4k22Ct_EH9MYRKlfyE-XPuJ_ndE1uJoKA65dfhYq_CdMXIiHHXHEkkSJJRyLu3_9BxNflclbST-g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgddugeelgedtucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttdertd
+    dttddvnecuhfhrohhmpefirhgvghcumffjuceoghhrvghgsehkrhhorghhrdgtohhmqeen
+    ucggtffrrghtthgvrhhnpeehgedvvedvleejuefgtdduudfhkeeltdeihfevjeekjeeuhf
+    dtueefhffgheekteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
+    fhhrohhmpehgrhgvgheskhhrohgrhhdrtghomhdpnhgspghrtghpthhtohepuddvpdhmoh
+    guvgepshhmthhpohhuthdprhgtphhtthhopehthihmsggrrhhkjeefjedvsehprhhothho
+    nhdrmhgvpdhrtghpthhtoheplhhinhhugidqrhgumhgrsehvghgvrhdrkhgvrhhnvghlrd
+    horhhgpdhrtghpthhtohepiiihjhiihihjvddttddtsehgmhgrihhlrdgtohhmpdhrtghp
+    thhtohepjhhgghesnhhvihguihgrrdgtohhmpdhrtghpthhtoheplhgvohhnrhhosehnvh
+    hiughirgdrtghomhdprhgtphhtthhopehsthgrsghlvgesvhhgvghrrdhkvghrnhgvlhdr
+    ohhrgh
+X-ME-Proxy: <xmx:PN8ParQwQ4RtKHeBiY6RLFcPxvIQX4F1cAj0ysPYTVTQ-LWT2t_c2A>
+    <xmx:PN8Pam1_N0U3Ch4mguBeekCSng_VwCPflS0JhuuFLpPG_CnEXuehww>
+    <xmx:PN8Palx7Q2EInUnFEpC7BNu8q9XWcizlHkf9pnKXiLEInzyE4EUdGQ>
+    <xmx:PN8PaiwRTgUoUGcyBfrC7akxhRCRumeJVKdnK4-35te_CwmksJi4TA>
+    <xmx:PN8Paq3z6RJSMqkHk1Ql50CPP3Ok562BaejV8wFcP8kIiIuEo2yz_vTv>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 22 May 2026 00:44:43 -0400 (EDT)
+Date: Fri, 22 May 2026 06:44:47 +0200
+From: Greg KH <greg@kroah.com>
+To: Tymbark7372 <tymbark7372@proton.me>
+Cc: linux-rdma@vger.kernel.org, zyjzyj2000@gmail.com, jgg@nvidia.com,
+	leonro@nvidia.com, stable@vger.kernel.org
+Subject: Re: [PATCH 1/4] RDMA/rxe: Fix u64 iova+length overflow in
+ mr_check_range
+Message-ID: <2026052221-deceiver-grafting-58e9@gregkh>
+References: <20260521194402.811-1-tymbark7372@proton.me>
+ <20260521194402.811-2-tymbark7372@proton.me>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260521194402.811-2-tymbark7372@proton.me>
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kroah.com,none];
+	R_DKIM_ALLOW(-0.20)[kroah.com:s=fm3,messagingengine.com:s=fm3];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-21146-lists,linux-rdma=lfdr.de];
+	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,nvidia.com];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21145-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[kroah.com:+,messagingengine.com:+];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[greg@kroah.com,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,run.sh:url]
-X-Rspamd-Queue-Id: 423B45AEBEF
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,messagingengine.com:dkim,proton.me:email,kroah.com:dkim]
+X-Rspamd-Queue-Id: 24BFC5AEC0D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, 2026-05-21 at 07:42 -0700, Jakub Kicinski wrote:
-> On Wed, 20 May 2026 11:34:43 +1000 Matthieu Baerts (NGI0) wrote:
-> > The run.sh script explicitly checks that CONFIG_MODULES is disabled.
-> >=20
-> > By default, this config option is enabled. Explicitly disable it to be
-> > able to run the RDS tests.
-> >=20
-> > Note that writing '# CONFIG_(...) is not set' is usually recommended to
-> > disable an option in the .config, but it looks like selftests usually
-> > set 'CONFIG_(...)=3Dn', which looks clearer.
-> >=20
-> > Fixes: 0f5d68004780 ("selftests: rds: add tools/testing/selftests/net/r=
-ds/config")
-> > Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
-> > ---
-> >  tools/testing/selftests/net/rds/config | 1 +
-> >  1 file changed, 1 insertion(+)
-> >=20
-> > diff --git a/tools/testing/selftests/net/rds/config b/tools/testing/sel=
-ftests/net/rds/config
-> > index 97db7ecb892a..3d62d0c750a8 100644
-> > --- a/tools/testing/selftests/net/rds/config
-> > +++ b/tools/testing/selftests/net/rds/config
-> > @@ -1,3 +1,4 @@
-> > +CONFIG_MODULES=3Dn
-> >  CONFIG_NET_NS=3Dy
-> >  CONFIG_NET_SCH_NETEM=3Dy
-> >  CONFIG_RDS=3Dy
->=20
-> Hm, okay, if it works it works, but IIUC disabling modules turns all =3Dm
-> from the default config into =3Dn (not =3Dy as one would naively hope?) s=
-o
-> this may come back to bite us. Unless there's a strong reason to not use
-> modules it may be good to follow up in net-next and life this
-> requirement.
+On Thu, May 21, 2026 at 07:44:08PM +0000, Tymbark7372 wrote:
+> In mr_check_range(), the IB_MR_TYPE_USER and IB_MR_TYPE_MEM_REG case
+> computes both iova + length and mr->ibmr.iova + mr->ibmr.length without
+> overflow check.  Both iova (u64) and length (size_t) are 64-bit on
+> 64-bit platforms.  An attacker setting iova = 0xFFFFFFFFFFFFFC00 and
+> length = 0x400 wraps the sum to 0, so the bound check
+> "iova + length > mr->ibmr.iova + mr->ibmr.length" passes.
+> 
+> After the bypass, rxe_mr_iova_to_index() computes a huge index value;
+> WARN_ON(idx >= mr->nbuf) fires but does not abort, and
+> rxe_mr_copy_xarray() then dereferences page_info[huge_idx], an
+> attacker-controlled out-of-bounds slot.  In the RXE_TO_MR_OBJ
+> direction this becomes an OOB write of attacker payload bytes through
+> info->page + info->offset.
+> 
+> Use check_add_overflow() on both ends to reject any iova/length pair
+> that wraps.  Also explicitly scope the local declarations introduced
+> by the helper variables.
+> 
+> Reachable from any unprivileged local process with
+> /dev/infiniband/uverbs0 open (world-rw on distros that ship the
+> rdma-core udev rules) and from an unauthenticated remote peer over
+> UDP/4791 (RoCEv2) when the target rkey/QPN are known.  Reproduced on
+> v7.1.0-rc3 + KASAN with a single ibv_post_send(IBV_WR_RDMA_WRITE) and
+> the wrap iova above; the kernel oopses in rxe_mr_copy+0x20d after
+> WARN at rxe_mr_iova_to_index+0x135.
+> 
+> Site A in rxe_resp.c (check_rkey()) reaches mr_check_range() with
+> attacker iova as well, so this patch also closes that path; Site B
+> (duplicate_request, also in rxe_resp.c) has an independent inline
+> check that wraps and is fixed in patch 3 of this series.
+> 
+> Fixes: 8700e3e7c485 ("Soft RoCE driver")
+> Cc: stable@vger.kernel.org # v4.8+
+> Reported-by: Tymbark7372 <tymbark7372@proton.me>
+> Signed-off-by: Tymbark7372 <tymbark7372@proton.me>
 
-Ok, thanks for the feedback. I will work on a follow up set to rework the m=
-odule configs as well as rename the scripts.
-I think the initial motivation for CONFIG_MODULES=3Dn was to simplify gcov =
-collection, but it should work either way.  I
-will try to get a patch set out later this week.  Thank you!
+We need a real name for the From: and signed-off-by line, and no need
+for the duplicate reported-by line.
 
-Allison
+thanks,
 
+greg k-h
 
