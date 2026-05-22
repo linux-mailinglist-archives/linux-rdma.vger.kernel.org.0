@@ -1,66 +1,66 @@
-Return-Path: <linux-rdma+bounces-21154-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21155-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AOIZOyxEEGrpVQYAu9opvQ
-	(envelope-from <linux-rdma+bounces-21154-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 13:55:24 +0200
+	id WKNANxpFEGpqVgYAu9opvQ
+	(envelope-from <linux-rdma+bounces-21155-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 13:59:22 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 903885B3513
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 13:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 45B835B3605
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 13:59:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1A741300DDD8
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 11:49:02 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5477F30A6E6E
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 11:52:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A6DE3EA94F;
-	Fri, 22 May 2026 11:49:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F1093F54AE;
+	Fri, 22 May 2026 11:52:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="gBip7CO+"
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="jLcXZYR0"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7854C3CBE6B;
-	Fri, 22 May 2026 11:48:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04FEB3EFD1F;
+	Fri, 22 May 2026 11:51:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779450540; cv=none; b=t7LcI0nIPMhpUy4wrSBBENwk9A5OQ8rqMUIPDvXpITHVbtO4OW9WOC2IVFiwaT0Tqt5LHDRDhHX71h9rtpqgPluLnkbzvGe4tdoxK58YehMRMLpqVeLWME3yGTNF5hZ4IaaSKqMdGUY8B4AHy4SvGd4DLC0Fg0ql/19w97q5/5g=
+	t=1779450717; cv=none; b=Xa5JdW0XSOTbC5D8225FlRHRgDD5hiXAUuYJeIFvrEoKm5M+aafEeSZCzhT7YZ0DRhHjuojinu8TmmoQ+3dDR4jIdtScLjDBsCdskWI+/OyP09Kv2nPfew+2PCoWrfL7BkutNU+Zn0rCu+shsG5kTYeD1/55BV2dxZmnWMii9Q0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779450540; c=relaxed/simple;
-	bh=6eyn1Jha3vDmyk2oxi9jurBu1zW/thPNp1/L6UVvqgI=;
+	s=arc-20240116; t=1779450717; c=relaxed/simple;
+	bh=W2uoMQ06PqTqlnsg8xTdLjeudGgZmupcHFArBXUXn/w=;
 	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D8CUt3/PyuE33s9m/pmabmsAZvKbptHIWy6gNp6I0T8loyzSjnzDpj2E+S69G9Ip+e8tyQbbJipnbAxzU6g6ouyhgGP5puslZ45NL7TSYAJHLy9gWdmmuNYoEstka9JAvj4hQPulOhEEsYB0HAKGEsO/4WvWJjQZip1M7EPJ61I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=gBip7CO+; arc=none smtp.client-ip=67.231.148.174
+	 Content-Type:Content-Disposition:In-Reply-To; b=V1OZaqpd12ZvrEfL+TcLOQdDIx43MTy7opi3hKzuObI0832/sgGyKJ9jG9v4WIXM5d78KjxhA8NK0uvNEG1sehCajYRb3IY4ekSz2KneXc0na+37QinehKC50kwcOsiYGH2s23TZCU6v88EWXxIvAFzLPvg4B39KrA+yIwl+2gA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=jLcXZYR0; arc=none smtp.client-ip=67.231.148.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=marvell.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
 Received: from pps.filterd (m0431384.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 64M4qJuY092449;
-	Fri, 22 May 2026 04:48:16 -0700
+	by mx0a-0016f401.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 64M56ri2091636;
+	Fri, 22 May 2026 04:51:28 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
 	cc:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pfpt0220; bh=76lA5hDeG8LLZ60pzeSd7kSpw
-	fGaYTO7DJWvyEI4nug=; b=gBip7CO+RSoN8qpe/kE5F9usyARcRz5/5VD5UYfJZ
-	crOaxn7OPwSdKG5Yf17wqILngMtkWHBWvhm9qbN6PJgZZdu7oLnbrZlGWBdaWcYm
-	XPsXOItfPXc3X2t2vc4H6auOsXJTl4QhImDoYVNNN7Fj2Jsh9eW3ZoFUou1PN3Ma
-	QHWc810IUpqEEr4AweFRNzelOL+9fgimo/PsjM6vFKXpj3r9g4fcQT9FXex5B+O2
-	4sfv37L9pK9wGLUXm3jRWSd97k1lZoGPKyDyfZYzHgnq80TSgabIGoIpvDUcP6xp
-	11IpUnCByGHeW24+5jyJ9afSEQQye7RAuJevRv0PLUwsg==
+	:references:subject:to; s=pfpt0220; bh=Q98qvVz6bWd4vJptQvs1DxTBs
+	6d5qnrj7xHi6NTbZxg=; b=jLcXZYR0/UKn00mL7kFlk7Mu57oOazh3LlyM469oz
+	34hCNk0a+S0scy/pk6WBXM+nDg1vXHUIPkvQK7iUzdOfPR81ZzRb2TAMeui4LM2S
+	5xeAc+xzeBXhfZfRUDHE6F+1S9YnseHPhIACVc6AW4JqPsulcSS3A8B8GnRAYR1I
+	jtWUghy919wvdv8RnTrWteFEClfxr0MkWnVBbdeRB6klidnRHNIq2OJfJO/zmxgo
+	68eN4rFqx/psm3zfveUQUKAZjGo2qZMZoz8mv+tBRKBuO0K8foarp1RduGwLB7LS
+	+/d/koJP9YRNNRncgCF0Y9+L4WNdwIkD+qxauVuiB4WJA==
 Received: from dc5-exch05.marvell.com ([199.233.59.128])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 4e9vjjccpy-1
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 4e9vjjcd21-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 May 2026 04:48:16 -0700 (PDT)
+	Fri, 22 May 2026 04:51:27 -0700 (PDT)
 Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
  DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.25; Fri, 22 May 2026 04:48:15 -0700
+ 15.2.1544.25; Fri, 22 May 2026 04:51:26 -0700
 Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
  (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.25 via Frontend
- Transport; Fri, 22 May 2026 04:48:15 -0700
+ Transport; Fri, 22 May 2026 04:51:26 -0700
 Received: from rkannoth-OptiPlex-7090 (unknown [10.28.36.165])
-	by maili.marvell.com (Postfix) with SMTP id 1730C5B6949;
-	Fri, 22 May 2026 04:48:06 -0700 (PDT)
-Date: Fri, 22 May 2026 17:18:06 +0530
+	by maili.marvell.com (Postfix) with SMTP id 5AC5F3F707A;
+	Fri, 22 May 2026 04:51:18 -0700 (PDT)
+Date: Fri, 22 May 2026 17:21:17 +0530
 From: Ratheesh Kannoth <rkannoth@marvell.com>
 To: <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
         <netdev@vger.kernel.org>, <oss-drivers@corigine.com>
@@ -75,11 +75,11 @@ CC: <akiyano@amazon.com>, <andrew+netdev@lunn.ch>,
         <Prathosh.Satish@microchip.com>, <przemyslaw.kitszel@intel.com>,
         <saeedm@nvidia.com>, <sgoutham@marvell.com>, <tariqt@nvidia.com>,
         <vadim.fedorenko@linux.dev>
-Subject: Re: [PATCH v16 net-next 7/9] octeontx2-af: npc: Support for custom
- KPU profile from filesystem
-Message-ID: <ahBCdspfMKMJYPlW@rkannoth-OptiPlex-7090>
+Subject: Re: [PATCH v16 net-next 8/9] octeontx2: cn20k: Respect NPC MCAM
+ X2/X4 profile in flows and DFT alloc
+Message-ID: <ahBDNRgCfJKoAY9O@rkannoth-OptiPlex-7090>
 References: <20260521095303.2395584-1-rkannoth@marvell.com>
- <20260521095303.2395584-8-rkannoth@marvell.com>
+ <20260521095303.2395584-9-rkannoth@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -88,22 +88,22 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20260521095303.2395584-8-rkannoth@marvell.com>
-X-Authority-Analysis: v=2.4 cv=O4kJeh9W c=1 sm=1 tr=0 ts=6a104280 cx=c_pps
+In-Reply-To: <20260521095303.2395584-9-rkannoth@marvell.com>
+X-Authority-Analysis: v=2.4 cv=O4kJeh9W c=1 sm=1 tr=0 ts=6a10433f cx=c_pps
  a=rEv8fa4AjpPjGxpoe8rlIQ==:117 a=rEv8fa4AjpPjGxpoe8rlIQ==:17
  a=kj9zAlcOel0A:10 a=NGcC8JguVDcA:10 a=VkNPw1HP01LnGYTKEx00:22
  a=l0iWHRpgs5sLHlkKQ1IR:22 a=TtqV-g6YmW1Jfm2GSLaY:22 a=M5GUcnROAAAA:8
- a=NlRZgN0ufz6fjOar1VwA:9 a=CjuIK1q_8ugA:10 a=OBjm3rFKGHvpk9ecZwUJ:22
-X-Proofpoint-ORIG-GUID: HIYrUHewJBAFBUAvIXL7nI5YC_SZaETQ
-X-Proofpoint-GUID: HIYrUHewJBAFBUAvIXL7nI5YC_SZaETQ
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTIyMDExOCBTYWx0ZWRfXxIZEWg2TUA3y
- d/abet0caiHgyTSLcUIv++rf7wbTrdYKCq4AI8uCzlDnQK3wOxFUKNOZuZ8Ea0eqQLCHx/xt1bo
- 3SffeK//CV6A3GDJrO65b6m9ioQwJ0WEzrnPthaMFlesG8ttdFRgU7EfcNJiUb4N41X5pv9ILPk
- pQMRT0QYQyrIx/04k/bK2FL2TNDiQtcHN7PVTzyidecA/oJrpjVY6hNJEWK0ry2a+32TuduHapM
- oNB3sPKI1kNTDZJmIGdiC0YpKIInWx6FVP/iv0QyzragbLkqvaBU7YtboEsEXYfpmlRBYhUf67M
- b5ykz/dtQJMfn4ODoJZ1woB+JV99iZdzK59+DMawqiziEk581PaSfdEuqwLyl14XXnTrquQaFuf
- CncJIqiIeWEEq9ZGQobeuIwOUN0jdDkbl1ZBBqJBdqexYDNNmzvncrUSdkPA4Qd4SgIKn9vs1HL
- 8R6/PSta7zU211uognA==
+ a=h_rf9Kp-KExXIHB_074A:9 a=CjuIK1q_8ugA:10 a=OBjm3rFKGHvpk9ecZwUJ:22
+X-Proofpoint-ORIG-GUID: 2t0pQsNbwm-7N9RYWypKqT7XwbdesSto
+X-Proofpoint-GUID: 2t0pQsNbwm-7N9RYWypKqT7XwbdesSto
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTIyMDExOCBTYWx0ZWRfXwfhfWTEJmlxX
+ 0jjTtOIwVe7NVhn6KXWSGN4rzprNHK4B7aV9r+ljRhmwEiZB3nXvrKoaxwh4eB595oxPcQk3kob
+ olYdK50sZwttyGCQLXK9Raifwz7buyFLmXPStZ99ZXYW1RBqA/Poz1PDn86fBpH3KSxRpcKRyeH
+ JIOhnxklbeH6YNSDc1gHtwuKgxEYPO/G5F/9kUVciV8fO6m72s5GOThhrkswo0vjbZIvPRyqev8
+ wAhBa2HckpL13irmHXHd6rlqOslgwvm5HgePsUBSx4xKJCs90ANPFv3v7pvVj+puJtrLlhYVywd
+ /UckvxKVSJaSGT0k0L3jhcU23UstfoGLfXaK6C7NTGH1Vs0zGhzSyp5znkMIv058dTRfUevMUNV
+ mLfsbq+5TfhKp04FgN5GG4+mbk6oEI9cRN8H/6AH/pT8efSOjJscO7PSGPebbccym4cbhR08tmx
+ F9u1Y41dmXpWk5BIJxA==
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
  definitions=2026-05-22_03,2026-05-18_01,2025-10-01_01
@@ -120,7 +120,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FREEMAIL_CC(0.00)[amazon.com,lunn.ch,intel.com,amd.com,davemloft.net,gmail.com,google.com,kernel.org,nvidia.com,redhat.com,resnulli.us,broadcom.com,microchip.com,marvell.com,linux.dev];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,marvell.com:email,marvell.com:dkim];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21154-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21155-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[marvell.com:+];
@@ -135,129 +135,44 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	NEURAL_HAM(-0.00)[-0.999];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_COUNT_SEVEN(0.00)[8]
-X-Rspamd-Queue-Id: 903885B3513
+X-Rspamd-Queue-Id: 45B835B3605
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 2026-05-21 at 15:23:01, Ratheesh Kannoth (rkannoth@marvell.com) wrote:
-> Flashing updated firmware on deployed devices is cumbersome. Provide a
-> mechanism to load a custom KPU (Key Parse Unit) profile directly from
-> the filesystem at module load time.
-
->This commit introduces a mechanism to load custom KPU profiles from the
->filesystem at module load time. It adds a kpu_profile module parameter
->to read profiles from /lib/firmware/kpu.
->> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cn20k/npc.c b/drivers/net/ethernet/marvell/octeontx2/af/cn20k/npc.c
->> index 0e1744609ccfd..513e68711962f 100644
->> --- a/drivers/net/ethernet/marvell/octeontx2/af/cn20k/npc.c
->> +++ b/drivers/net/ethernet/marvell/octeontx2/af/cn20k/npc.c
->> @@ -1676,8 +1692,15 @@ int npc_cn20k_apply_custom_kpu(struct rvu *rvu,
->>  	}
->>
->>  	for (kpu = 0; kpu < fw->kpus; kpu++) {
->>  		fw_kpu = (struct npc_kpu_fwdata *)(fw->data + offset);
->>  		if (fw_kpu->entries > KPU_CN20K_MAX_CST_ENT)
->This is a pre-existing issue, but missing a check for negative entries here
->allows bypassing bounds checks. If fw_kpu->entries is negative, multiplying it
->by sizeof(*cam) causes an unsigned wraparound. The offset decreases,
->potentially wrapping around the 64-bit address space to bypass bounds checks
->later, leading to arbitrary backward out-of-bounds reads. Could we add a check
->to ensure entries is non-negative?
->This is also a pre-existing issue, but does missing a bounds check before
->dereferencing the firmware structure fields lead to an out-of-bounds read?
->The bounds check for rvu->kpu_fwdata_sz < hdr_sz + offset happens later, but
->fw_kpu is located at fw->data + offset. If the firmware blob is truncated
->exactly at hdr_sz + offset, reading fw_kpu->entries accesses 4 bytes out of
->bounds. Can this be checked before accessing fw_kpu?
-
-Pre existing issue. Will prepare patch for net tree once this series is merged.
-
->>
->> +static int npc_alloc_kpu_cam2_n_action2(struct rvu *rvu, int kpu_num,
->> +					int num_entries)
->> +{
->> +	struct npc_kpu_profile_adapter *adapter = &rvu->kpu;
->> +	struct npc_kpu_profile *kpu;
->> +
->> +	kpu = &adapter->kpu[kpu_num];
->> +
->> +	kpu->cam2 = devm_kcalloc(rvu->dev, num_entries,
->> +				 sizeof(*kpu->cam2), GFP_KERNEL);
->Does storing device-managed memory in a shared static global array cause
->use-after-free and data races? The adapter->kpu pointer references
->npc_kpu_profiles, which is a static global array shared across all OcteonTX2
->devices.
->If multiple devices are probed, they will race to overwrite these pointers.
->Furthermore, if a device is unbound, the devm framework frees the memory,
->leaving dangling pointers in the global array which will trigger a
->use-after-free on subsequent access.
+On 2026-05-21 at 15:23:02, Ratheesh Kannoth (rkannoth@marvell.com) wrote:
+>> Default CN20K NPC rule allocation now keys off the active MCAM keyword
+>> width: use X4 with a bank-masked reference index when the silicon uses
+>> X4 keys, and X2 with the raw index otherwise (replacing the previous
+>> always-X2 / eidx + 1 behaviour).
 >
+>> -static int otx2_mcam_pfl_info_get(struct otx2_nic *pfvf, bool *is_x2,
+>> -				  u16 *x4_slots)
+>> +static int otx2_mcam_pfl_info_get(struct otx2_nic *pfvf, u16 *x4_slots, u8 *kw_type)
+>>  {
+>>  	struct npc_get_pfl_info_rsp *rsp;
+>>  	struct msg_req *req;
+>>  	static struct {
+>>  		bool is_set;
+>> -		bool is_x2;
+>> +		u8 kw_type;
+>>  		u16 x4_slots;
+>>  	} pfl_info;
+>This is a pre-existing issue, but since this patch expands the cached fields
+>here, is it safe to use a function-local static struct for this profile
+>information?
+>Because pfl_info is static, it is shared globally across all NIC instances.
+>However, access to it is protected by pfvf->mbox.lock further down in the
+>function, which is a per-NIC instance lock.
+>If multiple NIC instances (like multiple PFs or VFs) invoke this concurrently,
+>they will acquire their own instance locks but race on this shared static
+>structure. Could CPU or compiler instruction reordering cause one thread to
+>observe pfl_info.is_set == true before x4_slots or kw_type are fully written?
+>This could result in x4_slots == 0, causing underflow when calculating
+>x4_slots - 1 later in otx2_alloc_mcam_entries().
+>Additionally, does this mean the first probed device populates the cache for
+>all devices, potentially forcing incorrect configurations if different hardware
+>blocks have differing profiles?
 
-There is only one AF device per system.
-
->> +	fw = rvu->kpu_fwdata;
->>
->> +	for (kpu = 0; kpu < fw->kpus; kpu++) {
->> +		if (rvu->kpu_fwdata_sz < hdr_sz + offset) {
->> +			dev_warn(rvu->dev,
->> +				 "Profile size mismatch on KPU%i parsing\n",
->> +				 kpu + 1);
->> +			return -EINVAL;
->> +		}
->> +
->> +		fw_kpu = (struct npc_kpu_fwdata *)(fw->data + offset);
->> +		if (fw_kpu->entries < 0) {
->Is there a missing bounds check before dereferencing fw_kpu? The bounds check
->for rvu->kpu_fwdata_sz < hdr_sz + offset only verifies the start of the
->structure.
->Since fw_kpu is located at fw->data + offset, the structure itself resides
->after hdr_sz + offset. If the firmware blob is truncated to exactly
->hdr_sz + offset, reading fw_kpu->entries will access 4 bytes out of bounds.
->
-
-This is an existing issue. I agree, even though we rearranged and renamed functions,
-mentioned bug exist. Will prepare a net-next patch to harden these parts once this series
-is merged.
-
-> +	profile->ikpu2 = devm_kcalloc(rvu->dev, 1,
->> +				      sizeof(ikpu_action_entries),
->> +				      GFP_KERNEL);
->> +	if (!profile->ikpu2)
->> +		return -ENOMEM;
->> +
->> +	action = (struct npc_kpu_profile_action *)(fw->data + offset);
->> +
->> +	if (rvu->kpu_fwdata_sz < hdr_sz + sizeof(ikpu_action_entries))
->> +		return -EINVAL;
->> +
->> +	/* The firmware layout does dependent on the internal size of
->> +	 * ikpu_action_entries.
->> +	 */
->> +	memcpy((void *)profile->ikpu2, action, sizeof(ikpu_action_entries));
->> +	offset += sizeof(ikpu_action_entries);
->Does tying the firmware ABI to the kernel's internal array size break
->backward and forward compatibility?
->Since ikpu_action_entries is a statically sized kernel array, its size
->increases whenever new port kinds are added in future kernel releases. Older
->firmware binaries will either fail the bounds check or parse data from the
->wrong offset, breaking firmware compatibility.
-
-NO. We keep the same size for all binaries (ikpu_action_entries). We cant introduce
-size variable in this structure as it will break backward compatability.
-
->+	*fw_kpus = fw->kpus;
->> +
->> +	sfw = devm_kcalloc(rvu->dev, 1, sizeof(*sfw), GFP_KERNEL);
->> +	if (!sfw)
->> +		return -ENOMEM;
->> +
->> +	memcpy(sfw, fw, sizeof(*sfw));
->Will calling memcpy directly on an IOMEM pointer cause faults on ARM64?
->The KPU profile firmware can be loaded from the firmware database which maps
->the profile as device memory. Using standard memcpy emits unaligned loads or
->DC ZVA instructions that trigger hardware exceptions like alignment faults or
->external aborts on device memory on ARM64 architectures.
->Should memcpy_fromio be used here instead?
->
-THis is not an IO memory. This fw loaded memory thru request_firmware_direct()
+These are AF attributes and is same for all PFs/VFs. Even multple PF/VFs request for these
+features, AF will process these requests one by one. And all results of these requests will be same.
 
