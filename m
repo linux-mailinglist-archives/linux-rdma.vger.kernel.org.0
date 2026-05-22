@@ -1,176 +1,140 @@
-Return-Path: <linux-rdma+bounces-21148-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21149-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AKs3O9jmD2r+RAYAu9opvQ
-	(envelope-from <linux-rdma+bounces-21148-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 07:17:12 +0200
+	id wGAHHnQCEGqLSQYAu9opvQ
+	(envelope-from <linux-rdma+bounces-21149-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 09:15:00 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56D085AF099
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 07:17:12 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC5785AFE02
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 09:14:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3E72B307FB15
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 05:09:12 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D3EED3032992
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 07:12:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AEBB1A267;
-	Fri, 22 May 2026 05:09:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 999183905EF;
+	Fri, 22 May 2026 07:12:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b="hTqP4+dQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f/0Xw8lM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3574364E81
-	for <linux-rdma@vger.kernel.org>; Fri, 22 May 2026 05:08:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09C25226D18;
+	Fri, 22 May 2026 07:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779426543; cv=none; b=BPNW4t7d2wZVfwYriJjv7eJRT0UojDS2A/7yDc7F4LxFeIHpUSiTe89U8Nhfw3Oqb5IWLecRpRPv+3ZKk/VLDGXPIVh095eeAW8lN2FBcYsvStED1nprQkDMc4QCZHv++qHRs+1CYqQi1blD7KXzgVkvRGTpYvM26pkwu8+U0j8=
+	t=1779433959; cv=none; b=BFE3bd6XkWOtdqL6FApRnZHDfsVoF59ecXqsY/o197XxB/FMAwZkf/eOHT+mw4BfRfJLDSYiuS3C9TIc2doSDMJknDt+LJl0jII4gz+zgE/EJl94AO1g/pjXgZEvnezjtEvrvoPoBJyVIFqE2C4L1LhlSFrc/maX/8TqYLkBVn4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779426543; c=relaxed/simple;
-	bh=NkvD/6z5PxHoDeUDNemV6zEaq/cU+OWRVRkadFNVzJU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eO47Fa72ZIU+NvarFV0c9phC/VPzFjfyVMlTkgLhyzFqwvF3K0oY7MnVAW+uEk2i2Sf3ka/Bdrp5bRB9zPjkT6wEMIjeYhVA46WpUzyRQuXRVD3bzwxWGOzvBxu5O2lAs0ptyKTJZenfMiavBpGKDs+3YtTXwmuLjTx+40s/uek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b=hTqP4+dQ; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 97A453FEAB
-	for <linux-rdma@vger.kernel.org>; Fri, 22 May 2026 05:08:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20251003; t=1779426536;
-	bh=60NKKNxtT9Il3Mq63R2ogOWMUGMUCB1FdbJonMkcvks=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version;
-	b=hTqP4+dQcMPlQc51WeuXXzSJiV+dfIKv67IbN2KcECr0ZIn1EQuXVRDwlcY0yncg4
-	 VU0n3TPrLgJdyL645HzNmZXgAA2Sot8l5Am9SK2TgXapSK+hKBPwbazbpgswNeuOZP
-	 WyezuZi1PdmWaifHHJPxzj3+EvB+uqRLiQjLWJQHuxjjtOSMe70KHJaIxXQ6B+/eii
-	 NXbTT5hDYz1a2MP48wNBMIBfioV+vfMi+MuKjIUmn6db/7ygkkVHJmiaPKmbXT8JLG
-	 TOq8hQWKndeEnDIFiEW7NlrGTUm+8Ph0HFr0JkYP8XavfxInyUMgzm1M8zFjgvyrtu
-	 tixNIw4rA2ibQsiA6V5L61CGAtCynkZi0MOkNMqgRrUjIkVfUWgYsjTNCAIpZGBSAY
-	 dZF+0qUtB+UXZL4nCBm/9wSeyJNzYt8Z0TvmhVQc0FMjao8kxzKin+t/xsC5u2WXnY
-	 enjmn6YSzVGFa4xw4RUis7vvePbmohIkV0BZrPILaXl2vpOam0xAmv+TZwRZUpQrxE
-	 ZJmbkG9ByhvMzznaRN1xX8tk5GK9A+NgCAq+odMl2o6htPx7Tx4jPS/82ncyZHwaUS
-	 oLXz3x4X2LNNXirV02xphzt9Di8JQpaicdG1knkO6/ZiSU39Th3tQYctv0y4TTjXdD
-	 JPgra8TRSryLtsuBjS0LrlxA=
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-369467ab5bfso6125539a91.0
-        for <linux-rdma@vger.kernel.org>; Thu, 21 May 2026 22:08:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779426535; x=1780031335;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=60NKKNxtT9Il3Mq63R2ogOWMUGMUCB1FdbJonMkcvks=;
-        b=KY6Jijc2wUKhgOxedcZJmspi2EuFBU6OFKGxe1qGNdSR+DNPqQzKDRSDYLdccqVxyD
-         emcRSTb4rq24gD+qJA5FXuCn3nY0PgRs99pqiTnGsTPb1O6CDW1uA+b2GZAZ1hNHCSsU
-         MBPJWrQPy4jVHSfUb1J7OSmnuZncZM9mKez/GfSIcCzEkSCpSV4+tC2r1dTGibKaQilP
-         85gyLy1ws6uJWIDzZPa8n9j5SGT3wx9xparf8l4uf+G01XXWVnYjMUnkQvaLGwFE2Ar7
-         rdL47pdlsRAea3Poq5PyBPLudS7TEPRdHU9YQ8+OdiroAnDqFkO7YLFJhOxNKqUkJqKE
-         G78g==
-X-Gm-Message-State: AOJu0YzdMIK9nIJvN+PUbgmKNerjG0hOZYZ5HCJ3BJH+UBHld+YVWotw
-	trK5YHoofJwbmshHeszIh5+XhifxjuzrchquAYweGPbVwbZzu8kY5WGMttWiRUqgUsyFgHzBtS7
-	wyfXyFn5IRFL+GhbqItpl444aJOw0r2JVFGVYwOORQdxmdm+TbSE4PdvPAjsZ05m2Z+/1tmVh1R
-	44OkBN9GZIzjG5kg==
-X-Gm-Gg: Acq92OGh5Md6O/UOc5UPZCWVf4jCqwkffKiU8pAb6hGCDYndpAOyu183FJDy8brdKxd
-	ZJ+LpmIrhbWBBa9hh10v9k+C44ENE0G6sgynzWEAAMlUpcPP1HMaR0htd8Itztx3lgzjCtGBFqo
-	C9WPnGXvaDeuZuqhHffQt8mM3ztoW7QaKMJjCMksyQwHD6uXbNaizWBO4byN1WJOF3ggDXIj1o3
-	X9l5EpICUhyMTGqqyjGR25Q4hkDFa+hvH1fdukv2QeKU4auvKOTL/rD5qwOpCd78QU8yvgjeaQX
-	9l+/dxL6e1MX4XtR7wAwVqmjQ0eIG3GqE33adkcQhwKF3Ll1SVCdJSLE9pwe3UnyEyM7Xymk6L/
-	kj/i9tUJEqhw/ua6ZvtpFULFKRczAlWBPlE+HZd3Z8g==
-X-Received: by 2002:a17:90b:5848:b0:366:16d1:6a26 with SMTP id 98e67ed59e1d1-36a6773c276mr1995032a91.5.1779426535030;
-        Thu, 21 May 2026 22:08:55 -0700 (PDT)
-X-Received: by 2002:a17:90b:5848:b0:366:16d1:6a26 with SMTP id 98e67ed59e1d1-36a6773c276mr1995012a91.5.1779426534679;
-        Thu, 21 May 2026 22:08:54 -0700 (PDT)
-Received: from cnode.tail.seyeong.kim ([39.118.66.20])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-36a72c4ce6bsm645610a91.11.2026.05.21.22.08.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2026 22:08:54 -0700 (PDT)
-From: Seyeong Kim <seyeong.kim@canonical.com>
-To: linux-rdma@vger.kernel.org
-Cc: Krzysztof Czurylo <krzysztof.czurylo@intel.com>,
-	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Seyeong Kim <seyeong.kim@canonical.com>
-Subject: Re: [RFC PATCH] RDMA/irdma: Suppress PF reset on HMC error
-Date: Fri, 22 May 2026 05:08:45 +0000
-Message-ID: <20260522050845.406895-1-seyeong.kim@canonical.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260416071541.3899471-1-seyeong.kim@canonical.com>
-References: <20260416071541.3899471-1-seyeong.kim@canonical.com>
+	s=arc-20240116; t=1779433959; c=relaxed/simple;
+	bh=mmjD/BfwuqvlPWyD9wQSO3/75vf2wdElFWQ4twkS6lk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K+YkCUueUdy0v5HTZBPJzqrfVFotKGR3u45uUd3lKuWpm2fAJdz7bqGQigjyVQ2Wr8HFZ79/Cdr3L6+zfl/KuhjnVbOCUqjH5Rt++ZslDI6Wn50Ic7n6mqWaj879LLvHtO2VW+kZwdNHCb16xpi6R0ztXVjSILRoztOYPZ4V+rk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f/0Xw8lM; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 257031F00A3D;
+	Fri, 22 May 2026 07:12:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779433956;
+	bh=KH2JbmMgdb3FAGMCfvbKA2uQ99psKpF2tMWtecKElbU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=f/0Xw8lMEZCN3oUF9paqLqOk7MO5W80g+bMpgSCDKundPKfSK8Uq+0jYSJ/oD7vrQ
+	 m5NQK2ADqz6cGBUb+WhA9u8c2Yy8UGe12Zzhi953EY9lqHNwR17r1ZK2Vw9qKpFphA
+	 Iq3Vta0D50Eaxfu3r9ak1cK0iSw1EIuCrMm2tYwTgISw3fDYeHvyl+2eq03TAwiLTY
+	 NDteNj0cjSDnhUyP/0Fh1JlxrahqN0Frxf3eWEysW7ncjHQDbVFzElkj7forDP62oj
+	 kzMG8Xxleb3YShCEAAmhF0On0l+AfI97ZuR4HWiV8USUlOIqC+/QWUDppq0qqNTNB4
+	 pTi+jfHBeXfyQ==
+Date: Fri, 22 May 2026 08:12:30 +0100
+From: Simon Horman <horms@kernel.org>
+To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, longli@microsoft.com, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, kotaranov@microsoft.com,
+	shradhagupta@linux.microsoft.com, dipayanroy@linux.microsoft.com,
+	kees@kernel.org, linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next v9] net: mana: Expose hardware diagnostic info
+ via debugfs
+Message-ID: <20260522071230.GG1506108@horms.kernel.org>
+References: <20260519064621.772154-1-ernis@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260519064621.772154-1-ernis@linux.microsoft.com>
 X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[canonical.com,reject];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[canonical.com:s=20251003];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21148-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21149-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[seyeong.kim@canonical.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[canonical.com:+];
+	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,canonical.com:mid,canonical.com:dkim]
-X-Rspamd-Queue-Id: 56D085AF099
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[horms.kernel.org:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: EC5785AFE02
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi,
+On Mon, May 18, 2026 at 11:46:10PM -0700, Erni Sri Satya Vennela wrote:
+> Add debugfs entries to expose hardware configuration and diagnostic
+> information that aids in debugging driver initialization and runtime
+> operations without adding noise to dmesg.
+> 
+> The debugfs directory for each PCI device is named using pci_name()
+> (the unique BDF address), and its creation and removal is integrated
+> into mana_gd_setup() and mana_gd_cleanup_device() respectively, so
+> that all callers (probe, remove, suspend, resume, shutdown) share a
+> single code path.
+> 
+> Device-level entries (under /sys/kernel/debug/mana/<BDF>/):
+>   - num_msix_usable, max_num_queues: Max resources from hardware
+>   - gdma_protocol_ver, pf_cap_flags1: VF version negotiation results
+>   - num_vports, bm_hostmode: Device configuration
+> 
+> Per-vPort entries (under /sys/kernel/debug/mana/<BDF>/vportN/):
+>   - port_handle: Hardware vPort handle
+>   - max_sq, max_rq: Max queues from vPort config
+>   - indir_table_sz: Indirection table size
+>   - steer_rx, steer_rss, steer_update_tab, steer_cqe_coalescing:
+>     Last applied steering configuration parameters
+> 
+> Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+> ---
+> Change in v9:
+> * Change steer_update_tab type from u32 to bool and use
+>   debugfs_create_bool() accordingly
+> * Guard debugfs_lookup_and_remove() calls in mana_remove() with a
+>   NULL check on gc->mana_pci_debugfs
+> * Fix mana_gd_resume() RDMA failure unwind: call mana_rdma_remove()
+>   to undo partial RDMA state and return err, instead of
+>   mana_remove(true) + mana_gd_cleanup_device(), avoiding a UAF
+>   where gf_stats_work could fire against an already-destroyed HWC
 
-The patch in the original posting was generated against mainline but
-tested on a 6.8 kernel (Ubuntu 24.04). I re-ran that test on mainline
-v7.1-rc4: the patch applied unchanged and the result was the same.
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-Testing details (mainline v7.1-rc4)
------------------------------------
-
-Tested on:
-  Kernel   : 7.1.0-rc4 (mainline)
-  Adapter  : Intel E810-XXV for SFP [8086:159b rev02], 2-port
-  NVM      : 4.51, fw.mgmt 7.5.4, DDP 1.3.43.0
-  Repro    : writel(BIT(26), BAR0 + 0x0016CA00) via /dev/mem
-  Workload : ib_write_bw -R -F -q 4 -D 90, 4 QPs, loopback on the
-             injected PF; HMC_ERR forced three times during the run
-
-Before the patch, a forced HMC_ERR caused a full PF reset. With an
-RDMA workload running, the reset tore down the irdma aux device with
-a uverbs file still open, and hit a WARNING at uverbs_destroy_ufile_hw
-(rdma_core.c:957, via ice_prepare_for_reset -> ice_unplug_aux_dev).
-The ib_write_bw run aborted.
-
-After the patch, each forced HMC_ERR only logged a single "HMC Error:
-errinfo=0x00000000 errdata=0x00000000" line - no reset, no WARNING.
-The ib_write_bw run completed (8622 MiB/s over 4 QPs).
-
-One difference from the original test: on this newer NVM (4.51) a
-single HMC_ERR caused one PF reset, not the cascading resets / DMAR
-faults seen on NVM 3.10. The unconditional reset is what the patch
-addresses either way.
-
-Thanks,
-Seyeong
 
