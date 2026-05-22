@@ -1,184 +1,164 @@
-Return-Path: <linux-rdma+bounces-21146-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21147-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2OsnLWDfD2rQQwYAu9opvQ
-	(envelope-from <linux-rdma+bounces-21146-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 06:45:20 +0200
+	id EBPTDu7hD2pERAYAu9opvQ
+	(envelope-from <linux-rdma+bounces-21147-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 06:56:14 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24BFC5AEC0D
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 06:45:20 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 908DF5AED19
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 06:56:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 843363020EB4
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 04:44:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6A0953055423
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 04:49:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAA8E347515;
-	Fri, 22 May 2026 04:44:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2565D359A90;
+	Fri, 22 May 2026 04:49:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="Z/7pYuXj";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dSFeIUJj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LSiqZitO"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from fhigh-b5-smtp.messagingengine.com (fhigh-b5-smtp.messagingengine.com [202.12.124.156])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93AC822E3E9;
-	Fri, 22 May 2026 04:44:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8D8029B77C;
+	Fri, 22 May 2026 04:49:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779425087; cv=none; b=Xz1NWy1lJBzFSxh6fCmCltV57tNGwEtymF2aMW29T/irh3tD2h0V0+LmAEt0qHM4ADjHGwi65hBqKNzCWuclzWwC+SOTR/4jjX/Lh5xGmuDVAu0kh/zKkjcDbin/0HNuAzorJ7hXfcs56RR+AGNfIWUO4ttxpD8UGraeuIgqctQ=
+	t=1779425363; cv=none; b=hp2Rs8Vhunv5E4BoRDmi+IN7Gielpgo6vq63nKX5KjzwpTj7kEqfyU+V0NiRvoDfi/Hb5M2sEAKpHlxcXD1x4++eimRPYDppO5uD88dmSANyzEIJLTDCZo0LsFUBTMiODycxNbTnjYp30mGixPjQV4h6duS2ta2rD1YC/jauJRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779425087; c=relaxed/simple;
-	bh=A2iwVa+JfXcMyDSVVnLV/EE4aDQxemLxskO2NRdDyIM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RRtmiJNtZiqPPS3F3qv+OGK+VEhQvymFQcBbM9nEfdNXCjgyZ0Q8qenWBxuYK9XnAL9zXkR/LIQNDdMlokWiaw/mcYYTaIsvfXTgBbAMSC0f6BK7NMuhbrY4e55R1Fr6r73VLazdSGSE6Wr29vis13PTpNeZNzZCbWF0ZRdp46Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=Z/7pYuXj; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=dSFeIUJj; arc=none smtp.client-ip=202.12.124.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
-Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 721E27A00A4;
-	Fri, 22 May 2026 00:44:44 -0400 (EDT)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-03.internal (MEProxy); Fri, 22 May 2026 00:44:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1779425084; x=1779511484; bh=9BRLcK4fb6
-	9mi1+15hYmmA6GtamMCSVNkvbyUWdeZRQ=; b=Z/7pYuXjmP9AqfBkbE2Gzoz4Bv
-	BxNjHhbpLf0e3We/omeDLfGyI/Ga6vVx6diWQuVS91Whathb2R0SpDtmg2LtOJin
-	O5QuxMd8BBJ111OIWn7zO9qYV4vbrp5Uc83MgZaClfYBpaJopQm5h0+z4PhbTfRX
-	n2tuzvYl7+cUeRl/uoPtM8U1FwxWblmD8zC3gwuBYXY7rwOnHS3aLVp3zYEqPusE
-	85v5pGB/QMjv0RLhVGg0c9RBu0vM/Hiq1XXjTtElpPiMbDbgest1v1GjfRZQomBv
-	C7pCCmlz+tD1DK8W1dnV2fPJN8wGPgYkZ3/M0WF53pchgMPJ+4mmQvwqD5ZQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1779425084; x=1779511484; bh=9BRLcK4fb69mi1+15hYmmA6GtamMCSVNkvb
-	yUWdeZRQ=; b=dSFeIUJjEObVpZBY5MGP+KximEdJpHhZEP5FM3C5CHdi6i+pH3a
-	oNE6/6cx9reJ2d0aBUwfdU8T7LaTSCrxRboYRB2rsEHqyJhuhbXbtt04J1D2l4EA
-	Fh/F7MMtCt09o2a2QuO8c5rJnGWaEN2evCoirZljFLP5bJ0uWUsfsyMPmrmwUARB
-	S0ZHLj1j2tCBfCxzflt5KZb3yG8M9Nf4xSmyAWRf+UVBz1Bxi007q2uALjR+acaH
-	vIsJcefCqRygw/yhLfnAWthKncd/JuwS4QkCXlaAWFB/h4krUbwluRn9UWq+9xq0
-	HWbAY16EGarhjdst6IufgUq6JTVDMHSiJBw==
-X-ME-Sender: <xms:PN8Pap_gvizK4yX6_O2uvaPp_bXmvaukBH6IWVY9fW3jdBp7uKn5qw>
-    <xme:PN8PakH8EtI2O1OxM4YaE9JgASnxL7wQ_IeL_5uAN1RqyW9vfpdZ9NLb6yIch16-5
-    l27hbGwa9UElIIzId-iIw1R8qTMTWgP91e3eI9iAL1n2l4P>
-X-ME-Received: <xmr:PN8PajTvk-eowh4k22Ct_EH9MYRKlfyE-XPuJ_ndE1uJoKA65dfhYq_CdMXIiHHXHEkkSJJRyLu3_9BxNflclbST-g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgddugeelgedtucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttdertd
-    dttddvnecuhfhrohhmpefirhgvghcumffjuceoghhrvghgsehkrhhorghhrdgtohhmqeen
-    ucggtffrrghtthgvrhhnpeehgedvvedvleejuefgtdduudfhkeeltdeihfevjeekjeeuhf
-    dtueefhffgheekteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
-    fhhrohhmpehgrhgvgheskhhrohgrhhdrtghomhdpnhgspghrtghpthhtohepuddvpdhmoh
-    guvgepshhmthhpohhuthdprhgtphhtthhopehthihmsggrrhhkjeefjedvsehprhhothho
-    nhdrmhgvpdhrtghpthhtoheplhhinhhugidqrhgumhgrsehvghgvrhdrkhgvrhhnvghlrd
-    horhhgpdhrtghpthhtohepiiihjhiihihjvddttddtsehgmhgrihhlrdgtohhmpdhrtghp
-    thhtohepjhhgghesnhhvihguihgrrdgtohhmpdhrtghpthhtoheplhgvohhnrhhosehnvh
-    hiughirgdrtghomhdprhgtphhtthhopehsthgrsghlvgesvhhgvghrrdhkvghrnhgvlhdr
-    ohhrgh
-X-ME-Proxy: <xmx:PN8ParQwQ4RtKHeBiY6RLFcPxvIQX4F1cAj0ysPYTVTQ-LWT2t_c2A>
-    <xmx:PN8Pam1_N0U3Ch4mguBeekCSng_VwCPflS0JhuuFLpPG_CnEXuehww>
-    <xmx:PN8Palx7Q2EInUnFEpC7BNu8q9XWcizlHkf9pnKXiLEInzyE4EUdGQ>
-    <xmx:PN8PaiwRTgUoUGcyBfrC7akxhRCRumeJVKdnK4-35te_CwmksJi4TA>
-    <xmx:PN8Paq3z6RJSMqkHk1Ql50CPP3Ok562BaejV8wFcP8kIiIuEo2yz_vTv>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 22 May 2026 00:44:43 -0400 (EDT)
-Date: Fri, 22 May 2026 06:44:47 +0200
-From: Greg KH <greg@kroah.com>
-To: Tymbark7372 <tymbark7372@proton.me>
-Cc: linux-rdma@vger.kernel.org, zyjzyj2000@gmail.com, jgg@nvidia.com,
-	leonro@nvidia.com, stable@vger.kernel.org
-Subject: Re: [PATCH 1/4] RDMA/rxe: Fix u64 iova+length overflow in
- mr_check_range
-Message-ID: <2026052221-deceiver-grafting-58e9@gregkh>
-References: <20260521194402.811-1-tymbark7372@proton.me>
- <20260521194402.811-2-tymbark7372@proton.me>
+	s=arc-20240116; t=1779425363; c=relaxed/simple;
+	bh=upzwlhH2S6BYm2RtVA6AYXk71GKmgyCd8tcanZx/Pjw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=KF9fJ+HYlA5qdA5IQvTThHpCgRRjc2o7MVxHzLxSyq5O0nulYBWmc/5Fznez1GKpc9EHcGuQjlq1A1JG9gdlO0nndt6gA7jgQkRbCJfyCc4Lmgvp0f/WQKuoTnkMou2O6RhiNd7umEt7SKE5w+ybGj3KoG/mMV2Vx7YMAMOnHFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LSiqZitO; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C97921F00A3D;
+	Fri, 22 May 2026 04:49:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779425360;
+	bh=ekNjVBI3tkZHPdsUPq0t0Huu7boUNAOIWIJNJDXGevI=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=LSiqZitOmkNs6UcUnhE064EQY5fhVG3mtdt5yeq7FxnAYdYRe0eQmwG4yM7BByXha
+	 mn6RIXqMClMSMzRaQourcJQdg7CIUvlwl+0D5vVfyPJFDj4RsMYhU9CoTFm3Kpk+l3
+	 rlcWQW4mj9rbb7AMsAmMaJKWcf6X4AlYeiLt/YPoWwjkvZnsrDabKT0AgCS/LnO6Ri
+	 qCHQc1E6/W16tYQWBj/OifEXR+npJ45LtZzfjvVqKoKIEgO32otPkld58OjWPPgfvS
+	 jAjoBtsDDg4XyxkTlmOzTVZUTP7pGYaqPWBJ5mqe7OkEi4SvS1gqe5iLmepzqCGGVQ
+	 7I30KhK5FoxgA==
+Message-ID: <ba093b6b93fffe07564e89dc5744efe45dfb4c21.camel@kernel.org>
+Subject: Re: [PATCH net] rds: annotate data-race around rs_seen_congestion
+From: Allison Henderson <achender@kernel.org>
+To: Jiayuan Chen <jiayuan.chen@linux.dev>, netdev@vger.kernel.org
+Cc: syzbot+fbf3648ae7f5bdb05c59@syzkaller.appspotmail.com, "David S. Miller"
+	 <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	 <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman
+	 <horms@kernel.org>, Andy Grover <andy.grover@oracle.com>, 
+	linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, 
+	linux-kernel@vger.kernel.org
+Date: Thu, 21 May 2026 21:49:19 -0700
+In-Reply-To: <20260522011621.304470-1-jiayuan.chen@linux.dev>
+References: <20260522011621.304470-1-jiayuan.chen@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3-0ubuntu1.1 
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260521194402.811-2-tymbark7372@proton.me>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kroah.com,none];
-	R_DKIM_ALLOW(-0.20)[kroah.com:s=fm3,messagingengine.com:s=fm3];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21146-lists,linux-rdma=lfdr.de];
-	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,nvidia.com];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21147-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[kroah.com:+,messagingengine.com:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[greg@kroah.com,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,messagingengine.com:dkim,proton.me:email,kroah.com:dkim]
-X-Rspamd-Queue-Id: 24BFC5AEC0D
+	TAGGED_RCPT(0.00)[linux-rdma,fbf3648ae7f5bdb05c59];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,linux.dev:email]
+X-Rspamd-Queue-Id: 908DF5AED19
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, May 21, 2026 at 07:44:08PM +0000, Tymbark7372 wrote:
-> In mr_check_range(), the IB_MR_TYPE_USER and IB_MR_TYPE_MEM_REG case
-> computes both iova + length and mr->ibmr.iova + mr->ibmr.length without
-> overflow check.  Both iova (u64) and length (size_t) are 64-bit on
-> 64-bit platforms.  An attacker setting iova = 0xFFFFFFFFFFFFFC00 and
-> length = 0x400 wraps the sum to 0, so the bound check
-> "iova + length > mr->ibmr.iova + mr->ibmr.length" passes.
-> 
-> After the bypass, rxe_mr_iova_to_index() computes a huge index value;
-> WARN_ON(idx >= mr->nbuf) fires but does not abort, and
-> rxe_mr_copy_xarray() then dereferences page_info[huge_idx], an
-> attacker-controlled out-of-bounds slot.  In the RXE_TO_MR_OBJ
-> direction this becomes an OOB write of attacker payload bytes through
-> info->page + info->offset.
-> 
-> Use check_add_overflow() on both ends to reject any iova/length pair
-> that wraps.  Also explicitly scope the local declarations introduced
-> by the helper variables.
-> 
-> Reachable from any unprivileged local process with
-> /dev/infiniband/uverbs0 open (world-rw on distros that ship the
-> rdma-core udev rules) and from an unauthenticated remote peer over
-> UDP/4791 (RoCEv2) when the target rkey/QPN are known.  Reproduced on
-> v7.1.0-rc3 + KASAN with a single ibv_post_send(IBV_WR_RDMA_WRITE) and
-> the wrap iova above; the kernel oopses in rxe_mr_copy+0x20d after
-> WARN at rxe_mr_iova_to_index+0x135.
-> 
-> Site A in rxe_resp.c (check_rkey()) reaches mr_check_range() with
-> attacker iova as well, so this patch also closes that path; Site B
-> (duplicate_request, also in rxe_resp.c) has an independent inline
-> check that wraps and is fixed in patch 3 of this series.
-> 
-> Fixes: 8700e3e7c485 ("Soft RoCE driver")
-> Cc: stable@vger.kernel.org # v4.8+
-> Reported-by: Tymbark7372 <tymbark7372@proton.me>
-> Signed-off-by: Tymbark7372 <tymbark7372@proton.me>
+On Fri, 2026-05-22 at 09:16 +0800, Jiayuan Chen wrote:
+> rs_seen_congestion is read in rds_poll() and written in rds_sendmsg()
+> and rds_poll() without any lock.  Use READ_ONCE()/WRITE_ONCE() to
+> annotate these lockless accesses and silence KCSAN.
+>=20
+> Fixes: b98ba52f96e7 ("RDS: only put sockets that have seen congestion on =
+the poll_waitq")
+> Reported-by: syzbot+fbf3648ae7f5bdb05c59@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/netdev/6a0f8d94.050a0220.6b33c.0000.GAE@g=
+oogle.com/
+> Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
 
-We need a real name for the From: and signed-off-by line, and no need
-for the duplicate reported-by line.
+Hi Jiayuan,
 
-thanks,
+I was about to send the same patch, so no complaints here.  Thanks for catc=
+hing this.
+Reviewed-by: Allison Henderson <achender@kernel.org>=C2=A0
+Tested-by: Allison Henderson <achender@kernel.org>
 
-greg k-h
+Allison
+> ---
+>  net/rds/af_rds.c | 4 ++--
+>  net/rds/send.c   | 2 +-
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/net/rds/af_rds.c b/net/rds/af_rds.c
+> index 76f625986a7f..93b2da63ed42 100644
+> --- a/net/rds/af_rds.c
+> +++ b/net/rds/af_rds.c
+> @@ -219,7 +219,7 @@ static __poll_t rds_poll(struct file *file, struct so=
+cket *sock,
+> =20
+>  	poll_wait(file, sk_sleep(sk), wait);
+> =20
+> -	if (rs->rs_seen_congestion)
+> +	if (READ_ONCE(rs->rs_seen_congestion))
+>  		poll_wait(file, &rds_poll_waitq, wait);
+> =20
+>  	read_lock_irqsave(&rs->rs_recv_lock, flags);
+> @@ -247,7 +247,7 @@ static __poll_t rds_poll(struct file *file, struct so=
+cket *sock,
+> =20
+>  	/* clear state any time we wake a seen-congested socket */
+>  	if (mask)
+> -		rs->rs_seen_congestion =3D 0;
+> +		WRITE_ONCE(rs->rs_seen_congestion, 0);
+> =20
+>  	return mask;
+>  }
+> diff --git a/net/rds/send.c b/net/rds/send.c
+> index d8b14ff9d366..e5d58c29aabe 100644
+> --- a/net/rds/send.c
+> +++ b/net/rds/send.c
+> @@ -1388,7 +1388,7 @@ int rds_sendmsg(struct socket *sock, struct msghdr =
+*msg, size_t payload_len)
+> =20
+>  	ret =3D rds_cong_wait(conn->c_fcong, dport, nonblock, rs);
+>  	if (ret) {
+> -		rs->rs_seen_congestion =3D 1;
+> +		WRITE_ONCE(rs->rs_seen_congestion, 1);
+>  		goto out;
+>  	}
+>  	while (!rds_send_queue_rm(rs, conn, cpath, rm, rs->rs_bound_port,
+
 
