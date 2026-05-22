@@ -1,53 +1,62 @@
-Return-Path: <linux-rdma+bounces-21163-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21164-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YFpqHNyfEGpuawYAu9opvQ
-	(envelope-from <linux-rdma+bounces-21163-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 20:26:36 +0200
+	id kFJ1L5/QEGrHeAYAu9opvQ
+	(envelope-from <linux-rdma+bounces-21164-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 23:54:39 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0107E5B9021
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 20:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B0DD5BAC6F
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 23:54:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 60BD7303112E
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 18:20:11 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 00CAC300B128
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2026 21:54:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A4D2374E7F;
-	Fri, 22 May 2026 18:20:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3A2338E8CB;
+	Fri, 22 May 2026 21:54:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RFHjpT21"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m/tbS2v0"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B1A237204A;
-	Fri, 22 May 2026 18:20:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5842340281;
+	Fri, 22 May 2026 21:54:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779474009; cv=none; b=Dhw46stAaeD0oV5am1Bm21H0B3AKXe6w2i1SQBvip3kqqvCd/F58A6IWsmXZZvfJh39X3zxB5PivOZLLbZuWmsvW2VgXrEeBwT50DORPUZ7LRqrt8CmMYDHynB657xbgUntZPzPHe1SRw3Nxq0DL2h/BFEHMhftUgLtugNxzPmQ=
+	t=1779486872; cv=none; b=rsoQ4BRv6+RFUyX7PFZJhyj5tyiFCvXJoIpdvS0PxzTsHzfzRiXsZfCcVN66t8KG64xST3DZubVrLZO02XQHo9Iw5GnEKa05OdpRWYKJYx3FB4iNs/B/4sG5ggDhCBWgzqMmNjsgq2cUq+/DGf29saoZDV++oqybpo8Jpm074N0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779474009; c=relaxed/simple;
-	bh=NUoNLZkXE7mCPVDC6q+rsPMeKJv3VUIh65EIfkPD3sM=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=NTjC4CCPE1ifIafj84p/bjjlF3mlCTGFAxw0t1SDCBCyRTN33ohqgqaZ0Woen7L4LlfT5PoCPwxN4HKJ5F1tdoS7C88pt43sN/EPd/kVnAksJ+f/CRt4xcEVs5GoZ80pxFpgVq+bB6/A3o1+TDi5qTvXtY56HluuxvETomWqdM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RFHjpT21; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E40B1F000E9;
-	Fri, 22 May 2026 18:20:08 +0000 (UTC)
+	s=arc-20240116; t=1779486872; c=relaxed/simple;
+	bh=FXxvypeUhIvVVHiJ9zEADS1Fn7Ky0VJvLn9oDbd8JMo=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=X1qH7xnrljWSBHHK3plpzgcR4UK38X1jHJl69juNhd6baU1tUYUb6sK73qlpE0chetlIiidwNtP9QTTcaIims5UKrXtb9OB5IzorRHtUi1PQkIM26WEh+eCOvgx3uxQY51NhmsMYcv1OakYNnCbYh2PdwE1NNum0BrJKXCZ7ht4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m/tbS2v0; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA5A91F000E9;
+	Fri, 22 May 2026 21:54:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779474008;
-	bh=qM2p6TEmCfXL753GtJ3p2ebVls1ARMYe7b6ogYrro08=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc;
-	b=RFHjpT21c9Tdmt5V3Y7OffReXiagtN+25l/L1Swf6yVoJNkwQGEPUo4OGC6bnJMqK
-	 hP54lmC6xu6cQ11deryvMqDHAfq9qjDs6iOAB5EmgwYpJiW2eqf1RJc8Q32/4vHiuC
-	 S5fVQuXYO3e5xXZ3ZGwSbSzt3qAHNUd7EKqQBoDhgYoj4088K2O1niL+HQSVhfDLmy
-	 ECQr0aMq9IrPUNYW/P9AOpCVGxJdyNMSr3NJ7UzvxE9Swi5Bzx4ki2QKJ7CjVgs9fb
-	 i50b6tq7xyc/55P34erz0VpeZ8tb5v8b5rICjYIQULh8IhKMqKpxEdGjnzra9scptT
-	 jnxXB5TLXmmHA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 93BD03930FB9;
-	Fri, 22 May 2026 18:20:18 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20260515; t=1779486871;
+	bh=KxAu/FOwB7Rt33B2dM3eIygIo4s+mBKShRVjNFSpc+k=;
+	h=From:To:Subject:Date;
+	b=m/tbS2v0sAfVFcfNe43DILWhS6uVeDw5Sc74gcSRvJuROeDKiWrh9Dq9uY5IvMZ00
+	 4nQsOphZFkW0tKkhQ67hX5d39iKOxxwZaXMdZq1O3BAxsEuigWtGy28pgtPNmDCaCs
+	 NhxybsobxVivcwlGIdOi/Es/8lZyUTc12jGFcBHcebhNBuKqnmSuddLJ96M8ZIw1Y9
+	 wJVdsS3RyRNpNqof6lap7KnWOIpAN8SutrphV1T2JPS6NlPevgwqAilwxo8B82UNWB
+	 q75twfUasP7TF3bqc9q0+PtCDKhiCXj4src8KDYZ+KaaoAh4jMKBVj2TVoIKjUALcW
+	 OfBbz6Fx9XFRw==
+From: Allison Henderson <achender@kernel.org>
+To: netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	kuba@kernel.org,
+	horms@kernel.org,
+	linux-rdma@vger.kernel.org,
+	achender@kernel.org,
+	linux-kselftest@vger.kernel.org,
+	shuah@kernel.org
+Subject: [PATCH net-next v1 0/3] selftests: rds: ROCE support follow ups
+Date: Fri, 22 May 2026 14:54:27 -0700
+Message-Id: <20260522215430.3748226-1-achender@kernel.org>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -55,81 +64,83 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v9] net: mana: Expose hardware diagnostic info
- via
- debugfs
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <177947401714.1320830.17170258046275289857.git-patchwork-notify@kernel.org>
-Date: Fri, 22 May 2026 18:20:17 +0000
-References: <20260519064621.772154-1-ernis@linux.microsoft.com>
-In-Reply-To: <20260519064621.772154-1-ernis@linux.microsoft.com>
-To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, longli@microsoft.com, andrew+netdev@lunn.ch,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- kotaranov@microsoft.com, horms@kernel.org, shradhagupta@linux.microsoft.com,
- dipayanroy@linux.microsoft.com, kees@kernel.org,
- linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_MISSING_CHARSET(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21163-lists,linux-rdma=lfdr.de,netdevbpf];
-	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-21164-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NO_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MIME_TRACE(0.00)[0:+];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 0107E5B9021
+	TO_DN_NONE(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,rds_rdma_run.sh:url,run.sh:url]
+X-Rspamd-Queue-Id: 6B0DD5BAC6F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hello:
+Hi all,
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+This is a follow up series to the "Add ROCE support to rds selftests"
+series.  The first patch renames run.sh to rds_run.sh, and also adds
+two wrappers to the TEST_PROGS target to run the same test over the
+rdma and tcp transports.  The wrappers rds_rdma_run.sh and
+rds_tcp_run.sh also provide self-describing names that appear on the
+netdev CI dashboard.
 
-On Mon, 18 May 2026 23:46:10 -0700 you wrote:
-> Add debugfs entries to expose hardware configuration and diagnostic
-> information that aids in debugging driver initialization and runtime
-> operations without adding noise to dmesg.
-> 
-> The debugfs directory for each PCI device is named using pci_name()
-> (the unique BDF address), and its creation and removal is integrated
-> into mana_gd_setup() and mana_gd_cleanup_device() respectively, so
-> that all callers (probe, remove, suspend, resume, shutdown) share a
-> single code path.
-> 
-> [...]
+The second patch addresses a sashiko complaint that I thought was worth
+circling back for.  In the patch "pin RDS sockets to their intended
+transport," sockets are pinned the specific transport they are meant to
+test. By default, socket transports are implicitly selected based on
+the network topology, but it is possible that they can fail back to
+other transports if the underlying connection could not be established.
+So the patch pins them to the intended transport to avoid false
+positives.
 
-Here is the summary with links:
-  - [net-next,v9] net: mana: Expose hardware diagnostic info via debugfs
-    https://git.kernel.org/netdev/net-next/c/c227f8aaf22c
+Lastly the third patch "support RDS built as loadable module," lifts
+the CONFIG_MODULES=n requirement, and updates the check_*conf_enabled()
+to allow modules set to "=m" and further load the backing modules for
+any component set as such.
 
-You are awesome, thank you!
+Questions, comments and feedback appreciated!
+
+Thanks everyone!
+Allison
+
+Allison Henderson (3):
+  selftests: rds: add per-transport run wrappers
+  selftests: rds: pin RDS sockets to their intended transport
+  selftests: rds: support RDS built as loadable modules
+
+ tools/testing/selftests/net/rds/Makefile      |  6 +-
+ tools/testing/selftests/net/rds/README.txt    | 13 ++--
+ tools/testing/selftests/net/rds/config        |  1 -
+ .../testing/selftests/net/rds/rds_rdma_run.sh | 11 ++++
+ .../selftests/net/rds/{run.sh => rds_run.sh}  | 63 ++++++++++++-------
+ .../testing/selftests/net/rds/rds_tcp_run.sh  | 11 ++++
+ tools/testing/selftests/net/rds/test.py       | 18 ++++++
+ 7 files changed, 95 insertions(+), 28 deletions(-)
+ create mode 100755 tools/testing/selftests/net/rds/rds_rdma_run.sh
+ rename tools/testing/selftests/net/rds/{run.sh => rds_run.sh} (80%)
+ create mode 100755 tools/testing/selftests/net/rds/rds_tcp_run.sh
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.25.1
 
 
