@@ -1,54 +1,54 @@
-Return-Path: <linux-rdma+bounces-21184-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21185-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EEPEJKHwEGo+fwYAu9opvQ
-	(envelope-from <linux-rdma+bounces-21184-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 23 May 2026 02:11:13 +0200
+	id MGOWJqfwEGo+fwYAu9opvQ
+	(envelope-from <linux-rdma+bounces-21185-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 23 May 2026 02:11:19 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B6E15BBB09
-	for <lists+linux-rdma@lfdr.de>; Sat, 23 May 2026 02:11:13 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1509A5BBB17
+	for <lists+linux-rdma@lfdr.de>; Sat, 23 May 2026 02:11:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id E6FD9300C302
-	for <lists+linux-rdma@lfdr.de>; Sat, 23 May 2026 00:11:11 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B2F87301B4D4
+	for <lists+linux-rdma@lfdr.de>; Sat, 23 May 2026 00:11:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4455935893;
-	Sat, 23 May 2026 00:11:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B88CDEEBB;
+	Sat, 23 May 2026 00:11:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="YnwNqal2"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ghjqjQ/O"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from PH0PR06CU001.outbound.protection.outlook.com (mail-westus3azon11011003.outbound.protection.outlook.com [40.107.208.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 536A01096F
-	for <linux-rdma@vger.kernel.org>; Sat, 23 May 2026 00:11:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D8D128F5
+	for <linux-rdma@vger.kernel.org>; Sat, 23 May 2026 00:11:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.208.3
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779495070; cv=fail; b=riZfG1gleCglRzK0tHH+cw8dbANYQ0BJhlRRkpl9EOgb5HBke9Wzm2cSBhYnh45n+r/JfZr6acXQ7ShAR+vfKK1W/EMCpLaZl5B+xwyCRyHxsDnkhoraLX9YBw+YXkuddlsW22jdJoRmnUHRsfzUlZ4lh9XSLsz5cwYxBXPc3v8=
+	t=1779495071; cv=fail; b=PnbXGMGFNTZzW+/jIlTmq8oaQ1De86zMvi2kEmNbvkc23kbvaWh5QQbch++mpoBJ0+HAu8Tk5YSVwZK430mXfxHxVm0ATkwAYyxgYX41kAGP3zDu6CQEIItK8JkZw/guD6q4PIF7ZFgXXpezUDj5enY5aX8YpTbKgn1No7aIJfk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779495070; c=relaxed/simple;
-	bh=BGAd26NsUzOic+y0ZfZfkPCkF6zFz+fcMsn5QLDbOWU=;
+	s=arc-20240116; t=1779495071; c=relaxed/simple;
+	bh=OUQ3nHl353fa8YwRoRwA5DKM5aaHZrNyBBKHjLqIaTc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=BEfYjm6NloomDySkf9qtCeevVl4SDxGMEkbx+rYcWpndNx/myRNnh+72F/bfXxLep8yfViYBM9QgUFUzmylis96uSCHpwEOGhNmot/P7VchXGFUdnwf1fNJjN7lih/hm5Jwe7WdmAiWBuSHGUWAPXf0Wf4SEhaTGJtKoaArGJ5A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=YnwNqal2; arc=fail smtp.client-ip=40.107.208.3
+	 Content-Type:MIME-Version; b=uLoZC+mbnMNjVOQgM3DzOzgiwi4mHBtEb+t/TwIGyK3kqz+zsNW0surEcnlMLvFYc3fXl9QIXwEGdo2GcPPizQzvnq4TTH425tqXSLr4xvRc48MTav7IsDKCKVbpqjAYvZ9GsAUaZ04oglrvHvjwAIaemwovKuViiHDhDwWIJ30=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ghjqjQ/O; arc=fail smtp.client-ip=40.107.208.3
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Ss49toaDFQpHaASHX6OIVksbOdOT/cl9zVPE0nZz7Ff3EkPVOzb3gNJXONHdJ5z2IXxwOM4j9cSL5h8+EK+r8Asjhl6umfpeF2hkE2SS/GOYt3bHphom8f2gty16nUlQykBlTP4RyE2MRdij62NZu/+tNvpltJfHTpGEDYirh3A+qYegBsv//Ay46WOXBPJr4nlGHvGQ9P3HMbGQLIwUS6ieb1LjOHJ8IMT8JMlOr0/ZyFdFa/KyF9XaN0SnEd6eCSH+KNGUFMnv9kNH27ER9LKkkne8MMZh4I5sV7+49l7NUjCZVTcnyDCwYAC2nasvu7ecnQPkpQeptoxTjiRu6w==
+ b=LVptt9Sqh+WyB6nQhXrcieGUPyDHGt/UzO/wPA19ymjn+RVGeGEC1Oyw8U3v4BoyFRDFeINjVN9rgVyocR1LDhIbZRbybB6lKVWovR63xGquNRo+6QxDOCLH2nDXllLysAj97eItPaKQMm6NlLoT6uezgOdaCPhuseL1Sgm+s2uVMbRM1PEKXDutJ8gNMBTNJ46E6YIrXMi1GqKOW7eweeWnisHEY+RC/OJ7OyWmcdJUu1PuH2vrMDvtdB3oLoclOHLPrKJIbKvDYrJGAH6EmcNdwIZGSAbcmZMhzAcbRmBC9F9PFVnar4wq5871jcyMAyyQAixAJI2eK1+egIu5cQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=l5vEuT5Nu2KzqXgx49FdnpMKocAzl3uMk9dhbZHcC/0=;
- b=LQ27bbfExRPm1ZBFjLNbbASWyZXpKV4zfnWfYfgSl7E4YyC2INa9DrmB0wnlNOpJzHcRSjXuLsf9l6So5CPPzP7B9xGFY80Bgg7K5BliqLkEsw1kcbZEIyqvsDwy3C8EmZshAxwIrflIfbUfNNl/cHat8cBsdNfg23e7VVQAvbyxKueOOoLIXwETwTa4w0144PRxT31snYtl9FKJBKGXpf1yc/kNaT+Dz4ZE3Ml3aB93+vFBBMmdmWUvvfhxIVvePr+IKcq8nieBvTchGgqnbiQ0dmfPFM4zy70tn7/1M2/PH+y48C8P54dymzCn/wXEQQNLrlvwuDIXaV1zIh9J4g==
+ bh=GGGXNsbfzj5aKGpCkNoAPVrqoIatzXhJ9/QVphz5gIM=;
+ b=Vx0bBtMbD540QEtSFIa47cPuR+5P7HamreYxTAwIlJk1ijCJuQ87Lj1uy1SW4l7cvy1O/gmQO833fAavP2oEMggbjGctA/nC6xARs1XO/vJbWNMJt1IzTHJ0usPt0CHRcDHN4VXqg9H50O7gKp0fzyCL+JvaR7kofjxTuj7jkFLoMsRKFcXjJg7slGp6I8pbYptzN3DtrRar8TfoSfiSpJNnTiN1cvY1uf+tps+1kp4gv4iIKixSvz7tQb+BB2ZE6I4z8rQDNnOZacv4vZa/gBrA1Fh4S9q21y+Lvery+uFGT8MPO107/CQeNiygPC3ul+BPSWKf5BpVNPKBhYN5ww==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l5vEuT5Nu2KzqXgx49FdnpMKocAzl3uMk9dhbZHcC/0=;
- b=YnwNqal2mptkQQ6QneOY885GvE5XrDVZ2iGP7g2ee3SEpsqom1nG8RVYQQD6U1b/eEV1o2ZEOWbF6WvnY6LAwX3x2jjcgnD8RS3VdyjB4FNjOTlqKwFGJbMUguttlDLib7UQQXdv+XpltAV/MNvF9favo2rKwpQEuqEWHbojFEQWcP0GiLSmSujHHmQSbT6j9Hik027HQCJXtSRPeBp6AgA33vmNAAHBV8gwuWUJE9XhxDX8UFg5pR+2ISB1eKOkOa3T1iuodnr/TinwzbM3Uh9pdISLCTAiIoEkX8fXz1TnuSAwIYwqDZ3EHfpRa9OCYJlKD9HH+FieDgs2Q9mDoQ==
+ bh=GGGXNsbfzj5aKGpCkNoAPVrqoIatzXhJ9/QVphz5gIM=;
+ b=ghjqjQ/OxboUEr9SkqP/eBys9qs9B5dA5trjs4XdPgpTlxMYb8bk4F0zTXhw4Vt2f+WXLCS9RhCwZ4lgmWDcfYlsPjOPX51Uj/Ah5yGC+VaLElIayksHYoOSPCOrpMT7QwKwgxysh7zYvjbb+LHnycJ8owMFyNXqwuGSaTlo53OUZOjNq7Xz8nofyJeY3Mw9/ooy2Iwz4uM+/0GiC9aGtA0KfXE8oMLrKmyPWveSyiEHBztEmxLwJgYC+T5KOVf6ksZtBkO7tcBPGX0hj9ibmcFPICpdG3UxHUQ3vSAl3mJW3XqqA9gA3vthHec5HAGpnSnMcXDlTL6iMjJFcyegdQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19)
@@ -65,15 +65,15 @@ To: Leon Romanovsky <leon@kernel.org>,
 	linux-rdma@vger.kernel.org
 Cc: Jiri Pirko <jiri@resnulli.us>,
 	patches@lists.linux.dev
-Subject: [PATCH v2 4/6] RDMA/core: Make a new module for the uverbs components needed by drivers
-Date: Fri, 22 May 2026 21:10:51 -0300
-Message-ID: <4-v2-4a21959414f2+3d7-ib_uverbs_support_ko_jgg@nvidia.com>
+Subject: [PATCH v2 5/6] RDMA/core: Move ucaps into ib_uverbs_support.ko
+Date: Fri, 22 May 2026 21:10:52 -0300
+Message-ID: <5-v2-4a21959414f2+3d7-ib_uverbs_support_ko_jgg@nvidia.com>
 In-Reply-To: <0-v2-4a21959414f2+3d7-ib_uverbs_support_ko_jgg@nvidia.com>
 References:
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: BL1PR13CA0292.namprd13.prod.outlook.com
- (2603:10b6:208:2bc::27) To LV8PR12MB9620.namprd12.prod.outlook.com
+X-ClientProxiedBy: BL1PR13CA0271.namprd13.prod.outlook.com
+ (2603:10b6:208:2bc::6) To LV8PR12MB9620.namprd12.prod.outlook.com
  (2603:10b6:408:2a1::19)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -83,56 +83,56 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: LV8PR12MB9620:EE_|IA0PR12MB8086:EE_
-X-MS-Office365-Filtering-Correlation-Id: 10a259be-6453-4328-98dd-08deb85fc265
+X-MS-Office365-Filtering-Correlation-Id: 91259c83-0192-4a03-70f6-08deb85fc229
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|1800799024|376014|56012099003|18002099003|22082099003|5023799004|11063799006|6133799003|3023799007;
+	BCL:0;ARA:13230040|366016|1800799024|376014|56012099003|18002099003|22082099003|11063799006;
 X-Microsoft-Antispam-Message-Info:
-	hyZXQ3JQRkxPNVjxm3+ARrRf51t26uKkhhh/6lS/r2fHvnHBGvzHPVS5UFovxci5WQ2ZeXmhZ5p3vU+dhxC2k6uBknkCq/XSmK4hICO0e1TrOhigOBgdzjlXmMprfzwpR17OxCCxdpYFbwRwcMTZ2CWs3aIfya+RxhOzX+jnYpTbSxPBR0E6uQCj7L/zgVwUTPxkbCjufIM60nrJtt4GLJ7Nhd9uxJKdnXpVGTICn7pZzxtJixT+rpHpuBKwToQKlvjUI2gsUuc6CnQEEAj02BpBDji0CRRqLZ5Ph/2JMV7ZsNqj+eYvyFSSTukTRkR5qwNFmEIHq/5o08FTm/FYH8a1AdUcA4BrJBL2t4LOpXP81LlqvJ/9fTvROd6WhrlDOXe4Ym0eNjC9283936TZPbiI0ZFKVeRDda8eF57qsnveU1OQyhhAJMxrTcVTOLasa38ZhbiyW2mRYcmpKsDgRIv+yoq5hP8UwNzMQrjiDhq0Ztx3cA7RCAWv1/tmp98KEzB91N//T9fA55kLCz/m1/UKIKO2cAsLq9YoT0bV8JKr5ryDKQcMAPLnHogZhsQ5pMm9yzC1EegLxahA0NTLxhiR1r1CwhTtt16RJ4NGqhCSuUW6gQ8N7a18aE5qgTlesImrTv2Kd5gZfx+hUEg7fsISdy6/2K9e4HZPQcX8w4AToRVagiBcgNfMsuEv5M2D
+	BepvWpGnmXaLrR6anePOhf5EwB6wuHSFF74BkjXoYLNhAO1jV30WnGZcdV8ZzCkHA7qQHHqXt3fWIK0T92l5YLce+82M5WJfN/ES/cVM2J8j0S2EJRQRgVUWGKoycILsLTHvoHSb/mw68/fFizxRE4J967xN1dW1hCkvtR1h14/sPnou/q1jjmAW3rDA12UQkk+7IWH17VZjTg1sC9lgbPgcNVeGLG7fFOx/h9VVRn1rOmQBqOLuGibv5nZGkCPp7EJQNtbtovzuZvtkBNI3GD6LhyDnFpjBIrH4qs6Q0Q5AHhgrLkX1gvDfmUGioH79RFzr/ZrohZTy+E/wfxmU+frq5MG3Kv3sL1PhOMf+v4xY26b3WW4RXtE361v50HeCDt8K6wpQA+Fpuwz8h2LTXAb7zYZJMA6SvIJKJN0HvdJDpyOjvnwR8oC+o89N4IV4uST3n8ToVyBHH5TbeBS1fS3ag5ANDJDqlWUHdJSiGi8Stg/f2zwArmpXjfXmcPFZywRe8gs7yMljcVvvjB/QMcaUG7fr8vVkDuMvtPTFvpEnccSYMz6A9uXTng1+a8PUOSGp3BMIHbHX6DeY9mSABtxHNzdeake4qppbQDTD8EzfNqjfkcYRnqxPXqdLGeTa+aTGHltI/CBASxECX+6xzJfrgrPIE4375b4No5R7E4F5kyMUl0EN2fsiptZHkYN5
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9620.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(56012099003)(18002099003)(22082099003)(5023799004)(11063799006)(6133799003)(3023799007);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9620.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(56012099003)(18002099003)(22082099003)(11063799006);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?kqn/PW/m84wmtBM7UHwGTSG7yEfqpHxvU9t6Y6Vw8lCPGU5WCC8zeqWH0q7Q?=
- =?us-ascii?Q?Lcc/59Ya3GHpf2dzH1Wg+Wj4woZmdzajm5VoPWyNVXKmsEsBlJrYekBNk/yb?=
- =?us-ascii?Q?vPwIodvkfjkhImJNfs8thMUGPWSpeMHxoW6+GiY7oq6pCvfUIwFzq6fWEyAl?=
- =?us-ascii?Q?7jYym5tFP+IEGIAStnvoVNZkE5uaaFiP2jX2POM8qdiB6q05FiTrnKa0vUiT?=
- =?us-ascii?Q?lelnMlv6d8HK7puo/UQe6ilWYzwisBqTvn2XnGPDJ4+cMMjiB7+WCfchsdJZ?=
- =?us-ascii?Q?wLjuSAuCa1b99Auw414VXmNNrb50/Odxf32UPqUyu4LW/08Q05+Bq5l4xm61?=
- =?us-ascii?Q?nz1JQaiakrkYkxb03Ix1BIcIaHRYbpgNYhVInYXaw3N0M/V1d4DRdE0aRLEh?=
- =?us-ascii?Q?8IQRfgjRDQoYlpTT26lrC5r9NZIQrfi3wjzR+0lnJuQG6P9PJWH3KoHVPBOq?=
- =?us-ascii?Q?Ah2H1AyMAFV0Iv0ifVraVVbgCqYrDRin86PENeu39/yfJljPfKYel0x+Fj/f?=
- =?us-ascii?Q?XCccgpsbvRtKQm466KN0cFYydB/apRXysyfX+n2gGldGAFSJec+a0FqU+8Dv?=
- =?us-ascii?Q?iFxKh8D5QgG3/Z6agtnbqIK4h8d1TvjVYZEqmyBVFiqqfpYbLtiaNGP1Q3JU?=
- =?us-ascii?Q?OcBiIbZB22jN7gYpWvUo2G2KNASXt4Ou3oiBW4ZMtPUV4pYRzLU/tlJecgdX?=
- =?us-ascii?Q?5ACWwBfXP1jXEuzUQOxOh2S+arfFcLHYzKT92zQVtPrMInyF/JWP5qjWJImV?=
- =?us-ascii?Q?L8RVzYfSmJVLDRtRfjw8WqTZKW9EIhWmqh7315KY7TF5Uqrrx0naD71ARnoE?=
- =?us-ascii?Q?IeO5CqdSL9K9X8sd/BagM8hoDKc13xgClSFYJmknGpbP3XC1EF15sZHvJ2MR?=
- =?us-ascii?Q?WyoboQawpOwyGGzWXnqS71suw3+svGgYqCsVEHjgVXnSZmurLWO7YypOilRe?=
- =?us-ascii?Q?tPFX4A05iHlAx6R4VvChY78G416tM7lit7t2j3BbkSiFSJgve3O3/uTiQ0Cg?=
- =?us-ascii?Q?HnKUS6fbvCjzFE0ZJ/Ne2IOOIN25sjasoMUnqv3AfwWxTYz13o6d6kjLyRtE?=
- =?us-ascii?Q?eSOjzPiwXUlzJz86Txp1CHETDEeLNhsBtXKehr9kFNJ++titDNlTbaPXB/tI?=
- =?us-ascii?Q?f998dl2eudU/g3lPIAUZvlqgmWyZnBRYJlxgY89VrI8mU2ij+AmXA+KowAix?=
- =?us-ascii?Q?sQ0BvSOAfSWxg1c4vEVfxrSII8N9J5U6hzg3/WPm6G0xF74WJcmBI7hxwIeT?=
- =?us-ascii?Q?F7QFyvjyxhQRkyXDSIfrHBX7XZdbc+NTjSjrjjnLtOs49F3nm7G/yQ7FM1zq?=
- =?us-ascii?Q?g0SftV8cMLPbx5vqIgIpr8wA6K7asXApf2/yLllA2+OeV6wt8dg65MkgZeYU?=
- =?us-ascii?Q?1P4HetsfE3iRxAoB8FhRJtL7zBXtlTJpgnkvcULUuJg8Msno6KnAWWd2ZtvB?=
- =?us-ascii?Q?I40ypZ0zHKQcxNrV+E0Xdjty0V/FniX8S7Ld5mwPvZkgfdiXPFg8nKOJjq/z?=
- =?us-ascii?Q?7sn+xzS4GbyeDLYUmFCMLkZ/35yj2TiBnor9ijErjjpuqmwCo8/BL6P7sOpu?=
- =?us-ascii?Q?PJ7W8P0cJ0K0lnqwatE+fmRz5ijHIvmnt1IX1vq+qFqeQMLoYn5S0zyRmXUC?=
- =?us-ascii?Q?N6cd5AD+VQX+uHHnrlKWXaIiy3YA8Q1j9SmqcSklm1Wd7E0hTQEF4G+4zNVn?=
- =?us-ascii?Q?TNut08IZL/Es66qedBnpOnktSgcyqiOtwctHJTR1HWWS7Moz?=
+	=?us-ascii?Q?2UKc09riJAOpYhpYmMdqWjKiLufgKmXpIXriz28McZ9mwsvInMZ2lG7hZFdR?=
+ =?us-ascii?Q?ckJxsdg8Qd9kR9rOoY5c5cpWVeSrsncmlsJo4k53SWbhOjkul4EMWvUf318B?=
+ =?us-ascii?Q?IiwJt39vRR1s+BigJJ/MS9lHdwgNTSxXOHryKPBx7w97+w8Kv1oALiGnbApA?=
+ =?us-ascii?Q?Ja6o8fcYYGv1NsEWeuTxvULwLhsG9XDNq6htCptglyjrqJfbfnaOQPT8Z3di?=
+ =?us-ascii?Q?AvkGvgiKJGm1kejsiqmcEpO1W8YKe6Focsg45OCHM+Hschav/rkjqG/P99jl?=
+ =?us-ascii?Q?SfqVO+flB0audmMXg0WTxcsRkH5umujFYTYrtvpR+2h0OBEOd3URAHXaR51d?=
+ =?us-ascii?Q?S/4NzsVGxFCJdL2HXUFZ/Mvvf4npxpcvkP/xmv9yFMIX5QSPsXBNo7guGYEE?=
+ =?us-ascii?Q?0KbPdyHxPPEwnWwSLXJkplYmHVk7g5Ph5o1U3h0mcfnmK+Wd4beUxENLl+QY?=
+ =?us-ascii?Q?Xwixsxdo6TDj+CRlAK6QCMNvI3ZDd9ITeQmHTn8agK/kPpaqOpbjsg+NgtQ1?=
+ =?us-ascii?Q?cqw6c9IZV3GKH8HMoGZ59N3hAJWDqOvthV1VBxAmQ1/p+Zn6w2GKXbzfpAbd?=
+ =?us-ascii?Q?RSfD4grIwdTyRxe/HdQuu+peaTnN3MGGBG7ojVaOb8s5lVCljnbg+lOsV44W?=
+ =?us-ascii?Q?+nGkdG3WwWVzjm2elbPmDoVldLkK5mW8pM2L3Gxo499UvUhS77+PKMxheVFL?=
+ =?us-ascii?Q?ekZ3JNExRZhAjv9aapKMKAcpLt6h/JepCEs4ufbDj+mfWro1SzNAikt0y8GQ?=
+ =?us-ascii?Q?Br2Va8BaGX7XEEByXrRK4BubtgksadzbFWKGVLP4ADSLbM8AMXBAxiDjQ7eD?=
+ =?us-ascii?Q?+TsPj7vF8b/I9jdU35LPwxitxypgVGBSQ0OCRpzFLAG9RGluEO+OG+CWwgvp?=
+ =?us-ascii?Q?pCBe0XSWkKCDSzfT2trG1ZQiH7EVP947iKrT3MfHbUUHvw/balkWAxQ8dgay?=
+ =?us-ascii?Q?JzUtZ1K7hLuUuyd4Vs9fXTEMGbfioAISCWBCLFfxA+SEC24TAVSErSxE6/aK?=
+ =?us-ascii?Q?paJehDEgloE3GSh/67TF+nmBc/5i+ZjMXxHhmd+8Hg9WGCTtKJuY94+4U7Te?=
+ =?us-ascii?Q?CDXpNkpIWCSntqvCGExkYsSu63v3lZ0iq6qHnl01ows4+tJK6qjlJ44NQgup?=
+ =?us-ascii?Q?zfwIms/oeNJD+FaoJ1FuuXLr95nkdTF3Ul+/Q4+SjZAzLKoG1CUY1lquMipL?=
+ =?us-ascii?Q?teb/QVHrMqUmGCu4wfV8SQz0s41phaYaJU5Uei6cMNLq/5Ablm8VDqQCBYoQ?=
+ =?us-ascii?Q?NGSpKpkuarW9sbJdH0V8OzwiPQ5+KdQU+zAYZ+wX4YKzcIiSlak2WXVvuxog?=
+ =?us-ascii?Q?PVq59zHLfHV3Q0DnJO0uzVh55sq1rYv0INpqpsYSQvbHET5BZbpjF+BZEcWy?=
+ =?us-ascii?Q?Tq/eX9v2czKj+HR0KZ+Y5T7v2gwgmJ+gnqAI79z7ljxYl3cns07j+HtYfHKr?=
+ =?us-ascii?Q?5fUr5FzZTFlzzbiqgm6SAszJJWfx6FsTBY6K2ATsC3m9V40HvbBP9nsdPAJW?=
+ =?us-ascii?Q?ShDbzblOVnU71OS2bLAQ8vB9HcL675lC/cVJOJ9rIXmk5LCEAH+5oGkiu8bC?=
+ =?us-ascii?Q?f+gvc2tHaWZ/C+coEfEaR2Bst1bK5mx8aF9D+U/y/tJNjJju30z0pBwzeN0O?=
+ =?us-ascii?Q?UZGjyl499P9QbdUU5ncRwm7lzoMTpWJhgGpy4Q52qOzEwXmKOZsfAh3Mgiqc?=
+ =?us-ascii?Q?QDvRyKr1ID3ta0l9OqXmteLWC1o9Q9iF+Ao9Xp9I4/i0AgLB?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 10a259be-6453-4328-98dd-08deb85fc265
+X-MS-Exchange-CrossTenant-Network-Message-Id: 91259c83-0192-4a03-70f6-08deb85fc229
 X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9620.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 May 2026 00:10:55.9158
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 May 2026 00:10:55.3679
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +MxD8t7KnOeYLKsFxkXZxndGGeQIITtpf8N2yLe5MXyONZ+/Kr1JK9La0dhOMiv7
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4Z2xhdblTkkSNmo1Er1Ye52838m/B4y3gRGtTNKPF9wYbMgCjC7N54E4hkoJxkgU
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8086
 X-Spamd-Result: default: False [1.34 / 15.00];
 	ARC_REJECT(1.00)[cv is fail on i=2];
@@ -140,14 +140,14 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
 	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21184-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21185-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DKIM_TRACE(0.00)[Nvidia.com:+];
 	MISSING_XM_UA(0.00)[];
@@ -159,456 +159,81 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	NEURAL_HAM(-0.00)[-0.999];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:mid,nvidia.com:email,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,Nvidia.com:dkim]
-X-Rspamd-Queue-Id: 7B6E15BBB09
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[Nvidia.com:dkim,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,nvidia.com:mid,nvidia.com:email]
+X-Rspamd-Queue-Id: 1509A5BBB17
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-To maintain the split where ib_uverbs.ko should not be depended on by
-drivers, add a new module ib_uverbs_support.ko which contains the driver
-called functions that are too large or too rare to be placed in
-ib_uverbs_core.ko
-
-Start by moving most of rdma_core.c into this module, making some
-adjustments to split it from the actual uverbs FD code.
-
-This was not done originally because we lacked EXPORT_SYMBOL_NS and I had
-a fear that drivers would abuse this interface surface.
+mlx5 uses these move them into the support module from ib_uverbs.ko.
 
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 ---
- drivers/infiniband/core/Makefile      |   8 +-
- drivers/infiniband/core/rdma_core.c   | 120 ++++++++++++--------------
- drivers/infiniband/core/rdma_core.h   |   1 -
- drivers/infiniband/core/uverbs.h      |   9 ++
- drivers/infiniband/core/uverbs_main.c | 100 +++++++++++++--------
- 5 files changed, 133 insertions(+), 105 deletions(-)
+ drivers/infiniband/core/Makefile      | 6 +++---
+ drivers/infiniband/core/ucaps.c       | 5 ++++-
+ drivers/infiniband/core/uverbs_main.c | 1 -
+ include/rdma/ib_ucaps.h               | 1 -
+ 4 files changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/infiniband/core/Makefile b/drivers/infiniband/core/Makefile
-index f24f575a011be3..e696bb197b0e1f 100644
+index e696bb197b0e1f..263129a23050aa 100644
 --- a/drivers/infiniband/core/Makefile
 +++ b/drivers/infiniband/core/Makefile
-@@ -5,7 +5,9 @@ user_access-$(CONFIG_INFINIBAND_ADDR_TRANS)	:= rdma_ucm.o
- obj-$(CONFIG_INFINIBAND) +=		ib_core.o ib_cm.o iw_cm.o \
- 					$(infiniband-y)
- obj-$(CONFIG_INFINIBAND_USER_MAD) +=	ib_umad.o
--obj-$(CONFIG_INFINIBAND_USER_ACCESS) += ib_uverbs.o $(user_access-y)
-+obj-$(CONFIG_INFINIBAND_USER_ACCESS) += ib_uverbs.o \
-+					$(user_access-y) \
-+					ib_uverbs_support.o
- 
- ib_core-y :=			packer.o ud_header.o verbs.o cq.o rw.o sysfs.o \
- 				device.o cache.o netlink.o \
-@@ -34,7 +36,7 @@ rdma_ucm-y :=			ucma.o
- ib_umad-y :=			user_mad.o
- 
- ib_uverbs-y :=			uverbs_main.o uverbs_cmd.o uverbs_marshall.o \
--				rdma_core.o uverbs_std_types.o uverbs_ioctl.o \
-+				uverbs_std_types.o uverbs_ioctl.o \
- 				uverbs_std_types_cq.o \
- 				uverbs_std_types_dmabuf.o \
- 				uverbs_std_types_dmah.o \
-@@ -46,3 +48,5 @@ ib_uverbs-y :=			uverbs_main.o uverbs_cmd.o uverbs_marshall.o \
+@@ -46,7 +46,7 @@ ib_uverbs-y :=			uverbs_main.o uverbs_cmd.o uverbs_marshall.o \
+ 				uverbs_std_types_async_fd.o \
+ 				uverbs_std_types_srq.o \
  				uverbs_std_types_wq.o \
- 				uverbs_std_types_qp.o \
- 				ucaps.o
-+
-+ib_uverbs_support-y :=		rdma_core.o
-diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
-index 71e3d58d26e654..b81a1540d0fb59 100644
---- a/drivers/infiniband/core/rdma_core.c
-+++ b/drivers/infiniband/core/rdma_core.c
-@@ -42,6 +42,40 @@
- #include "core_priv.h"
- #include "rdma_core.h"
+-				uverbs_std_types_qp.o \
+-				ucaps.o
++				uverbs_std_types_qp.o
  
-+static void release_ufile_idr_uobject(struct ib_uverbs_file *ufile);
-+
-+void ib_uverbs_release_file(struct kref *ref)
-+{
-+	struct ib_uverbs_file *file =
-+		container_of(ref, struct ib_uverbs_file, ref);
-+	struct ib_device *ib_dev;
-+	int srcu_key;
-+
-+	release_ufile_idr_uobject(file);
-+
-+	srcu_key = srcu_read_lock(&file->device->disassociate_srcu);
-+	ib_dev = srcu_dereference(file->device->ib_dev,
-+				  &file->device->disassociate_srcu);
-+	if (ib_dev && !ib_dev->ops.disassociate_ucontext)
-+		module_put(ib_dev->ops.owner);
-+	srcu_read_unlock(&file->device->disassociate_srcu, srcu_key);
-+
-+	if (refcount_dec_and_test(&file->device->refcount))
-+		ib_uverbs_comp_dev(file->device);
-+
-+	if (file->default_async_file)
-+		uverbs_uobject_put(&file->default_async_file->uobj);
-+	put_device(&file->device->dev);
-+
-+	if (file->disassociate_page)
-+		__free_pages(file->disassociate_page, 0);
-+	mutex_destroy(&file->disassociation_lock);
-+	mutex_destroy(&file->umap_lock);
-+	mutex_destroy(&file->ucontext_lock);
-+	kfree(file);
-+}
-+EXPORT_SYMBOL_NS_GPL(ib_uverbs_release_file, "rdma_core");
-+
- static void uverbs_uobject_free(struct kref *ref)
+-ib_uverbs_support-y :=		rdma_core.o
++ib_uverbs_support-y :=		rdma_core.o \
++				ucaps.o
+diff --git a/drivers/infiniband/core/ucaps.c b/drivers/infiniband/core/ucaps.c
+index 948093260dbda1..7f32d7b7bb0773 100644
+--- a/drivers/infiniband/core/ucaps.c
++++ b/drivers/infiniband/core/ucaps.c
+@@ -51,7 +51,7 @@ static const struct file_operations ucaps_cdev_fops = {
+  *
+  * This is called once, when removing the ib_uverbs module.
+  */
+-void ib_cleanup_ucaps(void)
++static void ib_cleanup_ucaps(void)
  {
- 	kfree_rcu(container_of(ref, struct ib_uobject, ref), rcu);
-@@ -214,6 +248,7 @@ int uobj_destroy(struct ib_uobject *uobj, struct uverbs_attr_bundle *attrs)
- 	up_read(&ufile->hw_destroy_rwsem);
+ 	mutex_lock(&ucaps_mutex);
+ 	if (!ucaps_class_is_registered) {
+@@ -265,3 +265,6 @@ int ib_get_ucaps(int *fds, int fd_count, uint64_t *idx_mask)
+ 	mutex_unlock(&ucaps_mutex);
  	return ret;
  }
-+EXPORT_SYMBOL_NS_GPL(uobj_destroy, "rdma_core");
- 
- /*
-  * uobj_get_destroy destroys the HW object and returns a handle to the uobj
-@@ -239,6 +274,7 @@ struct ib_uobject *__uobj_get_destroy(const struct uverbs_api_object *obj,
- 
- 	return uobj;
- }
-+EXPORT_SYMBOL_NS_GPL(__uobj_get_destroy, "rdma_core");
- 
- /*
-  * Does both uobj_get_destroy() and uobj_put_destroy().  Returns 0 on success
-@@ -255,6 +291,7 @@ int __uobj_perform_destroy(const struct uverbs_api_object *obj, u32 id,
- 	uobj_put_destroy(uobj);
- 	return 0;
- }
-+EXPORT_SYMBOL_NS_GPL(__uobj_perform_destroy, "rdma_core");
- 
- /* alloc_uobj must be undone by uverbs_destroy_uobject() */
- static struct ib_uobject *alloc_uobj(struct uverbs_attr_bundle *attrs,
-@@ -420,6 +457,7 @@ struct ib_uobject *rdma_lookup_get_uobject(const struct uverbs_api_object *obj,
- 	uverbs_uobject_put(uobj);
- 	return ERR_PTR(ret);
- }
-+EXPORT_SYMBOL_NS_GPL(rdma_lookup_get_uobject, "rdma_core");
- 
- static struct ib_uobject *
- alloc_begin_idr_uobject(const struct uverbs_api_object *obj,
-@@ -522,6 +560,7 @@ struct ib_uobject *rdma_alloc_begin_uobject(const struct uverbs_api_object *obj,
- 	}
- 	return ret;
- }
-+EXPORT_SYMBOL_NS_GPL(rdma_alloc_begin_uobject, "rdma_core");
- 
- static void alloc_abort_idr_uobject(struct ib_uobject *uobj)
- {
-@@ -668,6 +707,7 @@ void rdma_alloc_commit_uobject(struct ib_uobject *uobj,
- 	/* Matches the down_read in rdma_alloc_begin_uobject */
- 	up_read(&ufile->hw_destroy_rwsem);
- }
-+EXPORT_SYMBOL_NS_GPL(rdma_alloc_commit_uobject, "rdma_core");
- 
- /*
-  * new_uobj will be assigned to the handle currently used by to_uobj, and
-@@ -697,6 +737,7 @@ void rdma_assign_uobject(struct ib_uobject *to_uobj, struct ib_uobject *new_uobj
- 	 */
- 	uverbs_destroy_uobject(to_uobj, RDMA_REMOVE_DESTROY, attrs);
- }
-+EXPORT_SYMBOL_NS_GPL(rdma_assign_uobject, "rdma_core");
- 
- /*
-  * This consumes the kref for uobj. It is up to the caller to unwind the HW
-@@ -727,6 +768,7 @@ void rdma_alloc_abort_uobject(struct ib_uobject *uobj,
- 	/* Matches the down_read in rdma_alloc_begin_uobject */
- 	up_read(&ufile->hw_destroy_rwsem);
- }
-+EXPORT_SYMBOL_NS_GPL(rdma_alloc_abort_uobject, "rdma_core");
- 
- static void lookup_put_idr_uobject(struct ib_uobject *uobj,
- 				   enum rdma_lookup_mode mode)
-@@ -770,13 +812,15 @@ void rdma_lookup_put_uobject(struct ib_uobject *uobj,
- 	/* Pairs with the kref obtained by type->lookup_get */
- 	uverbs_uobject_put(uobj);
- }
-+EXPORT_SYMBOL_NS_GPL(rdma_lookup_put_uobject, "rdma_core");
- 
- void setup_ufile_idr_uobject(struct ib_uverbs_file *ufile)
- {
- 	xa_init_flags(&ufile->idr, XA_FLAGS_ALLOC);
- }
-+EXPORT_SYMBOL_NS_GPL(setup_ufile_idr_uobject, "rdma_core");
- 
--void release_ufile_idr_uobject(struct ib_uverbs_file *ufile)
-+static void release_ufile_idr_uobject(struct ib_uverbs_file *ufile)
- {
- 	struct ib_uobject *entry;
- 	unsigned long id;
-@@ -839,6 +883,7 @@ int uverbs_uobject_release(struct ib_uobject *uobj)
- 	uverbs_uobject_put(uobj);
- 	return 0;
- }
-+EXPORT_SYMBOL_NS_GPL(uverbs_uobject_release, "rdma_core");
- 
- /*
-  * Users of UVERBS_TYPE_ALLOC_FD should set this function as the struct
-@@ -878,41 +923,8 @@ int uverbs_uobject_fd_release(struct inode *inode, struct file *filp)
- }
- EXPORT_SYMBOL(uverbs_uobject_fd_release);
- 
--/*
-- * Drop the ucontext off the ufile and completely disconnect it from the
-- * ib_device
-- */
--static void ufile_destroy_ucontext(struct ib_uverbs_file *ufile,
--				   enum rdma_remove_reason reason)
--{
--	struct ib_ucontext *ucontext = ufile->ucontext;
--	struct ib_device *ib_dev = ucontext->device;
--
--	/*
--	 * If we are closing the FD then the user mmap VMAs must have
--	 * already been destroyed as they hold on to the filep, otherwise
--	 * they need to be zap'd.
--	 */
--	if (reason == RDMA_REMOVE_DRIVER_REMOVE) {
--		uverbs_user_mmap_disassociate(ufile);
--		if (ib_dev->ops.disassociate_ucontext)
--			ib_dev->ops.disassociate_ucontext(ucontext);
--	}
--
--	ib_rdmacg_uncharge(&ucontext->cg_obj, ib_dev,
--			   RDMACG_RESOURCE_HCA_HANDLE);
--
--	rdma_restrack_del(&ucontext->res);
--
--	ib_dev->ops.dealloc_ucontext(ucontext);
--	WARN_ON(!xa_empty(&ucontext->mmap_xa));
--	kfree(ucontext);
--
--	ufile->ucontext = NULL;
--}
--
--static int __uverbs_cleanup_ufile(struct ib_uverbs_file *ufile,
--				  enum rdma_remove_reason reason)
-+int __uverbs_cleanup_ufile(struct ib_uverbs_file *ufile,
-+			   enum rdma_remove_reason reason)
- {
- 	struct uverbs_attr_bundle attrs = { .ufile = ufile };
- 	struct ib_ucontext *ucontext = ufile->ucontext;
-@@ -953,36 +965,7 @@ static int __uverbs_cleanup_ufile(struct ib_uverbs_file *ufile,
- 	}
- 	return ret;
- }
--
--/*
-- * Destroy the ucontext and every uobject associated with it.
-- *
-- * This is internally locked and can be called in parallel from multiple
-- * contexts.
-- */
--void uverbs_destroy_ufile_hw(struct ib_uverbs_file *ufile,
--			     enum rdma_remove_reason reason)
--{
--	down_write(&ufile->hw_destroy_rwsem);
--
--	/*
--	 * If a ucontext was never created then we can't have any uobjects to
--	 * cleanup, nothing to do.
--	 */
--	if (!ufile->ucontext)
--		goto done;
--
--	while (!list_empty(&ufile->uobjects) &&
--	       !__uverbs_cleanup_ufile(ufile, reason)) {
--	}
--
--	if (WARN_ON(!list_empty(&ufile->uobjects)))
--		__uverbs_cleanup_ufile(ufile, RDMA_REMOVE_DRIVER_FAILURE);
--	ufile_destroy_ucontext(ufile, reason);
--
--done:
--	up_write(&ufile->hw_destroy_rwsem);
--}
-+EXPORT_SYMBOL_NS_GPL(__uverbs_cleanup_ufile, "rdma_core");
- 
- const struct uverbs_obj_type_class uverbs_fd_class = {
- 	.alloc_begin = alloc_begin_fd_uobject,
-@@ -1020,6 +1003,7 @@ uverbs_get_uobject_from_file(u16 object_id, enum uverbs_obj_access access,
- 		return ERR_PTR(-EOPNOTSUPP);
- 	}
- }
-+EXPORT_SYMBOL_NS_GPL(uverbs_get_uobject_from_file, "rdma_core");
- 
- void uverbs_finalize_object(struct ib_uobject *uobj,
- 			    enum uverbs_obj_access access, bool hw_obj_valid,
-@@ -1052,6 +1036,7 @@ void uverbs_finalize_object(struct ib_uobject *uobj,
- 		WARN_ON(true);
- 	}
- }
-+EXPORT_SYMBOL_NS_GPL(uverbs_finalize_object, "rdma_core");
- 
- /**
-  * rdma_uattrs_has_raw_cap() - Returns whether a rdma device linked to the
-@@ -1081,3 +1066,6 @@ bool rdma_uattrs_has_raw_cap(const struct uverbs_attr_bundle *attrs)
- 	return has_cap;
- }
- EXPORT_SYMBOL(rdma_uattrs_has_raw_cap);
++EXPORT_SYMBOL_NS_GPL(ib_get_ucaps, "rdma_core");
 +
-+MODULE_DESCRIPTION("InfiniBand uverbs objects");
-+MODULE_LICENSE("Dual BSD/GPL");
-diff --git a/drivers/infiniband/core/rdma_core.h b/drivers/infiniband/core/rdma_core.h
-index 55f1e3558856f1..b626d3d24d087d 100644
---- a/drivers/infiniband/core/rdma_core.h
-+++ b/drivers/infiniband/core/rdma_core.h
-@@ -70,7 +70,6 @@ void uverbs_finalize_object(struct ib_uobject *uobj,
- int uverbs_output_written(const struct uverbs_attr_bundle *bundle, size_t idx);
- 
- void setup_ufile_idr_uobject(struct ib_uverbs_file *ufile);
--void release_ufile_idr_uobject(struct ib_uverbs_file *ufile);
- 
- struct ib_udata *uverbs_get_cleared_udata(struct uverbs_attr_bundle *attrs);
- 
-diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
-index a1de8fe9c90bf1..c64dd6b94e1067 100644
---- a/drivers/infiniband/core/uverbs.h
-+++ b/drivers/infiniband/core/uverbs.h
-@@ -359,4 +359,13 @@ static inline void ib_uverbs_dmabuf_done(struct kref *kref)
- 	complete(&priv->comp);
- }
- 
-+int __uverbs_cleanup_ufile(struct ib_uverbs_file *ufile,
-+			   enum rdma_remove_reason reason);
-+
-+static inline void ib_uverbs_comp_dev(struct ib_uverbs_device *dev)
-+{
-+	complete(&dev->comp);
-+}
-+
-+
- #endif /* UVERBS_H */
++module_exit(ib_cleanup_ucaps);
 diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-index a937d276c5c076..ab6f1e3cb47a18 100644
+index ab6f1e3cb47a18..3ccf58e96aedeb 100644
 --- a/drivers/infiniband/core/uverbs_main.c
 +++ b/drivers/infiniband/core/uverbs_main.c
-@@ -61,6 +61,7 @@
- MODULE_AUTHOR("Roland Dreier");
- MODULE_DESCRIPTION("InfiniBand userspace verbs access");
- MODULE_LICENSE("Dual BSD/GPL");
-+MODULE_IMPORT_NS("rdma_core");
- 
- enum {
- 	IB_UVERBS_MAJOR       = 231,
-@@ -165,42 +166,6 @@ void ib_uverbs_detach_umcast(struct ib_qp *qp,
- 	}
+@@ -1350,7 +1350,6 @@ static void __exit ib_uverbs_cleanup(void)
+ 				 IB_UVERBS_NUM_FIXED_MINOR);
+ 	unregister_chrdev_region(dynamic_uverbs_dev,
+ 				 IB_UVERBS_NUM_DYNAMIC_MINOR);
+-	ib_cleanup_ucaps();
+ 	mmu_notifier_synchronize();
  }
  
--static void ib_uverbs_comp_dev(struct ib_uverbs_device *dev)
--{
--	complete(&dev->comp);
--}
--
--void ib_uverbs_release_file(struct kref *ref)
--{
--	struct ib_uverbs_file *file =
--		container_of(ref, struct ib_uverbs_file, ref);
--	struct ib_device *ib_dev;
--	int srcu_key;
--
--	release_ufile_idr_uobject(file);
--
--	srcu_key = srcu_read_lock(&file->device->disassociate_srcu);
--	ib_dev = srcu_dereference(file->device->ib_dev,
--				  &file->device->disassociate_srcu);
--	if (ib_dev && !ib_dev->ops.disassociate_ucontext)
--		module_put(ib_dev->ops.owner);
--	srcu_read_unlock(&file->device->disassociate_srcu, srcu_key);
--
--	if (refcount_dec_and_test(&file->device->refcount))
--		ib_uverbs_comp_dev(file->device);
--
--	if (file->default_async_file)
--		uverbs_uobject_put(&file->default_async_file->uobj);
--	put_device(&file->device->dev);
--
--	if (file->disassociate_page)
--		__free_pages(file->disassociate_page, 0);
--	mutex_destroy(&file->disassociation_lock);
--	mutex_destroy(&file->umap_lock);
--	mutex_destroy(&file->ucontext_lock);
--	kfree(file);
--}
--
- static ssize_t ib_uverbs_event_read(struct ib_uverbs_event_queue *ev_queue,
- 				    struct file *filp, char __user *buf,
- 				    size_t count, loff_t *pos,
-@@ -985,6 +950,69 @@ static int ib_uverbs_open(struct inode *inode, struct file *filp)
- 	return ret;
- }
+diff --git a/include/rdma/ib_ucaps.h b/include/rdma/ib_ucaps.h
+index d9f96be3a553f8..b629c99117d8fe 100644
+--- a/include/rdma/ib_ucaps.h
++++ b/include/rdma/ib_ucaps.h
+@@ -14,7 +14,6 @@ enum rdma_user_cap {
+ 	RDMA_UCAP_MAX
+ };
  
-+/*
-+ * Drop the ucontext off the ufile and completely disconnect it from the
-+ * ib_device
-+ */
-+static void ufile_destroy_ucontext(struct ib_uverbs_file *ufile,
-+			    enum rdma_remove_reason reason)
-+{
-+	struct ib_ucontext *ucontext = ufile->ucontext;
-+	struct ib_device *ib_dev = ucontext->device;
-+
-+	/*
-+	 * If we are closing the FD then the user mmap VMAs must have
-+	 * already been destroyed as they hold on to the filep, otherwise
-+	 * they need to be zap'd.
-+	 */
-+	if (reason == RDMA_REMOVE_DRIVER_REMOVE) {
-+		uverbs_user_mmap_disassociate(ufile);
-+		if (ib_dev->ops.disassociate_ucontext)
-+			ib_dev->ops.disassociate_ucontext(ucontext);
-+	}
-+
-+	ib_rdmacg_uncharge(&ucontext->cg_obj, ib_dev,
-+			   RDMACG_RESOURCE_HCA_HANDLE);
-+
-+	rdma_restrack_del(&ucontext->res);
-+
-+	ib_dev->ops.dealloc_ucontext(ucontext);
-+	WARN_ON(!xa_empty(&ucontext->mmap_xa));
-+	kfree(ucontext);
-+
-+	ufile->ucontext = NULL;
-+}
-+
-+/*
-+ * Destroy the ucontext and every uobject associated with it.
-+ *
-+ * This is internally locked and can be called in parallel from multiple
-+ * contexts.
-+ */
-+void uverbs_destroy_ufile_hw(struct ib_uverbs_file *ufile,
-+			     enum rdma_remove_reason reason)
-+{
-+	down_write(&ufile->hw_destroy_rwsem);
-+
-+	/*
-+	 * If a ucontext was never created then we can't have any uobjects to
-+	 * cleanup, nothing to do.
-+	 */
-+	if (!ufile->ucontext)
-+		goto done;
-+
-+	while (!list_empty(&ufile->uobjects) &&
-+	       !__uverbs_cleanup_ufile(ufile, reason)) {
-+	}
-+
-+	if (WARN_ON(!list_empty(&ufile->uobjects)))
-+		__uverbs_cleanup_ufile(ufile, RDMA_REMOVE_DRIVER_FAILURE);
-+	ufile_destroy_ucontext(ufile, reason);
-+
-+done:
-+	up_write(&ufile->hw_destroy_rwsem);
-+}
-+
- static int ib_uverbs_close(struct inode *inode, struct file *filp)
- {
- 	struct ib_uverbs_file *file = filp->private_data;
+-void ib_cleanup_ucaps(void);
+ int ib_get_ucaps(int *fds, int fd_count, uint64_t *idx_mask);
+ #if IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS)
+ int ib_create_ucap(enum rdma_user_cap type);
 -- 
 2.43.0
 
