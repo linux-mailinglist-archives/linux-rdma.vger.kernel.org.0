@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-21209-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21210-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oGxWODIcE2oE7wYAu9opvQ
-	(envelope-from <linux-rdma+bounces-21209-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 24 May 2026 17:41:38 +0200
+	id EH2qBEccE2oE7wYAu9opvQ
+	(envelope-from <linux-rdma+bounces-21210-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 24 May 2026 17:41:59 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 902565C2F26
-	for <lists+linux-rdma@lfdr.de>; Sun, 24 May 2026 17:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EFF545C2F44
+	for <lists+linux-rdma@lfdr.de>; Sun, 24 May 2026 17:41:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 520C4300E146
-	for <lists+linux-rdma@lfdr.de>; Sun, 24 May 2026 15:40:08 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 5A708301C67A
+	for <lists+linux-rdma@lfdr.de>; Sun, 24 May 2026 15:40:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CEE839C01A;
-	Sun, 24 May 2026 15:39:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F01673AA4E4;
+	Sun, 24 May 2026 15:39:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Sy2ZG330"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="L+/aUwsw"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11010021.outbound.protection.outlook.com [52.101.61.21])
+Received: from CO1PR03CU002.outbound.protection.outlook.com (mail-westus2azon11010053.outbound.protection.outlook.com [52.101.46.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9757438F957;
-	Sun, 24 May 2026 15:39:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C4E2399019;
+	Sun, 24 May 2026 15:39:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.46.53
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779637163; cv=fail; b=g2kxtS4s0006LgJ/l1q+N1leEWvNeghCdUiJDtrIiwwM/rJv8vNw8yEI0RtF1N9KZIvZUOALlgHKxxjUfbYSRe4XSVguwdlQngrUbV7GyDEvpxdGk2eqRl8STmWFFEQPaal8Qiq4ivz7+JxKCVzirTAbMQk7MERAxJTSoZtLrSE=
+	t=1779637168; cv=fail; b=RUyrNRyDvVkrZeeEGscyWQMoGw5KCU0MsiYFd8zn/nSorYaKcRHRZzJnmdpSPJlhroBpgcd0WaSQ57pbi6YcFd2RO+o8CmP+++cfY8V0+qWavxyJjtNCeq5yA6vVnjOPIdaIzKp6W5Vl3yE271XXThu3yJ3lfNZac+Ju0qmJvWU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779637163; c=relaxed/simple;
-	bh=VrfwuHP/1lUZnE0FCHESyFVthBsA5bGj0cNsuKRqBCk=;
+	s=arc-20240116; t=1779637168; c=relaxed/simple;
+	bh=RYIxnf9DXnrEhh3acy8sg8NJJDmUPJVZUd6reMbx3Og=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=ad2PjHTseX+t6eA8Kr040TJEyTNfNezd8n9bWwx23GbjQtIW/gqyOThv1Nyh8PcAmabUPwQjqfjvpYZcTEJBvQ8nr8ZhwKqHpryW+eWm78VFBQHlzlLFfDo/7eqoYwwsu96iIxhEhhEh+DVyA2DXbWd6wIFcQb++pKwh78ECD4M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Sy2ZG330; arc=fail smtp.client-ip=52.101.61.21
+	 In-Reply-To:To:CC; b=Me74xjwdy1BVtc0iO2Cb0vCMd1BU6IszJXALORb1ii8QfZNVYbFuX9lCOqBC7riz48lwWBenyQIIAltL7vFh9wvqNNzhMTXJ4PpEhDADE5nVdWJsQBfQIvNci7BKYvRfpA6JizwfHfjGmM7vjhjNTpdRyhO4S8q6Jd8yF+pS3Qw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=L+/aUwsw; arc=fail smtp.client-ip=52.101.46.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=REiRFLgGisTvdav7mKQGHUWL58nnqouKwT4Mvr0cZFaZ/iBHYWYvov53ddfDCVj7IUodI3KIDAR7iud70BqEY4rLFIpPEy9FeAQVC0jFB8hPlv1X2/HX3RQdO8v7wJxUr8ZDm3jy/K/Wnr9rMxwsnkNnuxm5gvy2Z+xLEHDlTlF9olC/C6BEQ5jHPwTRPi5q/dNGYmto9jUOObs7bciLZOX+7ZbT0kqdl0ZBSA1ACY51WuJHhgXEzqVSf2p2GX1tF2qYw1PiUT+F9wO4PBgWIrCg4EnGZ4YBP9kYBZYzRrzIOBXKSVPN0D6ydCRqO4aGSmNB40XVuuUZbrfIvOY1Tw==
+ b=i73C3h4EG0IskcELMbXuRwiGZ8rJEAnXDqhnp3d2VMJGd9God3Yb5gce7ngfJNnMrhHOLJASJTc/b1w+aHLUcfa/RH4z6nfWN7NDGWxSCEiYaE1KREbsBu0q/outojBLgZlVnupL7mWaRjXRD4gmL6f1GcqZ8nD078X14gmw8iU1uzg0HyRHTNXJFRjpeH+iLxel+L1Qa02Lgf72pMy9aH3alOCbImw4b0PzIJ8h0TmdvOH+FVMbWGeXfXgEHGYLYckZHOMEC0vm4/eAE3T9E44W5I862PMqv4beduIjpKJz15AUiTAGPGTSHmDykbxW2NPDAH4JNwuVXuXBU73cag==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DoO108gb8QKOzmAkS4bh00XDxo5YS/LTSF6hFvbsGGY=;
- b=WMNJ/Dlk91RomgPLzBa2VeFIolC1LYJf0QoiKp4Y0PUmZ4DuPS+1sAntuvRRlTEud8FoJ/U9xivKOlGlbMuVp5Pn2hFELF9ykoLYG9I/jNhfRLcwLNLGkjFOCJrURG/58yqii66lA1mGyPkSPUYuBt9rTSOD4OYjaWociwCEKcQ+LxwteXKpnkVDUhYGRN0d2hWUdhRYaSp2gyffH1fvh2fQda5bXB1NxbacxuhMEs94t5O/KaVrzyIg9nLwgjJk8ezm4P8Ws5P708QrSsfeDfR+kPpLDgxa6ImbLgwqFoAjhPCCN8E8fK4XzriQIrdurLrXRcKOExQwC7K7JOZ5Ag==
+ bh=FD1XRWCeQBztypRZN+bhYIJba8gTsFeBh4O+ySAHFfE=;
+ b=ZtdDsnfoPLryNj+d8douD8U6SRgiXzFCewkeBWeAJthUYyLmcZ4c9G4Oz711U3INMXdWYWbVh3pp1KDXAjpHsMSw3uljZKjjCmrM9sBtmDkZImz9YJ6VTtRLUQUFe4QlhrWGZMCYXFTVX6wQMkdM9z/gm6EuUXj+sF3OpuGh+W74xFpMzPuy4CRWMyH2+qFs0Sst8YZcbgzG5aqQ6qMx6NTTjqX3ZKplccZt6Pr920dUMlgnDXwdJj/4WhPEJ/uWgj1R98cIZhOCv8NmLPkx7SzEY5ZFms+QVZC4nVYKJUeuiFw38oJzTxUuvOSchl51+hjY8aeYVrL6EG0CmigP5g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.118.232) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -48,18 +48,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DoO108gb8QKOzmAkS4bh00XDxo5YS/LTSF6hFvbsGGY=;
- b=Sy2ZG330lBfb2JgOqFvZhyY4NQkLooD/6uIvKeqgYOYoGPlnsZel7Vq20bvGxs/+WxrXm4Xg3fwWnBIcX2T08OUDHdpdaOm6p63Pq1XQlOsgVE4QwOjPjwxm8+SSTIrmWJaUcqv6gCnV/gEynZdFZhjiN9SZc2nYJ41eck4znnieC4jMk+jUrooOH0hYeFokf0Dpo7Sq3KNtZ4+0T54/cZIrb7Pj5EeR3dA7BklpS4axsUv0ieag3rkLL+UrdZFS6CoRXYZhO2Vy251emwSK3DP33JaSkSGBD3RI3E00wDxUYqhlI/lTwU8r8HDlDOHrXcSRfWi584tDWCo4rJU6oQ==
-Received: from CY5PR15CA0207.namprd15.prod.outlook.com (2603:10b6:930:82::26)
- by LV3PR12MB9143.namprd12.prod.outlook.com (2603:10b6:408:19e::11) with
+ bh=FD1XRWCeQBztypRZN+bhYIJba8gTsFeBh4O+ySAHFfE=;
+ b=L+/aUwsw+F4WOftLtkFNEYMxv8L0Ku8lnfI/+TMx9mFXPG8uOUx8UrFq8zfhV8zg2KAPJf4SVb4bQH4nTftBcBT3BYY5dqjOfIiqDmxOWV3CI52eCfsOwYBEq4j8K7bU2aMgIbVeb44NfTfNe34YxGq1fXspOb/eglO9H1yrVTJ/WWe8//OjM4PIil1I1SCp0KRYWQp+ipA2NjqoPeq52c9z6aXEzI0x7ZxQuPdR0lQmB5ZQr9+om+60vD21t8O6OxAxSbbwyGiIN59OKGhpWENaayh7SaVagA234mVSqYo5loXX1ct3g5hiD/WS5uZDjdXWdP7QNhSOfB7dEfveaA==
+Received: from CY5PR15CA0199.namprd15.prod.outlook.com (2603:10b6:930:82::16)
+ by DS0PR12MB8017.namprd12.prod.outlook.com (2603:10b6:8:146::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.48.19; Sun, 24 May
- 2026 15:39:18 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.48.17; Sun, 24 May
+ 2026 15:39:22 +0000
 Received: from CH2PEPF00000099.namprd02.prod.outlook.com
- (2603:10b6:930:82:cafe::24) by CY5PR15CA0207.outlook.office365.com
- (2603:10b6:930:82::26) with Microsoft SMTP Server (version=TLS1_3,
+ (2603:10b6:930:82:cafe::4e) by CY5PR15CA0199.outlook.office365.com
+ (2603:10b6:930:82::16) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.21.48.19 via Frontend Transport; Sun, 24
- May 2026 15:39:17 +0000
+ May 2026 15:39:21 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -69,22 +69,22 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
 Received: from mail.nvidia.com (216.228.118.232) by
  CH2PEPF00000099.mail.protection.outlook.com (10.167.244.20) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.71.7 via Frontend Transport; Sun, 24 May 2026 15:39:17 +0000
+ 15.21.71.7 via Frontend Transport; Sun, 24 May 2026 15:39:21 +0000
 Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
  (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Sun, 24 May
- 2026 08:39:04 -0700
+ 2026 08:39:08 -0700
 Received: from drhqmail203.nvidia.com (10.126.190.182) by
  drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.20; Sun, 24 May 2026 08:39:04 -0700
+ 15.2.2562.20; Sun, 24 May 2026 08:39:08 -0700
 Received: from [10.135.59.1] (10.127.8.10) by mail.nvidia.com (10.126.190.182)
  with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Sun, 24
- May 2026 08:39:00 -0700
+ May 2026 08:39:04 -0700
 From: Edward Srouji <edwards@nvidia.com>
-Date: Sun, 24 May 2026 18:38:08 +0300
-Subject: [PATCH rdma-next 7/8] RDMA/ionic: Validate rate limit attribute in
- modify QP
+Date: Sun, 24 May 2026 18:38:09 +0300
+Subject: [PATCH rdma-next 8/8] IB/core: Delegate IB_QP_RATE_LIMIT
+ validation to drivers
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -93,7 +93,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20260524-packet-pacing-v1-7-3d79439f8d08@nvidia.com>
+Message-ID: <20260524-packet-pacing-v1-8-3d79439f8d08@nvidia.com>
 References: <20260524-packet-pacing-v1-0-3d79439f8d08@nvidia.com>
 In-Reply-To: <20260524-packet-pacing-v1-0-3d79439f8d08@nvidia.com>
 To: Leon Romanovsky <leon@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
@@ -105,40 +105,40 @@ CC: <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, Edward Srouji <edwards@nvidia.com>, "Maher
  Sanalla" <msanalla@nvidia.com>, Michael Guralnik <michaelgur@nvidia.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1779637112; l=2395;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1779637112; l=2883;
  i=edwards@nvidia.com; s=20251029; h=from:subject:message-id;
- bh=dvJIgzdzy6JZcmgwATlZWqb3siPNnePA4XerF5CAJ0k=;
- b=gdWcAls43FKshyxhUJfQPEKodHLj/W6UBbq+fB5MdWLlDJbv5vhQtRVFwH4WpMavN4QfxiBhf
- MymgRyBeYKkCB9B49weeLNXc5ho7xsH+1Ryv5SVfbk2/OuHvDgWRplg
+ bh=H/vEYrNKcfkNSalVAkI98bNt5QiYXTFNrsGSqde6Zjg=;
+ b=ZCQjIM3o7VR053BKt6WX0R/zzVzJkU00uDljKXZkMjMcQs5Oks+PQ7GypupCi5L9o1HwqeJOO
+ 3mFk4b8ggcbAojA75JKsHLXq5PZr6sxeQ3UQvKLR5ppKEO8XX0jkRo4
 X-Developer-Key: i=edwards@nvidia.com; a=ed25519;
  pk=VME+d2WbMZT5AY+AolKh2XIdrnXWUwwzz/XLQ3jXgDM=
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH2PEPF00000099:EE_|LV3PR12MB9143:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8f0cb663-1576-430d-4503-08deb9aa9db2
+X-MS-TrafficTypeDiagnostic: CH2PEPF00000099:EE_|DS0PR12MB8017:EE_
+X-MS-Office365-Filtering-Correlation-Id: 75cfd5ba-e9f9-422d-84ee-08deb9aa9fe9
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700016|376014|1800799024|82310400026|18002099003|56012099003|22082099003|11063799006;
+	BCL:0;ARA:13230040|82310400026|36860700016|376014|1800799024|18002099003|22082099003|56012099003|11063799006;
 X-Microsoft-Antispam-Message-Info:
-	xNdBCC/+9uAAqIeaEG10la5w94QfP6gQUSq37pfkW2C8UDZbyR4Ni09bWdYSrCErZQ8/lhqV+1BdZG/rRknZQHt9Mr2lQXk9LgAhKWikSfUYlE3C+oKGqC57JtkLH/OJNwp5zQEB5olXMLE6IKUsz80wh/zWNhY7d6X1RoQk9556yX7z20HG64+TLEsEWRSGqr0kVy2nOdVglJejdTfHFwCkaQGX4fBXIQ+exerneqj2PRIc+fZtVLiBsek5/qOZfk3RMwcNc+cHgf/aNQY4aCY87AyOzoQud42wYX0d3NKml6KOK9TyeFXSDGIhSlEg+XDMtgRE8eQzBAO0zsbgifidM19AkYGsfZR7b1Im9e6ieGu2uxS2rD7LOhq3A62C7kHt9/tODbqfnLwdmhy7T3cvckdk48X+P8B0nWHPyViWZMW8qflidAJqzlwNmPqZB7Uy52ZT3iOiAZjT58QNuZ9t1Xa+T9uvjUgFoScEzL+IkFVg6sv4h0BIW6g1mdr0Zf7ovdjPaS4mDCDsgSJ8f9JheDh2dslkNtswLvytnerri/zfHzhPrtqjs5kSoRHe/UtEPMutzpeb16nBe2nCDPyALv8ox/AA3lLiSn8+6naFq3l+HlJawB5h6JCvObqeluu/mwpjxmgqXcexjPdMxn5m40aepy7YMkvw1QXFO00ZjsJtluGpQ4KME9vhGJsstFAmNVDdx6ZSAjYeqMf0jKWDoDuHXXog1mHOxZmH1G0=
+	/3brHAQPAtFhSGNMBWXVf9capF93DWa15NsRF6gW5+kJ7yOnO0kTdpP+75xIVMQkXmocYIE67D3oSGvrHdjR4bepcrg3lg8nfOsrrp1WhgvdGljh5uT1eb7XwskJgRsw10LCZE4wGyrKNVfJ6TjlDh4/PuPgVoMmq4bpG02541/E6ovgaI0YaTZLr3Hg64PzCnGpg6XR+mtUTCy7/PdtB/p7A8R1AEYkxpqTBlCdDixYTqoAwVsKECDxEL2mi7ogqYRBsnYvJHR49lOYTuuCjT+G1IhrVv4Bv56Mh58p0A5D36V7ZtzV2COELgTszFmiorANTDMLPONbm0rcN98+DxE1A3bGJcqKAxQ5qeE49nTY2Frcer1PCxTm2Ejj/UBTU2qw+/JPuvKRUz1wZkTCPBM1rJYNEwc504cszV6F+ULLkHazsZ4QwL2ENBAnFwRAGdiugm24uldCjkRxL/vfPTQaXIcySFiXQpsQsKgF+HOHb4yj9Kqg+om7s+u4H4o+eLYlZEqb3Su8s607Xe8e/TigWYamfR2O3gcevGZnhD1aHWddJVbWYqsvVT9dnhDK49zO+LtAp2sFwgq+siOcWnVzesYICZHHZpX8KtKHLCiv58wwuM3z90cciBPFEH6TDKNaj10xKYTANMAiouEnJTYyvRGjSeXjFCITEPUy4bCEcS4ACxmbc/Ds/wumVx/+M8ney6HmaigCh+xCJTUuJBf3GHCMuodzev0fcFsFtjU=
 X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(36860700016)(376014)(1800799024)(82310400026)(18002099003)(56012099003)(22082099003)(11063799006);DIR:OUT;SFP:1101;
+	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(36860700016)(376014)(1800799024)(18002099003)(22082099003)(56012099003)(11063799006);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	iezn/YCZ2peFE3KKih9yzJWqg/CJSi2LvYyfAUm5MUkC1LsoC1pu/62iccNF38kl6Vu+GCjAV2zIdvUrk2N3A+St9CIVnHD5cMqEvB0IO70IFjq5L9Quw/80gV4WFkWZz44cd6KKuQQDWu0mEhZ43B7DhbQxXrQKvF88CFvJBV/3PtN8GBIBGuRNfmNUOUTcbZkicPAoy27uyg1/qWTgHeOjVawogdz9zNivVvACL71ujARYaHI94YmAemCwz1nOT8tGpx4DNtRPNju0WP1o6Sa6F3NT541NuvV5+uiHqAN1IE7m+Wl87eJAHSsuvHzj+60+3rDa4UumK7qmNmzH6j35op+qBdv9u27i55Fifm5t+2Hc89yVsAfAz7zcW19Xt20wEtAJk5MOfACBb7b5vrXT16Eae/VPkI90V7u4KrPLNY0vP73l71qlpfxapj/k
+	qfWXnP4jQHVsxmgtI4l3BWLS2sLv4tx5uk+rng3yfkG5b7eiy6oIM8vXglMWfTCin2F5jtlwAXNAgr1o4GtdHz37683gfYHPQmKbm4MkxfqnP/IdatDwVasK+CH2qv1oG1HHiL9OSjvfj2C2UIvTZnVre/ZuiSGcvwYQVw8FVeYd5K4RSDjfWJW09AgXGX+uslWG9IhrvfnWfpLOqHX1S/3Q5aTna7AaqXpPaYnX9bV/HmaAhXFhXj8ALUDTV85uZO56uc5OF1PkebSEE3JUmC+NcCEBuWvs5NkfepDJbmVTtqZR425akcKjjevSao8tn0ErNz2KG+srnkWIS6gO0BETgD/xAmWg1cgcXt+M+s3v8AKM4zP+dwVBtulbqeW6tHVu4G5yi22KcZes8nSz6E/1QBe7eniZtYsWAyp45IwGUAPs4D4VcwADcvQHGGip
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 May 2026 15:39:17.3062
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 May 2026 15:39:21.0123
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8f0cb663-1576-430d-4503-08deb9aa9db2
+X-MS-Exchange-CrossTenant-Network-Message-Id: 75cfd5ba-e9f9-422d-84ee-08deb9aa9fe9
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
 	CH2PEPF00000099.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9143
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8017
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_REJECT(1.00)[cv is fail on i=2];
 	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
@@ -147,7 +147,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21209-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21210-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,Nvidia.com:dkim,nvidia.com:mid,nvidia.com:email];
 	MIME_TRACE(0.00)[0:+];
@@ -164,69 +164,91 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCVD_COUNT_SEVEN(0.00)[9]
-X-Rspamd-Queue-Id: 902565C2F26
+X-Rspamd-Queue-Id: EFF545C2F44
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Maher Sanalla <msanalla@nvidia.com>
 
-Rate limit transition validation for RC QPs currently relies on
-the IB core qp_state_table. Add a driver-level helper to validate
-the rate limit attribute directly during QP modify, ensuring it
-is only accepted for RC QPs in INIT->RTR, RTR->RTS and RTS->RTS
-transitions.
+Remove IB_QP_RATE_LIMIT from the qp_state_table and instead
+pass it through ib_modify_qp_is_ok() unconditionally. This
+delegates rate limit attribute validation to the individual
+drivers that support it.
 
-This makes the driver responsible for rate limit validation
-and prepares for a follow-up IB core change that delegates
-IB_QP_RATE_LIMIT and all future non-standard modify attributes
-handling to individual vendor drivers.
+As rate limit support expands to additional QP types and transitions
+across different vendors, centralizing this policy in the core becomes
+impractical. Each driver is better positioned to enforce its own
+supported QP types and transitions over non-standard attributes.
+
+Future support for non-standard attributes will be handled per vendor
+driver instead of in generic IB core qp_state_table.
 
 Signed-off-by: Maher Sanalla <msanalla@nvidia.com>
 Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
 Signed-off-by: Edward Srouji <edwards@nvidia.com>
 ---
- drivers/infiniband/hw/ionic/ionic_controlpath.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+ drivers/infiniband/core/verbs.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/infiniband/hw/ionic/ionic_controlpath.c b/drivers/infiniband/hw/ionic/ionic_controlpath.c
-index 2b01345848ddb7ee9b34e5c9bb074912734536e1..72e111027f1f5fede5aa21f0265219392f29a3ee 100644
---- a/drivers/infiniband/hw/ionic/ionic_controlpath.c
-+++ b/drivers/infiniband/hw/ionic/ionic_controlpath.c
-@@ -2535,6 +2535,23 @@ static bool ionic_qp_cur_state_is_ok(enum ib_qp_state q_state,
- 	return false;
- }
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index bac87de9cc6735c5d25420a7fac8facdd77d5f09..d105106fe9dc2a86001f771c0b7ab887e576642d 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -1538,8 +1538,7 @@ static const struct {
+ 						 IB_QP_PKEY_INDEX),
+ 				 [IB_QPT_RC]  = (IB_QP_ALT_PATH			|
+ 						 IB_QP_ACCESS_FLAGS		|
+-						 IB_QP_PKEY_INDEX		|
+-						 IB_QP_RATE_LIMIT),
++						 IB_QP_PKEY_INDEX),
+ 				 [IB_QPT_XRC_INI] = (IB_QP_ALT_PATH		|
+ 						 IB_QP_ACCESS_FLAGS		|
+ 						 IB_QP_PKEY_INDEX),
+@@ -1587,8 +1586,7 @@ static const struct {
+ 						 IB_QP_ALT_PATH			|
+ 						 IB_QP_ACCESS_FLAGS		|
+ 						 IB_QP_MIN_RNR_TIMER		|
+-						 IB_QP_PATH_MIG_STATE		|
+-						 IB_QP_RATE_LIMIT),
++						 IB_QP_PATH_MIG_STATE),
+ 				 [IB_QPT_XRC_INI] = (IB_QP_CUR_STATE		|
+ 						 IB_QP_ALT_PATH			|
+ 						 IB_QP_ACCESS_FLAGS		|
+@@ -1602,7 +1600,6 @@ static const struct {
+ 						 IB_QP_QKEY),
+ 				 [IB_QPT_GSI] = (IB_QP_CUR_STATE		|
+ 						 IB_QP_QKEY),
+-				 [IB_QPT_RAW_PACKET] = IB_QP_RATE_LIMIT,
+ 			 }
+ 		}
+ 	},
+@@ -1622,8 +1619,7 @@ static const struct {
+ 						IB_QP_ACCESS_FLAGS		|
+ 						IB_QP_ALT_PATH			|
+ 						IB_QP_PATH_MIG_STATE		|
+-						IB_QP_MIN_RNR_TIMER		|
+-						IB_QP_RATE_LIMIT),
++						IB_QP_MIN_RNR_TIMER),
+ 				[IB_QPT_XRC_INI] = (IB_QP_CUR_STATE		|
+ 						IB_QP_ACCESS_FLAGS		|
+ 						IB_QP_ALT_PATH			|
+@@ -1637,7 +1633,6 @@ static const struct {
+ 						IB_QP_QKEY),
+ 				[IB_QPT_GSI] = (IB_QP_CUR_STATE			|
+ 						IB_QP_QKEY),
+-				[IB_QPT_RAW_PACKET] = IB_QP_RATE_LIMIT,
+ 			}
+ 		},
+ 		[IB_QPS_SQD]   = {
+@@ -1775,7 +1770,7 @@ bool ib_modify_qp_is_ok(enum ib_qp_state cur_state, enum ib_qp_state next_state,
+ 	if ((mask & req_param) != req_param)
+ 		return false;
  
-+static bool ionic_is_modify_ok(enum ib_qp_attr_mask ext_mask,
-+			       enum ib_qp_type type, enum ib_qp_state cur,
-+			       enum ib_qp_state next)
-+{
-+	if (!ext_mask)
-+		return true;
-+
-+	if (ext_mask & ~IB_QP_RATE_LIMIT)
-+		return false;
-+
-+	/* Rate limit is only supported for RC QPs during specific transitions */
-+	return type == IB_QPT_RC &&
-+	       ((cur == IB_QPS_INIT && next == IB_QPS_RTR) ||
-+		(cur == IB_QPS_RTR && next == IB_QPS_RTS) ||
-+		(cur == IB_QPS_RTS && next == IB_QPS_RTS));
-+}
-+
- static int ionic_check_modify_qp(struct ionic_qp *qp, struct ib_qp_attr *attr,
- 				 int mask)
- {
-@@ -2547,7 +2564,9 @@ static int ionic_check_modify_qp(struct ionic_qp *qp, struct ib_qp_attr *attr,
- 	    !ionic_qp_cur_state_is_ok(qp->state, attr->cur_qp_state))
- 		return -EINVAL;
+-	if (mask & ~(req_param | opt_param | IB_QP_STATE))
++	if (mask & ~(req_param | opt_param | IB_QP_STATE | IB_QP_RATE_LIMIT))
+ 		return false;
  
--	if (!ib_modify_qp_is_ok(cur_state, next_state, qp->ibqp.qp_type, mask))
-+	if (!ib_modify_qp_is_ok(cur_state, next_state, qp->ibqp.qp_type, mask) ||
-+	    !ionic_is_modify_ok(mask & ~IB_QP_ATTR_STANDARD_BITS,
-+				qp->ibqp.qp_type, cur_state, next_state))
- 		return -EINVAL;
- 
- 	/* unprivileged qp not allowed privileged qkey */
+ 	return true;
 
 -- 
 2.49.0
