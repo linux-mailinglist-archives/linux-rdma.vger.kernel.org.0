@@ -1,196 +1,312 @@
-Return-Path: <linux-rdma+bounces-21247-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21248-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EN6LA8J6FGokNgcAu9opvQ
-	(envelope-from <linux-rdma+bounces-21247-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2026 18:37:22 +0200
+	id gOPNN5+CFGqnNwcAu9opvQ
+	(envelope-from <linux-rdma+bounces-21248-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2026 19:10:55 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F3CC5CCEFF
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2026 18:37:20 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 892425CD323
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2026 19:10:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C980F3013A7B
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2026 16:37:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 279233028ED7
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2026 17:10:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40AFB3AC0C2;
-	Mon, 25 May 2026 16:37:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E923D3F86F9;
+	Mon, 25 May 2026 17:10:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="DBlmLopF"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="GQr1PYm1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazon11012015.outbound.protection.outlook.com [40.93.195.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD00738228F
-	for <linux-rdma@vger.kernel.org>; Mon, 25 May 2026 16:37:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.195.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779727035; cv=fail; b=tsYwmNtPZ8kycj91UBOWQbs6q/AWNWHJ0qTWW0/7hClHjPBmQ9+cV2yxDJFyCU4dwZkSy5RMy+RqU/Ob0YZpXmGNECCTsSMplVL8TKKIV/zy3TojnjDPimQL2vy8r+qoWn4/urExKgd+OgHBQE0NVdT2fULND+SE6H/P1/fcOQ0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779727035; c=relaxed/simple;
-	bh=C/g1B0EhoQ0/zRsv7w42Qrbik+tlSprKen8lpIvdc3Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=h9429gmh/1aRXwbYgZtCLYp66m6eigBmwbAly8wqsmRj8B8PJDzRW6q3VLZ0AJuFrQfrPx7IdThV/4H4gNZkCU3CjjJkYFPRF0NOUYHZdnydiSFAjwsR3LABIkSj+b23D2wkqreLyV/kDXSz54OLQmvKmQhgmnlL2iKkMxgBkBI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=DBlmLopF; arc=fail smtp.client-ip=40.93.195.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=mdge0dzYzt8/Cclg0qHfeHzEklR8X75bOOOlzfsPoH39Tvschkl8N0nmZv+bzSMxvWlgBW+vAzZoNpbIdURxLPh+39fVHcXXUzz0b8qP7mfikbXAdtqfXLnFlne8CwotyZ1ppyGt4Fa/X5Au/JYe9NKcQhh4S5KEcq7amJTW6EtRZ/mpgcfTkklDr6ca680kVhpssNgl6BLBZslRPClWzlpWdAfcoSU5b96299QFf0+2zFyANHHhd9oEm9DkEwKHGdeb6OyXmQz89Of0hN4CNxSivlAVcUgJ4LIANyJ6n/gYH0rrPrisKciwRqMa/89fCSMW0o1+CRal6hUH0FMKFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lYE516+Pj5/Y6eg0zZl7ycqfvIlyWsG8mQhJDXNYkpY=;
- b=QgockKcGGKYEzmWJnjNaLrl6bFgNYMA7sgCMC25FKSkQY258oVSLsdbgx0v4dgu4+mzbrS5rO9nVVMGUlPrwaXv3bi9vcji19o7dctrMqnm7+WAjO9inbG7B/U0o+jZqyv/CTVrWAzfQ2CY7/X47UHPzU6cLN3zER9HddzZdJdvmn05mGZr1lIWZg11OgAt4XYRqNjkVVyJ2ZBV6Bf8gna58FIAGkkGZUZDKmZ6aQuCN01UQBYNMDyEmWLoN9A1Xpo4lZMox43dbDr9H2pFqnsnkiBOiSZYDzgIoJAVVLiSjB2twJuRGfXig3d/cblMzWbvM8IHQklWM4TQoSmMeFw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lYE516+Pj5/Y6eg0zZl7ycqfvIlyWsG8mQhJDXNYkpY=;
- b=DBlmLopFhCp92XJxo9UCVFjdFsqVnLg276kqGRl+NAGgzbfn2HlOGH1m8RYhWt/o2/4ggvxtvejI0+aM/xeaVvM1gTqyLkblhsmAXRH+no1YWiG3jhnFf3IC1r2PiTzdC6pR7N0Thj9/shAKqiQxMSrg+UhPkbhV0N2VF1PZtIQ4wSNsYCk1TzzrOkzCHmD8kyGKE8tFxVoQWYZU3FgVPUcmxUwinZ3ct5EMQ7FDBXmcb4GbjwKcuCsxmEOYr+w9A9+FNAoMfqlyFD/FE0X3tnGxJ0MVBiAQRKLxBUtduMk5deNPB3EJSH6gHEmcVqi8GiiV2/lOdFwinveCkk3qIQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19)
- by CY8PR12MB8363.namprd12.prod.outlook.com (2603:10b6:930:7a::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.48.20; Mon, 25 May
- 2026 16:37:10 +0000
-Received: from LV8PR12MB9620.namprd12.prod.outlook.com
- ([fe80::299d:f5e0:3550:1528]) by LV8PR12MB9620.namprd12.prod.outlook.com
- ([fe80::299d:f5e0:3550:1528%5]) with mapi id 15.21.0048.019; Mon, 25 May 2026
- 16:37:10 +0000
-Date: Mon, 25 May 2026 13:37:08 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Boshi Yu <boshiyu@linux.alibaba.com>
-Cc: leon@kernel.org, linux-rdma@vger.kernel.org, chengyou@linux.alibaba.com,
-	kaishen@linux.alibaba.com
-Subject: Re: [PATCH for-next v2 3/3] RDMA/erdma: Implement
- erdma_reg_user_mr_dmabuf
-Message-ID: <20260525163708.GA2504127@nvidia.com>
-References: <20260518120637.16831-1-boshiyu@linux.alibaba.com>
- <20260518120637.16831-4-boshiyu@linux.alibaba.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260518120637.16831-4-boshiyu@linux.alibaba.com>
-X-ClientProxiedBy: YT4PR01CA0242.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:10f::21) To LV8PR12MB9620.namprd12.prod.outlook.com
- (2603:10b6:408:2a1::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41F603F58C1
+	for <linux-rdma@vger.kernel.org>; Mon, 25 May 2026 17:10:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779729011; cv=none; b=qmLe/2+PqR02EQaja4yOOaO/R2Wm4PNsJyURnSXpVVCzei52iLjmvBJH3ywuV/itH02YBUzaP1X57dNTC6f4kWUs02Bj2yKYwwq7yF/OvdO2bC4oaejPefCpqLAMF9jIQUQ/+4ijQe/PIc1F25VuQz8sT21UmyWzmLjWH0vgxJI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779729011; c=relaxed/simple;
+	bh=PTNg3RyBjtWL4NnI8O0q7hXUoY8uPF4RaVnZMbEInR0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=K473DSweVzCAiFdlBfVDXebvFZvizbvnINNoIIbOitJp+qY9GlUx0n96Z2Aq1+/tMTnH63dwJKb80Hk2VrSiDaKIYOk8hJrFQBdM0g7dJwac8uARA72FwYAOldVwbiA7jYeTydpfn75/Y/ytdzlcrVQNyVypQJDECGACF3mFGm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=GQr1PYm1; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-490388fd0dbso41525885e9.0
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2026 10:10:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1779729007; x=1780333807; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=izugkSqOYsBmSyQ8jfD9m1SVj73YG14U78pRBc6Lai0=;
+        b=GQr1PYm1QRIrfgBC/EILAtR9O17tFRT933ldDJCayUjXIyRMiDnumrFP9i4iPLQuP/
+         bWYj6u/50hd5AlTl8fnNFXZxscNWQsfvT08lWT2g7USA76CFTeDeB9CAGnGBLt+Jk5Kd
+         lX3x9dDR55Y2wg8pVl8cBGmVyZoFj8APvHLhilXEkRN6z7J5HsqQkRDuiJpcpmZ76bBE
+         nunnNO0efpqrh3Mg+srvekhGI13bTspzjyxHMZeoT7BQvRd6lyijtBc2rfmKjAaENr6C
+         i+8SY1MRgNki/ClY1lWgGG4FXSsH+ZhGYZ0VK7FSfIVhFbKqAWGdmu0VyhcviooSpQ7X
+         9jYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779729007; x=1780333807;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=izugkSqOYsBmSyQ8jfD9m1SVj73YG14U78pRBc6Lai0=;
+        b=g7rxWQn4THGm8+DKl3IMVLL4oqAdIm7uVcInO8nVDLDhOoM/TxXXgcvRT/QchDGG1c
+         /U3COawu/9OSVMCWs2EiSap96M+jB4noEATvL/I7HmqflJKJAtz33/FO8848D4oUOZbL
+         G5LUXNTUZQqLXeStgpXcgTU7tgf/xz6f+InD4KZS2QMS2BPxK/t8jMRMsNBnYeAl7Hp0
+         bk2tAI4pBaT4lPonHVqUIkNps+jRkyQW2UyLdQ/LPMVLXznAunGB25jeFow/5uluffM4
+         ORo3V1dR/FdWN1ZsPCmx5ULkexkMEKJfnUi9xJvFXyIxfuhz/BSlIneeaikJDkJidP0T
+         75BA==
+X-Forwarded-Encrypted: i=1; AFNElJ85OwnS8rAb+R+RQOYZzeOeLL5VEGp+DNH2W0UAaXTw+wB5HLGNVE82GVdyMRj+RwaOYxH37K5nPrIb@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyzb4X7cgOUlyOniy7HDywGo2Ndu2pYHh5F63les9MhL8IJQ3Vx
+	E7bQNOt+43mCPJKNLd5/qsyv2eymu36rgiEZV699mZ6ISGYJjH2H2ES/poYuDh0QvBQ=
+X-Gm-Gg: Acq92OHrbA0kgHApw2QGbS80vmg6IozVXPAK6n8PNhqlkiIuhsGM37Ol6Cof6JphXvV
+	XFTAQMQQwmkiAzozxjvh0GWK+lMRn73HpTDH67ldDDs7bbsnafnEM/C+lV9gukKuRrWyVhJ4lmt
+	yUSrGCsyfhSBDC42uvYy8UAwRaeNZ4BdVPwdjQWtUVyAu5D0aD4WubNUIhgCg/ARoQ0GGQrWHzc
+	NwqfL4DNhGuQYbn2STBAZQA8KjYV3cckQ6RWB1vhXcwzr/uTgiEvHcImaNbAdjBFsiK1xSvq6gP
+	E0ffmRXMFpO8fx6dRLh9EJAV/lFqRNdSZ3TYOz48MW8ZMT4a0FlSrPEKsludpTdOc4g0c3vTL+c
+	pUNeFrUn0SubaEUPVqY32Q2RpLXtjPfuP9yV7O1v3Is7BQRM4kTiKyJ2POdV0Cntf5bTPZtjaJb
+	pfDl+9XXzvf+Fib0OEsR81x0RCk2vX+biPkR34LREMexEMaB5/L37TKdGEYRaUo+1H086bUjovh
+	v4lFH1/oRGDvyrqkaroRy+cG4Cav3y1lKTFI91WbCOmgdnaAT60ykNKo5ct4BZHUWSwSrk+zai5
+	3bVxkPWCLdNs3u8=
+X-Received: by 2002:a05:600c:35cf:b0:490:44eb:c1e5 with SMTP id 5b1f17b1804b1-49044ebc257mr277307095e9.31.1779729006482;
+        Mon, 25 May 2026 10:10:06 -0700 (PDT)
+Received: from ?IPV6:2a00:1028:838d:271e:8e3b:4aff:fe4c:a100? (dynamic-2a00-1028-838d-271e-8e3b-4aff-fe4c-a100.ipv6.o2.cz. [2a00:1028:838d:271e:8e3b:4aff:fe4c:a100])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4904526c926sm456877405e9.1.2026.05.25.10.10.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 May 2026 10:10:06 -0700 (PDT)
+Message-ID: <a192eb5c-5d16-483d-862e-d937fa1b8269@suse.com>
+Date: Mon, 25 May 2026 19:10:03 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV8PR12MB9620:EE_|CY8PR12MB8363:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6afe863a-c242-4233-71c9-08deba7bddbc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|376014|18002099003|56012099003|22082099003|11063799006|5023799004|4143699003;
-X-Microsoft-Antispam-Message-Info:
-	gS718Ell7sdaZrF8zrbOQ3ra58QMFJ8cp/RHzY65vVyEhqx6d6EOa+u0RvOktnF7fyhUpqB5cs/a7tMLKHu/mCyib6wVPY7KidOSS0pXmHioKOLuU7elpNMEhYBksWs+H9TThjU08y3RBFmJLJssonk/XsmWFo4fd21L7XQV0qCl1LXnFMxnfbML+qiueL658wA1iyWtkNtlm+1yUXMwPEVdO7tFDXajs+qzb3bd0sackOAckkLS4u2gAMBljroMGUce6xdkjo9vPBtcbGGSQMkErTw6xWiv5kgm8taDvpay4Wx5n2JCFjlJPKoBE2sxH11EEKcCboNTHy01sWcq8gTMRfrBd13IaKPyukMQb10Rw/MMINoVCcLVZEIpcioCB5015b9X3a3rFuuoCfEMN77gvTt2Wko7EB9ccp3mJhou74SKmMwdpq74t+wzhbE1kLShjGAOsUJED5Clu5IucXcxFy2M78Dg8Fq6aygv+aHU7tOKyArsvKClVtthiL2djnUeSltC4/E0FfQdE7I1jntrEIHr34iP5AHut1i7GIO4hOGhSZfOBiEiprBSy878r2tF/7nmGqbPv9lFQECS6y/WHT/cFOx3VpBeH+L8bUw2GTbOoUanODe1shs30tFAi1vNJwq9NG5j99RVbflSK3pkELDFwZGzaHauClCuGcS9SSzACUtJcYrJiaSGGYt+
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9620.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(18002099003)(56012099003)(22082099003)(11063799006)(5023799004)(4143699003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?w6oXNp62APYylkZPNwM6Ahz5S/qLY2Z0oKoKL0+uzjiwcFcb5VkUjkLS2wDe?=
- =?us-ascii?Q?a42gSFp8gttmE1zHZ3VgSWaF3aIkaG08cyOiB9RlBIqPwKr6XOoFxZ8Nl1mp?=
- =?us-ascii?Q?LV7FPg81FpLmJAkCQzq7NH1+bD/WPBz64TTvIUgtLnUUSuWccLeDFwFVk4nU?=
- =?us-ascii?Q?tQekks4tjwsEbanaQcYXTlvwCURb5ygCrHAgy3O6keyU8l42XpPReePXoMIe?=
- =?us-ascii?Q?VR6qtckEUbLeEdhz2sKZpNK72fwrw2rGZLHMKp2CeFSytRZdEG5QpjUxaU/T?=
- =?us-ascii?Q?nM9VymhNTRdySxWj90G5cgAZBd1tKVHmP5Z/Gddg+qbeS3JEF+oo9e8LPdxf?=
- =?us-ascii?Q?hmptc5hr1b1UVu06EUk6qJp9IfeRUKrsZGstxLF43nUpbaAvdWXQk4SaFZHv?=
- =?us-ascii?Q?m89Zx+/TQi4oKvUEjlYjDBHtEqJXxxIs8azmI09h/KXI2AaVq1t9STg8TDM/?=
- =?us-ascii?Q?0qGr6cM5d6mcmkBelGA+/Xdf4/5113iIW0NKkTIgDVY5rCCC5LqleUQ+QQo8?=
- =?us-ascii?Q?sr2y5lsmT7iA4Gobkr7Oqe7m8Ps34nxO2/+DlhA4WSdEt0fV+RcVPKfunI39?=
- =?us-ascii?Q?v58lX7fnOQ/qWvMPrY0nsK2SQ6i0GyTMMMxEUB3+rahV6KLr+BAjNsqv1zvL?=
- =?us-ascii?Q?qUGdouNg/PavFUOTZtS5YAcTnY5bbgBb3RXpehPA1CKE4taNB9NkQDj+XgjF?=
- =?us-ascii?Q?ppGhwxav46JUjhnBcGg8ajVBV/D7dO50I9adwejRbKuGdwwjdWoZu88WsSNl?=
- =?us-ascii?Q?AWI+3Js8f7fipxTMj5sspHQSn/Ozp7ZVc1LXCm/tg4az+D2Kg75ML/v5DrbM?=
- =?us-ascii?Q?JlNcSFk6mIo+VvzuRmnYZJscZ8WjJ3a6hXLtwY8mG/kCOfFOjm+v6GuPAVYc?=
- =?us-ascii?Q?kWilx8x4Bkft+cwSR8DOBWviehG9mJm681B/QDGNJd/fadJy+2X1pYhX5Bo/?=
- =?us-ascii?Q?J59vD/xUf0jVmLO0mMY1S4SLA1yOa9qas8ZfjRuInuKaV6J3Tlw7+R6nXhVp?=
- =?us-ascii?Q?2Lm6P+4EpqOT1cMqzp55gWIyLgWFYoVr4LPRJFTW8R7FVlxJqkEJkh36JRHq?=
- =?us-ascii?Q?g78wz5reDv9U2S9DiDp02+N7+upttcI/4SizG88usRdtf1dxuLAv/S3MVzdR?=
- =?us-ascii?Q?5UkxA+jGgLeXt1DRmXdFVNci1dPvkuvuNAeiIZpluVenlexIA/M+YatX7Whs?=
- =?us-ascii?Q?lJPD2+Yt+W7lVNuEwH23Ow1e0837zX6t+wK6Ml71lKq70sDVQqw34qZFszPH?=
- =?us-ascii?Q?Nmz67ptqUAzggRLc5SUB5t52aWZ2hdvv9PjuFJjcukpdrZp3odXZtgQnYOOg?=
- =?us-ascii?Q?OwPGyNd723a6dPEHQ1ZXiJaWBM8faWi1R5AY9zMtjleYqQFRabTt3siKmDLd?=
- =?us-ascii?Q?ZTYBGSANkc9f4SMEfpMS2lcaFKpkJwZGzpy5dQnOWDuFjQ/lNDoAmcSUIHdz?=
- =?us-ascii?Q?Qg3FjNKjURu7D1SfAOMV8sKXS3g17swUiWyMNsWHcqdV8l3rfa1yBzGC4nVx?=
- =?us-ascii?Q?9eMbszfjji9XTQ0pwK5/NCnIaLBK/FURcYmo+UJqGUqfPx3DkVDP6QNZ+BUE?=
- =?us-ascii?Q?Y+x6NvyBYGGZ1k2PBDoNNluCSTAqFXxzehYlkvcf3LLaaSOc6hCNHbmHMek3?=
- =?us-ascii?Q?V8cRUJYv5Fr9gikm7Dl5Fz1vWaTp3c5vtH9vwnNOLkYMa8FtHv1eqvOJvAje?=
- =?us-ascii?Q?OQC83l6pfd2ZbwULFMLKMvZaE8cW1hUEouSfyYnclosY/fvJ?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6afe863a-c242-4233-71c9-08deba7bddbc
-X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9620.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2026 16:37:09.9627
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gZlCuo5sffyunEQAb0YjRrm1rTFXUdi4jwHCWWf93cGgXrmoW3TGbXJJZpnTWdBP
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB8363
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 08/11] params: Convert generic kernel_param_ops .get
+ helpers to seq_buf
+To: Kees Cook <kees@kernel.org>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, Pengpeng Hou
+ <pengpeng@iscas.ac.cn>, Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+ Corey Minyard <corey@minyard.net>, Gabriel Somlo <somlo@cmu.edu>,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ Jani Nikula <jani.nikula@linux.intel.com>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin
+ <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>, Bart Van Assche <bvanassche@acm.org>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Hans de Goede <hansg@kernel.org>, Mauro Carvalho Chehab
+ <mchehab@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Hannes Reinecke <hare@suse.de>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Daniel Lezcano <daniel.lezcano@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+ Lukasz Luba <lukasz.luba@arm.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jiri Slaby <jirislaby@kernel.org>, Alan Stern <stern@rowland.harvard.edu>,
+ Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ Jason Baron <jbaron@akamai.com>, Jim Cromie <jim.cromie@gmail.com>,
+ Tiwei Bie <tiwei.btw@antgroup.com>, Benjamin Berg <benjamin.berg@intel.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ "David E. Box" <david.e.box@linux.intel.com>,
+ "Maciej W. Rozycki" <macro@orcam.me.uk>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ Peter Zijlstra <peterz@infradead.org>, Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>, Sean Christopherson <seanjc@google.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Thomas Gleixner <tglx@kernel.org>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>, Vinod Koul <vkoul@kernel.org>,
+ Frank Li <Frank.Li@kernel.org>, Daniel Gomez <da.gomez@kernel.org>,
+ Sami Tolvanen <samitolvanen@google.com>, Aaron Tomlin <atomlin@atomlin.com>,
+ Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>,
+ Dmitry Vyukov <dvyukov@google.com>, Andrew Morton
+ <akpm@linux-foundation.org>, John Johansen <john.johansen@canonical.com>,
+ Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+ "Serge E. Hallyn" <serge@hallyn.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Georgia Garcia <georgia.garcia@canonical.com>, kvm@vger.kernel.org,
+ dmaengine@vger.kernel.org, linux-modules@vger.kernel.org,
+ kasan-dev@googlegroups.com, linux-mm@kvack.org, apparmor@lists.ubuntu.com,
+ linux-security-module@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-acpi@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
+ qemu-devel@nongnu.org, intel-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-pm@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-serial@vger.kernel.org,
+ linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
+ virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org, netdev@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20260521133315.work.845-kees@kernel.org>
+ <20260521133326.2465264-8-kees@kernel.org>
+Content-Language: en-US
+From: Petr Pavlu <petr.pavlu@suse.com>
+In-Reply-To: <20260521133326.2465264-8-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21247-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,iscas.ac.cn,nod.at,cambridgegreys.com,sipsolutions.net,minyard.net,cmu.edu,redhat.com,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,acm.org,ziepe.ca,ideasonboard.com,google.com,suse.de,HansenPartnership.com,oracle.com,arm.com,linuxfoundation.org,rowland.harvard.edu,linux.alibaba.com,akamai.com,antgroup.com,orcam.me.uk,infradead.org,linux.ibm.com,alien8.de,zytor.com,atomlin.com,linux-foundation.org,canonical.com,paul-moore.com,namei.org,hallyn.com,vger.kernel.org,googlegroups.com,kvack.org,lists.ubuntu.com,lists.infradead.org,lists.sourceforge.net,nongnu.org,lists.freedesktop.org,lists.ozlabs.org,lists.one-eyed-alien.net,lists.linux.dev];
+	DKIM_TRACE(0.00)[suse.com:+];
+	TAGGED_FROM(0.00)[bounces-21248-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@nvidia.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	FROM_NEQ_ENVFROM(0.00)[petr.pavlu@suse.com,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_GT_50(0.00)[98];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,Nvidia.com:dkim,nvidia.com:mid]
-X-Rspamd-Queue-Id: 5F3CC5CCEFF
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 892425CD323
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, May 18, 2026 at 08:06:28PM +0800, Boshi Yu wrote:
-> +	if (attr->flags & ERDMA_MEM_FLAG_DMABUF) {
-> +		umem_dmabuf = ib_umem_dmabuf_get_pinned(&dev->ibdev,
-> +							attr->start, attr->len,
-> +							attr->fd, attr->access);
-> +		if (IS_ERR(umem_dmabuf)) {
+On 5/21/26 3:33 PM, Kees Cook wrote:
+> Convert the generic struct kernel_param_ops .get helpers in
+> kernel/params.c directly to the seq_buf signature, drop their legacy
+> "char *" form, and refresh prototypes in <linux/moduleparam.h>:
+> 
+>   param_get_byte/short/ushort/int/uint/long/ulong/ullong/hexint
+>   param_get_charp/bool/invbool/string
+>   param_array_get
+> 
+> The STANDARD_PARAM_DEF() macro expands to a seq_buf body for every
+> numeric helper. param_array_get() now writes element output directly
+> into the parent seq_buf when the element ops provide .get; it only
+> allocates the per-call PAGE_SIZE bounce buffer when the element ops
+> still use the legacy .get_str path. The common "rewrite the prior
+> element's trailing newline as a comma" step lives outside both
+> branches so the two paths share it.
+> 
+> The non-core changes in this commit (arch/x86/kvm, mm/kfence,
+> drivers/dma/dmatest, security/apparmor) are the small set of callers that
+> directly invoke one of the converted generic helpers from their own .get
+> callback (e.g. an apparmor wrapper that adds a capability check and then
+> delegates to param_get_bool()). Because the helpers' signature changes
+> here, these wrappers must move in lockstep. Each of them is updated
+> to take "struct seq_buf *" and pass it through; param_get_debug() in
+> apparmor also pulls aa_print_debug_params() (and its val_mask_to_str()
+> helper, in security/apparmor/lib.c) over to seq_buf, since that is the
+> only consumer. No other behavioural change is intended.
+> 
+> Custom .get callbacks that do not delegate to a generic helper (and
+> therefore still match the .get_str signature) are routed automatically
+> to the .get_str field by the DEFINE_KERNEL_PARAM_OPS _Generic dispatcher
+> and are deliberately left alone here, to be changed separately within
+> their respective subsystems.
+> 
+> Signed-off-by: Kees Cook <kees@kernel.org>
+> ---
+> [...]
+> @@ -453,36 +457,46 @@ static int param_array_set(const char *val, const struct kernel_param *kp)
+>  			   arr->num ?: &temp_num);
+>  }
+>  
+> -static int param_array_get(char *buffer, const struct kernel_param *kp)
+> +static int param_array_get(struct seq_buf *s, const struct kernel_param *kp)
+>  {
+> -	int i, off, ret;
+> -	char *elem_buf;
+>  	const struct kparam_array *arr = kp->arr;
+>  	struct kernel_param p = *kp;
+> +	char *elem_buf = NULL;
+> +	int i, ret = 0;
+>  
+> -	elem_buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
+> -	if (!elem_buf)
+> -		return -ENOMEM;
+> +	for (i = 0; i < (arr->num ? *arr->num : arr->max); i++) {
+> +		size_t before = s->len;
+>  
+> -	for (i = off = 0; i < (arr->num ? *arr->num : arr->max); i++) {
+>  		p.arg = arr->elem + arr->elemsize * i;
+>  		check_kparam_locked(p.mod);
+> -		ret = arr->ops->get_str(elem_buf, &p);
+> -		if (ret < 0)
+> -			goto out;
+> -		ret = min(ret, (int)(PAGE_SIZE - 1 - off));
+> -		if (!ret)
+> +
+> +		if (arr->ops->get) {
+> +			ret = arr->ops->get(s, &p);
+> +			if (ret < 0)
+> +				goto out;
+> +		} else {
+> +			if (!elem_buf) {
+> +				elem_buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
+> +				if (!elem_buf) {
+> +					ret = -ENOMEM;
+> +					goto out;
+> +				}
+> +			}
+> +			ret = arr->ops->get_str(elem_buf, &p);
+> +			if (ret < 0)
+> +				goto out;
+> +			seq_buf_putmem(s, elem_buf, ret);
+> +		}
+> +
+> +		/* Nothing got written (e.g. overflow) — stop. */
+> +		if (s->len == before)
+>  			break;
+> +
+>  		/* Replace the previous element's trailing newline with a comma. */
+> -		if (i)
+> -			buffer[off - 1] = ',';
+> -		memcpy(buffer + off, elem_buf, ret);
+> -		off += ret;
+> -		if (off == PAGE_SIZE - 1)
+> -			break;
+> +		if (i && s->buffer[before - 1] == '\n')
+> +			s->buffer[before - 1] = ',';
+>  	}
+> -	buffer[off] = '\0';
+> -	ret = off;
+> +	ret = 0;
+>  out:
+>  	kfree(elem_buf);
+>  	return ret;
 
-I don't want to see new MR implementations that use the get_pinned
-interface.
+Since you're almost completely rewriting the logic in param_array_get(),
+I suggest tightening it up a bit. The function could warn or return an
+error when a kernel_param_ops::get/get_str() call adds a string that
+doesn't terminate with '\n', specifically, when the call adds either
+a zero-length string or a non-zero-length string that ends with
+a different character (unless an overflow occurred).
 
-Please implement the revoked interface Jacob added:
+The updated code silently stops the loop when a get call returns
+a zero-length string. Similarly, handling of a string not terminated by
+'\n' is halfway there because of the added check
+"s->buffer[before - 1] == '\n'".
 
-commit ff85a2ebacbdaec9f28c4660c991295ace93cd1c
-Author: Jacob Moroni <jmoroni@google.com>
-Date:   Thu Mar 5 17:08:24 2026 +0000
-
-    RDMA/umem: Add pinned revocable dmabuf import interface
-    
-    Added an interface for importing a pinned but revocable dmabuf.
-    This interface can be used by drivers that are capable of revocation
-    so that they can import dmabufs from exporters that may require it,
-    such as VFIO.
-
-
-Any IBTA compliant device should be implement revoke at least through
-regreg_mr.
-
-Jason
+-- 
+Thanks,
+Petr
 
