@@ -1,59 +1,53 @@
-Return-Path: <linux-rdma+bounces-21250-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21251-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id heVKLX+cFGqpOwcAu9opvQ
-	(envelope-from <linux-rdma+bounces-21250-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2026 21:01:19 +0200
+	id qIoCAqKeFGoLPAcAu9opvQ
+	(envelope-from <linux-rdma+bounces-21251-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2026 21:10:26 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 600625CDDF3
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2026 21:01:19 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78C115CDF25
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2026 21:10:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 90FA230185AF
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2026 19:01:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5C81B301F9C5
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2026 19:10:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5377035E1DC;
-	Mon, 25 May 2026 19:01:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25DCE37F72A;
+	Mon, 25 May 2026 19:10:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="q/fN6tcq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n5D9LSPZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF6D81FDE31;
-	Mon, 25 May 2026 19:01:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9F7B385D79;
+	Mon, 25 May 2026 19:10:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779735674; cv=none; b=kAoazKQALrpLPXWHZWoeMlH9cyWibBHHg2On5iAG8NqnJXywJEMIt8dWESJXjPseCwxhuyuTERYThX1Ttj5oFHYqdSjg8Rfv/+zewyhYyTkxi64+1EGOBBk1ewsY4ZTPebUDxeB9nkrxu1Y9e3xesn4N8gziiI707ndlZXs03M4=
+	t=1779736203; cv=none; b=RyIcXhJmicxAZVPVDFwaf0TGEAqhJagXGJ179PA59DN+/iua8SEwRTPUS+OO4tdgRqZrdmskOzOfGEHYjCXuYcoWGVoFKZifr5FqDs391m3hjrpzBf4XD91EwUG6v5F5BMQM5+m4ny5tzZ/tr4Qh32B9QEGjkI9JD5TexYuZCmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779735674; c=relaxed/simple;
-	bh=CKyRKxtHLl0lHstjvPd68gVhZNBfc9IHMW1Nj3o87B4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rNRrOli3BgzUehzDIVGNbFnGXfbBF05CvxPwtLJPww7Ca1EXrBBJPoeMT8TK97vjSzNvXRXRl8KUXm6MSSd21hsfdodTiVWy6bB/kp1XvvLfyhvQVx1yg7fNf4ivAK8v3ePmWKTc2MB+1iyv4oCobW7MYBS8UE9rtoOPROH41rc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=q/fN6tcq; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1173)
-	id 5A1AF20B7166; Mon, 25 May 2026 12:01:03 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5A1AF20B7166
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1779735663;
-	bh=Un6NUoOXoAS8Gs2lq6egSVJZ5269tBQWMy722ZhF/YE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=q/fN6tcqrHnRMG6Udu4k3q9BBtFPifmAXHpDbj0ygXG+N7U0nl1hajG90VcJLHkkt
-	 oKK8SZlJBs7paRcvKeecqkDCM+oofEfDQkGaLohmqXTwPPffU04L8FZ6zejlCN1rdr
-	 /lPfcfVtyLAIymF5ua3dTaG2UJQR74XABNvY6q5Q=
-From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-To: longli@microsoft.com,
-	kotaranov@microsoft.com,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	linux-rdma@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-Subject: [PATCH rdma-next v3] RDMA/mana_ib: Clamp adapter capabilities at the ib_device_attr boundary
-Date: Mon, 25 May 2026 12:01:01 -0700
-Message-ID: <20260525190101.1264185-1-ernis@linux.microsoft.com>
-X-Mailer: git-send-email 2.43.7
+	s=arc-20240116; t=1779736203; c=relaxed/simple;
+	bh=CQIwo/+uoUtf6GVcsy+r/PrVniU8YCURG5WOj0wOpEc=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=eXIYpdKvjBmFlG+9RCurGK5Ml2bY4e4JPuNVIIDVjBZ4W+LLuoFtKDIQaT8gNG2Fx9qLbIVlP6L+3mE46p0BGo0yLwzmmcPUqnuIVn3ZnE4pnJmcd2o2PMXdSFsEccTOSvbjydlshm8w/FpZwq9HWa2AgSkSeL1hM7rGgF4zun0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n5D9LSPZ; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71BFE1F00A3A;
+	Mon, 25 May 2026 19:10:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779736202;
+	bh=tqaOp+ZDWDC3UIxDELAWihuKv/0z0wgKTmEF36hX5l4=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc;
+	b=n5D9LSPZRsPv//pGSYjiLeWYNtOCH81lQy+NqHQSOpWjmSvbr/ULQNl/BKW2jg5QN
+	 d3QRIDy/IjvU8j/QkTw/xS3/0Hi8aO7QbynMR6OqeJYdw46kKzjqRmyRjrmjPWw8YQ
+	 1OVtIJmp7zk7mdZenjYiFexo0QUEcG/H+dYu1X/CZ0cfLCNaHyRaXDxVzoTUJ9hM+F
+	 109SU240rXpYKpPm3qjkQ5kLd02zgO9qIGwlKPUAKeLdZk2I5b7QkPel5GqS7DsTJX
+	 CcWQD3NCfSNaL0GHg3Nr6O363mWS1TwK2gvDdlGAZrMeJyVg0aCdDbwZaTRfml81vM
+	 Xr9OPXbsf7acA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 56F5E380AA75;
+	Mon, 25 May 2026 19:10:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -61,116 +55,76 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] rds: annotate data-race around rs_seen_congestion
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <177973620889.3087812.8566427149825736484.git-patchwork-notify@kernel.org>
+Date: Mon, 25 May 2026 19:10:08 +0000
+References: <20260522011621.304470-1-jiayuan.chen@linux.dev>
+In-Reply-To: <20260522011621.304470-1-jiayuan.chen@linux.dev>
+To: Jiayuan Chen <jiayuan.chen@linux.dev>
+Cc: netdev@vger.kernel.org,
+ syzbot+fbf3648ae7f5bdb05c59@syzkaller.appspotmail.com, achender@kernel.org,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ horms@kernel.org, andy.grover@oracle.com, linux-rdma@vger.kernel.org,
+ rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21250-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-21251-lists,linux-rdma=lfdr.de,netdevbpf];
+	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_TWELVE(0.00)[13];
 	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ernis@linux.microsoft.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	FROM_NO_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[]
-X-Rspamd-Queue-Id: 600625CDDF3
+	NEURAL_HAM(-0.00)[-0.999];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,fbf3648ae7f5bdb05c59];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linux.dev:email]
+X-Rspamd-Queue-Id: 78C115CDF25
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-mana_ib stores its adapter capabilities internally as u32 in
-struct mana_ib_adapter_caps. The IB core, however, exposes the
-corresponding device attributes through struct ib_device_attr, where
-fields such as max_qp, max_qp_wr, max_send_sge, max_recv_sge,
-max_sge_rd, max_cq, max_cqe, max_mr, max_pd, max_qp_rd_atom,
-max_res_rd_atom and max_qp_init_rd_atom are signed int.
+Hello:
 
-mana_ib_query_device() is the only place that copies the cached u32
-caps into these int fields. If a cap exceeds INT_MAX, the implicit
-u32-to-int narrowing yields a negative value. Clamp each cap to
-INT_MAX at this boundary so the values handed to the IB core are always
-non-negative.
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-While here, fix a related overflow in the computation of
-max_res_rd_atom. It is derived as max_qp_rd_atom * max_qp, both of
-which are int after the assignment above; the multiplication can
-overflow an int even with the new clamps in place. Widen to s64
-before multiplying and clamp the result to INT_MAX.
+On Fri, 22 May 2026 09:16:20 +0800 you wrote:
+> rs_seen_congestion is read in rds_poll() and written in rds_sendmsg()
+> and rds_poll() without any lock.  Use READ_ONCE()/WRITE_ONCE() to
+> annotate these lockless accesses and silence KCSAN.
+> 
+> Fixes: b98ba52f96e7 ("RDS: only put sockets that have seen congestion on the poll_waitq")
+> Reported-by: syzbot+fbf3648ae7f5bdb05c59@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/netdev/6a0f8d94.050a0220.6b33c.0000.GAE@google.com/
+> Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+> 
+> [...]
 
-Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
----
-Changes in v3:
-* Drop clamping from mana_ib_gd_query_adapter_caps(). The internal u32
-  caps cache does not need to be clamped.
-* Move all clamping exclusively to mana_ib_query_device(), which is the
-  only place the cached u32 values are narrowed into the signed int
-  fields of struct ib_device_attr.
-* Reframe commit message: this is a u32-to-int type boundary fix, not a
-  CVM/untrusted-hardware hardening patch.
-Changes in v2:
-* Update patch title.
----
- drivers/infiniband/hw/mana/main.c | 33 ++++++++++++++++++++-----------
- 1 file changed, 21 insertions(+), 12 deletions(-)
+Here is the summary with links:
+  - [net] rds: annotate data-race around rs_seen_congestion
+    https://git.kernel.org/netdev/net-next/c/67636cab273e
 
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index ac5e75dd3494..ca843083140f 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -555,19 +555,28 @@ int mana_ib_query_device(struct ib_device *ibdev, struct ib_device_attr *props,
- 	props->vendor_part_id = dev->gdma_dev->dev_id.type;
- 	props->max_mr_size = MANA_IB_MAX_MR_SIZE;
- 	props->page_size_cap = dev->adapter_caps.page_size_cap;
--	props->max_qp = dev->adapter_caps.max_qp_count;
--	props->max_qp_wr = dev->adapter_caps.max_qp_wr;
-+	/*
-+	 * mana_ib stores adapter capabilities internally as u32, but the
-+	 * corresponding ib_device_attr fields are signed int. Clamp each
-+	 * value at this boundary so a cap larger than INT_MAX is never
-+	 * narrowed into a negative value visible to the IB core or
-+	 * userspace.
-+	 */
-+	props->max_qp = min_t(u32, dev->adapter_caps.max_qp_count, INT_MAX);
-+	props->max_qp_wr = min_t(u32, dev->adapter_caps.max_qp_wr, INT_MAX);
- 	props->device_cap_flags = IB_DEVICE_RC_RNR_NAK_GEN;
--	props->max_send_sge = dev->adapter_caps.max_send_sge_count;
--	props->max_recv_sge = dev->adapter_caps.max_recv_sge_count;
--	props->max_sge_rd = dev->adapter_caps.max_recv_sge_count;
--	props->max_cq = dev->adapter_caps.max_cq_count;
--	props->max_cqe = dev->adapter_caps.max_qp_wr;
--	props->max_mr = dev->adapter_caps.max_mr_count;
--	props->max_pd = dev->adapter_caps.max_pd_count;
--	props->max_qp_rd_atom = dev->adapter_caps.max_inbound_read_limit;
--	props->max_res_rd_atom = props->max_qp_rd_atom * props->max_qp;
--	props->max_qp_init_rd_atom = dev->adapter_caps.max_outbound_read_limit;
-+	props->max_send_sge = min_t(u32, dev->adapter_caps.max_send_sge_count, INT_MAX);
-+	props->max_recv_sge = min_t(u32, dev->adapter_caps.max_recv_sge_count, INT_MAX);
-+	props->max_sge_rd = min_t(u32, dev->adapter_caps.max_recv_sge_count, INT_MAX);
-+	props->max_cq = min_t(u32, dev->adapter_caps.max_cq_count, INT_MAX);
-+	props->max_cqe = min_t(u32, dev->adapter_caps.max_qp_wr, INT_MAX);
-+	props->max_mr = min_t(u32, dev->adapter_caps.max_mr_count, INT_MAX);
-+	props->max_pd = min_t(u32, dev->adapter_caps.max_pd_count, INT_MAX);
-+	props->max_qp_rd_atom = min_t(u32, dev->adapter_caps.max_inbound_read_limit, INT_MAX);
-+	props->max_res_rd_atom = min_t(s64,
-+				       (s64)props->max_qp_rd_atom * props->max_qp,
-+				       INT_MAX);
-+	props->max_qp_init_rd_atom = min_t(u32, dev->adapter_caps.max_outbound_read_limit, INT_MAX);
- 	props->atomic_cap = IB_ATOMIC_NONE;
- 	props->masked_atomic_cap = IB_ATOMIC_NONE;
- 	props->max_ah = INT_MAX;
+You are awesome, thank you!
 -- 
-2.34.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
