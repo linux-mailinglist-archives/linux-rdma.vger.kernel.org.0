@@ -1,234 +1,153 @@
-Return-Path: <linux-rdma+bounces-21256-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21257-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CFPpKai6FGoiPwcAu9opvQ
-	(envelope-from <linux-rdma+bounces-21256-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2026 23:10:00 +0200
+	id IORLGb66FGoiPwcAu9opvQ
+	(envelope-from <linux-rdma+bounces-21257-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2026 23:10:22 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51C2F5CECEE
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2026 23:10:00 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B01555CED05
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2026 23:10:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6D8593017015
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2026 21:09:54 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 77F8430058DD
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2026 21:10:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D633815C2;
-	Mon, 25 May 2026 21:09:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E48B382F39;
+	Mon, 25 May 2026 21:10:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TihYrZW8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TuV5kqM5"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8559730C371;
-	Mon, 25 May 2026 21:09:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D68E93563DD;
+	Mon, 25 May 2026 21:10:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779743393; cv=none; b=oK85V3hxpykg1VCthvTaxHl2kU+sM0o1as0LC15ITwK+wuGKW6VluHL/wNN857I5qvKSNhzI6qXykaHheGRfCF4juyPBk8olOqQ88fTlsG3BFG0600W/KuOP4bGUBxA8DGb9oRwEezbx1O9uelSj9IFcHwxMDnpn7JHXeF1mV48=
+	t=1779743416; cv=none; b=RnBVus4nytFeyHMifKJzXleEXDdiM7jWZ2cd7by+87neibLtjZO4Zt70m6+O19BDnKtN3XEq83ii4diUn3qqUbESRKuUGyXu/StGz5+SOtaQBeQ+P2+U9KdRKIQXZ4h2XMu30+eGGJwAHjKWcWVhaZcKE40wCrwoVuowCijpvUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779743393; c=relaxed/simple;
-	bh=/xYmC0F1r/G0vhtFk4QqxRRRrD5vvJvYIa4MINZvR/o=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dqAC/+u6x190ythWlVJ285tHuBp0C8rLhCgffM+P0Bm5BjiaH7LjkoKh3oYH/kSKDs0Niuh2sUYK59pV0cCMHpZ7QMYwOupCqJbg1Mxuqi1N3IHRRz0vYIPyeye5ie1gEL7u8UDcBR/2aDTNXbvKEDqMhen7Jok14gHtJ+hLvjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TihYrZW8; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AAA91F000E9;
-	Mon, 25 May 2026 21:09:51 +0000 (UTC)
+	s=arc-20240116; t=1779743416; c=relaxed/simple;
+	bh=z3wY83YnJ7vyJObEV21QFr34vTxeXrGXC9u7vpxKj3Q=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=T1wQ9xOCHWy4fhHsa9HhQXDm3ggTefjx6ZiBvQAbhU9wQK8DiWOXQcBfxulY/0MhEJLWN7AKMYXaFFS92aznrvVAiigxircAfapAOC7JC2fKIyAzN6QRlKYGt2dBXMJshkZE2OSnm1Wl8vkNzMO47FVrXKUPemnkyDgt2//paA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TuV5kqM5; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 859D81F000E9;
+	Mon, 25 May 2026 21:10:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779743392;
-	bh=18u4KIJFG/FGlDDbOxnHj9dWhrDn5wztIGKAiz2Fya0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=TihYrZW8bP14POQyR7rxRNh2oCwolKTDzzGEk4yWuemeA19V0T3Igl5LTwR/wxsTw
-	 0AwpFE3cSvtNeMoY7BT6/Vdj9XW6nHgEXC59EMpm92U8GhtEAN15uRNTruBmOD0LxU
-	 T5QDgJfTKZ/fint3AVyPwzzDNhpQuZRKjAkPpvtcAlm8ZumIUjq41C/egvnixHfnOe
-	 IFgXGb/P3Vu3F1qSqFgUZ2fWVZwQru3/1NLfQxpgxXoKMjCQOad/VecAIdC7YnBaK6
-	 z6Tzr+ZqlraqbT8FGJd+pTnoiwTauW3MJnvtlUhShF8B0Udz0fCY8wXTzlCfpONwYE
-	 /TdFkZi1PvGvg==
-Date: Mon, 25 May 2026 14:09:50 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Ratheesh Kannoth <rkannoth@marvell.com>
-Cc: <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
- <netdev@vger.kernel.org>, <oss-drivers@corigine.com>, <akiyano@amazon.com>,
- <andrew+netdev@lunn.ch>, <anthony.l.nguyen@intel.com>,
- <arkadiusz.kubalewski@intel.com>, <brett.creeley@amd.com>,
- <darinzon@amazon.com>, <davem@davemloft.net>, <donald.hunter@gmail.com>,
- <edumazet@google.com>, <horms@kernel.org>, <idosch@nvidia.com>,
- <ivecera@redhat.com>, <jiri@resnulli.us>, <leon@kernel.org>,
- <mbloch@nvidia.com>, <michael.chan@broadcom.com>, <pabeni@redhat.com>,
- <pavan.chebbi@broadcom.com>, <petrm@nvidia.com>,
- <Prathosh.Satish@microchip.com>, <przemyslaw.kitszel@intel.com>,
- <saeedm@nvidia.com>, <sgoutham@marvell.com>, <tariqt@nvidia.com>,
- <vadim.fedorenko@linux.dev>
-Subject: Re: [PATCH v16 net-next 4/9] devlink: Implement devlink param multi
- attribute nested data values
-Message-ID: <20260525140950.7e5cac5e@kernel.org>
-In-Reply-To: <20260521095303.2395584-5-rkannoth@marvell.com>
-References: <20260521095303.2395584-1-rkannoth@marvell.com>
-	<20260521095303.2395584-5-rkannoth@marvell.com>
+	s=k20260515; t=1779743415;
+	bh=5uh8lvF59dy6GEkZyD8DYh+bApbz7m+16hj4KkJ9sRQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc;
+	b=TuV5kqM5SGQSd/6wkBejj8UC22m5W9Utq4DF4EAAbYV4IYG17uHBfwAlBuTSRZ8n+
+	 HU/GndBvvmEpftw+YYoFHeGd4ThlWh+WRaM9wbsDgKbDWAcmGkQoSRdKgeoCZWXlrr
+	 pXPsL+F2ZOmcesbZakW6uBUxPSY4Fj1bzBnslQfVwuwEAYD/dBELFv89pSlv+xwgi1
+	 D67K6lT+Fyf9Qon0GLjzraET1i621v226bVqYC9DemzIKhaslEvqSxmqY861DH8c54
+	 ps3/y7uXSl/aRIwvU4d59aifa/1yL/BO/SkknfEc6knRY6JFwE3vVR6sDxm8teQyHK
+	 4aXfj/fIWZb4A==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 56994380AA76;
+	Mon, 25 May 2026 21:10:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 00/12] net/mlx5: Add satellite PF support
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <177974342189.3116972.17192014468998795064.git-patchwork-notify@kernel.org>
+Date: Mon, 25 May 2026 21:10:21 +0000
+References: <20260521110843.367329-1-tariqt@nvidia.com>
+In-Reply-To: <20260521110843.367329-1-tariqt@nvidia.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
+ leon@kernel.org, mbloch@nvidia.com, horms@kernel.org,
+ ajayachandra@nvidia.com, jiri@resnulli.us, moshe@nvidia.com,
+ ohartoov@nvidia.com, shayd@nvidia.com, parav@nvidia.com, danielj@nvidia.com,
+ kees@kernel.org, cratiu@nvidia.com, cjubran@nvidia.com,
+ netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, gal@nvidia.com
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21256-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,corigine.com,amazon.com,lunn.ch,intel.com,amd.com,davemloft.net,gmail.com,google.com,kernel.org,nvidia.com,redhat.com,resnulli.us,broadcom.com,microchip.com,marvell.com,linux.dev];
-	RCPT_COUNT_TWELVE(0.00)[30];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-21257-lists,linux-rdma=lfdr.de,netdevbpf];
+	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_TWELVE(0.00)[24];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NO_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,nvidia.com:email]
-X-Rspamd-Queue-Id: 51C2F5CECEE
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: B01555CED05
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, 21 May 2026 15:22:58 +0530 Ratheesh Kannoth wrote:
-> From: Saeed Mahameed <saeedm@nvidia.com>
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Thu, 21 May 2026 14:08:31 +0300 you wrote:
+> Hi,
 > 
-> Devlink param value attribute is not defined since devlink is handling
-> the value validating and parsing internally, this allows us to implement
-> multi attribute values without breaking any policies.
+> See detailed feature description by Moshe below.
 > 
-> Devlink param multi-attribute values are considered to be dynamically
-> sized arrays of u64 values, by introducing a new devlink param type
-> DEVLINK_PARAM_TYPE_U64_ARRAY, driver and user space can set a variable
-> count of u64 values into the DEVLINK_ATTR_PARAM_VALUE_DATA attribute.
+> Regards,
+> Tariq
 > 
-> Implement get/set parsing and add to the internal value structure passed
-> to drivers.
-> 
-> This is useful for devices that need to configure a list of values for
-> a specific configuration.
+> [...]
 
-> diff --git a/net/devlink/param.c b/net/devlink/param.c
-> index 1a196d3a843d..6e0e48696f4a 100644
-> --- a/net/devlink/param.c
-> +++ b/net/devlink/param.c
-> @@ -252,6 +252,15 @@ devlink_nl_param_value_put(struct sk_buff *msg, enum devlink_param_type type,
->  				return -EMSGSIZE;
->  		}
->  		break;
-> +	case DEVLINK_PARAM_TYPE_U64_ARRAY:
-> +		for (int i = 0; i < val->u64arr.size; i++) {
-> +			if (i >= __DEVLINK_PARAM_MAX_ARRAY_SIZE)
-> +				break;
+Here is the summary with links:
+  - [net-next,01/12] net/mlx5: Add satellite PF vport support
+    https://git.kernel.org/netdev/net-next/c/ed9671b8bd4f
+  - [net-next,02/12] net/mlx5: Introduce generic helper for PF SFs info
+    https://git.kernel.org/netdev/net-next/c/69978da9bb71
+  - [net-next,03/12] net/mlx5: Initialize host PF host number earlier
+    https://git.kernel.org/netdev/net-next/c/171b7fb59f8d
+  - [net-next,04/12] net/mlx5: Initialize satellite PF SF vports
+    https://git.kernel.org/netdev/net-next/c/7aed78522df2
+  - [net-next,05/12] net/mlx5: Support SPF SFs in SF hardware table
+    https://git.kernel.org/netdev/net-next/c/beca1cd919e0
+  - [net-next,06/12] net/mlx5: Expose PF number from query_esw_functions
+    https://git.kernel.org/netdev/net-next/c/0b43d2b76cc2
+  - [net-next,07/12] net/mlx5: Map SF controller to pfnum for satellite PFs
+    https://git.kernel.org/netdev/net-next/c/90a6aabb74a4
+  - [net-next,08/12] net/mlx5: Register devlink ports for satellite PFs
+    https://git.kernel.org/netdev/net-next/c/e020a7067295
+  - [net-next,09/12] net/mlx5: Register SF resource on satellite PF ports
+    https://git.kernel.org/netdev/net-next/c/ac338d8011c0
+  - [net-next,10/12] net/mlx5: Support state get/set for satellite PF ports
+    https://git.kernel.org/netdev/net-next/c/425ac0e7a6a0
+  - [net-next,11/12] net/mlx5: Add FDB peer miss rules for satellite PFs
+    https://git.kernel.org/netdev/net-next/c/652be53b37d8
+  - [net-next,12/12] net/mlx5: Add SPF function type for page management
+    https://git.kernel.org/netdev/net-next/c/ea0dada7194e
 
-Why not check this before the loop and return an error if someone tries
-to dump too much data?
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-> +			if (nla_put_uint(msg, nla_type, val->u64arr.val[i]))
-> +				return -EMSGSIZE;
-> +		}
-> +		break;
->  	}
->  	return 0;
->  }
-> @@ -304,56 +313,78 @@ static int devlink_nl_param_fill(struct sk_buff *msg, struct devlink *devlink,
->  				 u32 portid, u32 seq, int flags,
->  				 struct netlink_ext_ack *extack)
->  {
-> -	union devlink_param_value default_value[DEVLINK_PARAM_CMODE_MAX + 1];
-> -	union devlink_param_value param_value[DEVLINK_PARAM_CMODE_MAX + 1];
->  	bool default_value_set[DEVLINK_PARAM_CMODE_MAX + 1] = {};
->  	bool param_value_set[DEVLINK_PARAM_CMODE_MAX + 1] = {};
->  	const struct devlink_param *param = param_item->param;
-> -	struct devlink_param_gset_ctx ctx;
-> +	union devlink_param_value *default_value;
-> +	union devlink_param_value *param_value;
-> +	struct devlink_param_gset_ctx *ctx;
->  	struct nlattr *param_values_list;
->  	struct nlattr *param_attr;
->  	void *hdr;
->  	int err;
->  	int i;
->  
-> +	default_value = kcalloc(DEVLINK_PARAM_CMODE_MAX + 1,
-> +				sizeof(*default_value), GFP_KERNEL);
-> +	if (!default_value)
-> +		return -ENOMEM;
-> +
-> +	param_value = kcalloc(DEVLINK_PARAM_CMODE_MAX + 1,
-> +			      sizeof(*param_value), GFP_KERNEL);
-> +	if (!param_value) {
-> +		kfree(default_value);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	ctx = kzalloc_obj(*ctx);
-> +	if (!ctx) {
-> +		kfree(param_value);
-> +		kfree(default_value);
-> +		return -ENOMEM;
-> +	}
-
-The mem alloc should preferably be a separate patch for ease of review.
-
->  static void devlink_param_notify(struct devlink *devlink,
-> @@ -507,7 +545,7 @@ devlink_param_value_get_from_info(const struct devlink_param *param,
->  				  union devlink_param_value *value)
->  {
->  	struct nlattr *param_data;
-> -	int len;
-> +	int len, cnt, rem;
->  
->  	param_data = info->attrs[DEVLINK_ATTR_PARAM_VALUE_DATA];
->  
-> @@ -547,6 +585,26 @@ devlink_param_value_get_from_info(const struct devlink_param *param,
->  			return -EINVAL;
->  		value->vbool = nla_get_flag(param_data);
->  		break;
-> +
-> +	case DEVLINK_PARAM_TYPE_U64_ARRAY:
-> +		cnt = 0;
-> +		nla_for_each_attr_type(param_data,
-> +				       DEVLINK_ATTR_PARAM_VALUE_DATA,
-> +				       genlmsg_data(info->genlhdr),
-> +				       genlmsg_len(info->genlhdr), rem) {
-> +			if (cnt >= __DEVLINK_PARAM_MAX_ARRAY_SIZE)
-> +				return -EMSGSIZE;
-> +
-> +			if ((nla_len(param_data) != sizeof(u64)) &&
-> +			    (nla_len(param_data) != sizeof(u32)))
-
-NL_SET_BAD_ATTR() would be good here
-
-> +				return -EINVAL;
-> +
-> +			value->u64arr.val[cnt] = (u64)nla_get_uint(param_data);
-
-Why the cast? Looks like a leftover..
-
-> +			cnt++;
-> +		}
-> +
-> +		value->u64arr.size = cnt;
-> +		break;
->  	}
->  	return 0;
->  }
 
 
