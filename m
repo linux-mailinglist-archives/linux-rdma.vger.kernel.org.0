@@ -1,37 +1,37 @@
-Return-Path: <linux-rdma+bounces-21279-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21280-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SN+YMDRjFWprUwcAu9opvQ
-	(envelope-from <linux-rdma+bounces-21279-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 11:09:08 +0200
+	id MKO2ETpjFWo9UwcAu9opvQ
+	(envelope-from <linux-rdma+bounces-21280-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 11:09:14 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73CFC5D305D
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 11:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EB0005D3076
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 11:09:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 845E530451F0
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 09:07:27 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CBC4F3045E2C
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 09:07:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44AB53D1ABE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 705E03D3311;
 	Tue, 26 May 2026 09:07:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="ZHZdmhgd"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="ePpHKAKK"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from pdx-out-012.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-012.esa.us-west-2.outbound.mail-perimeter.amazon.com [35.162.73.231])
+Received: from pdx-out-013.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-013.esa.us-west-2.outbound.mail-perimeter.amazon.com [34.218.115.239])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA236356A12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0B9C3D16F4
 	for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 09:07:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.162.73.231
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=34.218.115.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779786447; cv=none; b=co3Brwqj3O7fUulxmZVfvwlmKvmYW67+xdnDcEva2ubst1ZVm9yl3cgaLKB9Qse9o7dxSzuxJRO8wWVGP16lCFkQdpb1ImiAjVR/1LPGRTJICtkVBFAyBcqqH/U90mjz92n7qU8gsuxevOBhtfs8XT51LlXHfEql/ZI9wNLzVNY=
+	t=1779786447; cv=none; b=Yo/G+49VAD//UgeskXkWCzMQ9UCctPV6mmB9Vsi8XUQIidMatTbhgt8g2WuyPeSA0i4ghda14nGvt5Ie9HjwwOkSeP1etYlr/K0E30lGh7fLdguI+Bjl/4QugCqhHQj/bW3beX4FJKzZuXzI/1N9A89ofcP5Zan6JmtjR5R5CQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1779786447; c=relaxed/simple;
-	bh=3fGEfBXSJ9Ca6VsUZqI1ST9X3nGq5EjGBOe0b9UeUtQ=;
+	bh=JrCfRTvWtKk0EFgL74pc151pVmfdiBoWVAnaa8PcV5s=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WbVwmYmdCN33OCWzPmmiozuklsDTCLpsBR5uwfbvySStPFgu1YAzVWo6RfbO8uOCaA724ie+wcUwU7/x8Pr0HaId687mfc0K3WXV4nD0dnA3rleKVMzVDVuTYDIX7zn8xrihZ/DjUrdujh7dC0G3BdZG3Er7a9z5IN6AC/A5egE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=ZHZdmhgd; arc=none smtp.client-ip=35.162.73.231
+	 MIME-Version:Content-Type; b=R6Il1IbwxqxUJm2+PulNe2UXJFf9f6BrhR1psG5VubVSyb8dl7xsznzkpKZZVjCIFEbrGwxhSoL8iN8EZtFqri93EbzUwuVH3BTzcVjhVtDVJOjvuQc5YCRdJx2fpxbXFxnOqIZWdojWAnirR/G254O/+JG6zbRyxH+xv8HSD1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=ePpHKAKK; arc=none smtp.client-ip=34.218.115.239
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
@@ -39,40 +39,40 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   t=1779786445; x=1811322445;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Ah+rWSdu+d8UedvkU1lD3PJYduWu6otjmFXbmHIEN2w=;
-  b=ZHZdmhgdUa00S+IFzfbvFM0pXbF37ID1EkwVml7lhm7IGj2eKE49W8XJ
-   XEVBzp3yHuB/eLjzfLG8nHQ+qpsh/15mkVVXAwUIVVTZoFpz8FmOwAyp0
-   DX/Agn0XnYAZKLtyUkeyQgePipBQ8IVEyP4iWvnORer/Ls2GOvz33qj2b
-   +N0pPpUTXpjLrbsIi+UMOfLERDbyUTHnwuBlRiTZPi0A+IjORaPynxbhX
-   gYHdMtqP1VcLGLcLuUO9xSXtXfb0odRGFI83E8nsnky/OWk8xgMnWAEkq
-   nNoat+i1IRXkxF/Hhh/u2PheMmFgPbarJ453gEiR75/X3bkcrxwMwE7A3
-   w==;
-X-CSE-ConnectionGUID: ipOm2F5zTDes1J0+byVHuA==
-X-CSE-MsgGUID: V4hnfTIwStuOgXvY3KsiKQ==
+  bh=XGwLbVtO9qm6udd0Z+W8gLzuFPnDL8+eZofrKCcHUJY=;
+  b=ePpHKAKKV6b/qrMnU9PPupXwX4e/RivY9j42jt77SR8MG71ff6rWzGXR
+   SRAPY7V2jmxomjYZU4ybTjRfNd5RIIOrDDJY9+BQqpouTYcAxizfNx1GQ
+   UvfCScaaqxIdRJ2iuF5zle2VlRQcieXRyzLpIj3cWlPwjOMqayRL03AJu
+   41DXLmJaSFjenJ1UoxcHqZba2Az9Z09BnZ8H4f5jLWFVIhLBem5JNFAcJ
+   DMC7jhYF5xTRc7TKaSqo4/MVugACHo7R2x37UveB/MS/ronrTLDeEqLYh
+   BipsKgzMT4orNaft2hVet/h3vxGwm+V7kZ5A2OmzczpsI5rwSjehHg4gQ
+   A==;
+X-CSE-ConnectionGUID: SMJtKOZzSt6UTCa0LSNIsQ==
+X-CSE-MsgGUID: jfyGgn4aQOOOj9rYRmp94g==
 X-IronPort-AV: E=Sophos;i="6.24,169,1774310400"; 
-   d="scan'208";a="20260840"
-Received: from ip-10-5-9-48.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.9.48])
-  by internal-pdx-out-012.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2026 09:07:21 +0000
-Received: from EX19MTAUWA001.ant.amazon.com [205.251.233.182:14523]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.1.25:2525] with esmtp (Farcaster)
- id 5c3db884-2c62-41ad-bcbe-8ff12b07a81f; Tue, 26 May 2026 09:07:20 +0000 (UTC)
-X-Farcaster-Flow-ID: 5c3db884-2c62-41ad-bcbe-8ff12b07a81f
+   d="scan'208";a="20259234"
+Received: from ip-10-5-0-115.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.0.115])
+  by internal-pdx-out-013.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2026 09:07:21 +0000
+Received: from EX19MTAUWC001.ant.amazon.com [205.251.233.53:21228]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.35.206:2525] with esmtp (Farcaster)
+ id 33522e88-35dd-4579-badb-0c47dd8d6b07; Tue, 26 May 2026 09:07:21 +0000 (UTC)
+X-Farcaster-Flow-ID: 33522e88-35dd-4579-badb-0c47dd8d6b07
 Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWA001.ant.amazon.com (10.250.64.217) with Microsoft SMTP Server
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
- Tue, 26 May 2026 09:07:18 +0000
+ Tue, 26 May 2026 09:07:19 +0000
 Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
  (10.253.103.172) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37; Tue, 26 May 2026
- 09:07:16 +0000
+ 09:07:17 +0000
 From: Michael Margolin <mrgolin@amazon.com>
 To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
 CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>,
 	"Yonatan Nachum" <ynachum@amazon.com>
-Subject: [PATCH for-next v5 2/5] RDMA/core: Prevent destroying in-use completion counters
-Date: Tue, 26 May 2026 09:07:09 +0000
-Message-ID: <20260526090712.17575-3-mrgolin@amazon.com>
+Subject: [PATCH for-next v5 3/5] RDMA/core: Add Completion Counters to resource tracking
+Date: Tue, 26 May 2026 09:07:10 +0000
+Message-ID: <20260526090712.17575-4-mrgolin@amazon.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260526090712.17575-1-mrgolin@amazon.com>
 References: <20260526090712.17575-1-mrgolin@amazon.com>
@@ -88,150 +88,136 @@ X-ClientProxiedBy: EX19D032UWA004.ant.amazon.com (10.13.139.56) To
  EX19D001UWA001.ant.amazon.com (10.13.138.214)
 X-Spamd-Result: default: False [-7.66 / 15.00];
 	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21279-lists,linux-rdma=lfdr.de];
-	FROM_NEQ_ENVFROM(0.00)[mrgolin@amazon.com,linux-rdma@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21280-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[amazon.com:+];
+	FROM_NEQ_ENVFROM(0.00)[mrgolin@amazon.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	NEURAL_HAM(-0.00)[-1.000];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[amazon.com:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo];
 	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
 	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 73CFC5D305D
+X-Rspamd-Queue-Id: EB0005D3076
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Reject comp_cntr destroy while it is attached to any QP. Track
-attachments using an xarray in ib_qp keyed by the attach op_mask.
-Use op bitmask to reject overlapping attaches early.
+Track completion counter objects in the resource tracking database so
+they are visible through the rdma netlink interface. The rdma tool
+displays the comp_cntr count in the resource summary.
+
+Add RDMA_RESTRACK_COMP_CNTR type, embed rdma_restrack_entry in
+ib_comp_cntr, and add the res_to_dev mapping. Register the resource
+on create and remove it on destroy.
 
 Reviewed-by: Yonatan Nachum <ynachum@amazon.com>
 Signed-off-by: Michael Margolin <mrgolin@amazon.com>
 ---
- .../infiniband/core/uverbs_std_types_comp_cntr.c |  3 +++
- drivers/infiniband/core/uverbs_std_types_qp.c    | 16 +++++++++++++++-
- drivers/infiniband/core/verbs.c                  |  8 ++++++++
- include/rdma/ib_verbs.h                          |  3 +++
- 4 files changed, 29 insertions(+), 1 deletion(-)
+ drivers/infiniband/core/nldev.c                      | 1 +
+ drivers/infiniband/core/restrack.c                   | 2 ++
+ drivers/infiniband/core/uverbs_std_types_comp_cntr.c | 6 ++++++
+ include/rdma/ib_verbs.h                              | 1 +
+ include/rdma/restrack.h                              | 4 ++++
+ 5 files changed, 14 insertions(+)
 
+diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+index 96c745d5bac4..155954fef3e2 100644
+--- a/drivers/infiniband/core/nldev.c
++++ b/drivers/infiniband/core/nldev.c
+@@ -446,6 +446,7 @@ static int fill_res_info(struct sk_buff *msg, struct ib_device *device,
+ 		[RDMA_RESTRACK_MR] = "mr",
+ 		[RDMA_RESTRACK_CTX] = "ctx",
+ 		[RDMA_RESTRACK_SRQ] = "srq",
++		[RDMA_RESTRACK_COMP_CNTR] = "comp_cntr",
+ 	};
+ 
+ 	struct nlattr *table_attr;
+diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
+index ac3688952cab..d152cc5f042b 100644
+--- a/drivers/infiniband/core/restrack.c
++++ b/drivers/infiniband/core/restrack.c
+@@ -102,6 +102,8 @@ static struct ib_device *res_to_dev(struct rdma_restrack_entry *res)
+ 		return container_of(res, struct ib_srq, res)->device;
+ 	case RDMA_RESTRACK_DMAH:
+ 		return container_of(res, struct ib_dmah, res)->device;
++	case RDMA_RESTRACK_COMP_CNTR:
++		return container_of(res, struct ib_comp_cntr, res)->device;
+ 	default:
+ 		WARN_ONCE(true, "Wrong resource tracking type %u\n", res->type);
+ 		return NULL;
 diff --git a/drivers/infiniband/core/uverbs_std_types_comp_cntr.c b/drivers/infiniband/core/uverbs_std_types_comp_cntr.c
-index 91ad54b270cf..967f05f76bbe 100644
+index 967f05f76bbe..41236cb39703 100644
 --- a/drivers/infiniband/core/uverbs_std_types_comp_cntr.c
 +++ b/drivers/infiniband/core/uverbs_std_types_comp_cntr.c
-@@ -13,6 +13,9 @@ static int uverbs_free_comp_cntr(struct ib_uobject *uobject, enum rdma_remove_re
- 	struct ib_comp_cntr *cc = uobject->object;
- 	int ret;
+@@ -6,6 +6,7 @@
+ #include <rdma/uverbs_std_types.h>
+ #include "rdma_core.h"
+ #include "uverbs.h"
++#include "restrack.h"
  
-+	if (atomic_read(&cc->usecnt))
-+		return -EBUSY;
-+
- 	ret = cc->device->ops.destroy_comp_cntr(cc);
+ static int uverbs_free_comp_cntr(struct ib_uobject *uobject, enum rdma_remove_reason why,
+ 				 struct uverbs_attr_bundle *attrs)
+@@ -20,6 +21,7 @@ static int uverbs_free_comp_cntr(struct ib_uobject *uobject, enum rdma_remove_re
  	if (ret)
  		return ret;
-diff --git a/drivers/infiniband/core/uverbs_std_types_qp.c b/drivers/infiniband/core/uverbs_std_types_qp.c
-index c401972865a0..aa740478c117 100644
---- a/drivers/infiniband/core/uverbs_std_types_qp.c
-+++ b/drivers/infiniband/core/uverbs_std_types_qp.c
-@@ -395,7 +395,21 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_ATTACH_COMP_CNTR)(
- 	if (!attr.op_mask)
- 		return -EINVAL;
  
--	return qp->device->ops.qp_attach_comp_cntr(qp, cc, &attr);
-+	if (attr.op_mask & qp->comp_cntr_op_mask)
-+		return -EBUSY;
-+
-+	ret = qp->device->ops.qp_attach_comp_cntr(qp, cc, &attr);
-+	if (ret)
-+		return ret;
-+
-+	ret = xa_err(xa_store(&qp->comp_cntrs, attr.op_mask, cc, GFP_KERNEL));
-+	if (ret)
-+		return ret;
-+
-+	atomic_inc(&cc->usecnt);
-+	qp->comp_cntr_op_mask |= attr.op_mask;
-+
-+	return 0;
++	rdma_restrack_del(&cc->res);
+ 	kfree(cc);
+ 	return 0;
  }
+@@ -48,7 +50,11 @@ static int UVERBS_HANDLER(UVERBS_METHOD_COMP_CNTR_CREATE)(struct uverbs_attr_bun
+ 	if (ret)
+ 		goto err_free;
  
- DECLARE_UVERBS_NAMED_METHOD(
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index bac87de9cc67..3a7ab4df89d1 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -1293,6 +1293,7 @@ static struct ib_qp *create_qp(struct ib_device *dev, struct ib_pd *pd,
- 	qp->qp_context = attr->qp_context;
- 
- 	spin_lock_init(&qp->mr_lock);
-+	xa_init(&qp->comp_cntrs);
- 	INIT_LIST_HEAD(&qp->rdma_mrs);
- 	INIT_LIST_HEAD(&qp->sig_mrs);
- 	init_completion(&qp->srq_completion);
-@@ -1325,6 +1326,7 @@ static struct ib_qp *create_qp(struct ib_device *dev, struct ib_pd *pd,
- 	qp->device->ops.destroy_qp(qp, udata ? &dummy : NULL);
- err_create:
- 	rdma_restrack_put(&qp->res);
-+	xa_destroy(&qp->comp_cntrs);
- 	kfree(qp);
- 	return ERR_PTR(ret);
- 
-@@ -2147,6 +2149,8 @@ int ib_destroy_qp_user(struct ib_qp *qp, struct ib_udata *udata)
- 	const struct ib_gid_attr *alt_path_sgid_attr = qp->alt_path_sgid_attr;
- 	const struct ib_gid_attr *av_sgid_attr = qp->av_sgid_attr;
- 	struct ib_qp_security *sec;
-+	struct ib_comp_cntr *cc;
-+	unsigned long index;
- 	int ret;
- 
- 	WARN_ON_ONCE(qp->mrs_used > 0);
-@@ -2177,6 +2181,10 @@ int ib_destroy_qp_user(struct ib_qp *qp, struct ib_udata *udata)
- 	if (av_sgid_attr)
- 		rdma_put_gid_attr(av_sgid_attr);
- 
-+	xa_for_each(&qp->comp_cntrs, index, cc)
-+		atomic_dec(&cc->usecnt);
-+	xa_destroy(&qp->comp_cntrs);
++	rdma_restrack_new(&cc->res, RDMA_RESTRACK_COMP_CNTR);
++	rdma_restrack_set_name(&cc->res, NULL);
 +
- 	ib_qp_usecnt_dec(qp);
- 	if (sec)
- 		ib_destroy_qp_security_end(sec);
+ 	uobj->object = cc;
++	rdma_restrack_add(&cc->res);
+ 	uverbs_finalize_uobj_create(attrs, UVERBS_ATTR_CREATE_COMP_CNTR_HANDLE);
+ 
+ 	ret = uverbs_copy_to(attrs, UVERBS_ATTR_CREATE_COMP_CNTR_RESP_COUNT_MAX_VALUE,
 diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 776070e061cd..9cfc5691f217 100644
+index 9cfc5691f217..1f3ebe6527df 100644
 --- a/include/rdma/ib_verbs.h
 +++ b/include/rdma/ib_verbs.h
-@@ -1752,6 +1752,7 @@ struct ib_comp_cntr {
- 	struct ib_uobject *uobject;
+@@ -1753,6 +1753,7 @@ struct ib_comp_cntr {
  	u64 comp_count_max_value;
  	u64 err_count_max_value;
-+	atomic_t usecnt;
+ 	atomic_t usecnt;
++	struct rdma_restrack_entry res;
  };
  
  enum ib_comp_cntr_entry {
-@@ -1947,6 +1948,8 @@ struct ib_qp {
- 	struct completion	srq_completion;
- 	struct ib_xrcd	       *xrcd; /* XRC TGT QPs only */
- 	struct list_head	xrcd_list;
-+	struct xarray		comp_cntrs; /* op_mask -> comp_cntr */
-+	u32			comp_cntr_op_mask;
- 
- 	/* count times opened, mcast attaches, flow attaches */
- 	atomic_t		usecnt;
+diff --git a/include/rdma/restrack.h b/include/rdma/restrack.h
+index 451f99e3717d..4ab72bc6d8c7 100644
+--- a/include/rdma/restrack.h
++++ b/include/rdma/restrack.h
+@@ -60,6 +60,10 @@ enum rdma_restrack_type {
+ 	 * @RDMA_RESTRACK_DMAH: DMA handle
+ 	 */
+ 	RDMA_RESTRACK_DMAH,
++	/**
++	 * @RDMA_RESTRACK_COMP_CNTR: Completion Counter
++	 */
++	RDMA_RESTRACK_COMP_CNTR,
+ 	/**
+ 	 * @RDMA_RESTRACK_MAX: Last entry, used for array dclarations
+ 	 */
 -- 
 2.47.3
 
