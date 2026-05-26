@@ -1,60 +1,108 @@
-Return-Path: <linux-rdma+bounces-21303-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21304-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aKsnAdqsFWrgXgcAu9opvQ
-	(envelope-from <linux-rdma+bounces-21303-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 16:23:22 +0200
+	id eJYRMLyyFWpxYAcAu9opvQ
+	(envelope-from <linux-rdma+bounces-21304-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 16:48:28 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B8925D7667
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 16:23:21 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 392F85D7E35
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 16:48:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 45F983049FE0
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 14:14:21 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6B9F13010EE4
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 14:42:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FA9A3E0259;
-	Tue, 26 May 2026 14:14:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1693A3FF892;
+	Tue, 26 May 2026 14:42:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a06xeVq2"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="tOmvav7e"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40B663FE641;
-	Tue, 26 May 2026 14:14:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92D94355F57
+	for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 14:41:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779804854; cv=none; b=pjS0/omtUwLgcOJXWrnTp2oADR96gkIjaq9XjaXDOcpfVomqEXpq8sw6MoXQfatItcFqaXL/gA6SQgE1ZWBLtqBa176oIQDTjRLA5XexSfdbtko0mxAgznogefA2AmPJhhCA0FG9ZN3z54y8UxDRVfKpodtXogTba9tJpMuz03E=
+	t=1779806522; cv=none; b=E1xZ1R8YixjKdrx/5fSDTvbS1ktmta60szqMnF2ie6hsTxrjJVipRUBudx4wMWgfI/jrJFnWkn3VzojA2yxZHgERGLxPbreQvqArR7TGZ401ZeDHg0xOBAnB0H60DCHzxifBgRic9h+RjufYZKK87ejSkfg71LY27uZpKQ8FqpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779804854; c=relaxed/simple;
-	bh=q2RkpUxIlXmZfLSZtMfKFrjyfuQgxTT4YvjRAvXt8kM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oNxcFG5qOoD+vQL3cufl2UrRyDH/+e3Sx5SaiyZBPAAfTHk9vyHQR+c171tDQLtlw11sG+330pa2kFreeXb9ETtfnECeZqtELyZMglRQcHMIilhO0z5PawXaFXzroHVcfQQ+E9YvbgZNsOkTt+1Y/Twk4voM1H8ApwTj2+TjPtc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a06xeVq2; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C207A1F00A3E;
-	Tue, 26 May 2026 14:14:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779804853;
-	bh=8MtHOuz/pGDUezQdwB47SzjgtT2rpQX01Ql5drdrHVE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=a06xeVq20U4iUhXaMIa+wQd6Vpda+8lBxFy+fS3BphKQxrkVzSTREiyuGLKn9w1g5
-	 h/nkF7RPm8A64A53WhkjB/Vrrgt/nirSJs2SEs4h5rq48l7enj1w2qKHtvOiHx5APw
-	 F7AXV2CHLdjxoOiVrMkx7/keBXLhP2wxrtOtWlw8sRz2DPyLf+MATDXITxXwmSyc0H
-	 WiyPli8Wzs/8SS8OsBq0rAm1OGEGMwZtXYnWgcrIZdzyWk7rJePqmmYBCHcKBqw75y
-	 qzPQABbAx9j0bzjbFfghamlJep7qd6yAqqcgnBGCZCzt3Npy9xcVxDg5pCd0m45y1K
-	 ZFqjmrFWdCSwQ==
-From: Chuck Lever <cel@kernel.org>
-To: Anna Schumaker <anna@kernel.org>
-Cc: <linux-rdma@vger.kernel.org>,
-	<linux-nfs@vger.kernel.org>,
-	Chuck Lever <chuck.lever@oracle.com>
-Subject: [PATCH v3 5/5] xprtrdma: Document and assert reply-handler invariants
-Date: Tue, 26 May 2026 10:14:05 -0400
-Message-ID: <20260526141405.39877-6-cel@kernel.org>
+	s=arc-20240116; t=1779806522; c=relaxed/simple;
+	bh=64gInwnnjhhv8V6kuMqS9KmmdJUoAxUSoD1AvBRfyeo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TfQQTG8uqNJWwIUkCvf5qM2eWWbwqPVcHWq4zF8K1nYVTPl3H2abq1LkySO50EOWT1XQoUPDfSQnL28IM2QvRfyNBrrZyWLQ8EQ1ANVBr/xtxiDtjRbBvXV1Wc99qkr+pUcqiymjoAeivV6QiYxnUyB3477mS29dMuNhFAKkC+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=tOmvav7e; arc=none smtp.client-ip=209.85.128.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-4905529b933so23425295e9.0
+        for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 07:41:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1779806517; x=1780411317; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kTKl3pLJD8SabdAaZe07jyBUSBk+quM4ZE1IBcHKtIw=;
+        b=tOmvav7egtcpyOBHUNOLhBFLcLhh9M3/KAimiGO0tr/i7z0zbv7PnkAJnr85cXaNnC
+         H1EGny2bHxGIcvYz2LOUFcx7c64i8FXmUPE5zF9IHT9/EH76fA4wknm+W5GAGR9vKDEq
+         L+dMQXI1BjuitbFO9HnxdRihohoS4sSYZnHgFe5SzhjZDCRhJSVKzINeUtXwyHAfDhjl
+         bLufdR4xg1h6OD2YmJiuI9sQ5zczVdLefXcewWVssh9dnLaThtyTk8htLHU8qy2kCZF6
+         U9jJoGwFtXTDOX1gFBikyDHKeWIwsZ/7PAeOcUiF338jHWaewywvuCiS6O2ylq53fUgT
+         iW+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779806517; x=1780411317;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kTKl3pLJD8SabdAaZe07jyBUSBk+quM4ZE1IBcHKtIw=;
+        b=HN+tCRvomtXJnMN/2puc1Q2jWokN2bRosdVe96Cgpce76pjhH2MbUjMmkRJzhHQ4sU
+         rEdUwJEQwDDzA0HjHas7mhMLjXXXp+GSN7RoUTNPXUxDS08PFvynFu/FOQWN4aIlloYr
+         zcYQ35mFgkgI49Tgie8Cmhh7DyRbXGeLsnxlG2fCiynjXvyfnfvC/EZJ4AZarvbNfhir
+         OZrCKm+pan4Ug77Xe7bwqYzo4Yk1beGJt8lYYGRZCjixe8dqF62tlrKn3KGKiAB9P2aR
+         5bX0iYoVFQqjtiyzVbo8GQyiOqSBQwyRIfRi2o125JVhP4HN+nPwUZikFCvYufvoIVIL
+         vCeA==
+X-Gm-Message-State: AOJu0YwZgOPVKp9MsHUkf+/L+A3GTBrk2JPT9FyVwGEGrUZEq4nxzCCs
+	QTAo/YKS+bDg8hqZ/Jrma/BPdVUPZBq4pMnI0BDLEa7Mt+gvqgWQnPNeAhLB1iTigc99cbn/io+
+	XXTZlRLKqqfd7
+X-Gm-Gg: Acq92OEkiWgMng1gUkf34b/MjZ9QzYhzN2zDwLS2HPUAk+AWtRz75wfuouHo1lZQlrr
+	lmFHfklT4KYaltFjFzJRk2bldA4935CI5yLfIjfBJOT8s2U+G02XHHeyKSerXK47YR0YHq2UVW4
+	SyNkNqi9dtIkmld+VPEJm4BaK7T0oZRl6F3pv6OcpBqJlq4RK6Ao3P7wWQPHDQJAstcfH0AvSLY
+	+l7dXQmXmnX7hiaam02382VJf7TeOFknZbTTYoRO5xXfZ99MyZBmokpKYtE41ifvWdHIL7xteEP
+	XGltiJ5bD8wizC5d/NnRuDsX+2zhufYxN2PwwjHa7bZJ40RqTxgppGdVXuwINRx/fOlecqJGBxT
+	HCT5oMJB7dR0wensk7+je1q3aRUkwNJJUQ29E+Fop+hiydGrnZJE3FP5k2Wm5A/QE8PQ2DTVwGL
+	IrzDyam+kMr50xkr0TM3oaZWFHzHFFptIR
+X-Received: by 2002:a05:600c:a011:b0:490:50ff:7943 with SMTP id 5b1f17b1804b1-49050ff7b15mr246311765e9.5.1779806516558;
+        Tue, 26 May 2026 07:41:56 -0700 (PDT)
+Received: from localhost ([140.209.217.212])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4904333146bsm193574235e9.0.2026.05.26.07.41.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2026 07:41:56 -0700 (PDT)
+From: Jiri Pirko <jiri@resnulli.us>
+To: linux-rdma@vger.kernel.org
+Cc: jgg@ziepe.ca,
+	leon@kernel.org,
+	mrgolin@amazon.com,
+	gal.pressman@linux.dev,
+	sleybo@amazon.com,
+	parav@nvidia.com,
+	mbloch@nvidia.com,
+	yanjun.zhu@linux.dev,
+	marco.crivellari@suse.com,
+	roman.gushchin@linux.dev,
+	phaddad@nvidia.com,
+	lirongqing@baidu.com,
+	ynachum@amazon.com,
+	huangjunxian6@hisilicon.com,
+	kalesh-anakkur.purayil@broadcom.com,
+	ohartoov@nvidia.com,
+	michaelgur@nvidia.com,
+	shayd@nvidia.com,
+	edwards@nvidia.com,
+	sriharsha.basavapatna@broadcom.com,
+	andrew.gospodarek@broadcom.com,
+	selvin.xavier@broadcom.com,
+	jmoroni@google.com
+Subject: [PATCH rdma-next v7 00/15] RDMA: Introduce generic buffer descriptor infrastructure for umem
+Date: Tue, 26 May 2026 16:41:37 +0200
+Message-ID: <20260526144152.1422310-1-jiri@resnulli.us>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260526141405.39877-1-cel@kernel.org>
-References: <20260526141405.39877-1-cel@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,239 +110,149 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21304-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	DMARC_NA(0.00)[resnulli.us];
+	FROM_HAS_DN(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21303-lists,linux-rdma=lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCPT_COUNT_THREE(0.00)[4];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cel@kernel.org,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 9B8925D7667
+	RCPT_COUNT_TWELVE(0.00)[24];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,resnulli.us:mid,nvidia.com:email]
+X-Rspamd-Queue-Id: 392F85D7E35
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Chuck Lever <chuck.lever@oracle.com>
+From: Jiri Pirko <jiri@nvidia.com>
 
-The xprtrdma reply path has been the subject of recurring
-LLM-driven review claims that 'an RPC can complete while
-receive buffers are still DMA-mapped' or that 'the req can be
-freed while the HCA still owns the send buffer.'  No runtime
-reproducer has surfaced, but the absence of a written-down
-invariant set lets each pass of automated review reach the
-same hypothetical conclusion.  Subsequent fixes against
-ce2f9a4d9ccc ('xprtrdma: Decouple req recycling from RPC
-completion') closed the underlying races but did not document
-the closure where future readers will look for it.
+This patchset introduces a generic buffer descriptor infrastructure
+for passing memory buffers (dma-buf or user VA) to uverbs commands,
+and wires it up for CQ and QP creation in the uverbs core, efa, mlx5,
+bnxt_re and mlx4 drivers.
 
-State the invariants explicitly in a comment above
-rpcrdma_reply_handler() and back four of them with
-WARN_ON_ONCE() probes positioned where each invariant is
-locally checkable on the previous patch's cleaned-up
-ownership state:
+Instead of adding ad-hoc per-buffer UAPI attributes for each new buffer
+type, each command declares dedicated UVERBS_ATTR_UMEM attributes that
+carry one buffer descriptor each. Each descriptor specifies a buffer
+type, covering both VA and dma-buf. A consumption check ensures
+userspace and driver agree on which attributes are used.
 
-- I1 (Receive WR ownership): WARN at rpcrdma_post_recvs() that
-  a rep pulled from rb_free_reps carries rr_rqst == NULL.
+The patchset:
+1-2,4. Plumbing: rename ib_umem_get() to ib_umem_get_va() and re-route
+   it through ib_umem_get_attr_or_va(); no behaviour change.
+3. Introduces the core buffer descriptor infrastructure and UAPI.
+5. Factors out CQ buffer umem processing into a helper.
+6. Adds the CQ buffer UMEM attribute and driver wrappers.
+7-10. Converts efa, mlx5, bnxt_re and mlx4 to use the new CQ helpers,
+   with drivers taking umem ownership.
+11. Removes the legacy umem field from struct ib_cq, now that all
+   drivers use the new helpers.
+12. Adds optional whole-QP, RQ and SQ UMEM attributes to QP creation.
+13. Converts mlx5 QP creation to use the new attributes.
+14-15. Adds mlx5 driver-namespace UMEM attributes for CQ and QP
+   doorbell records.
 
-- I2 (rep attachment): WARN at rpcrdma_reply_put() that
-  req->rl_reply was NULLed before the matching rep_put.
-
-- I3 (Registered-MR fence): WARN at rpcrdma_complete_rqst()
-  that req->rl_registered is empty.  Strong send-queue
-  ordering of the LocalInv WR chain makes the last
-  completion observe the ib_dma_unmap_sg() of every earlier
-  MR, so 'list empty' implies 'all MRs unmapped'.
-
-- I4 (Send-buffer release): WARN at rpcrdma_req_release()
-  that req->rl_sendctx is NULL.  Reaching the kref release
-  callback requires both the RPC-layer and Send-side
-  references to have dropped; the Send-side drop runs in
-  rpcrdma_sendctx_unmap(), which clears rl_sendctx
-  (previous patch).  A non-NULL rl_sendctx here would mean
-  the Send-side owner had not run -- a contradiction.
-
-The XXX comment in xprt_rdma_free() about signal-driven
-release racing the Send completion described the pre-decouple
-state.  Replace it with a one-line note pointing at the
-invariant set, since the kref scheme now holds the req across
-the in-flight Send regardless of which path released the
-rpc_task.
-
-I5 (req lifecycle) is stated in the comment but not probed:
-making it locally assertible would require moving kref_init
-out of rpcrdma_req_release(), which in turn requires adding
-kref_init to the bc_pa_list and backlog-wake reuse paths.
-That restructuring is deferred -- the invariant is unchanged
-either way.
-
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 ---
- net/sunrpc/xprtrdma/rpc_rdma.c  | 69 +++++++++++++++++++++++++++++++++
- net/sunrpc/xprtrdma/transport.c | 13 +++++--
- net/sunrpc/xprtrdma/verbs.c     |  6 +++
- 3 files changed, 84 insertions(+), 4 deletions(-)
+Based on top of: jgg-for-next 9733e9f580fdda2e8c1cd349caddd93f026ab6f5
 
-diff --git a/net/sunrpc/xprtrdma/rpc_rdma.c b/net/sunrpc/xprtrdma/rpc_rdma.c
-index f4b4abefc4e0..626cadec4555 100644
---- a/net/sunrpc/xprtrdma/rpc_rdma.c
-+++ b/net/sunrpc/xprtrdma/rpc_rdma.c
-@@ -1336,6 +1336,11 @@ void rpcrdma_complete_rqst(struct rpcrdma_rep *rep)
- 	struct rpc_rqst *rqst = rep->rr_rqst;
- 	int status;
- 
-+	/* I3: every registered MR has been invalidated and
-+	 * ib_dma_unmap_sg()'d before complete_rqst runs.
-+	 */
-+	WARN_ON_ONCE(!list_empty(&rpcr_to_rdmar(rqst)->rl_registered));
-+
- 	switch (rep->rr_proc) {
- 	case rdma_msg:
- 		status = rpcrdma_decode_msg(r_xprt, rep, rqst);
-@@ -1367,6 +1372,70 @@ void rpcrdma_complete_rqst(struct rpcrdma_rep *rep)
- 	goto out;
- }
- 
-+/* Reply-side ownership invariants
-+ *
-+ * I1 (Receive WR ownership).  A struct rpcrdma_rep is owned by the
-+ *    HCA between ib_post_recv() and the matching Receive completion.
-+ *    After ib_dma_sync_single_for_cpu() in rpcrdma_wc_receive() it is
-+ *    owned by the CPU until rpcrdma_rep_put() returns it to
-+ *    rb_free_reps; a rep on rb_free_reps is not re-posted until
-+ *    rpcrdma_post_recvs() pulls it off.  Asserted: rpcrdma_post_recvs()
-+ *    WARNs that a pulled rep has rr_rqst == NULL.
-+ *
-+ * I2 (rep attachment).  While req->rl_reply == rep, the rep cannot be
-+ *    re-posted.  rpcrdma_reply_put() NULLs req->rl_reply before handing
-+ *    the rep to rpcrdma_rep_put().  Asserted: rpcrdma_reply_put() WARNs
-+ *    that rl_reply is NULL after the put.
-+ *
-+ * I3 (Registered-MR fence).  On entry to rpcrdma_complete_rqst() every
-+ *    MR that was on req->rl_registered has had its rkey invalidated
-+ *    (remotely via IB_WC_WITH_INVALIDATE or locally via IB_WR_LOCAL_INV)
-+ *    and its pages ib_dma_unmap_sg()'d.  The LocalInv chain is posted
-+ *    on a single QP; strong send-queue ordering makes the last
-+ *    completion (frwr_wc_localinv_done) observe the
-+ *    ib_dma_unmap_sg() that ran from each earlier completion's
-+ *    frwr_mr_put() before complete_rqst is called.  The inline
-+ *    frwr_reminv() path unmaps its one MR synchronously before
-+ *    rpcrdma_reply_handler() reaches complete_rqst.  Asserted:
-+ *    rpcrdma_complete_rqst() WARNs that rl_registered is empty.
-+ *
-+ * I4 (Send-buffer release).  req->rl_kref carries two unconditional
-+ *    owners while a Send is outstanding: the RPC-layer reference (set
-+ *    at xprt_rdma_alloc_slot / xprt_rdma_bc_rqst_get / rpcrdma_req_release
-+ *    pool-entry) and the Send-side reference (kref_get() in
-+ *    rpcrdma_prepare_send_sges()).  rpcrdma_req_release() runs only
-+ *    after both have dropped, so the req does not return to its free
-+ *    pool until rpcrdma_sendctx_unmap() has fired -- the HCA has
-+ *    released the send buffer before the req can be reused.  Asserted:
-+ *    rpcrdma_req_release() WARNs that rl_sendctx is NULL.
-+ *
-+ * I5 (req lifecycle).  A req is owned by the RPC layer between slot
-+ *    acquisition and the matching xprt_rdma_free_slot() (or, for the
-+ *    backchannel, xprt_rdma_bc_free_rqst()).  While owned, rl_kref >= 1.
-+ *    The pools (rb_send_bufs, bc_pa_list, backlog wake target) never
-+ *    contain a req with outstanding Send-side or Reply-side work.
-+ *
-+ * Non-hazards.  The following claims have been raised by adversarial
-+ * review and are each closed by the invariants above:
-+ *
-+ *   * "Reply completes the RPC while the HCA still holds the send
-+ *     buffer" -- excluded by I4.  The Send-side kref reference is held
-+ *     until rpcrdma_sendctx_unmap() runs from Send completion.
-+ *
-+ *   * "Signal-driven release races the in-flight Send" -- same
-+ *     resolution.  xprt_rdma_free() does not touch rl_kref; the
-+ *     Send-side reference keeps the req out of its pool until Send
-+ *     completion fires.
-+ *
-+ *   * "Receive completion races rep reuse" -- excluded by I1.  A rep
-+ *     is on rb_free_reps only after rpcrdma_rep_put() has been called
-+ *     and rpcrdma_post_recvs() owns the next transition back to the HCA.
-+ *
-+ *   * "Pages still DMA-mapped when call_decode reads them" -- excluded
-+ *     by I3.  The matching ib_dma_unmap_sg() for every MR has run on
-+ *     the same CPU thread that calls rpcrdma_complete_rqst().
-+ */
-+
- /**
-  * rpcrdma_reply_handler - Process received RPC/RDMA messages
-  * @rep: Incoming rpcrdma_rep object to process
-diff --git a/net/sunrpc/xprtrdma/transport.c b/net/sunrpc/xprtrdma/transport.c
-index 5569f17fdd9b..5ff8e5126a6c 100644
---- a/net/sunrpc/xprtrdma/transport.c
-+++ b/net/sunrpc/xprtrdma/transport.c
-@@ -509,6 +509,11 @@ static void rpcrdma_req_release(struct kref *kref)
- 	struct rpc_xprt *xprt = rqst->rq_xprt;
- 	struct rpcrdma_xprt *r_xprt;
- 
-+	/* I4: both the RPC-layer and Send-side owners have dropped,
-+	 * so rpcrdma_sendctx_unmap() has cleared rl_sendctx.
-+	 */
-+	WARN_ON_ONCE(req->rl_sendctx);
-+
- 	kref_init(&req->rl_kref);
- 
- #if defined(CONFIG_SUNRPC_BACKCHANNEL)
-@@ -652,10 +657,10 @@ xprt_rdma_free(struct rpc_task *task)
- 		frwr_unmap_sync(rpcx_to_rdmax(rqst->rq_xprt), req);
- 	}
- 
--	/* XXX: If the RPC is completing because of a signal and
--	 * not because a reply was received, we ought to ensure
--	 * that the Send completion has fired, so that memory
--	 * involved with the Send is not still visible to the NIC.
-+	/* The Send-side rl_kref owner keeps req out of its free pool
-+	 * until rpcrdma_sendctx_unmap() has fired -- see I4 above
-+	 * rpcrdma_reply_handler() -- so signal-driven release here
-+	 * does not let the HCA touch a recycled send buffer.
- 	 */
- }
- 
-diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
-index 60cbc14c5299..da2c6fa44154 100644
---- a/net/sunrpc/xprtrdma/verbs.c
-+++ b/net/sunrpc/xprtrdma/verbs.c
-@@ -1259,6 +1259,10 @@ void rpcrdma_reply_put(struct rpcrdma_buffer *buffers, struct rpcrdma_req *req)
- 		req->rl_reply = NULL;
- 		rpcrdma_rep_put(buffers, rep);
- 	}
-+	/* I2: rl_reply NULL after the put closes the
-+	 * 'rep on rb_free_reps still referenced by req' window.
-+	 */
-+	WARN_ON_ONCE(req->rl_reply);
- }
- 
- /**
-@@ -1435,6 +1439,8 @@ void rpcrdma_post_recvs(struct rpcrdma_xprt *r_xprt, int needed)
- 			rep = rpcrdma_rep_create(r_xprt);
- 		if (!rep)
- 			break;
-+		/* I1: a rep on rb_free_reps must carry no rqst pointer. */
-+		WARN_ON_ONCE(rep->rr_rqst);
- 		if (!rpcrdma_regbuf_dma_map(r_xprt, rep->rr_rdmabuf)) {
- 			rpcrdma_rep_put(buf, rep);
- 			break;
+See individual patches for changelog.
+
+v6: https://lore.kernel.org/all/20260520101129.899464-1-jiri@resnulli.us/
+v5: https://lore.kernel.org/all/20260517063006.2200680-1-jiri@resnulli.us/
+v4: https://lore.kernel.org/all/20260507125231.2950751-1-jiri@resnulli.us/
+v3: https://lore.kernel.org/all/20260504135731.2345383-1-jiri@resnulli.us/
+v2: https://lore.kernel.org/all/20260411144915.114571-1-jiri@resnulli.us/
+v1: https://lore.kernel.org/all/20260203085003.71184-1-jiri@resnulli.us/
+
+Note this re-works the original patchset trying to handle this:
+https://lore.kernel.org/all/20260203085003.71184-1-jiri@resnulli.us/
+The code is so much different I'm sending this is a new patchset.
+
+Jiri Pirko (15):
+  RDMA/umem: Rename ib_umem_get() to ib_umem_get_va()
+  RDMA/umem: Split ib_umem_get_va() into a thin wrapper around
+    __ib_umem_get_va()
+  RDMA/core: Introduce generic buffer descriptor infrastructure for umem
+  RDMA/umem: Route ib_umem_get_va() through ib_umem_get_attr_or_va()
+  RDMA/uverbs: Push out CQ buffer umem processing into a helper
+  RDMA/uverbs: Add CQ buffer UMEM attribute and driver helpers
+  RDMA/efa: Use ib_umem_get_cq_buf() for user CQ buffer
+  RDMA/mlx5: Use ib_umem_get_cq_buf_or_va() for user CQ buffer
+  RDMA/bnxt_re: Use ib_umem_get_cq_buf_or_va() for user CQ buffer
+  RDMA/mlx4: Use ib_umem_get_cq_buf() for user CQ buffer
+  RDMA/uverbs: Remove legacy umem field from struct ib_cq
+  RDMA/uverbs: Use UMEM attributes for QP creation
+  RDMA/mlx5: Use UMEM attributes for QP buffers in create_qp
+  RDMA/mlx5: Use UMEM attribute for CQ doorbell record
+  RDMA/mlx5: Use UMEM attribute for QP doorbell record
+
+ drivers/infiniband/core/umem.c                | 336 +++++++++++++++++-
+ drivers/infiniband/core/uverbs_cmd.c          |   1 -
+ drivers/infiniband/core/uverbs_ioctl.c        |  25 ++
+ drivers/infiniband/core/uverbs_std_types_cq.c |  73 +---
+ drivers/infiniband/core/uverbs_std_types_qp.c |   6 +
+ drivers/infiniband/core/verbs.c               |   7 -
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c      |  61 ++--
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h      |   1 +
+ drivers/infiniband/hw/cxgb4/mem.c             |   2 +-
+ drivers/infiniband/hw/efa/efa_verbs.c         |  29 +-
+ drivers/infiniband/hw/erdma/erdma_verbs.c     |   6 +-
+ drivers/infiniband/hw/hns/hns_roce_db.c       |   4 +-
+ drivers/infiniband/hw/hns/hns_roce_mr.c       |   4 +-
+ .../infiniband/hw/ionic/ionic_controlpath.c   |  10 +-
+ drivers/infiniband/hw/irdma/verbs.c           |   4 +-
+ drivers/infiniband/hw/mana/main.c             |   2 +-
+ drivers/infiniband/hw/mana/mr.c               |   2 +-
+ drivers/infiniband/hw/mlx4/cq.c               |  56 +--
+ drivers/infiniband/hw/mlx4/doorbell.c         |   4 +-
+ drivers/infiniband/hw/mlx4/mlx4_ib.h          |   1 +
+ drivers/infiniband/hw/mlx4/mr.c               |   4 +-
+ drivers/infiniband/hw/mlx4/qp.c               |   4 +-
+ drivers/infiniband/hw/mlx4/srq.c              |   2 +-
+ drivers/infiniband/hw/mlx5/cq.c               |  41 ++-
+ drivers/infiniband/hw/mlx5/devx.c             |   2 +-
+ drivers/infiniband/hw/mlx5/doorbell.c         |  93 ++++-
+ drivers/infiniband/hw/mlx5/main.c             |   1 +
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |   6 +-
+ drivers/infiniband/hw/mlx5/mr.c               |   6 +-
+ drivers/infiniband/hw/mlx5/qp.c               |  69 +++-
+ drivers/infiniband/hw/mlx5/srq.c              |   4 +-
+ drivers/infiniband/hw/mthca/mthca_provider.c  |   2 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c   |   2 +-
+ drivers/infiniband/hw/qedr/verbs.c            |  13 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c  |   4 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c  |   2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c  |  10 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_srq.c |   2 +-
+ drivers/infiniband/sw/rdmavt/mr.c             |   2 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c            |   2 +-
+ drivers/infiniband/sw/siw/siw_mem.c           |   4 +-
+ include/rdma/ib_umem.h                        |  71 +++-
+ include/rdma/ib_verbs.h                       |   1 -
+ include/rdma/uverbs_ioctl.h                   |  31 ++
+ include/uapi/rdma/ib_user_ioctl_cmds.h        |   4 +
+ include/uapi/rdma/ib_user_ioctl_verbs.h       |  27 ++
+ include/uapi/rdma/mlx5_user_ioctl_cmds.h      |   5 +
+ 47 files changed, 783 insertions(+), 265 deletions(-)
+
 -- 
 2.54.0
 
