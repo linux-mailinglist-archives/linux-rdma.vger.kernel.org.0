@@ -1,449 +1,221 @@
-Return-Path: <linux-rdma+bounces-21268-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21269-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ALUeMW0+FWqgTwcAu9opvQ
-	(envelope-from <linux-rdma+bounces-21268-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 08:32:13 +0200
+	id 2FVNFl1DFWolUAcAu9opvQ
+	(envelope-from <linux-rdma+bounces-21269-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 08:53:17 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 939325D1302
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 08:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AF3835D15B5
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 08:53:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 24508301CCFC
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 06:32:10 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1890B3011124
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 06:53:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B47473246ED;
-	Tue, 26 May 2026 06:32:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DAB93C4176;
+	Tue, 26 May 2026 06:53:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NxA102wt"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="TR/s+dSF"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E4D52139C9
-	for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 06:32:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0105F3C197F
+	for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 06:53:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779777128; cv=none; b=iMGxyTqQX37g2IZggtHkRla74yoGI0WKbGzjH/HtLuIBA1rF8cj2edyv9kR0tIDR1p/PP7k+gWnTgc1zea8Erl5+toufWDA0lbwErqiyN+2V4xi6TkowWfYHSe2RmyGDu9IFyxG8p/ECPieZ9dKdv5Aw71bNsebuacNwhO3tXgw=
+	t=1779778392; cv=none; b=p0XIbSHI9cqLRobaPR1O8LGNgRCNOE3lcdGGq+qsyyoIcQp9YkkoB6UikM6B0j98c8sihNm/gamaHNgNEYCbLDOn8OoJdjJ13zwEWNjdk9+NxtglP5CNJDWUbA3v5JkwZ6uVpF++77+wWnlNR81l/ZkVCDMn4+UWIktA70DQkY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779777128; c=relaxed/simple;
-	bh=WFHaITeQfEFlfvrPQt23QPZClTYhHLh7FyIKFoBCv2U=;
+	s=arc-20240116; t=1779778392; c=relaxed/simple;
+	bh=lI94k3K5Kcc20pekEfGAOaAomJ1QgkYtP6G74MUe9gk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UNJEHTzLznEuzaKURD7pfuEB4hTHqw/VBPq/c/gdmoR1mLk8ex+kg2yoXhzIGiGl76tIruSERB9AR5lPa4SfiT1/zNdmKiE8wcZEyypVWlTChAISTCt9dhnhn9KppM9f8kuFIR75e/RK2zYe+LznyxOsZrOFP2MuEBC2Q02YPNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NxA102wt; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e21fbea2-961f-4186-830d-2ecca98d8243@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1779777074;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OV2dgY7vBtSoIXUGKcdhg2nd6jYn8gsEtXnzc3l4HnA=;
-	b=NxA102wtzpVq2JAKyYUExLMDMVEaCSJrIpveUP6+8XT1CCgTcKA5kZHwfGEouCQUbL6buZ
-	9IJomSZIEtOZiUvIboZy6gqtaNZdbqCfBcLROI0uNb0IHBKKz/I9moDHZW1JHqDq/cwCls
-	CRHW3AO8+rwGtSaTpl3AJn/B6ws4nYQ=
-Date: Mon, 25 May 2026 23:31:02 -0700
+	 In-Reply-To:Content-Type; b=qL4nPjTahSBlCGIPQPKY45S1zc1rOpB/eP3ffYlgMB+FLd5rorolpqm2U0tsjrACPJAnV3Ytiar3Ape7VJ0Hy/hf6PHaduPPDm5NQ4h14YAQ+9IhGR13asN5KBtSjox0CJoVYa7N5bIElw41UzohiAs/uZvsi71NEVp9s1BYgpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=TR/s+dSF; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-459bf19e87bso5943348f8f.1
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2026 23:53:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1779778389; x=1780383189; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yXWASYjT/jE4WzpKhE8nVhHkzGwmPlTITkkcMF0D8BI=;
+        b=TR/s+dSFI2Vk05JY9oKvhTkUPLyGjERphtpAPMGuiQxvuv3fbFSbN1th4lK+bttysm
+         cFb/iWCpkNb08kRUbTcn9WjfJUaB3xcjwa8CXEuHNu8ztYYWGwWQbD8loHo0HuyuciOC
+         0TwcL+CxgU01vXU93n3aCg4f5dmgC1/3cis8o9d493p1B0tb+ArlTCB5LaW6RVOHuZSe
+         xFgNBY2Ddet/gPdHUxjFVULwbZSkZetwjzSKlyv7KFRavsith7RHUAc5uHnKUJqDu/G4
+         H3+i6q7GH893mbCE8FjnHXqiv6/6t+5ocWoYo60XT6575r8A+rywJ8KG4tumaLrCo8Ff
+         W8Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779778389; x=1780383189;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yXWASYjT/jE4WzpKhE8nVhHkzGwmPlTITkkcMF0D8BI=;
+        b=ngsE3m8yv0dDda51rw1Rjj5gDtjokq4UsfCgIzbdBhgJC4gDAPncOGw6d9crFYi0vs
+         Bf+aITpFNs3UaF3KbiY+jv5wIFfW4xAp2fVsM140SN7FJfoeWfWZexP+LVnavLivMPW5
+         NAJw7FnDEUF3PHbZGx/2ZpJYhyfA2+wdqkzEMD+Ezf8OeyNW/htkcRGgWSehGNgrWbUB
+         f7nTPpEYVFiiOA6Nzw8J9ydQ/oCaf61dxVGqWtrLRtPtPEeztvue161m9cfw9AyHMBYh
+         BFBVo0XJsnH1tcx/M7jPlbZP3nkId68PB7Q96+uplHtLYtTCbj2DjHkXC3g+BU9EEwbM
+         BOAA==
+X-Forwarded-Encrypted: i=1; AFNElJ8Pnz26wtP5vR/jud0m/FVEF/9ewV0wodC5RHVzq/3Zdu3UjX4i8qMnfzURe11tLe23nl1pR+yCLF0O@vger.kernel.org
+X-Gm-Message-State: AOJu0YwxDVVD1dV6sEYnopXtirOe4KNDZp1hu4H2ofXv9VieArcMDROR
+	mDM4B+Wy1oM8PYpD+Mmv8Jw/zwW0ZsqaPr+MSjx4Ret+8AyQQG9fwiEgkwBwCv7NR5U=
+X-Gm-Gg: Acq92OHSwERZTR82dfeSiaZoe/V4nqHtfa4KHrgDPtyEIBwI0r7mzfgDwvZV0z2NRhF
+	eEUMHVCOihjRgOMr6al1clFFqYH0QogfWOrf6l2D/bTyQlsi7E736m0iruz5ELBRUK2omaJKhC+
+	0Qu7fUiZaADlBal7qecdaVgysDVijlIwE+GaHPVGq93tTz/Dh1vzYBjvDVL0W6pddazvGymNw9g
+	KQyX7sx3AWTEkW467qjuSExp1V86XqQxPzOeUNrDUpy+z0Hb6HhtcIwDiDI1W9ldN6awLXNZV82
+	xiOLA6W2qRkB3HZTIAR+gHfZWe8flZOTl8JwOGU36S+wR7UxBXw3Y4G3UWsurn4nyjezDYe8ncM
+	GCFfLVEQVKFp62i/6VJAgpf0BR8D3mko2blF90dsb0/9mtlzhcLV38WvR1Hn2pudL7oDP00LLik
+	X5l/ewUUw2cLpm7ZvaZbo/lZ0Ip8jz+hmpxNAfw9avYx7UCRxoznKnMc6G4YuF4+c8IvNSwYAHO
+	YziqIAcYE0CnxBVDMPdfBUB+NJn1rasw0AMpw63hxftf4BvCdVHZHBGzhX9mRuVDyDKpA1FGvh0
+	TGyj
+X-Received: by 2002:a05:6000:2003:b0:43b:4136:1e6f with SMTP id ffacd0b85a97d-45eb38e4b46mr29516257f8f.38.1779778389230;
+        Mon, 25 May 2026 23:53:09 -0700 (PDT)
+Received: from ?IPV6:2a00:1028:838d:271e:8e3b:4aff:fe4c:a100? (dynamic-2a00-1028-838d-271e-8e3b-4aff-fe4c-a100.ipv6.o2.cz. [2a00:1028:838d:271e:8e3b:4aff:fe4c:a100])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45eb6c9ba2esm33848641f8f.8.2026.05.25.23.53.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 May 2026 23:53:08 -0700 (PDT)
+Message-ID: <88c5ca1d-eeda-4023-bc7a-397b92780db9@suse.com>
+Date: Tue, 26 May 2026 08:53:06 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/1] RDMA/rxe: Fix Use-After-Free problem in
- rxe_net_del
-To: zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
- linux-rdma@vger.kernel.org, "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>
-Cc: syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
-References: <20260519023541.8594-1-yanjun.zhu@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20260519023541.8594-1-yanjun.zhu@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/11] Convert moduleparams to seq_buf
+To: Kees Cook <kees@kernel.org>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, Pengpeng Hou
+ <pengpeng@iscas.ac.cn>, Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+ Corey Minyard <corey@minyard.net>, Gabriel Somlo <somlo@cmu.edu>,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ Jani Nikula <jani.nikula@linux.intel.com>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin
+ <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>, Bart Van Assche <bvanassche@acm.org>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Hans de Goede <hansg@kernel.org>, Mauro Carvalho Chehab
+ <mchehab@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Hannes Reinecke <hare@suse.de>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Daniel Lezcano <daniel.lezcano@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+ Lukasz Luba <lukasz.luba@arm.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jiri Slaby <jirislaby@kernel.org>, Alan Stern <stern@rowland.harvard.edu>,
+ Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ Jason Baron <jbaron@akamai.com>, Jim Cromie <jim.cromie@gmail.com>,
+ Tiwei Bie <tiwei.btw@antgroup.com>, Benjamin Berg <benjamin.berg@intel.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ "David E. Box" <david.e.box@linux.intel.com>,
+ "Maciej W. Rozycki" <macro@orcam.me.uk>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ Peter Zijlstra <peterz@infradead.org>, Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>, Sean Christopherson <seanjc@google.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Thomas Gleixner <tglx@kernel.org>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>, Vinod Koul <vkoul@kernel.org>,
+ Frank Li <Frank.Li@kernel.org>, Daniel Gomez <da.gomez@kernel.org>,
+ Sami Tolvanen <samitolvanen@google.com>, Aaron Tomlin <atomlin@atomlin.com>,
+ Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>,
+ Dmitry Vyukov <dvyukov@google.com>, Andrew Morton
+ <akpm@linux-foundation.org>, John Johansen <john.johansen@canonical.com>,
+ Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+ "Serge E. Hallyn" <serge@hallyn.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Georgia Garcia <georgia.garcia@canonical.com>, kvm@vger.kernel.org,
+ dmaengine@vger.kernel.org, linux-modules@vger.kernel.org,
+ kasan-dev@googlegroups.com, linux-mm@kvack.org, apparmor@lists.ubuntu.com,
+ linux-security-module@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-acpi@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
+ qemu-devel@nongnu.org, intel-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-pm@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-serial@vger.kernel.org,
+ linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
+ virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org, netdev@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20260521133315.work.845-kees@kernel.org>
+Content-Language: en-US
+From: Petr Pavlu <petr.pavlu@suse.com>
+In-Reply-To: <20260521133315.work.845-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21268-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,kernel.org,vger.kernel.org,linux.dev];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.998];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,d8f76778263ab65c2b21];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6]
-X-Rspamd-Queue-Id: 939325D1302
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,iscas.ac.cn,nod.at,cambridgegreys.com,sipsolutions.net,minyard.net,cmu.edu,redhat.com,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,acm.org,ziepe.ca,ideasonboard.com,google.com,suse.de,HansenPartnership.com,oracle.com,arm.com,linuxfoundation.org,rowland.harvard.edu,linux.alibaba.com,akamai.com,antgroup.com,orcam.me.uk,infradead.org,linux.ibm.com,alien8.de,zytor.com,atomlin.com,linux-foundation.org,canonical.com,paul-moore.com,namei.org,hallyn.com,vger.kernel.org,googlegroups.com,kvack.org,lists.ubuntu.com,lists.infradead.org,lists.sourceforge.net,nongnu.org,lists.freedesktop.org,lists.ozlabs.org,lists.one-eyed-alien.net,lists.linux.dev];
+	DKIM_TRACE(0.00)[suse.com:+];
+	TAGGED_FROM(0.00)[bounces-21269-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[petr.pavlu@suse.com,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_GT_50(0.00)[98];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,suse.com:mid,suse.com:dkim]
+X-Rspamd-Queue-Id: AF3835D15B5
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-gently ping
+On 5/21/26 3:33 PM, Kees Cook wrote:
+> Hi,
+> 
+> I tried to trim the CC list here, but it's still pretty huge...
+> 
+> We've had a long-standing issue with "write to a string pointer" callbacks
+> that don't bounds check the destination (and for which the bounds is
+> also not part of the callback prototype, even if it is "known" to be
+> PAGE_SIZE, which sysfs_emit() depends on). Both moduleparams and sysfs
+> use this pattern. As a first step, and to test the migration method,
+> migrate moduleparams first.
+> 
+> There are 2 "mechanical" treewide patches that are handled by Coccinelle:
+> - treewide: Convert struct kernel_param_ops initializers to DEFINE_KERNEL_PARAM_OPS
+> - treewide: Convert custom kernel_param_ops .get callbacks to seq_buf via cocci
+> 
+> The last treewide patch is manual, and may need to be broken up into
+> per-subsystem patches, though I'd prefer to avoid this, as it would
+> extend the migration from 1 relase to at least 2 releases. (1 to
+> release the migration infrastructure, then 1 release to collect all the
+> subsystem changes, and possibly 1 more release to remove the migration
+> infrastructure.)
+> 
+> Thoughts, questions?
 
-在 2026/5/18 19:35, Zhu Yanjun 写道:
-> syzbot reported a general protection fault (KASAN: null-ptr-deref) in
-> kernel_sock_shutdown() called during the software RoCE (rxe) link
-> deletion path (rxe_dellink -> rxe_net_del).
-> 
-> The call trace is as below:
-> "
-> rdma_rxe: rxe_newlink: failed to add lo
-> Oops: gen[  127.022080][ T5982] Oops: general protection fault, probably for non-canonical address 0xdffffc0000000004: 0000 [#1] SMP KASAN PTI
-> KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
-> CPU: 1 UID: 0 PID: 5982 Comm: syz.3.20 Not tainted syzkaller #0 PREEMPT_{RT,(full)}
-> ...
-> Call Trace:
->   <TASK>
->   udp_tunnel_sock_release+0x6d/0x80 net/ipv4/udp_tunnel_core.c:197
->   rxe_release_udp_tunnel drivers/infiniband/sw/rxe/rxe_net.c:294 [inline]
->   rxe_sock_put drivers/infiniband/sw/rxe/rxe_net.c:639 [inline]
->   rxe_net_del+0xfb/0x290 drivers/infiniband/sw/rxe/rxe_net.c:660
->   rxe_dellink+0x15/0x20 drivers/infiniband/sw/rxe/rxe.c:254
->   nldev_dellink+0x304/0x3d0 drivers/infiniband/core/nldev.c:1849
->   rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:-1 [inline]
->   rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
->   rdma_nl_rcv+0x6d7/0xa10 drivers/infiniband/core/netlink.c:259
->   netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
->   netlink_unicast+0x780/0x920 net/netlink/af_netlink.c:1345
->   netlink_sendmsg+0x813/0xb40 net/netlink/af_netlink.c:1895
->   sock_sendmsg_nosec+0x112/0x150 net/socket.c:797
->   __sock_sendmsg net/socket.c:812 [inline]
->   ____sys_sendmsg+0x55c/0x870 net/socket.c:2716
->   ___sys_sendmsg+0x2a5/0x360 net/socket.c:2770
->   __sys_sendmsg net/socket.c:2802 [inline]
->   __do_sys_sendmsg net/socket.c:2807 [inline]
->   __se_sys_sendmsg net/socket.c:2805 [inline]
->   __x64_sys_sendmsg+0x1c3/0x2a0 net/socket.c:2805
->   do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
->   do_syscall_64+0x15f/0xf80 arch/x86/entry/syscall_64.c:94
->   entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> RIP: 0033:0x7f89172fcdd9
-> RSP: 002b:00007ffe8bf8c018 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> RAX: ffffffffffffffda RBX: 00007f8917575fa0 RCX: 00007f89172fcdd9
-> RDX: 0000000000000000 RSI: 00002000000002c0 RDI: 0000000000000006
-> RBP: 00007f8917392d69 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 00007f8917575fac R14: 00007f8917575fa0 R15: 00007f8917575fa0
->   </TASK>
-> "
-> 
-> The root cause is a TOCTOU (Time-of-Check to Time-of-Use) race condition
-> in rxe_net_del(). Previously, the function fetched the socket pointer
-> via rxe_ns_pernet_sk4/6() outside the critical section, and then
-> acquired the lock to release it via rxe_sock_put().
-> 
-> In a highly concurrent teardown environment, another thread could close
-> and clear the pernet socket after it was fetched but before the lock
-> was acquired. This causes rxe_sock_put() to operate on a dangling or
-> already cleared socket pointer, leading to a NULL pointer dereference
-> when kernel_sock_shutdown() attempts to access sock->sk.
-> 
-> Fix this by introducing a dedicated, per-netns mutex 'release_lock'
-> and extending its scope. The socket pointers are now fetched, checked,
-> and released entirely within the same locked critical section. This
-> ensures the atomicity of the socket lookup and teardown sequence.
-> 
-> Since new mutex lock is introduced, remove the unnecessary rcu locks.
-> 
-> Reported-by: syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=d8f76778263ab65c2b21
-> Fixes: f1327abd6abe ("RDMA/rxe: Support RDMA link creation and destruction per net namespace")
-> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-> ---
-> V1 -> V2: Remove the unnecessary rcu locks, following Leon's advice.
-> ---
->   drivers/infiniband/sw/rxe/rxe_net.c | 49 +++++++++++++++++++-----
->   drivers/infiniband/sw/rxe/rxe_ns.c  | 58 ++++++++++++++++-------------
->   drivers/infiniband/sw/rxe/rxe_ns.h  |  3 ++
->   3 files changed, 74 insertions(+), 36 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-> index 50a2cb5405e2..0bf5b0eabc7b 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_net.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
-> @@ -135,13 +135,21 @@ static struct dst_entry *rxe_find_route6(struct rxe_qp *qp,
->   {
->   	struct dst_entry *ndst;
->   	struct flowi6 fl6 = {};
-> +	struct sock *sk;
->   
->   	fl6.flowi6_oif = ndev->ifindex;
->   	memcpy(&fl6.saddr, saddr, sizeof(*saddr));
->   	memcpy(&fl6.daddr, daddr, sizeof(*daddr));
->   	fl6.flowi6_proto = IPPROTO_UDP;
->   
-> -	ndst = ip6_dst_lookup_flow(net, rxe_ns_pernet_sk6(net), &fl6, NULL);
-> +	rxe_ns_lock(net);
-> +	sk = rxe_ns_pernet_sk6(net);
-> +	if (sk)
-> +		sock_hold(sk);
-> +	rxe_ns_unlock(net);
-> +
-> +	ndst = ip6_dst_lookup_flow(net, sk, &fl6, NULL);
-> +	sock_put(sk);
->   	if (IS_ERR(ndst)) {
->   		rxe_dbg_qp(qp, "no route to %pI6\n", daddr);
->   		return NULL;
-> @@ -655,6 +663,8 @@ void rxe_net_del(struct ib_device *dev)
->   
->   	net = dev_net(ndev);
->   
-> +	rxe_ns_lock(net);
-> +
->   	sk = rxe_ns_pernet_sk4(net);
->   	if (sk)
->   		rxe_sock_put(sk, rxe_ns_pernet_set_sk4, net);
-> @@ -663,6 +673,8 @@ void rxe_net_del(struct ib_device *dev)
->   	if (sk)
->   		rxe_sock_put(sk, rxe_ns_pernet_set_sk6, net);
->   
-> +	rxe_ns_unlock(net);
-> +
->   	dev_put(ndev);
->   }
->   
-> @@ -754,52 +766,67 @@ static struct notifier_block rxe_net_notifier = {
->   
->   static int rxe_net_ipv4_init(struct net *net)
->   {
-> -	struct sock *sk;
->   	struct socket *sock;
-> +	struct sock *sk;
-> +	int ret = 0;
->   
-> +	rxe_ns_lock(net);
->   	sk = rxe_ns_pernet_sk4(net);
->   	if (sk) {
->   		sock_hold(sk);
-> -		return 0;
-> +		ret = 0;
-> +		goto out_unlock;
->   	}
->   
->   	sock = rxe_setup_udp_tunnel(net, htons(ROCE_V2_UDP_DPORT), false);
->   	if (IS_ERR(sock)) {
->   		pr_err("Failed to create IPv4 UDP tunnel\n");
-> -		return -1;
-> +		ret = -1;
-> +		goto out_unlock;
->   	}
-> +
->   	rxe_ns_pernet_set_sk4(net, sock->sk);
->   
-> -	return 0;
-> +out_unlock:
-> +	rxe_ns_unlock(net);
-> +	return ret;
->   }
->   
->   static int rxe_net_ipv6_init(struct net *net)
->   {
-> +	int ret = 0;
->   #if IS_ENABLED(CONFIG_IPV6)
-> -	struct sock *sk;
->   	struct socket *sock;
-> +	struct sock *sk;
->   
-> +	rxe_ns_lock(net);
->   	sk = rxe_ns_pernet_sk6(net);
->   	if (sk) {
->   		sock_hold(sk);
-> -		return 0;
-> +		ret = 0;
-> +		goto out_unlock;
->   	}
->   
->   	sock = rxe_setup_udp_tunnel(net, htons(ROCE_V2_UDP_DPORT), true);
->   	if (PTR_ERR(sock) == -EAFNOSUPPORT) {
->   		pr_warn("IPv6 is not supported, can not create a UDPv6 socket\n");
-> -		return 0;
-> +		ret = 0;
-> +		goto out_unlock;
->   	}
->   
->   	if (IS_ERR(sock)) {
->   		pr_err("Failed to create IPv6 UDP tunnel\n");
-> -		return -1;
-> +		ret = -1;
-> +		goto out_unlock;
->   	}
->   
->   	rxe_ns_pernet_set_sk6(net, sock->sk);
->   
-> +out_unlock:
-> +	rxe_ns_unlock(net);
-> +
->   #endif
-> -	return 0;
-> +	return ret;
->   }
->   
->   int rxe_register_notifier(void)
-> @@ -840,9 +867,11 @@ int rxe_net_init(struct net_device *ndev)
->   
->   err_out:
->   	/* If ipv6 error, release ipv4 resource */
-> +	rxe_ns_lock(net);
->   	sk = rxe_ns_pernet_sk4(net);
->   	if (sk)
->   		rxe_sock_put(sk, rxe_ns_pernet_set_sk4, net);
-> +	rxe_ns_unlock(net);
->   
->   	return err;
->   }
-> diff --git a/drivers/infiniband/sw/rxe/rxe_ns.c b/drivers/infiniband/sw/rxe/rxe_ns.c
-> index 8b9d734229b2..744a3d16f963 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_ns.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_ns.c
-> @@ -14,8 +14,9 @@
->    * Per network namespace data
->    */
->   struct rxe_ns_sock {
-> -	struct sock __rcu *rxe_sk4;
-> -	struct sock __rcu *rxe_sk6;
-> +	struct sock	*rxe_sk4;
-> +	struct sock	*rxe_sk6;
-> +	struct mutex	ns_mutex_lock;
->   };
->   
->   /*
-> @@ -31,10 +32,26 @@ static int rxe_ns_init(struct net *net)
->   	/* defer socket create in the namespace to the first
->   	 * device create.
->   	 */
-> +	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
->   
-> +	mutex_init(&ns_sk->ns_mutex_lock);
->   	return 0;
->   }
->   
-> +void rxe_ns_lock(struct net *net)
-> +{
-> +	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
-> +
-> +	mutex_lock(&ns_sk->ns_mutex_lock);
-> +}
-> +
-> +void rxe_ns_unlock(struct net *net)
-> +{
-> +	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
-> +
-> +	mutex_unlock(&ns_sk->ns_mutex_lock);
-> +}
-> +
->   static void rxe_ns_exit(struct net *net)
->   {
->   	/* called when the network namespace is removed
-> @@ -42,23 +59,24 @@ static void rxe_ns_exit(struct net *net)
->   	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
->   	struct sock *sk;
->   
-> -	rcu_read_lock();
-> -	sk = rcu_dereference(ns_sk->rxe_sk4);
-> -	rcu_read_unlock();
-> +	rxe_ns_lock(net);
-> +	sk = ns_sk->rxe_sk4;
->   	if (sk) {
-> -		rcu_assign_pointer(ns_sk->rxe_sk4, NULL);
-> +		ns_sk->rxe_sk4 = NULL;
->   		udp_tunnel_sock_release(sk->sk_socket);
->   	}
->   
->   #if IS_ENABLED(CONFIG_IPV6)
-> -	rcu_read_lock();
-> -	sk = rcu_dereference(ns_sk->rxe_sk6);
-> -	rcu_read_unlock();
-> +	sk = ns_sk->rxe_sk6;
->   	if (sk) {
-> -		rcu_assign_pointer(ns_sk->rxe_sk6, NULL);
-> +		ns_sk->rxe_sk6 = NULL;
->   		udp_tunnel_sock_release(sk->sk_socket);
->   	}
->   #endif
-> +
-> +	rxe_ns_unlock(net);
-> +
-> +	mutex_destroy(&ns_sk->ns_mutex_lock);
->   }
->   
->   /*
-> @@ -74,42 +92,30 @@ static struct pernet_operations rxe_net_ops = {
->   struct sock *rxe_ns_pernet_sk4(struct net *net)
->   {
->   	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
-> -	struct sock *sk;
-> -
-> -	rcu_read_lock();
-> -	sk = rcu_dereference(ns_sk->rxe_sk4);
-> -	rcu_read_unlock();
->   
-> -	return sk;
-> +	return ns_sk->rxe_sk4;
->   }
->   
->   void rxe_ns_pernet_set_sk4(struct net *net, struct sock *sk)
->   {
->   	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
->   
-> -	rcu_assign_pointer(ns_sk->rxe_sk4, sk);
-> -	synchronize_rcu();
-> +	ns_sk->rxe_sk4 = sk;
->   }
->   
->   #if IS_ENABLED(CONFIG_IPV6)
->   struct sock *rxe_ns_pernet_sk6(struct net *net)
->   {
->   	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
-> -	struct sock *sk;
-> -
-> -	rcu_read_lock();
-> -	sk = rcu_dereference(ns_sk->rxe_sk6);
-> -	rcu_read_unlock();
->   
-> -	return sk;
-> +	return ns_sk->rxe_sk6;
->   }
->   
->   void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk)
->   {
->   	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
->   
-> -	rcu_assign_pointer(ns_sk->rxe_sk6, sk);
-> -	synchronize_rcu();
-> +	ns_sk->rxe_sk6 = sk;
->   }
->   #endif /* IPV6 */
->   
-> diff --git a/drivers/infiniband/sw/rxe/rxe_ns.h b/drivers/infiniband/sw/rxe/rxe_ns.h
-> index 4da2709e6b71..e6cc6b5a4806 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_ns.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_ns.h
-> @@ -20,6 +20,9 @@ static inline void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk)
->   }
->   #endif /* IPv6 */
->   
-> +void rxe_ns_lock(struct net *net);
-> +void rxe_ns_unlock(struct net *net);
-> +
->   int rxe_namespace_init(void);
->   void rxe_namespace_exit(void);
->   
+This looks reasonable to me. I added a few minor comments on the patches
+but they already look solid.
 
+-- 
+Thanks,
+Petr
 
