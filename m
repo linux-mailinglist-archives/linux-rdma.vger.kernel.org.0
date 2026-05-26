@@ -1,134 +1,178 @@
-Return-Path: <linux-rdma+bounces-21282-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21283-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QM+sFoNmFWqCUwcAu9opvQ
-	(envelope-from <linux-rdma+bounces-21282-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 11:23:15 +0200
+	id kBK8HgZqFWqyUwcAu9opvQ
+	(envelope-from <linux-rdma+bounces-21283-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 11:38:14 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A76E5D3369
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 11:23:13 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C8695D3759
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 11:38:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 78D5830086AE
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 09:18:49 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 07F6D300D30A
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 09:32:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 960D13D5C05;
-	Tue, 26 May 2026 09:18:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A9D73CC337;
+	Tue, 26 May 2026 09:32:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="c193j0ny"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RBT4mD7u"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75D083D5C10;
-	Tue, 26 May 2026 09:18:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 096343B9DAE
+	for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 09:32:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779787126; cv=none; b=RiHMdmqiSSDTeEKOC2JFo/Rt3S+AgOUOAcn11sSubY4mY14Y2JRmje+JJOEIXKbDqc1LraYZKMw6xSiKwKW252TKn2JV7IOjWokwPqm+9oi9/JsalOjyW14Ydvq40/yGzBttVJnF2p3VLHFIuGpGzF9xVdpD7o0XYwkbJ98+fZE=
+	t=1779787936; cv=none; b=JxhEBL8Eam8R1qbOwEMsEQl/D+j3gPkJqfjJz7BC4vYigfS+M1ab0NbOyytUpJQmeZEr96f38puXHUtyQXDg1FobBJqO6ClnZMOHC+7oXrUdZoqcaumtS9WHhQPBTT73byJw+57OxpUL3W1RZINoK4OHWxs25sOmYffp3QMy4jQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779787126; c=relaxed/simple;
-	bh=BJs7h7Zl4DMkHnn2OwnRuVTkScX2sI4/k5WRVGOYVJY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mhowYk73Iz7HYLXjYNyGBYg7xEI81scyf5+IHoh3RkoSG6fIkjjoFRC+zsIui3VpYS4Es8d1/2dJNuhkflxE/tEIAd13TM6iijqk3opWbjP6Rv+Y4N5z8B4ZOWfZWU6U4UNlOBQEXvTh/P3hhGM1Lf+/E4B8lH1xUlELG90gYAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=c193j0ny; arc=none smtp.client-ip=117.135.210.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=ox
-	RlXBRAXINZAKN2QAC9+mBr3drYulEbNtwC5q9Cui0=; b=c193j0ny5kWAvFU0Sp
-	mPz9Lh9jzzD7BahVFDX+xJJ/mp4GHXO6TDN+GCuVx+QG/jZamU2QQGqDjwaD+Sab
-	1jYccOolDMm+Kzp1i5V8DUwmfc4e3DhRyUmThIuYrQH4i0TnSGbvza9uYp2oRYjL
-	1hn2qVugxwxkkSJSWSk9xrrhg=
-Received: from localhost.localdomain (unknown [])
-	by gzsmtp4 (Coremail) with SMTP id PygvCgCX_zpYZRVqLGC6FA--.60S2;
-	Tue, 26 May 2026 17:18:20 +0800 (CST)
-From: luoqing <l1138897701@163.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>
-Cc: Kees Cook <kees@kernel.org>,
-	Mark Zhang <markzhang@nvidia.com>,
-	luoqing <luoqing@kylinos.cn>,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] rdma: infiniband: Added __alloc_cq request value Return value non-zero value determination
-Date: Tue, 26 May 2026 17:18:16 +0800
-Message-Id: <20260526091816.1873077-1-l1138897701@163.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1779787936; c=relaxed/simple;
+	bh=mA47mQzpmUZybZEDp9gCUCDKFVFEDERlpsr7ggWUWtE=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=o24TNgQ+r4Y2aKRB4BO0G9jPSTPR53kWvOE5tPc4ZuH97BmCVmYSyVV+5YhOoiEVKJV60f1M1TcNdUtXdW+q09a1gbJSwZ2PkhQPhxIGras92WxcGok0iAYeHxsrUhJCWEiNy9pm6XXoB4IcgYjZTy4OWH8xI8hcRJG248l9nno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RBT4mD7u; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1779787934; x=1811323934;
+  h=date:from:to:cc:subject:message-id;
+  bh=mA47mQzpmUZybZEDp9gCUCDKFVFEDERlpsr7ggWUWtE=;
+  b=RBT4mD7ub+yO4vu2s27NbMAfvSSHBniyB0+BHn9NH5qSJasyqo4zl67v
+   0kFyhpCzAh5tLy2CTzERUnnRRToz3WEvKpz2aVGHF3Ec75HxQBkLAQ5tr
+   I0BxthtoOMfeykWV2BIQIkLtsoQmJVNt45oiuPXL4JbjLUTnbwVq1Vh3h
+   mdZyPj81B6InCFcHAx/W7bTjk80DzuR0i85BFy3ctmT9T7JE0b3w9lPPA
+   x5BjKD/B08Xv8f8H0UwXyvbfSl08jdf+t++RFPR1ysEXjxjRRJT2ZmZLs
+   dTb7r/mD6vUUHKYeVpe/2wW2UG4XE6daFxpledDQi2F80nHPyI69InKFM
+   A==;
+X-CSE-ConnectionGUID: GZQy5a1eQfaYRDnd7gGC5A==
+X-CSE-MsgGUID: 4hGJN1QLQ/6oeucPlrxeyg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11797"; a="103273795"
+X-IronPort-AV: E=Sophos;i="6.24,169,1774335600"; 
+   d="scan'208";a="103273795"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2026 02:32:14 -0700
+X-CSE-ConnectionGUID: EPSmmO6VTcOVrnA3zWTDKw==
+X-CSE-MsgGUID: O/ze5idSTT+4VSfGGT97xQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.24,169,1774335600"; 
+   d="scan'208";a="246135208"
+Received: from lkp-server01.sh.intel.com (HELO f0d55cb201f0) ([10.239.97.150])
+  by orviesa004.jf.intel.com with ESMTP; 26 May 2026 02:32:13 -0700
+Received: from kbuild by f0d55cb201f0 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1wRo8v-000000002Im-3XIo;
+	Tue, 26 May 2026 09:32:09 +0000
+Date: Tue, 26 May 2026 17:31:12 +0800
+From: kernel test robot <lkp@intel.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ b86fd95805a7bd4c5b9465c9e7f75e45bbe7eb6f
+Message-ID: <202605261703.g85clerw-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:PygvCgCX_zpYZRVqLGC6FA--.60S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7WF47tryDGry5XFWrXrWrKrg_yoW8WF1Up3
-	y7Ja4jkFyqqF1xCw1kJa1kuF13G3yku345GFZ0v34DWrnYqr1qq3Z8KFyFva42yrWrXw17
-	X3Wjvr45C39rCaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UC4iUUUUUU=
-X-CM-SenderInfo: jorrjmiyzxliqr6rljoofrz/xtbC+R1QlGoVZV1MgAAA3r
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[163.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[163.com:s=s110527];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21282-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21283-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_THREE(0.00)[3];
+	DKIM_TRACE(0.00)[intel.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[l1138897701@163.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[163.com:+];
-	NEURAL_HAM(-0.00)[-0.999];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	FREEMAIL_FROM(0.00)[163.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 1A76E5D3369
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,intel.com:mid,intel.com:dkim]
+X-Rspamd-Queue-Id: 5C8695D3759
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: luoqing <luoqing@kylinos.cn>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: b86fd95805a7bd4c5b9465c9e7f75e45bbe7eb6f  RDMA/counter: Fix incorrect port index in rdma_counter_init() error cleanup
 
-Currently, when __alloc_cq allocates memory for an InfiniBand Completion Queue (ib_cq) object,
-it uses memory allocation functions that may not guarantee zero-initialization under certain error paths or memory pressure conditions.
-If the allocated ib_cq object contains non-zero garbage data due to incomplete initialization,
-the function may return a non-NULL pointer even though the object is not in a valid state. This can lead to undefined behavior,
-memory corruption, and potential kernel crashes when the driver subsequently accesses uninitialized fields.
+elapsed time: 1046m
 
-This patch adds explicit validation to ensure that the allocated ib_cq object is properly zeroed before being considered valid.
-If the object fails the zero-check (i.e., contains non-zero bytes beyond expected initialized fields),
-the function returns an error code (e.g., -ENOMEM or -EINVAL), logs a warning message, and prevents further usage of the corrupted CQ.
+configs tested: 53
+configs skipped: 2
 
-Signed-off-by: luoqing <luoqing@kylinos.cn>
----
- drivers/infiniband/core/cq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
-index 3d7b6cddd131..756bc33c850d 100644
---- a/drivers/infiniband/core/cq.c
-+++ b/drivers/infiniband/core/cq.c
-@@ -224,7 +224,7 @@ struct ib_cq *__ib_alloc_cq(struct ib_device *dev, void *private, int nr_cqe,
- 		return ERR_PTR(-EINVAL);
- 
- 	cq = rdma_zalloc_drv_obj(dev, ib_cq);
--	if (!cq)
-+	if (unlikely(ZERO_OR_NULL_PTR(cq)))
- 		return ERR_PTR(ret);
- 
- 	cq->device = dev;
--- 
-2.25.1
+tested configs:
+alpha         allnoconfig    gcc-15.2.0
+alpha        allyesconfig    gcc-15.2.0
+arc          allmodconfig    gcc-15.2.0
+arc           allnoconfig    gcc-15.2.0
+arc          allyesconfig    gcc-15.2.0
+arm           allnoconfig    clang-23
+arm          allyesconfig    gcc-15.2.0
+arm64        allmodconfig    clang-19
+arm64         allnoconfig    gcc-15.2.0
+csky         allmodconfig    gcc-15.2.0
+csky          allnoconfig    gcc-15.2.0
+hexagon      allmodconfig    clang-17
+hexagon       allnoconfig    clang-23
+i386         allmodconfig    gcc-14
+i386          allnoconfig    gcc-14
+i386         allyesconfig    gcc-14
+loongarch    allmodconfig    clang-19
+loongarch     allnoconfig    clang-23
+m68k         allmodconfig    gcc-15.2.0
+m68k          allnoconfig    gcc-15.2.0
+m68k         allyesconfig    gcc-15.2.0
+microblaze    allnoconfig    gcc-15.2.0
+microblaze   allyesconfig    gcc-15.2.0
+mips         allmodconfig    gcc-15.2.0
+mips          allnoconfig    gcc-15.2.0
+mips         allyesconfig    gcc-15.2.0
+nios2        allmodconfig    gcc-11.5.0
+nios2         allnoconfig    gcc-11.5.0
+openrisc      allnoconfig    gcc-15.2.0
+parisc       allmodconfig    gcc-15.2.0
+parisc        allnoconfig    gcc-15.2.0
+parisc       allyesconfig    gcc-15.2.0
+powerpc      allmodconfig    gcc-15.2.0
+powerpc       allnoconfig    gcc-15.2.0
+riscv        allmodconfig    clang-23
+riscv         allnoconfig    gcc-15.2.0
+riscv        allyesconfig    clang-16
+s390         allmodconfig    clang-18
+s390          allnoconfig    clang-23
+s390         allyesconfig    gcc-15.2.0
+sh           allmodconfig    gcc-15.2.0
+sh            allnoconfig    gcc-15.2.0
+sh           allyesconfig    gcc-15.2.0
+sparc         allnoconfig    gcc-15.2.0
+sparc64      allmodconfig    clang-23
+um           allmodconfig    clang-19
+um            allnoconfig    clang-23
+um           allyesconfig    gcc-14
+x86_64       allmodconfig    clang-20
+x86_64        allnoconfig    clang-20
+x86_64       allyesconfig    clang-20
+x86_64      rhel-9.4-rust    clang-20
+xtensa        allnoconfig    gcc-15.2.0
 
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
