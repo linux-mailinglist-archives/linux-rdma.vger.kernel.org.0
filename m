@@ -1,79 +1,79 @@
-Return-Path: <linux-rdma+bounces-21263-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21264-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +PLYDv31FGr2RwcAu9opvQ
-	(envelope-from <linux-rdma+bounces-21263-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 03:23:09 +0200
+	id gGRGFgD2FGr2RwcAu9opvQ
+	(envelope-from <linux-rdma+bounces-21264-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 03:23:12 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A926B5CF6D1
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 03:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E962C5CF6D8
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 03:23:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 86B2530182B1
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 01:23:06 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 66C003018771
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 01:23:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3AE029A9C3;
-	Tue, 26 May 2026 01:23:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0E64290DBB;
+	Tue, 26 May 2026 01:23:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="udfQou4r"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="e86I1Zbl"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11013028.outbound.protection.outlook.com [40.93.196.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAA332989B5
-	for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 01:23:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDE2029D275
+	for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 01:23:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.196.28
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779758585; cv=fail; b=kV0sxB+a0k+IVQc2yfiN8t16xQwK9cNyePLdlfeVwtHrOITGLQWk0Jht7T49obasimVYzETqlKqitUIQs/YuB4VhESp0kUgbLGug8ad4B/KD7toEv4hy8GaKFuORZmGqt/EinIrMm2r8QCK+mBwYobm6Ia/D8I9S5Nbi7vZBJpk=
+	t=1779758587; cv=fail; b=Wrb9Jvk86cmar8G7IluPmP5e373WIFfYcdBBtX1UHletwaDO8iQIKJCMVJ4N67JC3a6zAUh9i+fTbR9OoK0IvLy5NG/RgaCyyPm8CaylAu3OBTCFszuARMdkrkxl7W3rEzsSleEF9Cd6DXRyi/kfwSrnrOESlo+DRB75vjLYsS8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779758585; c=relaxed/simple;
-	bh=PYHvaWKVvFaBZ30OeI2eXzOPhNmdm5rTAikc+h73848=;
+	s=arc-20240116; t=1779758587; c=relaxed/simple;
+	bh=qYOdhwUPzh3XCT0ayU9woKJSs8wO6kRyLhY7mXOIgEA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=H/5YD2X3UK21yIZjSVz0Bpp3hSfDt+qmFiHesl0rFpZ9mNutxOm8S1E4YzKRbWlDMJj4YA2F2Ov7TFynwl3d9y3VgsX9KEM1B5ypuBr3RHKVXgniCw/2E0o1/lcrGdEM1c6Gg8Q3dVYXRcsdn+nF++dqjOMJRdYFZ5KPkZIOlTo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=udfQou4r; arc=fail smtp.client-ip=40.93.196.28
+	 Content-Type:MIME-Version; b=MoQj8KN+TNT2OVekW4aXlXk0fc8IlIxXL+bWbCgXxu7+VE3PbfuDH+jOimMt8Dn+BXP7H+QvnwDyQYV5FNQhr1nAGEHiMF1Dlz+MD0CSKpugEMZ6RM3Cnf21VguJVjerrIGa5ruixyj/StMYBN69JVFvcVJZa5d4239Ok09d/3E=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=e86I1Zbl; arc=fail smtp.client-ip=40.93.196.28
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=eMmcVdrM2I71yLCtjFqzHefljbeoZUlug3i7QMtFxK4HvIighzQThBg8hU3YqHlbi4BiyUeYBslLjmbRQpen6x9W/f/uSUIBj6TGxFcrTVKIElTK3VMzKBrvEw4dQ4qCPf1fht7IHjuddWmsxD7vh6cX7R1GvDQ4gr1icIa17KZPgw6aIcTewmQ/AVQQzesXHf0a/ODz4TYzT/u4ILY7a8H1B0jZ0ISe87szhtK1C2mHXlDK3O6/jZdjLcScISqLZFY5tGtZhxsyeGKNQLMqYs//QghGrExloCl0Kn4/QrfbuzW5qQ8Pzgtjf5knIC9fqmdOquhe7FgurNDyx3fInQ==
+ b=cr2yleo0Gxtsoe5wmIuid6fojHfyk4VKZKYyuQ3oxUR0rNZhy2qGhLGBUM1LIEDxuIG2/UgRrZlWCxv1oE2XKkoX4ZBi+zjPrLR34luYiLKGc2sHoIGfMmo781AMtaU9VzsI431BuZsGZUyRJBAcdW+h43dz/980FJYbcvcx59EFn7vcmli6Zg942Av0ABuR+CZDFRJiTCfpzFRV6JPjh9CEc916H50Rq1IALb4ICYXADvPDKuT7DI++Jd7bUTWLyYPFsfD9+F4ICkslVBIMmw5LgAcDCoi8nWHnPZeq381Hv1NAdrH4TbPAtRaCs3aycUVB1Zvyhs0UEEH5eiiW+A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WWOs1Zlvt/PDx5x6doE0uW+9Dfzqm2XP+qlf3j4jJvQ=;
- b=ipYHLxL1ONxD3ZOOse5f2mPYiRBpLfpIGXgjHlMOkZyWdGd7LlmrFFmXou38uWJGrvPDsHBTovV70mh7BVeIuljv8pTbFrMYQJak4/Zzw3sgWAIlEJ1OICgkSvOq/tZNUP4RADO6an58fO30wjhewCxRRHkwW+SK1HxcnyTrTkobMWcacpZMXEG60oCIsI5xwTF7JsMp6/1jrxwmr9AxMFtPz0fHedd9i/3aDncsdvpKj0EYvGRUj0RoYe3IooH9Q8JZWaplW+TOPXft3AOTyKg2OYQ3v6xBcLcGl22uwlDxB71nrqmb5HWxWC8ahqwiBu1cfAKqi0qrLZvpZqVD4A==
+ bh=OGv06KHuJgjtC0nyz7iy7u7nyZOc91mfuqJAqboC1LQ=;
+ b=Zfvrz73MBTq+IdMr22roGV9Z4ZFnDuW7w/fepTjiFddE9x9Zsyo/FMzNJo9WhNMzIH+yvAAs6q1S9rYYJv2SnfSpTM6KU+NSloD/QZepNZ6o8+sAIKWVlttE6bLaeIAi6c1wRgWdAMeLTHPrCw8HcNjrnSuxUIivd6OKF1htm6llyZZufBHrCypX8b2O3IGOz9/WzFIyQQVOWXJIH853CWlzNdsq6tKX8oWSTNCOkfMF5MJXkYOHPAlSZNwi0JhOhjHvVhpdm/sK8fA/j8vhdXADnWIBrCKsCNWoi3aMIufGJYwE28xQVvbmgC/AnMAUZkI8GFZT40K4QrA+BkrSdA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WWOs1Zlvt/PDx5x6doE0uW+9Dfzqm2XP+qlf3j4jJvQ=;
- b=udfQou4rHr+4Ns8Na/L0i6lLTdTr1QxTmdf+kJrSWFkCvdhLhAfUZLueE3smeow0Uy0uhS/o6A2SN+jNqfLiH2Fa8dcz+7Av8FkDMdOLgqb0Oot1sA+4R5+auhmUiIWUP8wpK6dC28xsUA2dJnHBf4+5aG2xDeONus06yKpF4zXgo1LHofxtvQ7asV4SqMV+GSSTFlOh8WMYig2ktBuqG0Xk8JyBw+GDHOEJLQtiNdAOBNhC5naEL4MOXbO9870I0YNSgjyrEDMny2KJSoI2sGrovUH3aFrva4B4L+E8prtEXlKYxoinSP5rPl1WkNwN9dQeiu5/07mee6jiAVIi1g==
+ bh=OGv06KHuJgjtC0nyz7iy7u7nyZOc91mfuqJAqboC1LQ=;
+ b=e86I1Zbl+HUdu3TJFhON5yV5sPFDns7d83nld42TbV1sB0UXXxfRI2N9Ht43i0qL2OCNll4Jr1FM4xRfk3jsiE1F84qGn/hSN6W8pDwt8b1WwrNwNtmaBWbnGx/QxgijUpSAddFyphFMax0M7pF3A5ATQ2qKOeKNeCaa20NBxpah7exUpJBmfsXYHfwbRJD/+lIc+snw4IT0fmJ3Rk8HekmHk5C0G3TM7M8xn6C1qUpqHil0W3iJqYKkEsFinfVpN/7Vq/btpxBxNcda1yseu8i6xcjcc+QrRgvKsoYA38FpqRYWE3Z/TZiOnptHa8PNcfDPHwdKEgSOe3j27+gmAA==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from CY1PR12MB9601.namprd12.prod.outlook.com (2603:10b6:930:107::16)
  by IA0PPF73BED5E32.namprd12.prod.outlook.com (2603:10b6:20f:fc04::bd2) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.25.21; Tue, 26 May
- 2026 01:22:46 +0000
+ 2026 01:22:47 +0000
 Received: from CY1PR12MB9601.namprd12.prod.outlook.com
  ([fe80::cd76:b497:475f:4de3]) by CY1PR12MB9601.namprd12.prod.outlook.com
  ([fe80::cd76:b497:475f:4de3%5]) with mapi id 15.21.0048.019; Tue, 26 May 2026
- 01:22:46 +0000
+ 01:22:47 +0000
 From: Jason Gunthorpe <jgg@nvidia.com>
 To: Leon Romanovsky <leon@kernel.org>,
 	linux-rdma@vger.kernel.org
 Cc: Jiri Pirko <jiri@resnulli.us>,
 	patches@lists.linux.dev
-Subject: [PATCH v3 3/6] RDMA/core: Remove uverbs_async_event_release()
-Date: Mon, 25 May 2026 22:22:39 -0300
-Message-ID: <3-v3-43aba1969751+1988-ib_uverbs_support_ko_jgg@nvidia.com>
+Subject: [PATCH v3 4/6] RDMA/core: Make a new module for the uverbs components needed by drivers
+Date: Mon, 25 May 2026 22:22:40 -0300
+Message-ID: <4-v3-43aba1969751+1988-ib_uverbs_support_ko_jgg@nvidia.com>
 In-Reply-To: <0-v3-43aba1969751+1988-ib_uverbs_support_ko_jgg@nvidia.com>
 References:
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: IA4P221CA0009.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:208:559::11) To CY1PR12MB9601.namprd12.prod.outlook.com
+X-ClientProxiedBy: IA4P221CA0001.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:208:559::16) To CY1PR12MB9601.namprd12.prod.outlook.com
  (2603:10b6:930:107::16)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -83,56 +83,56 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: CY1PR12MB9601:EE_|IA0PPF73BED5E32:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5aeda3eb-24ec-404f-774d-08debac54ace
+X-MS-Office365-Filtering-Correlation-Id: 942d89f7-2e9c-43c9-cebc-08debac54ace
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|376014|366016|22082099003|18002099003|56012099003|11063799006;
+	BCL:0;ARA:13230040|1800799024|376014|366016|22082099003|18002099003|56012099003|5023799004|3023799007|11063799006|6133799003;
 X-Microsoft-Antispam-Message-Info:
-	wuSHcHGy/Me7Ujd2pHK1UL847oDVUPJ3yItPJjiJvBm8kxT6n39mTv6pu2j7zWEzr79fIZ77umYy/05xkwbjPWXNgjX/5VpQqmHvk+BcFwWhmYvFFGooMNe9x05GCtVwaz/1dgodZ/4KlK3Afgp/j4PtoVm8lKsF5jbaT5WICNZX/M/UWekLAqBd9lWFUoCHAdjUr6E+l57AbWQiGAyf7S0lTGuUOny6ru+ZEYfwgpadwTQYcrGjTF6eYXgwX1IGssvhCtAguW8VRY23Grwy9hZXEdfMxrAZpGMneUGhbxz2G2Zm4EbMsK9USYWTP/RCz0dJ0O/SF8aPKP/PTNE1Lc68M8OSF2E/luuPeW4m73JDo+C8lXl6IJGRXovUOxaiCTmgL3eSKzWumIZO/NZp+F7EhuvJ5jqgsoqiUOkYwblQ+CsGSbMdw1gKjjjjNBhfE1d+Z4nSEqt0RGYpcWAdAa2SUhMb+zd28e637vXZ3VSMrdSiYXesNbD51Ufq3/kLu4L3LWRUPbS8c7JvHqi0iOrxET8mXRnpQWzqk6nj9IEO/EeD0re63eu0TjtugGr7isjWLO0AES8Cxz9Sb8ynsG5TocaOL/TqH6ztrr0W0mmj7B3rqi2zgDaMTuDDoH3IvqaOJ9jdf8WAapQr5XTp/d+MzBuCVVQV71l2w556cZJc3F4FUUrbywAW4pLvHp7R
+	VM3+1RNI0nJinr5RZQMeLoHr9d6ZVUZjCGq/9cbzqZtydX/R49Cvh5O5m3RYe+aUfLv76TciYB3V8Nyi5i5DtGP3OJe4v2DeUjtJ7dcF33NVSdAGpGgOoot9A4D0NSPQNrQGXrN3Zm13aUK15+5mX7n+jM9KPJorrSAP+I9l1PU+ufafaXqohWyXWA/G25ASONHOWYKwi+yKGlQVMtMiqc09JVUAvD4QRlWKiG+QumPYh/p+BqD/rosmKYRs98ODFwXAEwetXKwXXO4LW2cDdedleieJK682sZG3sDIelaD/eoJOzaydNjjy7/j9Q7wxlrtxOJy3fAaqivIajqrPbsXZ0jRbctbDiONDNS5occGL9wvqdFZAdx6ZFbedw5Ta28Nx3KJSyNXzZPrN/EkW+PuRgHGfCJLMCVm3FPSvG68yPWh3x5ApANUeen3CnmPNmAOa/da5OKX1Mg7jH/Gl42pHazhl6NI8QWrCHULZ+fE8Pt1B1oUz5D7BEE5Hr1dbskoJRFHGqle+LVRz/L2Vv7QmhnxoDNP6s19l2N0ezEcf3Fr7f14cOS2wvd2ti9mi/c8q4VzpBNJTeSf77muYGOqEuxNsrc++AdBJ541EETjUgVSl0h1hXMQy9HIEAqNf9KDLl+MrmTx9jCvJ3b8kGfqc0woe2rs+dPVSIRkHSwp82RE7NfzaGEBSFSQZF8xE
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY1PR12MB9601.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(22082099003)(18002099003)(56012099003)(11063799006);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY1PR12MB9601.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(22082099003)(18002099003)(56012099003)(5023799004)(3023799007)(11063799006)(6133799003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?vrJqEtEaQxdB++SBRwqVNN1EmcdtpAhr4PqLqBKLyG4Nx1uG61N8ZnUvT0En?=
- =?us-ascii?Q?MB+vnjxuoSOV4Jfj6JpZZ+Vg0STFRwDfCXE8/jH1ZeP56VZgdEq1BSTByekA?=
- =?us-ascii?Q?nKPP8LLVn2S5rienrJQX44Q6R4n2+o4AZ/j1LpoCDF8F+vDBMccG2+C3l0ys?=
- =?us-ascii?Q?xA/GHGReXba9JtHSPUjkjltldeJ0thX4cE2tH5TGZaQ6AYGdQz9eZa/Rx5s5?=
- =?us-ascii?Q?5eZWlOdsA1FUOKqu3hoIbkFe9KEqsYHKYQjdxcWy4h3MtrC2xNeczBaSWRSz?=
- =?us-ascii?Q?9HuECEu3Tb5gJvOPId2u06mchideUtK1GJHIMSghyNmC8Ps8HJ2oW8HrtuFQ?=
- =?us-ascii?Q?pLqXxXzWZ8RYANsU3ydnjShW4/9iFMN4uorGic9LgeGTb1iNMSneuvbd2egt?=
- =?us-ascii?Q?26D4zkAeGnPR/BtPI1ih2UYDsLsc7zQDPMGIdYEBF2g9dI3nDRP57grRZYR/?=
- =?us-ascii?Q?tA7MWOqvbktD5LNp4nDYJVJ+w05qnWfRdTrj5D4Dxlg2tqHqj4OKYmG+CJei?=
- =?us-ascii?Q?n9sbIOqJakkfURjJEXGqzTYkkPJvNshZiQnMe6r3c5PMlKcCt6a+JZA5s5vc?=
- =?us-ascii?Q?T5oFinuagjBPG0GVy23IPiBVQmgLW86I1C3LbCezLnj53D9tHcThfinKBICt?=
- =?us-ascii?Q?sJ933nLtNSPFLBlGJTFowD/s2K0ClxQ4Ox39lpORtn8/V9NRY+dK/6oVvBGM?=
- =?us-ascii?Q?Ax50uc1tLQ0hMpflrQNBia+wNTbdaX3c4JHpw+6PdWX9HVpMarzYriyiQXhF?=
- =?us-ascii?Q?aMgf7CiPaQQqrZZKsBf2EnE9wxkylnNt6soUrqjFR0a0FY2Q6tdybH372YNy?=
- =?us-ascii?Q?td4a8L1zAjuzyFLGZp5dt0zDtebR8SMvaMhUq3YzEUtd2o4ejpcCpPgNfJSQ?=
- =?us-ascii?Q?YKdmgbSA9pmLh0ZNd6dR0xZMHTcOH6zrAhH5eOUVKsVdLA+mEwa0NVkiCqPZ?=
- =?us-ascii?Q?AZVGXKBhlW6m/dyMt8fgHWc1hrx9buTpRBjn4juiZNKQIOIHaO14tpEM2hgX?=
- =?us-ascii?Q?ziS7ZCc4zM4QNFtQEhcqeY8zr2XvupgtV9Tc9iGUTxcfkfcEsQpSKNfpOaNY?=
- =?us-ascii?Q?wuzDLrCQVkgzha2r/VDmAorAB+Ny0HE1szikLCBwpbu1ZPJl6205Llt/nNQI?=
- =?us-ascii?Q?6+2CuwEELhAALWRauThNJF6o/WSdneHILAjuRtkIJprl2QyWckKte9C0y5nL?=
- =?us-ascii?Q?MibyLKHdqq8tCQcVj1HSmEgMWNIFxOdHTI0Uam/PzxD1Z4oRbh3aOiSpuDGr?=
- =?us-ascii?Q?MDJTL/ISyruA9v1C6zEyEFs/euBqCHYv5PMM+9mc2Dgfp0V/+rkkssTGuVb/?=
- =?us-ascii?Q?Az6ocU825H9+7mDbSVKzNYyFHfAML2be1ASV/XUS0EzEbih5+ITiMUfpPPcs?=
- =?us-ascii?Q?PGEGyBCxoSVpPErt/CmuSxZiA/o/QoChkcIHb6vWF18mnqs8xazmZTG7StUh?=
- =?us-ascii?Q?gR8NSdkn9QhvWGI7xk86Hty7AuYjwcBOQufsXIQ0gjMqP8A0Lu2ni9w7cvnY?=
- =?us-ascii?Q?Ws8oX/00ABU2iK4KIWNYhiOdocREXwdRK2D5s08sV+LpCtqOoyiRwV0DMUKm?=
- =?us-ascii?Q?OcPRbeVYn4ZtREv6SrRtbhwAXHrxKfbe3CJPl3VQvxPBzxEKX6UephuoI2IY?=
- =?us-ascii?Q?HUk0YAh8sz+yPe3Gp9IZry1+jxcxPK2A+QEDZ5O6p9FEXipDC2oneOfR3+AV?=
- =?us-ascii?Q?VooxCTKUKZPTgdqmltigQXb3E2V64VgjqtxlJukO3+ZXqED0?=
+	=?us-ascii?Q?xXxo4r1nxaobB/Nt7kh2NJ9XTmbtzw1sCruZ1Qu1wODOjFLqiC4WuH4oARlo?=
+ =?us-ascii?Q?w38c/5p3MrPJt/B+O+wQupZml4KetBuSuE4rRUMYjod5rn+5yL5Ocp4v+DTt?=
+ =?us-ascii?Q?z2ro+xWaQvfBfmrQvTpzhbrxTbPQJeHkDGwGsjldgGf/PfH1U9qIbTUFfTLq?=
+ =?us-ascii?Q?DLXMpplG8AxHsHzXMHDDGlc0gCpPuVoQAsYpW0sDxq0FtaNrrL+PRX1p2/sK?=
+ =?us-ascii?Q?EdgOAVg+f1D1LwIhmcNguIrQR1yHTluTU/ucdNePGd/pnKo4L2FkyyyUF/zz?=
+ =?us-ascii?Q?RtZowHkFf27DwBDZSEXLxdiInAFZlbD5UaKaEWcNi8iboUmrrUroBsgUHzxy?=
+ =?us-ascii?Q?j1Wxp2xw9l2qkBFjZcc5S4yFLu31CQDQ7+s+PgPfCilMnRBLT+VVyLnR4ztS?=
+ =?us-ascii?Q?si9DYlhHiuuOU7sS9rVx9q+c2wVz+Q0cKtJfngQYGgRb4vNIuRjct8MsJ6hy?=
+ =?us-ascii?Q?OqH3Qi7qTmxojH4fZ28thfG5+psK3S1DhDWeyKvTal8I/VHmOOd3X8enKpE1?=
+ =?us-ascii?Q?bJO4ttZ+kdX2N1Py2Wf1z02Xw6AkcPtsOknqjw37Kclhe1qH1YVY6hcQNB4l?=
+ =?us-ascii?Q?3opjepxhPJ8RDnfTrEY0YUy7DdtC8rnTA/es/MEs/Pj1KHwVPz8tirRX5b4x?=
+ =?us-ascii?Q?USborwm1+LLRUp4fPYAgGxlATC0QrlsYaaqgGro+FLPAmAe+dpWMvh4dHozx?=
+ =?us-ascii?Q?GlXcai7mzNjT+2UWZfyt/l+abuUZ9IcS+KruSNCf1foC3jtiWKqtK3tr3tLE?=
+ =?us-ascii?Q?+XMk+OqsqKaYzrtQ0gDm8L32z2FihAztouCXjMTIQn5fJgQcGxpYVfkhJagq?=
+ =?us-ascii?Q?y4wwulpck3qTPcVuYX476Qds8kNMT3qw6Mukor3wqQVNBJEjjRCTliC4IEv+?=
+ =?us-ascii?Q?cawYUAoBtlCsEqjrULHeIwWUA6JTg3oCXT6kbYtYeGAx6J9i7/h9rQGtTrRs?=
+ =?us-ascii?Q?P3EmTeqwlka5UAKX8qbXBXUS2Q5m4/UDMdKA8titkUQpEqiNSXnB2WCIBy3h?=
+ =?us-ascii?Q?Fwkse63E/wII4C/HbTbSZUNyRPqlBzTuMvYz9n/r0FHascKrixoFN4OXt6H2?=
+ =?us-ascii?Q?bWqe1Lhmrb8t86V2p0B/q8G5SZqMV4tPO6MnJ4Sj//DA4tAlSHL1h8tZUjVI?=
+ =?us-ascii?Q?2TRr+Z1dQTlEzo+UmhnA9rRE/84DXIlKpJmd0h3VWqHJHE5Owqn4cAe/+lHT?=
+ =?us-ascii?Q?rbGxNOkJab3lpSsXxpeqD4iR1oFAe2BenKL6h/inPLj0sKtRWKKG1wOJFSj/?=
+ =?us-ascii?Q?ApHiYkmmQ1awhrZ30EGEvPPz9PmFQ+6+EFLUKLaC9tljV7sDE5f6yRr5+P5y?=
+ =?us-ascii?Q?GKKaIu9G/OH9BQbfAVFVy99o3ptilD8KLX/fRIhmvf+5d0qYJOy94y9AsM89?=
+ =?us-ascii?Q?EykEhrBmn7IZVvfgNSxwuHM/UZZkIvvN1OHKT60krFO1eq4CJREhDG/88eHp?=
+ =?us-ascii?Q?8hPDcZmUcpE9BI7f0CkTZEp1JX5/O4YHypUUFkcwk0h6cjsEoLnmYpXrkz+U?=
+ =?us-ascii?Q?3abdcPp6lMOIHKw/wW8pYMOTZZpnprRf+Y3GpB4DuJgADB5J68Eb6pB3woRf?=
+ =?us-ascii?Q?+iWoyiJ4ArgNzX5DafsvrkxrIkD8HjHp3+2YgopbG+yoCcB8vsrvJIqmnga/?=
+ =?us-ascii?Q?+jrOpiSfmyE+u7jNUjpV3ja3AvXb3KCz34i3CbdxoT3NJWkfU4URBp0iGgnI?=
+ =?us-ascii?Q?DcV9JtJiUyQxmYcT2dbYjgU2MkRtHy7iwib6+a41A5PAbf7B?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5aeda3eb-24ec-404f-774d-08debac54ace
+X-MS-Exchange-CrossTenant-Network-Message-Id: 942d89f7-2e9c-43c9-cebc-08debac54ace
 X-MS-Exchange-CrossTenant-AuthSource: CY1PR12MB9601.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2026 01:22:46.2307
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2026 01:22:46.4719
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 89Cwu6szCQtANs+A6GVOR7/vn5yj6fJi7WnTwuNFxwBfkdbE7qYRQkFPZIi8yzcV
+X-MS-Exchange-CrossTenant-UserPrincipalName: /sYTGqAIBPSmw2dnEl/xyu7bCPM9bUiynuNFYqfjQyCsxwWDANP57DZcwT3L+pQ8
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PPF73BED5E32
 X-Spamd-Result: default: False [1.34 / 15.00];
 	ARC_REJECT(1.00)[cv is fail on i=2];
@@ -147,7 +147,7 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21263-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21264-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DKIM_TRACE(0.00)[Nvidia.com:+];
 	MISSING_XM_UA(0.00)[];
@@ -161,221 +161,454 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	NEURAL_HAM(-0.00)[-0.999];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,Nvidia.com:dkim,nvidia.com:mid,nvidia.com:email]
-X-Rspamd-Queue-Id: A926B5CF6D1
+X-Rspamd-Queue-Id: E962C5CF6D8
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Instead of having an alternative fops release always use the standard
-uverbs_uobject_fd_release() and route the special async behavior back up
-through uverbs_obj_fd_type ops pointer.
+To maintain the split where ib_uverbs.ko should not be depended on by
+drivers, add a new module ib_uverbs_support.ko which contains the driver
+called functions that are too large or too rare to be placed in
+ib_uverbs_core.ko
 
-This removes a dependency where the technically lower level rdma_core.c is
-referring to a symbol from uverbs_std_types_async_fd.c.
+Start by moving most of rdma_core.c into this module, making some
+adjustments to split it from the actual uverbs FD code.
+
+This was not done originally because we lacked EXPORT_SYMBOL_NS and I had
+a fear that drivers would abuse this interface surface.
 
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 ---
- drivers/infiniband/core/rdma_core.c           | 30 ++++++++++++++++---
- drivers/infiniband/core/uverbs.h              |  1 -
- drivers/infiniband/core/uverbs_main.c         |  2 +-
- .../core/uverbs_std_types_async_fd.c          | 22 +++++---------
- drivers/infiniband/core/uverbs_uapi.c         | 13 ++++++++
- include/rdma/uverbs_types.h                   |  8 ++++-
- 6 files changed, 54 insertions(+), 22 deletions(-)
+ drivers/infiniband/core/Makefile      |   8 +-
+ drivers/infiniband/core/rdma_core.c   | 120 ++++++++++++--------------
+ drivers/infiniband/core/rdma_core.h   |   1 -
+ drivers/infiniband/core/uverbs.h      |   9 ++
+ drivers/infiniband/core/uverbs_main.c | 100 +++++++++++++--------
+ 5 files changed, 133 insertions(+), 105 deletions(-)
 
+diff --git a/drivers/infiniband/core/Makefile b/drivers/infiniband/core/Makefile
+index 8c2ba2ce035176..e2ff9c2be9d377 100644
+--- a/drivers/infiniband/core/Makefile
++++ b/drivers/infiniband/core/Makefile
+@@ -5,7 +5,9 @@ user_access-$(CONFIG_INFINIBAND_ADDR_TRANS)	:= rdma_ucm.o
+ obj-$(CONFIG_INFINIBAND) +=		ib_core.o ib_cm.o iw_cm.o \
+ 					$(infiniband-y)
+ obj-$(CONFIG_INFINIBAND_USER_MAD) +=	ib_umad.o
+-obj-$(CONFIG_INFINIBAND_USER_ACCESS) += ib_uverbs.o $(user_access-y)
++obj-$(CONFIG_INFINIBAND_USER_ACCESS) += ib_uverbs.o \
++					$(user_access-y) \
++					ib_uverbs_support.o
+ 
+ ib_core-y :=			packer.o ud_header.o verbs.o cq.o rw.o sysfs.o \
+ 				device.o cache.o netlink.o \
+@@ -34,7 +36,7 @@ rdma_ucm-y :=			ucma.o
+ ib_umad-y :=			user_mad.o
+ 
+ ib_uverbs-y :=			uverbs_main.o uverbs_cmd.o uverbs_marshall.o \
+-				rdma_core.o uverbs_std_types.o uverbs_ioctl.o \
++				uverbs_std_types.o uverbs_ioctl.o \
+ 				uverbs_std_types_cq.o \
+ 				uverbs_std_types_dmabuf.o \
+ 				uverbs_std_types_dmah.o \
+@@ -46,3 +48,5 @@ ib_uverbs-y :=			uverbs_main.o uverbs_cmd.o uverbs_marshall.o \
+ 				uverbs_std_types_wq.o \
+ 				uverbs_std_types_qp.o \
+ 				ucaps.o
++
++ib_uverbs_support-y :=		rdma_core.o
 diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
-index 5018ec837056ff..71e3d58d26e654 100644
+index 71e3d58d26e654..b81a1540d0fb59 100644
 --- a/drivers/infiniband/core/rdma_core.c
 +++ b/drivers/infiniband/core/rdma_core.c
-@@ -465,8 +465,8 @@ alloc_begin_fd_uobject(const struct uverbs_api_object *obj,
+@@ -42,6 +42,40 @@
+ #include "core_priv.h"
+ #include "rdma_core.h"
  
- 	fd_type =
- 		container_of(obj->type_attrs, struct uverbs_obj_fd_type, type);
--	if (WARN_ON(fd_type->fops && fd_type->fops->release != &uverbs_uobject_fd_release &&
--		    fd_type->fops->release != &uverbs_async_event_release)) {
-+	if (WARN_ON(fd_type->fops &&
-+		    fd_type->fops->release != &uverbs_uobject_fd_release)) {
- 		ret = ERR_PTR(-EINVAL);
- 		goto err_fd;
- 	}
-@@ -846,13 +846,35 @@ int uverbs_uobject_release(struct ib_uobject *uobj)
-  */
- int uverbs_uobject_fd_release(struct inode *inode, struct file *filp)
++static void release_ufile_idr_uobject(struct ib_uverbs_file *ufile);
++
++void ib_uverbs_release_file(struct kref *ref)
++{
++	struct ib_uverbs_file *file =
++		container_of(ref, struct ib_uverbs_file, ref);
++	struct ib_device *ib_dev;
++	int srcu_key;
++
++	release_ufile_idr_uobject(file);
++
++	srcu_key = srcu_read_lock(&file->device->disassociate_srcu);
++	ib_dev = srcu_dereference(file->device->ib_dev,
++				  &file->device->disassociate_srcu);
++	if (ib_dev && !ib_dev->ops.disassociate_ucontext)
++		module_put(ib_dev->ops.owner);
++	srcu_read_unlock(&file->device->disassociate_srcu, srcu_key);
++
++	if (refcount_dec_and_test(&file->device->refcount))
++		ib_uverbs_comp_dev(file->device);
++
++	if (file->default_async_file)
++		uverbs_uobject_put(&file->default_async_file->uobj);
++	put_device(&file->device->dev);
++
++	if (file->disassociate_page)
++		__free_pages(file->disassociate_page, 0);
++	mutex_destroy(&file->disassociation_lock);
++	mutex_destroy(&file->umap_lock);
++	mutex_destroy(&file->ucontext_lock);
++	kfree(file);
++}
++EXPORT_SYMBOL_NS_GPL(ib_uverbs_release_file, "rdma_core");
++
+ static void uverbs_uobject_free(struct kref *ref)
  {
-+	void (*release_cleanup)(struct ib_uobject *uobj) = NULL;
-+	struct ib_uobject *uobj = filp->private_data;
-+	int ret;
-+
- 	/*
- 	 * This can only happen if the fput came from alloc_abort_fd_uobject()
- 	 */
--	if (!filp->private_data)
-+	if (!uobj)
- 		return 0;
+ 	kfree_rcu(container_of(ref, struct ib_uobject, ref), rcu);
+@@ -214,6 +248,7 @@ int uobj_destroy(struct ib_uobject *uobj, struct uverbs_attr_bundle *attrs)
+ 	up_read(&ufile->hw_destroy_rwsem);
+ 	return ret;
+ }
++EXPORT_SYMBOL_NS_GPL(uobj_destroy, "rdma_core");
  
--	return uverbs_uobject_release(filp->private_data);
-+	/*
-+	 * uverbs_disassociate_api() can NULL type_attrs after disassociate, but
-+	 * it won't if release_cleanup is used.
-+	 */
-+	if (uobj->uapi_object->type_attrs)
-+		release_cleanup = container_of(uobj->uapi_object->type_attrs,
-+					       struct uverbs_obj_fd_type, type)
-+					  ->release_cleanup;
-+	if (release_cleanup)
-+		uverbs_uobject_get(uobj);
-+
-+	ret = uverbs_uobject_release(uobj);
-+
-+	if (release_cleanup) {
-+		release_cleanup(uobj);
-+		uverbs_uobject_put(uobj);
-+	}
-+
-+	return ret;
+ /*
+  * uobj_get_destroy destroys the HW object and returns a handle to the uobj
+@@ -239,6 +274,7 @@ struct ib_uobject *__uobj_get_destroy(const struct uverbs_api_object *obj,
+ 
+ 	return uobj;
+ }
++EXPORT_SYMBOL_NS_GPL(__uobj_get_destroy, "rdma_core");
+ 
+ /*
+  * Does both uobj_get_destroy() and uobj_put_destroy().  Returns 0 on success
+@@ -255,6 +291,7 @@ int __uobj_perform_destroy(const struct uverbs_api_object *obj, u32 id,
+ 	uobj_put_destroy(uobj);
+ 	return 0;
+ }
++EXPORT_SYMBOL_NS_GPL(__uobj_perform_destroy, "rdma_core");
+ 
+ /* alloc_uobj must be undone by uverbs_destroy_uobject() */
+ static struct ib_uobject *alloc_uobj(struct uverbs_attr_bundle *attrs,
+@@ -420,6 +457,7 @@ struct ib_uobject *rdma_lookup_get_uobject(const struct uverbs_api_object *obj,
+ 	uverbs_uobject_put(uobj);
+ 	return ERR_PTR(ret);
+ }
++EXPORT_SYMBOL_NS_GPL(rdma_lookup_get_uobject, "rdma_core");
+ 
+ static struct ib_uobject *
+ alloc_begin_idr_uobject(const struct uverbs_api_object *obj,
+@@ -522,6 +560,7 @@ struct ib_uobject *rdma_alloc_begin_uobject(const struct uverbs_api_object *obj,
+ 	}
+ 	return ret;
+ }
++EXPORT_SYMBOL_NS_GPL(rdma_alloc_begin_uobject, "rdma_core");
+ 
+ static void alloc_abort_idr_uobject(struct ib_uobject *uobj)
+ {
+@@ -668,6 +707,7 @@ void rdma_alloc_commit_uobject(struct ib_uobject *uobj,
+ 	/* Matches the down_read in rdma_alloc_begin_uobject */
+ 	up_read(&ufile->hw_destroy_rwsem);
+ }
++EXPORT_SYMBOL_NS_GPL(rdma_alloc_commit_uobject, "rdma_core");
+ 
+ /*
+  * new_uobj will be assigned to the handle currently used by to_uobj, and
+@@ -697,6 +737,7 @@ void rdma_assign_uobject(struct ib_uobject *to_uobj, struct ib_uobject *new_uobj
+ 	 */
+ 	uverbs_destroy_uobject(to_uobj, RDMA_REMOVE_DESTROY, attrs);
+ }
++EXPORT_SYMBOL_NS_GPL(rdma_assign_uobject, "rdma_core");
+ 
+ /*
+  * This consumes the kref for uobj. It is up to the caller to unwind the HW
+@@ -727,6 +768,7 @@ void rdma_alloc_abort_uobject(struct ib_uobject *uobj,
+ 	/* Matches the down_read in rdma_alloc_begin_uobject */
+ 	up_read(&ufile->hw_destroy_rwsem);
+ }
++EXPORT_SYMBOL_NS_GPL(rdma_alloc_abort_uobject, "rdma_core");
+ 
+ static void lookup_put_idr_uobject(struct ib_uobject *uobj,
+ 				   enum rdma_lookup_mode mode)
+@@ -770,13 +812,15 @@ void rdma_lookup_put_uobject(struct ib_uobject *uobj,
+ 	/* Pairs with the kref obtained by type->lookup_get */
+ 	uverbs_uobject_put(uobj);
+ }
++EXPORT_SYMBOL_NS_GPL(rdma_lookup_put_uobject, "rdma_core");
+ 
+ void setup_ufile_idr_uobject(struct ib_uverbs_file *ufile)
+ {
+ 	xa_init_flags(&ufile->idr, XA_FLAGS_ALLOC);
+ }
++EXPORT_SYMBOL_NS_GPL(setup_ufile_idr_uobject, "rdma_core");
+ 
+-void release_ufile_idr_uobject(struct ib_uverbs_file *ufile)
++static void release_ufile_idr_uobject(struct ib_uverbs_file *ufile)
+ {
+ 	struct ib_uobject *entry;
+ 	unsigned long id;
+@@ -839,6 +883,7 @@ int uverbs_uobject_release(struct ib_uobject *uobj)
+ 	uverbs_uobject_put(uobj);
+ 	return 0;
+ }
++EXPORT_SYMBOL_NS_GPL(uverbs_uobject_release, "rdma_core");
+ 
+ /*
+  * Users of UVERBS_TYPE_ALLOC_FD should set this function as the struct
+@@ -878,41 +923,8 @@ int uverbs_uobject_fd_release(struct inode *inode, struct file *filp)
  }
  EXPORT_SYMBOL(uverbs_uobject_fd_release);
  
+-/*
+- * Drop the ucontext off the ufile and completely disconnect it from the
+- * ib_device
+- */
+-static void ufile_destroy_ucontext(struct ib_uverbs_file *ufile,
+-				   enum rdma_remove_reason reason)
+-{
+-	struct ib_ucontext *ucontext = ufile->ucontext;
+-	struct ib_device *ib_dev = ucontext->device;
+-
+-	/*
+-	 * If we are closing the FD then the user mmap VMAs must have
+-	 * already been destroyed as they hold on to the filep, otherwise
+-	 * they need to be zap'd.
+-	 */
+-	if (reason == RDMA_REMOVE_DRIVER_REMOVE) {
+-		uverbs_user_mmap_disassociate(ufile);
+-		if (ib_dev->ops.disassociate_ucontext)
+-			ib_dev->ops.disassociate_ucontext(ucontext);
+-	}
+-
+-	ib_rdmacg_uncharge(&ucontext->cg_obj, ib_dev,
+-			   RDMACG_RESOURCE_HCA_HANDLE);
+-
+-	rdma_restrack_del(&ucontext->res);
+-
+-	ib_dev->ops.dealloc_ucontext(ucontext);
+-	WARN_ON(!xa_empty(&ucontext->mmap_xa));
+-	kfree(ucontext);
+-
+-	ufile->ucontext = NULL;
+-}
+-
+-static int __uverbs_cleanup_ufile(struct ib_uverbs_file *ufile,
+-				  enum rdma_remove_reason reason)
++int __uverbs_cleanup_ufile(struct ib_uverbs_file *ufile,
++			   enum rdma_remove_reason reason)
+ {
+ 	struct uverbs_attr_bundle attrs = { .ufile = ufile };
+ 	struct ib_ucontext *ucontext = ufile->ucontext;
+@@ -953,36 +965,7 @@ static int __uverbs_cleanup_ufile(struct ib_uverbs_file *ufile,
+ 	}
+ 	return ret;
+ }
+-
+-/*
+- * Destroy the ucontext and every uobject associated with it.
+- *
+- * This is internally locked and can be called in parallel from multiple
+- * contexts.
+- */
+-void uverbs_destroy_ufile_hw(struct ib_uverbs_file *ufile,
+-			     enum rdma_remove_reason reason)
+-{
+-	down_write(&ufile->hw_destroy_rwsem);
+-
+-	/*
+-	 * If a ucontext was never created then we can't have any uobjects to
+-	 * cleanup, nothing to do.
+-	 */
+-	if (!ufile->ucontext)
+-		goto done;
+-
+-	while (!list_empty(&ufile->uobjects) &&
+-	       !__uverbs_cleanup_ufile(ufile, reason)) {
+-	}
+-
+-	if (WARN_ON(!list_empty(&ufile->uobjects)))
+-		__uverbs_cleanup_ufile(ufile, RDMA_REMOVE_DRIVER_FAILURE);
+-	ufile_destroy_ucontext(ufile, reason);
+-
+-done:
+-	up_write(&ufile->hw_destroy_rwsem);
+-}
++EXPORT_SYMBOL_NS_GPL(__uverbs_cleanup_ufile, "rdma_core");
+ 
+ const struct uverbs_obj_type_class uverbs_fd_class = {
+ 	.alloc_begin = alloc_begin_fd_uobject,
+@@ -1020,6 +1003,7 @@ uverbs_get_uobject_from_file(u16 object_id, enum uverbs_obj_access access,
+ 		return ERR_PTR(-EOPNOTSUPP);
+ 	}
+ }
++EXPORT_SYMBOL_NS_GPL(uverbs_get_uobject_from_file, "rdma_core");
+ 
+ void uverbs_finalize_object(struct ib_uobject *uobj,
+ 			    enum uverbs_obj_access access, bool hw_obj_valid,
+@@ -1052,6 +1036,7 @@ void uverbs_finalize_object(struct ib_uobject *uobj,
+ 		WARN_ON(true);
+ 	}
+ }
++EXPORT_SYMBOL_NS_GPL(uverbs_finalize_object, "rdma_core");
+ 
+ /**
+  * rdma_uattrs_has_raw_cap() - Returns whether a rdma device linked to the
+@@ -1081,3 +1066,6 @@ bool rdma_uattrs_has_raw_cap(const struct uverbs_attr_bundle *attrs)
+ 	return has_cap;
+ }
+ EXPORT_SYMBOL(rdma_uattrs_has_raw_cap);
++
++MODULE_DESCRIPTION("InfiniBand uverbs objects");
++MODULE_LICENSE("Dual BSD/GPL");
+diff --git a/drivers/infiniband/core/rdma_core.h b/drivers/infiniband/core/rdma_core.h
+index 55f1e3558856f1..b626d3d24d087d 100644
+--- a/drivers/infiniband/core/rdma_core.h
++++ b/drivers/infiniband/core/rdma_core.h
+@@ -70,7 +70,6 @@ void uverbs_finalize_object(struct ib_uobject *uobj,
+ int uverbs_output_written(const struct uverbs_attr_bundle *bundle, size_t idx);
+ 
+ void setup_ufile_idr_uobject(struct ib_uverbs_file *ufile);
+-void release_ufile_idr_uobject(struct ib_uverbs_file *ufile);
+ 
+ struct ib_udata *uverbs_get_cleared_udata(struct uverbs_attr_bundle *attrs);
+ 
 diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
-index 1563169c65009e..a1de8fe9c90bf1 100644
+index a1de8fe9c90bf1..c64dd6b94e1067 100644
 --- a/drivers/infiniband/core/uverbs.h
 +++ b/drivers/infiniband/core/uverbs.h
-@@ -203,7 +203,6 @@ void ib_uverbs_init_event_queue(struct ib_uverbs_event_queue *ev_queue);
- void ib_uverbs_init_async_event_file(struct ib_uverbs_async_event_file *ev_file);
- void ib_uverbs_free_event_queue(struct ib_uverbs_event_queue *event_queue);
- void ib_uverbs_flow_resources_free(struct ib_uflow_resources *uflow_res);
--int uverbs_async_event_release(struct inode *inode, struct file *filp);
+@@ -359,4 +359,13 @@ static inline void ib_uverbs_dmabuf_done(struct kref *kref)
+ 	complete(&priv->comp);
+ }
  
- int ib_alloc_ucontext(struct uverbs_attr_bundle *attrs);
- int ib_init_ucontext(struct uverbs_attr_bundle *attrs);
++int __uverbs_cleanup_ufile(struct ib_uverbs_file *ufile,
++			   enum rdma_remove_reason reason);
++
++static inline void ib_uverbs_comp_dev(struct ib_uverbs_device *dev)
++{
++	complete(&dev->comp);
++}
++
++
+ #endif /* UVERBS_H */
 diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-index 15d8387718c050..a937d276c5c076 100644
+index a937d276c5c076..ab6f1e3cb47a18 100644
 --- a/drivers/infiniband/core/uverbs_main.c
 +++ b/drivers/infiniband/core/uverbs_main.c
-@@ -338,7 +338,7 @@ const struct file_operations uverbs_async_event_fops = {
- 	.owner	 = THIS_MODULE,
- 	.read	 = ib_uverbs_async_event_read,
- 	.poll    = ib_uverbs_async_event_poll,
--	.release = uverbs_async_event_release,
-+	.release = uverbs_uobject_fd_release,
- 	.fasync  = ib_uverbs_async_event_fasync,
- };
+@@ -61,6 +61,7 @@
+ MODULE_AUTHOR("Roland Dreier");
+ MODULE_DESCRIPTION("InfiniBand userspace verbs access");
+ MODULE_LICENSE("Dual BSD/GPL");
++MODULE_IMPORT_NS("rdma_core");
  
-diff --git a/drivers/infiniband/core/uverbs_std_types_async_fd.c b/drivers/infiniband/core/uverbs_std_types_async_fd.c
-index cc24cfdf7aee66..671f510bca496f 100644
---- a/drivers/infiniband/core/uverbs_std_types_async_fd.c
-+++ b/drivers/infiniband/core/uverbs_std_types_async_fd.c
-@@ -32,14 +32,9 @@ static void uverbs_async_event_destroy_uobj(struct ib_uobject *uobj,
- 					NULL, NULL);
+ enum {
+ 	IB_UVERBS_MAJOR       = 231,
+@@ -165,42 +166,6 @@ void ib_uverbs_detach_umcast(struct ib_qp *qp,
+ 	}
  }
  
--int uverbs_async_event_release(struct inode *inode, struct file *filp)
-+static void uverbs_async_event_free_event_queue(struct ib_uobject *uobj)
- {
- 	struct ib_uverbs_async_event_file *event_file;
--	struct ib_uobject *uobj = filp->private_data;
--	int ret;
+-static void ib_uverbs_comp_dev(struct ib_uverbs_device *dev)
+-{
+-	complete(&dev->comp);
+-}
 -
--	if (!uobj)
--		return uverbs_uobject_fd_release(inode, filp);
- 
- 	event_file =
- 		container_of(uobj, struct ib_uverbs_async_event_file, uobj);
-@@ -50,11 +45,7 @@ int uverbs_async_event_release(struct inode *inode, struct file *filp)
- 	 * release. The user knows it has reached the end of the event stream
- 	 * when it sees IB_EVENT_DEVICE_FATAL.
- 	 */
--	uverbs_uobject_get(uobj);
--	ret = uverbs_uobject_fd_release(inode, filp);
- 	ib_uverbs_free_event_queue(&event_file->ev_queue);
--	uverbs_uobject_put(uobj);
--	return ret;
+-void ib_uverbs_release_file(struct kref *ref)
+-{
+-	struct ib_uverbs_file *file =
+-		container_of(ref, struct ib_uverbs_file, ref);
+-	struct ib_device *ib_dev;
+-	int srcu_key;
+-
+-	release_ufile_idr_uobject(file);
+-
+-	srcu_key = srcu_read_lock(&file->device->disassociate_srcu);
+-	ib_dev = srcu_dereference(file->device->ib_dev,
+-				  &file->device->disassociate_srcu);
+-	if (ib_dev && !ib_dev->ops.disassociate_ucontext)
+-		module_put(ib_dev->ops.owner);
+-	srcu_read_unlock(&file->device->disassociate_srcu, srcu_key);
+-
+-	if (refcount_dec_and_test(&file->device->refcount))
+-		ib_uverbs_comp_dev(file->device);
+-
+-	if (file->default_async_file)
+-		uverbs_uobject_put(&file->default_async_file->uobj);
+-	put_device(&file->device->dev);
+-
+-	if (file->disassociate_page)
+-		__free_pages(file->disassociate_page, 0);
+-	mutex_destroy(&file->disassociation_lock);
+-	mutex_destroy(&file->umap_lock);
+-	mutex_destroy(&file->ucontext_lock);
+-	kfree(file);
+-}
+-
+ static ssize_t ib_uverbs_event_read(struct ib_uverbs_event_queue *ev_queue,
+ 				    struct file *filp, char __user *buf,
+ 				    size_t count, loff_t *pos,
+@@ -985,6 +950,69 @@ static int ib_uverbs_open(struct inode *inode, struct file *filp)
+ 	return ret;
  }
  
- DECLARE_UVERBS_NAMED_METHOD(
-@@ -66,11 +57,12 @@ DECLARE_UVERBS_NAMED_METHOD(
- 
- DECLARE_UVERBS_NAMED_OBJECT(
- 	UVERBS_OBJECT_ASYNC_EVENT,
--	UVERBS_TYPE_ALLOC_FD(sizeof(struct ib_uverbs_async_event_file),
--			     uverbs_async_event_destroy_uobj,
--			     &uverbs_async_event_fops,
--			     "[infinibandevent]",
--			     O_RDONLY),
-+	UVERBS_TYPE_ALLOC_FD_RELEASE(sizeof(struct ib_uverbs_async_event_file),
-+				     uverbs_async_event_destroy_uobj,
-+				     uverbs_async_event_free_event_queue,
-+				     &uverbs_async_event_fops,
-+				     "[infinibandevent]",
-+				     O_RDONLY),
- 	&UVERBS_METHOD(UVERBS_METHOD_ASYNC_EVENT_ALLOC));
- 
- const struct uapi_definition uverbs_def_obj_async_fd[] = {
-diff --git a/drivers/infiniband/core/uverbs_uapi.c b/drivers/infiniband/core/uverbs_uapi.c
-index 31b248295854bd..4e2e556c8119b5 100644
---- a/drivers/infiniband/core/uverbs_uapi.c
-+++ b/drivers/infiniband/core/uverbs_uapi.c
-@@ -718,12 +718,25 @@ void uverbs_disassociate_api(struct uverbs_api *uapi)
- 		if (uapi_key_is_object(iter.index)) {
- 			struct uverbs_api_object *object_elm =
- 				rcu_dereference_protected(*slot, true);
-+			const struct uverbs_obj_type *type_attrs =
-+				object_elm->type_attrs;
- 
- 			/*
- 			 * Some type_attrs are in the driver module. We don't
- 			 * bother to keep track of which since there should be
- 			 * no use of this after disassociate.
-+			 *
-+			 * release_cleanup is the exception because
-+			 * uverbs_uobject_fd_release() needs it. In this case
-+			 * the module reference held by the fops will guarentee
-+			 * the type_class remains valid too.
- 			 */
-+			if (type_attrs &&
-+			    type_attrs->type_class == &uverbs_fd_class &&
-+			    container_of(type_attrs, struct uverbs_obj_fd_type,
-+					 type)->release_cleanup)
-+				continue;
++/*
++ * Drop the ucontext off the ufile and completely disconnect it from the
++ * ib_device
++ */
++static void ufile_destroy_ucontext(struct ib_uverbs_file *ufile,
++			    enum rdma_remove_reason reason)
++{
++	struct ib_ucontext *ucontext = ufile->ucontext;
++	struct ib_device *ib_dev = ucontext->device;
 +
- 			object_elm->type_attrs = NULL;
- 		} else if (uapi_key_is_attr(iter.index)) {
- 			struct uverbs_api_attr *elm =
-diff --git a/include/rdma/uverbs_types.h b/include/rdma/uverbs_types.h
-index 6a253b7dc5ea66..5a07f9a6dcd1f6 100644
---- a/include/rdma/uverbs_types.h
-+++ b/include/rdma/uverbs_types.h
-@@ -147,6 +147,7 @@ struct uverbs_obj_fd_type {
- 	struct uverbs_obj_type  type;
- 	void (*destroy_object)(struct ib_uobject *uobj,
- 			       enum rdma_remove_reason why);
-+	void (*release_cleanup)(struct ib_uobject *uobj);
- 	const struct file_operations	*fops;
- 	const char			*name;
- 	int				flags;
-@@ -190,7 +191,8 @@ int uverbs_uobject_release(struct ib_uobject *uobj);
- 
- #define UVERBS_BUILD_BUG_ON(cond) (sizeof(char[1 - 2 * !!(cond)]) -	\
- 				   sizeof(char))
--#define UVERBS_TYPE_ALLOC_FD(_obj_size, _destroy_object, _fops, _name, _flags) \
-+#define UVERBS_TYPE_ALLOC_FD_RELEASE(_obj_size, _destroy_object,	\
-+				     _release_cleanup, _fops, _name, _flags) \
- 	((&((const struct uverbs_obj_fd_type)				\
- 	 {.type = {							\
- 		.type_class = &uverbs_fd_class,				\
-@@ -199,9 +201,13 @@ int uverbs_uobject_release(struct ib_uobject *uobj);
- 					    sizeof(struct ib_uobject)), \
- 	 },								\
- 	 .destroy_object = _destroy_object,				\
-+	 .release_cleanup = _release_cleanup,				\
- 	 .fops = _fops,							\
- 	 .name = _name,							\
- 	 .flags = _flags}))->type)
-+#define UVERBS_TYPE_ALLOC_FD(_obj_size, _destroy_object, _fops, _name, _flags) \
-+	UVERBS_TYPE_ALLOC_FD_RELEASE(_obj_size, _destroy_object, NULL,	\
-+				     _fops, _name, _flags)
- #define UVERBS_TYPE_ALLOC_IDR_SZ(_size, _destroy_object)	\
- 	((&((const struct uverbs_obj_idr_type)				\
- 	 {.type = {							\
++	/*
++	 * If we are closing the FD then the user mmap VMAs must have
++	 * already been destroyed as they hold on to the filep, otherwise
++	 * they need to be zap'd.
++	 */
++	if (reason == RDMA_REMOVE_DRIVER_REMOVE) {
++		uverbs_user_mmap_disassociate(ufile);
++		if (ib_dev->ops.disassociate_ucontext)
++			ib_dev->ops.disassociate_ucontext(ucontext);
++	}
++
++	ib_rdmacg_uncharge(&ucontext->cg_obj, ib_dev,
++			   RDMACG_RESOURCE_HCA_HANDLE);
++
++	rdma_restrack_del(&ucontext->res);
++
++	ib_dev->ops.dealloc_ucontext(ucontext);
++	WARN_ON(!xa_empty(&ucontext->mmap_xa));
++	kfree(ucontext);
++
++	ufile->ucontext = NULL;
++}
++
++/*
++ * Destroy the ucontext and every uobject associated with it.
++ *
++ * This is internally locked and can be called in parallel from multiple
++ * contexts.
++ */
++void uverbs_destroy_ufile_hw(struct ib_uverbs_file *ufile,
++			     enum rdma_remove_reason reason)
++{
++	down_write(&ufile->hw_destroy_rwsem);
++
++	/*
++	 * If a ucontext was never created then we can't have any uobjects to
++	 * cleanup, nothing to do.
++	 */
++	if (!ufile->ucontext)
++		goto done;
++
++	while (!list_empty(&ufile->uobjects) &&
++	       !__uverbs_cleanup_ufile(ufile, reason)) {
++	}
++
++	if (WARN_ON(!list_empty(&ufile->uobjects)))
++		__uverbs_cleanup_ufile(ufile, RDMA_REMOVE_DRIVER_FAILURE);
++	ufile_destroy_ucontext(ufile, reason);
++
++done:
++	up_write(&ufile->hw_destroy_rwsem);
++}
++
+ static int ib_uverbs_close(struct inode *inode, struct file *filp)
+ {
+ 	struct ib_uverbs_file *file = filp->private_data;
 -- 
 2.43.0
 
