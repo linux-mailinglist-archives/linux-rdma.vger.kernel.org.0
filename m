@@ -1,260 +1,269 @@
-Return-Path: <linux-rdma+bounces-21296-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21297-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id pca4GmSiFWrEWwcAu9opvQ
-	(envelope-from <linux-rdma+bounces-21296-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 15:38:44 +0200
+	id kJMVF++pFWqJXAcAu9opvQ
+	(envelope-from <linux-rdma+bounces-21297-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 16:10:55 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1092D5D6A5B
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 15:38:43 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9EC25D7272
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 16:10:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0FCD23036CD8
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 13:36:27 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 3C585301303D
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 14:07:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EEB03FB079;
-	Tue, 26 May 2026 13:36:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C3962C0F84;
+	Tue, 26 May 2026 14:07:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SX9KGCRB"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="Z5SavboQ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98DF33FB055;
-	Tue, 26 May 2026 13:36:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D11E3FDBF3
+	for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 14:07:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779802576; cv=none; b=SO6DMdqOVyICyabC3c6JZTrjXC4LRd9TD6noAo/GMJELCkvlDJ+fybDrmYh422LRhQCn3zvYY0nNcpbFaABX+ijapEBQuAoWH2A4NEy5Ecdk7L8h38f5Tkaou6ehcpNSMXAgvdGRKL/Y/ph2uyXdD/P/2rRfOP0MPQq0TaoLez0=
+	t=1779804441; cv=none; b=D40y+KJ0lV4IToJATy3NUhPjbNXaXmWJnhaTYUMQI6mZjTxX4nL2bYdGs+ovZzaFonWDUMMN0cPbgXkW23Vknw3jDOM3LSqdcvxx1MMH7v1LfTWhCZTfG1ZB4rZ+m7+NvecYXDCxyh6LzJVqFVOU95b8RQQd0+bVy7rl1YX/MxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779802576; c=relaxed/simple;
-	bh=MtDeusiagA+X3jRoE7DdhCGzZ/GjrSPAj7u2Ply7JJg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=pH3nnNFSdGJQrLe9CICn0dNxw5oGX4oLYIy0ydEB8nLwIQrZJcP1xS2LyuXe53SU/79/oxRhjTQEzb3WCTYO+ltK8DBGc/Y4YeVVkrxjfrGubyb2WEiGERHySa0qq6Gj/mhD933rG4H9S8MWmcuDPyeb6NKYKjDjjft2pyFEMZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SX9KGCRB; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA5451F000E9;
-	Tue, 26 May 2026 13:36:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779802575;
-	bh=JfEcSrERzRVNaYwI5nugXfBfKpkG3xQlxLo5iwMnl/4=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=SX9KGCRB00IcGK3KxyV9rMUZlVsPqBMu7yAg5DbZOv/Q9hMQb7sHNwYzLNoMxJPvo
-	 gyNw1A2ejA+Pb2KWvEQQv3oxTDgozBLloWKgyYbRJNHpaWOSnAb5fuvnGDtlvdKw+5
-	 8K0f2JWnOKcAX3ZVIJp0rWBkb5+gkb+VwS1PGdnBB9dAHniJw6zBAc85tN0HCFqEG6
-	 b7WpA6l04xPoQDiD4qtUVx9DOYCR9NQINckXoivIaiLtg9V1L6QaLB9fxK2GZsKiQw
-	 r8jM3rSj+P/oYOruazxf3hXfRmlU4aIwupFAmYe7yBckO5GpTgnnzR1BWxdPxY+7RD
-	 vLCSmzAiPfNJg==
-From: Chuck Lever <cel@kernel.org>
-Date: Tue, 26 May 2026 09:36:00 -0400
-Subject: [PATCH 6/6] svcrdma: Validate Read chunk positions at decode time
+	s=arc-20240116; t=1779804441; c=relaxed/simple;
+	bh=T1UqiNTVmB4/tDb0kiqnEMrv4GrgBQEv5c3B2KoOQ+4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oZn2gAnPyeENrDUtK2yUA2fr+JwNSpwq9xgOejp0SfZTuiwqnrvlkEcdWICJSgicTfuOCu/fg52dyLHcbUG81OiSF0iFZOeKVxkT5cDUQXtdz1vbjvQn0+nYF1WgQBQo62ak4SdU7Tr3LgL/g8/AB80AYUr9a6nO3KuCuVOvtwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=Z5SavboQ; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-44e1860558fso6809169f8f.0
+        for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 07:07:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1779804435; x=1780409235; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GdJEpA7bMT8GO5yFBjPJn50s6+iOwqU78oJOnULy2Sc=;
+        b=Z5SavboQ8OfmgiOMXeMNLttL+ek46pq6N4vtuNm9QxlcqyoOI4xJyW3JUZG+p51Iq9
+         QMpNll0CyQ7obzOu1z02CyKJlMRH4ez2ray5djb2y+6XJviSdoBqUwHeiw7XQ9g4ZW2c
+         5vYCAp51dZy7ulO6W3/L4QsNanzQppg890v77m2d3IyoPIeEaSxs/EvNNnDtCDSbR48a
+         RbVc6uVLoii+CHswDM2ALLCNDuY4hk1VBDapcOMEG+06DWvPdGGxrWGn7eJxjAaFIqAG
+         GU/5DNQcXVGWtcD4hcGz7QQaMjMnHes+hbrcu2vbn0EGPfjWT8sbKtZaGmv8fC/FzMdr
+         Cn6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779804435; x=1780409235;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GdJEpA7bMT8GO5yFBjPJn50s6+iOwqU78oJOnULy2Sc=;
+        b=p0yyYYhbLm15YyDm3btLHGj+zMBABKlBpmzrlDlz/dN8gHqdncZkavZChFdVwO8k0A
+         rGF9E3xj6ktxvZAmgvT/B8LnQdoBXnd1mFrm3/OQWu5jBD7Pde2pUwrLvcuCV3owmqgk
+         XlIvDio74/p9/BrE23eS2PHlqDurSf4u+YSlWEppYh3pJC3ip8x7/gXOOfG7J+UOPLP8
+         zeDyPjPGpvA6MZ0cCs3qcoCzXCF9escSKH3mby1H+qH9WQHyt6owlseD/6GrXnRN1yQ+
+         NW8FrgCERE6PGoHiBrZ6/4jotamvfLTpWQOCkJxhmQYVSMjQJ3OgK1df0HAyZcWqEqEX
+         uO5A==
+X-Forwarded-Encrypted: i=1; AFNElJ+yUt5EIh8pXeLL6oeagWpPCchk6IbGbjpYMITItb2iVl1rZCmtxxw6a1aVt3/AN+oWrhRr274LdxMr@vger.kernel.org
+X-Gm-Message-State: AOJu0YzDLYZQdEOjvSG3IYUwvKZzbCQq3CxawN/GUyGQyeC+RBYggXvV
+	TtwNPM0zC48ud2cSaSg6np/01qsWFTsfvEDtLcE5pQ0GBWMmPQbrU4K0BaDDclgwXoI=
+X-Gm-Gg: Acq92OFuiV6tme4HBPuWpRhkaWLFymOAD2hLcOxU1nMmGdG56rKdgjwoh5O2THrXfFR
+	OHd7425gufrPZHZA7nzZ1yngbU4H86RASQXuS9Fr8Ia5Edi8Ywv88lZkYnfvdRZIETdL8cvNpL1
+	cXb5BeKmvbBAugwV/0334zENSY/qI8SvtwjkCsVbhI1E8kyEyJf0ERo06Z0ee4A0b1YcNngo0/u
+	yVYTajfLtPOJpxjTH7ABQwW8F7GuvXxUlaqUy4Q/dNOhruSBcH+NBgPvtm/f9cDefGK8NCrJ4Pe
+	8tVFwQcERV1T6PNj6mO+VJIQ5JNvIUe4bzGoctC/GmRdVLMh4CUqlCyNRRHQJrpGvxSkH36U7n1
+	87mTzzaoiJxf3ExkcRhIs6ZVrQi76udt5JpgTKvwygua07e4mVjcBEG6qW6cDANCf2Hw9wWan9T
+	Xpeo5392wGA6XO1bFbhTz/MColGIQ4NZVy
+X-Received: by 2002:a05:6000:2003:b0:43b:4136:1e6f with SMTP id ffacd0b85a97d-45eb38e4b46mr32483028f8f.38.1779804435027;
+        Tue, 26 May 2026 07:07:15 -0700 (PDT)
+Received: from localhost ([140.209.217.212])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45eb6d4ca0dsm35432258f8f.18.2026.05.26.07.07.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2026 07:07:14 -0700 (PDT)
+Date: Tue, 26 May 2026 16:07:11 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Mark Bloch <mbloch@nvidia.com>
+Cc: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
+	Simon Horman <horms@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, "Borislav Petkov (AMD)" <bp@alien8.de>, 
+	Andrew Morton <akpm@linux-foundation.org>, Randy Dunlap <rdunlap@infradead.org>, 
+	Thomas Gleixner <tglx@kernel.org>, Petr Mladek <pmladek@suse.com>, 
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>, Tejun Heo <tj@kernel.org>, Vlastimil Babka <vbabka@kernel.org>, 
+	Feng Tang <feng.tang@linux.alibaba.com>, Christian Brauner <brauner@kernel.org>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Dapeng Mi <dapeng1.mi@linux.intel.com>, 
+	Kees Cook <kees@kernel.org>, Marco Elver <elver@google.com>, 
+	Li RongQing <lirongqing@baidu.com>, Eric Biggers <ebiggers@kernel.org>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org, Gal Pressman <gal@nvidia.com>, 
+	Dragos Tatulea <dtatulea@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, Shay Drori <shayd@nvidia.com>, 
+	Moshe Shemesh <moshe@nvidia.com>
+Subject: Re: [PATCH net-next 3/3] net/mlx5: Apply devlink default eswitch
+ mode during init
+Message-ID: <ahWm4NXph9gdazV_@FV6GYCPJ69>
+References: <20260521072434.362624-1-tariqt@nvidia.com>
+ <20260521072434.362624-4-tariqt@nvidia.com>
+ <ahVPASuh4BZGOfx0@FV6GYCPJ69>
+ <8c8df8da-62a9-49e8-84eb-572d54cfeb1f@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260526-rpc-kernel-bugs-v1-6-e251306ccca9@oracle.com>
-References: <20260526-rpc-kernel-bugs-v1-0-e251306ccca9@oracle.com>
-In-Reply-To: <20260526-rpc-kernel-bugs-v1-0-e251306ccca9@oracle.com>
-To: Jeff Layton <jlayton@kernel.org>, NeilBrown <neil@brown.name>, 
- Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
- Tom Talpey <tom@talpey.com>
-Cc: linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org, 
- Chuck Lever <chuck.lever@oracle.com>
-X-Mailer: b4 0.16-dev-da966
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5729;
- i=chuck.lever@oracle.com; h=from:subject:message-id;
- bh=btxNslOv5ALJmWJZpkmzlxHkTUyTS1TxMa23AKk7NO0=;
- b=owEBbQKS/ZANAwAKATNqszNvZn+XAcsmYgBqFaHJk5LKhthyMp9u0djcbfLqgC4L9rHG5oF7U
- EZdUFByPouJAjMEAAEKAB0WIQQosuWwEobfJDzyPv4zarMzb2Z/lwUCahWhyQAKCRAzarMzb2Z/
- l1+pD/4i8OS5ew2M/E/c5u2o+uqZgAHcgEBNaoMSDGMghMvp83xu4KeRAWWR4aP+aFwGrPERHVx
- BRDe9Iz67dX4/kEORlWGNMIxCfEEjFPSpJqoQ/Jl/2fYAZVoRhO826AaQBplQtmj0FErGBI4a4T
- SO17GhyetaSGT/JNCV5Cgy0hk1BvzborZxZWFplYRtNmjdgKtCiNRKicHsa78HPWLFsGa66JPEr
- jzK0i2OCCCkH6l+CeiH8ffKeYnsI2L2Kc75T/RTFdthC0RhRlHwIwKJgoAcXt2chm/lcaAwpGIH
- EEur7OUwGjXzYckHT2ejSAlDx3Jeaud154r2wCds8+i7w0utIasB+7ULBNgsao24751iw+A60l7
- HWyH3ekmKC0q/pr7QhQkjR2VihvPyZw+mOn/6cnOCW6tsqvM1F1jCc3fASpw5s17hLy5ZejP4vA
- EzvDg+mJiucKNI1IBmcUMsGY4F3jW737HNHd1ZAiI9qTdYcz8Aer8WSsriFFQ62JofYMThG6yOp
- OIcsxSgaIG7gjwkKP8gO3s2Aiv8VNXtJuoFQoz3LXRqFHJu9DdSqIcu+Ep2vcImt904ngPPqkBi
- nPkQc+sfTyDBiOsvLrrmaugtNlJVkfhXwZjCHkA9iioymSrioViouRcy0vXzzsnuhQA8fEJP7Uv
- V54gJbsBMtKNLHA==
-X-Developer-Key: i=chuck.lever@oracle.com; a=openpgp;
- fpr=28B2E5B01286DF243CF23EFE336AB3336F667F97
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8c8df8da-62a9-49e8-84eb-572d54cfeb1f@nvidia.com>
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21296-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	DMARC_NA(0.00)[resnulli.us];
+	TAGGED_FROM(0.00)[bounces-21297-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[38];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cel@kernel.org,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
+	NEURAL_HAM(-0.00)[-0.989];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,oracle.com:mid,oracle.com:email]
-X-Rspamd-Queue-Id: 1092D5D6A5B
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,nvidia.com:email,resnulli-us.20251104.gappssmtp.com:dkim]
+X-Rspamd-Queue-Id: C9EC25D7272
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Chuck Lever <chuck.lever@oracle.com>
+Tue, May 26, 2026 at 11:44:46AM +0200, mbloch@nvidia.com wrote:
+>
+>
+>On 26/05/2026 10:44, Jiri Pirko wrote:
+>> Thu, May 21, 2026 at 09:24:34AM +0200, tariqt@nvidia.com wrote:
+>>> From: Mark Bloch <mbloch@nvidia.com>
+>>>
+>>> Apply devlink default eswitch mode for mlx5 devices after successful
+>>> device initialization while holding the devlink instance lock.
+>>>
+>>> At this point the devlink instance is registered and the mlx5 devlink
+>>> operations are available, so the default eswitch mode can be applied to
+>>> the matching PCI devlink handle.
+>>>
+>>> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+>>> Reviewed-by: Shay Drori <shayd@nvidia.com>
+>>> Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+>>> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+>>> ---
+>>> drivers/net/ethernet/mellanox/mlx5/core/main.c | 17 +++++++++++++++++
+>>> 1 file changed, 17 insertions(+)
+>>>
+>>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+>>> index 0c6e4efe38c8..4528097f3d84 100644
+>>> --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
+>>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+>>> @@ -1391,6 +1391,21 @@ static void mlx5_unload(struct mlx5_core_dev *dev)
+>>> 	mlx5_free_bfreg(dev, &dev->priv.bfreg);
+>>> }
+>>>
+>>> +static void mlx5_devl_apply_default_esw_mode(struct mlx5_core_dev *dev)
+>>> +{
+>>> +	struct devlink *devlink = priv_to_devlink(dev);
+>>> +	int err;
+>>> +
+>>> +	if (!MLX5_ESWITCH_MANAGER(dev))
+>>> +		return;
+>>> +
+>>> +	devl_assert_locked(devlink);
+>>> +	err = devl_apply_default_esw_mode(devlink);
+>>> +	if (err)
+>>> +		mlx5_core_warn(dev, "Couldn't apply default eswitch mode, err %d\n",
+>>> +			       err);
+>>> +}
+>>> +
+>>> int mlx5_init_one_devl_locked(struct mlx5_core_dev *dev)
+>>> {
+>>> 	bool light_probe = mlx5_dev_is_lightweight(dev);
+>>> @@ -1437,6 +1452,7 @@ int mlx5_init_one_devl_locked(struct mlx5_core_dev *dev)
+>>> 		mlx5_core_err(dev, "mlx5_hwmon_dev_register failed with error code %d\n", err);
+>>>
+>>> 	mutex_unlock(&dev->intf_state_mutex);
+>>> +	mlx5_devl_apply_default_esw_mode(dev);
+>> 
+>> I wonder how we can make this work for all. I mean, other driver would
+>> silently ignore this command like arg, right? Any idea how to make all
+>> drivers follow the arg from very beginning?
+>> 
+>
+>I have a follow-up series that adds the call to all drivers which support
+>setting eswitch mode. When going over the other drivers, what I found is
+>that the right point to apply the default is driver specific, drivers
+>I have patch for:
+>
+>46e16c6d9836 net: Apply devlink esw mode defaults
+>ab4f54102ba9 bnxt_en: Apply devlink default eswitch mode during init
+>b48cce1607bb liquidio: Apply devlink default eswitch mode during init
+>4ea54b0fe04a ice: Apply devlink default eswitch mode during init
+>b7faddaa1c90 octeontx2-af: Apply devlink default eswitch mode during init
+>74b0c22c47b9 octeontx2-pf: Apply devlink default eswitch mode during init
+>5000e4c3d768 nfp: Apply devlink default eswitch mode during init
+>97a218e95e41 netdevsim: Apply devlink default eswitch mode during init
+>
+>I don't think doing this generically from devlink is realistic. devlink
+>doesn't really know when a given driver is ready to change eswitch mode.
+>Some drivers need SR-IOV state, representor setup, or other init pieces to
+>be ready first, and the locking is not identical across drivers either.
 
-Read chunk position and length validation is currently scattered
-across three consumer functions: svc_rdma_read_data_item(),
-svc_rdma_read_multiple_chunks(), and svc_rdma_read_call_chunk().
-Each independently guards against the same class of unsigned
-arithmetic underflow from untrusted wire values. Any new consumer
-of the parsed Read chunk list must replicate these checks or risk
-re-introducing the defects fixed by earlier patches in this series.
 
-Add pcl_check_read_chunk_positions() to consolidate position and
-length validation into a single post-decode pass, called from
-svc_rdma_xdr_decode_req() after all three chunk lists have been
-parsed and the inline body length is known. The pass verifies
-three properties:
+Low hanging fruit would be just to call ops->eswitch_mode_set at the end
+of register. Multiple reasons:
 
- - Each Read chunk's inline-body offset (its unreduced-stream
-   position minus the cumulative length of preceding Read chunks)
-   falls within the inline body length, or within the Call chunk
-   length for interleaved reads.
+1) end of devl_register is exactly the point userspace is free to issue
+   the eswitch mode set. Driver should be ready to handle it.
+2) all drivers would transparently get this functionality, without
+   actually knowing this kernel command line arg ever existed, without
+   odd wiring call of related exported function. I prefer that stongly.
+3) you should add a there warning for the case this arg is passed yet
+   the driver does not implement eswitch_mode_set. User should
+   get a feedback like this, not silent ignore.
 
- - Adjacent Read chunk positions do not overlap: cumulative read
-   bytes at each transition do not exceed the next position.
+The only loose end is see it the void return of devl_register().
+Multiple ways to handle the possibly failed eswitch_mode_set(). I would
+probably just go for pr_warn, seems to be the most correct.
 
- - Each chunk length does not exceed the receive context's page
-   budget.
+Make sense?
 
-Malformed frames are rejected before reaching any consumer. The
-existing consumer-side guards remain as defense in depth.
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- include/linux/sunrpc/svc_rdma_pcl.h     |  2 ++
- net/sunrpc/xprtrdma/svc_rdma_pcl.c      | 61 +++++++++++++++++++++++++++++++--
- net/sunrpc/xprtrdma/svc_rdma_recvfrom.c |  3 ++
- 3 files changed, 63 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/sunrpc/svc_rdma_pcl.h b/include/linux/sunrpc/svc_rdma_pcl.h
-index 655681cf8fed..6346d8cf2587 100644
---- a/include/linux/sunrpc/svc_rdma_pcl.h
-+++ b/include/linux/sunrpc/svc_rdma_pcl.h
-@@ -119,6 +119,8 @@ extern bool pcl_alloc_call(struct svc_rdma_recv_ctxt *rctxt, __be32 *p);
- extern bool pcl_alloc_read(struct svc_rdma_recv_ctxt *rctxt, __be32 *p);
- extern bool pcl_alloc_write(struct svc_rdma_recv_ctxt *rctxt,
- 			    struct svc_rdma_pcl *pcl, __be32 *p);
-+extern bool pcl_check_read_chunk_positions(struct svc_rdma_recv_ctxt *rctxt,
-+					   unsigned int inline_len);
- extern int pcl_process_nonpayloads(const struct svc_rdma_pcl *pcl,
- 				   const struct xdr_buf *xdr,
- 				   int (*actor)(const struct xdr_buf *,
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_pcl.c b/net/sunrpc/xprtrdma/svc_rdma_pcl.c
-index 18d1045799ce..8623722790f2 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_pcl.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_pcl.c
-@@ -149,9 +149,6 @@ bool pcl_alloc_call(struct svc_rdma_recv_ctxt *rctxt, __be32 *p)
-  *              cl_count is updated to be the number of chunks (ie.
-  *              unique position values) in the Read list.
-  *      %false: Memory allocation failed.
-- *
-- * TODO:
-- * - Check for chunk range overlaps
-  */
- bool pcl_alloc_read(struct svc_rdma_recv_ctxt *rctxt, __be32 *p)
- {
-@@ -229,6 +226,64 @@ bool pcl_alloc_write(struct svc_rdma_recv_ctxt *rctxt,
- 	return true;
- }
- 
-+/**
-+ * pcl_check_read_chunk_positions - Validate Read chunk positions
-+ * @rctxt: Ingress receive context with populated chunk lists
-+ * @inline_len: Length of the inline RPC body after the transport header
-+ *
-+ * Read chunk positions are offsets in the unreduced XDR stream
-+ * (RFC 8166 Section 3.4.4), so each position includes the
-+ * cumulative length of preceding Read chunks. This function
-+ * subtracts those lengths to recover the inline-body offset
-+ * before comparing against @inline_len or the Call chunk length.
-+ *
-+ * Rejects frames where a Read chunk's inline-body offset exceeds
-+ * the bound, where adjacent Read chunks overlap, or where any
-+ * single chunk length exceeds the page budget.
-+ *
-+ * Return values:
-+ *       %true: Read chunk positions and lengths are valid
-+ *      %false: Malformed chunk list detected
-+ */
-+bool pcl_check_read_chunk_positions(struct svc_rdma_recv_ctxt *rctxt,
-+				    unsigned int inline_len)
-+{
-+	unsigned int max_len, bound, total_read;
-+	struct svc_rdma_chunk *chunk, *next;
-+
-+	max_len = rctxt->rc_maxpages << PAGE_SHIFT;
-+
-+	if (!pcl_is_empty(&rctxt->rc_call_pcl)) {
-+		chunk = pcl_first_chunk(&rctxt->rc_call_pcl);
-+		if (chunk->ch_length > max_len)
-+			return false;
-+		bound = chunk->ch_length;
-+	} else {
-+		bound = inline_len;
-+	}
-+
-+	if (pcl_is_empty(&rctxt->rc_read_pcl))
-+		return true;
-+
-+	total_read = 0;
-+	pcl_for_each_chunk(chunk, &rctxt->rc_read_pcl) {
-+		if (chunk->ch_position - total_read > bound)
-+			return false;
-+		if (chunk->ch_length > max_len)
-+			return false;
-+
-+		next = pcl_next_chunk(&rctxt->rc_read_pcl, chunk);
-+		if (!next)
-+			break;
-+
-+		if (chunk->ch_position + chunk->ch_length > next->ch_position)
-+			return false;
-+		total_read += chunk->ch_length;
-+	}
-+
-+	return true;
-+}
-+
- static int pcl_process_region(const struct xdr_buf *xdr,
- 			      unsigned int offset, unsigned int length,
- 			      int (*actor)(const struct xdr_buf *, void *),
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c b/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-index f6a7533a7555..d64b5f78ce8a 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-@@ -724,6 +724,9 @@ static int svc_rdma_xdr_decode_req(struct xdr_buf *rq_arg,
- 
- 	rq_arg->head[0].iov_base = rctxt->rc_stream.p;
- 	hdr_len = xdr_stream_pos(&rctxt->rc_stream);
-+	if (!pcl_check_read_chunk_positions(rctxt,
-+					    rq_arg->head[0].iov_len - hdr_len))
-+		goto out_inval;
- 	rq_arg->head[0].iov_len -= hdr_len;
- 	rq_arg->len -= hdr_len;
- 	trace_svcrdma_decode_rqst(rctxt, rdma_argp, hdr_len);
-
--- 
-2.54.0
-
+>
+>Also, since this knob is only about eswitch mode, I don't think we need to
+>touch every devlink driver. Drivers that don't implement eswitch_mode_set()
+>would just ignore it anyway. The follow-up only wires the default into
+>drivers that actually support changing eswitch mode.
+>
+>Mark
+>
+>> 
+>>> 	return 0;
+>>>
+>>> err_register:
+>>> @@ -1538,6 +1554,7 @@ int mlx5_load_one_devl_locked(struct mlx5_core_dev *dev, bool recovery)
+>>> 		goto err_attach;
+>>>
+>>> 	mutex_unlock(&dev->intf_state_mutex);
+>>> +	mlx5_devl_apply_default_esw_mode(dev);
+>>> 	return 0;
+>>>
+>>> err_attach:
+>>> -- 
+>>> 2.44.0
+>>>
+>
 
