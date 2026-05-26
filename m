@@ -1,208 +1,192 @@
-Return-Path: <linux-rdma+bounces-21274-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21275-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0LD9IQFTFWqmUQcAu9opvQ
-	(envelope-from <linux-rdma+bounces-21274-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 10:00:01 +0200
+	id 0JGmH8FWFWpPUgcAu9opvQ
+	(envelope-from <linux-rdma+bounces-21275-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 10:16:01 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5D795D22AA
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 10:00:00 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18E4A5D2520
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 10:16:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9CB3A3046378
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 07:57:03 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D120B300B9F5
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 08:15:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A70CE3CCFC3;
-	Tue, 26 May 2026 07:57:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD53F3B6376;
+	Tue, 26 May 2026 08:15:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IgPyLX33";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="VH9/Lbkk"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="OueVxiIY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from pdx-out-006.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-006.esa.us-west-2.outbound.mail-perimeter.amazon.com [52.26.1.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B443CC337
-	for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 07:57:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 653C12FFF8B
+	for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 08:15:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.26.1.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779782222; cv=none; b=sN92I5d9NpWoC4dEf4mRrlgf54a5/rXLuLiIylmmAcj+NrOJEyuJHNf6uIeR3vAb3pd2OGQ49ZalJLrGz1nkc2B4BoM2J7BAKwvPfGsm6tfzj93rxcx5By3JhIlg/o2OZyvr3Ltf9uxCRfD8FRdzJ1ERBxa/OuRjx2QtoWdBaH8=
+	t=1779783358; cv=none; b=n29Up0nmJNfsAg6XNmkgFeTT3+i+blzVudeOwoRvUjdjwR8bIsbcNBP/MT4wsgjZvWBgq7tqH4EI6blIy+D8LCUbjsmcMYWlyOdwmkojA8YR8qGbN92m8hD/9hLXitmnEQp9ay79+bnIcACiNnhj0Pk2avd/JK7Ta7xvkokhts8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779782222; c=relaxed/simple;
-	bh=/PP9KzfPgPPYnf2CrAWDmtazkrFsrTswwQu774a4yhU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gwx+5FTzxD56BU2iD/34DW6cUx7Y+M6y4pTk6yZXgZRUCTQu1ilstT5YzjMxONMZH2i+J72HDE7BEkp/lKQqOND0xbbAQcgAqUZnk9blhaZ9PQ9CEetTgZedKdndnZY94dgWxjkFhjBXJ9u+xO5i9UbX3YTx8yFoNkIExmCa78M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IgPyLX33; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=VH9/Lbkk; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1779782220;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xY7mocn0KmK7ngWOScBkr1Rtj5DdaTsx0/KZ/kJfr9c=;
-	b=IgPyLX33s/b/IOUvARHD0oXqIfJNxDFT/QeiDUJ+pfGayc/0Du3wQKoe9qVOpnz3dfovaZ
-	+YbAcM01chNX8nEkQbZ485jRlhPDYlPE0Cd/chW+ygSBfpjC93AVNi8hvFKfcPn6SDBqkr
-	R5vPj5qFA/Vd0uIq8VRQrdRCYui0AgQ=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-266-8fKiYLBjMJyuHDu1fc4EwA-1; Tue, 26 May 2026 03:56:58 -0400
-X-MC-Unique: 8fKiYLBjMJyuHDu1fc4EwA-1
-X-Mimecast-MFC-AGG-ID: 8fKiYLBjMJyuHDu1fc4EwA_1779782217
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-48fd33b4921so66518575e9.2
-        for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 00:56:58 -0700 (PDT)
+	s=arc-20240116; t=1779783358; c=relaxed/simple;
+	bh=fF4vvZ8uuDL6vM/xBpS89mo4qka3xdV/D6kpWEYMSPk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kJtpBBvZlVjuxQdY+5PYKiAyr5v1PAdfVug7lCUa0rmTmJfhFzLes/UAqcLrtkL7ZSMUzl0U2eFazwvQ4G5LWgtW9rogZdhAE0vDw/1odu5ZgOfzqgPJbigw+bbJGQo71hF8k+fT/oSlehI+YGKNBiHfwVsLONcTbVCF68eu7es=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=OueVxiIY; arc=none smtp.client-ip=52.26.1.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1779782217; x=1780387017; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xY7mocn0KmK7ngWOScBkr1Rtj5DdaTsx0/KZ/kJfr9c=;
-        b=VH9/LbkkwS0NbcLcsLN7YRwBlTeWuxFwtIaKrqB79eMwECjIdNus0UxxWUecS2QfrG
-         6qsHfHvvlLq8YIaA94GjA0AG7pzaz9VS3RT6D8IuFT7D3XqN2qsSkn7t47HkKeyr8bPr
-         LWqkRerrmpTh9Ltbi9L52Dce161lmnz0b///4udVT5xxGlfND8meHV6KeM3jT09feH0q
-         mJu+ezHC6w/tPJny48v3Ej7WlrMMTVTOadmQXmBzOcFOzwkxrkbWjFwmiZ9OQNfV9qNs
-         Eb2tcTX2jF6vZss7DD412m6GZAm6nJN5eIJKH0m5K5Fpun5S1acDVz6Ujr0XAm735mhA
-         swnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779782217; x=1780387017;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xY7mocn0KmK7ngWOScBkr1Rtj5DdaTsx0/KZ/kJfr9c=;
-        b=XH24xogbehEPxmyicsyf/9GUL683603c5Ht8FNtk50cuRIaHHS6P7MdQm/XusGYqya
-         IFknxQQFNDud965T9HoJ8HPoz4oqzNCp4YDXxXpmGAzYGAVIze9wl8cMndaBGcUHO7H5
-         I7FjQXNsi0444l36CyQ05h4sSCkN+g1l8jVvJ7x/jx9fe9l9t8iDok2T7JWcO7HesiRO
-         HiAuVPi4WTUsdeWZnauMuPHtcohnSOU7rX2Il2frE2MdUIl1tNR6/FBi7+3uy6KhDu2i
-         vEZx5sqHnDmvjRa2IqKQy6gi9Jiyv09N1uFb3p7FUBuNsQknveRCQJCAoAnc6pSdqRao
-         k1uQ==
-X-Forwarded-Encrypted: i=1; AFNElJ+SFS5O0b+7YfjAid9cjJEgdp5L0Au0QHCDCO4A7Bs7h93KIw1O7ApAbnRq4ldIQlKTSjA17VEDoKxd@vger.kernel.org
-X-Gm-Message-State: AOJu0YwhWf0bw1fRZ4gWNf1ZaWL08lx4KDhQw1oYHVSUhrUuxdwzaKs/
-	t6YwsMoDFmel2H95cog4lY2cmvvVy1cnr7ZVkn42RMu7cnU7w8/k/v3p0P7BKTooxEoDpjP+EDz
-	o+I/DDZimEBep7WD5IN1GAcWnR0ctfGZdCDQ2tD5gVfwyo4bxfx3fWPIgB2QmYUmric3ZBF4=
-X-Gm-Gg: Acq92OGgLillH/yBBf8jExpGS2ofNeGqQJHUAEt5qtFdxxHuyOExilCMxgsqA0S7aL2
-	vazP3+w0LCZUif2Hi1royNrmhHdk2fN9J5Mm3HW/Ln2KyMCNmVIOUTlOZOZJRgtwaUZAF0IdJW/
-	SOmoowu9OsLhDUv+Vz9RKd8InBs55TWwaOejH1XURk80Z/kFbF1J03bB86PnpPUfxiQfUnT0i8D
-	448LPsOjUybmwG5WDZUSRZyWVD19soe4mcrBsQH6x5/uRj2DDnDc9ypyw4Q0iGSc9n8R+qcR1ZI
-	hoxExGt/5uhckgYNcDBcRR6RpxJCaYq+cSbD7x7v5HqXwXsO9L/4NY/I9Q9qmNNDEpatYuubpH3
-	PZkr9YsCAmrOGsV7c3IUKHzcEI+aod+m6DGNWM+BEW7i4TCVcISb5JPJ8ZQ==
-X-Received: by 2002:a05:600d:8499:20b0:48a:5970:1fe1 with SMTP id 5b1f17b1804b1-4904248ad4cmr214893675e9.4.1779782217130;
-        Tue, 26 May 2026 00:56:57 -0700 (PDT)
-X-Received: by 2002:a05:600d:8499:20b0:48a:5970:1fe1 with SMTP id 5b1f17b1804b1-4904248ad4cmr214893345e9.4.1779782216746;
-        Tue, 26 May 2026 00:56:56 -0700 (PDT)
-Received: from [192.168.88.32] ([212.105.155.152])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-490454a0b82sm322436755e9.9.2026.05.26.00.56.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 May 2026 00:56:56 -0700 (PDT)
-Message-ID: <caa33c6c-2864-47c1-a111-06422d3723c9@redhat.com>
-Date: Tue, 26 May 2026 09:56:55 +0200
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1779783357; x=1811319357;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=yxfQLJOD9aDALl9RRgcZj9Ipn9e/KRO/IJqtaAuGan8=;
+  b=OueVxiIYgd2zF9FDJ+7+SJTX3DWw2SwOozfTIHkuIm5yIwZrzyF8GkUG
+   9agcGaGAHvpB07sfeq9+ndHPerVKFJqP8gB6h2StOH/OLGJFxE3wIXBTU
+   urROgbk5aG7j+o2C6NMivE4NzOnTGXwDJh/ThLvIYdqCFA/+TBxRmx0xg
+   DiahZ4HqaxFMPENqteH9Y/p5bRns9q1kaJofLwBuMmKMRyxHtiB0OJsuB
+   TK81zi3FBIVXcMPXPe9f1xSPYTUwvKOPRm59AjO38mirnfAE7HOs8QdHX
+   ylqQLfX/ETpA+xVKGm1IxMgb/ydKrUVRYNKUweP3s5KEEyZhpu0mpmo9j
+   w==;
+X-CSE-ConnectionGUID: GLuK4DSpREiruSnYilQpUA==
+X-CSE-MsgGUID: ILtKVZzvQZ+6+l4YPWeRVg==
+X-IronPort-AV: E=Sophos;i="6.24,169,1774310400"; 
+   d="scan'208";a="20485536"
+Received: from ip-10-5-0-115.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.0.115])
+  by internal-pdx-out-006.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2026 08:15:54 +0000
+Received: from EX19MTAUWA002.ant.amazon.com [205.251.233.178:21290]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.43.130:2525] with esmtp (Farcaster)
+ id 4ccd1ae2-c10f-4f03-8866-1265dd171d5a; Tue, 26 May 2026 08:15:54 +0000 (UTC)
+X-Farcaster-Flow-ID: 4ccd1ae2-c10f-4f03-8866-1265dd171d5a
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
+ Tue, 26 May 2026 08:15:52 +0000
+Received: from dev-dsk-ynachum-1b-0ecf7b87.eu-west-1.amazon.com
+ (10.13.226.176) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37; Tue, 26 May 2026
+ 08:15:50 +0000
+From: Yonatan Nachum <ynachum@amazon.com>
+To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC: <mrgolin@amazon.com>, <sleybo@amazon.com>, <matua@amazon.com>,
+	<gal.pressman@linux.dev>, Yonatan Nachum <ynachum@amazon.com>
+Subject: [PATCH for-rc] RDMA/efa: Validate SQ ring size against max LLQ size
+Date: Tue, 26 May 2026 08:15:36 +0000
+Message-ID: <20260526081536.1203553-1-ynachum@amazon.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] net/mlx4: avoid GCC 10 __bad_copy_from() false
- positive
-To: Tariq Toukan <tariqt@nvidia.com>, Yao Sang <sangyao@kylinos.cn>,
- "David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>,
- "Gustavo A . R . Silva" <gustavoars@kernel.org>, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org
-References: <20260520102130.423044-1-sangyao@kylinos.cn>
- <31260e8f-15c3-4738-b5b6-67b0ea2d3b0e@nvidia.com>
-From: Paolo Abeni <pabeni@redhat.com>
-Content-Language: en-US
-In-Reply-To: <31260e8f-15c3-4738-b5b6-67b0ea2d3b0e@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D041UWB003.ant.amazon.com (10.13.139.176) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
+X-Spamd-Result: default: False [-7.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
 	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21275-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21274-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ynachum@amazon.com,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[amazon.com:+];
+	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pabeni@redhat.com,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	NEURAL_HAM(-0.00)[-0.999];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,kylinos.cn:email]
-X-Rspamd-Queue-Id: D5D795D22AA
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 18E4A5D2520
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 5/25/26 12:47 PM, Tariq Toukan wrote:
-> On 20/05/2026 13:21, Yao Sang wrote:
->> mlx4_init_user_cqes() allocates a single PAGE_SIZE buffer and fills it
->> with the CQE initialization pattern. When entries_per_copy >= entries,
->> the function copies array_size(entries, cqe_size) bytes from that buffer
->> to userspace.
->>
->> That copy is actually bounded by PAGE_SIZE in the else branch because
->> entries_per_copy >= entries implies entries * cqe_size <= PAGE_SIZE.
->> However, GCC 10 does not derive that constraint and falsely triggers
->> __bad_copy_from() in mlx4_init_user_cqes().
->>
->> Cap the single copy_to_user() length to PAGE_SIZE to make that bound
->> explicit and avoid the GCC 10 false positive.
->>
->> Fixes: f69bf5dee7ef ("net/mlx4: Use array_size() helper in copy_to_user()")
->> Signed-off-by: Yao Sang <sangyao@kylinos.cn>
->> ---
->>   drivers/net/ethernet/mellanox/mlx4/cq.c | 5 ++++-
->>   1 file changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/ethernet/mellanox/mlx4/cq.c b/drivers/net/ethernet/mellanox/mlx4/cq.c
->> index e130e7259275..7b024a5e13c8 100644
->> --- a/drivers/net/ethernet/mellanox/mlx4/cq.c
->> +++ b/drivers/net/ethernet/mellanox/mlx4/cq.c
->> @@ -314,8 +314,11 @@ static int mlx4_init_user_cqes(void *buf, int entries, int cqe_size)
->>   			buf += PAGE_SIZE;
->>   		}
->>   	} else {
->> +		size_t copy_bytes = min_t(size_t, array_size(entries, cqe_size),
->> +					 PAGE_SIZE);
->> +
->>   		err = copy_to_user((void __user *)buf, init_ents,
->> -				   array_size(entries, cqe_size)) ?
->> +				   copy_bytes) ?
->>   			-EFAULT : 0;
->>   	}
->>   
-> 
-> Thanks for your patch.
-> 
-> This is a compiler issue.
-> Did you try fixing it there first?
+Validate the SQ ring size against the device's max LLQ size. This
+ensures that when using 128-byte WQEs, userspace cannot exceed the queue
+limits.
 
-AFAICS gcc 10 is a supported version, the kernel should build correctly
-with it, right?
+On create QP, userspace provides the SQ ring size (depth x WQE size)
+which is validated against the max LLQ size.
 
-Also AFAICS this is not fastpath so an additional check should not be
-problematic? Perhaps a warn instead would be more palatable?
+Fixes: 40909f664d27 ("RDMA/efa: Add EFA verbs implementation")
+Reviewed-by: Michael Margolin <mrgolin@amazon.com>
+Signed-off-by: Yonatan Nachum <ynachum@amazon.com>
+---
+ drivers/infiniband/hw/efa/efa_verbs.c | 27 ++++++++++++++++++---------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
 
-		if (WARN_ON_ONCE(array_size(entries, cqe_size) > PAGE_SIZE))
-			// ...
-
-/P
+diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+index 395290ab0584..aa1a615bb341 100644
+--- a/drivers/infiniband/hw/efa/efa_verbs.c
++++ b/drivers/infiniband/hw/efa/efa_verbs.c
+@@ -598,7 +598,8 @@ static int qp_mmap_entries_setup(struct efa_qp *qp,
+ }
+ 
+ static int efa_qp_validate_cap(struct efa_dev *dev,
+-			       struct ib_qp_init_attr *init_attr)
++			       struct ib_qp_init_attr *init_attr,
++			       u32 sq_ring_size)
+ {
+ 	if (init_attr->cap.max_send_wr > dev->dev_attr.max_sq_depth) {
+ 		ibdev_dbg(&dev->ibdev,
+@@ -607,6 +608,14 @@ static int efa_qp_validate_cap(struct efa_dev *dev,
+ 			  dev->dev_attr.max_sq_depth);
+ 		return -EINVAL;
+ 	}
++
++	if (sq_ring_size > dev->dev_attr.max_llq_size) {
++		ibdev_dbg(&dev->ibdev,
++			  "qp: requested sq ring size[%u] exceeds the max[%u]\n",
++			  sq_ring_size, dev->dev_attr.max_llq_size);
++		return -EINVAL;
++	}
++
+ 	if (init_attr->cap.max_recv_wr > dev->dev_attr.max_rq_depth) {
+ 		ibdev_dbg(&dev->ibdev,
+ 			  "qp: requested receive wr[%u] exceeds the max[%u]\n",
+@@ -676,14 +685,6 @@ int efa_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init_attr,
+ 	ucontext = rdma_udata_to_drv_context(udata, struct efa_ucontext,
+ 					     ibucontext);
+ 
+-	err = efa_qp_validate_cap(dev, init_attr);
+-	if (err)
+-		goto err_out;
+-
+-	err = efa_qp_validate_attr(dev, init_attr);
+-	if (err)
+-		goto err_out;
+-
+ 	err = ib_copy_validate_udata_in_cm(udata, cmd, driver_qp_type, 0);
+ 	if (err)
+ 		goto err_out;
+@@ -705,6 +706,14 @@ int efa_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init_attr,
+ 		goto err_out;
+ 	}
+ 
++	err = efa_qp_validate_cap(dev, init_attr, cmd.sq_ring_size);
++	if (err)
++		goto err_out;
++
++	err = efa_qp_validate_attr(dev, init_attr);
++	if (err)
++		goto err_out;
++
+ 	create_qp_params.uarn = ucontext->uarn;
+ 	create_qp_params.pd = to_epd(ibqp->pd)->pdn;
+ 
+-- 
+2.50.1
 
 
