@@ -1,81 +1,81 @@
-Return-Path: <linux-rdma+bounces-21317-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21318-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OCG2CS+zFWpxYAcAu9opvQ
-	(envelope-from <linux-rdma+bounces-21317-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 16:50:23 +0200
+	id qFPFJQ21FWpxYAcAu9opvQ
+	(envelope-from <linux-rdma+bounces-21318-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 16:58:21 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D4105D7EEF
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 16:50:22 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 959D25D828F
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 16:58:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 98B0231BE598
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 14:43:58 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 21C7B307183F
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 14:44:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 525DF4014B8;
-	Tue, 26 May 2026 14:42:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7BCF400DEB;
+	Tue, 26 May 2026 14:42:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="yrz6BkTO"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="e1oS92RR"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 744E1405872
-	for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 14:42:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB2ED400E0B
+	for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 14:42:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779806566; cv=none; b=IGlFmXyjTa6mp58TuBZX0iFoRI+HsGb4b9JQZ1CzU6x1FjzK0UppYne6k2Ap+dxnCtqYgF8YlE7hazgeHOHetsgRavRjUFAvgQgwH7Fo+8uvoFRIMArwvE5yoyrHusCPlGaXSPx7H/C3mQKExtemvDczFgNqPYe+2A+Z35rCjCk=
+	t=1779806569; cv=none; b=q5citzYYGQMalvuV/Y911BwckXWHiIu5pxjcO1xqtRF3AYAmJMFcTt3/dhFxD/fUXbyQ38sY2qb5psJX9zywBA3gNfREmNGL/Q/esMpQCwPy0sT6IWbYzFNGg3ji07IRZE/CNcjnrjrU8JltSLBhHvznu0d+DgHvd25KkD/TR2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779806566; c=relaxed/simple;
-	bh=IN8XrRHBqyQJf4RvDB4F9UIWoV8ZolcmZ9pYh+ODDGg=;
+	s=arc-20240116; t=1779806569; c=relaxed/simple;
+	bh=gCmBIGWfMMTfFjAbhZB4UtETUyzQm4uIxJ8qcA9bqkY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ady/z92G7rgTtoxgOf4nv2r7+eHZ4XU5GF3n8W9pgJpDzNZhMSDDOj+Z/moCES8nBpICZQaBjAHLF+GEDzYIDgpbnqeF5/61T3bIe82Vhu5I3Pilu5+FRdCN+WcKNYhb0xv9AlkJ2hN1NDX85FOo1xOvOvSXYO+osoOB7VI0kXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=yrz6BkTO; arc=none smtp.client-ip=209.85.128.67
+	 MIME-Version; b=fxcvTcy2+wbrmrL4x++NFZvGMCiG5DShoaqEq9eV3nQVoGAlrT5P9STH970fBLcHthIHVn98Za1rOZcujxXvCO7w/C4cjZKgYeoR/x7jKdmQICgSoOqMIo+uNJKLWptpavDtSfJlIbMRbzeID77p2HKEbejhno1AqQaUNNUAjNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=e1oS92RR; arc=none smtp.client-ip=209.85.221.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-4906869f0cbso20473775e9.1
-        for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 07:42:44 -0700 (PDT)
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-44dd5cb0f81so7665504f8f.0
+        for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 07:42:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1779806563; x=1780411363; darn=vger.kernel.org;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1779806566; x=1780411366; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=p9ybo2OUCBIL4On7jktasfAHvutgvVVerka/CoM3i5w=;
-        b=yrz6BkTOeMe7Mp/TtWwXiIpKjTC3CEV5MgHZr/EvAyWULcJbzlNWhYZiowCQWu2fqX
-         5FPNP9yzF+3AQXrJMdZoqlS3P798AmyaxDCMoFIgjHpqds3+a1zIrbZuqdgAUgzNJ0G5
-         EtplcqUYx5+Gaxqa+8SFmgJzZwLZghnfpLyTlKLey7hrT4AjZAL5PghnHZ7F4O0LlN6L
-         81S5L7sGiurX0qq1lksF1CvLqyRUYgv1ZHC77c1B+xIYTpdzsZXJZYevMHTcI447nrPk
-         en6BTuCuLa2PKyRHw5BKzDGt0s3HWPBW3Y+BZWSrgdoPAeZEyGEmiUxTjG8ENoFUv/+o
-         HCmQ==
+        bh=3Db22UDEfVqdoooR5TLw2VHfejFh6/Z68awKlDrIBgI=;
+        b=e1oS92RRwCLG/xGHrmOBbohYcPlGleJbNi+cBmTiQNxO/36YVOGBh9wDPCJzQcNJM0
+         7SBLKHw4vgDdh8XmvXibAjMpz6+a657zc1ZPB5JvYGu3sTXQIhOHagc+TnYHa/aOpYdR
+         I8sRolrYTDENvhnjU98yMH4JS6uIkCb6FMyOZl+w1iyOXX59QisIhldf9HItw4zwQZIm
+         z4s1rnHxvCkGQxOvrZ9mSw7/lYKTjhsDhR0TN92lXkcWdsPQP+9Rv5frL4q/Uz/rvyaa
+         NYVHd/APUMOMxXtqWaf0pAbx04mlNY2g+pUO8y/IGZOs+9X+TIPNEPqmTmj6zIGWfd74
+         ts2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779806563; x=1780411363;
+        d=1e100.net; s=20251104; t=1779806566; x=1780411366;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=p9ybo2OUCBIL4On7jktasfAHvutgvVVerka/CoM3i5w=;
-        b=b7KOte0qS28zYLfeVk0Fcpy6kfpYElOgsgJXaSJl0YveFLgcMF9MErKQfCcmKN5bdZ
-         9ANDDi3JaBRn10/+JFD1fhzcUQXqZ/J2XA7pjP/DoVurzlc4B6koKxPkZPZmY7SRKazN
-         wGna/EYzpXBXN/FeTcdUvZzgX6g4L/RHgNzxPHVknnmowYNHG75OozH5BlnzlSC8Ti/G
-         RzJw5aXUILVUx5CELqKVdUk8l1PFJyHyNcEQzS02Wt7y8uv5luN8GJ3RKABOaSqSOJEX
-         0aQHCBbcaaIwEZUHZzt0+t6njibeC0NV2Dc2KW7p3cWsrqnplfJB0ZGocomCRQ1GoqHP
-         9HtQ==
-X-Gm-Message-State: AOJu0YyIRsU1/XXbwbTmslH7/jL0Hh+gvzO2CDUH8ud2/oF1ofcrDxbh
-	X89VmJmnoUE5vm0VyaG7iqEkRSz+3QoU1ickGYJKv0H6z+ZfUSkx0vBlJCOvujuVOwhQXTuWk4M
-	oeLqQIugHKId0
-X-Gm-Gg: Acq92OE3WZnLpyh389UQ5niCtq2pWRLn7+ic4idBab3MhIJsOErtekR/cTr7q0kPqZ3
-	EWuh3PGujYWMXjYf/tBJzVrwj9YSUO016DTpZPdXa1jnY9WSbT2KFTvfxaTi0Bg4bQxJYhsZ37N
-	DzyYW45ldvAsym4TVDkEYrjOzocJ7YpojT5oQD1tJ3vEBl8zqm/14Cnmn45VT+BPWH3nXIB2gaO
-	YtuUG8FSu+mEbwKn0vJlSqrfFErxPG76z6DHomlbcUlrl6POo3HYsqfhJT7sgC3DKRIh03G7dgj
-	El77CCrTSTS1wMqasa+5StmOlfzB0P9pH/7UW2x56szzfl7H7WfMXb0ENW2mbm6vqu12C3POXtx
-	1Uir2Cm53njMzPYmEaIeJIHjFagd7r8UOpOPi7jNMy2bVoAW1yB8ZeJXy8qeE8GkXzX5Z8xsqSs
-	CymoUBzQVoJYVgiGivzn8P7cNZ4HYyKC18
-X-Received: by 2002:a05:600c:46cb:b0:490:40f1:5330 with SMTP id 5b1f17b1804b1-49042482485mr322531255e9.6.1779806562506;
-        Tue, 26 May 2026 07:42:42 -0700 (PDT)
+        bh=3Db22UDEfVqdoooR5TLw2VHfejFh6/Z68awKlDrIBgI=;
+        b=PZeGskQWigjp87EIGozS3MIya8bU+gBLW26vNOhEWW3PpGrmBTSFt2F0yOJwz3+1Cw
+         LTqC9pVmu5RfpW3qoYGaukU65ozQGRCYmhKQgM0XkNMT9/ZtHF4lXGEFtE5uMC0gS0Bi
+         c6UDdnNzpzgBwLlHqOK5x3Q0JdwOcBE5poc+CFveUZsshin7Ecrq5i1kEmUPrZd2vacG
+         XzU9o33ifU6ZRyXNR0jUog49gwSOQzbMJazC4/qsto3nVJaz0DillRomHHZ4aGWhhuaT
+         7ukB1AI25D+KhK2m1V4ZKldqXwwcojOL/jubaLSWmYiC5VRw+7C2NWGFzIha+b2s1Vjh
+         THJw==
+X-Gm-Message-State: AOJu0YwemLCPK6AYXfSj8DgOZ6g+Nng/LDP9o9fI1XoXNg1SKNiDqsZC
+	R5KE0U4c93tf6oa43ugt8uq4haRlKwFO2v5EpffBLSEVxG3TcxDaHFIVztlmmblfXiRAFFNu30Q
+	ZwFZtr6Bt6Q==
+X-Gm-Gg: Acq92OH3UjQPDIpjUpUhg1yIckBGcB9i2o6L+f4lw2X7TFa/jveh+qZzBiaNsBBAf3o
+	wwWItZhEZp9itF6khaJHq8u97m/g95BzLwddI+pYLAI0bSWZYC4uI6XFPIvhO1XLWhWDPNpa7sU
+	AAnTEQuIUwaMWJGAww2ngnH5jNpsRvUsk0o1YSqaVzsNtbItfQj7vJ/awqBxByQM5RcYs4ELeB3
+	5nEu0KgMJNIm+RnZZbbXj9yxkvrGwT1hKibL1ZQjIpfEksrjBnVTunQspsrUu613WjS3HMu3EF5
+	jn8zcSRMLiWAqRCMNmX0EqP1OJpJXE3mnBnWwKD4GTLiYFMd+O+us3x0QcO3yaRjmTHTPZesKQJ
+	CD9nN1233LofKWbv1f/ZJLvtfB23SKDcRDA8n6XdC7h9G/MNQ9wVnxmQ6J5DxZO0YuxthIRD5R0
+	M0APL5I3Z7Wg+UvuQNUaDa6s0tA5LdKfg3b8edjfARnCE=
+X-Received: by 2002:a05:600c:4746:b0:490:3d48:6cb9 with SMTP id 5b1f17b1804b1-4904225f7efmr292533825e9.3.1779806566250;
+        Tue, 26 May 2026 07:42:46 -0700 (PDT)
 Received: from localhost ([140.209.217.212])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-490456274ebsm316082815e9.15.2026.05.26.07.42.41
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45eb6c9b980sm33053496f8f.3.2026.05.26.07.42.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2026 07:42:42 -0700 (PDT)
+        Tue, 26 May 2026 07:42:45 -0700 (PDT)
 From: Jiri Pirko <jiri@resnulli.us>
 To: linux-rdma@vger.kernel.org
 Cc: jgg@ziepe.ca,
@@ -101,9 +101,9 @@ Cc: jgg@ziepe.ca,
 	andrew.gospodarek@broadcom.com,
 	selvin.xavier@broadcom.com,
 	jmoroni@google.com
-Subject: [PATCH rdma-next v7 13/15] RDMA/mlx5: Use UMEM attributes for QP buffers in create_qp
-Date: Tue, 26 May 2026 16:41:50 +0200
-Message-ID: <20260526144152.1422310-14-jiri@resnulli.us>
+Subject: [PATCH rdma-next v7 14/15] RDMA/mlx5: Use UMEM attribute for CQ doorbell record
+Date: Tue, 26 May 2026 16:41:51 +0200
+Message-ID: <20260526144152.1422310-15-jiri@resnulli.us>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260526144152.1422310-1-jiri@resnulli.us>
 References: <20260526144152.1422310-1-jiri@resnulli.us>
@@ -118,7 +118,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -128,7 +128,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[5];
 	DMARC_NA(0.00)[resnulli.us];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21317-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21318-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -139,172 +139,277 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCPT_COUNT_TWELVE(0.00)[24];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	FROM_HAS_DN(0.00)[]
-X-Rspamd-Queue-Id: 7D4105D7EEF
+X-Rspamd-Queue-Id: 959D25D828F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Jiri Pirko <jiri@nvidia.com>
 
-Use the per-attribute UMEM helpers to pin QP buffer umems on
-demand. The QP-type predicate selects between the BUF and RQ_BUF
-attrs; raw-packet SQ uses its own dedicated SQ_BUF attr.
+Add an optional mlx5 driver-namespace UMEM attribute on CQ
+create so userspace can supply the doorbell record buffer
+explicitly. mlx5_ib_db_map_user() resolves the attribute (or
+falls back to the legacy UHW VA) into a struct
+ib_uverbs_buffer_desc and runs a unified lookup-then-pin:
+VA-typed descriptors share a per-page umem across CQ/QP/SRQ
+in the same process, FD-typed descriptors are pinned per call.
 
 Signed-off-by: Jiri Pirko <jiri@nvidia.com>
 ---
 v5->v6:
 - changed to pass attrs instead of udata to ib_umem_get*()
+v4->v5:
+- split mlx5_ib_db_map_user() into a thin attr-resolving wrapper
+  and a static mlx5_ib_db_map_user_desc() taking a desc
+- struct mlx5_ib_user_db_page: store ib_uverbs_buffer_desc instead
+  of user_virt; one match key for both VA and FD entries
+- attr-based callers now share per-page umems with each other
+  and the legacy VA path; single ib_umem_get_desc() call
+- replaced manual page-boundary check with ib_umem_is_contiguous()
 v2->v3:
-- changed to use ib_umem_get_attr_or_va() per-attr
-- added ubuffer->umem / sq->ubuffer.umem to store umem
-- renamed mlx5_qp_buf_slot() -> mlx5_qp_buf_attr()
-- replaced ib_umem_release_non_listed() with ib_umem_release()
+- moved CQ DBR attr to mlx5 driver namespace
+- changed to use ib_umem_get_attr() to get umem
+- added page-crossing check
 ---
- drivers/infiniband/hw/mlx5/qp.c | 46 +++++++++++++++++++++++----------
- 1 file changed, 33 insertions(+), 13 deletions(-)
+ drivers/infiniband/hw/mlx5/cq.c          |  8 +-
+ drivers/infiniband/hw/mlx5/doorbell.c    | 93 +++++++++++++++++++-----
+ drivers/infiniband/hw/mlx5/mlx5_ib.h     |  5 +-
+ drivers/infiniband/hw/mlx5/qp.c          |  4 +-
+ drivers/infiniband/hw/mlx5/srq.c         |  2 +-
+ include/uapi/rdma/mlx5_user_ioctl_cmds.h |  1 +
+ 6 files changed, 88 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index dc5e6e3e5a64..dd5611800531 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -934,8 +934,17 @@ static int adjust_bfregn(struct mlx5_ib_dev *dev,
- 				bfregn % MLX5_NON_FP_BFREGS_PER_UAR;
+diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
+index e8f8fcc106c8..49b4bf148a4a 100644
+--- a/drivers/infiniband/hw/mlx5/cq.c
++++ b/drivers/infiniband/hw/mlx5/cq.c
+@@ -761,7 +761,9 @@ static int create_cq_user(struct mlx5_ib_dev *dev, struct ib_udata *udata,
+ 		goto err_umem;
+ 	}
+ 
+-	err = mlx5_ib_db_map_user(context, ucmd.db_addr, &cq->db);
++	err = mlx5_ib_db_map_user(context, attrs,
++				  MLX5_IB_ATTR_CREATE_CQ_DBR_BUF_UMEM,
++				  ucmd.db_addr, &cq->db);
+ 	if (err)
+ 		goto err_umem;
+ 
+@@ -1521,7 +1523,9 @@ ADD_UVERBS_ATTRIBUTES_SIMPLE(
+ 	UVERBS_ATTR_PTR_IN(
+ 		MLX5_IB_ATTR_CREATE_CQ_UAR_INDEX,
+ 		UVERBS_ATTR_TYPE(u32),
+-		UA_OPTIONAL));
++		UA_OPTIONAL),
++	UVERBS_ATTR_UMEM(MLX5_IB_ATTR_CREATE_CQ_DBR_BUF_UMEM,
++			 UA_OPTIONAL));
+ 
+ const struct uapi_definition mlx5_ib_create_cq_defs[] = {
+ 	UAPI_DEF_CHAIN_OBJ_TREE(UVERBS_OBJECT_CQ, &mlx5_ib_cq_create),
+diff --git a/drivers/infiniband/hw/mlx5/doorbell.c b/drivers/infiniband/hw/mlx5/doorbell.c
+index 020c70328663..7c864fe0b8dc 100644
+--- a/drivers/infiniband/hw/mlx5/doorbell.c
++++ b/drivers/infiniband/hw/mlx5/doorbell.c
+@@ -40,47 +40,82 @@
+ struct mlx5_ib_user_db_page {
+ 	struct list_head	list;
+ 	struct ib_umem	       *umem;
+-	unsigned long		user_virt;
++	struct ib_uverbs_buffer_desc desc;
+ 	int			refcnt;
+ 	struct mm_struct	*mm;
+ };
+ 
+-int mlx5_ib_db_map_user(struct mlx5_ib_ucontext *context, unsigned long virt,
+-			struct mlx5_db *db)
++static int mlx5_ib_db_map_user_desc(struct mlx5_ib_ucontext *context,
++				    const struct ib_uverbs_buffer_desc *desc,
++				    struct mlx5_db *db)
+ {
+ 	struct mlx5_ib_user_db_page *page;
++	struct ib_umem *umem;
+ 	int err = 0;
+ 
++	if (desc->length < sizeof(__be32) * 2)
++		return -EINVAL;
++
+ 	mutex_lock(&context->db_page_mutex);
+ 
+-	list_for_each_entry(page, &context->db_page_list, list)
+-		if ((current->mm == page->mm) &&
+-		    (page->user_virt == (virt & PAGE_MASK)))
+-			goto found;
++	/*
++	 * Only VA-typed descriptors are eligible to share a per-page
++	 * doorbell umem; FD-typed descriptors are pinned individually.
++	 */
++	if (desc->type == IB_UVERBS_BUFFER_TYPE_VA) {
++		list_for_each_entry(page, &context->db_page_list, list) {
++			if (current->mm != page->mm)
++				continue;
++			if (page->desc.addr == (desc->addr & PAGE_MASK))
++				goto found;
++		}
++	}
+ 
+-	page = kmalloc_obj(*page);
++	page = kzalloc_obj(*page);
+ 	if (!page) {
+ 		err = -ENOMEM;
+ 		goto out;
+ 	}
+ 
+-	page->user_virt = (virt & PAGE_MASK);
+-	page->refcnt    = 0;
+-	page->umem = ib_umem_get_va(context->ibucontext.device,
+-				    virt & PAGE_MASK, PAGE_SIZE, 0);
+-	if (IS_ERR(page->umem)) {
+-		err = PTR_ERR(page->umem);
++	page->desc = *desc;
++
++	/*
++	 * Normalize VA descriptors to a page-aligned PAGE_SIZE region so
++	 * multiple DBRs that fall in the same user page share one umem.
++	 */
++	if (page->desc.type == IB_UVERBS_BUFFER_TYPE_VA) {
++		page->desc.addr &= PAGE_MASK;
++		page->desc.length = PAGE_SIZE;
++	}
++
++	umem = ib_umem_get_desc(context->ibucontext.device, &page->desc, 0);
++	if (IS_ERR(umem)) {
++		err = PTR_ERR(umem);
++		kfree(page);
++		goto out;
++	}
++
++	/*
++	 * The 8-byte DBR is programmed to the device as one DMA address,
++	 * so it must live in a single contiguous DMA segment.
++	 */
++	if (!ib_umem_is_contiguous(umem)) {
++		ib_umem_release(umem);
+ 		kfree(page);
++		err = -EINVAL;
+ 		goto out;
+ 	}
+-	mmgrab(current->mm);
+-	page->mm = current->mm;
+ 
++	page->umem = umem;
++	if (page->desc.type == IB_UVERBS_BUFFER_TYPE_VA) {
++		mmgrab(current->mm);
++		page->mm = current->mm;
++	}
+ 	list_add(&page->list, &context->db_page_list);
+ 
+ found:
+ 	db->dma = sg_dma_address(page->umem->sgt_append.sgt.sgl) +
+-		  (virt & ~PAGE_MASK);
++		  (desc->addr & ~PAGE_MASK);
+ 	db->u.user_page = page;
+ 	++page->refcnt;
+ 
+@@ -90,13 +125,35 @@ int mlx5_ib_db_map_user(struct mlx5_ib_ucontext *context, unsigned long virt,
+ 	return err;
  }
  
-+static u16 mlx5_qp_buf_attr(struct mlx5_ib_qp *qp)
++int mlx5_ib_db_map_user(struct mlx5_ib_ucontext *context,
++			const struct uverbs_attr_bundle *attrs, u16 attr_id,
++			unsigned long virt, struct mlx5_db *db)
 +{
-+	if (qp->type == IB_QPT_RAW_PACKET ||
-+	    qp->flags & IB_QP_CREATE_SOURCE_QPN)
-+		return UVERBS_ATTR_CREATE_QP_RQ_BUF_UMEM;
-+	return UVERBS_ATTR_CREATE_QP_BUF_UMEM;
++	struct ib_uverbs_buffer_desc desc = {
++		.type = IB_UVERBS_BUFFER_TYPE_VA,
++		.addr = virt,
++		.length = sizeof(__be32) * 2,
++	};
++
++	if (attrs) {
++		int err;
++
++		err = uverbs_attr_get_buffer_desc(attrs, attr_id, &desc);
++		if (err && err != -ENOENT)
++			return err;
++	}
++
++	return mlx5_ib_db_map_user_desc(context, &desc, db);
 +}
 +
- static int _create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 			   struct mlx5_ib_qp *qp, struct ib_udata *udata,
-+			   struct uverbs_attr_bundle *attrs,
- 			   struct ib_qp_init_attr *attr, u32 **in,
- 			   struct mlx5_ib_create_qp_resp *resp, int *inlen,
- 			   struct mlx5_ib_qp_base *base,
-@@ -994,14 +1003,20 @@ static int _create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 	if (err)
- 		goto err_bfreg;
- 
--	if (ucmd->buf_addr && ubuffer->buf_size) {
-+	ubuffer->umem = NULL;
-+	if (ubuffer->buf_size) {
- 		ubuffer->buf_addr = ucmd->buf_addr;
--		ubuffer->umem = ib_umem_get_va(&dev->ib_dev, ubuffer->buf_addr,
--					       ubuffer->buf_size, 0);
-+		ubuffer->umem = ib_umem_get_attr_or_va(&dev->ib_dev, attrs,
-+						       mlx5_qp_buf_attr(qp),
-+						       ubuffer->buf_addr,
-+						       ubuffer->buf_size, 0);
- 		if (IS_ERR(ubuffer->umem)) {
- 			err = PTR_ERR(ubuffer->umem);
-+			ubuffer->umem = NULL;
- 			goto err_bfreg;
- 		}
-+	}
-+	if (ubuffer->umem) {
- 		page_size = mlx5_umem_find_best_quantized_pgoff(
- 			ubuffer->umem, qpc, log_page_size,
- 			MLX5_ADAPTER_PAGE_SHIFT, page_offset, 64,
-@@ -1011,8 +1026,6 @@ static int _create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 			goto err_umem;
- 		}
- 		ncont = ib_umem_num_dma_blocks(ubuffer->umem, page_size);
--	} else {
--		ubuffer->umem = NULL;
- 	}
- 
- 	*inlen = MLX5_ST_SZ_BYTES(create_qp_in) +
-@@ -1329,6 +1342,7 @@ static int get_qp_ts_format(struct mlx5_ib_dev *dev, struct mlx5_ib_cq *send_cq,
- 
- static int create_raw_packet_qp_sq(struct mlx5_ib_dev *dev,
- 				   struct ib_udata *udata,
-+				   struct uverbs_attr_bundle *attrs,
- 				   struct mlx5_ib_sq *sq, void *qpin,
- 				   struct ib_pd *pd, struct mlx5_ib_cq *cq)
+ void mlx5_ib_db_unmap_user(struct mlx5_ib_ucontext *context, struct mlx5_db *db)
  {
-@@ -1348,8 +1362,10 @@ static int create_raw_packet_qp_sq(struct mlx5_ib_dev *dev,
- 	if (ts_format < 0)
- 		return ts_format;
+ 	mutex_lock(&context->db_page_mutex);
  
--	sq->ubuffer.umem = ib_umem_get_va(&dev->ib_dev, ubuffer->buf_addr,
--					  ubuffer->buf_size, 0);
-+	sq->ubuffer.umem = ib_umem_get_attr_or_va(&dev->ib_dev, attrs,
-+						  UVERBS_ATTR_CREATE_QP_SQ_BUF_UMEM,
-+						  ubuffer->buf_addr,
-+						  ubuffer->buf_size, 0);
- 	if (IS_ERR(sq->ubuffer.umem))
- 		return PTR_ERR(sq->ubuffer.umem);
- 	page_size = mlx5_umem_find_best_quantized_pgoff(
-@@ -1562,6 +1578,7 @@ static int create_raw_packet_qp_tir(struct mlx5_ib_dev *dev,
- static int create_raw_packet_qp(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
- 				u32 *in, size_t inlen, struct ib_pd *pd,
- 				struct ib_udata *udata,
-+				struct uverbs_attr_bundle *attrs,
- 				struct mlx5_ib_create_qp_resp *resp,
- 				struct ib_qp_init_attr *init_attr)
- {
-@@ -1582,7 +1599,7 @@ static int create_raw_packet_qp(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
- 		if (err)
- 			return err;
- 
--		err = create_raw_packet_qp_sq(dev, udata, sq, in, pd,
-+		err = create_raw_packet_qp_sq(dev, udata, attrs, sq, in, pd,
- 					      to_mcq(init_attr->send_cq));
- 		if (err)
- 			goto err_destroy_tis;
-@@ -1700,6 +1717,7 @@ static void destroy_rss_raw_qp_tir(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *q
- 
- struct mlx5_create_qp_params {
- 	struct ib_udata *udata;
-+	struct uverbs_attr_bundle *attrs;
- 	size_t inlen;
- 	size_t outlen;
- 	size_t ucmd_size;
-@@ -2121,8 +2139,8 @@ static int create_dci(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 	if (ts_format < 0)
- 		return ts_format;
- 
--	err = _create_user_qp(dev, pd, qp, udata, init_attr, &in, &params->resp,
--			      &inlen, base, ucmd);
-+	err = _create_user_qp(dev, pd, qp, udata, params->attrs, init_attr,
-+			      &in, &params->resp, &inlen, base, ucmd);
- 	if (err)
- 		return err;
- 
-@@ -2289,8 +2307,8 @@ static int create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 			return ts_format;
+ 	if (!--db->u.user_page->refcnt) {
+ 		list_del(&db->u.user_page->list);
+-		mmdrop(db->u.user_page->mm);
++		if (db->u.user_page->mm)
++			mmdrop(db->u.user_page->mm);
+ 		ib_umem_release(db->u.user_page->umem);
+ 		kfree(db->u.user_page);
  	}
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index e156dc4d7529..078f281bcdac 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -1259,8 +1259,9 @@ to_mmmap(struct rdma_user_mmap_entry *rdma_entry)
  
--	err = _create_user_qp(dev, pd, qp, udata, init_attr, &in, &params->resp,
--			      &inlen, base, ucmd);
-+	err = _create_user_qp(dev, pd, qp, udata, params->attrs, init_attr,
-+			      &in, &params->resp, &inlen, base, ucmd);
- 	if (err)
- 		return err;
+ int mlx5_ib_dev_res_cq_init(struct mlx5_ib_dev *dev);
+ int mlx5_ib_dev_res_srq_init(struct mlx5_ib_dev *dev);
+-int mlx5_ib_db_map_user(struct mlx5_ib_ucontext *context, unsigned long virt,
+-			struct mlx5_db *db);
++int mlx5_ib_db_map_user(struct mlx5_ib_ucontext *context,
++			const struct uverbs_attr_bundle *attrs, u16 attr_id,
++			unsigned long virt, struct mlx5_db *db);
+ void mlx5_ib_db_unmap_user(struct mlx5_ib_ucontext *context, struct mlx5_db *db);
+ void __mlx5_ib_cq_clean(struct mlx5_ib_cq *cq, u32 qpn, struct mlx5_ib_srq *srq);
+ void mlx5_ib_cq_clean(struct mlx5_ib_cq *cq, u32 qpn, struct mlx5_ib_srq *srq);
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index dd5611800531..58997714df70 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -914,7 +914,7 @@ static int create_user_rq(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 		ib_umem_num_pages(rwq->umem), page_size, rwq->rq_num_pas,
+ 		offset);
  
-@@ -2394,7 +2412,8 @@ static int create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 		qp->raw_packet_qp.sq.ubuffer.buf_addr = ucmd->sq_buf_addr;
- 		raw_packet_qp_copy_info(qp, &qp->raw_packet_qp);
- 		err = create_raw_packet_qp(dev, qp, in, inlen, pd, udata,
--					   &params->resp, init_attr);
-+					   params->attrs, &params->resp,
-+					   init_attr);
- 	} else
- 		err = mlx5_qpc_create_qp(dev, &base->mqp, in, inlen, out);
+-	err = mlx5_ib_db_map_user(ucontext, ucmd->db_addr, &rwq->db);
++	err = mlx5_ib_db_map_user(ucontext, NULL, 0, ucmd->db_addr, &rwq->db);
+ 	if (err) {
+ 		mlx5_ib_dbg(dev, "map failed\n");
+ 		goto err_umem;
+@@ -1053,7 +1053,7 @@ static int _create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 		resp->bfreg_index = MLX5_IB_INVALID_BFREG;
+ 	qp->bfregn = bfregn;
  
-@@ -3274,6 +3293,7 @@ int mlx5_ib_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attr,
- 		return err;
+-	err = mlx5_ib_db_map_user(context, ucmd->db_addr, &qp->db);
++	err = mlx5_ib_db_map_user(context, NULL, 0, ucmd->db_addr, &qp->db);
+ 	if (err) {
+ 		mlx5_ib_dbg(dev, "map failed\n");
+ 		goto err_free;
+diff --git a/drivers/infiniband/hw/mlx5/srq.c b/drivers/infiniband/hw/mlx5/srq.c
+index 44903015c6c9..5bc48fef3744 100644
+--- a/drivers/infiniband/hw/mlx5/srq.c
++++ b/drivers/infiniband/hw/mlx5/srq.c
+@@ -74,7 +74,7 @@ static int create_srq_user(struct ib_pd *pd, struct mlx5_ib_srq *srq,
+ 	}
+ 	in->umem = srq->umem;
  
- 	params.udata = udata;
-+	params.attrs = udata ? rdma_udata_to_uverbs_attr_bundle(udata) : NULL;
- 	params.uidx = MLX5_IB_DEFAULT_UIDX;
- 	params.attr = attr;
- 	params.is_rss_raw = !!attr->rwq_ind_tbl;
+-	err = mlx5_ib_db_map_user(ucontext, ucmd.db_addr, &srq->db);
++	err = mlx5_ib_db_map_user(ucontext, NULL, 0, ucmd.db_addr, &srq->db);
+ 	if (err) {
+ 		mlx5_ib_dbg(dev, "map doorbell failed\n");
+ 		goto err_umem;
+diff --git a/include/uapi/rdma/mlx5_user_ioctl_cmds.h b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
+index 01a2a050e468..b63e75034cda 100644
+--- a/include/uapi/rdma/mlx5_user_ioctl_cmds.h
++++ b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
+@@ -274,6 +274,7 @@ enum mlx5_ib_device_query_context_attrs {
+ 
+ enum mlx5_ib_create_cq_attrs {
+ 	MLX5_IB_ATTR_CREATE_CQ_UAR_INDEX = UVERBS_ID_DRIVER_NS_WITH_UHW,
++	MLX5_IB_ATTR_CREATE_CQ_DBR_BUF_UMEM,
+ };
+ 
+ enum mlx5_ib_reg_dmabuf_mr_attrs {
 -- 
 2.54.0
 
