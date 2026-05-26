@@ -1,177 +1,449 @@
-Return-Path: <linux-rdma+bounces-21267-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21268-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6A2pKfwzFWqPTgcAu9opvQ
-	(envelope-from <linux-rdma+bounces-21267-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 07:47:40 +0200
+	id ALUeMW0+FWqgTwcAu9opvQ
+	(envelope-from <linux-rdma+bounces-21268-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 08:32:13 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1536C5D0F31
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 07:47:39 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 939325D1302
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 08:32:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3A5F9302F3AF
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 05:47:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 24508301CCFC
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 06:32:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C17BF3BF689;
-	Tue, 26 May 2026 05:47:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B47473246ED;
+	Tue, 26 May 2026 06:32:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K6//mGGv"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NxA102wt"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BB41384244
-	for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 05:46:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E4D52139C9
+	for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 06:32:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779774420; cv=none; b=VPErO/J4FCjWd8tjNSxiXDdykEsbTUr70xBcy01WzC4CZ1v/aSbjTqbzg0NYv0h1MGQv72o4tt3QwtKku4QbguRKHE5OvARUdd2XkYtVL+5HaXfx3CvW/K1I1QAazv9XcJwnB+3o9RaCJ4M5ZQ+0zNn+4wr5+gJiab+gha2GXd4=
+	t=1779777128; cv=none; b=iMGxyTqQX37g2IZggtHkRla74yoGI0WKbGzjH/HtLuIBA1rF8cj2edyv9kR0tIDR1p/PP7k+gWnTgc1zea8Erl5+toufWDA0lbwErqiyN+2V4xi6TkowWfYHSe2RmyGDu9IFyxG8p/ECPieZ9dKdv5Aw71bNsebuacNwhO3tXgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779774420; c=relaxed/simple;
-	bh=PVDzbIBA4YjAagmd+kztB/cOqPXnioxFk7d8OQzLPtg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=C/qSggjJURnHPdm0rk5aKG5yN/KKNf9x96uWMPpFpbzxqd3GUWF82/F5MNSLzFexvdQHh1eFB1opk7DxwUMEE1Z20IMhKrbs0l8OUZ00hqnqgY0Oad9fVRkFeSNYLr00+3XkxIHhjrgLRF0JdUm8Lr/JNTjvREnTOUprDY20hm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K6//mGGv; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-837b39eb078so7037461b3a.2
-        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2026 22:46:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779774418; x=1780379218; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u0PzatHJgmkNNzl7148vyb+AgfWDZJiRwa8PGXGAHFI=;
-        b=K6//mGGv6V/ytxEWbOyr/XQCF6ryE1OiakQcuhEyI6jkY10Jis8o1b3qFaTwl9NdsW
-         hqTm0QaiyZWnKSgNRvbE+YUC3WS7QZzC72SwqogqzzIL1YeWg3H9Oi0ycWQaceWfu5oB
-         ksnvfZ7J8Ot2OSJwdEoNqQEGrOKYa2qybLcqjsdFlQkyiCUilzNI8jH726JEG2G22H27
-         N1FWU7dTpNeV9/6Ot0g7NARQmke2xvoB1gH/8Hb1htiO0el7+kLpVscajB/atTWvrMpN
-         K+UdtTcGQYBbbQA+D2X8t+W/L60+KsUdiSfqQkh29umOpfpSR8lQNxABMc+xsn495y4X
-         DuQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779774418; x=1780379218;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=u0PzatHJgmkNNzl7148vyb+AgfWDZJiRwa8PGXGAHFI=;
-        b=sHv0yt02ew7FWmOhl0vE3SlgrzHI3vq8dPZhUXO/ho27GBMUhDEX2eLrF+9Ml5x6XN
-         ZqVn/PLsR+0jMiVPyygSq4hSLkKLygYWzeXDXB8j85jBIPcN+ybwy90ngUVkpcwdE/VP
-         qjeI3Qq6i1MGYiKngl4pdQYE2n4cTWhGdIX+dAkFxmMu74qQXhpbYaNo+yHlWwBrlKyx
-         vDB9ORc4qmd6eHgCzrOK3ZIlDhGe6PSZhwlDuOTaBkgpBXa/gWZWFzGAs5kkf9iCesSt
-         5AQRbsDB/2K/v7gE8W6EFDh6dukMzqybFO3qDWOpE3z5hFhFpl0MUTr2/86Zq+quqyCz
-         4QwA==
-X-Forwarded-Encrypted: i=1; AFNElJ8pXzeyAPhFDEK1d2MLUxngUho8nptsEzp2AKfa7hToweW8eghHZ9QJraO/9Ksg8XLIbmO09DEZqAB/@vger.kernel.org
-X-Gm-Message-State: AOJu0YwBT8EEs7cnx9We9/p4n5EvmKEEcC1GRYrKV9C/3flin4atsHVv
-	bZuAr+R5uKiRXaSvmRZuZawNRYsA9KlssUUz28Et2o5+C4Lv9lOag3ZBTlA92w==
-X-Gm-Gg: Acq92OE2TAFN628ycWs4ubVn13d58fqZMeRRpb92niQagJrS6cu1522GYjk/JZx2dfo
-	cKK31uUr18FGJJ98uly27fyS3a0nVT2ooFJSi9ZxfsLfmn1erUkb5zj7L+Vs8lJQRGPA054G4Mf
-	fPaZfvPjsx9XNRUArNN9EBUU/tr6qBT12MtOWsGVaqukZ9QHh69kfHN5Sj4D1AUxu1qqE82NRuQ
-	whjUSZG43GjLPveD2Pu0UGkC3SiZub3Ykr0B67nRdr7Ry4jzhMRr4/w/4TUNKuy46j9bKJRwcoW
-	EabpKSn7KZcRe+LdQ3zsLsWUXw6HqdpL4XAKDXTfT2zSKUjiQ2d9zETtgg7ezvG02fb5i1E82Qd
-	KTlIRhOPOY6JX8vatDnR+CsAOZ69OK6rfZnyz578P2dS5giJ1gypxtgn+H5ebj5A+CKeu/Xbj1C
-	46zdxSdbOG58xbzOf6s/Ya18zVEFxUXHCZwqNcobjJn4kAfYU7
-X-Received: by 2002:a05:6a00:140f:b0:82c:b808:4c59 with SMTP id d2e1a72fcca58-8415f687146mr16176516b3a.46.1779774417666;
-        Mon, 25 May 2026 22:46:57 -0700 (PDT)
-Received: from csl-conti-dell7858.ntu.edu.sg ([155.69.195.57])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-84164e9ec47sm12917142b3a.32.2026.05.25.22.46.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 May 2026 22:46:57 -0700 (PDT)
-From: Maoyi Xie <maoyixie.tju@gmail.com>
-To: Chengchang Tang <tangchengchang@huawei.com>,
-	Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: Jason Gunthorpe <jgg@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] RDMA/hns: drop dead empty check in setup_root_hem()
-Date: Tue, 26 May 2026 13:46:53 +0800
-Message-Id: <20260526054653.2054800-1-maoyixie.tju@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20260521132045.3430906-1-maoyixie.tju@gmail.com>
-References: <20260521132045.3430906-1-maoyixie.tju@gmail.com>
+	s=arc-20240116; t=1779777128; c=relaxed/simple;
+	bh=WFHaITeQfEFlfvrPQt23QPZClTYhHLh7FyIKFoBCv2U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UNJEHTzLznEuzaKURD7pfuEB4hTHqw/VBPq/c/gdmoR1mLk8ex+kg2yoXhzIGiGl76tIruSERB9AR5lPa4SfiT1/zNdmKiE8wcZEyypVWlTChAISTCt9dhnhn9KppM9f8kuFIR75e/RK2zYe+LznyxOsZrOFP2MuEBC2Q02YPNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NxA102wt; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e21fbea2-961f-4186-830d-2ecca98d8243@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1779777074;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OV2dgY7vBtSoIXUGKcdhg2nd6jYn8gsEtXnzc3l4HnA=;
+	b=NxA102wtzpVq2JAKyYUExLMDMVEaCSJrIpveUP6+8XT1CCgTcKA5kZHwfGEouCQUbL6buZ
+	9IJomSZIEtOZiUvIboZy6gqtaNZdbqCfBcLROI0uNb0IHBKKz/I9moDHZW1JHqDq/cwCls
+	CRHW3AO8+rwGtSaTpl3AJn/B6ws4nYQ=
+Date: Mon, 25 May 2026 23:31:02 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH v2 1/1] RDMA/rxe: Fix Use-After-Free problem in
+ rxe_net_del
+To: zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
+ linux-rdma@vger.kernel.org, "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>
+Cc: syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
+References: <20260519023541.8594-1-yanjun.zhu@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20260519023541.8594-1-yanjun.zhu@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Migadu-Flow: FLOW_OUT
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21267-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21268-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,kernel.org,vger.kernel.org,linux.dev];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FROM_NEQ_ENVFROM(0.00)[maoyixietju@gmail.com,linux-rdma@vger.kernel.org];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_COUNT_FIVE(0.00)[5];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.998];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 1536C5D0F31
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,d8f76778263ab65c2b21];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6]
+X-Rspamd-Queue-Id: 939325D1302
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-setup_root_hem() reads the first entry of head->root and checks
-the returned pointer against NULL:
+gently ping
 
-    root_hem = list_first_entry(&head->root,
-                                struct hns_roce_hem_item, list);
-    if (!root_hem)
-        return -ENOMEM;
-
-list_first_entry() never returns NULL. On an empty list it returns
-container_of(head, ..., list), a non-NULL garbage pointer that
-aliases the head. So the check is dead.
-
-The only caller adds an entry to head.root right before invoking
-setup_root_hem():
-
-    list_add(&root_hem->list, &head.root);
-    ret = setup_root_hem(..., &head, ...);
-
-So head.root is guaranteed non-empty on entry. Drop the check.
-
-Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Maoyi Xie <maoyixie.tju@gmail.com>
----
-v2: drop the check entirely per Jason's review, instead of
-    converting to list_first_entry_or_null() as in v1.
-v1: https://lore.kernel.org/r/20260521132045.3430906-1-maoyixie.tju@gmail.com
-
- drivers/infiniband/hw/hns/hns_roce_hem.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
-index e7c9e30ad2d8..61cd9f96423e 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hem.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
-@@ -1269,8 +1269,6 @@ setup_root_hem(struct hns_roce_dev *hr_dev, struct hns_roce_hem_list *hem_list,
- 
- 	root_hem = list_first_entry(&head->root,
- 				    struct hns_roce_hem_item, list);
--	if (!root_hem)
--		return -ENOMEM;
- 
- 	total = 0;
- 	for (i = 0; i < region_cnt && total <= max_ba_num; i++) {
--- 
-2.34.1
+在 2026/5/18 19:35, Zhu Yanjun 写道:
+> syzbot reported a general protection fault (KASAN: null-ptr-deref) in
+> kernel_sock_shutdown() called during the software RoCE (rxe) link
+> deletion path (rxe_dellink -> rxe_net_del).
+> 
+> The call trace is as below:
+> "
+> rdma_rxe: rxe_newlink: failed to add lo
+> Oops: gen[  127.022080][ T5982] Oops: general protection fault, probably for non-canonical address 0xdffffc0000000004: 0000 [#1] SMP KASAN PTI
+> KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
+> CPU: 1 UID: 0 PID: 5982 Comm: syz.3.20 Not tainted syzkaller #0 PREEMPT_{RT,(full)}
+> ...
+> Call Trace:
+>   <TASK>
+>   udp_tunnel_sock_release+0x6d/0x80 net/ipv4/udp_tunnel_core.c:197
+>   rxe_release_udp_tunnel drivers/infiniband/sw/rxe/rxe_net.c:294 [inline]
+>   rxe_sock_put drivers/infiniband/sw/rxe/rxe_net.c:639 [inline]
+>   rxe_net_del+0xfb/0x290 drivers/infiniband/sw/rxe/rxe_net.c:660
+>   rxe_dellink+0x15/0x20 drivers/infiniband/sw/rxe/rxe.c:254
+>   nldev_dellink+0x304/0x3d0 drivers/infiniband/core/nldev.c:1849
+>   rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:-1 [inline]
+>   rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+>   rdma_nl_rcv+0x6d7/0xa10 drivers/infiniband/core/netlink.c:259
+>   netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
+>   netlink_unicast+0x780/0x920 net/netlink/af_netlink.c:1345
+>   netlink_sendmsg+0x813/0xb40 net/netlink/af_netlink.c:1895
+>   sock_sendmsg_nosec+0x112/0x150 net/socket.c:797
+>   __sock_sendmsg net/socket.c:812 [inline]
+>   ____sys_sendmsg+0x55c/0x870 net/socket.c:2716
+>   ___sys_sendmsg+0x2a5/0x360 net/socket.c:2770
+>   __sys_sendmsg net/socket.c:2802 [inline]
+>   __do_sys_sendmsg net/socket.c:2807 [inline]
+>   __se_sys_sendmsg net/socket.c:2805 [inline]
+>   __x64_sys_sendmsg+0x1c3/0x2a0 net/socket.c:2805
+>   do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+>   do_syscall_64+0x15f/0xf80 arch/x86/entry/syscall_64.c:94
+>   entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> RIP: 0033:0x7f89172fcdd9
+> RSP: 002b:00007ffe8bf8c018 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+> RAX: ffffffffffffffda RBX: 00007f8917575fa0 RCX: 00007f89172fcdd9
+> RDX: 0000000000000000 RSI: 00002000000002c0 RDI: 0000000000000006
+> RBP: 00007f8917392d69 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> R13: 00007f8917575fac R14: 00007f8917575fa0 R15: 00007f8917575fa0
+>   </TASK>
+> "
+> 
+> The root cause is a TOCTOU (Time-of-Check to Time-of-Use) race condition
+> in rxe_net_del(). Previously, the function fetched the socket pointer
+> via rxe_ns_pernet_sk4/6() outside the critical section, and then
+> acquired the lock to release it via rxe_sock_put().
+> 
+> In a highly concurrent teardown environment, another thread could close
+> and clear the pernet socket after it was fetched but before the lock
+> was acquired. This causes rxe_sock_put() to operate on a dangling or
+> already cleared socket pointer, leading to a NULL pointer dereference
+> when kernel_sock_shutdown() attempts to access sock->sk.
+> 
+> Fix this by introducing a dedicated, per-netns mutex 'release_lock'
+> and extending its scope. The socket pointers are now fetched, checked,
+> and released entirely within the same locked critical section. This
+> ensures the atomicity of the socket lookup and teardown sequence.
+> 
+> Since new mutex lock is introduced, remove the unnecessary rcu locks.
+> 
+> Reported-by: syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=d8f76778263ab65c2b21
+> Fixes: f1327abd6abe ("RDMA/rxe: Support RDMA link creation and destruction per net namespace")
+> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> ---
+> V1 -> V2: Remove the unnecessary rcu locks, following Leon's advice.
+> ---
+>   drivers/infiniband/sw/rxe/rxe_net.c | 49 +++++++++++++++++++-----
+>   drivers/infiniband/sw/rxe/rxe_ns.c  | 58 ++++++++++++++++-------------
+>   drivers/infiniband/sw/rxe/rxe_ns.h  |  3 ++
+>   3 files changed, 74 insertions(+), 36 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+> index 50a2cb5405e2..0bf5b0eabc7b 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_net.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
+> @@ -135,13 +135,21 @@ static struct dst_entry *rxe_find_route6(struct rxe_qp *qp,
+>   {
+>   	struct dst_entry *ndst;
+>   	struct flowi6 fl6 = {};
+> +	struct sock *sk;
+>   
+>   	fl6.flowi6_oif = ndev->ifindex;
+>   	memcpy(&fl6.saddr, saddr, sizeof(*saddr));
+>   	memcpy(&fl6.daddr, daddr, sizeof(*daddr));
+>   	fl6.flowi6_proto = IPPROTO_UDP;
+>   
+> -	ndst = ip6_dst_lookup_flow(net, rxe_ns_pernet_sk6(net), &fl6, NULL);
+> +	rxe_ns_lock(net);
+> +	sk = rxe_ns_pernet_sk6(net);
+> +	if (sk)
+> +		sock_hold(sk);
+> +	rxe_ns_unlock(net);
+> +
+> +	ndst = ip6_dst_lookup_flow(net, sk, &fl6, NULL);
+> +	sock_put(sk);
+>   	if (IS_ERR(ndst)) {
+>   		rxe_dbg_qp(qp, "no route to %pI6\n", daddr);
+>   		return NULL;
+> @@ -655,6 +663,8 @@ void rxe_net_del(struct ib_device *dev)
+>   
+>   	net = dev_net(ndev);
+>   
+> +	rxe_ns_lock(net);
+> +
+>   	sk = rxe_ns_pernet_sk4(net);
+>   	if (sk)
+>   		rxe_sock_put(sk, rxe_ns_pernet_set_sk4, net);
+> @@ -663,6 +673,8 @@ void rxe_net_del(struct ib_device *dev)
+>   	if (sk)
+>   		rxe_sock_put(sk, rxe_ns_pernet_set_sk6, net);
+>   
+> +	rxe_ns_unlock(net);
+> +
+>   	dev_put(ndev);
+>   }
+>   
+> @@ -754,52 +766,67 @@ static struct notifier_block rxe_net_notifier = {
+>   
+>   static int rxe_net_ipv4_init(struct net *net)
+>   {
+> -	struct sock *sk;
+>   	struct socket *sock;
+> +	struct sock *sk;
+> +	int ret = 0;
+>   
+> +	rxe_ns_lock(net);
+>   	sk = rxe_ns_pernet_sk4(net);
+>   	if (sk) {
+>   		sock_hold(sk);
+> -		return 0;
+> +		ret = 0;
+> +		goto out_unlock;
+>   	}
+>   
+>   	sock = rxe_setup_udp_tunnel(net, htons(ROCE_V2_UDP_DPORT), false);
+>   	if (IS_ERR(sock)) {
+>   		pr_err("Failed to create IPv4 UDP tunnel\n");
+> -		return -1;
+> +		ret = -1;
+> +		goto out_unlock;
+>   	}
+> +
+>   	rxe_ns_pernet_set_sk4(net, sock->sk);
+>   
+> -	return 0;
+> +out_unlock:
+> +	rxe_ns_unlock(net);
+> +	return ret;
+>   }
+>   
+>   static int rxe_net_ipv6_init(struct net *net)
+>   {
+> +	int ret = 0;
+>   #if IS_ENABLED(CONFIG_IPV6)
+> -	struct sock *sk;
+>   	struct socket *sock;
+> +	struct sock *sk;
+>   
+> +	rxe_ns_lock(net);
+>   	sk = rxe_ns_pernet_sk6(net);
+>   	if (sk) {
+>   		sock_hold(sk);
+> -		return 0;
+> +		ret = 0;
+> +		goto out_unlock;
+>   	}
+>   
+>   	sock = rxe_setup_udp_tunnel(net, htons(ROCE_V2_UDP_DPORT), true);
+>   	if (PTR_ERR(sock) == -EAFNOSUPPORT) {
+>   		pr_warn("IPv6 is not supported, can not create a UDPv6 socket\n");
+> -		return 0;
+> +		ret = 0;
+> +		goto out_unlock;
+>   	}
+>   
+>   	if (IS_ERR(sock)) {
+>   		pr_err("Failed to create IPv6 UDP tunnel\n");
+> -		return -1;
+> +		ret = -1;
+> +		goto out_unlock;
+>   	}
+>   
+>   	rxe_ns_pernet_set_sk6(net, sock->sk);
+>   
+> +out_unlock:
+> +	rxe_ns_unlock(net);
+> +
+>   #endif
+> -	return 0;
+> +	return ret;
+>   }
+>   
+>   int rxe_register_notifier(void)
+> @@ -840,9 +867,11 @@ int rxe_net_init(struct net_device *ndev)
+>   
+>   err_out:
+>   	/* If ipv6 error, release ipv4 resource */
+> +	rxe_ns_lock(net);
+>   	sk = rxe_ns_pernet_sk4(net);
+>   	if (sk)
+>   		rxe_sock_put(sk, rxe_ns_pernet_set_sk4, net);
+> +	rxe_ns_unlock(net);
+>   
+>   	return err;
+>   }
+> diff --git a/drivers/infiniband/sw/rxe/rxe_ns.c b/drivers/infiniband/sw/rxe/rxe_ns.c
+> index 8b9d734229b2..744a3d16f963 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_ns.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_ns.c
+> @@ -14,8 +14,9 @@
+>    * Per network namespace data
+>    */
+>   struct rxe_ns_sock {
+> -	struct sock __rcu *rxe_sk4;
+> -	struct sock __rcu *rxe_sk6;
+> +	struct sock	*rxe_sk4;
+> +	struct sock	*rxe_sk6;
+> +	struct mutex	ns_mutex_lock;
+>   };
+>   
+>   /*
+> @@ -31,10 +32,26 @@ static int rxe_ns_init(struct net *net)
+>   	/* defer socket create in the namespace to the first
+>   	 * device create.
+>   	 */
+> +	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
+>   
+> +	mutex_init(&ns_sk->ns_mutex_lock);
+>   	return 0;
+>   }
+>   
+> +void rxe_ns_lock(struct net *net)
+> +{
+> +	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
+> +
+> +	mutex_lock(&ns_sk->ns_mutex_lock);
+> +}
+> +
+> +void rxe_ns_unlock(struct net *net)
+> +{
+> +	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
+> +
+> +	mutex_unlock(&ns_sk->ns_mutex_lock);
+> +}
+> +
+>   static void rxe_ns_exit(struct net *net)
+>   {
+>   	/* called when the network namespace is removed
+> @@ -42,23 +59,24 @@ static void rxe_ns_exit(struct net *net)
+>   	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
+>   	struct sock *sk;
+>   
+> -	rcu_read_lock();
+> -	sk = rcu_dereference(ns_sk->rxe_sk4);
+> -	rcu_read_unlock();
+> +	rxe_ns_lock(net);
+> +	sk = ns_sk->rxe_sk4;
+>   	if (sk) {
+> -		rcu_assign_pointer(ns_sk->rxe_sk4, NULL);
+> +		ns_sk->rxe_sk4 = NULL;
+>   		udp_tunnel_sock_release(sk->sk_socket);
+>   	}
+>   
+>   #if IS_ENABLED(CONFIG_IPV6)
+> -	rcu_read_lock();
+> -	sk = rcu_dereference(ns_sk->rxe_sk6);
+> -	rcu_read_unlock();
+> +	sk = ns_sk->rxe_sk6;
+>   	if (sk) {
+> -		rcu_assign_pointer(ns_sk->rxe_sk6, NULL);
+> +		ns_sk->rxe_sk6 = NULL;
+>   		udp_tunnel_sock_release(sk->sk_socket);
+>   	}
+>   #endif
+> +
+> +	rxe_ns_unlock(net);
+> +
+> +	mutex_destroy(&ns_sk->ns_mutex_lock);
+>   }
+>   
+>   /*
+> @@ -74,42 +92,30 @@ static struct pernet_operations rxe_net_ops = {
+>   struct sock *rxe_ns_pernet_sk4(struct net *net)
+>   {
+>   	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
+> -	struct sock *sk;
+> -
+> -	rcu_read_lock();
+> -	sk = rcu_dereference(ns_sk->rxe_sk4);
+> -	rcu_read_unlock();
+>   
+> -	return sk;
+> +	return ns_sk->rxe_sk4;
+>   }
+>   
+>   void rxe_ns_pernet_set_sk4(struct net *net, struct sock *sk)
+>   {
+>   	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
+>   
+> -	rcu_assign_pointer(ns_sk->rxe_sk4, sk);
+> -	synchronize_rcu();
+> +	ns_sk->rxe_sk4 = sk;
+>   }
+>   
+>   #if IS_ENABLED(CONFIG_IPV6)
+>   struct sock *rxe_ns_pernet_sk6(struct net *net)
+>   {
+>   	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
+> -	struct sock *sk;
+> -
+> -	rcu_read_lock();
+> -	sk = rcu_dereference(ns_sk->rxe_sk6);
+> -	rcu_read_unlock();
+>   
+> -	return sk;
+> +	return ns_sk->rxe_sk6;
+>   }
+>   
+>   void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk)
+>   {
+>   	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
+>   
+> -	rcu_assign_pointer(ns_sk->rxe_sk6, sk);
+> -	synchronize_rcu();
+> +	ns_sk->rxe_sk6 = sk;
+>   }
+>   #endif /* IPV6 */
+>   
+> diff --git a/drivers/infiniband/sw/rxe/rxe_ns.h b/drivers/infiniband/sw/rxe/rxe_ns.h
+> index 4da2709e6b71..e6cc6b5a4806 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_ns.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_ns.h
+> @@ -20,6 +20,9 @@ static inline void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk)
+>   }
+>   #endif /* IPv6 */
+>   
+> +void rxe_ns_lock(struct net *net);
+> +void rxe_ns_unlock(struct net *net);
+> +
+>   int rxe_namespace_init(void);
+>   void rxe_namespace_exit(void);
+>   
 
 
