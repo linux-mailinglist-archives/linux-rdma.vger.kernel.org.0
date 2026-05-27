@@ -1,81 +1,81 @@
-Return-Path: <linux-rdma+bounces-21388-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21389-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MIgKJKglF2qu6wcAu9opvQ
-	(envelope-from <linux-rdma+bounces-21388-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 19:11:04 +0200
+	id oMzQIbMlF2qu6wcAu9opvQ
+	(envelope-from <linux-rdma+bounces-21389-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 19:11:15 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 076555E8340
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 19:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 183FA5E834F
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 19:11:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D2FE5304799A
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 17:10:26 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8FD1F305FC6D
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 17:10:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03B9244BC9F;
-	Wed, 27 May 2026 17:10:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6447344CAFC;
+	Wed, 27 May 2026 17:10:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="dvFysfZ9"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="y1Z7X1Ss"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com [209.85.128.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B38244B69F
-	for <linux-rdma@vger.kernel.org>; Wed, 27 May 2026 17:10:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72E6044CACB
+	for <linux-rdma@vger.kernel.org>; Wed, 27 May 2026 17:10:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779901823; cv=none; b=EVQar5ZyDoL7pr+294to86hIUHFdq5Ou+5lZ4TB7cZ2rh5ceTVzPgq1hF2vfiGzjhqIT2bltUzZQzDGbSEhqqzno53KkuKaN/5B7XeV5si91Hs8f2OsV/Ja1pLkWJCnn7OZ4YJifn4Dk0JBebJRrP/p7nbRLKtU3ZjGm3Pr+Inw=
+	t=1779901827; cv=none; b=msIgsLyj0ax2MqckgynqZD5rRt2qli9Ewn5pAjhXBItvblNB12pwEDSDQmS4BdHP8gj1ZUf2P1TdqL5qukJnf+PMtoFryy3QxNQmrFD3dtUf2MyJPDsFIxjpAd0cfye9OtgUJNZHG+AK2v1xwyoRGFhrOnUDXk+y3VlTfJ08j0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779901823; c=relaxed/simple;
-	bh=JL1ALejby8xkWWceZ2B1S9dc9zBQ8fnbQTFwn72Yjzg=;
+	s=arc-20240116; t=1779901827; c=relaxed/simple;
+	bh=tdvNnYGmyYT27XSMmtS4WHrzY64AyhhuS9KvHlVV1os=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aoyosAPA8c2Bi99+TRLo6bfSeYFXd1Rp+KJfF9wbldLe4VNkg/+h1Rrc2Bg9qW7rMCWs8jHHUR09f5FQPg0XgWOcq6TQM1lvRYT04HYfz733+FvIRSizrK/7uGk5qKEhpzKWFwk711dCVka9FyW3Ngk+zt1mJkjjVJ+B42drhzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=dvFysfZ9; arc=none smtp.client-ip=209.85.221.47
+	 MIME-Version; b=gCLmCFKzX/1CGYnAUaPdVpb7FsoV8GhhKXl4E2bFhQUOl9+NLZyoriTknpht8KPVqyuMjqJ815hY5KRSqM/Ve3+vVE1T88YVt18czavy5Erpw7CEsFi2aDg1SQyQh9l9J9EkUqxZ1iHSa4islBqXYDJrGh6TjFzMZAg20ACjIHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=y1Z7X1Ss; arc=none smtp.client-ip=209.85.128.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-449de065cb3so11750636f8f.2
-        for <linux-rdma@vger.kernel.org>; Wed, 27 May 2026 10:10:22 -0700 (PDT)
+Received: by mail-wm1-f66.google.com with SMTP id 5b1f17b1804b1-4891e5b9c1fso103272595e9.2
+        for <linux-rdma@vger.kernel.org>; Wed, 27 May 2026 10:10:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1779901821; x=1780506621; darn=vger.kernel.org;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1779901824; x=1780506624; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zqkXGmR2/PUHI9Cm4beBm0J+ILFxbZgRlzc+bhspsLY=;
-        b=dvFysfZ97mUVZ/RocuNpiG37mvS6Gh1FsyiHBle/+bxRNhVpE1k8+TUAIqBOX2Pvgu
-         Xxe3HxfCKO4go1CL4/euohX7lOJUmA/3MmLNzMU2UDUyGjXxMLZDpP50NA6BYb5v3YFD
-         lZDn6tNhgNau3XkZg9EpHwMuqOcfhjUook9XX+G66QxQBVTYjAASZKhW0yB/wYZL6l6G
-         xRn8CNEviJyxsTNMSYvgNTvx5v3mFe7StvmbngtL2iJi82wSqzZlLo1aZbFoPbuj8GWr
-         QffQY0xTWuArhF6TCUahNuxiLXxTuXRHod0jfbZu8cZZgHhvWR5cn2tsonw8F76waf14
-         2g+A==
+        bh=WjjTy5N0o9waymd7oxe/JGUze74rQcZZqAXG8k2+Coo=;
+        b=y1Z7X1Ss+Bh43Yh9lr+xT62i+fMmYki+//9i4aukfiVRLSBtLQ02IFv03/EkpiPCcb
+         uaZ7117xDY7h07KvQa3rY/tGmJrFUMaxYg5yAWPCRRX8PXg/JpdjKfqc1jtL3Ne0gqKq
+         7QQxH+j4EuNZ/6pIK6XV9r75WRnpl9vWc98eF6zHMuBDqtdbO6/LKngG6e1dSmhuICXx
+         cWR2SP7K6eYCQb+T3NODIArnjSVTWb0oRT8ZZ7E2Bc/eY09WI7TQub6v+K59jgeCD9C8
+         XevMTvpDY8ulujvECWVKPLGXzJZL6/O8PRHnIRt11s5emOD0gyEPAT7rx8f/SDSFbZW0
+         +djg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779901821; x=1780506621;
+        d=1e100.net; s=20251104; t=1779901824; x=1780506624;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=zqkXGmR2/PUHI9Cm4beBm0J+ILFxbZgRlzc+bhspsLY=;
-        b=IdIQ6/UP+ablbS8zIqFyZrtaP+gGK2o4qhvSpSuOAZainjpOYpv+hzawKrffydsOBJ
-         I9LAgjqKqWnYkLEbTe4PCvqC7wZzc/y8/c26N8JSiQ4VwZdgyYECuEa3WSeMpjz7YcBE
-         luyUwimhmRNhR4ylihmxJ4fd1/5kgrq1J6IcVjoy99lXOSS2py2nB5vDw5k+R/g41Arr
-         pBARvlAQfiT8GqbmNp9R2UTr4Z0p2wOb3b6RrZ4fzeMESxQxsa1vxNfzmIDyVCwZYwYf
-         p6b73VxL/XWabkTSwGElP5JkoPRpk0A7pEYula/LHR/WQ6tR1AxLqHW1xHrxXk3/VEd9
-         g3ng==
-X-Gm-Message-State: AOJu0YyhG22LOtIc9i49HGA13UxJdh07g39vlYGLjZgnRJ7sHRsEDt/L
-	IWsoROwR7y6SsTO5dlV/sfhDrHxZyW/QPPilIPGF62mJ+2VxIXCP7y/lwaFZeEZGV7gS3/a1mxy
-	27V53r4v/Gw==
-X-Gm-Gg: Acq92OHnu1+s+tWMfXMIVf6RHr0UuLKkwnN5Sy2RRYqOHzBxiNIZZ+fmmx6SicqROGB
-	jT1hCRxD2ZGCuikE0qfBu1+KcfIJRtCzonIH6XqmymWtVitreehqCkpNHDNTG08Q/R4DC1mH59Q
-	JfwkrzPd075IlFnRHq8OCUz09BNaW9OZJQTMKIvELMN7uGFcI0YjjragFtllHlRR2y7HurZOIov
-	JQ/n++8noy/7YHfTVAntYarFGgFX6RtinI1ftEsIr+OCjAf8OZgzLbjdekUvhH8ZSZeHXZK3Ebm
-	oBUf2lJlmK1qKadS0qgiHiKUVFInzWnKeFik2ZxMmDZZAZAGnU06Qbb7RB151OOtnvWFjNWtMZF
-	uDO/27/+7pds7WrkE486jeFWsrUdun582AASn+rBynTKSbzXeHirUteO3mfhDBvGfXi0o1hs5bw
-	41veYUX0vGZIZG+d6yOndyAF4+keMABwXXjE5Ae3t0XQ==
-X-Received: by 2002:a5d:6f08:0:b0:43d:7c1b:b8c7 with SMTP id ffacd0b85a97d-45eb36ac4cfmr37015768f8f.21.1779901820787;
-        Wed, 27 May 2026 10:10:20 -0700 (PDT)
+        bh=WjjTy5N0o9waymd7oxe/JGUze74rQcZZqAXG8k2+Coo=;
+        b=W2toEKhOnRMs96a2ELF4Zv8+b0aMMsDQf/l14d0jFRjCD0E/TQL5g6E+N3cwTb1C2P
+         z1kBGiyyuU7I4WsmdQut+77dAgbHmll8rhOBLt1e5sEKELOig4OkU0Rg44ZxhLzXn+hx
+         NSqqapJWjzeeCGjM51XS1zkf6pCGMtjvcqeqfDPrMcGDafDKBdLv7QCDohi8Ed5qZNpo
+         Q55A27QqhIW192UG5EQlatV73ECEdyPFSbP1C+UDU3Vow47DwDsuRvbcbW2/IKcpl9JA
+         ASraw1Czgy6++a9sATRChUUhxva7+Q0mkGwEYlq7qH+sE5ZIcpcIaYnxuAjDiV5Sulfn
+         eASQ==
+X-Gm-Message-State: AOJu0Yz/6N/C9PcQPt71ZqzgIoacv6TCRYawSH7tE7Se5yFjKZuVUCdg
+	+S99wpOTerXIG3CcdYNRsB3nKPYJLcJ9LeNXMh2w3+rNM+f80Ly/awJuTTIiec96K6m5c0JNm7O
+	FOq5QASDP4bkl
+X-Gm-Gg: Acq92OHga/CTG8h5vGslqLEbsHEB+o0VkwqEtVbfk0cRCT1R7DsMgy/pai+5EwR6lCj
+	v49GA0Umm9lgbXYrFLWoeTUwdo4PBuJhTbb5BYLOAP3rRBnS3p2NdkpEVBoifjBMqM3788hOWgt
+	H1RMllalo5BC6ihelxHgNyseb3I34AIJfXckFtb875S0X9XC7CykW9SGlDsD30LzU1gY5bLqSYO
+	IIphfwjHYDsulKWYJSA37JYBd76d/oP/66h8pE8iyL7tRYC+C779J5jerGRtkI1Kf5DOlkvRib9
+	YRyr1dSlYFxDYFlqfXGjd0MWN6AE9KZhEYLiHC2RweE+fPiJydS9gEJyAm90VVg7l2SoxLN1ysB
+	3qoy7C0v/8wMOt4N+7xhPpOxK65asDGMA3tN2zSCjbxuOPCMbU4NFc2AZBjSJupPNVhUherrpER
+	1msSArQX7mn/4kphWWLZWeR/X5JpF2kWkmIqTY1bi2hg==
+X-Received: by 2002:a05:600c:3d96:b0:490:5429:1513 with SMTP id 5b1f17b1804b1-49054291bbamr349012455e9.6.1779901823861;
+        Wed, 27 May 2026 10:10:23 -0700 (PDT)
 Received: from localhost ([128.77.52.126])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45edb5b19aasm8093679f8f.25.2026.05.27.10.10.20
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45edb5b2a2asm7484217f8f.28.2026.05.27.10.10.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2026 10:10:20 -0700 (PDT)
+        Wed, 27 May 2026 10:10:23 -0700 (PDT)
 From: Jiri Pirko <jiri@resnulli.us>
 To: linux-rdma@vger.kernel.org
 Cc: jgg@ziepe.ca,
@@ -101,9 +101,9 @@ Cc: jgg@ziepe.ca,
 	andrew.gospodarek@broadcom.com,
 	selvin.xavier@broadcom.com,
 	jmoroni@google.com
-Subject: [PATCH rdma-next v8 08/15] RDMA/mlx5: Use ib_umem_get_cq_buf_or_va() for user CQ buffer
-Date: Wed, 27 May 2026 19:09:41 +0200
-Message-ID: <20260527170948.2017439-9-jiri@resnulli.us>
+Subject: [PATCH rdma-next v8 09/15] RDMA/bnxt_re: Use ib_umem_get_cq_buf_or_va() for user CQ buffer
+Date: Wed, 27 May 2026 19:09:42 +0200
+Message-ID: <20260527170948.2017439-10-jiri@resnulli.us>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260527170948.2017439-1-jiri@resnulli.us>
 References: <20260527170948.2017439-1-jiri@resnulli.us>
@@ -123,7 +123,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21388-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21389-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	DMARC_NA(0.00)[resnulli.us];
@@ -142,7 +142,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCPT_COUNT_TWELVE(0.00)[24];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,resnulli-us.20251104.gappssmtp.com:dkim,resnulli.us:mid]
-X-Rspamd-Queue-Id: 076555E8340
+X-Rspamd-Queue-Id: 183FA5E834F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
@@ -157,92 +157,125 @@ Signed-off-by: Jiri Pirko <jiri@nvidia.com>
 v5->v6:
 - changed to pass attrs instead of udata to ib_umem_get*()
 v2->v3:
-- used ib_umem_get_cq_buf_or_va() to get umem, stored in cq->buf.umem
+- used ib_umem_get_cq_buf_or_va() to get umem, stored in new
+  struct bnxt_re_cq field cq->umem
 - replaced ib_umem_release_non_listed() with ib_umem_release()
-- added release to destroy_cq_user() and the resize error path
+- added release to bnxt_re_destroy_cq() and the resize error path
 ---
- drivers/infiniband/hw/mlx5/cq.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 35 +++++++++++++-----------
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h |  1 +
+ 2 files changed, 20 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
-index 5a89676ebeb2..e8f8fcc106c8 100644
---- a/drivers/infiniband/hw/mlx5/cq.c
-+++ b/drivers/infiniband/hw/mlx5/cq.c
-@@ -746,15 +746,15 @@ static int create_cq_user(struct mlx5_ib_dev *dev, struct ib_udata *udata,
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index 5e8fa7bf99cb..c1c4ddc615e2 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -3455,6 +3455,7 @@ int bnxt_re_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
  
- 	*cqe_size = ucmd.cqe_size;
+ 	atomic_dec(&rdev->stats.res.cq_count);
+ 	kfree(cq->cql);
++	ib_umem_release(cq->umem);
+ 	return ib_respond_empty_udata(udata);
+ }
  
--	if (!cq->ibcq.umem)
--		cq->ibcq.umem = ib_umem_get_va(&dev->ib_dev, ucmd.buf_addr,
--					       entries * ucmd.cqe_size,
--					       IB_ACCESS_LOCAL_WRITE);
--	if (IS_ERR(cq->ibcq.umem))
--		return PTR_ERR(cq->ibcq.umem);
-+	cq->buf.umem = ib_umem_get_cq_buf_or_va(&dev->ib_dev, attrs,
-+						ucmd.buf_addr,
-+						entries * ucmd.cqe_size,
-+						IB_ACCESS_LOCAL_WRITE);
-+	if (IS_ERR(cq->buf.umem))
-+		return PTR_ERR(cq->buf.umem);
+@@ -3495,17 +3496,15 @@ int bnxt_re_create_user_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *att
+ 		entries = bnxt_re_init_depth(attr->cqe + 1,
+ 					     dev_attr->max_cq_wqes + 1, uctx);
  
- 	page_size = mlx5_umem_find_best_cq_quantized_pgoff(
--		cq->ibcq.umem, cqc, log_page_size, MLX5_ADAPTER_PAGE_SHIFT,
-+		cq->buf.umem, cqc, log_page_size, MLX5_ADAPTER_PAGE_SHIFT,
- 		page_offset, 64, &page_offset_quantized);
- 	if (!page_size) {
- 		err = -EINVAL;
-@@ -765,12 +765,12 @@ static int create_cq_user(struct mlx5_ib_dev *dev, struct ib_udata *udata,
- 	if (err)
- 		goto err_umem;
+-	if (!ibcq->umem) {
+-		ibcq->umem = ib_umem_get_va(&rdev->ibdev, req.cq_va,
++	cq->umem = ib_umem_get_cq_buf_or_va(&rdev->ibdev, attrs, req.cq_va,
+ 					    entries * sizeof(struct cq_base),
+ 					    IB_ACCESS_LOCAL_WRITE);
+-		if (IS_ERR(ibcq->umem))
+-			return PTR_ERR(ibcq->umem);
+-	}
++	if (IS_ERR(cq->umem))
++		return PTR_ERR(cq->umem);
  
--	ncont = ib_umem_num_dma_blocks(cq->ibcq.umem, page_size);
-+	ncont = ib_umem_num_dma_blocks(cq->buf.umem, page_size);
- 	mlx5_ib_dbg(
- 		dev,
- 		"addr 0x%llx, size %u, npages %zu, page_size %lu, ncont %d\n",
- 		ucmd.buf_addr, entries * ucmd.cqe_size,
--		ib_umem_num_pages(cq->ibcq.umem), page_size, ncont);
-+		ib_umem_num_pages(cq->buf.umem), page_size, ncont);
+-	rc = bnxt_re_setup_sginfo(rdev, ibcq->umem, &cq->qplib_cq.sg_info);
++	rc = bnxt_re_setup_sginfo(rdev, cq->umem, &cq->qplib_cq.sg_info);
+ 	if (rc)
+-		return rc;
++		goto free_umem;
  
- 	*inlen = MLX5_ST_SZ_BYTES(create_cq_in) +
- 		 MLX5_FLD_SZ_BYTES(create_cq_in, pas[0]) * ncont;
-@@ -781,7 +781,7 @@ static int create_cq_user(struct mlx5_ib_dev *dev, struct ib_udata *udata,
+ 	cq->qplib_cq.dpi = &uctx->dpi;
+ 	cq->qplib_cq.max_wqe = entries;
+@@ -3515,7 +3514,7 @@ int bnxt_re_create_user_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *att
+ 
+ 	rc = bnxt_qplib_create_cq(&rdev->qplib_res, &cq->qplib_cq);
+ 	if (rc)
+-		return rc;
++		goto free_umem;
+ 
+ 	cq->ib_cq.cqe = entries;
+ 	cq->cq_period = cq->qplib_cq.period;
+@@ -3528,8 +3527,10 @@ int bnxt_re_create_user_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *att
+ 		hash_add(rdev->cq_hash, &cq->hash_entry, cq->qplib_cq.id);
+ 		/* Allocate a page */
+ 		cq->uctx_cq_page = (void *)get_zeroed_page(GFP_KERNEL);
+-		if (!cq->uctx_cq_page)
+-			return -ENOMEM;
++		if (!cq->uctx_cq_page) {
++			rc = -ENOMEM;
++			goto destroy_cq;
++		}
+ 
+ 		resp.comp_mask |= BNXT_RE_CQ_TOGGLE_PAGE_SUPPORT;
  	}
+@@ -3537,15 +3538,17 @@ int bnxt_re_create_user_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *att
+ 	resp.tail = cq->qplib_cq.hwq.cons;
+ 	resp.phase = cq->qplib_cq.period;
+ 	rc = ib_respond_udata(udata, resp);
+-	if (rc) {
+-		bnxt_qplib_destroy_cq(&rdev->qplib_res, &cq->qplib_cq);
++	if (rc)
+ 		goto free_mem;
+-	}
  
- 	pas = (__be64 *)MLX5_ADDR_OF(create_cq_in, *cqb, pas);
--	mlx5_ib_populate_pas(cq->ibcq.umem, page_size, pas, 0);
-+	mlx5_ib_populate_pas(cq->buf.umem, page_size, pas, 0);
+ 	return 0;
  
- 	cqc = MLX5_ADDR_OF(create_cq_in, *cqb, cq_context);
- 	MLX5_SET(cqc, cqc, log_page_size,
-@@ -854,7 +854,7 @@ static int create_cq_user(struct mlx5_ib_dev *dev, struct ib_udata *udata,
- 	mlx5_ib_db_unmap_user(context, &cq->db);
- 
- err_umem:
--	/* UMEM is released by ib_core */
-+	ib_umem_release(cq->buf.umem);
- 	return err;
+ free_mem:
+ 	free_page((unsigned long)cq->uctx_cq_page);
++destroy_cq:
++	bnxt_qplib_destroy_cq(&rdev->qplib_res, &cq->qplib_cq);
++free_umem:
++	ib_umem_release(cq->umem);
+ 	return rc;
  }
  
-@@ -864,6 +864,7 @@ static void destroy_cq_user(struct mlx5_ib_cq *cq, struct ib_udata *udata)
- 		udata, struct mlx5_ib_ucontext, ibucontext);
+@@ -3609,8 +3612,8 @@ static void bnxt_re_resize_cq_complete(struct bnxt_re_cq *cq)
  
- 	mlx5_ib_db_unmap_user(context, &cq->db);
-+	ib_umem_release(cq->buf.umem);
- }
- 
- static void init_cq_frag_buf(struct mlx5_ib_cq_buf *buf)
-@@ -1436,8 +1437,8 @@ int mlx5_ib_resize_cq(struct ib_cq *ibcq, unsigned int entries,
- 
- 	if (udata) {
- 		cq->ibcq.cqe = entries - 1;
--		ib_umem_release(cq->ibcq.umem);
--		cq->ibcq.umem = cq->resize_umem;
-+		ib_umem_release(cq->buf.umem);
-+		cq->buf.umem = cq->resize_umem;
+ 	cq->qplib_cq.max_wqe = cq->resize_cqe;
+ 	if (cq->resize_umem) {
+-		ib_umem_release(cq->ib_cq.umem);
+-		cq->ib_cq.umem = cq->resize_umem;
++		ib_umem_release(cq->umem);
++		cq->umem = cq->resize_umem;
  		cq->resize_umem = NULL;
- 	} else {
- 		struct mlx5_ib_cq_buf tbuf;
+ 		cq->resize_cqe = 0;
+ 	}
+@@ -4206,7 +4209,7 @@ int bnxt_re_poll_cq(struct ib_cq *ib_cq, int num_entries, struct ib_wc *wc)
+ 	/* User CQ; the only processing we do is to
+ 	 * complete any pending CQ resize operation.
+ 	 */
+-	if (cq->ib_cq.umem) {
++	if (cq->umem) {
+ 		if (cq->resize_umem)
+ 			bnxt_re_resize_cq_complete(cq);
+ 		return 0;
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+index ebc393e6da4f..4d6d1259a795 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+@@ -109,6 +109,7 @@ struct bnxt_re_cq {
+ 	struct bnxt_qplib_cqe	*cql;
+ #define MAX_CQL_PER_POLL	1024
+ 	u32			max_cql;
++	struct ib_umem		*umem;
+ 	struct ib_umem		*resize_umem;
+ 	int			resize_cqe;
+ 	void			*uctx_cq_page;
 -- 
 2.54.0
 
