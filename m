@@ -1,208 +1,308 @@
-Return-Path: <linux-rdma+bounces-21351-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21352-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GFLGKTbrFmruvgcAu9opvQ
-	(envelope-from <linux-rdma+bounces-21351-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 15:01:42 +0200
+	id IFwzBWvrFmruvgcAu9opvQ
+	(envelope-from <linux-rdma+bounces-21352-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 15:02:35 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA8535E48C3
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 15:01:41 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 838785E48D9
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 15:02:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B46533016832
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 12:53:57 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 146323013B56
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 12:55:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BF353FF8B5;
-	Wed, 27 May 2026 12:53:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DED43E0087;
+	Wed, 27 May 2026 12:55:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="F4Zty1IE"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="PSkyVkGE"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11010034.outbound.protection.outlook.com [52.101.61.34])
+Received: from CY3PR05CU001.outbound.protection.outlook.com (mail-westcentralusazon11013057.outbound.protection.outlook.com [40.93.201.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DABA211A14;
-	Wed, 27 May 2026 12:53:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ECB931F9A4;
+	Wed, 27 May 2026 12:55:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.201.57
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779886403; cv=fail; b=JdLDMIDOftKyqeUUIN8CSAhB5DJdplvyUzBWIeLg77iw3WYrIwswi5U4B1901hU/t2Sf4wjduxJy4Uolduu19fLbid7Eiw0VXe0AG4/DBwUdj2jgnJ2amurUYDFYBGnY0BQ701+Wc9IZyLoT4J3EnnFMyanBZwsi+b4CGf4BQyQ=
+	t=1779886532; cv=fail; b=M3VnHlMhZdXpsAHNu1NSBX0EEupuAwi6r+O9Xe2r+jjFWjDSUgCswXliqC62srEavHjM1xtBMEM5+DbfV483eo/T+vBvn/WH+Ospow5zy1smi17cMNkw6pbYRT27cQ/yfeD8XhujTK2BKxMUJak1kiL52E9ZBJpmLJhWNbWsEUo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779886403; c=relaxed/simple;
-	bh=JkRHH0CaZrjqB/7aHpNeaq4bfeVkGjdlw5BbS5gerzM=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ZTWWwsShYeOJG95GjjWUZ6OLuB524MZd4GcqGspM9VLA6a+Mz9jJ/qxxQkHQqaLV8KEwaLU1WkPyS5Aykia/woVdTIvLyUf/VLqRxAugsENXoVObwaz4wzosfwpmzB3AqCkJJZZer2tPnXhpvmPH+wkG4mzdBWPWO4n/L89K4i0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=F4Zty1IE; arc=fail smtp.client-ip=52.101.61.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+	s=arc-20240116; t=1779886532; c=relaxed/simple;
+	bh=kqg525A/p3kwSuVLlNWYidx9zUL49Mf4WQSa3O0wOc0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LtoPIPP6lm/EQd3NxRUiVQbWu5uMzFB4HPz49pnDrO2EBuxeLYo+1eATh1fnxxt7VZQ220FBppycm9pxmISdr17QjVUwlQqJQK96qyuCZD+Z0FwSexDrehHY7wXTbSni7WVJgXSN0d7NVjWuyr25Qnl2eZ6lmTSmQHMaueVqmuQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=PSkyVkGE; arc=fail smtp.client-ip=40.93.201.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=rPDQ2yWvA9FkzRFo8TrknKJTlFREXrz6sp9XLcIsMlGOdidhEwsN1DQtkGiSlBuVsSTkTANfku0OmFiw/a4/1GtHCeKpkziLet/g3XwHmZ/etoCnOkX8qgG+Z8bglzKXZz5yydmkEZ1eg6+taGVDNjwfJsxlbRo0UB77DFKXOOly6m4G3smN/fw5Ax/Ds6oggyp6epxjcZhaLzT+U1Ams7mv6wj08/15kLPW/1HCBes2w+/pkAE/490YQxUSoE/TYyStx1E3WuRqZogkC2W1pal3aFUZhLvu+nq1eOl3QvSQsCDD6+/fxgIrrm0IHORtVXXAMM6i8ZSS1WaU4EbUVw==
+ b=Ak4KAWcu4DwQ9xmVPFPptghYLh/AWU/pjl6l4tC7RJZSaooMM4wwrUmz2RLz5BuZsNoei6a7ZFk68L8ZrdqyvD7QaE0ffYkmm1K7/PZ/8OEwqQzOUceKgWmyMNt7GtHDgqf8hf7vymaIF4k9pEsY0eK0TgUzXFYKtYsTfrwrl7dq5vdLSFRaTag0KQ7LiDmVOJbyn/S+Tf6EBasnwhg7t7Pij13zHCHDzvZHBx++gXEbQlCswfYlMXDCW/9LLjIKKcc+zv1WIodVtaTM0S+ngrgjsmw7/0LiDUCv0O4dQITjCVavwIWfkVCJnfkzKZZihV5NjQVbf4TE92nudUwSfg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=U4PI9faZbQMsAAW94xXtUjPhnmS/lLjslthFk6i/eB4=;
- b=JgVYCfmMIsv2apWPAb5y2N8i+w0ZB7msMaINM0GHCrsWipWVIqrti+CIq3FQ7ZgCkBkxh6xVmhccMB8VA4ojm3A/STRLsMTz5j/iq2onJtu0xUObLJNv78LN6gDadZ5wNUMYxxnltbbGGCFrpJQVw6kW5Dr6AG3c2jub31CGK+zfFJpkGo9i51OMLNk/VC3iCEFYzFa5X2PVsVjFOqr+tcKFGRVs04gjbH169Q9ILK2a4YYP5vuqhXwpHO/s5LDlXD2oub1pdJyunqCkUeH+l+MIJkAbg5ODKZFyX/82Ku3GfhcJt+TPvf+p29rQw1LjRT/TOASLr3u6IhJL7H8CHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=Qxys6uu9eCbdHxbCvmGqOQ23xpONLouWzHlMLfa4XGg=;
+ b=eAPnTu9VTquIHwjIWJ6oWtu4Yqwiv7wU/x+wwjU6O+qftdiC1K42yCM3fwij2AzymBJnLkQdpRq1RjdZPFQeMM5DMFkn/DQIl/YTt33xTep16I8TTOiMJy9koE6JNr8nQlmb9XpwMpy/gmuh6DOOVwKCaRYtJOCq+/L3y066FMT3kMDqtfxHUsRoNy0WJrnlbuOUvpwP56h0I3BhTCJ8YUVLii0ZhG3xTYhZnvTox4fzbWJcwYwEsvG4ho5jP0r+rXuTB+LAHfuV0Q68SF7QkA499aSdWXznq2lgRFaVUxPIf28pu4IJlp+vUs2BmHXF1th0ra1pDJVgOrU9qGSFTQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U4PI9faZbQMsAAW94xXtUjPhnmS/lLjslthFk6i/eB4=;
- b=F4Zty1IERg0YCpDNh3ut4pQlnFdYY819I0812A8zF+mkIDCerV62XjGeQT+fDez5pb5F5ShuUg3L+8mkOyqgcpNHlhsPRnkhxuWQ2PaFlvrUXT+EXin+5xeZYwdJA/AacnV+NgSAnpaxuRGWxcBqWx4pZg0WYCoAr1IH4mTgc3w=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by CYYPR12MB8869.namprd12.prod.outlook.com (2603:10b6:930:bf::8) with
+ bh=Qxys6uu9eCbdHxbCvmGqOQ23xpONLouWzHlMLfa4XGg=;
+ b=PSkyVkGEIp7m+KlcuUMvtGs3jptvHqIXLHf0ZuB6sTrFyh53efJnr5uvt/fXLsyS2UJnnGkgThvD7UED77/Vw8H59kk9FOhprHIu7m3dMh3LX3p0h1clU15tfDaqlzIJF9lZLXcsaExpMxqUhep0kFtKy6ID7nrTnf04ib+90FFApexVzN3jY5sDiCFlMp0mcc8d/uyeRTEl8EVF6aQzHbz9VxNQN6OcJYdRpRIN0cJGd7opeWh9HKQWqcklStZdQI922dY5/GYd2yfNfd6K79UKEkS3Z16nOG5ijWU8Su5EFCGopaNDk7J/5JU2/NIKzOxi7LZU0aY3anFPPXG3vA==
+Received: from MW4PR04CA0256.namprd04.prod.outlook.com (2603:10b6:303:88::21)
+ by CH0PR12MB8577.namprd12.prod.outlook.com (2603:10b6:610:18b::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.71.11; Wed, 27 May
- 2026 12:53:13 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::ce69:cfae:774d:a65c]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::ce69:cfae:774d:a65c%5]) with mapi id 15.21.0071.011; Wed, 27 May 2026
- 12:53:12 +0000
-Message-ID: <a5ff1930-e9fb-43f5-82ab-9875d7a28421@amd.com>
-Date: Wed, 27 May 2026 14:53:04 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/4] vfio/dma-buf: add TPH support for peer-to-peer
- access
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Zhiping Zhang <zhipingz@meta.com>, Alex Williamson <alex@shazbot.org>,
- Leon Romanovsky <leon@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- Bjorn Helgaas <helgaas@kernel.org>, kvm@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
- netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- Keith Busch <kbusch@kernel.org>, Yochai Cohen <yochai@nvidia.com>,
- Yishai Hadas <yishaih@nvidia.com>
-References: <20260526144401.1485788-1-zhipingz@meta.com>
- <a8cd01ab-d7aa-465d-bfa3-431f78f33ee1@amd.com>
- <20260527121438.GJ2487554@ziepe.ca>
- <ff247643-73e7-44e2-b3d5-8ac0a8efb871@amd.com>
- <20260527123634.GK2487554@ziepe.ca>
-Content-Language: en-US
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20260527123634.GK2487554@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BLAPR05CA0031.namprd05.prod.outlook.com
- (2603:10b6:208:335::12) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.48.14; Wed, 27 May
+ 2026 12:55:22 +0000
+Received: from CO1PEPF00012E66.namprd05.prod.outlook.com
+ (2603:10b6:303:88:cafe::2e) by MW4PR04CA0256.outlook.office365.com
+ (2603:10b6:303:88::21) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.71.13 via Frontend Transport; Wed, 27
+ May 2026 12:55:22 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ CO1PEPF00012E66.mail.protection.outlook.com (10.167.249.75) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.71.7 via Frontend Transport; Wed, 27 May 2026 12:55:22 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 27 May
+ 2026 05:55:05 -0700
+Received: from drhqmail201.nvidia.com (10.126.190.180) by
+ drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.20; Wed, 27 May 2026 05:55:04 -0700
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
+ (10.126.190.180) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
+ Transport; Wed, 27 May 2026 05:54:59 -0700
+From: Tariq Toukan <tariqt@nvidia.com>
+To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>
+CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Nimrod Oren
+	<noren@nvidia.com>, Yael Chemla <ychemla@nvidia.com>, Shay Drory
+	<shayd@nvidia.com>, Or Har-Toov <ohartoov@nvidia.com>, Edward Srouji
+	<edwards@nvidia.com>, Maher Sanalla <msanalla@nvidia.com>, Simon Horman
+	<horms@kernel.org>, Parav Pandit <parav@nvidia.com>, Patrisious Haddad
+	<phaddad@nvidia.com>, Kees Cook <kees@kernel.org>, Moshe Shemesh
+	<moshe@nvidia.com>, <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, Gal Pressman <gal@nvidia.com>
+Subject: [PATCH net-next 00/13] net/mlx5: Add switchdev mode support for Socket Direct single netdev, part 1/2
+Date: Wed, 27 May 2026 15:54:14 +0300
+Message-ID: <20260527125427.385976-1-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|CYYPR12MB8869:EE_
-X-MS-Office365-Filtering-Correlation-Id: cc980e0a-877c-45e0-f0b7-08debbeee966
+X-MS-TrafficTypeDiagnostic: CO1PEPF00012E66:EE_|CH0PR12MB8577:EE_
+X-MS-Office365-Filtering-Correlation-Id: 34e63ca4-2437-4210-d5b9-08debbef36a1
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|366016|376014|1800799024|22082099003|18002099003|56012099006|11063799006|4143699003;
+	BCL:0;ARA:13230040|82310400026|1800799024|376014|7416014|36860700016|3023799007|5023799004|6133799003|11063799006|18002099003|56012099006;
 X-Microsoft-Antispam-Message-Info:
-	9gIrTufGTRsUQRMddbWwbdmQF6qw7zE+dBa/zi+prmab2Bu6Xzw291wUsBq6M79XQDjLvIw9rFg5mjXnSN4IyGwtqUImmNBg5tLMjE9kSy4N4RM+dCAC074JZg3qFGtu/Q1r5xcxaVLZ8pNzt7AsLnBmRGokLeOegWR+mN6O9D4OA7FPY4Q4NX9uOqdgEwrYLIGV8owoZxwd34fFjJvaOf46mJuVBDMLb6Yh52OzIalpzD3gakCKt3JfEqhsANlwv4ekd1sndrcsjNVaDnyWeJ8Rx5BQdRSGjdpvWGHfkEEPBS+uhJuf5Z5q9pL+EUSY6pMabGmEhfe9EFRpzKIzVFWnd4AkyxEPEeaY0b3+fuw24r6kCQLfXtnjra7m1sUiNrUZMjW9LJJP4pPLOHhvDy8mGGDbg7Dh+An9J0UTBzEdmEIugqoEAjqobgrt09DINmZR/LgxDojW/76VtuqLDAshCeTQMjzLykM2ugoNf4oK9qqk0+eiUrFnJ/WmHk2+VO9fZVvB4CRabStxZampkdJvmkCY/laCAaLEbUiMKRbsS1eJLlM8caxmiyWuuWwak6B37JxenSCU///3iShJPo512dsDaBJhvlqNFkUYxdIHunq04brTsrXKpQjSldIGCV3h2DcXxv8/HxANu5GXEll8ViFVsEKvi6h/gsR0MNq/HuUr3Aqh7MMNuUE3er6R
+	UMubzqOS6phzFGtBJ3/Vyvteu98a/lVGSvfA5LMBkMMyxx9+fceWJk0ZuNuvWmB+73XtUgg334nlku302sJ2U/yQ0PJeqrjciyhZRym8VRn5oiNz+2xl+iJdJhaqhnfpXzXapXqV7vAQQLd6/lzG/sTm7yKkwg+m8Vwmj2wYHpRUrwcX7jns2wFYQWhehTDZ+Mq4EjCC0Eo55r1/GtrVc9NhGtSkzR9dG1GqOdc2IVlf05w4Z6vmPnUNsa3jQNVmR81I+7nOhUH8pTkeENZ36Ft/NCXlitFLgjXrSbr81lgXJZ5dn8KO+1Xj7Lrb0pozERxkjy6NfQCq/ABzr8CXIMTEUabTq5hevJmp4g8Zft+m63eGIz/FqTkX0o+g3X09O7CHE0G+WAURm93/eLK0LFuX9YycrgXkff5g0DJQN0BrJ1ZdAtGoMf6/5ybOkrwnrSPX/pwZkba10Eb6kcTPJ9dkGe8NMkU77xU6Hmyd13yYwTyZqVxOOUotmSgD4PnMgZYH1hjm8rKa0zvRFXhUjrNDeW6gwrmQQpHawsDdGSz+7NUmQVDkCn7SfNvr8fYynanLaO0pDpmJEdA6v5S5wrDlItj7/Vu740ncbMDXxOcPuEgQBVWhUh7sANy6Ea6a0nR17B7BuYmfgUG813mpjusEzx/PmBzE4N79t7xfhQMU5WGDRz0ZkAeXdBd1khlEzUQ3Mpueop0M9XmFGeWL347xcCL5ud9syLyaEVyNjnU=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(366016)(376014)(1800799024)(22082099003)(18002099003)(56012099006)(11063799006)(4143699003);DIR:OUT;SFP:1101;
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(376014)(7416014)(36860700016)(3023799007)(5023799004)(6133799003)(11063799006)(18002099003)(56012099006);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Z3dlUWVEbkpGaGpQeEZzd1BOTXpPbHlsWSsyZVppQldpZnp5Y3cvd2xwZTZi?=
- =?utf-8?B?cjFMb0ZyMWJGbUl3b0NvOVdkN05TTTZVMG85UGlLbUJuNlB0c0U2YUpKd0Mz?=
- =?utf-8?B?QXlRa052c1lTT3Y0K1VzY3VSWmdKdllxUkswTUc1TTJkdnQ2TEZOZG9hd3dL?=
- =?utf-8?B?c1ZuQUlnNW9YL1laRFhBb3JwMGh0ZTFSdGQxS0RzV2h1UHk0d2dBRGE5a3dz?=
- =?utf-8?B?SHcwYlNna2g3MC9sb3h6a2xPUm9DUUd0bzF5RENhd0FEVk5Xc3Q5SGJ5cGtt?=
- =?utf-8?B?MjhwN2R3amJVT1kwTkIzY1NiSDNjdlh5c2wxRXhQRHQreEZSOXJHQjdXaDJW?=
- =?utf-8?B?bEczdnlXTE96emdwZjJWVDdhdkliMzdzcXN2ZE5uZklLT1NYVjUrQ1ZVNndO?=
- =?utf-8?B?WDJyeHEzQm9qQ0lKVTdBNGE5aHFOcUF6bXFycUxOeFN2dEhoU2dZVEl5QWk1?=
- =?utf-8?B?aWFqSUNOVjFaM2NRcGtlN0FvcFZvU05WeXVmbCtoeFcyeUtlYnNoSGlvWENn?=
- =?utf-8?B?dmw3aFBZdXcrZ0xSRVo0WGI5eG9FcHphdkRCZ2ZPMzhKYXRhclVPWEIrWnRi?=
- =?utf-8?B?a01vK0g2cXRKQzAwbTN4OXc5NlhRa051alpyV1BubE9mVExDaTJKR1hSNG1K?=
- =?utf-8?B?eTVqK1d6V2JPeDRLYkhlYUYrVjRLdjczTjdlVWsxeDJHNW04SU00OHNBemY1?=
- =?utf-8?B?TEg5d1ovUG1EaE40Y0h6VlFoSkNqbFlSc3BQdktiZ09ZWXVUa3haZi9sT2FG?=
- =?utf-8?B?MmVTeTFYUFozaEZlNEY4VWprdkZvQnVVTFRvdGxacWJFY1YwUUQzcUFndnZD?=
- =?utf-8?B?bVFXYjVCeDRRNThrS2JBam9IanJDZm52VDNXTUpWdDFqd1YvZVpBai9oNC92?=
- =?utf-8?B?TDdRbzF2RG1YMVpBbTlIQWhra0w0Yk1BbGpqSUgvZXlDUGY3WFdIUElXWG1p?=
- =?utf-8?B?Q0JPeW1MOTlIa3JrSDJyZmZLNnlBRHRIUi9qaDdWSGxjVUdub2FqRElpMkJ0?=
- =?utf-8?B?bUJ4U0Z4cWU3RDQ5RldrcFY0M2w5N0FLaTRrR21QaVJURTFLN3EwOVVjWGdl?=
- =?utf-8?B?VWx6Z25iSno2RlVzMmhHK3kvZW9JeFlFeDJZYWFabzN4d1FrVmtud2t6OU9k?=
- =?utf-8?B?TXcwQ01pR25OdUtkSm1HSTNRaXlZUTJTbHlSblJFN1I2TGh4SFU0bFEvUmIw?=
- =?utf-8?B?UEp2MmJsd2FqMjY4OVZBSDdVeVdqOVFQYkQ3eFNwTkhrVHk1dlV6K2s1NzlF?=
- =?utf-8?B?S0dSSitnR2xNWlZxaVZWTFFKN094eG1RRzJzNnhxMFRQbVZmSVRJNmJ1M3Ni?=
- =?utf-8?B?RjN0djZwd0xmMHBFckp2Rzh0MmUxcThFRDQ5OEw2azBOYXBHVmlab245TFBB?=
- =?utf-8?B?Zmk5ZTVycW0zd0cyOHN6NnlGMmp2QU5Mek9YUXRZMzdYWEFMU0wwcWxKOS9F?=
- =?utf-8?B?MUxiRTdSb0ZnNW9vYmlnRGxkVDEyZE5VM3ZWVTRSbTFjcDJ5RENQL1NkbS8v?=
- =?utf-8?B?TkIrQ1hVS2lZLzhsdjZIWjQxMTZ0bTl2MzZxbUp1N0YzelJLVVR6RU5YUStF?=
- =?utf-8?B?N3EzVDg5UWFsVURUSzE1Qk4ydS80bFVRN0Q3VTZWR0FpYm5qTityK3Z2M1V3?=
- =?utf-8?B?TXNCWEJwV2l6U1plU0diN0pOWHNHVHhvc2pNNjF1TS9Xa3Z0ZnBTKzg2OGpK?=
- =?utf-8?B?aXFSUkQwMUYzWXVsVEwyZEFwYzZ0dzlKRjIzenNBd1U0R3poZUxwV29WSE12?=
- =?utf-8?B?eEpQZ1JYdUJycVNVVE9HSWxRU2RUN1MvRk9kdFZnQ3RTMjBSdVkvckNwYzgw?=
- =?utf-8?B?NjZOK1U5ZHd1T0t1OTFzanU5THpBUkxuTTdwKzJnZGJ5eVVsOEtvcnlTQnZU?=
- =?utf-8?B?TlUrZ0JycXRSTVhpOVdrQmd3dWpXbVBqTXR4dUtoWGpXazNpdGc4K0hJVDJx?=
- =?utf-8?B?Uk5RSURDNlpNWHlMVnQ4M3VXZmNyeitDYzFIbkMyYTRocXVGWkg3ajhYbTJC?=
- =?utf-8?B?Qit5MEo0aWJSZ0VFMTNqV2ZPR0NtZWEvT0d4OTNQbE9vRys2MEJRc0NQZlZN?=
- =?utf-8?B?akczLzdGZ3RJYlN6UFYzTERNN0dzV0RoNVVRamxOWUZBUnJMLytCTlNKbzZ1?=
- =?utf-8?B?S1J1Ump1WWpjS0JkK1JDY1hYbGtuNFk5ZVJzQ1p3Ukk0SDVCMWJDeGdMZUdv?=
- =?utf-8?B?VGtESTREam5vMWtEYzJRTmZYUldxT2Y1c2R6OU5LZWZOT3NFSjl1WjlnS2FV?=
- =?utf-8?B?SnhOcTBlR3lEazdCeDBuT2JBN2doTDRoKzZzZXhXVEZteG9TL05KQm9acUtE?=
- =?utf-8?Q?MucUb6SGV3RRm5Bwbn?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cc980e0a-877c-45e0-f0b7-08debbeee966
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2026 12:53:12.7663
+	o8jkcFTM8xQmgC7w7RhJ+BYRETCm65GXTgxdKWSlXJmlxzBlx/ux+qKSE7RVRSpUCWd/owSDKbZCf6+2aJZ9P/9A9NnvlCdQojeayqfBP3XgcHewbzgtLgwF3ZwNM7Z5x9Vg5nPKOcwWjpBFwY4ayd9Wm5fUaJMSC7Kq7Rn8qMA6zRIJMzf5DlQfQcCZsA0mSWUbz0xeN/DS2Q/f2CxSAF0EeF7LQ38qHMZsXpzfolRB4kuBKLy61EFMBMZX8vapk8pCzJU2Ip/zFQvflIaK4b9CreJ6wOG5l0nOo5xFlw8eUegfZQvlAP1Wa6r2PbMwXrWnKI3vY2FNUgeHjo5sgcm1f9BIA1OAihHLKDcsL4i3KTGbIYkiMm4mIJxEIf29RrJIn3Yj39+mgj7No4hPtWrKyxOlEuCD7Z1llQKaI+JahJYrKMS4QQ6YbLig8eu5
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2026 12:55:22.0490
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /UtfwVixnj3JCExTufRllquSL7s/2Z1j9a6+fBDuZ/I52IrCF0D0VixRR6XkCg2w
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8869
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-MS-Exchange-CrossTenant-Network-Message-Id: 34e63ca4-2437-4210-d5b9-08debbef36a1
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CO1PEPF00012E66.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB8577
+X-Spamd-Result: default: False [2.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[amd.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21351-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	DKIM_TRACE(0.00)[amd.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[24];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-21352-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[christian.koenig@amd.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,amd.com:mid,amd.com:dkim]
-X-Rspamd-Queue-Id: DA8535E48C3
+	FROM_NEQ_ENVFROM(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:mid,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,Nvidia.com:dkim];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	NEURAL_HAM(-0.00)[-0.996];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[9]
+X-Rspamd-Queue-Id: 838785E48D9
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 5/27/26 14:36, Jason Gunthorpe wrote:
-> On Wed, May 27, 2026 at 02:23:46PM +0200, Christian König wrote:
-> 
->> Yeah that's a good point, I should probably rephrase the question.
->>
->> I'm aware of how TPH works by adding the extra ST to the TLP.
->>
->> But my question is how is that useful to a PCIe endpoint? What is the effect of the ST here?
-> 
-> TBH I've never heard Meta explain what their device is doing with
-> it. At least it seems to be super important to their device..
+Hi,
 
-Yeah I think at least a brief description of what is going on here would be necessary for the review.
-
-Otherwise we have only the info that the exporter wants to give an opaque ST for the importer to use and no technical description what that is good for, how to test it etc...
+This series enables Socket Direct single netdev to operate in switchdev
+mode with shared FDB. See detailed feature description by Shay below.
 
 Regards,
-Christian.
+Tariq
 
-> 
-> Jason
+
+This series enables Socket Direct single netdev to operate in switchdev
+mode with shared FDB. SD single netdev combines multiple PCI functions
+behind a single netdev interface. To support switchdev offloads, these
+functions must participate in virtual LAG (shared FDB).
+
+Design
+
+Rather than introducing a separate LAG instance for SD, this series
+integrates SD secondary devices into the existing LAG structure
+(priv.lag) created at probe time. Each lag_func entry carries a
+group_id field that identifies its SD group membership (0 means not
+part of any SD group). An xarray mark (XA_MARK_PORT) distinguishes
+physical port entries from SD secondaries, enabling a single unified
+iterator that filters by group:
+
+  - MLX5_LAG_FILTER_PORTS: iterate port-level entries only (existing
+    behavior, used by bonding, FW LAG commands, v2p_map)
+  - MLX5_LAG_FILTER_ALL: iterate all devices including SD secondaries
+    (used by MPESW shared FDB across all devices)
+  - specific group_id: iterate only devices in that SD group (used by
+    per-group SD shared FDB operations)
+
+Existing callers use mlx5_ldev_for_each() which maps to
+MLX5_LAG_FILTER_PORTS, preserving current behavior for non-SD
+configurations.
+
+Lifecycle and ownership
+
+The SD LAG lifecycle is tied to the SD group, not to bonding events:
+
+1. At PCI probe, mlx5_lag_add_mdev() creates the LAG structure
+   (priv.lag) for each LAG-capable PF. e.g.: SD primary devices
+
+2. During mlx5_sd_init(), after the SD group is fully formed (primary
+   and secondaries paired), sd_lag_init() registers the secondary
+   devices into the primary's existing priv.lag by calling
+   mlx5_ldev_add_mdev() with the SD group_id. The primary's lag_func
+   also gets its group_id set. No separate LAG instance is created.
+
+3. After all the devices in SD group transition to switchdev,
+   mlx5_lag_shared_fdb_create() is invoked with the group_id to create
+   a software-only shared FDB scoped to that SD group. This sets
+   sd_fdb_active on all lag_func entries in the group. No FW LAG
+   commands are issued since SD devices share the same physical port.
+
+4. If MPESW (multi-port eswitch) is enabled on top of SD groups, the
+   per-group SD shared FDB is torn down first, then MPESW shared FDB is
+   created spanning all devices (ports + SD secondaries) using
+   MLX5_LAG_FILTER_ALL. On MPESW disable, per-group SD shared FDB is
+   restored.
+
+5. On SD teardown (mlx5_sd_cleanup or device unbind), sd_lag_cleanup()
+   removes secondaries from priv.lag and clears the primary's group_id.
+   The LAG structure itself is not destroyed.
+
+The sd_fdb_active flag is set on all lag_func entries in a group (not
+just the primary), so any device can detect the SD shared FDB state
+during lag_disable_change teardown without needing to look up peer
+entries.
+
+SD shared FDB is a pure software construct -- unlike regular LAG modes
+(ROCE, SRIOV, MPESW), it does not issue FW create_lag/destroy_lag
+commands. The software vport LAG for SD is implemented via eswitch
+egress ACL bounce rules, managed by the IB layer through
+mlx5_eth_lag_init(). And the software LAG demux is implemented via
+steering rules that utilize new destination, VHCA_RX.
+
+Patches
+
+Infrastructure (patches 1, 5-6):
+  - Factor out shared FDB code into a dedicated file
+  - Extend lag_func with group_id and sd_fdb_active fields;
+    add XA_MARK_PORT and unified iterator with group_id filter
+  - Extend shared FDB API with group_id parameter
+
+E-Switch preparation (patches 2-3):
+  - Align eswitch disable sequence ordering
+  - Move devcom init from TC to eswitch layer
+
+SD group management (patches 4, 7-9):
+  - Replace peer count check with direct peer lookup
+  - Register SD secondaries in the existing LAG at SD init time
+  - Block RoCE and VF LAG for SD devices
+  - Block multipath LAG for SD devices
+
+Switchdev integration (patch 10):
+  - Keep netdev resources local in switchdev mode
+
+Steering (patches 11-12):
+  - Track peer flow slots with bitmap for selective peer flow deletion
+  - Enable TC flow steering for SD LAG
+
+Enablement (patch 13):
+  - Verify unique vhca_id count for cross-VHCA RQT
+
+Shay Drory (13):
+  net/mlx5: LAG, factor out shared FDB code into dedicated file
+  net/mlx5: E-Switch, align disable sequence with switchdev-to-legacy
+    transition
+  net/mlx5: E-Switch, move devcom init from TC to eswitch layer
+  net/mlx5: LAG, replace peer count check with direct peer lookup
+  net/mlx5: LAG, prepare for SD device integration
+  net/mlx5: LAG, extend shared FDB API with group_id filter
+  net/mlx5: SD, introduce Socket Direct LAG
+  net/mlx5: LAG, block RoCE and VF LAG for SD devices
+  net/mlx5: LAG, block multipath LAG for SD devices
+  net/mlx5: SD, keep netdev resources on same PF in switchdev mode
+  net/mlx5e: TC, track peer flow slots with bitmap
+  net/mlx5e: TC, enable steering for SD LAG
+  net/mlx5e: Verify unique vhca_id count instead of range
+
+ .../net/ethernet/mellanox/mlx5/core/Makefile  |   2 +-
+ .../net/ethernet/mellanox/mlx5/core/en/rqt.c  |  27 +-
+ .../ethernet/mellanox/mlx5/core/en/tc_priv.h  |   7 +
+ .../net/ethernet/mellanox/mlx5/core/en_tc.c   |  83 ++--
+ .../net/ethernet/mellanox/mlx5/core/eswitch.h |  11 +-
+ .../mellanox/mlx5/core/eswitch_offloads.c     |  26 ++
+ .../net/ethernet/mellanox/mlx5/core/lag/lag.c | 429 ++++++++++--------
+ .../net/ethernet/mellanox/mlx5/core/lag/lag.h | 100 +++-
+ .../net/ethernet/mellanox/mlx5/core/lag/mp.c  |   4 +
+ .../ethernet/mellanox/mlx5/core/lag/mpesw.c   |  28 +-
+ .../mellanox/mlx5/core/lag/shared_fdb.c       | 233 ++++++++++
+ .../net/ethernet/mellanox/mlx5/core/lib/sd.c  | 227 +++++++--
+ .../net/ethernet/mellanox/mlx5/core/lib/sd.h  |  23 +
+ .../net/ethernet/mellanox/mlx5/core/main.c    |   3 +-
+ 14 files changed, 914 insertions(+), 289 deletions(-)
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/lag/shared_fdb.c
+
+
+base-commit: aa064a614efcfa4c300609d1f01134e99a12ad10
+-- 
+2.44.0
 
 
