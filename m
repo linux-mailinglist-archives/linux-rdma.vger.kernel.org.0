@@ -1,172 +1,181 @@
-Return-Path: <linux-rdma+bounces-21366-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21367-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WIrSDuj1FmrUywcAu9opvQ
-	(envelope-from <linux-rdma+bounces-21366-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 15:47:20 +0200
+	id yCYYJmH+FmoJ0QcAu9opvQ
+	(envelope-from <linux-rdma+bounces-21367-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 16:23:29 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E3515E54DC
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 15:47:19 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1017D5E5CF7
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 16:23:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 65E07305C472
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 13:34:07 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6753930594D8
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 14:20:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402B640FDA0;
-	Wed, 27 May 2026 13:34:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 991AC33CEA9;
+	Wed, 27 May 2026 14:20:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="BrZjRvoI"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="T3NxkvSh"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from CY7PR03CU001.outbound.protection.outlook.com (mail-westcentralusazon11010039.outbound.protection.outlook.com [40.93.198.39])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B20340FD86
-	for <linux-rdma@vger.kernel.org>; Wed, 27 May 2026 13:34:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779888844; cv=none; b=b4WFhylzwpaXn+7FjVb2XEld3kXgeNmgqs4Na60dWi9VKPC5EWfhbcT6uTIckPACoJwJOWG2nVffqJCpD2mWo+yfGGmRBzfIJUM9dvT3QilALIleYw5o2dDkg8mN63GuUwMnoQqPhY7svr/YJzKTOm21r8pMeryckJpTLZ7XgXM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779888844; c=relaxed/simple;
-	bh=SX/btaHg8hisQE4HPjWH8PXnsnxSqCDOj4S+rvTli/4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EIObmsGO943Sa9jN+GP3wJ9ULCbW2wvd97fsA2a65Hg0RP5QkowlrZGRSmxW0xpV8Xxqag4VzQUyrfHXMinHgW2B/pdhaD/Xy6DE+aLJAE/HlNBDl2yOjca8raz3TlX+H47TndtgAXS8tH0NOfaO1ZaptGyi7BaAqJeEiK7I+f4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=BrZjRvoI; arc=none smtp.client-ip=209.85.222.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-ua1-f51.google.com with SMTP id a1e0cc1a2514c-95fa7cd1392so8911329241.2
-        for <linux-rdma@vger.kernel.org>; Wed, 27 May 2026 06:34:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1779888841; x=1780493641; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+e2bIG+i9gyjJiiA+ouh3//Pf3aD7RE7geFrfA4l6SY=;
-        b=BrZjRvoITH5BXAfXA2jkpD1rp5AioNGjGttSCb4XDYtDBBBfFXe318dOvCGO4dNmWO
-         5s2W0PRQx0CtOGTYAilzdJSxxiJ01MQzqQcNV6wofvLUK6n2kpbaRjBXO1C+18SUBFAJ
-         yUJ37dLVPqQMiAX0lA5//nOC8p9837wal7BH+2iiUKdYeVX329hot3zOkQ+VVSxemS29
-         pDWLtFKFeK56ECkBag0jTJh7mwPsNvF/0XiSR4o5Sy9sJwsL5g5lb5yufCeZ6TZf7sJl
-         jP7DwqjWpqtOEa9fLfqvBN09ynhi3Z47M7kedXQSEpFdommyA62wK8YXKSXUL9EZa0mR
-         neJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779888841; x=1780493641;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+e2bIG+i9gyjJiiA+ouh3//Pf3aD7RE7geFrfA4l6SY=;
-        b=lRy6nnfQAPHG6aALY0aSy/d7CaVb0numMCnf1mzCObYZ1mzroJAHUq8S/RQK2j2ipv
-         dvMZZGag7BzZthMyMrmB6K9/meNOckfKbtBFFfzGs9qbLy322cnYQBXrfjyStiMD7gbi
-         lykh9MHpflB0foHzIwQ75bDLWZIKNFv/sbln+/gbgfYmbMf7zjbZFQv0lbqEq4eeR4TV
-         4rY/eDyTPPQWnH2XyJz/JRctYa43W6gowVOjyVnqtao3eGF4UV8Vk8PPVzOVvfN9aD3d
-         0pXGJbRLkHqOfXQ6jcANFqvWs720Fgz+hM1Rvi6AaBaVG+/lk8o1G5+0LkszYfB7xsAL
-         KowQ==
-X-Forwarded-Encrypted: i=1; AFNElJ9sY5uav864Eh6GBHw7Y75EN42nfe4AmcysBJ09sa7cHWBMMlpXAo6XlI1PHVf1o7hVyHp3SdhVsf1S@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy2Zb6a3Ke7Yguf/s9ZigdXLOFcYmYtIqIQyS+d/8ESTHPIxHeL
-	PC50z01tmGkjviuRCzu12BlpUp4zmAVT423xtthN9n5S8by6CsmESVtCijJqqc8vZYc67eZJumt
-	tRTuJ
-X-Gm-Gg: Acq92OEd8PWrElgEWjSWIqgUC7iPtLNNyUdnAI5Ausit+dDRHj5b0GzqmPn+270uRhn
-	reG72pf4Ix6AqWwXsNVaZynZ52oni3jcnW4OyfgNOeAL+NZjiQa43d/ohoEWRSRzuKV+9PwL+p6
-	0lLfm85L4GXNCf1kPoWrXnpK13XMqPYhE2ZymwzppUkkfhn1s7SIgkQnMbu76jdpF6iK1sHh4si
-	l7Wi+etc1/j4YvZWkHCDuwwIsDyGKwq92ClzWiq5wWraIAYQdOv/Ig1Tbuk7lUbvsS2RT93vDiQ
-	EwYT81PORwq1iko/TAG45HeVxwtXsHgdMTUr/gb5u590wx4ibrqHI+iND+0QwoIbLIxm1eU4XRL
-	gW1HE/jh6ZuKIsNnOjk+N4creFtKXsv6nL3DrZKm4ieulmb7PWAxkKyiBzsbNGNg3LLrW2RC1cQ
-	i6KFvURUl3Nwd0QFVRh2YgVQN2opn0/QAAq7F31k/0nJ/kpEmy1kuGaqB25PLdxy4B3e+fsJGtB
-	OFdmMJ886moY397
-X-Received: by 2002:a05:6102:688f:b0:631:81d6:e158 with SMTP id ada2fe7eead31-67c8fcbdbdfmr12092231137.27.1779888841412;
-        Wed, 27 May 2026 06:34:01 -0700 (PDT)
-Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-914f87034a2sm476927185a.16.2026.05.27.06.34.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2026 06:34:00 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1wSEOW-0000000EPtJ-0OFT;
-	Wed, 27 May 2026 10:34:00 -0300
-Date: Wed, 27 May 2026 10:34:00 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Tao Cui <cuitao@kylinos.cn>
-Cc: tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, leon@kernel.org,
-	linux-rdma@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH rdma-next 0/5] cgroup/rdma: add per-type resource
- accounting for QP, MR and MR memory
-Message-ID: <20260527133400.GM2487554@ziepe.ca>
-References: <20260525055506.2002985-1-cuitao@kylinos.cn>
- <20260525134314.GI7702@ziepe.ca>
- <b8269d9b-bd14-4ba1-be60-a210a9a1d093@kylinos.cn>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5DF133BBB9;
+	Wed, 27 May 2026 14:20:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.198.39
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779891625; cv=fail; b=I8lsD4pgZLQJpmcdA6c+Efdfk8hNOUXvnJaeL1o6uyrMRAdINF4nGNGTagSS76Z5dTxDbjnvT55ubYIhRtzZALvktnrSPjt6G3phrUGdi8waLT9hFOV5MoBL1VKRDu7djs/CyLWCgZMwMNuKDkbamXavosDfM7DbYGH9hSAt0hQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779891625; c=relaxed/simple;
+	bh=haJEZW3SRmxAOSuD/HXiWplj8PMbZG7jB4wktP52xYs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=h1U3dAQ0yPZu+m6cdjTqq+iDy+vHH64KfDNvXqygx6HGgPMzot++FYKQvzmOl4OeKn1dI2Qrs4Be7Zmm5Ijh1zoEj9WRIjTRREicJY/YtIrPAaNVUilR8JwRzJVHXoiZE+HT7ujudmTPPtZNDx8aAX0FDZjRVkIGpW74VM1Anio=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=T3NxkvSh; arc=fail smtp.client-ip=40.93.198.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=wMQpfA4YTwP+PR8PuzAFZZOCKkZA0QexBu5Vtn+oWucYU7A4yEDdYyAQMaw92aqM4iD8b6KuzoTKNUOefWlhPnqNI5HfHvGcFcv/UJ/gopLCdnLSJGhPSOIl0TA/lvpulYf6cMpu1AuWRJbwZIiENv269Gc/TRu4xEF8qm8SwuxV0UW/TOJ4VFhwQDDLS79seoiQn91i4KwyJ0vXleehkKSqp7d+iGBVCUuerryqOvovs+XKPpq4fciQ4EQn1SYrQcn25Ts26dnno2YmCrG5Bst7SFHbuKcc3N2FV2E7l2UeMwcwnV9eYiH9OuVB4El2GBn//qNHcdk1fEEhqapKsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KFdzGkDkWo2PeKQMZ+vZa6ht/jv3Q/9fOlr77ITbfyU=;
+ b=vUA/DkQGhtAxo8czmGFSJLYA/w0dd3xg6KSGnBvgf/OVT5cPNJ1w3jIu5ROaMR6dH/MxkNes4SuWYxu24xcayGqlOo0x2lkZtQd+D69De+OuuLoDIbsvkO9jYO4wtLkMlTVLd+bfzKuqPw9pdWeXNX9XjcSqcTiM/vg903ihhwJAswrmaw1/+JaHClQsT4oeoawmh+URTOw1wXVExRMj2FiAwpXN9cboCii6xCVU1I9M26F+/HBcFelSAWB0olleZH5CoS1DPbfI8yY3/m+SmbSuZtNgSPlcDCP6b1uBUuwnhsYV87u1KTMAk0T3OSp1qiIprij09Bk78nyGQ22Mlw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=yandex-team.ru smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KFdzGkDkWo2PeKQMZ+vZa6ht/jv3Q/9fOlr77ITbfyU=;
+ b=T3NxkvShVQUCXzT46BMj4/agtaUHXcxafuqGOC4+6X9N2OHXgsFn3WVcpTssz8qJ/dv9O6lypwWBmlcl9n17WbPc0p5u+d7nVXu/sligvu3wwFLBkNJGqqwBJz79dZ+6i+2MmM0uQDJcBU4i//HOfru5NVipVmp58csmM3yZP4C/g+v5gPfPXepvqdpG4tghjqi/VnvLhXxm2bIePpEJziRHAFIIfW45IgNskO/+wzZ+4p9SySxTsYdNCjwbbjz2siTbvH9FluJ28icJkyEby/YYvEIqCTk/l5mPJk9DRGV81sMzRABTDizxwUf7z5Iehj8J/tXXUgieoK7xIrrhDQ==
+Received: from SA1PR03CA0019.namprd03.prod.outlook.com (2603:10b6:806:2d3::21)
+ by CH3PR12MB7714.namprd12.prod.outlook.com (2603:10b6:610:14e::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.71.11; Wed, 27 May
+ 2026 14:20:18 +0000
+Received: from SN1PEPF00036F3C.namprd05.prod.outlook.com
+ (2603:10b6:806:2d3:cafe::ad) by SA1PR03CA0019.outlook.office365.com
+ (2603:10b6:806:2d3::21) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.71.13 via Frontend Transport; Wed, 27
+ May 2026 14:20:18 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ SN1PEPF00036F3C.mail.protection.outlook.com (10.167.248.20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.71.7 via Frontend Transport; Wed, 27 May 2026 14:20:17 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 27 May
+ 2026 07:20:03 -0700
+Received: from [10.221.194.170] (10.126.231.37) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 27 May
+ 2026 07:20:00 -0700
+Message-ID: <fe5a2ed1-2fdd-45f8-ae1d-656e5e89a354@nvidia.com>
+Date: Wed, 27 May 2026 17:19:58 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b8269d9b-bd14-4ba1-be60-a210a9a1d093@kylinos.cn>
-X-Spamd-Result: default: False [-1.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] net/mlx5: Reorder completion before putting command entry
+ in cmd_work_handler
+To: Nikolay Kuratov <kniv@yandex-team.ru>, <linux-kernel@vger.kernel.org>
+CC: <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>, Saeed Mahameed
+	<saeedm@nvidia.com>, Akiva Goldberger <agoldberger@nvidia.com>, Tariq Toukan
+	<tariqt@nvidia.com>, <stable@vger.kernel.org>
+References: <20260526162932.501584-1-kniv@yandex-team.ru>
+Content-Language: en-US
+From: Moshe Shemesh <moshe@nvidia.com>
+In-Reply-To: <20260526162932.501584-1-kniv@yandex-team.ru>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF00036F3C:EE_|CH3PR12MB7714:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0f954574-8a7b-4680-5989-08debbfb13cd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|36860700016|376014|1800799024|11063799006|5023799004|56012099006|6133799003|22082099003|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	dQuCqohIaWm1J7tGF2CfuMdxUCPzl3vbeakgRbyke8rqpAmN/wCivX2mNMp7CgUn25qqKNG1fGozElUTxDRCi2AeJ7Ov9dfrl0RE9xdaEivkFqyjWgYhXvsyckM17PD542+KUektqiaS/9BLIvUxlNo7rvp9mrxSdemRATR4u+ydI+XBA7LNAI2dJOz0gA0tMo68ECLzZ0J2suVGpp34pihmtd9AIofrBmHDrlKgb5wT0W5CCP78VJN36Scux4QYX5G1vRmC63HspDE4SVhptJ7NDnv9rHt6EWiADTcvEgBKZQZXOqOSqWec8oRlwEPFwwGPzhBFvWgxL0W3exMtUzVXONyV8RyUPE05mqwWiTJxkkQJu/VotPUncSAeJNloFJP4COHdiHBikrCTOtMe7uOaP56rkK1tgWe5Gp+T03er2qhF+bOcUcUXJGsirKxbnPgMySpgdpS5FCQzqtC0a19RzbMtRrt7WfAZHKq414xsFTZskqs6hJDyVYqnJcM3/divDQuHyRSgTyFlZ2RKGD3zuzaThy4yHFVnXdrYNW8KrF3ZTh60fze3CG4hJyPDqpEyyRGGEA3bzV++8nB/lmu3tfuvxlAB+ApbW++PGA/++fM8s7YRLuo6ABIB9OHjcFgwiA5aV0Fiypxxq8jEsnykMHkyo3qEB/BWXZYD3lSUs1wnDEbkASuxYfRzjILFWhTl0cwKMD/2w1SldTzG4/QLMPA7ucacqu3mM20rB3A=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(36860700016)(376014)(1800799024)(11063799006)(5023799004)(56012099006)(6133799003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	A7iUTHjanmhLMd+FyQIvlLRermj8LIy9SMyEqqfHNucFZwTwP7lLvmfWprY7a149zQoZ/Xr22CzXl3yfHuuK72F4AQzIv2zlEO78/a8CAVHQqRoncY5UDmoSr9l0SMVIqjSNYk5UqzE5fP9AAM0s8bR/+emvxNrvthiCFnl9mk/hhrAoChb6PZAKbT0cxLua25rmGcCzPQwCPnSacDGUZSnIYStcxW5Gyr/Khs0rj7LHt++oILW1+6nmKvsU4HjIPPlnipbW1tX3a1LMOpNy9MN6afYhurFyZeA66foupLIz4U34O9bneEEl5g7IENkqtRvhdUkDcZ/p/2ledZJStqVhQt48bKrLv6BhvDQzaSZaZGueScbmym1zcF6TTAM4OaTbWyUIZM4atERH8JZexmkOJDU46gAJVgoSUuHaYHj35CwN7wmFywtg4QX7WBbi
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2026 14:20:17.5109
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0f954574-8a7b-4680-5989-08debbfb13cd
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SN1PEPF00036F3C.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7714
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	TAGGED_FROM(0.00)[bounces-21366-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[ziepe.ca];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-21367-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[yandex-team.ru:email,Nvidia.com:dkim,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,nvidia.com:mid,nvidia.com:email];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[moshe@nvidia.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,ziepe.ca:mid,ziepe.ca:dkim]
-X-Rspamd-Queue-Id: 3E3515E54DC
+	RCVD_COUNT_SEVEN(0.00)[8]
+X-Rspamd-Queue-Id: 1017D5E5CF7
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, May 27, 2026 at 07:28:59PM +0800, Tao Cui wrote:
-> Hi,Jason
+
+
+On 5/26/2026 7:29 PM, Nikolay Kuratov wrote:
+> Assuming callback != NULL && !page_queue, cmd_work_handler takes
+> command entry with refcnt == 1 from mlx5_cmd_invoke.
+> If either semaphore timeout or index allocation error happens,
+> it does final cmd_ent_put(ent). To avoid access to freed memory,
+> notify slotted completion before cmd_ent_put.
 > 
-> Thanks for the review.
+> This is theoretical issue found by Svace static analyser.
 > 
-> 在 2026/5/25 21:43, Jason Gunthorpe 写道:
-> > 
-> > I would agree to mr_mem as a reasonable extension, but not splitting
-> > out objects to finer grains. There are endless objects we don't want a
-> > 100 different cgroup knobs, it is not usable.
-> > 
-> 
-> Understood.  Our initial motivation was
-> multi-tenant isolation: a tenant could consume disproportionate
-> resources by creating many objects of a single type.  In hindsight,
-> though, the real bottleneck is pinned memory, not object counts —
-> modern hardware has large object pools, and the scarce resource is
-> how much physical memory gets registered through MRs.  mr_mem
-> addresses that directly, while hca_object remains sufficient for
-> coarse object accounting.
+> Cc:stable@vger.kernel.org
+> Fixes: 485d65e135712 ("net/mlx5: Add a timeout to acquire the command queue semaphore")
+> Fixes: 0e2909c6bec90 ("net/mlx5: Fix variable not being completed when function returns")
+> Signed-off-by: Nikolay Kuratov<kniv@yandex-team.ru>
+> ---
+>   drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
 
-This was the same motivation that lead us to a single object
-limit. Inside a modern NIC the objects tend to pool from the same memory
-pool so it doesn't matter if you have 100 QPs or 100 SRQs or whatever
-they sort of cost the same.
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
 
-memory pin accounting should ideally be limited by the cgroup directly
-but we argued about that for a while and could never get an agreement
-of an acceptable implementation. There are many nasty corner cases
-around cgroups and fork and other cases IIRC
-
-So I'm not sure if making it rdma specific can easially solve these
-problems
-
-Jason
+Thanks.
 
