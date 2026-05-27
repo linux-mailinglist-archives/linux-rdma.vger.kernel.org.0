@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-21336-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21337-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +KXUN0VYFmo9lgcAu9opvQ
-	(envelope-from <linux-rdma+bounces-21336-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 04:34:45 +0200
+	id QAlsO1RYFmo9lgcAu9opvQ
+	(envelope-from <linux-rdma+bounces-21337-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 04:35:00 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 716715DE96A
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 04:34:45 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 917245DE99C
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 04:35:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 4757F303E12B
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 02:34:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 05668303CFAA
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 02:34:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5D2F1B808;
-	Wed, 27 May 2026 02:34:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 202E230CDA2;
+	Wed, 27 May 2026 02:34:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gZe7es6p"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jzVLad9+"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C59B62FF657;
-	Wed, 27 May 2026 02:34:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67F5636B044;
+	Wed, 27 May 2026 02:34:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779849267; cv=none; b=Le+va76UUmhyHfP717Uwm1pcbne0cw7USvxa8iSm/pfRJPanIcUHs9eOckSn27cdh6TOVNblD4+5wBW3LYy94MaQkY9yPe2kFd2xpcQCxmSytx5uata55TrpOCgLYhzZen3Kq7O2F/I0H3I5RDF5AApSeU7BVdUEzClsPsrcBkk=
+	t=1779849267; cv=none; b=bAIOugjj6lxHbCVo8KLSSu01aYsLYa+ABqBJEC/Gir3SKnJfdfd46+USKtEm1yargrwxK98g6jmAh1pl6GOFuy21MiYPcaMslfx4iDjePBl6ifdyo7nv2scqdIb/gU6T5B/6jM2lMms0mrxfokro96PAghjoI/Ku+194KgvejrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1779849267; c=relaxed/simple;
-	bh=A353jG6v4Xf+ficc2QHwROMy6RZ991EqlHbddOLJAPk=;
+	bh=6Y0ISuxZgz/P3ld5rbFvop5CRCFHLlT0T5DbHrF2OXg=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IgJN09CCUeLv84/s36/AFhLStAn2n2/BWV0LuSowtkE9aUH51aVOUfo9hpwAX6V8x4LMtyMnoQ5WXv0Ylbmg8L6iVYvTUF/m/pkgeQzPCYf/VkCX7Lzsi2MZobZzYFBwL1umhBZRp4qLVjOMeekOjoFlZb4v25VXMnm1rJQvVQ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gZe7es6p; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C26621F00A3C;
-	Wed, 27 May 2026 02:34:24 +0000 (UTC)
+	 MIME-Version; b=lGmcJeYQjBQ3xZuwdpLJANsLdh/1wqHoiEs4RKuq36vOcUba86aq3cDn/7bx9gLiMQxo1ncynShy04WOvBB6KIk7uwsokR4weoDjDKKuRDLmuKwCTo8OCt3j3mRFp+t7Z0XFmsq1rbkFQq4BYkUHLuQXkqhjwE1Um1sX0pkqUnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jzVLad9+; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91D161F00A3A;
+	Wed, 27 May 2026 02:34:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779849265;
-	bh=rvUiGXIlZLfkWLEsCqFZPSmPSyXchjjcFfHX3Gx5JwI=;
+	s=k20260515; t=1779849266;
+	bh=33Q+0nVF0ARpJV3lvmXHvrP9ISNqoJj90QlqqmgjQNA=;
 	h=From:To:Subject:Date:In-Reply-To:References;
-	b=gZe7es6pSbYpVPNago6F35ulfTHmox/Lah8gMiLxwwycsO4Ps1YhIxlRcL1xfA43L
-	 7ATDU4F/bVsgrm/3Kmrf92b2+yXwuBFutbBEFrjtLzfte7Hf+lNHAz1h43CqGL632F
-	 tLI6pjuRuTzKXVCmZUvpHtXiNv4m+XY6CNIpgscNSrIamdGKuHJXy5yfjxzoYRYgzl
-	 4DN+GVFu3jSCkS7LJVz4l5D7d9T0rPVvIcC0DPug3P7PkbJCAp5/1JRJHoBkoNsNn/
-	 m+60xElBplhYQcKlUC6iP7HVTm3wOFSsbEIQx+QgQY1K10LR2pwX9ASer8ojnjKa5V
-	 9yFSEZo+NzTuA==
+	b=jzVLad9+nE56KDu1h3aMww3nqpNvDXTwr7J4v/OOi/r0PlFae7me6gkMl80vPIkPZ
+	 Lf6LxW19vf0A0QLnYh3h2R2I/KyAJrq+f6fBtDrRG7b4z+AkgToVJ1lDV8ewQ34hHE
+	 J6kub8Ggumc2s9mAp8I5lWZazw0wjiK65cenqpihgONIb/KHdCsj+kNsw3jDW7Ezuz
+	 pna4SAA+Osjm/TLvr86eZFnIbOGg+hEQL+0OyYtjdUXh5AreDQWtbjhW2J6w834qKJ
+	 21CnBy02Ou2mp7dhumdladW/cm3SySsObSRFnufkyxChpHyHCzmfuLD0J+o526MlBm
+	 ETS6ThsfV2VfQ==
 From: Allison Henderson <achender@kernel.org>
 To: netdev@vger.kernel.org,
 	pabeni@redhat.com,
@@ -54,9 +54,9 @@ To: netdev@vger.kernel.org,
 	achender@kernel.org,
 	linux-kselftest@vger.kernel.org,
 	shuah@kernel.org
-Subject: [PATCH net-next v2 1/4] selftests: rds: Rename run.sh to rds_run.sh
-Date: Tue, 26 May 2026 19:34:20 -0700
-Message-Id: <20260527023423.387792-2-achender@kernel.org>
+Subject: [PATCH net-next v2 2/4] selftests: rds: pin RDS sockets to their intended transport
+Date: Tue, 26 May 2026 19:34:21 -0700
+Message-Id: <20260527023423.387792-3-achender@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20260527023423.387792-1-achender@kernel.org>
 References: <20260527023423.387792-1-achender@kernel.org>
@@ -72,7 +72,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -80,7 +80,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-21336-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21337-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -88,89 +88,73 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_NONE(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[9];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,run.sh:url]
-X-Rspamd-Queue-Id: 716715DE96A
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 917245DE99C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-This patch renames run.sh to rds_run.sh. This gives the test a
-self-describing name that appears in the netdev CI dashboard.
+The RDS selftests create AF_RDS sockets but never selects a transport,
+so the transport is chosen implicitly based on network topology when
+the socket is bound.  If underlying connection establishment fails, RDS
+can fall back to another transport (e.g. loopback) and the test still
+passes, silently bypassing the intended datapath it is meant to
+exercise.
 
-Suggested-by: Matthieu Baerts <matttbe@kernel.org>
+Set SO_RDS_TRANSPORT to the proper RDS_TRANS_IB or RDS_TRANS_TCP before
+they are bound, so the test fails loudly if the intended transport is
+unavailable rather than passing on a different path.
+
 Signed-off-by: Allison Henderson <achender@kernel.org>
 ---
- tools/testing/selftests/net/rds/Makefile               | 2 +-
- tools/testing/selftests/net/rds/README.txt             | 8 ++++----
- tools/testing/selftests/net/rds/{run.sh => rds_run.sh} | 4 ++--
- 3 files changed, 7 insertions(+), 7 deletions(-)
+ tools/testing/selftests/net/rds/test.py | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/tools/testing/selftests/net/rds/Makefile b/tools/testing/selftests/net/rds/Makefile
-index fe363be8e3586..ec10ae24e4cf1 100644
---- a/tools/testing/selftests/net/rds/Makefile
-+++ b/tools/testing/selftests/net/rds/Makefile
-@@ -3,7 +3,7 @@
- all:
- 	@echo mk_build_dir="$(shell pwd)" > include.sh
+diff --git a/tools/testing/selftests/net/rds/test.py b/tools/testing/selftests/net/rds/test.py
+index 08f2a846a8ab5..9e4df01cb0d4b 100755
+--- a/tools/testing/selftests/net/rds/test.py
++++ b/tools/testing/selftests/net/rds/test.py
+@@ -59,6 +59,14 @@ rdma_addrs = [
+ OP_FLAG_TCP     = 0x1
+ OP_FLAG_RDMA    = 0x2
  
--TEST_PROGS := run.sh
-+TEST_PROGS := rds_run.sh
++# from include/uapi/linux/rds.h: SO_RDS_TRANSPORT pins a socket to a
++# specific RDS transport so connection setup cannot silently fall back
++# to another (e.g. loopback) transport.
++SOL_RDS          = 276
++SO_RDS_TRANSPORT = 8
++RDS_TRANS_TCP    = 2
++RDS_TRANS_IB     = 0
++
+ signal_handler_label = ""
  
- TEST_FILES := \
- 	include.sh \
-diff --git a/tools/testing/selftests/net/rds/README.txt b/tools/testing/selftests/net/rds/README.txt
-index bac6f15a80d52..8aa41148b1b5c 100644
---- a/tools/testing/selftests/net/rds/README.txt
-+++ b/tools/testing/selftests/net/rds/README.txt
-@@ -14,9 +14,9 @@ configs required for the RDMA transport.  The kernel may optionally be
- configured to omit the coverage report as well.
+ tap_idx = 0
+@@ -214,11 +222,21 @@ def snd_rcv_packets(env):
+             netns_socket(netns_list[0], socket.AF_RDS, socket.SOCK_SEQPACKET),
+             netns_socket(netns_list[1], socket.AF_RDS, socket.SOCK_SEQPACKET),
+         ]
++
++        # Pin the sockets to the TCP transport so it doesn't fail over to a
++        # different transport during this test
++        for s in sockets:
++            s.setsockopt(SOL_RDS, SO_RDS_TRANSPORT, RDS_TRANS_TCP)
+     elif flags & OP_FLAG_RDMA:
+         sockets = [
+             socket.socket(socket.AF_RDS, socket.SOCK_SEQPACKET),
+             socket.socket(socket.AF_RDS, socket.SOCK_SEQPACKET),
+         ]
++
++        # Pin the sockets to the RDMA transport so it doesn't fail over to a
++        # different transport during this test
++        for s in sockets:
++            s.setsockopt(SOL_RDS, SO_RDS_TRANSPORT, RDS_TRANS_IB)
+     else:
+         raise RuntimeError(f"Invalid transport flag sets no transports: {flags}")
  
- USAGE:
--	run.sh [-d logdir] [-l packet_loss] [-c packet_corruption]
--	       [-u packet_duplicate] [-t timeout]
--	       [-T tcp|rdma|tcp,rdma]
-+	rds_run.sh [-d logdir] [-l packet_loss] [-c packet_corruption]
-+	           [-u packet_duplicate] [-t timeout]
-+	           [-T tcp|rdma|tcp,rdma]
- 
- OPTIONS:
- 	-d	Log directory.  If set, logs will be stored in the
-@@ -73,5 +73,5 @@ EXAMPLE:
-         "export PYTHONPATH=tools/testing/selftests/net/; \
-          export SUDO_USER=example_user; \
-          export RDS_LOG_DIR=tools/testing/selftests/net/rds/rds_logs; \
--         tools/testing/selftests/net/rds/run.sh -T tcp,rdma"
-+         tools/testing/selftests/net/rds/rds_run.sh -T tcp,rdma"
- 
-diff --git a/tools/testing/selftests/net/rds/run.sh b/tools/testing/selftests/net/rds/rds_run.sh
-similarity index 98%
-rename from tools/testing/selftests/net/rds/run.sh
-rename to tools/testing/selftests/net/rds/rds_run.sh
-index 07af2f927a2a7..ef16039be1ae5 100755
---- a/tools/testing/selftests/net/rds/run.sh
-+++ b/tools/testing/selftests/net/rds/rds_run.sh
-@@ -209,7 +209,7 @@ while getopts "d:l:c:u:t:T:" opt; do
-       TRANSPORT=${OPTARG}
-       ;;
-     :)
--      echo "USAGE: run.sh [-d logdir] [-l packet_loss] [-c packet_corruption]" \
-+      echo "USAGE: rds_run.sh [-d logdir] [-l packet_loss] [-c packet_corruption]" \
-            "[-u packet_duplicate] [-t timeout] [-T tcp|rdma|tcp,rdma]"
-       exit 1
-       ;;
-@@ -224,7 +224,7 @@ done
- IFS=',' read -ra transports <<< "$TRANSPORT"
- for t in "${transports[@]}"; do
-     if [ "$t" != "tcp" ] && [ "$t" != "rdma" ]; then
--        echo "run.sh: unknown transport '$t' (expected tcp or rdma)"
-+        echo "rds_run.sh: unknown transport '$t' (expected tcp or rdma)"
-         exit 1
-     fi
- done
 -- 
 2.25.1
 
