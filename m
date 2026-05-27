@@ -1,155 +1,199 @@
-Return-Path: <linux-rdma+bounces-21349-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21350-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SB+JI67mFmruvgcAu9opvQ
-	(envelope-from <linux-rdma+bounces-21349-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 14:42:22 +0200
+	id kKRQJQvoFmruvgcAu9opvQ
+	(envelope-from <linux-rdma+bounces-21350-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 14:48:11 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A1D45E459E
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 14:42:21 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 190A35E463F
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 14:48:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 4B6A7301F82D
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 12:36:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C51073019518
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 12:44:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73AC5405C21;
-	Wed, 27 May 2026 12:36:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49BF03DFC7C;
+	Wed, 27 May 2026 12:44:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="UVUIw1Pe"
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="Rq96XAjY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03C9E405874
-	for <linux-rdma@vger.kernel.org>; Wed, 27 May 2026 12:36:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779885402; cv=none; b=F6IgIHZO9DwLnw3How8HMrlQo5dHlXkGaPIuq6XRBy0RXqvGmEbKw8JP5cBQ5xftEp2wrzVQQZbEEKI8Efv39MWHVp3w0yGgQ7GzU1cm+cxVmrt6VmhsnFFp6usV9U16srY53lSx8Ll39z9QdnJ/JWXfQCkLg3Nx7BM6y0Xv7WU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779885402; c=relaxed/simple;
-	bh=H7p6mpDtDLxmKvgOZ4pgS/ak1T+DvZzVyyf47SslWwI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pHuj0uioZlH4P684y4J2BHb0iwJ/5z2b+3Rn4EFP5B0pKHUrK2gdW/SmVrZ4JOYK2lqxQWhDQpXwW8kO/4z7MNu94s+tDZnDp9t1dB9hSfw3RKE6GgyXoVCW0klTg8FkjK4Q95SHq0goxyPQyCxK7TNSOcFnUJUGtCXoYBJFLXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=UVUIw1Pe; arc=none smtp.client-ip=209.85.222.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-914bf787977so389675585a.2
-        for <linux-rdma@vger.kernel.org>; Wed, 27 May 2026 05:36:37 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3416A346766
+	for <linux-rdma@vger.kernel.org>; Wed, 27 May 2026 12:44:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.176
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779885863; cv=pass; b=LJWzvdi5d5PwrPFA6PHxsOeC/hgYgaRacel0cTx5n+gV1K5SFFmVQGB6m6NxxEIjRJht/4HE8djO1yHalkEJIgnOCg+EqUS08E1BwFb3j3fi6RSxXhVuIpKvJT51Bgv4DDtaUQ9AftLHvIgxJ0pNxRzrS7WLkUkDzr7AvgavQmY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779885863; c=relaxed/simple;
+	bh=rKGbXXnRzWeaQEyHC0cf0kemgdpBvit5j2YSNFR8sD0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ebya5Fo8eW4seQPFWK3ZdsO/1mihz+uYmiHjLQcSwZ8Mlyl9cErjXT5yBYkMD93/yrzK9MzhPakLLdYEEL6IRQrkD19X0X1DKv6cAazkX9dP6ppoXXv0kS+cD8A2iB7SrBKcC9t2hOEbBQakAtIHT2rt511yHk01jS0sPIWVC5Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=Rq96XAjY; arc=pass smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-38ea6a5a0b3so93830421fa.3
+        for <linux-rdma@vger.kernel.org>; Wed, 27 May 2026 05:44:20 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1779885859; cv=none;
+        d=google.com; s=arc-20240605;
+        b=Nzkn3eFdZyQG59II6Bdizr09TPN5e0WDLSG8DgWlVR8FBBT208QMk5KEf+XP9HNRcR
+         RSNSoLTL+OUER64BN80ej97ZzY52yMSba9GOU9hffKgnyYTLYILnbNF1/GORYfu83mM9
+         0JhnrqHkABcqybr2tMk01khWRTZPAlWggVzFYVYEV/XhSCoqUtAZr22p72rKCUDS49Dp
+         xSgPHosFtLw4xxIkFiyiHsQ3LKKA3iVjzFEHuduPKyB1/sYDxCfcVq1+w4gWcCsKpZ0P
+         yT7XDYQHEFR4XffvYLGrDs332seS0rbX/iE8MXBZbfHswGPghZ8A9O7H433StUaXy+nc
+         nilA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=qYq2RP7F78uUAT5YOZEmhrXVmYdKWobwZFZG/FoawmM=;
+        fh=jdsbh/ZZgo9UkZ2q2omkg/T6+WHuctsyrhoDmogjoEM=;
+        b=WS0u5LC9Tdhw5GL5+u0nY/VTKbosuqo9vW0iULCYHFgNMmKsS0P+wLsseGj/+zbjkf
+         fDpuptB9ozd0rjMxIdzmI7A4eq2DqNrMUnu4c1x5LHMERBZOUBMLis/4KL6hWs4g6w61
+         StofdLoeDP768nYbw33CKjPUtCU5Iga1RjjiL1rkMLUCcAWlF64AbZgWoSFnCeqn5EP0
+         IPsLxfFwKHhNUdsxciizZIr8MlDAJFkH8BQN+KibhPATIs8MKcOvPKcYWG+fGXRLhAKL
+         dlxogB3BzXcBIeoan4qwAgaUZ2Bcao7qZNy/yNranF7dzxnlkeoVDdU5dneQD5AYpPWJ
+         QqMg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1779885396; x=1780490196; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=oAXF5UZCW6iJvbxUWxjJToe/IDClMd9U7HBLuJfAyw0=;
-        b=UVUIw1Pe+iVgP2MaWntCCcmTVdFtxJ43P4b9vkG6V1hz2oZ71ktASAYU+aXvwRtFzI
-         4rmquspQgOIxfrJO7NE5Dfk+n3R9xiugHdCOzkWe7AYTGau3DVbRW89DDJrhC81sLaE+
-         o6a6B18gLyrs7UQieFJwpEBol3hnlgs0gxkWfow1CvLpCIRXlNPoMJCkG96es13xPOin
-         4d0BYlETpf3nX4upGpx0q00LdG5X8YdDbvKEf+fu3iB+XUkiBHhr4sI76mCB3WkEdpEj
-         PTk67x4NA2ZHuWq9h9KCgW/rVZvP8Ncl51og1pGtrBnuYvzZHf6c6yfaTHPsQzPzcR1n
-         17pQ==
+        d=ionos.com; s=google; t=1779885859; x=1780490659; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qYq2RP7F78uUAT5YOZEmhrXVmYdKWobwZFZG/FoawmM=;
+        b=Rq96XAjYJ0bCmfwqWVKdMxj8UkueOC8qrqieEVn2pQIDXzhAf/6B3fzbc1AEegOkec
+         eaPiO3DDX9n/c2rWRwdt9R8ge2/sfBYaIXSmLGHs9ncjEhnAEdniuSbzADTDk/0U7FBG
+         z+oKYrzdi7EAdYdKKq3JFw5/vykWSRkFvbhusqi52uertqJXqR56CiIfE5A3Aa4OPxdh
+         +ZDto/1W0cdBwES+bNcq1pmyh3Yz3/oKkPV5GfaGQwjaCaHU8VjXPz5OQUHq8wnEYpg6
+         20HqOSJPReM3fpSOxMrbdPs33YnScokzQPKDXeThnFnXRuxqJ3WuikgkqYdASmM3OFbe
+         i+5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779885396; x=1780490196;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oAXF5UZCW6iJvbxUWxjJToe/IDClMd9U7HBLuJfAyw0=;
-        b=NTKarRGQIv+Xb+A6dIRkQuk4F69jeLBzIfFpjNTHqXD22lPnHY85Y8Mxe4t5+O08dI
-         yVPpm1Ai10R503Kbvb1yQfh5Eq3joKBxKhXxWdi/kBokcezSRTADUBKi9cSZjNZSxnbl
-         4oVoX5TMaTs9LCl+pOzRqcxY0eoudJdi6Z5HqFl/zL+t+8+j8soOqYLf7z+d+dggOyi1
-         HMV/xf8Fufb97hhw+4yYKkBfX8KXmQV3Cn+aB5XAfLTmzojuPTGUpI+0n5AfB4AM93hB
-         owXjbX6xI0lmUqTm7z/6mMUTYvglXBGm7sokaO8BM8yV9yghyJlnXpARQSVRMYbvenzN
-         2FbQ==
-X-Forwarded-Encrypted: i=1; AFNElJ/uzp04UJLx0fwMcsleqi5HA06F9VfveHVx9tW3tbo3QsoE5IEhAWRXWl4sgbPy2/04QTU/m7xVafTA@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzg2DNSVPukfqtYFOrEhvt9JGry4GfgB06nIWLX66npq45yMAXq
-	pAtfGS6ucDSE1fbHIJj0F65aYw2VymAEkt2FK3A3VPYUxuYd82gXQJtdHTSGIBi/708=
-X-Gm-Gg: Acq92OGAtlwCxZ8dL2Wc5hBjuKqnibZQyLyZdRFkjklo1846gZVMhXeoeF8rbqfmmN1
-	lx+arj22uQE7+jv//euXjFYqL4vdqWxhcR9zB2LbqfJ2TrcKDcBwJIUHmznxM0KAqDcq8AFtZJB
-	UN3Z0CH/cl/1WgGkIM6FclxcLHPFKtlubDSfckh2b30EnlOsE7VMWik4zmCxlHccFmqQhNyHeZn
-	SCoaWFFPGNn3pAh0Pj56oDe6Ji25otAIJmtFXDhwoxtWQ8oSMa9+p+Fg+XQNVdCSwYA4DZ/sYRm
-	auW1aquEVnxnYNVOr8lGCgji/EaRyWlq+uubXb6VquiB3/NQoKtffRoD6dkcF6NZ0p0XKa/ozDm
-	WLOIBcTl+ycdBYSsBbsRUVw9YxeLnIodGDmZ7lCfHI/gwnQgaHK/ATgPXfRmx2eGW8jVixj4ko6
-	aL0/i3A1nUKZf8BRmL+cVGB2MsOT9xNF1LYy3f5Q+U1cLtxrpmLlyIyuDYe1GYNhPnOCxuTPYhz
-	XJMLg==
-X-Received: by 2002:a05:620a:438a:b0:914:aaba:8d2e with SMTP id af79cd13be357-914b49336ddmr3211226285a.14.1779885395945;
-        Wed, 27 May 2026 05:36:35 -0700 (PDT)
-Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-914f8800e1dsm455621385a.34.2026.05.27.05.36.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2026 05:36:34 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1wSDUw-0000000EOYw-0lyZ;
-	Wed, 27 May 2026 09:36:34 -0300
-Date: Wed, 27 May 2026 09:36:34 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Cc: Zhiping Zhang <zhipingz@meta.com>, Alex Williamson <alex@shazbot.org>,
-	Leon Romanovsky <leon@kernel.org>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Bjorn Helgaas <helgaas@kernel.org>, kvm@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
-	netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	Keith Busch <kbusch@kernel.org>, Yochai Cohen <yochai@nvidia.com>,
-	Yishai Hadas <yishaih@nvidia.com>
-Subject: Re: [PATCH v5 0/4] vfio/dma-buf: add TPH support for peer-to-peer
- access
-Message-ID: <20260527123634.GK2487554@ziepe.ca>
-References: <20260526144401.1485788-1-zhipingz@meta.com>
- <a8cd01ab-d7aa-465d-bfa3-431f78f33ee1@amd.com>
- <20260527121438.GJ2487554@ziepe.ca>
- <ff247643-73e7-44e2-b3d5-8ac0a8efb871@amd.com>
+        d=1e100.net; s=20251104; t=1779885859; x=1780490659;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=qYq2RP7F78uUAT5YOZEmhrXVmYdKWobwZFZG/FoawmM=;
+        b=EKZCjwXwewhKzcDYT48gmMSRPuuZcWfDXAJFJFTPCE95rYaO9Rit19mKnIqDYz8Qg6
+         qKz+NS0r0WiXyob4FC0n0rq07nRtmdeiOnAZrJEUsA9MNpzXZwAEUHpqt7syB8naZVo5
+         F/CmxCYF72UChoHiJDw9cbfgjVihDaeidaBZidEp9i13shtvRFqrFtX16eAKWmWgy4D6
+         0DsTh3ZEQMeZxG0XNYBRAtR3uqX0Z/W9CWlmEn55KwNWMxanaEa1uBf/npP5r1oRgw0f
+         tBUrcr+dgXJ5fxT2teo15J4NNpAwFVBSyXQYXghCI2vUZ7gsofQ6/XOgG6dfkD0jAYml
+         eXqg==
+X-Forwarded-Encrypted: i=1; AFNElJ+vMEspcT/JPeULHIEXN4amFYC991nIIFlfJzXe2C86mgNvV0ZMNnkqCMPLngY78ZkfxIriKvvkLaIF@vger.kernel.org
+X-Gm-Message-State: AOJu0YyfiPokTkQxK29kYE5fX50qugLwgWhCPxtC7Dbekthjlm8PbZOc
+	bJQEG9YTD6tGle97k9tejGrT9ZOBzcg9VOYEDc8En6XqehuFV/i4WZBlfck5sGQIiBSIH7AFtd6
+	ZiCmk/NX8EhXRwrGqxpbh8cRb1r09sFEd4jaNvnpxIA==
+X-Gm-Gg: Acq92OEyc7A9vrLPfwL7A8psiWcOVI9bxICcd3L872AE+LpklYmRopsY3LZsg3EM9mT
+	HkTBsGNSTiaQxwyzh/Rj4Tg+85GdxNUWERkEeT5Nq08fjMiPPnAiUcuA+bvY8h0IAsR5yPg0hVQ
+	Wk0eAIQJrKPM2srBQimTHWqYrczR5uDaFKi7EfFXL/IKfNoFfMFhYkQUk3PVsz1u26vU3/IxFjJ
+	PSDEmNX2XUuI4rCQzY+ughRsAiIZ9H08Blv3EH1AtGdww7MFgs2eSkFbdBXWv4yHQn8fEcy6EW2
+	o53RJ+K92Me9E0Hyp2tBHgE+V7mdbKcYHZ5vvGmLreWkh6Q2P1+M+pZq6Q+zPntIKaPbsn02tif
+	6CIMlSedlO7iMAGwF4KWr+V2S5FQxDfyIfQ==
+X-Received: by 2002:a05:651c:32d4:b0:38e:97c5:fe20 with SMTP id
+ 38308e7fff4ca-395d8d8d349mr56711231fa.23.1779885859193; Wed, 27 May 2026
+ 05:44:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ff247643-73e7-44e2-b3d5-8ac0a8efb871@amd.com>
-X-Spamd-Result: default: False [-1.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+References: <20260505074644.195453-1-haris.iqbal@ionos.com> <20260512103424.GR15586@unreal>
+In-Reply-To: <20260512103424.GR15586@unreal>
+From: Haris Iqbal <haris.iqbal@ionos.com>
+Date: Wed, 27 May 2026 14:44:08 +0200
+X-Gm-Features: AVHnY4JbIzKW-7wrGTUabsud434YAg-68Z5-lM-9PCK-aByORojgnGaXhVpogZs
+Message-ID: <CAJpMwyg-6Qxskq2ktuhvf46yD5848J9BYLMPPfBLjg2Uzs=xnw@mail.gmail.com>
+Subject: Re: [LSF/MM/BPF RFC PATCH 00/13]
+To: Leon Romanovsky <leon@kernel.org>
+Cc: linux-block@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, axboe@kernel.dk, bvanassche@acm.org, hch@lst.de, 
+	jgg@ziepe.ca, jinpu.wang@ionos.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spamd-Result: default: False [-0.06 / 15.00];
+	SUBJ_ALL_CAPS(2.10)[28];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[ionos.com,reject];
+	R_DKIM_ALLOW(-0.20)[ionos.com:s=google];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21349-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	DMARC_NA(0.00)[ziepe.ca];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21350-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[ionos.com:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[haris.iqbal@ionos.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ziepe.ca:mid,ziepe.ca:dkim,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 8A1D45E459E
+	RCPT_COUNT_SEVEN(0.00)[9];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,ionos.com:dkim]
+X-Rspamd-Queue-Id: 190A35E463F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, May 27, 2026 at 02:23:46PM +0200, Christian König wrote:
+On Tue, May 12, 2026 at 12:34=E2=80=AFPM Leon Romanovsky <leon@kernel.org> =
+wrote:
+>
+> On Tue, May 05, 2026 at 09:46:12AM +0200, Md Haris Iqbal wrote:
+> > Following a conversation with Bart yesterday, I am sending the RMR+BRMR
+> > code through patch for easier review.
+> >
+> > The patches apply over the for-next branch of the block tree over commi=
+t
+> > 07dfa981ca3
+> >
+> > For context,
+> > RMR (Reliable Multicast over RTRS) is a kernel module that provides
+> > active-active block-level replication over RDMA. It guarantees delivery
+> > of IO to a group of storage nodes and handles resynchronization of data
+> > directly between storage nodes without involving the compute client.
+> >
+> > BRMR (Block device over RMR) sits on top of RMR and exposes a standard
+> > Linux block device (/dev/brmrX) backed by an RMR pool. Together, RMR an=
+d
+> > BRMR provide a single-hop replication and resynchronization solution fo=
+r
+> > RDMA-connected storage clusters.
+> >
+> > My session is on Wednesday, at 12 in the storage room (Istanbul).
+>
+> To summarize the discussion:
+>
+> 1. Move as much logic as possible into the block layer; RDMA should serve
+>    strictly as a transport.
+> 2. Identify another in=E2=80=91kernel user of this functionality, and add=
+ support for
+>    it if required. At least accommodate potential users elsewhere in the
+>    kernel.
 
-> Yeah that's a good point, I should probably rephrase the question.
-> 
-> I'm aware of how TPH works by adding the extra ST to the TLP.
-> 
-> But my question is how is that useful to a PCIe endpoint? What is the effect of the ST here?
+Thanks for the summary Leon.
 
-TBH I've never heard Meta explain what their device is doing with
-it. At least it seems to be super important to their device..
+The main logic which handles multicast/replication legs, missed I/O
+tracking, re-synchronization, etc are the core parts of RMR.
+If we move those to a separate module, there won't be much left in
+RMR. RMR already uses RTRS from the RDMA subsystem as transport.
 
-Jason
+Having said that, I am not against moving RMR out of the RDMA layer.
+It can serve as a reliable replication service/library for any other
+user in the kernel to use.
+Which subsystem (block or something else) would be a better fit then,
+can be discussed.
+
+PS: Would this be a good candidate for a session/discussion in the upcoming=
+ LPC?
+
+>
+> Thanks
 
