@@ -1,229 +1,172 @@
-Return-Path: <linux-rdma+bounces-21365-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21366-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yGsFCC/tFmruvgcAu9opvQ
-	(envelope-from <linux-rdma+bounces-21365-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 15:10:07 +0200
+	id WIrSDuj1FmrUywcAu9opvQ
+	(envelope-from <linux-rdma+bounces-21366-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 15:47:20 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F33F5E4AAD
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 15:10:05 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E3515E54DC
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 15:47:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 4BA5E30860C5
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 12:58:24 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 65E07305C472
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 13:34:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FB46408029;
-	Wed, 27 May 2026 12:56:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402B640FDA0;
+	Wed, 27 May 2026 13:34:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="nhX440dz"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="BrZjRvoI"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CH5PR02CU005.outbound.protection.outlook.com (mail-northcentralusazon11012035.outbound.protection.outlook.com [40.107.200.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BA2921E091;
-	Wed, 27 May 2026 12:56:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.200.35
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779886612; cv=fail; b=OzSwUR8Uc6SBgpEe5dhQeo93rMMLKqIJHCSasfJZrkldpLYA4xvlnHmtPHm1LghfRB+NcKhp0pLaGbVr15eSh0LwwLSnyTVKChtFbV6awzD0nggvc/xEn1oT0BG4cYIbMG6c5eAs9OOkWFABkV+/cNhHDkC6adP37cV1n/4qSpA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779886612; c=relaxed/simple;
-	bh=sQnAtlXhG2K63oWZXFT8sP4DXuosorjINpoJdmM0QKk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=G7DBJBWaSkRjkjKp/4CVwLoEYEnaXar3kowS/vCKGDNEWkZl0v/dxlUVXQKzsskRIKDYDwEJMUTKdT+c2QQMm+ADqPX9Vkbn9sfRIyJeE+QsINNmGQf/VZoBdQgxH/v8uouAfeAEb/QMIHsjOV8IiMpgXytbyIMfPf4ZM2Csgws=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=nhX440dz; arc=fail smtp.client-ip=40.107.200.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=dLjAFVvbZaeSrjY4H88z/AEuvsvqjhwg+8URkKnJPt1wOr+6oChm/7xZ4fTgX7i3DWvo5RuSrq3u5752GfLSQQ1xw0oJHbcxQdsJz5l/VEUQnELIm3T63dcmd3F5Qmkgb/58WPRvyDFQ5kut+aUOOQ5RvhXqGRiVtoIIhwG9yDB5CZQHZiYaPvs9jp3p/Q2iRpifmShCwiabQCGqOXTaqVJDwnVy3du/A3t9Xs3Kaf59JPVsChs+nndMSKCSrxiNVGZDXanToAjKKiOH7rIyArRcNU1T9cJOlv9YHsutt2HgOCC1r56jpffWwJcgeurEnx7AZ1hVrP+05QH4adljOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vBc5T5e3GYCM4CIelkXZlhrl5shwcWKAKGIY5D40HZA=;
- b=kh+M9fG+3e0MV3lHwB10V35C7wXKJe8tZU97JNUnlD7FEFCtesWRwDz1Z/ZtUZjr/NYYVPl/jkcmFywLiWdHe8ua2vn35fXfcqG2rH2wpE8KAIolSPsNCJQ6bURIublVs4jGXpgj6bF1VU9aJNTNdN2v9J+7D1L/y9cF6YnFDH/r3UL+OjLkFe105kMfSgnK3QD4gFuopxtjF0Sjza+55csMc9Qjd3g2we5tDzB2Dn8+SCg/OUxYYWa+pWb49bShA2BSLEaVJ5Tt95J3iqlzvrrChMooTpoquoLqFanCakW4Fr8fVDtp7hd4NXUto5uw8z8X47ixkh/j0ChEWEBcKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vBc5T5e3GYCM4CIelkXZlhrl5shwcWKAKGIY5D40HZA=;
- b=nhX440dzMldHiHuRp4/7JkwlVL84n3ApGTlupabnj7vD4okui7AzF0tczP3KwrgvPdha7xaceiXuAR1Z+wrZ+bTlOdx5OSiujDBHDUZIq85M6YmpV97cHm9BsM/e+j/Vh0Zfjity5x4SOktpw2iWzWZWC0QqUksPnD1ijW2MEHaz4LU08b0Ym3r1ZhoQlT6wkujaBe9soLuxB/KzDpN8hYDFNEULcIoGEIrmsPCeQ7tl4Uoo0AnlUxWBmlGvkRCPINJexC531leXqQAmLoW6D4ZTqOuoXytjE2WVD9kRFDoEMEL9kpp9xfkFGIFB5TpK0iNQqu8Tl4bYpKYCeQhppg==
-Received: from MW4PR03CA0006.namprd03.prod.outlook.com (2603:10b6:303:8f::11)
- by BL1PR12MB5948.namprd12.prod.outlook.com (2603:10b6:208:39b::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.71.13; Wed, 27 May
- 2026 12:56:46 +0000
-Received: from CO1PEPF00012E61.namprd05.prod.outlook.com
- (2603:10b6:303:8f:cafe::57) by MW4PR03CA0006.outlook.office365.com
- (2603:10b6:303:8f::11) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.71.12 via Frontend Transport; Wed, 27
- May 2026 12:56:46 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- CO1PEPF00012E61.mail.protection.outlook.com (10.167.249.70) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.71.7 via Frontend Transport; Wed, 27 May 2026 12:56:46 +0000
-Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 27 May
- 2026 05:56:22 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.20; Wed, 27 May 2026 05:56:22 -0700
-Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
- Transport; Wed, 27 May 2026 05:56:16 -0700
-From: Tariq Toukan <tariqt@nvidia.com>
-To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
- S. Miller" <davem@davemloft.net>
-CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Nimrod Oren
-	<noren@nvidia.com>, Yael Chemla <ychemla@nvidia.com>, Shay Drory
-	<shayd@nvidia.com>, Or Har-Toov <ohartoov@nvidia.com>, Edward Srouji
-	<edwards@nvidia.com>, Maher Sanalla <msanalla@nvidia.com>, Simon Horman
-	<horms@kernel.org>, Parav Pandit <parav@nvidia.com>, Patrisious Haddad
-	<phaddad@nvidia.com>, Kees Cook <kees@kernel.org>, Moshe Shemesh
-	<moshe@nvidia.com>, <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, Gal Pressman <gal@nvidia.com>
-Subject: [PATCH net-next 13/13] net/mlx5e: Verify unique vhca_id count instead of range
-Date: Wed, 27 May 2026 15:54:27 +0300
-Message-ID: <20260527125427.385976-14-tariqt@nvidia.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20260527125427.385976-1-tariqt@nvidia.com>
-References: <20260527125427.385976-1-tariqt@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B20340FD86
+	for <linux-rdma@vger.kernel.org>; Wed, 27 May 2026 13:34:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779888844; cv=none; b=b4WFhylzwpaXn+7FjVb2XEld3kXgeNmgqs4Na60dWi9VKPC5EWfhbcT6uTIckPACoJwJOWG2nVffqJCpD2mWo+yfGGmRBzfIJUM9dvT3QilALIleYw5o2dDkg8mN63GuUwMnoQqPhY7svr/YJzKTOm21r8pMeryckJpTLZ7XgXM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779888844; c=relaxed/simple;
+	bh=SX/btaHg8hisQE4HPjWH8PXnsnxSqCDOj4S+rvTli/4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EIObmsGO943Sa9jN+GP3wJ9ULCbW2wvd97fsA2a65Hg0RP5QkowlrZGRSmxW0xpV8Xxqag4VzQUyrfHXMinHgW2B/pdhaD/Xy6DE+aLJAE/HlNBDl2yOjca8raz3TlX+H47TndtgAXS8tH0NOfaO1ZaptGyi7BaAqJeEiK7I+f4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=BrZjRvoI; arc=none smtp.client-ip=209.85.222.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-ua1-f51.google.com with SMTP id a1e0cc1a2514c-95fa7cd1392so8911329241.2
+        for <linux-rdma@vger.kernel.org>; Wed, 27 May 2026 06:34:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1779888841; x=1780493641; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=+e2bIG+i9gyjJiiA+ouh3//Pf3aD7RE7geFrfA4l6SY=;
+        b=BrZjRvoITH5BXAfXA2jkpD1rp5AioNGjGttSCb4XDYtDBBBfFXe318dOvCGO4dNmWO
+         5s2W0PRQx0CtOGTYAilzdJSxxiJ01MQzqQcNV6wofvLUK6n2kpbaRjBXO1C+18SUBFAJ
+         yUJ37dLVPqQMiAX0lA5//nOC8p9837wal7BH+2iiUKdYeVX329hot3zOkQ+VVSxemS29
+         pDWLtFKFeK56ECkBag0jTJh7mwPsNvF/0XiSR4o5Sy9sJwsL5g5lb5yufCeZ6TZf7sJl
+         jP7DwqjWpqtOEa9fLfqvBN09ynhi3Z47M7kedXQSEpFdommyA62wK8YXKSXUL9EZa0mR
+         neJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779888841; x=1780493641;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+e2bIG+i9gyjJiiA+ouh3//Pf3aD7RE7geFrfA4l6SY=;
+        b=lRy6nnfQAPHG6aALY0aSy/d7CaVb0numMCnf1mzCObYZ1mzroJAHUq8S/RQK2j2ipv
+         dvMZZGag7BzZthMyMrmB6K9/meNOckfKbtBFFfzGs9qbLy322cnYQBXrfjyStiMD7gbi
+         lykh9MHpflB0foHzIwQ75bDLWZIKNFv/sbln+/gbgfYmbMf7zjbZFQv0lbqEq4eeR4TV
+         4rY/eDyTPPQWnH2XyJz/JRctYa43W6gowVOjyVnqtao3eGF4UV8Vk8PPVzOVvfN9aD3d
+         0pXGJbRLkHqOfXQ6jcANFqvWs720Fgz+hM1Rvi6AaBaVG+/lk8o1G5+0LkszYfB7xsAL
+         KowQ==
+X-Forwarded-Encrypted: i=1; AFNElJ9sY5uav864Eh6GBHw7Y75EN42nfe4AmcysBJ09sa7cHWBMMlpXAo6XlI1PHVf1o7hVyHp3SdhVsf1S@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy2Zb6a3Ke7Yguf/s9ZigdXLOFcYmYtIqIQyS+d/8ESTHPIxHeL
+	PC50z01tmGkjviuRCzu12BlpUp4zmAVT423xtthN9n5S8by6CsmESVtCijJqqc8vZYc67eZJumt
+	tRTuJ
+X-Gm-Gg: Acq92OEd8PWrElgEWjSWIqgUC7iPtLNNyUdnAI5Ausit+dDRHj5b0GzqmPn+270uRhn
+	reG72pf4Ix6AqWwXsNVaZynZ52oni3jcnW4OyfgNOeAL+NZjiQa43d/ohoEWRSRzuKV+9PwL+p6
+	0lLfm85L4GXNCf1kPoWrXnpK13XMqPYhE2ZymwzppUkkfhn1s7SIgkQnMbu76jdpF6iK1sHh4si
+	l7Wi+etc1/j4YvZWkHCDuwwIsDyGKwq92ClzWiq5wWraIAYQdOv/Ig1Tbuk7lUbvsS2RT93vDiQ
+	EwYT81PORwq1iko/TAG45HeVxwtXsHgdMTUr/gb5u590wx4ibrqHI+iND+0QwoIbLIxm1eU4XRL
+	gW1HE/jh6ZuKIsNnOjk+N4creFtKXsv6nL3DrZKm4ieulmb7PWAxkKyiBzsbNGNg3LLrW2RC1cQ
+	i6KFvURUl3Nwd0QFVRh2YgVQN2opn0/QAAq7F31k/0nJ/kpEmy1kuGaqB25PLdxy4B3e+fsJGtB
+	OFdmMJ886moY397
+X-Received: by 2002:a05:6102:688f:b0:631:81d6:e158 with SMTP id ada2fe7eead31-67c8fcbdbdfmr12092231137.27.1779888841412;
+        Wed, 27 May 2026 06:34:01 -0700 (PDT)
+Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-914f87034a2sm476927185a.16.2026.05.27.06.34.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2026 06:34:00 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1wSEOW-0000000EPtJ-0OFT;
+	Wed, 27 May 2026 10:34:00 -0300
+Date: Wed, 27 May 2026 10:34:00 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Tao Cui <cuitao@kylinos.cn>
+Cc: tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, leon@kernel.org,
+	linux-rdma@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH rdma-next 0/5] cgroup/rdma: add per-type resource
+ accounting for QP, MR and MR memory
+Message-ID: <20260527133400.GM2487554@ziepe.ca>
+References: <20260525055506.2002985-1-cuitao@kylinos.cn>
+ <20260525134314.GI7702@ziepe.ca>
+ <b8269d9b-bd14-4ba1-be60-a210a9a1d093@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF00012E61:EE_|BL1PR12MB5948:EE_
-X-MS-Office365-Filtering-Correlation-Id: 64ec7503-2d74-4d09-d31b-08debbef68bb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|7416014|82310400026|36860700016|1800799024|22082099003|18002099003|11063799006|56012099006;
-X-Microsoft-Antispam-Message-Info:
-	AiwUFlWLW+CSTd6Jh3gGNvLIMK1V1yDdktlRIWitkn8RklPRMSHfAwdSb3Hxub37gwPFBFL0NtsLJa9bMQHcc1lRvKIRkrz+yAE+QMsgYiiWZGN11IB63H7WdGMl/iWJfOD6SBfHPv1kQ8eBtbrp5qZqVq0C+pQzdrORaHSeWyAcNCNaEDRJbs0UN4Rsqom85xxHH9zpax8KANp94s74JeU8Za1yjXUMgIY0r9upS5GGO+aVMcEEJUiERsF6jPQiHWubYoAmCLitthGCTgzR/koPJB0Znqv93Si1U8vooAVsUtGnB7+t40vVai+MOfiur+qxT/Gmn2Djq5Nl0Lh40nTOY2SbtgNZCg9lr3t74f9xsq+J9wxXn5SXM2adjqvy/T+IzEd2utF0LAErDy39y8gRY8cjpaHX4i9lQWvQgOsVsLabPmeem+fM3Ff4HWxXbMeUlSejSTULxERbhTNIieHo1VpwLx1U8hPqV65thMhlhMeEP2PY3vf9A64mghAE8XJYJQ+3ZXqaSg565IpMXogUhp/tTrKKJRFhIZrmFTxHf8w/TLD2yvNWF5NAueviP+EwCEAB0sc86tEG+g4js1ja9+gfpnINiHk9JgrUOMJQnW4LFyzsOQVSpH59SZ8Ef9FP7Oh+sqsNy572Jskxh8fmmNu9pZgT4o3shgHzmGm551/DxD2Va9mkVIj46rlDmvSGgyI9KNbBypGdLkj555XJtGLX+ADMmXv8MJWtI/o=
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(7416014)(82310400026)(36860700016)(1800799024)(22082099003)(18002099003)(11063799006)(56012099006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	A/LF/cKVlNb8FB9s4FuBk4AxBt08JKyoIlymmXSdge+qRU5R7Lw1mAGjrInXZWfQqiEWcoQk02HuOQZ5VOFkYXFSwoFIDcy3YpNWfyFH+++fISa+OXXhqduaWOjhV4XZndFiO6M/ITqpwtxXbCPIvQPrQYGJ8vSxVxvLeDFdke7s7z2tiDdgeDy/tsHrBLCdLJtoXSIYX7dnGVti1O0f5YaKjC7ufbNM9m1ZvvlTulmpMHOzOn3wPgRgmS3+G1UhbI1qtJL2js0w0QTFcoqY+eVXTavT7KNc5zhCdgDuS5rpwkoRIm4pfCId0o9dnmusSMOwx/b6nigRQYAOEpbdFW7EbH7X0TPZhzxOE/PSDoPQHF2PSnGlg5J8U+eTi8RNMaOByHGjpvZoF4mkAUUoPGIb5ula5sT/gRJfvkdsGpnY6u3xndnRsfzjeaROg9+p
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2026 12:56:46.0920
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 64ec7503-2d74-4d09-d31b-08debbef68bb
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF00012E61.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5948
-X-Spamd-Result: default: False [2.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+In-Reply-To: <b8269d9b-bd14-4ba1-be60-a210a9a1d093@kylinos.cn>
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[24];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-21365-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[ziepe.ca:+];
+	TAGGED_FROM(0.00)[bounces-21366-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:mid,nvidia.com:email,Nvidia.com:dkim,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	NEURAL_HAM(-0.00)[-0.996];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	RCVD_COUNT_SEVEN(0.00)[9]
-X-Rspamd-Queue-Id: 1F33F5E4AAD
+	DMARC_NA(0.00)[ziepe.ca];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,ziepe.ca:mid,ziepe.ca:dkim]
+X-Rspamd-Queue-Id: 3E3515E54DC
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Shay Drory <shayd@nvidia.com>
+On Wed, May 27, 2026 at 07:28:59PM +0800, Tao Cui wrote:
+> Hi,Jason
+> 
+> Thanks for the review.
+> 
+> 在 2026/5/25 21:43, Jason Gunthorpe 写道:
+> > 
+> > I would agree to mr_mem as a reasonable extension, but not splitting
+> > out objects to finer grains. There are endless objects we don't want a
+> > 100 different cgroup knobs, it is not usable.
+> > 
+> 
+> Understood.  Our initial motivation was
+> multi-tenant isolation: a tenant could consume disproportionate
+> resources by creating many objects of a single type.  In hindsight,
+> though, the real bottleneck is pinned memory, not object counts —
+> modern hardware has large object pools, and the scarce resource is
+> how much physical memory gets registered through MRs.  mr_mem
+> addresses that directly, while hca_object remains sufficient for
+> coarse object accounting.
 
-Change verify_num_vhca_ids() to count the number of unique vhca_ids
-and verify this count doesn't exceed max_num_vhca_id, rather than
-validating individual vhca_id values are within a specific range.
+This was the same motivation that lead us to a single object
+limit. Inside a modern NIC the objects tend to pool from the same memory
+pool so it doesn't matter if you have 100 QPs or 100 SRQs or whatever
+they sort of cost the same.
 
-The previous implementation checked if each vhca_id was in the range
-[0, max_num_vhca_id - 1], which is overly restrictive. The hardware
-capability max_rqt_vhca_id represents the maximum number of unique
-vhca_ids that can be used, not a range constraint on individual IDs.
+memory pin accounting should ideally be limited by the cgroup directly
+but we argued about that for a while and could never get an agreement
+of an acceptable implementation. There are many nasty corner cases
+around cgroups and fork and other cases IIRC
 
-Signed-off-by: Shay Drory <shayd@nvidia.com>
-Reviewed-by: Mark Bloch <mbloch@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
----
- .../net/ethernet/mellanox/mlx5/core/en/rqt.c  | 27 ++++++++++++++-----
- 1 file changed, 21 insertions(+), 6 deletions(-)
+So I'm not sure if making it rdma specific can easially solve these
+problems
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/rqt.c b/drivers/net/ethernet/mellanox/mlx5/core/en/rqt.c
-index a3382f6a6b74..8511363f7bec 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/rqt.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/rqt.c
-@@ -8,13 +8,28 @@ static bool verify_num_vhca_ids(struct mlx5_core_dev *mdev, u32 *vhca_ids,
- 				unsigned int size)
- {
- 	unsigned int max_num_vhca_id = MLX5_CAP_GEN_2(mdev, max_rqt_vhca_id);
--	int i;
-+	unsigned int unique_count = 0;
-+	int i, j;
-+
-+	/* Count unique vhca_ids */
-+	for (i = 0; i < size; i++) {
-+		bool is_unique = true;
-+
-+		/* Check if vhca_ids[i] was already seen */
-+		for (j = 0; j < i; j++) {
-+			if (vhca_ids[j] == vhca_ids[i]) {
-+				is_unique = false;
-+				break;
-+			}
-+		}
-+		if (is_unique)
-+			unique_count++;
-+	}
- 
--	/* Verify that all vhca_ids are in range [0, max_num_vhca_ids - 1] */
--	for (i = 0; i < size; i++)
--		if (vhca_ids[i] >= max_num_vhca_id)
--			return false;
--	return true;
-+	/* Verify that number of unique vhca_ids doesn't exceed
-+	 * max_num_vhca_id
-+	 */
-+	return unique_count <= max_num_vhca_id;
- }
- 
- static bool rqt_verify_vhca_ids(struct mlx5_core_dev *mdev, u32 *vhca_ids,
--- 
-2.44.0
-
+Jason
 
