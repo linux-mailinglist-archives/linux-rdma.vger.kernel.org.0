@@ -1,147 +1,155 @@
-Return-Path: <linux-rdma+bounces-21334-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21335-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KDrtBcwrFmqdigcAu9opvQ
-	(envelope-from <linux-rdma+bounces-21334-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 01:25:00 +0200
+	id WAoPOTlYFmo9lgcAu9opvQ
+	(envelope-from <linux-rdma+bounces-21335-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 04:34:33 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 266405DD871
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 01:24:58 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48CCF5DE959
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 04:34:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id A7DA83009F09
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2026 23:24:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BA70730137A3
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2026 02:34:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD41E3CB2C7;
-	Tue, 26 May 2026 23:24:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 151BE363C73;
+	Wed, 27 May 2026 02:34:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZFhy7sp8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OzSzZxVd"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D8F0380FC2
-	for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 23:24:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.167.176
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779837892; cv=pass; b=QMmGVQ4OW31XYbGABpQkt55qFOvBY/tQgBbsTUzFvuDdDkjr3d0hhyDU64Xlrqn4xmyvIX/Niivv3HSK4EVlR8tLMBnibKu6kU6RdF1p4eC+MqE3XPTm75OIhQtxaevxGgrIfVfkVdT8UU/6Rv5I7doOxUpjVPUWIJOr93nif8U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779837892; c=relaxed/simple;
-	bh=Q7sAtjKL+cEjZyGKthSSnLGiIUdUNWZFAmkDO/gAlEA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fSQBgADL0HNqpyppNbVXga1DBldW53uLhqLj4TUchWY7SEYsK318KAHOyPOVQtTPKQBIGaLNDHmK9poLicoqAd8Pr449Y1dJhz7cuRzYmfXkUCzNCkhJQTRMyY6BB/zKWgKgQK/U9Vore88ysxvbtdcMj+EgBD7lj49d4WcDCAc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZFhy7sp8; arc=pass smtp.client-ip=209.85.167.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-484cf882ce5so7968838b6e.1
-        for <linux-rdma@vger.kernel.org>; Tue, 26 May 2026 16:24:51 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1779837890; cv=none;
-        d=google.com; s=arc-20240605;
-        b=PTyBECvnlxgs8w77uMAsU6NWGqSX6jJ8/AIcU0x5c15gZ15i+3RnalANMegKoua8ut
-         HNOlAv0zmq4HfFt0dQCZl/gPJu3uvYl0qRynRrGkxZJ9/pPiQ2vDTLQQ9wiMqbyQvYcZ
-         RrA536PKH3RlcTad8mIcNadfwnEzeJ2m2iV2hWgsSUP/dBQqpwSHWrbKF7UrA475oA3I
-         XbYe2QkVPa6gPpEK7NYtffp94OAOViDE1SW97jYGsyZ0kwpaqDdskJGSX666O56eqenE
-         gTbwFINHez5icGh8odHI8A9hXHYUFt3hVuEVmDOVWnr4m/4ksmkBWHAVY3xw0Rl7NjCj
-         sQ+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=Q7sAtjKL+cEjZyGKthSSnLGiIUdUNWZFAmkDO/gAlEA=;
-        fh=skXsT9xQAJ2tBumqhuthuMMSTqvHRSefC1f+1jdtLlQ=;
-        b=JjAdDantcPxyUJJWnNZKMjqA0z4cNTe6kvZYsfai7cive1Tq6bBs0HBoWRbKD27Sj9
-         kAbSoP2jmuFbbgUy63DSp+T+/w45/V+c720jVyW9Z6gnGqUtgMaVj1BOlXJA+n/ZOfMP
-         xxOcEAHu8jWl+UAsomHgM/LTgChPW6CyS+DTV4rqUgb6hidFvJ6Z4vnW32W4tD51NDLw
-         obJDkgF5GiXp3mmdPzB1xWz8zedu0ojlhF51cVBaEKCNCm+8L4XtBTLFh8SI+NxnVIzY
-         CyDa9l4nUHDupe1Qapyc/zmI0mG2/OYAwFtj+t3x5eKJmnrTsbH5Z2/gZYlxCrfkCCzG
-         RI8Q==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1779837890; x=1780442690; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q7sAtjKL+cEjZyGKthSSnLGiIUdUNWZFAmkDO/gAlEA=;
-        b=ZFhy7sp8P33qBhWAhntj7GL1mbYPzlyqGqthC5IrxQBS/mkYsDYAd1zrIbC+OwVQrz
-         Zx57FZCMq2en6B1T3pOwFps46y8aIzMSU4imxGW5jrV5TUkuWLBR6iNYom9HApgpy9nz
-         xbNRPzwxJTBsPIe+r0gb6MYtlQQqJ9qIKe1m5LgzZKf0YVLGr0UE5Pack72bwX7G/BBs
-         aGopVoG9khkTA25GSl8yxz/Wm+jCi2Ae8wYWBmXJG1N5StLgMtXGzLMxRbLaBAnMlwBi
-         cAt0jMrAsLYbvXImuZxRMSaEIex8fZ8fcxUcsrvGolTMKLGOtRLg3uibHeIwIaCX4SZV
-         4sVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779837890; x=1780442690;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q7sAtjKL+cEjZyGKthSSnLGiIUdUNWZFAmkDO/gAlEA=;
-        b=riVHY3gvbrORsq634WBXbayhVjMUL3gOqZ33sFSzT3SCM8gB2gJyszIDxhBkn5Li5f
-         zn2xTZN0dfZJdsJPyXU23ndZNU24SDn1NYCG9FSOaaQW+pzpw+iGRgUID87nO+eAwkBd
-         0w4ugm/eu2hEhnMPWeLiZchGi24T+MzQ42KgC//I4QFsrqslcnY3Yq7PDVhJsDhqIsmj
-         6TN6I6MQMLA2fTLdSBxrfxeFL9e+VIqs48ScHrzcGHj2o/n9n4NYu3+yv74ahp0fEj1y
-         WlgoBAtTx19QYxmLTez9/qUG4xq9fAxKZqbB/eqvWB1Iw4lR4PZKrHMt9nt16X1keJ2z
-         tKCQ==
-X-Forwarded-Encrypted: i=1; AFNElJ/gIMfI4t/dI2JVuv148w6Y+0p9/HTosT/NaQ+LDDZOg/O5Bu9CP0zy5zRrKHXApMhtSDn4hbP1gZhD@vger.kernel.org
-X-Gm-Message-State: AOJu0YxnSXp+fPBih3yJlHDr5NoVnbeMqZcNpjVTMlxY0oa5uKhzMG47
-	n69bPjcoKGRIJ2+o2zds0CRBS4mwrmbj+2odJ9VRhQTjQT1tmfyvFcxdimCQJCkTQpR+ZKxYdcK
-	0qk5qYycS53k1925Tl6oXxx7C9/tZDHmFzo7BGtJo
-X-Gm-Gg: Acq92OEoEMg5E0Y2jqoylkiC47n3TG1hF8KHnltN1IChTkBc/zGEjlqtlipBwnL9x5R
-	9sz9+d39/5pO5gNWRRCrfQm1XWc+1qPsJBa7gyZtCVuxcRGYtU4gr4KiRFdoU0kH1PMsYtL6mEK
-	yV5OhDLj5aWYXSbWW3idQLvmqtxUO8fxwgNd0i4Bf+KkxNrDd+3XI6fZGheELLFhF37jhdIFj2Y
-	vQ0nIl9k4oWMJdUuetbF4f5ZM0GkBc8vaoeC8VHU95x9LaJQvsVEk/gJHg0ZLpT3c/iYQMHDeSR
-	wYP7/BnbGrG5Ztl8X5o=
-X-Received: by 2002:a05:6808:1189:b0:47b:ccf2:91e1 with SMTP id
- 5614622812f47-48549ea8389mr12621507b6e.21.1779837889844; Tue, 26 May 2026
- 16:24:49 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C34162DFA25;
+	Wed, 27 May 2026 02:34:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779849265; cv=none; b=APS/pTUfZpamzFis0gq3GexiNL9ltZ1KeAjldmAeEqHe94Ot+/cxsLcnIfzC+NCaiXK25ltC59AOsKuq6HwdvnS5KStcXlV4V8UeEwhRSzmgeXmDX2WMPIcvRR5ba/P1tngkK2G2I9raNYe4Zd5GDr/zdQuk4aFtwLB+rIkA9ro=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779849265; c=relaxed/simple;
+	bh=mTXzHo9IhRsoIGL7Rhzno3JrOsQRwe8W9h77DZeG2hU=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=LhPGaY4kCUu4FBPXHs8Glkj+AiGBTj+XJGhtxnc5Ev1fgPs+EU6Cjb9HFTQxqs0kbBpNRJKptoMSC5H9EWV2PPgbr8xY7D/qi1N+8dHxQ9JRsrIsGBE9I20NTm5igGylrhpPmcoTdaqxEX356+RXBaIecEdKO63BJ3dZxrNXZ24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OzSzZxVd; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0BDC1F000E9;
+	Wed, 27 May 2026 02:34:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779849264;
+	bh=P24sS9sSMp4+ojJAWQ+i+YOvllL4qXcWUbK74vyaWAw=;
+	h=From:To:Subject:Date;
+	b=OzSzZxVd0OvHMa9KHmrhplz9U2xaKL1O5Jiyr/6CsIHXsKhFK37khf/TXUfET/mbM
+	 SLqhlO+2cilZGbQ7To1npfHKHZ/cCC/2Y1B3a3v0gNUqueK5RnGMDTYeMMjZiJxh/O
+	 ptiIEDmNoqd7TYpN3LG7H7XWi4SgcBW3jHKO22MHgIgos8Rj5hzG3Trm3HdNO9HqMW
+	 AzFeTKmsCLXgV9SpxZebz2T5lRax4ZgpZAO8sHOhQQ9GAIdIznrfVk/F0l4BYzxZrO
+	 f7v7xWZPvtCrKOzTE6YQa92XT3D1xDgVJQqPS0t5AA/xuef2oTbjNf03P8+zD6z+3Y
+	 2tP46bWtD2BLQ==
+From: Allison Henderson <achender@kernel.org>
+To: netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	kuba@kernel.org,
+	horms@kernel.org,
+	linux-rdma@vger.kernel.org,
+	achender@kernel.org,
+	linux-kselftest@vger.kernel.org,
+	shuah@kernel.org
+Subject: [PATCH net-next v2 0/4] selftests: rds: ROCE support follow ups
+Date: Tue, 26 May 2026 19:34:19 -0700
+Message-Id: <20260527023423.387792-1-achender@kernel.org>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260512183852.614045-1-jmoroni@google.com> <20260525135945.GA2440908@nvidia.com>
-In-Reply-To: <20260525135945.GA2440908@nvidia.com>
-From: Jacob Moroni <jmoroni@google.com>
-Date: Tue, 26 May 2026 19:24:37 -0400
-X-Gm-Features: AVHnY4Lq5ErYktBPFnShRR1rFFf3Fvz7xU9rxOB1pOb2SKKwCy2CTzVVUtHY7ds
-Message-ID: <CAHYDg1QTg_McOknngpNsmWwBsuMA2mhnb71+fsByfmzp9d7z1Q@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/irdma: Fix out-of-bounds write in irdma_copy_user_pgaddrs
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: tatyana.e.nikolova@intel.com, leon@kernel.org, linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21334-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[google.com:+];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-21335-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jmoroni@google.com,linux-rdma@vger.kernel.org];
-	RCPT_COUNT_THREE(0.00)[4];
+	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_NONE(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 266405DD871
+	DBL_BLOCKED_OPENRESOLVER(0.00)[run.sh:url,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 48CCF5DE959
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Thanks!
+Hi all,
 
-> Can you also address the unrelated bug sashiko found:
+This is a follow up series to the "Add ROCE support to rds selftests"
+series.  The first patch renames run.sh to rds_run.sh, which provides
+a self-describing name that appears on the netdev CI dashboard.
 
-Sure, I will take a look.
+The second patch addresses a sashiko complaint that I thought was
+worth circling back for.  In the patch "pin RDS sockets to their
+intended transport," sockets are pinned to the specific transport they
+are meant to test.  By default, socket transports are implicitly
+selected based on the network topology, but it is possible that they
+can fail back to other transports if the underlying connection could
+not be established.  So the patch pins them to the intended transport
+to avoid false positives.
 
-- Jake
+The third patch "support RDS built as loadable modules," lifts the
+CONFIG_MODULES=n requirement, and updates the check_*conf_enabled()
+to allow modules set to "=m" and further load the backing modules for
+any component set as such.
+
+The fourth patch converts the rdma-prerequisite checks to return XFAIL
+rather than SKIP, since the RDMA datapath is not run in netdev CI.
+
+Questions, comments and feedback appreciated!
+
+Thanks everyone!
+Allison
+
+Change log:
+v2:
+   [PATCH net-next v1 1/3] selftests: rds: add per-transport run wrappers
+   - Renamed to "selftests: rds: Rename run.sh to rds_run.sh"
+   - Removed rds_*_run.sh wrappers
+
+   [PATCH net-next v1 3/3] selftests: rds: support RDS built as loadable modules
+   - Fixed long line length warning
+
+   [PATCH net-next v2 4/4] selftests: rds: report missing RDMA prereqs as XFAIL
+   - NEW
+
+Allison Henderson (4):
+  selftests: rds: Rename run.sh to rds_run.sh
+  selftests: rds: pin RDS sockets to their intended transport
+  selftests: rds: support RDS built as loadable modules
+  selftests: rds: report missing RDMA prereqs as XFAIL
+
+ tools/testing/selftests/net/rds/Makefile      |  2 +-
+ tools/testing/selftests/net/rds/README.txt    |  8 +--
+ tools/testing/selftests/net/rds/config        |  1 -
+ .../selftests/net/rds/{run.sh => rds_run.sh}  | 72 ++++++++++++-------
+ tools/testing/selftests/net/rds/test.py       | 18 +++++
+ 5 files changed, 69 insertions(+), 32 deletions(-)
+ rename tools/testing/selftests/net/rds/{run.sh => rds_run.sh} (78%)
+
+-- 
+2.25.1
+
 
