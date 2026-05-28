@@ -1,281 +1,226 @@
-Return-Path: <linux-rdma+bounces-21434-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21435-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4DMxEIKFGGq6kggAu9opvQ
-	(envelope-from <linux-rdma+bounces-21434-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 20:12:18 +0200
+	id 4E8lLZ+GGGq6kggAu9opvQ
+	(envelope-from <linux-rdma+bounces-21435-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 20:17:03 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89EE95F6229
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 20:12:17 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 396285F62B1
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 20:17:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 92F2630746BA
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 18:08:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D450C308889B
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 18:13:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8A11408010;
-	Thu, 28 May 2026 18:08:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E62A34389E;
+	Thu, 28 May 2026 18:13:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Ha0wD8K+"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EpycXfcU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E5E1403E8E;
-	Thu, 28 May 2026 18:08:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 314793FE348
+	for <linux-rdma@vger.kernel.org>; Thu, 28 May 2026 18:13:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779991696; cv=none; b=K1LmYdOrQszGT9n6zbpvT+BaOfeBJO2Dg7EF3nlv5VFkt86snGzEmD6wk1gA/aX+E0TabsD3wR5Ihb0i2PMurmty7x9bryZwWr57C/lJio4cWGyy/q6FliebZ//eXlztm6aHVeDU0UsskXqPa4sIQgpj8qj3guVn0XoGOQedvas=
+	t=1779992013; cv=none; b=G8qy88dLm5jnotNThSIc4+AsyqAfMepHdjnsurkgjPowiOO11EVeUKX4WTNBMUWDKGYaE6L+TF2dZbUtRHetwsglm8X9pM6t7V5t3IxszpfsZ65nnOKaXmf54WqrUpAyzWnxaUZQScCYzCL2/y/3fSi1ZCSGrlwouGoVI1qXAOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779991696; c=relaxed/simple;
-	bh=R0170DRurt5KznohmtGzjOoU03o4QnlFYT7pbNh0Mfc=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=U3b3MfSesDmGOU8ydmDIu3e5LWpjlq9BndiMRn9uttdDavK5fpmBJ41WYz740fc0MP+qG3dDKwY3hZ38C9SLGNKrdr8FM+/AUDWheUBc2jFG2wPzTNTl5fgindSvnpHNr6wHqx73ZojEZbAfbSA4TwDXSps1P2KizbyPGJNoZOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Ha0wD8K+; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1173)
-	id 4EFC620B7167; Thu, 28 May 2026 11:07:58 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4EFC620B7167
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1779991678;
-	bh=fmR34n8OOkEcXeaFsrYkS3bWekx70hrvA5+bSqAYTs4=;
-	h=From:To:Subject:Date:From;
-	b=Ha0wD8K+aRcYuKZoK5XXPNQbpCWAMoEP+bVpi8kt3UfiXApEI5reQFcZeg2Xw5WU3
-	 h7OlrgXF3F0/p1BNLPLyr7Q5w8IqqZAgEYSrhDM3p3rEJIUhUNKsmbaD5+7iGF5cZY
-	 BRJ7lhvs9UaRQp0sY76bhYL8aw4QkJA17O0qze98=
-From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-To: kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	longli@microsoft.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	kotaranov@microsoft.com,
-	horms@kernel.org,
-	ernis@linux.microsoft.com,
-	dipayanroy@linux.microsoft.com,
-	kees@kernel.org,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH net-next] net: mana: Cache MANA_QUERY_LINK_CONFIG result to avoid repeated HWC queries
-Date: Thu, 28 May 2026 11:07:51 -0700
-Message-ID: <20260528180757.1536640-1-ernis@linux.microsoft.com>
-X-Mailer: git-send-email 2.43.7
+	s=arc-20240116; t=1779992013; c=relaxed/simple;
+	bh=olgS644GXBJ8sN4D9PdM4exux7HJbLCjd7+u5JgazSM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FsRqRFXrcSAV/lnvmT2BRTHHNB5HGPY0G8v7FZUfB48oQbE3BbjcTIhLkdkez3Kr61J5MuVfbuHcI6wQ5Sk6W0Qpmrkk/5fec4rZn6HrptSj7YPhtIzQWpbW8bfNQeD+erSRfx99cWIshlLNl3Vj5q59OLuuALKQV42wcQzpxwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EpycXfcU; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2ba4a1a0325so88876035ad.0
+        for <linux-rdma@vger.kernel.org>; Thu, 28 May 2026 11:13:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1779992011; x=1780596811; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Dpxsk/T+HI611YA3BXnCwNdpS4kyHfnhJj1enlM0vqI=;
+        b=EpycXfcUm6voEldLgmN0HiW7hPTdOUp6fx4Zgv2wDzUiEy973E0M0+Y0xxAnDt1p0l
+         dIgX78/JUiYLxeLpEFPyYYil6gtohU64dPvZ1Dcl16mX/hKaKVgDLsKp/5KeRbHV8++x
+         eQigHHLT5ZT4IVdWGEeMvK7C9HPvYHW88GyBM7qaznqzYe5PsWAuSmC4kx9COKFszGNW
+         rG9+qqMO1V+06u2avvy5cfYqUQAOFYiT1eJtUGqBfLDMyvP0b4eQoUs2L8fJaZYGAxAU
+         /UKC6H3ZYcPnMJ8xxM5yDXtWfLaMA2PO2ao8DNR5WbYrZwUOq6RaSfhXEc1fGhOZVFFw
+         3EVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779992011; x=1780596811;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Dpxsk/T+HI611YA3BXnCwNdpS4kyHfnhJj1enlM0vqI=;
+        b=ELYTntkLbFEPAEqnjzH4YyGmkFI3+C74oyTsaS24OfOrckkbLdFCDu2eV5kuJwObtL
+         r65GY1SKvP69QVUFPfCb06Z8orCfmIrNjSZ5rm7O7oGy+6QLxAv0UBd/UcK3y6+M4ojt
+         oYITxMz8RHKX+MG5pOlqi4tB7ltOtHOKPtFRs3EH+5NfLh1y5YUBJjzTv/BT4g3Nc1X5
+         mHyzCleyD1mXA4Q3rIZFMAabrL1wJzVUuyV1trwS6CssLwywZNVoGN9qy75116HhpUZJ
+         ecOXFg5SLcIVGSMN6sN0LbiYKcb6hmURxHe+XAEz3GmDjLpr2rhZSET5OqZ3HmXOThR/
+         2XYw==
+X-Forwarded-Encrypted: i=1; AFNElJ9hVGg+fsKXGeKVk5vcnG4zRVGjGmgAeINuX8/MJSEjjPVkeOhiL/jEMFi1zlpvlM1AH4PtKX4Bi/+4@vger.kernel.org
+X-Gm-Message-State: AOJu0YyCaMiPoGuJZnTTMElilSCfGE0qTYl8RSslwrmdudFKZxMEpVQn
+	higkYxsV+Ttx+tE8pKTE4dn8xTZbIiED1gu9mJaT/OuoSjFMAGCx93A+7XR9l2cZcA==
+X-Gm-Gg: Acq92OEEf8p5r5YVAv4eVOI2UXA6a/nq7sKZF2f23mstFRl1gk0llmbjofuODjfAKOx
+	dYd8WbgQmiIxFTWOUAB5neAEsjliLQ3dfBA5J5IYd5rwzlPnm451ZjDyk/rCjVbc4kHFOqXJlAr
+	Xq3vB+sLmZNCbVn+yUxWQCYzrncSxN8i5kijqWwIAmB4oZ8pzf/cync1alVgL0qcCbB80vKM7zL
+	qHMS4V+SrDm8d91AtPxOXBu+fgEc8J+//H7g/Jf6IVLe+J/8McDvtkNZBGzO2vh1CCfyJCMfFDY
+	vtzBwyxo9ZC/OezM1BX83rxhUjG+vVjiDdlkl75Y4AKLtXMWIr1DHJm2wOeEsdIRj8hZ4zAyneP
+	Rfn9aCoMWH01aJ/JAUxsMBeMIb6lDxx9iB7csW3OT0lhez0hMl9MerLUCTroqh1FFJjkGEQi3nI
+	44MqvZ01Bm/FAv+ONbVYuAqwxKCkpbEjD6NTDX9vu8uzmnKiHDRPlh6ZMUNvnt7hJkOS6MQlat
+X-Received: by 2002:a17:902:c94a:b0:2bd:9728:5e42 with SMTP id d9443c01a7336-2beb074b967mr322151685ad.31.1779992011034;
+        Thu, 28 May 2026 11:13:31 -0700 (PDT)
+Received: from google.com (56.149.168.34.bc.googleusercontent.com. [34.168.149.56])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2bf1e38a934sm174895ad.0.2026.05.28.11.13.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2026 11:13:30 -0700 (PDT)
+Date: Thu, 28 May 2026 18:13:26 +0000
+From: David Matlack <dmatlack@google.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Alex Williamson <alex@shazbot.org>, kvm@vger.kernel.org,
+	Leon Romanovsky <leon@kernel.org>, linux-kselftest@vger.kernel.org,
+	linux-rdma@vger.kernel.org, Mark Bloch <mbloch@nvidia.com>,
+	netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+	Shuah Khan <shuah@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+	patches@lists.linux.dev
+Subject: Re: [PATCH v2 06/11] selftests: Fix arm64 IO barriers to match kernel
+Message-ID: <ahiFxtmspbETiqWw@google.com>
+References: <0-v2-72e9640932fd+2c64-mlx5st_jgg@nvidia.com>
+ <6-v2-72e9640932fd+2c64-mlx5st_jgg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6-v2-72e9640932fd+2c64-mlx5st_jgg@nvidia.com>
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[google.com:+];
+	RCPT_COUNT_TWELVE(0.00)[12];
 	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-21435-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21434-lists,linux-rdma=lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ernis@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dmatlack@google.com,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,linux.microsoft.com:mid,linux.microsoft.com:dkim]
-X-Rspamd-Queue-Id: 89EE95F6229
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 396285F62B1
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-mana_query_link_cfg() sends an HWC command to firmware on every call,
-but the link speed and QoS values it returns only change when the
-driver explicitly calls mana_set_bw_clamp(). This function is called
-not only by userspace via ethtool get_link_ksettings, but also
-periodically by hv_netvsc through netvsc_get_link_ksettings and by
-the sysfs speed_show attribute via dev_attr_show, resulting in
-unnecessary HWC traffic every few minutes.
+On 2026-05-15 02:30 PM, Jason Gunthorpe wrote:
+> The tools/include readl/writel MMIO accessors on arm64 use
+> inner-shareable barriers (dmb ish) while the kernel uses
+> outer-shareable (dmb osh).  Fix them to match.
+> 
+> Add __io_bw() and __io_ar() definitions matching the kernel's
+> arch/arm64/include/asm/io.h, including the dummy control dependency
+> in __io_ar() that orders MMIO reads against all subsequent
+> instructions.
+> 
+> Assisted-by: Claude:claude-opus-4.6
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>  tools/arch/arm64/include/asm/barrier.h | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/tools/arch/arm64/include/asm/barrier.h b/tools/arch/arm64/include/asm/barrier.h
+> index abdc64fc3c70f0..3f7fcb2a27541e 100644
+> --- a/tools/arch/arm64/include/asm/barrier.h
+> +++ b/tools/arch/arm64/include/asm/barrier.h
+> @@ -28,6 +28,20 @@
+>  #define dma_rmb()	asm volatile("dmb oshld" ::: "memory")
+>  #define dma_wmb()	asm volatile("dmb oshst" ::: "memory")
+>  
+> +/* Match arch/arm64/include/asm/io.h: use osh barriers for device MMIO */
+> +#define __io_bw()	dma_wmb()
+> +#define __io_ar(v)							\
+> +({									\
+> +	unsigned long tmp;						\
+> +									\
+> +	dma_rmb();							\
+> +									\
+> +	asm volatile("eor	%0, %1, %1\n"				\
+> +		     "cbnz	%0, ."					\
+> +		     : "=r" (tmp) : "r" ((unsigned long)(v))		\
+> +		     : "memory");					\
+> +})
+> +
 
-Add a link_cfg_error field to mana_port_context to cache the query
-result. The field uses three states: 1 (not yet queried, initial
-value set during mana_probe_port), 0 (success, speed/max_speed are
-valid), or a negative errno for permanent errors like -EOPNOTSUPP
-when the hardware does not support the command. Transient errors and
-qos_unconfigured responses are not cached so that subsequent calls
-will retry.
+Let's put these in tools/arch/arm64/include/asm/io.h so that the tools
+headers are more aligned with the kernel headers, and so that the arm64
+io.h overrides are done in the same way as the x86 overrides in
+tools/arch/x86/include/asm/io.h.
 
-To prevent a concurrent mana_set_bw_clamp() from racing with an
-in-flight query and publishing stale pre-clamp speed/max_speed,
-serialize the firmware transaction and the cache update under a new
-per-port mutex (link_cfg_mutex). The mutex covers both the HWC
-request and the subsequent stores in mana_query_link_cfg(), and the
-HWC request and invalidation in mana_set_bw_clamp(). With this lock
-held, two queries can no longer interleave their speed/max_speed
-stores, and an invalidation can no longer slip in between a query's
-response and its publish.
+Something like this (untested):
 
-Invalidate the cache inside mana_set_bw_clamp() on success, so all
-current and future callers that change the link configuration
-automatically trigger a fresh query on the next mana_query_link_cfg()
-call. Also reset link_cfg_error during resume in mana_probe() under
-link_cfg_mutex, so that any slow-path query already in flight cannot
-later store 0 and silently overwrite the post-resume invalidation.
-
-Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
----
- drivers/net/ethernet/microsoft/mana/mana_en.c | 41 +++++++++++++++----
- include/net/mana/mana.h                       |  4 ++
- 2 files changed, 36 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index 82f1461a48e9..43018bc13dc1 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -1456,6 +1456,12 @@ int mana_query_link_cfg(struct mana_port_context *apc)
- 	struct mana_query_link_config_req req = {};
- 	int err;
- 
-+	mutex_lock(&apc->link_cfg_mutex);
+diff --git a/tools/arch/arm64/include/asm/io.h b/tools/arch/arm64/include/asm/io.h
+new file mode 100644
+index 000000000000..8a5de4fe2afd
+--- /dev/null
++++ b/tools/arch/arm64/include/asm/io.h
+@@ -0,0 +1,22 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _TOOLS_ASM_ARM64_IO_H
++#define _TOOLS_ASM_ARM64_IO_H
 +
-+	err = apc->link_cfg_error;
-+	if (err <= 0)
-+		goto out;
++#include <asm/barrier.h>
 +
- 	mana_gd_init_req_hdr(&req.hdr, MANA_QUERY_LINK_CONFIG,
- 			     sizeof(req), sizeof(resp));
- 
-@@ -1468,10 +1474,11 @@ int mana_query_link_cfg(struct mana_port_context *apc)
- 	if (err) {
- 		if (err == -EOPNOTSUPP) {
- 			netdev_info_once(ndev, "MANA_QUERY_LINK_CONFIG not supported\n");
--			return err;
-+			apc->link_cfg_error = err;
-+			goto out;
- 		}
- 		netdev_err(ndev, "Failed to query link config: %d\n", err);
--		return err;
-+		goto out;
- 	}
- 
- 	err = mana_verify_resp_hdr(&resp.hdr, MANA_QUERY_LINK_CONFIG,
-@@ -1482,16 +1489,20 @@ int mana_query_link_cfg(struct mana_port_context *apc)
- 			   resp.hdr.status);
- 		if (!err)
- 			err = -EOPNOTSUPP;
--		return err;
-+		goto out;
- 	}
- 
- 	if (resp.qos_unconfigured) {
- 		err = -EINVAL;
--		return err;
-+		goto out;
- 	}
- 	apc->speed = resp.link_speed_mbps;
- 	apc->max_speed = resp.qos_speed_mbps;
--	return 0;
-+	apc->link_cfg_error = 0;
-+	err = 0;
-+out:
-+	mutex_unlock(&apc->link_cfg_mutex);
-+	return err;
- }
- 
- int mana_set_bw_clamp(struct mana_port_context *apc, u32 speed,
-@@ -1508,17 +1519,19 @@ int mana_set_bw_clamp(struct mana_port_context *apc, u32 speed,
- 	req.link_speed_mbps = speed;
- 	req.enable_clamping = enable_clamping;
- 
-+	mutex_lock(&apc->link_cfg_mutex);
++#define __io_bw()      dma_wmb()
++#define __io_ar(v)                                                     \
++({                                                                     \
++       unsigned long tmp;                                              \
++                                                                       \
++       dma_rmb();                                                      \
++                                                                       \
++       asm volatile("eor       %0, %1, %1\n"                           \
++                    "cbnz      %0, ."                                  \
++                    : "=r" (tmp) : "r" ((unsigned long)(v))            \
++                    : "memory");                                       \
++})
 +
- 	err = mana_send_request(apc->ac, &req, sizeof(req), &resp,
- 				sizeof(resp));
- 
- 	if (err) {
- 		if (err == -EOPNOTSUPP) {
- 			netdev_info_once(ndev, "MANA_SET_BW_CLAMP not supported\n");
--			return err;
-+			goto out;
- 		}
- 		netdev_err(ndev, "Failed to set bandwidth clamp for speed %u, err = %d",
- 			   speed, err);
--		return err;
-+		goto out;
- 	}
- 
- 	err = mana_verify_resp_hdr(&resp.hdr, MANA_SET_BW_CLAMP,
-@@ -1529,13 +1542,18 @@ int mana_set_bw_clamp(struct mana_port_context *apc, u32 speed,
- 			   resp.hdr.status);
- 		if (!err)
- 			err = -EOPNOTSUPP;
--		return err;
-+		goto out;
- 	}
- 
- 	if (resp.qos_unconfigured)
- 		netdev_info(ndev, "QoS is unconfigured\n");
- 
--	return 0;
-+	/* Invalidate the cache; next query will re-fetch from firmware. */
-+	apc->link_cfg_error = 1;
-+	err = 0;
-+out:
-+	mutex_unlock(&apc->link_cfg_mutex);
-+	return err;
- }
- 
- int mana_create_wq_obj(struct mana_port_context *apc,
-@@ -3430,6 +3448,8 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
- 	apc->port_handle = INVALID_MANA_HANDLE;
- 	apc->pf_filter_handle = INVALID_MANA_HANDLE;
- 	apc->port_idx = port_idx;
-+	apc->link_cfg_error = 1;
-+	mutex_init(&apc->link_cfg_mutex);
- 	apc->cqe_coalescing_enable = 0;
- 
- 	mutex_init(&apc->vport_mutex);
-@@ -3750,6 +3770,9 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
- 			rtnl_lock();
- 			apc = netdev_priv(ac->ports[i]);
- 			enable_work(&apc->queue_reset_work);
-+			mutex_lock(&apc->link_cfg_mutex);
-+			apc->link_cfg_error = 1;
-+			mutex_unlock(&apc->link_cfg_mutex);
- 			err = mana_attach(ac->ports[i]);
- 			rtnl_unlock();
- 			/* Log the port for which the attach failed, stop
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index d9c27310fd04..af772b7297ec 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -555,6 +555,10 @@ struct mana_port_context {
- 	u32 speed;
- 	/* Maximum speed supported by the SKU (mbps) */
- 	u32 max_speed;
-+	/* 1 = not queried, 0 = cached success, negative = permanent error */
-+	int link_cfg_error;
-+	/* Serializes mana_query_link_cfg() and mana_set_bw_clamp(). */
-+	struct mutex link_cfg_mutex;
- 
- 	bool port_is_up;
- 	bool port_st_save; /* Saved port state */
--- 
-2.34.1
++#include <asm-generic/io.h>
++
++#endif /* _TOOLS_ASM_ARM64_IO_H */
+diff --git a/tools/include/asm/io.h b/tools/include/asm/io.h
+index eed5066f25c4..1090a2c387f4 100644
+--- a/tools/include/asm/io.h
++++ b/tools/include/asm/io.h
+@@ -4,6 +4,8 @@
 
+ #if defined(__i386__) || defined(__x86_64__)
+ #include "../../arch/x86/include/asm/io.h"
++#elif defined(__aarch64__)
++#include "../../arch/arm64/include/asm/io.h"
+ #else
+ #include <asm-generic/io.h>
+ #endif
+
+
+>  #define smp_store_release(p, v)						\
+>  do {									\
+>  	union { typeof(*p) __val; char __c[1]; } __u =			\
+> -- 
+> 2.43.0
+> 
 
