@@ -1,240 +1,152 @@
-Return-Path: <linux-rdma+bounces-21469-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21470-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qAU+FAm9GGoumwgAu9opvQ
-	(envelope-from <linux-rdma+bounces-21469-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 00:09:13 +0200
+	id sNerIQnDGGp4nAgAu9opvQ
+	(envelope-from <linux-rdma+bounces-21470-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 00:34:49 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E01EB5FAC9F
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 00:09:12 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC42E5FB07C
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 00:34:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 101AC30ADA2B
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 22:06:05 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CAA0E3060C80
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 22:30:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E3F735AC10;
-	Thu, 28 May 2026 22:06:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9C22367F36;
+	Thu, 28 May 2026 22:30:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="CWd2IM9B"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fTusoSH/"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11022141.outbound.protection.outlook.com [40.107.209.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1674923394D;
-	Thu, 28 May 2026 22:06:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.141
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780005963; cv=fail; b=PQACH5wKhUDrg04zw/wqUn0Xyoyz2KswOIoNnZ5moaEQ3+5+PmdE30qEy5ajbqDedpI0Yr/V0Rb8KmQ+LK35ZZL3gTmgvWz7Fjbsa94qTXw4jUWW/YWspY+HZ/wKgxL0mqo1j14FCrIcyH6fRvbmpJA9uk5eIt3/uOnGUar4egk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780005963; c=relaxed/simple;
-	bh=/J3csQj/H4+Dm/q6bHl9AIWV/CC2KxLJH/pDqH9jSoY=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=G+PBPBb7XwXWdjtmcW3FGbqUFIITP+E9nXrpfz/vIIppeLERAcyqxWw7xoSL7aGrlbFt8VQsJbsu8x9yPNWJriiMQkJKer0EbZdyQbquO5gSCg/03gDqMTQfVFf43MdJIAb7NBn8XNMrknIvv0SV1rn1FU9SAsBHRviL8bEP0J8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=CWd2IM9B; arc=fail smtp.client-ip=40.107.209.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ufzaHf24XX+su7F2wMeuamRqED4W4lkTwAaxLWBA9CI6z6S8hqj9UYhiqTwsVu2oM1jFvztRGP7NjJjGPi8rnK9O3G1tqXIiXD94+qQbwir9nOVdF2ec7zfdchUIoUfPu6IxwPu9+vqskyI//ghZuYTOkgh4kN2/IGkmjc7yAsedqzTsMVxuw9nicFiX/nvG1f5gzgkSvV1gSaGKZ8WaKa5qdDCldci1Gw9JGSXHMK6ilWBsi4V6XtoUCceyUQ1q6y6ACTTKi9pmOkDMxdTQZ9XJvuBI269IO+B+2drlfHuGBoNJWkyoKJrgd29z9x3KPVp6/CDETvW8GRcUWEZWjA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Pcj9i5DkQEAdOoNabaHXnYZO6NUxHwdW3REQx9Kc1ys=;
- b=DNBU2DGQelS5lgOadQ6Pzeubx8FK1GnK6/Z870gzf0AD5lp78hWbyb+yNzBsmdekQtp1+l6sCxbAB6qRg1auiCFEG/DhE1NcVCq5MmespEIxfO8/fT0OiWiHnCqCua62NjW9NWEZmdj8VhII9wGV5vPish8riv3i9G/xAn+lRxzeOkItoefFYJ5tWcSxR3ERO/iuLY8c+Dad29O7N++2HG+o4I65PyeQZglTC+BxAAebuiQo7x3HmjaxvEgWF+cYG1yQ8Ca0pG2Y+KM8hYQdby1NcY/7jLEgXczzjiSPOl1TydLPkhcsjtW5VfbGajVo/mqqEzSIyDND1uEyiWzbOg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Pcj9i5DkQEAdOoNabaHXnYZO6NUxHwdW3REQx9Kc1ys=;
- b=CWd2IM9B/klGL0t3vseU9iu3Oq1XsTU2Ou2aTlmAQYxwIfDE3LBPFJdJV3m6O8kGwE0RDCZMFtaQDHEoQx69MAXp+b2qLc2bBVd+NBK4ou34q/JyqbxTbHc8/QupKiikXIyGO4wff7JLwQCeWr0tULhFjf2M6LXtMY3j1Mfrdgs=
-Received: from SA1PR21MB6683.namprd21.prod.outlook.com (2603:10b6:806:4a4::6)
- by SA1PR21MB6704.namprd21.prod.outlook.com (2603:10b6:806:4a3::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.1; Thu, 28 May 2026
- 22:05:58 +0000
-Received: from SA1PR21MB6683.namprd21.prod.outlook.com
- ([fe80::8bad:6294:8a07:fe18]) by SA1PR21MB6683.namprd21.prod.outlook.com
- ([fe80::8bad:6294:8a07:fe18%3]) with mapi id 15.21.0092.002; Thu, 28 May 2026
- 22:05:58 +0000
-From: Long Li <longli@microsoft.com>
-To: Jakub Kicinski <kuba@kernel.org>
-CC: Konstantin Taranov <kotaranov@microsoft.com>, "David S . Miller"
-	<davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, Eric Dumazet
-	<edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Jason Gunthorpe
-	<jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Haiyang Zhang
-	<haiyangz@microsoft.com>, KY Srinivasan <kys@microsoft.com>, Wei Liu
-	<wei.liu@kernel.org>, Dexuan Cui <DECUI@microsoft.com>,
-	"shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>, Simon
- Horman <horms@kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [EXTERNAL] Re: [PATCH net-next v11 0/6] net: mana: Per-vPort EQ
- and MSI-X management
-Thread-Topic: [EXTERNAL] Re: [PATCH net-next v11 0/6] net: mana: Per-vPort EQ
- and MSI-X management
-Thread-Index: AQHc6lhTyIkZh41VFEGbRGEZk/VnV7YivmWAgAFG0OA=
-Date: Thu, 28 May 2026 22:05:58 +0000
-Message-ID:
- <SA1PR21MB6683A7B2415BEAF17BD0EB4ECE092@SA1PR21MB6683.namprd21.prod.outlook.com>
-References: <20260523020258.1107742-1-longli@microsoft.com>
- <20260527192735.34a794cf@kernel.org>
-In-Reply-To: <20260527192735.34a794cf@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=b6f8d270-dfd8-4186-906b-7ff7b9b59e84;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2026-05-28T21:57:17Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
- 3, 0, 1;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR21MB6683:EE_|SA1PR21MB6704:EE_
-x-ms-office365-filtering-correlation-id: 1e760b02-ca8c-4cb5-3bbf-08debd054c50
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|376014|7416014|1800799024|366016|38070700021|4143699003|56012099006|11063799006|4133799003|22082099003|18002099003;
-x-microsoft-antispam-message-info:
- a439EvpCXJN8dBlaHZiuGW1cri5AkqG7Ca5+rth6mWi4XV4HeMAhEU0QNye40M5OB45k7Q8OVELYuoCOaaHTsZm4QkPuH8eXkn67YP8AzR/zgL3aJ0JoXBL5OoClEKFbUpTp3f+bIf9oUXvodgjdSG6PjRM3aIGKTlUx77SEudPxiB54dptJ11pVwFspviLx01KUKTz/rDwJZXQYevsfqa76cEPm+DJf4a4FqE26r+Y9Cis2oim45FrE1sIpKeEVyui+74MXw2hZB8gFAVXVvNK0awMaI1Pr7CdZWi4ZRUCjpMuVwkuK6G/91kN1GjaszY0c6+qvQtLP9BrVkTtGNNIL7Iun9RujMghyGoycALd3Y8cZ3WrQ6fd0CjS5JSReFx2grvxAqWm6h04OhZ4F19ZndI7yd5TH+Blu8dx1O8MWX8WEI8x3DZsYon3ryWdAydcEcDGXO8ETLaUWPKoCmc5FWHrhN6Y92OsQFLVhIRa6/pv5znWjqwFIJxlDmg91lt0Np+6u8dXvzH5ZjfK1yzJxGyGx+bQqax0R9UYKchbwEet9+uHZWMGg7l0zPaPVK54Y7ghVPO4F+WTMKqGxelnVLFLKYkZEmc1A/Zyoseeujq8GcKMDa0B47TlXvf5XHN/IY+KQbZbuTszDKcTRavkmfM/TWnmRwUqK8jy+I2Cngtyr04RBZtyil/fOAdXQJIL0B2O66F3gmw8OPtrroQWHKJwbdWU1yBGKsHxhN6r8FrAv27pKKIvIWi/euaYL
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR21MB6683.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016)(38070700021)(4143699003)(56012099006)(11063799006)(4133799003)(22082099003)(18002099003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?1oMhXwPc/Fm3aDSCr6fBF0q8cojNhBKLoPN/HIkOkUrVNaX4p0x9gP+PhwFv?=
- =?us-ascii?Q?vsgEzNSDrhAvC2XBzphVFETpQEHVnR8S06X4Qk6XV/XxCLknA9kGa2qH8MJN?=
- =?us-ascii?Q?4RSfW8vI84teS58vrPEZfLQep/PxiO1/U8YXKu9LLDX1z9poWzdF5UgoJkSb?=
- =?us-ascii?Q?iv7GMG2C6vUuARjzdZSryrSgBvXsU40XOlmQB4Vvz7ZhFtqGmSrK8fuEESps?=
- =?us-ascii?Q?9o5r3XokyojUwq6hcMggjT8dC6HEKr6L47urNfbPPAL44sNI6tnjoRE3DrNY?=
- =?us-ascii?Q?xUl/4VR3QJ1VRkeeAxAE8sCufkBGwZ8yDjO5FnDN3MbbCFyWTEFR3t7GN2fh?=
- =?us-ascii?Q?wXZ2WLBcT44uhU9TvB83shm1veyW94jdOnulLENrkfclhsiGIHpQ97EpFYNI?=
- =?us-ascii?Q?X1eHoOF9JzQF5PyyMwThvYpPB1BWL7oYKArDxxzFs+ObmI4g6iOD5+53Z5Ap?=
- =?us-ascii?Q?JyuW3gOGF/aK6bGqBYl90oHohbWOESd3M0Xv6R/VjCmLW9mAkDDKeaOlKu/V?=
- =?us-ascii?Q?v6RfP6jLyOvXNZRTXXJmGEsciLpNuRJoZK6EstKD7p0LPCUzqO4SD6mUPK6u?=
- =?us-ascii?Q?z0uixyTBmFdzhHTr1JW+1bZpRBJ77kSpUW4i0kB3I4nChdefsHKt6n2obApK?=
- =?us-ascii?Q?CCBgsVDXxFXTlb8KmaG+D00HFG+62ObnZkU+mAEG51m22cyzCxCaSVohcX8G?=
- =?us-ascii?Q?5JZFc13J3rQGPFhAJa9pFXqgn2Zjj/gNGPEdfwysv1Ru0fpydR+k0oGkIRqB?=
- =?us-ascii?Q?mgdkAxCaOPukEMvmUcRsr0h9M3vyq3vKoT14FFdwhB50ymFyB0U7Z3bZynmz?=
- =?us-ascii?Q?vMePCTmHfv35dit8zs3FvM+BDpKnLeh0cYku4w0BMihvKM2PsdH/tGbX/1Sm?=
- =?us-ascii?Q?T9wHdUMqd4QiIsypK2JGeHWOdu+UgN/cY9nFVgwCif0XaQ+6TONCq0ce6/0a?=
- =?us-ascii?Q?6evptsopV9MClz54g+k/tTjPHj6VjYed3mcrR3op7Sy0aa55AUxKKdkF1lE0?=
- =?us-ascii?Q?xqlPsA9Nie0DcAUyg2BMjQiZCiqbC2xtvfgvWP9i/2vypzd3p4MNbvFmNca0?=
- =?us-ascii?Q?/CTceQsVNSsnQORbzeF22OcZNgRT2mdsL1unwIqL6yK/XSGH7CoSwtm1e8M8?=
- =?us-ascii?Q?gnEtHWreZb9DgyUzJiH0HoMmJulI3q1IIrNfDKOGYqZpKx058j++9JjfDzGe?=
- =?us-ascii?Q?gLMeGlhHw8IdYrBRSGohxMrUOjyQupLgAj9qoS4sIomjMsi2dgsd7G9z5xSE?=
- =?us-ascii?Q?PR5t3SYZykPC/Jh77gb8cyN4A/jwUHwMycvUy4KNw7Pm9CtiQk0Tw7bDXGTb?=
- =?us-ascii?Q?9yLZEbhR0VbOIXmccPW2bEbNbBxnoTJH0gG2OQn3m8z2VU/RxRr2HPcVi8Aj?=
- =?us-ascii?Q?sSMVtvlWMzZsWPjGTrsFRxBkQpt+PE2Mp4QVmMB7iZeDDPx0huPTDTxOFs4y?=
- =?us-ascii?Q?vRXUQOp5tO4Qi4vWKB52D9XRgxTk1/spNm9gpSsx5LsPCBmMHC6cVPIlWn0K?=
- =?us-ascii?Q?83BPpPYzZgcEWqKbJqZll4jr3cgDRfcTT3aGBySFdrxZO0UReWLN3xEz/9+s?=
- =?us-ascii?Q?du4uCJd43ReabmGLFUNei3oSSY1j9csg+0YYCsw96lBp6SVKn/BVOV2Z7Wlz?=
- =?us-ascii?Q?RmHzGSMUHCV7DVjxCHMHP/yaXHS7Xa0sfW+NIkBF7ak83eYLJBlLrXwtoYdd?=
- =?us-ascii?Q?VmOcQ3KuHFLR3Yfd745SrQ4P/XJnrwimjF/F/X7uBo9q5biR?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4935636BCC9
+	for <linux-rdma@vger.kernel.org>; Thu, 28 May 2026 22:30:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780007416; cv=none; b=CFC3JxfeaMZhn4VwVJPDwZRdErwbRFS7Sh64h4Ug7MTT/jJJp7rQ/WPS9JvBs+dl8gZ3kzjEGpgEjq0cGF8a/cHFBXqnz+BDs467+Rb7qNBvY4IWCYFBHXh5wIw1RDUpKK/is4DHbYFd62w18gVtLOdHGJoG3M0HsaOUGAOXpas=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780007416; c=relaxed/simple;
+	bh=XE2Nz8XY3jfeATNv6GLApHENG4QyQDJPsi8VaxfTPGU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=XPFrRTQojItVtth0GQUmWSg5yctvDKh5rDfRfDaAkGK5VcsLtTq7RipmVbg733Etuan+WMQLcrpGCEkJ2J0jaIALkCOn75EbCX2PcnqXOdIeBTSStIR+qwxtoZUQ2NkipjeaNfcF0Cisry37zQhWtCBTX8Eu0OWK+9ZCfIK4lBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fTusoSH/; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-bcda7765d64so2489598166b.1
+        for <linux-rdma@vger.kernel.org>; Thu, 28 May 2026 15:30:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1780007414; x=1780612214; darn=vger.kernel.org;
+        h=user-agent:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IiJpfn9/OPGvc7lLpZ8Q6/8VjpgeaL3UxQCz6z34DRA=;
+        b=fTusoSH/yR8iRjMuEGolfK9IdvTG98QnfWNc5ntZmmtvFNYpX+XZ3Zt8Z8RuEHKgY5
+         pgurGfE59frtj1mn3DMs2GYMIHnrIW5eAuETCT+Zw8vzB3I+jUX/TAt1NwK2AdkHzg3D
+         nrKx9G3+JKcXt1VEthRd2X21kk3tHZLruFchaYF5HWU8EC9mdD++jQI3TJaXUfw/4D1Y
+         GjJtSJ5G/3w4eFGmObcsjd09fNw/ZSf6mngyWIeix4ZZlzi1df0w8TMexlXXxx7i65Yy
+         6+KLzuUxiRBRwon1I3880/LRzoxghuKIAwxUwENexKS5aXtKDQPyuvAXBrv6GlfcPGIZ
+         PRUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780007414; x=1780612214;
+        h=user-agent:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IiJpfn9/OPGvc7lLpZ8Q6/8VjpgeaL3UxQCz6z34DRA=;
+        b=YnURBew8rWE5HXmN8dJeXkOlpRV8Bl7BzvXsGG/37LFa9VeFj8PKO3dpyuz99WuMeJ
+         hmP32gSNGNBkvrwpgShFjHmkcEz4kQoF02W4iNx0sUG3VcMVEV7bxop6Pa7xv0CHgT7R
+         WYdB+0rSD3kSWHxEjQcqDGD69xY7xN0pI79dsUngTE4sb3lKjGCUNGJm4xA+0viB183j
+         Wb8FDUKc1tC2uvdhXluQnUZikPrfQjoCSG+68c4tklydU3/JyESnAWnao4ZVk9oVSEim
+         qhnw3ShjQIDLfl0ANuyNCwic4faveQs/JKprGNPiOY3NXiRkl3JNZ1puZvEmMWRRPvjR
+         pUkw==
+X-Gm-Message-State: AOJu0YztOJT9lszkVYsgHqzs7vZXIoRTl+YhX6YC0RQ+VgeK5DkSumjr
+	jCc64EZY/mbMl9IYpU0II8vyXYxiJQ58mPS7IB8xorGh2baa+Eaw4VdWu2uWgVhL
+X-Gm-Gg: Acq92OHCRf98Pj2rXx+pTANpMQ55bTW3eqM75/lQYmLmLpt4j6eTSE99TfAhiogKz+1
+	hq+RVVrhkreehsmcqQRz15m90rZOsnjyMCoNC6y18ndGc1uzc/woxomx/iRk9/4TYR1gDtz5NlH
+	VPDD5Gi4P8g2o+RPZVF2z+D1k0/tb/zH3KPbnTu/s3Zs8QODHnx8yMUAq+8P/bOr2ULqvshLkSQ
+	i3tbgr7+Ye32tG93byt9B1cWNNh02Ie8m+LS7GKs4M0nXafNvuHeF7WUKx9wB0+QgUu4kJobm+w
+	M8rjpNfWZIUBCU1SwYKShqv/orMdwz44qess3PL3Y9pFukcQQHNVBPLnPovRbJBsSvG/gFhnlZ8
+	b7S4LX7qxQw2XU949hrO/9FtgmyMMD9ODYPPR++16b5W97IGVBkv3YL7YCcHKzF6johx+cxSya+
+	sOFtI+wJN4ycjg5xM7QTiRLMW7tcZ1yRpAM4U=
+X-Received: by 2002:a17:907:75e4:b0:bc5:2352:555c with SMTP id a640c23a62f3a-be9ac78d0b2mr11752866b.14.1780007413511;
+        Thu, 28 May 2026 15:30:13 -0700 (PDT)
+Received: from grain.localdomain ([5.18.255.97])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-be9b2bc9b50sm6105166b.0.2026.05.28.15.30.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2026 15:30:13 -0700 (PDT)
+Received: by grain.localdomain (Postfix, from userid 1000)
+	id 977B85A0061; Fri, 29 May 2026 01:30:11 +0300 (MSK)
+Date: Fri, 29 May 2026 01:30:11 +0300
+From: Cyrill Gorcunov <gorcunov@gmail.com>
+To: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Krzysztof Czurylo <krzysztof.czurylo@intel.com>,
+	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Subject: [PATCH] RDMA/irdma: Fix typo in SQ completions generation
+Message-ID: <ahjB87k54bYdFbft@grain>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR21MB6683.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e760b02-ca8c-4cb5-3bbf-08debd054c50
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 May 2026 22:05:58.5772
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BHJ6aO+6uONiEVB/GQoHGpV6rYrL4ZpcsfbKdcqvAhqtgWwi2DXX+5GwapkeNKub4nIXVA+Cayn6OTq2DolmIQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR21MB6704
-X-Spamd-Result: default: False [1.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[microsoft.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[microsoft.com:s=selector2];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/2.3.1 (2026-03-20)
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21469-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[microsoft.com:+];
-	MISSING_XM_UA(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21470-lists,linux-rdma=lfdr.de];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[longli@microsoft.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[gorcunov@gmail.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,SA1PR21MB6683.namprd21.prod.outlook.com:mid,outlook.com:url]
-X-Rspamd-Queue-Id: E01EB5FAC9F
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_FIVE(0.00)[6];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: DC42E5FB07C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-> On Fri, 22 May 2026 19:02:50 -0700 Long Li wrote:
-> > The following changes since commit
-> 95fab46aea57d6d7b76b319341acbefe8a9293c8:
-> >
-> >   Merge branch
-> > 'net-convert-atm-xdp-af_iucv-l2tp_ppp-rxrpc-tipc-to-getsockopt_iter'
-> > (2026-05-22 11:11:12 -0700)
-> >
-> > are available in the Git repository at:
-> >
-> >
-> >
-> https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgith
-> >
-> ub.com%2Flonglimsft%2Flinux.git&data=3D05%7C02%7Clongli%40microsoft.co
-> m%
-> >
-> 7C36237239bb6949843c7508debc60af6c%7C72f988bf86f141af91ab2d7c
-> d011db47%
-> >
-> 7C1%7C0%7C639155320616840917%7CUnknown%7CTWFpbGZsb3d8eyJF
-> bXB0eU1hcGkiO
-> >
-> nRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoy
-> fQ%
-> >
-> 3D%3D%7C0%7C%7C%7C&sdata=3D43aUwSeHYaOhd%2Bmd1lwfmCqmrAObg
-> MWJoDRpKDhmCt8
-> > %3D&reserved=3D0 tags/mana-eq-msi-v11
-> >
-> > for you to fetch changes up to
-> a26d11135abba51e81ae8b9689e288718af95088:
-> >
-> >   RDMA/mana_ib: Allocate interrupt contexts on EQs (2026-05-22
-> > 20:35:43 +0000)
->=20
-> The branch is no good, it needs to be your patches applied on top of a co=
-mmit
-> already in Linus's tree. The current branch is on top of net-next, RDMA w=
-ould
-> have to pull in 100s of networking commits together with your changes.
+When we generate completion for SQ the opcode while being properly read
+from ring buffer is ignored when written back to completion. Seems
+to be a simple typo.
 
-Hi Jakub,
+Signed-off-by: Cyrill Gorcunov <gorcunov@gmail.com>
+---
+Hopefully I didn't miss something obvious here, found it while been
+fighting with unrelated issue.
 
-Thanks for looking into this. Since the RDMA patch (patch 6) depends on the=
- networking changes in patches 1-5, could this series go through net-next? =
-I've verified that the tag pulls cleanly into the latest net-next.
+ drivers/infiniband/hw/irdma/utils.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Leon, Jason - could you provide an Acked-by for patch 6 ("RDMA/mana_ib: All=
-ocate interrupt contexts on EQs") so it can be taken through the networking=
- tree?
-
-Thanks,
-Long
+Index: linux-tip.git/drivers/infiniband/hw/irdma/utils.c
+===================================================================
+--- linux-tip.git.orig/drivers/infiniband/hw/irdma/utils.c
++++ linux-tip.git/drivers/infiniband/hw/irdma/utils.c
+@@ -2442,7 +2442,7 @@ void irdma_generate_flush_completions(st
+ 			cmpl->cpi.wr_id = qp->sq_wrtrk_array[wqe_idx].wrid;
+ 			sw_wqe = qp->sq_base[wqe_idx].elem;
+ 			get_64bit_val(sw_wqe, 24, &wqe_qword);
+-			cmpl->cpi.op_type = (u8)FIELD_GET(IRDMAQPSQ_OPCODE, IRDMAQPSQ_OPCODE);
++			cmpl->cpi.op_type = (u8)FIELD_GET(IRDMAQPSQ_OPCODE, wqe_qword);
+ 			cmpl->cpi.q_type = IRDMA_CQE_QTYPE_SQ;
+ 			/* remove the SQ WR by moving SQ tail*/
+ 			IRDMA_RING_SET_TAIL(*sq_ring,
 
