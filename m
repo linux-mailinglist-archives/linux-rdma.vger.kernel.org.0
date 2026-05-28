@@ -1,180 +1,194 @@
-Return-Path: <linux-rdma+bounces-21419-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21420-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uN2NNin1F2q5WAgAu9opvQ
-	(envelope-from <linux-rdma+bounces-21419-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 09:56:25 +0200
+	id COzrGpf5F2oWXwgAu9opvQ
+	(envelope-from <linux-rdma+bounces-21420-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 10:15:19 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6065F5EE195
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 09:56:25 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C59A5EE609
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 10:15:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 70AF4305F4BD
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 07:56:15 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 155D9302AEE1
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 08:04:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5CB3546E8;
-	Thu, 28 May 2026 07:56:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEBE6365A03;
+	Thu, 28 May 2026 08:04:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="VWNmy/8p"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from canpmsgout08.his.huawei.com (canpmsgout08.his.huawei.com [113.46.200.223])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81214326930;
-	Thu, 28 May 2026 07:56:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05C53277C9E;
+	Thu, 28 May 2026 08:04:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.223
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779954966; cv=none; b=UzUbbBoYYsKm2DsRMzt/EskevLEcuScqKBS7Hp1N22V3v8Iwq6TUc9Rip1VIcHovEsiudx94D8/CzLSSZkIz84XvMq61zxn/9xdS/h+J6RYrWXMHH7SyC5SWC4xWf4QxmwwbCqMWxORsy0dKRT4lpgOrbe4PlrWg8p4zgl1E0SA=
+	t=1779955472; cv=none; b=EXNoiDnCe4loUImdIgiegBLfIt2mnp/rLq7r4uGlacAIXnohqKKujOS0TCWm2JsWOe4nIfam3mzF0d29N+vM7EAOIOtjmbJe6s6W23r7VSrtf3iY+a04ZeaxakcN4Nhl5XbZZ84f0rqyfDDS57KwiYoBmeWulWkqo8CLFkrp2Qs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779954966; c=relaxed/simple;
-	bh=XqQxthfkv6qf1oZmzZTOfUtUEu7Ncp/WgeS1AD4+RLg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CG2Yb/x2xbOYCKujBzUBmCeraQY9Q63yTvrJtlKtcIi5dk/UIMitxT2x2vqNTV5NOsqmDxs0On39XDXgHl1hlXVyG+hIun2XjA7FYEpU5tsrg3rjehVx/qFYV9uj4E7CWAx95XOrcckp3u/4nTKot0z2O5x7V8igMBbuYVXZt24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: a6f5245a5a6a11f1aa26b74ffac11d73-20260528
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_TXT
-	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
-	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
-	HR_SJ_PHRASE_LEN, HR_SJ_PRE_RE, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
-	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
-	SA_EXISTED, SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS
-	DMARC_NOPASS, CIE_BAD, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS
-	GTI_RG_INFO, GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:c8201710-5741-4812-a693-c8ac5cfaeb98,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:10
-X-CID-INFO: VERSION:1.3.12,REQID:c8201710-5741-4812-a693-c8ac5cfaeb98,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-	elease,TS:10
-X-CID-META: VersionHash:e7bac3a,CLOUDID:813f779d6722cf99add929ab5d23f428,BulkI
-	D:260525214329UXPT78B0,BulkQuantity:4,Recheck:0,SF:17|19|64|66|78|80|81|82
-	|83|102|127|841|865|898,TC:nil,Content:-10|0|15|50,EDM:-3,IP:-2,URL:0,File
-	:nil,RT:nil,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR
-	:0,DKP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: a6f5245a5a6a11f1aa26b74ffac11d73-20260528
-X-User: cuitao@kylinos.cn
-Received: from ctao-book.. [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <cuitao@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 278844867; Thu, 28 May 2026 15:55:53 +0800
-From: Tao Cui <cuitao@kylinos.cn>
-To: jgg@ziepe.ca
-Cc: cgroups@vger.kernel.org,
-	cuitao@kylinos.cn,
-	hannes@cmpxchg.org,
-	leon@kernel.org,
-	linux-rdma@vger.kernel.org,
-	mkoutny@suse.com,
-	tj@kernel.org
-Subject: Re: [RFC PATCH rdma-next 0/5] cgroup/rdma: add per-type resource accounting for QP, MR and MR memory
-Date: Thu, 28 May 2026 15:55:37 +0800
-Message-ID: <20260528075537.2170697-1-cuitao@kylinos.cn>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260527133400.GM2487554@ziepe.ca>
-References: <20260527133400.GM2487554@ziepe.ca>
+	s=arc-20240116; t=1779955472; c=relaxed/simple;
+	bh=GWCH/Aonkgn/NPWpyC1bnkTBZ5RLU7iQOKnQqDuOdik=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=HrXcZrIVVpxfdLp9LCqEdRemb9Pc3SHFBnOTUs7ZShFq26xb+l5G7+BMU95n0iSKMAKRsAXWB5ZLdlkG9jbOInoXVmtuMQVEKX2dQsyM7xyDO7H6kC8CW1TWQCbHKHTwIq+PbwsgtNCbX7NQ0eyamBLjJYA5mJtmX/UDaAbQVsg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=VWNmy/8p; arc=none smtp.client-ip=113.46.200.223
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=CEfwnPgqLrNaYc1mj4Eyf5bsKzEWDOcFqXc4WbjJj3Y=;
+	b=VWNmy/8ppTsOaeH7aF0IkCxzVtF02EKB40Q9n+4FS2a49yqKE93km1cGo7tdMukvd+DizK640
+	vi3iz/xW1BQV8Gi5uBJySJ7LLs+A4yUb35GPILBJVkXEleZVBmRDs/+XWvwt+5lC9/Fs3PEnMDf
+	Z/U2WkMeDuot+idcTJbFv+w=
+Received: from mail.maildlp.com (unknown [172.19.163.15])
+	by canpmsgout08.his.huawei.com (SkyGuard) with ESMTPS id 4gQzMp6R6nzmV6T;
+	Thu, 28 May 2026 15:56:38 +0800 (CST)
+Received: from kwepemk500009.china.huawei.com (unknown [7.202.194.94])
+	by mail.maildlp.com (Postfix) with ESMTPS id 59E7140539;
+	Thu, 28 May 2026 16:04:26 +0800 (CST)
+Received: from [10.67.121.161] (10.67.121.161) by
+ kwepemk500009.china.huawei.com (7.202.194.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 28 May 2026 16:04:25 +0800
+Message-ID: <65b3d63a-271a-4aa8-ba8c-fc2b186349dc@huawei.com>
+Date: Thu, 28 May 2026 16:04:25 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/4] PCI/TPH: expose the enabled TPH requester type
+To: Zhiping Zhang <zhipingz@meta.com>, Alex Williamson <alex@shazbot.org>
+CC: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Sumit
+ Semwal <sumit.semwal@linaro.org>, Christian Konig <christian.koenig@amd.com>,
+	Bjorn Helgaas <helgaas@kernel.org>, <kvm@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <dri-devel@lists.freedesktop.org>, Keith Busch
+	<kbusch@kernel.org>, Yochai Cohen <yochai@nvidia.com>, Yishai Hadas
+	<yishaih@nvidia.com>
+References: <20260526144401.1485788-1-zhipingz@meta.com>
+ <20260526144401.1485788-2-zhipingz@meta.com>
+ <20260527145332.30412ea4@shazbot.org>
+ <CAH3zFs3Yv2G0rQNE7x8DjBWPE+3sFC_3X6ZtF4x-mPp==h0BQA@mail.gmail.com>
+Content-Language: en-US
+From: fengchengwen <fengchengwen@huawei.com>
+In-Reply-To: <CAH3zFs3Yv2G0rQNE7x8DjBWPE+3sFC_3X6ZtF4x-mPp==h0BQA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.46 / 15.00];
+X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
+ kwepemk500009.china.huawei.com (7.202.194.94)
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	RCVD_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	DMARC_NA(0.00)[kylinos.cn];
 	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[cuitao@kylinos.cn,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	R_DKIM_NA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21419-lists,linux-rdma=lfdr.de];
-	TO_DN_NONE(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	TAGGED_FROM(0.00)[bounces-21420-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[]
-X-Rspamd-Queue-Id: 6065F5EE195
+	DKIM_TRACE(0.00)[huawei.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fengchengwen@huawei.com,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCVD_COUNT_FIVE(0.00)[6];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[shazbot.org:email,meta.com:email,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,huawei.com:mid,huawei.com:dkim]
+X-Rspamd-Queue-Id: 7C59A5EE609
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi,Jason
+On 5/28/2026 1:35 PM, Zhiping Zhang wrote:
+> On Wed, May 27, 2026 at 1:53 PM Alex Williamson <alex@shazbot.org> wrote:
+>>
+>>>
+>> On Tue, 26 May 2026 07:43:53 -0700
+>> Zhiping Zhang <zhipingz@meta.com> wrote:
+>>
+>>> Add pcie_tph_enabled_req_type() so drivers can query the enabled TPH
+>>> requester mode without reaching into pci_dev internals.
+>>>
+>>> This keeps pci_dev::tph_req_type inside the PCI/TPH code and provides a
+>>> !CONFIG_PCIE_TPH stub for callers.
+>>>
+>>> Signed-off-by: Zhiping Zhang <zhipingz@meta.com>
+>>> ---
+>>>  drivers/pci/tph.c       | 12 ++++++++++++
+>>>  include/linux/pci-tph.h |  2 ++
+>>>  2 files changed, 14 insertions(+)
+>>>
+>>> diff --git a/drivers/pci/tph.c b/drivers/pci/tph.c
+>>> index 91145e8d9d95..6c4492075ae9 100644
+>>> --- a/drivers/pci/tph.c
+>>> +++ b/drivers/pci/tph.c
+>>> @@ -174,6 +174,18 @@ u32 pcie_tph_get_st_table_loc(struct pci_dev *pdev)
+>>>  }
+>>>  EXPORT_SYMBOL(pcie_tph_get_st_table_loc);
+>>>
+>>> +/**
+>>> + * pcie_tph_enabled_req_type - Return the device's enabled TPH requester type
+>>> + * @pdev: PCI device to query
+>>> + *
+>>> + * Return: PCI_TPH_REQ_DISABLE, PCI_TPH_REQ_TPH_ONLY or PCI_TPH_REQ_EXT_TPH.
+>>> + */
+>>> +u8 pcie_tph_enabled_req_type(struct pci_dev *pdev)
+>>> +{
+>>> +     return pdev->tph_req_type;
+>>> +}
+>>> +EXPORT_SYMBOL(pcie_tph_enabled_req_type);
+>>> +
+>>>  /*
+>>>   * Return the size of ST table. If ST table is not in TPH Requester Extended
+>>>   * Capability space, return 0. Otherwise return the ST Table Size + 1.
+>>> diff --git a/include/linux/pci-tph.h b/include/linux/pci-tph.h
+>>> index be68cd17f2f8..fe572737b409 100644
+>>> --- a/include/linux/pci-tph.h
+>>> +++ b/include/linux/pci-tph.h
+>>> @@ -30,6 +30,7 @@ void pcie_disable_tph(struct pci_dev *pdev);
+>>>  int pcie_enable_tph(struct pci_dev *pdev, int mode);
+>>>  u16 pcie_tph_get_st_table_size(struct pci_dev *pdev);
+>>>  u32 pcie_tph_get_st_table_loc(struct pci_dev *pdev);
+>>> +u8 pcie_tph_enabled_req_type(struct pci_dev *pdev);
+>>>  #else
+>>>  static inline int pcie_tph_set_st_entry(struct pci_dev *pdev,
+>>>                                       unsigned int index, u16 tag)
+>>> @@ -41,6 +42,7 @@ static inline int pcie_tph_get_cpu_st(struct pci_dev *dev,
+>>>  static inline void pcie_disable_tph(struct pci_dev *pdev) { }
+>>>  static inline int pcie_enable_tph(struct pci_dev *pdev, int mode)
+>>>  { return -EINVAL; }
+>>> +static inline u8 pcie_tph_enabled_req_type(struct pci_dev *pdev) { return 0; }
+>>
+>> nit, s/0/PCI_TPH_REQ_DISABLE/ for consistency.  Thanks,
 
-> memory pin accounting should ideally be limited by the cgroup directly
-> but we argued about that for a while and could never get an agreement
-> of an acceptable implementation. There are many nasty corner cases
-> around cgroups and fork and other cases IIRC
->
-> So I'm not sure if making it rdma specific can easially solve these
-> problems
+It need add #include <linux/pci.h> at beginning too, else it will counter compile error like this:
 
-Thanks for the detailed context.  I understand the concern — generic
-pinned-page accounting at the memcg level has difficult ownership
-semantics around fork(), cgroup migration, shared mappings, and page
-lifetime tracking.
+   In file included from drivers/vdpa/mlx5/core/mr.c:8:
+   In file included from include/linux/mlx5/qp.h:36:
+   In file included from include/linux/mlx5/device.h:37:
+   In file included from include/rdma/ib_verbs.h:46:
+>> include/linux/pci-tph.h:48:10: error: use of undeclared identifier 'PCI_TPH_LOC_NONE'
+      48 | { return PCI_TPH_LOC_NONE; }
+         |          ^
+   1 error generated.
 
-The intent of mr_mem is narrower and RDMA-scoped.  It is not page-level
-ownership tracking — it is object-based accounting tied to the MR
-lifetime:
+>>
+>> Alex
+>>
+> ack, will do.
+> 
+> Thanks,
+> Zhiping
+> 
 
-  - charged at MR registration time
-  - uncharged at MR destruction time
-  - the charge lives with the MR's creating cgroup for the entire
-    lifetime of the MR object
-
-This model intentionally defines accounting semantics around MR
-object lifetime rather than page ownership:
-
-1. fork(): The accounting model is based on MR object ownership
-   rather than ownership of the underlying pages after fork().
-   fork() does not duplicate MR objects.  Even though the child
-   inherits the uverbs fd and can access the parent's ucontext,
-   the MR remains a single kernel object — fork itself creates no
-   additional MR registrations or associated RDMA resource accounting.
-   The charge is tied to the MR object, not to the number of processes
-   that can reach it, so no splitting or re-accounting is needed.
-
-2. Cgroup migration: mr_mem follows the same semantics as the existing
-   hca_object — charge at creation time against the invoking task's
-   cgroup, uncharge at destruction time.  The RDMA cgroup does not
-   implement can_attach/attach callbacks today, so charges do not
-   migrate with the task.  This is a known limitation that applies
-   equally to hca_handle and hca_object.  mr_mem does not introduce
-   any new complication here.
-
-3. Overlap with memory cgroup: mr_mem does not count process memory
-   usage — it represents a per-device DMA registration budget: how
-   much memory can this cgroup register through a given HCA.  This is
-   a different dimension from what memory cgroup tracks.  An
-   administrator might set mr_mem limits differently per device, which
-   memory cgroup cannot express.
-
-   In particular, mr_mem tracks the registered memory range associated
-   with the MR rather than exact dynamically pinned pages (e.g. for
-   ODP MRs).  This is a stable, policy-oriented approximation of
-   registration footprint — not an attempt at precise physical page
-   accounting.
-
-If you think this RDMA-scoped approach still has unresolved problems,
-I'd appreciate guidance on which corner cases remain problematic.
-
-Thanks,
-Tao
 
