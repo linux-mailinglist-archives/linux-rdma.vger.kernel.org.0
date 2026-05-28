@@ -1,230 +1,166 @@
-Return-Path: <linux-rdma+bounces-21426-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21427-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OJxEI0wOGGrMbAgAu9opvQ
-	(envelope-from <linux-rdma+bounces-21426-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 11:43:40 +0200
+	id CD+8ONIVGGrKbggAu9opvQ
+	(envelope-from <linux-rdma+bounces-21427-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 12:15:46 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6CDF5EFCFA
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 11:43:39 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 075E45F066D
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 12:15:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 826FE3247E77
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 09:31:44 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 411C2307EE1E
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 10:02:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46A49361DC3;
-	Thu, 28 May 2026 09:30:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D64963793C6;
+	Thu, 28 May 2026 10:02:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="f0pO4gbd";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="V6KbaBgN"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GbFiFNB8"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CD273AD527
-	for <linux-rdma@vger.kernel.org>; Thu, 28 May 2026 09:30:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D43633A03A
+	for <linux-rdma@vger.kernel.org>; Thu, 28 May 2026 10:02:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779960650; cv=none; b=tS72uvjMTDM2Sp7GPZm3y51nCf7DKL/xaxAos1hMmCgpn13B3XlGHTorTCl/TaIEoA7Gd8RQY+EnaMI+o5zw2nQsyEQJ4LSdHpEKUNKRhcjx0aSIFIUiRUEWv1F8o0j95mJFN3sXPEOukPSerwnDtYDfTTDF7z9BvNob/628oRc=
+	t=1779962553; cv=none; b=BeR3j800JSilwNIbqrxpcfLhmx2VhXWpGmLPnxPzQnktw7DfRRRqoMYHzENg29VCCww0jhTxZbn9CICrK/xzsn33RjAKhbHRTBInfoXRe6OBzVjNMMEERX09iWYh52Mj4Qkru7dabeRk2MV4L6U00QeYlCVedLg30TU8QzYBI+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779960650; c=relaxed/simple;
-	bh=LoGASex2qnTG+TbDm1RTWf0ExI8R1+KY/4AGVcMtGWU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=QNk39zZC4qxfwbuMkQ2TSpo5QiOQ6lJkZ7b2d9alIixPzaOf9BJdZAaR8kiKGdLCddP4f/UzULZxmNpWB+d4TYnoO9Zj7C8sW6A/8/PIHxunMjPQ3gDZCzeVQ7jFvZnX0QLwnnoe/cucuGA8v2fWj+tXQoRf/s/y1ltaD8BWiTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=f0pO4gbd; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=V6KbaBgN; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1779960645;
+	s=arc-20240116; t=1779962553; c=relaxed/simple;
+	bh=WC8bhNqhQI6ok+lYewjNkzGNaQrIf1SxGQJ3MGJi+5g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iwljUbVHt29vRm5/+wCVbzRtRG2ArqDzC6OPbrz0GbwYrpvz8JrE9/iZcgToe1sfmd0rg90jnYVWs8vjwT0aiPhhSUFC7dZHPpfBLN3TDUurLbqZVMUjAA34buvz1sq0j25nKO0zJ+GcQ0VD/1hmZb2vH1ertOFiqa7W/5g+bZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GbFiFNB8; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <94d830ba-a8ec-4505-84e0-947a930ccf0a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1779962540;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tDPtL7TwxG75IfmZr4FfYfvPDdnmXjEs/bxPVe7ap1c=;
-	b=f0pO4gbdAje+bUGJJpmNOBTVLTWgbtr09S6H7/x0qIrriZEEuAO84G0+FIt6OgUhSBsvEC
-	5K+TtuC5BXNg2t/3/ZIr+D46B46ttIlg0qphs/7Y0FPZMGL7Cup+oFkpCCvhcmhw8rZ4fC
-	xJmUqSh9G5gOfXwgqxFHwiEmjjtX9hg=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-132-OqqWyi9pPtK5z-4vS2ksrA-1; Thu, 28 May 2026 05:30:44 -0400
-X-MC-Unique: OqqWyi9pPtK5z-4vS2ksrA-1
-X-Mimecast-MFC-AGG-ID: OqqWyi9pPtK5z-4vS2ksrA_1779960643
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-43d7a5b9678so7668417f8f.2
-        for <linux-rdma@vger.kernel.org>; Thu, 28 May 2026 02:30:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1779960643; x=1780565443; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=tDPtL7TwxG75IfmZr4FfYfvPDdnmXjEs/bxPVe7ap1c=;
-        b=V6KbaBgNjttznWNNpi1z9T3hFVZiNKzLFLHpJY4/7dM8xcU3Gn1PhchlRhVKGB2gPD
-         BADVKIINDAJhLRj69ru8cVAHH/wWq9UOWIJmA/C0pPF//y3FGrhZvNVE19dxjx0Xxpdy
-         XFKgWQ1rqOPpvulaLYdgbzBcCTcigrrR62fAvSNdAO59R1vUhVG4YFKVAKXWuEE15tpT
-         zs0/T6KrlQ1iphzT8mHq5Xc2zq/y5A2l9FO3CyboIXIROMACE5Qnw5e60dRnSzQNN/aL
-         z5nVoSjTZwpJoPDiTri3lw1bTLHEKR9Ld2tOgEjwn6z/i8plJTYcsroF7jxNGAtHd82A
-         qHoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779960643; x=1780565443;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tDPtL7TwxG75IfmZr4FfYfvPDdnmXjEs/bxPVe7ap1c=;
-        b=my/WKLvYIlc44tZtVpsZw5+GGzMOsDWY6cv1oJX7pUR228J4l8n5sUGd4olrkOShOj
-         JR2LJfuETkf63Luo/B1mDK6ChsKjNTzgrh1TWD02PWWwzwLOvWA6GWYnmP38wYpPEVR0
-         YMYzE6ufV5dOFJct9qWPYTQ7NFK/wP4XZLAdqDqOMe9ftUjO3rEwag4Nr+v4brZ2b36p
-         2FnxwH9KUzwJj0tMYVu9SVxbLaQV3JAHf82p0PcJgjEhkgUiomLK0AecbO8nofKrnVBb
-         U6jIXbWBe2OFPVst8kuSiDMVR6zqaSrnk7XmJYulBgQZXI2ZystlvIhDBNNyp7r3aVcO
-         yhZg==
-X-Forwarded-Encrypted: i=1; AFNElJ9r2kEsrXcpzWwbuo9Gsa2u4GAMLLSdjOrXUArYRPMn6EsbZVHqagGrqcMQIPiz3RSms56TXlJf7Mhh@vger.kernel.org
-X-Gm-Message-State: AOJu0YxC+btUbGI47OwIzEbonPMPWCUYKlAMecBsi4wfcLYpjCjDKIir
-	/GVFY41oXRP6eHEaxm7tXuwHQjg2luQZ5ujyALZ5Xy/jKZJHc8QdHIP+Z3E3qrckikCd0vHSHV6
-	JMrcaVH6jQo0ukY1Xr+jtGpX5uHGL86NFl42NTF+VQDepriub/6p3y1fh4YGDzvo=
-X-Gm-Gg: Acq92OEwRl+lZnBPraERFINocuYdpKOoBQURNJKUm4i2ktxiVR0g5hhvKDyL1sQ7Taz
-	v5afwxuSZjjtiU/6MP31cd8N0qpZxdmj/RBsuTawwM6RdSUku39AxEmMPV50Zl4MObF5tysSWHu
-	alZkKJHTH01Ww4q8qmZCEU8yMY1+QnAxchuuBfKS++zwy91AOmhQDmW+mhfk70CMiZpbfOurzqg
-	P4QFjvQqgrKdssuyYuWc/K+Ttm7BWXnMX0d6IoO1PVu/WMbJ2/xsOhEM/wCHmAI1zAUFFHMjnhQ
-	R4+NZuqaK9b1sQv1J+Xj26qsvo/I/3Eeg663AUPmteZApJnVlkSIZbFozxefkJnZPU+lKvxQKEg
-	jqm0SX3gwGwqbUmK8vCP9yPHFEy1WF8Gw8xE9/FuG9ogU6GC4gvPXtyoZeGutygBiFg==
-X-Received: by 2002:adf:e009:0:10b0:43d:c95b:c46f with SMTP id ffacd0b85a97d-45eb38bfdebmr32523766f8f.38.1779960642525;
-        Thu, 28 May 2026 02:30:42 -0700 (PDT)
-X-Received: by 2002:adf:e009:0:10b0:43d:c95b:c46f with SMTP id ffacd0b85a97d-45eb38bfdebmr32523688f8f.38.1779960641995;
-        Thu, 28 May 2026 02:30:41 -0700 (PDT)
-Received: from [192.168.88.32] ([216.128.11.12])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45edb5a296bsm11898279f8f.21.2026.05.28.02.30.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 May 2026 02:30:41 -0700 (PDT)
-Message-ID: <3665f7c1-9c97-44ac-8b6a-e6c31ad96730@redhat.com>
-Date: Thu, 28 May 2026 11:30:39 +0200
+	bh=oejTxN9lF8TU+UST/6qHxdWQ8Qa2Iqj1rEXdtZAOGxc=;
+	b=GbFiFNB84PzamiMmdoTUGBp37rckKJqA7QiSwbnqos+obaFzLLxOyp364q13z8YYtgQLi/
+	aqB2Tjo7/GR7J3ut+9qyjhQ//c60DWZBFSFN2OD8G2Jr4dr1Kj+maJlofRyThuzgBKqq8H
+	F3JY6DJyIXtRr55SM+Z3HCXDt6sS0HA=
+Date: Thu, 28 May 2026 12:02:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v3 2/2] net: mana: Skip redundant detach on
- already-detached port
-To: Dipayaan Roy <dipayanroy@linux.microsoft.com>, kys@microsoft.com,
- haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, leon@kernel.org, longli@microsoft.com,
- kotaranov@microsoft.com, horms@kernel.org, shradhagupta@linux.microsoft.com,
- ssengar@linux.microsoft.com, ernis@linux.microsoft.com,
- shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, stephen@networkplumber.org,
- jacob.e.keller@intel.com, dipayanroy@microsoft.com, leitao@debian.org,
- kees@kernel.org, john.fastabend@gmail.com, hawk@kernel.org,
- bpf@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org, sdf@fomichev.me,
- yury.norov@gmail.com, pavan.chebbi@broadcom.com
-References: <20260525081129.1230035-1-dipayanroy@linux.microsoft.com>
- <20260525081129.1230035-3-dipayanroy@linux.microsoft.com>
-From: Paolo Abeni <pabeni@redhat.com>
-Content-Language: en-US
-In-Reply-To: <20260525081129.1230035-3-dipayanroy@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [BUG] KASAN: slab-use-after-free in siw_cm_work_handler
+To: Shuangpeng <shuangpeng.kernel@gmail.com>, jgg@ziepe.ca, leon@kernel.org
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <FFC7BFD6-EDB5-49AE-ACB5-A2F940D8F687@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Bernard Metzler <bernard.metzler@linux.dev>
+In-Reply-To: <FFC7BFD6-EDB5-49AE-ACB5-A2F940D8F687@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21426-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[linux.microsoft.com,microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me,broadcom.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[34];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_FROM(0.00)[bounces-21427-lists,linux-rdma=lfdr.de];
+	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pabeni@redhat.com,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[bernard.metzler@linux.dev,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: E6CDF5EFCFA
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,linux.dev:mid,linux.dev:dkim]
+X-Rspamd-Queue-Id: 075E45F066D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 5/25/26 10:08 AM, Dipayaan Roy wrote:
-> When mana_per_port_queue_reset_work_handler() runs after a previous
-> detach succeeded but attach failed, the port is left in a detached
-> state with apc->tx_qp and apc->rxqs already freed. Calling
-> mana_detach() again unconditionally leads to NULL pointer dereferences
-> during queue teardown.
+On 28.05.2026 05:52, Shuangpeng wrote:
+> Hi Kernel Maintainers,
 > 
-> Add an early exit in mana_detach() when the port is already in
-> detached state (!netif_device_present) for non-close callers, making
-> it safe to call idempotently. This allows the queue reset handler and
-> other recovery paths to simply retry mana_attach() without redundant
-> teardown.
+> I hit the following KASAN report while testing current upstream kernel:
 > 
-> Fixes: 3b194343c250 ("net: mana: Implement ndo_tx_timeout and serialize queue resets per port.")
-> Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-> Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-> ---
->  drivers/net/ethernet/microsoft/mana/mana_en.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+> KASAN: slab-use-after-free in siw_cm_work_handler
 > 
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> index 0582803907a8..1e1ad2795c3c 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> @@ -3350,6 +3350,12 @@ int mana_detach(struct net_device *ndev, bool from_close)
->  
->  	ASSERT_RTNL();
->  
-> +	/* If already detached (indicates detach succeeded but attach failed
-> +	 * previously). Now skip mana detach and just retry mana_attach.
-> +	 */
-> +	if (!from_close && !netif_device_present(ndev))
-> +		return 0;
-> +
->  	apc->port_st_save = apc->port_is_up;
->  	apc->port_is_up = false;
+> on commit: e8c2f9fdadee7cbc75134dc463c1e0d856d6e5c7 (May 25 2026)
+> 
+> The reproducer, detailed document, and .config files are here:
+> https://gist.github.com/shuangpengbai/f8a60ffa1b95c54672433bd9ee82e8ce
+> 
+> I’m happy to test debug patches or provide additional information.
+> 
 
-sashiko(gemini) notes the above can lead to different race:
+Thanks Shuangpeng, I will look at it next week.
+I am currently travelling w/o access to any
+development environment.
 
----
-Can this early return cause state machine corruption by bypassing the
-updates
-to apc->port_st_save?
-Consider this sequence:
-1. queue_reset_work runs, mana_detach() succeeds (apc->port_st_save = true,
-   apc->port_is_up = false), but mana_attach() fails.
-2. The admin brings the interface down (ip link set dev eth0 down), skipping
-   mana_close() since apc->port_is_up is false.
-3. The admin changes the MTU, triggering mana_change_mtu() which calls
-   mana_detach() followed by mana_attach().
-4. mana_detach() hits this new early return, preserving
-   apc->port_st_save == true.
-When mana_attach() runs, it sees apc->port_st_save == true and allocates
-queues, setting apc->vport_use_count = 1 and apc->port_is_up = true, even
-though the interface is administratively down.
-If the admin then brings the interface up, mana_open() will unconditionally
-call mana_alloc_queues(). That function calls mana_cfg_vport(), which will
-return -EBUSY because apc->vport_use_count is already 1.
-This leaves mana_open() failing and the interface down. Since the interface
-is already down, trying to bring it down again is a no-op, meaning
-mana_close() is never called to clean up the orphaned queues.
-Does this sequence permanently brick the port until the driver is reloaded?
----
+Thanks for reporting!
+Bernard.
 
-I think you need to be more restrictive in the early return check.
-
-/P
+> Reported-by: Shuangpeng Bai <shuangpeng.kernel@gmail.com>
+> 
+> 
+> 
+> [   60.059964][  T817] ==================================================================
+> [   60.060980][  T817] BUG: KASAN: slab-use-after-free in siw_cm_work_handler (drivers/infiniband/sw/siw/siw_cm.c:1053 drivers/infiniband/sw/siw/siw_cm.c:1075)
+> [   60.062008][  T817] Write of size 8 at addr ffff888170c8ac70 by task kworker/u8:1/817
+> [   60.063033][  T817]
+> [   60.063347][  T817] Hardware name: QEMU Ubuntu 24.04 PC v2 (i440FX + PIIX, arch_caps fix, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+> [   60.063350][  T817] Workqueue: siw_cm_wq siw_cm_work_handler
+> [   60.063356][  T817] Call Trace:
+> [   60.063359][  T817]  <TASK>
+> [   60.063361][  T817]  dump_stack_lvl (lib/dump_stack.c:94 lib/dump_stack.c:120)
+> [   60.063369][  T817]  print_report (mm/kasan/report.c:378 mm/kasan/report.c:482)
+> [   60.063385][  T817]  kasan_report (mm/kasan/report.c:595)
+> [   60.063399][  T817]  siw_cm_work_handler (drivers/infiniband/sw/siw/siw_cm.c:1053 drivers/infiniband/sw/siw/siw_cm.c:1075)
+> [   60.063472][  T817]  process_scheduled_works (kernel/workqueue.c:3314 kernel/workqueue.c:3397)
+> [   60.063477][  T817]  worker_thread (kernel/workqueue.c:3478)
+> [   60.063484][  T817]  kthread (kernel/kthread.c:436)
+> [   60.063495][  T817]  ret_from_fork (arch/x86/kernel/process.c:158)
+> [   60.063511][  T817]  ret_from_fork_asm (arch/x86/entry/entry_64.S:245)
+> [   60.063515][  T817]  </TASK>
+> [   60.063516][  T817]
+> [   60.087529][  T817] Freed by task 817 on cpu 1 at 60.059899s:
+> [   60.088264][  T817]  kasan_save_track (mm/kasan/common.c:57 mm/kasan/common.c:78)
+> [   60.088821][  T817]  kasan_save_free_info (mm/kasan/generic.c:584)
+> [   60.089385][  T817]  __kasan_slab_free (mm/kasan/common.c:253 mm/kasan/common.c:285)
+> [   60.089940][  T817]  kfree (./include/linux/kasan.h:235 mm/slub.c:2689 mm/slub.c:6251 mm/slub.c:6566)
+> [   60.090383][  T817]  siw_cm_work_handler (drivers/infiniband/sw/siw/siw_cm.c:141 drivers/infiniband/sw/siw/siw_cm.c:1051 drivers/infiniband/sw/siw/siw_cm.c:1075)
+> [   60.090979][  T817]  process_scheduled_works (kernel/workqueue.c:3314 kernel/workqueue.c:3397)
+> [   60.091616][  T817]  worker_thread (kernel/workqueue.c:3478)
+> [   60.092191][  T817]  kthread (kernel/kthread.c:436)
+> [   60.092637][  T817]  ret_from_fork (arch/x86/kernel/process.c:158)
+> [   60.093226][  T817]  ret_from_fork_asm (arch/x86/entry/entry_64.S:245)
+> [   60.093782][  T817]
+> [   60.094033][  T817] The buggy address belongs to the object at ffff888170c8ac00
+> [   60.094033][  T817]  which belongs to the cache kmalloc-256 of size 256
+> [   60.095541][  T817] The buggy address is located 112 bytes inside of
+> [   60.095541][  T817]  freed 256-byte region [ffff888170c8ac00, ffff888170c8ad00)
+> 
+> 
+> 
+> 
+> Best,
+> Shuangpeng
+> 
 
 
