@@ -1,301 +1,213 @@
-Return-Path: <linux-rdma+bounces-21409-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21410-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WDOsNh6yF2p+NggAu9opvQ
-	(envelope-from <linux-rdma+bounces-21409-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 05:10:22 +0200
+	id iH5hGlC8F2qRPAgAu9opvQ
+	(envelope-from <linux-rdma+bounces-21410-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 05:53:52 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2D765EC178
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 05:10:21 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C36225EC4D7
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 05:53:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 516243044137
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 03:09:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8762C307D8C6
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 03:53:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24EE3279DCC;
-	Thu, 28 May 2026 03:09:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A06BF31327D;
+	Thu, 28 May 2026 03:53:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="SK9rot+W"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VXHWpt97"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out203-205-221-236.mail.qq.com (out203-205-221-236.mail.qq.com [203.205.221.236])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABDDB2C11C6
-	for <linux-rdma@vger.kernel.org>; Thu, 28 May 2026 03:09:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.236
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03F602F7F03
+	for <linux-rdma@vger.kernel.org>; Thu, 28 May 2026 03:53:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779937787; cv=none; b=VFJWwt37lpxpM3CDh94bI22JhwgxAAlbb74rwjU1QF+Fuex3ntjabB8qJcyt/SIhgF9hocyNLR+8RtujpN7oRST4lIVvjyPdOisNSm4+V2z1RyovksoGWcf3yVPDkeFndnVWB++s3ItECi5tMhKhQ2jKPI05au1mktaD7WKi8HA=
+	t=1779940383; cv=none; b=UqTif5Ck1v1UlEAH8MdeoH6/dBpO36ebCoHHS6yjtyBkRVYDMGdzBChs03sfZX2VWJg11OnPofPGkeStxwo1JQjiXaKuOoRzap1km0S+awFRSRMoSfUTREB1O4anw43R8Hh7npeiyvWn/IlvvfCuWS8BLOOwS0zlfGBsDIJY+N4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779937787; c=relaxed/simple;
-	bh=V9a16BbvXJarY4TZF6RaqyKPeOkW0EcHZ2wUNDYOAxw=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=MUnfY/jo5/BAcXhf8NhS21KAoXV5YXg5vK0/bc6BF+tL06R7e/mqnFSil94//hwGcLcTl73FZU4eElOgZ9e6bS3QpD5L3aOviRuGb1r/uSdONSX3eUn1Epap/ESfznQBBkxEF3CqG3HjuuxhbOl1giH6a8UOR7f+w5hqumVIkBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=SK9rot+W; arc=none smtp.client-ip=203.205.221.236
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1779937781; bh=sv/GIMG6xhB0X65kL7r24iAqg31ymP+0eCjcmcrAGvM=;
-	h=From:To:Cc:Subject:Date;
-	b=SK9rot+W70xDhkjNAdtc67Sgbtju81lxh6jKIbg7ldzZuBrBXKjbfQvGIYg61UTZP
-	 b3V1QEjiJR+5TjB17tq2aWOWRKG3wlYfXAH33DfbLwwCGzElCOdy8KaIff7JYY6Bgq
-	 by/6XnEOByBhuDwce6YvOAx6J6D99Aw1NYuI/vL0=
-Received: from NTT-kernel-dev ([60.247.85.88])
-	by newxmesmtplogicsvrsza63-0.qq.com (NewEsmtp) with SMTP
-	id 265A0CDE; Thu, 28 May 2026 11:09:37 +0800
-X-QQ-mid: xmsmtpt1779937777t17iiwvdo
-Message-ID: <tencent_2CCEB7347C9C631F1181F2C768D4B3AA6307@qq.com>
-X-QQ-XMAILINFO: MRMtjO3A6C9XtOiblvciSp9yaWC90YPowWReMT9cVp9UJYXDtWRK2/j/rmxxst
-	 zlSuY3Y4bSEjYOqPBiXubiAQBlIa+jefYh1fJuypTtk6sm2Fxev4/HTh7yYaONIbmZMtyVGjdP8L
-	 IuD5AiKLOo/wgdWYL1ISrOjM8hY0wiq69nvd6JyXJP493I3N39gA7alVds9PHE7ZbLMcAzAzCIg1
-	 y5Ais9Ppaeu9XrMIpzEKBFdN/FMz6Kn/ogkdFIQv7bQEs33005fU1T2HqJDaCmdvGy8cjC/AQsN8
-	 L8nX7fVX8GSzDja8KQhTshD1o9oYzE4BmmmrRYKGT/y9Nqi+cpInsGiNE5t39w8eTT1iZIuo7ipG
-	 bN82yVWGr9fCXftk87UbQBbatIb9hDAIqZViP+RaFjVvdQ8oX0Mv8h56adFMuWjfcpgCOgYj05Hy
-	 X4Dos9ZPWYYVoYYOISxhWewMhQVfaWqNKlCnQmV7msKW0tWBifhhTIFYS3Op2rwpWCIJuOS/fGVz
-	 q/qAWHmL0+y08IlyRoS5kumDZKmLo1x7Q9yKaWYCv5RbqoHQS4Fz4VjTjKVE2HNakKc7wFr93QrA
-	 xkF0n3as2uyyhevQGx0j9by9NEGZNkVvzlfJCzinQm6a3R0UDdYOEHXBMeGL/FM7BNuczWpktWvn
-	 /R6Q9VKIW2FjTneJKsfAPJMqlPzwGErIaY7EYEcz2n5LmpM/rQD75N/hwYfmAiHifX5LgQXTZcOC
-	 Xtagcuy49a9RzNONJPXNlihAh6s+No1bvzL3leOoInBRct1bkBAq+BDQIrwJh9cKGxMRfyYykfOm
-	 tyQO8G0XKw7gGcqPqSzM565lAraBFF+REPsssh+Rnj5Uy+P8QeucsKU447D3t92wONpx8h83npV1
-	 MSSebsl1n8ZxZ42IISef2ykuVrVCFtGpi83oDGWEEDhcqVTYaQDErQ2Str5mYx8gG1YRwcSPq7XG
-	 9rYJs8BFV4luObcOOKGF5+ifJaVMlpaphfYDIJZhWj4HqdPRh6z0PgG2G8V99T+afo+4ccnkr+P5
-	 ODT6vaXg==
-X-QQ-XMRINFO: M/715EihBoGS47X28/vv4NpnfpeBLnr4Qg==
-From: Fang Wang <32840572@qq.com>
-To: torvalds@linux-foundation.org
-Cc: tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	hpa@zytor.com,
-	dennis.dalessandro@cornelisnetworks.com,
-	jgg@ziepe.ca,
-	leon@kernel.org,
-	jdmason@kudzu.us,
-	dave.jiang@intel.com,
-	allenbh@gmail.com,
-	jpoimboe@kernel.org,
-	peterz@infradead.org,
-	linux-rdma@vger.kernel.org,
-	ntb@lists.linux.dev
-Subject: [PATCH 6.6.y] x86-64: rename misleadingly named '__copy_user_nocache()' function
-Date: Thu, 28 May 2026 11:09:37 +0800
-X-OQ-MSGID: <20260528030937.923133-1-32840572@qq.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1779940383; c=relaxed/simple;
+	bh=DQnvRbLLDRnhIZeLmXh7LWHMsIlHKRRVHVxc+4Rootw=;
+	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:Cc:To; b=V57W+bdMkQYh69NJxwa3yEPLnq4A6WT6hpCJ8drvDzlxWRZcvHUp5IjCu/TFn9175OyhmftgjHHWRYSiCL04/2oPviXY5YNNIXvVShbvZom/Ek7Sf127YPTy9g0W1GPnnw+mv2NTtNhTgZmn4rDiryrOkATHnhzMCBKdKtXhZdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VXHWpt97; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-50e5eb0fabaso140666051cf.0
+        for <linux-rdma@vger.kernel.org>; Wed, 27 May 2026 20:53:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1779940380; x=1780545180; darn=vger.kernel.org;
+        h=to:cc:date:message-id:subject:mime-version
+         :content-transfer-encoding:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8dMrYjvINrkHP2I7aJF9Y7W20M5jqPVJtuCbsMxY9Mo=;
+        b=VXHWpt97MiRkk4nOGl8At+ayXjNXgNBKpzoAzlJEgedS7rI/qTbHty1iN3eE8fU9wC
+         huijaeAFnPSnsA3GyeCubRye0swlol+OxeTKg0hb/4zUp0joKnp/mhq+XWtgIkNEPWZg
+         997Om5Iv8kfYsymcoJLGybX/W6ef5XHHmyWa5bKN0iP8EaEsBHb1sUbiH0DmxcgelfSY
+         MkUTJLFzBejAf219U7DuB7o0/uT9hNe1RfZKriPCGmtrTc/sDwOU3ZlJF75z2W2ar2kI
+         czgVDxdIxhzXMBSZkZghqcdilDRs8Z27TNeUAlJ4LWaQTjNPPVAMeg+NWBH0eXCkE86V
+         tRMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779940380; x=1780545180;
+        h=to:cc:date:message-id:subject:mime-version
+         :content-transfer-encoding:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=8dMrYjvINrkHP2I7aJF9Y7W20M5jqPVJtuCbsMxY9Mo=;
+        b=lgOgedAaYwBp7xQpjmXFpQ1XXDhQ3uPKU+fjN9w/d+pLhxWYQAWDianRAvmKLT8KcE
+         ih9WazN7Asz15HJCNfBcgziBX6igpD15arvXPBJcbH0zo9if4XDCqePVVxGLsLORNDik
+         NShvxSaKwyGrBivZHW6UI5S3G3IN+QjYUuyrdhAeqnI9pv0Uh3V1befXQCku9zJgr7Ph
+         wFK5xBXDJMU+bofXx6vGX+9XNGFbXOrbYr1ESRueDaaz22I+qKRgYH+qkeWiZXZY2IAk
+         J+acULqIMn/WuqQFKgA+mDFPHqt7Q/B0WntTBXWWUKn60hYwGXvz2R0nntg2RpzGofwL
+         ilcA==
+X-Gm-Message-State: AOJu0YwZj5JZVBhRHVwltvajFzUmuCxFmgzo+rOmUeRJNSVQ5N6a6gOf
+	IZooP5sETnEf8WdDA/XRhDYMiF4my0R+2nXBoB1DW2SLHuu2Bh1dFg26jIUWhLAa
+X-Gm-Gg: Acq92OFVqdlhf62At0uuwqqpfb44A6oWORaFQQ3lZNOwBAc8Yj/jD93hpGOT7096MVy
+	C/T5BOF7NIr76CeKappysAap5GGpd7groB0V+Yl8AdpNgtHZWmS7LeQURFq1s2vZtyiGQtqpF4B
+	GetgoVYWMSKHlpxpFZ+d9TnavRucwSu0juV44qUcILiYBuzVIZ5TZRmPDB4WBTq75cnQV9GDtMa
+	mRXM7sIbEkcXTid+WhLMv5p1xhindasTQ8hTWRxpc3XrA6Rxl+JE/xrSv1Y3l/q/kK+ymXPWd8Z
+	OfksYpMlunouRDlNDKDGClBaMKglHC1DpfRoDOVJOtd+nUl7bTO6NzNTcIWDNr7POISpK6Y2Xbz
+	L3V7sm6V3zexswkKSKvQSo1jVUqR7QC9xseIaM/vtUbSkdbuZhqcYLDysE8iSGiDQ9u9KYcA4Ga
+	FhTA/rtNKuq48GGXuglzrvSbGTj8W7gCMQ8trCyp/Nf22yA0HkfnVz/cEMkGbxeZ2BLh1+fiAuB
+	G8=
+X-Received: by 2002:a05:622a:134f:b0:50d:6b06:a453 with SMTP id d75a77b69052e-516d445ee68mr358347531cf.18.1779940379892;
+        Wed, 27 May 2026 20:52:59 -0700 (PDT)
+Received: from smtpclient.apple ([2601:985:4601:5df0:e825:366f:655c:9bfd])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-51706b081c7sm62479651cf.28.2026.05.27.20.52.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 May 2026 20:52:59 -0700 (PDT)
+From: Shuangpeng <shuangpeng.kernel@gmail.com>
+Content-Type: text/plain;
+	charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.600.51.1.1\))
+Subject: [BUG] KASAN: slab-use-after-free in siw_cm_work_handler
+Message-Id: <FFC7BFD6-EDB5-49AE-ACB5-A2F940D8F687@gmail.com>
+Date: Wed, 27 May 2026 23:52:48 -0400
+Cc: linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+To: bernard.metzler@linux.dev,
+ jgg@ziepe.ca,
+ leon@kernel.org
+X-Mailer: Apple Mail (2.3864.600.51.1.1)
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[qq.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[qq.com:s=s201512];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MV_CASE(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[linutronix.de,redhat.com,alien8.de,linux.intel.com,kernel.org,zytor.com,cornelisnetworks.com,ziepe.ca,kudzu.us,intel.com,gmail.com,infradead.org,vger.kernel.org,lists.linux.dev];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	TAGGED_FROM(0.00)[bounces-21409-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	TAGGED_FROM(0.00)[bounces-21410-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	DKIM_TRACE(0.00)[qq.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FREEMAIL_FROM(0.00)[qq.com];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[32840572@qq.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[shuangpengkernel@gmail.com,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_NONE(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,qq.com:email,qq.com:mid,qq.com:dkim]
-X-Rspamd-Queue-Id: D2D765EC178
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: C36225EC4D7
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+Hi Kernel Maintainers,
 
-[ Upstream commit d187a86de793f84766ea40b9ade7ac60aabbb4fe ]
+I hit the following KASAN report while testing current upstream kernel:
 
-This function was a masterclass in bad naming, for various historical
-reasons.
+KASAN: slab-use-after-free in siw_cm_work_handler
 
-It claimed to be a non-cached user copy.  It is literally _neither_ of
-those things.  It's a specialty memory copy routine that uses
-non-temporal stores for the destination (but not the source), and that
-does exception handling for both source and destination accesses.
+on commit: e8c2f9fdadee7cbc75134dc463c1e0d856d6e5c7 (May 25 2026)
 
-Also note that while it works for unaligned targets, any unaligned parts
-(whether at beginning or end) will not use non-temporal stores, since
-only words and quadwords can be non-temporal on x86.
+The reproducer, detailed document, and .config files are here:
+https://gist.github.com/shuangpengbai/f8a60ffa1b95c54672433bd9ee82e8ce
 
-The exception handling means that it _can_ be used for user space
-accesses, but not on its own - it needs all the normal "start user space
-access" logic around it.
+I=E2=80=99m happy to test debug patches or provide additional =
+information.
 
-But typically the user space access would be the source, not the
-non-temporal destination.  That was the original intention of this,
-where the destination was some fragile persistent memory target that
-needed non-temporal stores in order to catch machine check exceptions
-synchronously and deal with them gracefully.
+Reported-by: Shuangpeng Bai <shuangpeng.kernel@gmail.com>
 
-Thus that non-descriptive name: one use case was to copy from user space
-into a non-cached kernel buffer.  However, the existing users are a mix
-of that intended use-case, and a couple of random drivers that just did
-this as a performance tweak.
 
-Some of those random drivers then actively misused the user copying
-version (with STAC/CLAC and all) to do kernel copies without ever even
-caring about the exception handling, _just_ for the non-temporal
-destination.
 
-Rename it as a first small step to actually make it halfway sane, and
-change the prototype to be more normal: it doesn't take a user pointer
-unless the caller has done the proper conversion, and the argument size
-is the full size_t (it still won't actually copy more than 4GB in one
-go, but there's also no reason to silently truncate the size argument in
-the caller).
+[   60.059964][  T817] =
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+[   60.060980][  T817] BUG: KASAN: slab-use-after-free in =
+siw_cm_work_handler (drivers/infiniband/sw/siw/siw_cm.c:1053 =
+drivers/infiniband/sw/siw/siw_cm.c:1075)
+[   60.062008][  T817] Write of size 8 at addr ffff888170c8ac70 by task =
+kworker/u8:1/817
+[   60.063033][  T817]
+[   60.063347][  T817] Hardware name: QEMU Ubuntu 24.04 PC v2 (i440FX + =
+PIIX, arch_caps fix, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[   60.063350][  T817] Workqueue: siw_cm_wq siw_cm_work_handler
+[   60.063356][  T817] Call Trace:
+[   60.063359][  T817]  <TASK>
+[   60.063361][  T817]  dump_stack_lvl (lib/dump_stack.c:94 =
+lib/dump_stack.c:120)
+[   60.063369][  T817]  print_report (mm/kasan/report.c:378 =
+mm/kasan/report.c:482)
+[   60.063385][  T817]  kasan_report (mm/kasan/report.c:595)
+[   60.063399][  T817]  siw_cm_work_handler =
+(drivers/infiniband/sw/siw/siw_cm.c:1053 =
+drivers/infiniband/sw/siw/siw_cm.c:1075)
+[   60.063472][  T817]  process_scheduled_works (kernel/workqueue.c:3314 =
+kernel/workqueue.c:3397)
+[   60.063477][  T817]  worker_thread (kernel/workqueue.c:3478)
+[   60.063484][  T817]  kthread (kernel/kthread.c:436)
+[   60.063495][  T817]  ret_from_fork (arch/x86/kernel/process.c:158)
+[   60.063511][  T817]  ret_from_fork_asm =
+(arch/x86/entry/entry_64.S:245)
+[   60.063515][  T817]  </TASK>
+[   60.063516][  T817]
+[   60.087529][  T817] Freed by task 817 on cpu 1 at 60.059899s:
+[   60.088264][  T817]  kasan_save_track (mm/kasan/common.c:57 =
+mm/kasan/common.c:78)
+[   60.088821][  T817]  kasan_save_free_info (mm/kasan/generic.c:584)
+[   60.089385][  T817]  __kasan_slab_free (mm/kasan/common.c:253 =
+mm/kasan/common.c:285)
+[   60.089940][  T817]  kfree (./include/linux/kasan.h:235 =
+mm/slub.c:2689 mm/slub.c:6251 mm/slub.c:6566)
+[   60.090383][  T817]  siw_cm_work_handler =
+(drivers/infiniband/sw/siw/siw_cm.c:141 =
+drivers/infiniband/sw/siw/siw_cm.c:1051 =
+drivers/infiniband/sw/siw/siw_cm.c:1075)
+[   60.090979][  T817]  process_scheduled_works (kernel/workqueue.c:3314 =
+kernel/workqueue.c:3397)
+[   60.091616][  T817]  worker_thread (kernel/workqueue.c:3478)
+[   60.092191][  T817]  kthread (kernel/kthread.c:436)
+[   60.092637][  T817]  ret_from_fork (arch/x86/kernel/process.c:158)
+[   60.093226][  T817]  ret_from_fork_asm =
+(arch/x86/entry/entry_64.S:245)
+[   60.093782][  T817]
+[   60.094033][  T817] The buggy address belongs to the object at =
+ffff888170c8ac00
+[   60.094033][  T817]  which belongs to the cache kmalloc-256 of size =
+256
+[   60.095541][  T817] The buggy address is located 112 bytes inside of
+[   60.095541][  T817]  freed 256-byte region [ffff888170c8ac00, =
+ffff888170c8ad00)
 
-Finally, use this now sanely named function in the NTB code, which
-mis-used a user copy version (with STAC/CLAC and all) of this interface
-despite it not actually being a user copy at all.
 
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Fang Wang <32840572@qq.com>
----
- arch/x86/include/asm/uaccess_64.h    | 5 +++--
- arch/x86/lib/copy_user_uncached_64.S | 6 +++---
- arch/x86/lib/usercopy_64.c           | 4 ++--
- drivers/infiniband/sw/rdmavt/qp.c    | 8 +++-----
- drivers/ntb/ntb_transport.c          | 7 ++++---
- tools/objtool/check.c                | 2 +-
- 6 files changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/arch/x86/include/asm/uaccess_64.h b/arch/x86/include/asm/uaccess_64.h
-index f2c02e4469cc..68417f5db5dc 100644
---- a/arch/x86/include/asm/uaccess_64.h
-+++ b/arch/x86/include/asm/uaccess_64.h
-@@ -133,7 +133,8 @@ raw_copy_to_user(void __user *dst, const void *src, unsigned long size)
- 	return copy_user_generic((__force void *)dst, src, size);
- }
- 
--extern long __copy_user_nocache(void *dst, const void __user *src, unsigned size);
-+#define copy_to_nontemporal copy_to_nontemporal
-+extern size_t copy_to_nontemporal(void *dst, const void *src, size_t size);
- extern long __copy_user_flushcache(void *dst, const void __user *src, unsigned size);
- 
- static inline int
-@@ -143,7 +144,7 @@ __copy_from_user_inatomic_nocache(void *dst, const void __user *src,
- 	long ret;
- 	kasan_check_write(dst, size);
- 	stac();
--	ret = __copy_user_nocache(dst, src, size);
-+	ret = copy_to_nontemporal(dst, (__force const void *)src, size);
- 	clac();
- 	return ret;
- }
-diff --git a/arch/x86/lib/copy_user_uncached_64.S b/arch/x86/lib/copy_user_uncached_64.S
-index 5c5f38d32672..b37a6f084c4c 100644
---- a/arch/x86/lib/copy_user_uncached_64.S
-+++ b/arch/x86/lib/copy_user_uncached_64.S
-@@ -26,7 +26,7 @@
-  * Output:
-  * rax uncopied bytes or 0 if successful.
-  */
--SYM_FUNC_START(__copy_user_nocache)
-+SYM_FUNC_START(copy_to_nontemporal)
- 	/* If destination is not 7-byte aligned, we'll have to align it */
- 	testb $7,%dil
- 	jne .Lalign
-@@ -238,5 +238,5 @@ _ASM_EXTABLE_UA(95b, .Ldone)
- _ASM_EXTABLE_UA(52b, .Ldone0)
- _ASM_EXTABLE_UA(53b, .Ldone0)
- 
--SYM_FUNC_END(__copy_user_nocache)
--EXPORT_SYMBOL(__copy_user_nocache)
-+SYM_FUNC_END(copy_to_nontemporal)
-+EXPORT_SYMBOL(copy_to_nontemporal)
-diff --git a/arch/x86/lib/usercopy_64.c b/arch/x86/lib/usercopy_64.c
-index e9251b89a9e9..1f1fb2ab1496 100644
---- a/arch/x86/lib/usercopy_64.c
-+++ b/arch/x86/lib/usercopy_64.c
-@@ -49,11 +49,11 @@ long __copy_user_flushcache(void *dst, const void __user *src, unsigned size)
- 	long rc;
- 
- 	stac();
--	rc = __copy_user_nocache(dst, src, size);
-+	rc = copy_to_nontemporal(dst, (__force const void *)src, size);
- 	clac();
- 
- 	/*
--	 * __copy_user_nocache() uses non-temporal stores for the bulk
-+	 * copy_to_nontemporal() uses non-temporal stores for the bulk
- 	 * of the transfer, but we need to manually flush if the
- 	 * transfer is unaligned. A cached memory copy is used when
- 	 * destination or size is not naturally aligned. That is:
-diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
-index dc83d0ac6a38..d77ada17e9db 100644
---- a/drivers/infiniband/sw/rdmavt/qp.c
-+++ b/drivers/infiniband/sw/rdmavt/qp.c
-@@ -92,12 +92,10 @@ static int rvt_wss_llc_size(void)
- static void cacheless_memcpy(void *dst, void *src, size_t n)
- {
- 	/*
--	 * Use the only available X64 cacheless copy.  Add a __user cast
--	 * to quiet sparse.  The src agument is already in the kernel so
--	 * there are no security issues.  The extra fault recovery machinery
--	 * is not invoked.
-+	 * Use the only available X64 cacheless copy.
-+	 * The extra fault recovery machinery is not invoked.
- 	 */
--	__copy_user_nocache(dst, (void __user *)src, n);
-+	copy_to_nontemporal(dst, src, n);
- }
- 
- void rvt_wss_exit(struct rvt_dev_info *rdi)
-diff --git a/drivers/ntb/ntb_transport.c b/drivers/ntb/ntb_transport.c
-index 0087c23655c7..03631c702c0c 100644
---- a/drivers/ntb/ntb_transport.c
-+++ b/drivers/ntb/ntb_transport.c
-@@ -1800,12 +1800,13 @@ static void ntb_tx_copy_callback(void *data,
- 
- static void ntb_memcpy_tx(struct ntb_queue_entry *entry, void __iomem *offset)
- {
--#ifdef ARCH_HAS_NOCACHE_UACCESS
-+#ifdef copy_to_nontemporal
- 	/*
- 	 * Using non-temporal mov to improve performance on non-cached
--	 * writes, even though we aren't actually copying from user space.
-+	 * writes. This only works if __iomem is strictly memory-like,
-+	 * but that is the case on x86-64
- 	 */
--	__copy_from_user_inatomic_nocache(offset, entry->buf, entry->len);
-+	copy_to_nontemporal(offset, entry->buf, entry->len);
- #else
- 	memcpy_toio(offset, entry->buf, entry->len);
- #endif
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 2c7b09c8415f..c54d531f73d9 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -1236,7 +1236,7 @@ static const char *uaccess_safe_builtin[] = {
- 	"copy_mc_enhanced_fast_string",
- 	"rep_stos_alternative",
- 	"rep_movs_alternative",
--	"__copy_user_nocache",
-+	"copy_to_nontemporal",
- 	NULL
- };
- 
--- 
-2.34.1
+
+Best,
+Shuangpeng
 
 
