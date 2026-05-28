@@ -1,166 +1,164 @@
-Return-Path: <linux-rdma+bounces-21427-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21428-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CD+8ONIVGGrKbggAu9opvQ
-	(envelope-from <linux-rdma+bounces-21427-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 12:15:46 +0200
+	id mGg5Edo9GGo1hggAu9opvQ
+	(envelope-from <linux-rdma+bounces-21428-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 15:06:34 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 075E45F066D
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 12:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 288EA5F2744
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 15:06:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 411C2307EE1E
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 10:02:35 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 13F44300C7EA
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 13:06:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D64963793C6;
-	Thu, 28 May 2026 10:02:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E683E3C3441;
+	Thu, 28 May 2026 13:06:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GbFiFNB8"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="DjwL9+wb"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D43633A03A
-	for <linux-rdma@vger.kernel.org>; Thu, 28 May 2026 10:02:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77F7F3F0AAC
+	for <linux-rdma@vger.kernel.org>; Thu, 28 May 2026 13:06:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779962553; cv=none; b=BeR3j800JSilwNIbqrxpcfLhmx2VhXWpGmLPnxPzQnktw7DfRRRqoMYHzENg29VCCww0jhTxZbn9CICrK/xzsn33RjAKhbHRTBInfoXRe6OBzVjNMMEERX09iWYh52Mj4Qkru7dabeRk2MV4L6U00QeYlCVedLg30TU8QzYBI+A=
+	t=1779973587; cv=none; b=AADPzmfqpDKF5BXrCMt61lMWxmp98KsXxnWt7Lw7CZeTGJXarCu1IDXbrDzrLaEfXOdpAqxnpBgtN/yce1O9mWmWAl+ZjoXeGqB6o9UWt3AI8RTRNIFVkRuG+wwjDlZF85rz7hdzgpRNcFSeEH5n3A4A6oEnwI75KVM1pCC86+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779962553; c=relaxed/simple;
-	bh=WC8bhNqhQI6ok+lYewjNkzGNaQrIf1SxGQJ3MGJi+5g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iwljUbVHt29vRm5/+wCVbzRtRG2ArqDzC6OPbrz0GbwYrpvz8JrE9/iZcgToe1sfmd0rg90jnYVWs8vjwT0aiPhhSUFC7dZHPpfBLN3TDUurLbqZVMUjAA34buvz1sq0j25nKO0zJ+GcQ0VD/1hmZb2vH1ertOFiqa7W/5g+bZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GbFiFNB8; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <94d830ba-a8ec-4505-84e0-947a930ccf0a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1779962540;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oejTxN9lF8TU+UST/6qHxdWQ8Qa2Iqj1rEXdtZAOGxc=;
-	b=GbFiFNB84PzamiMmdoTUGBp37rckKJqA7QiSwbnqos+obaFzLLxOyp364q13z8YYtgQLi/
-	aqB2Tjo7/GR7J3ut+9qyjhQ//c60DWZBFSFN2OD8G2Jr4dr1Kj+maJlofRyThuzgBKqq8H
-	F3JY6DJyIXtRr55SM+Z3HCXDt6sS0HA=
-Date: Thu, 28 May 2026 12:02:14 +0200
+	s=arc-20240116; t=1779973587; c=relaxed/simple;
+	bh=kXTeFcIvsmks7vWrM0laQ4OaSYv6Ip+x11G2+E6NIEQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P2C3hS/Zh6H1kwUqm06IxsInlhpLuAXtCty3/2peWk/NhAZ6awAsf/isOOrX1Qwytav8ys4kQjMyKEjS823G1YuovvV5a9z3128Jg/Ri7u2AzR8W3AX+hdy8kwPaKs9PT9a+yucB3V8Lu6zNi19Wuq2Rd5VmK1dSfWBppENEdM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=DjwL9+wb; arc=none smtp.client-ip=209.85.222.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-9144163319fso1337220485a.2
+        for <linux-rdma@vger.kernel.org>; Thu, 28 May 2026 06:06:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1779973584; x=1780578384; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=O4QLun+491Deibj/fLSmdMHafxxrHsY5pSpqns2mubI=;
+        b=DjwL9+wb5P7ImW8/0dqV803QfstLwp4Z3LZLFcZSvAawXdsFHMIBlnXKSnT5h1+5SP
+         olP8zO19xQzrbgsu1kSGTJzrSk8GWTKm0pC0C+t7xi8QlXYfC1DQ2dkYHAyFP2teQGKH
+         Ro1yHn28UcUavBexelrsdoVgW8yHwDV6P3+EG6z9DcuuxpvUxYp0O+Ed66vnitRmDahJ
+         JI9B7csvKx6oTiJCss3N1vjI6NSGQSq4NLzWZ4YrZvMfcgeuFyVG7zvPyVHExEETMCOu
+         A8lgEsHeoNnbfdpzS9PJm6bKcLfIBEWldZlIf6x5Zt52BmgEjU8xF8PoVrRVKQVwPO9t
+         EljA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779973584; x=1780578384;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O4QLun+491Deibj/fLSmdMHafxxrHsY5pSpqns2mubI=;
+        b=XOXS3o9qo8bDaGHfotbWoPMwIm985AMsURcF+Y19atRHZkTsFkzVGt+c9kXES1CaH1
+         d4I68852OfrIzVVUwm3+U2/camzaYPTUUlLGw0PP6nTvLNFvuGX4xGChXCNHiMac5XRO
+         w3y13FPMpG/miBprvOAAU7SLv5QIJb6+UekL2FFvmQOFNSkdE6x/EXgEAyxY2vDT0Upw
+         fiWRorqSt5B4rAHELPiN2yui2c3oIl5mlGkPgQOIvB6vtoz94p78j2cEELW21MCTZuFo
+         QT0RAEFEwVWi2rMRbWWa20SZsPIaWZdxe1pb64G8PIpOWEzDhjm+xgfLRPPDhP3f+7Jf
+         m9XQ==
+X-Forwarded-Encrypted: i=1; AFNElJ9I9/RLTs3CDRB5+AYrP/8735QQkMk71iGb7JcVJIkmnSpujcAp+Z2Q8xyKDf+Ufl3Rh8xqS9ACVL+x@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx4Bp2TuFT/IdltwWz1/xODwi3ojr+V1QnK0WOFDanjtNz3zcmO
+	x642CI05pfKkh17ZmdVuUcP/vdM/GUqXOWEN2rHzic8NjpxQ8AbgJ0UO9kiMBBVEn4c=
+X-Gm-Gg: Acq92OEgq2Ta/lBxkUAAMFrYXAEm1uRxvDapMTrWTQrud8PgkP8k8RFCetG/GsHMLpg
+	A7aD233d3z4lVn/KcELWCyqkqkbYjNsjm+l84DS6Q+dNBVfl9Jj5FNzVlQiym4Dvl6M5gNEGdHY
+	U9fgfz0HgEtto5fPf4dXLugZYgj5XYyAovbdaiBuCpkIY89+A1hi8grEiqaSLdBFg0Xav/FTg56
+	RZoRRHTc6NoSvR/22ggC3Ob5TQ4hDzXUao/cYgTICBotEjJ7M7l9ynbzN4ZJjtHY4pKajS+Pwpd
+	Mw6OPwfnCIIS95yQmf2rNX/SXK91C3d71SilMWdJVZpxmKknnXqf6phQw3od3HgHkurPMf9SbN5
+	aqlnPt6lFf7OVpaIIE5lKb6iLnKFA8PyjpyxZDbq3qoX8eWWsFapGX5+aARbDAmY4Q+hiRoEWPT
+	BKAwMSX+wH3tDWeDhg1bX66o7a8i9f4h5NpnH564KaxTOS/aAO+l+QEuNmqJ4VgGcJF5ooFTET7
+	FkvD7tTa2lNyxlF
+X-Received: by 2002:a05:620a:7106:b0:914:ec97:5457 with SMTP id af79cd13be357-914ec97563cmr2041801785a.46.1779973583681;
+        Thu, 28 May 2026 06:06:23 -0700 (PDT)
+Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-914f87d1a90sm869386785a.27.2026.05.28.06.06.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2026 06:06:22 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1wSaRK-0000000GYDV-0CFZ;
+	Thu, 28 May 2026 10:06:22 -0300
+Date: Thu, 28 May 2026 10:06:22 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Tao Cui <cuitao@kylinos.cn>
+Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org, leon@kernel.org,
+	linux-rdma@vger.kernel.org, mkoutny@suse.com, tj@kernel.org
+Subject: Re: [RFC PATCH rdma-next 0/5] cgroup/rdma: add per-type resource
+ accounting for QP, MR and MR memory
+Message-ID: <20260528130622.GO2487554@ziepe.ca>
+References: <20260527133400.GM2487554@ziepe.ca>
+ <20260528075537.2170697-1-cuitao@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [BUG] KASAN: slab-use-after-free in siw_cm_work_handler
-To: Shuangpeng <shuangpeng.kernel@gmail.com>, jgg@ziepe.ca, leon@kernel.org
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <FFC7BFD6-EDB5-49AE-ACB5-A2F940D8F687@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Bernard Metzler <bernard.metzler@linux.dev>
-In-Reply-To: <FFC7BFD6-EDB5-49AE-ACB5-A2F940D8F687@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+In-Reply-To: <20260528075537.2170697-1-cuitao@kylinos.cn>
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21427-lists,linux-rdma=lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[bernard.metzler@linux.dev,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,linux.dev:mid,linux.dev:dkim]
-X-Rspamd-Queue-Id: 075E45F066D
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[ziepe.ca:+];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[ziepe.ca];
+	TAGGED_FROM(0.00)[bounces-21428-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_FIVE(0.00)[6];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 288EA5F2744
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 28.05.2026 05:52, Shuangpeng wrote:
-> Hi Kernel Maintainers,
+On Thu, May 28, 2026 at 03:55:37PM +0800, Tao Cui wrote:
+> Hi,Jason
 > 
-> I hit the following KASAN report while testing current upstream kernel:
+> > memory pin accounting should ideally be limited by the cgroup directly
+> > but we argued about that for a while and could never get an agreement
+> > of an acceptable implementation. There are many nasty corner cases
+> > around cgroups and fork and other cases IIRC
+> >
+> > So I'm not sure if making it rdma specific can easially solve these
+> > problems
 > 
-> KASAN: slab-use-after-free in siw_cm_work_handler
+> Thanks for the detailed context.  I understand the concern — generic
+> pinned-page accounting at the memcg level has difficult ownership
+> semantics around fork(), cgroup migration, shared mappings, and page
+> lifetime tracking.
 > 
-> on commit: e8c2f9fdadee7cbc75134dc463c1e0d856d6e5c7 (May 25 2026)
+> The intent of mr_mem is narrower and RDMA-scoped.  It is not page-level
+> ownership tracking — it is object-based accounting tied to the MR
+> lifetime:
 > 
-> The reproducer, detailed document, and .config files are here:
-> https://gist.github.com/shuangpengbai/f8a60ffa1b95c54672433bd9ee82e8ce
-> 
-> I’m happy to test debug patches or provide additional information.
-> 
+>   - charged at MR registration time
+>   - uncharged at MR destruction time
+>   - the charge lives with the MR's creating cgroup for the entire
+>     lifetime of the MR object
 
-Thanks Shuangpeng, I will look at it next week.
-I am currently travelling w/o access to any
-development environment.
+Okay, that's an interesting framing. Perhaps it can work, you should
+include this in the commit message and be sure to CC the cgroup
+people.
 
-Thanks for reporting!
-Bernard.
-
-> Reported-by: Shuangpeng Bai <shuangpeng.kernel@gmail.com>
-> 
-> 
-> 
-> [   60.059964][  T817] ==================================================================
-> [   60.060980][  T817] BUG: KASAN: slab-use-after-free in siw_cm_work_handler (drivers/infiniband/sw/siw/siw_cm.c:1053 drivers/infiniband/sw/siw/siw_cm.c:1075)
-> [   60.062008][  T817] Write of size 8 at addr ffff888170c8ac70 by task kworker/u8:1/817
-> [   60.063033][  T817]
-> [   60.063347][  T817] Hardware name: QEMU Ubuntu 24.04 PC v2 (i440FX + PIIX, arch_caps fix, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-> [   60.063350][  T817] Workqueue: siw_cm_wq siw_cm_work_handler
-> [   60.063356][  T817] Call Trace:
-> [   60.063359][  T817]  <TASK>
-> [   60.063361][  T817]  dump_stack_lvl (lib/dump_stack.c:94 lib/dump_stack.c:120)
-> [   60.063369][  T817]  print_report (mm/kasan/report.c:378 mm/kasan/report.c:482)
-> [   60.063385][  T817]  kasan_report (mm/kasan/report.c:595)
-> [   60.063399][  T817]  siw_cm_work_handler (drivers/infiniband/sw/siw/siw_cm.c:1053 drivers/infiniband/sw/siw/siw_cm.c:1075)
-> [   60.063472][  T817]  process_scheduled_works (kernel/workqueue.c:3314 kernel/workqueue.c:3397)
-> [   60.063477][  T817]  worker_thread (kernel/workqueue.c:3478)
-> [   60.063484][  T817]  kthread (kernel/kthread.c:436)
-> [   60.063495][  T817]  ret_from_fork (arch/x86/kernel/process.c:158)
-> [   60.063511][  T817]  ret_from_fork_asm (arch/x86/entry/entry_64.S:245)
-> [   60.063515][  T817]  </TASK>
-> [   60.063516][  T817]
-> [   60.087529][  T817] Freed by task 817 on cpu 1 at 60.059899s:
-> [   60.088264][  T817]  kasan_save_track (mm/kasan/common.c:57 mm/kasan/common.c:78)
-> [   60.088821][  T817]  kasan_save_free_info (mm/kasan/generic.c:584)
-> [   60.089385][  T817]  __kasan_slab_free (mm/kasan/common.c:253 mm/kasan/common.c:285)
-> [   60.089940][  T817]  kfree (./include/linux/kasan.h:235 mm/slub.c:2689 mm/slub.c:6251 mm/slub.c:6566)
-> [   60.090383][  T817]  siw_cm_work_handler (drivers/infiniband/sw/siw/siw_cm.c:141 drivers/infiniband/sw/siw/siw_cm.c:1051 drivers/infiniband/sw/siw/siw_cm.c:1075)
-> [   60.090979][  T817]  process_scheduled_works (kernel/workqueue.c:3314 kernel/workqueue.c:3397)
-> [   60.091616][  T817]  worker_thread (kernel/workqueue.c:3478)
-> [   60.092191][  T817]  kthread (kernel/kthread.c:436)
-> [   60.092637][  T817]  ret_from_fork (arch/x86/kernel/process.c:158)
-> [   60.093226][  T817]  ret_from_fork_asm (arch/x86/entry/entry_64.S:245)
-> [   60.093782][  T817]
-> [   60.094033][  T817] The buggy address belongs to the object at ffff888170c8ac00
-> [   60.094033][  T817]  which belongs to the cache kmalloc-256 of size 256
-> [   60.095541][  T817] The buggy address is located 112 bytes inside of
-> [   60.095541][  T817]  freed 256-byte region [ffff888170c8ac00, ffff888170c8ad00)
-> 
-> 
-> 
-> 
-> Best,
-> Shuangpeng
-> 
-
+Jason
 
