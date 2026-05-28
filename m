@@ -1,213 +1,225 @@
-Return-Path: <linux-rdma+bounces-21410-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21411-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iH5hGlC8F2qRPAgAu9opvQ
-	(envelope-from <linux-rdma+bounces-21410-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 05:53:52 +0200
+	id yP5PAtLKF2o7RAgAu9opvQ
+	(envelope-from <linux-rdma+bounces-21411-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 06:55:46 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C36225EC4D7
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 05:53:51 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A07F75EC947
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 06:55:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8762C307D8C6
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 03:53:04 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 66BFE30B63D8
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 04:55:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A06BF31327D;
-	Thu, 28 May 2026 03:53:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DB9A314B6D;
+	Thu, 28 May 2026 04:55:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VXHWpt97"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="AIyX69k6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03F602F7F03
-	for <linux-rdma@vger.kernel.org>; Thu, 28 May 2026 03:53:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779940383; cv=none; b=UqTif5Ck1v1UlEAH8MdeoH6/dBpO36ebCoHHS6yjtyBkRVYDMGdzBChs03sfZX2VWJg11OnPofPGkeStxwo1JQjiXaKuOoRzap1km0S+awFRSRMoSfUTREB1O4anw43R8Hh7npeiyvWn/IlvvfCuWS8BLOOwS0zlfGBsDIJY+N4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779940383; c=relaxed/simple;
-	bh=DQnvRbLLDRnhIZeLmXh7LWHMsIlHKRRVHVxc+4Rootw=;
-	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:Cc:To; b=V57W+bdMkQYh69NJxwa3yEPLnq4A6WT6hpCJ8drvDzlxWRZcvHUp5IjCu/TFn9175OyhmftgjHHWRYSiCL04/2oPviXY5YNNIXvVShbvZom/Ek7Sf127YPTy9g0W1GPnnw+mv2NTtNhTgZmn4rDiryrOkATHnhzMCBKdKtXhZdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VXHWpt97; arc=none smtp.client-ip=209.85.160.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-50e5eb0fabaso140666051cf.0
-        for <linux-rdma@vger.kernel.org>; Wed, 27 May 2026 20:53:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779940380; x=1780545180; darn=vger.kernel.org;
-        h=to:cc:date:message-id:subject:mime-version
-         :content-transfer-encoding:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8dMrYjvINrkHP2I7aJF9Y7W20M5jqPVJtuCbsMxY9Mo=;
-        b=VXHWpt97MiRkk4nOGl8At+ayXjNXgNBKpzoAzlJEgedS7rI/qTbHty1iN3eE8fU9wC
-         huijaeAFnPSnsA3GyeCubRye0swlol+OxeTKg0hb/4zUp0joKnp/mhq+XWtgIkNEPWZg
-         997Om5Iv8kfYsymcoJLGybX/W6ef5XHHmyWa5bKN0iP8EaEsBHb1sUbiH0DmxcgelfSY
-         MkUTJLFzBejAf219U7DuB7o0/uT9hNe1RfZKriPCGmtrTc/sDwOU3ZlJF75z2W2ar2kI
-         czgVDxdIxhzXMBSZkZghqcdilDRs8Z27TNeUAlJ4LWaQTjNPPVAMeg+NWBH0eXCkE86V
-         tRMA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF7E3115B8
+	for <linux-rdma@vger.kernel.org>; Thu, 28 May 2026 04:55:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.145.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779944137; cv=fail; b=EzXUPmqqi3AWJ088GDqHsFYFivyPVM6tOyFQuWtfhzyUszp1MGfQoKiLsrczKXwQB7f8B8ab99d4BS1B87YYQlEmK2ydX7OCn/fpVf7ONCxnffpITTtKJmLglDdP5WIuV/PbIrQntY1QgnM8nE5i//8Kyp38NCnVvdPrV9UMi3A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779944137; c=relaxed/simple;
+	bh=CYYXlTA7hFjEhQyRif4MBMndMkIgqNioaptIr/n0Y0M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fO3bEtNoz6OmBqNGe9HNbYV3eatnpcYVjNMyIGKMw6XmdqmWOYYGUjaO7nBNypLz2zCldt4+qC1tFlgMtNPESXUhJ39LDuV6CXcch9iNTByImzZbx6IsBa1pMoJ5BOeVKbdS/wPsiZNb28X2bX4AuTcs5xQF5HYsTuCNF4NxgUs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=AIyX69k6; arc=fail smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0528008.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 64RKoFNx257274
+	for <linux-rdma@vger.kernel.org>; Wed, 27 May 2026 21:55:35 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
+	 bh=CYYXlTA7hFjEhQyRif4MBMndMkIgqNioaptIr/n0Y0M=; b=AIyX69k6A+c9
+	mM1a5KjBZFSdIajJE7N6M+mQ7sGkngpIAcWIEq6pqulW9U5nSY+gI6sFNht86O+Z
+	2D6jvDhopxPYZ1YE7naoN5Kloh1FC7xqcci30zbsC9zqOK5hXC7sYrpQFtCwvBAF
+	CM6JDW47bs/SUBHJiMz/+G0F/SU/VgcW4J5HaITGfovQtixxblrvL48RNOE4hkl4
+	QSltZkNb8/8gzsiQJteEhsP1K0aDt00kHUNwGqFqoNzF4bdIzG4nAfjSr3a8Np3W
+	FHPEHYqrWlMwWuCKKAYylzQAXpY1Mcpxe88gvgN6QcAwDuFO547/X8h14sWFBIaG
+	Xo82qWEcqw==
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4ee808t6h5-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <linux-rdma@vger.kernel.org>; Wed, 27 May 2026 21:55:35 -0700 (PDT)
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-7e56d2d6b9dso6352667a34.0
+        for <linux-rdma@vger.kernel.org>; Wed, 27 May 2026 21:55:35 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1779944135; cv=none;
+        d=google.com; s=arc-20240605;
+        b=OnNLBboLIoEk/p4GtCKLKRyhuk7C+x2Ex6e8izxh7xMN5EVlYzWco+OPelZA4lBCzq
+         J8iGC4C4RziMiZ7XtZNSf/lXHfljIUmkATxXTgubwXYYeNN4nPzUILZSChDlhVbZx35H
+         Lc1733YaVK8E7Nspi/mrPf1VPtNGu+S/XlOn+KZjfKaEIhrOPjzQ/7Q5JshJZc/7xWvV
+         q1+1W5vMXfvFmzwGZ877E6nBBN53tuXIUHEfeqXCDTKfq7wfd8Haaz56/2YyLx97VhoL
+         JRPCrYduuvFRTwvi4f4YBxTsZPlbL5o/ZG/43T3BpxR4xWIMCItYMRcO0WtR8VcJ4KRf
+         s5Gw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version;
+        bh=2lex2yvH679GF+7VuxlXdYUBKG+oUT1Bop2JInZINhU=;
+        fh=iKTWlsOGz7bil+zqIloHqYolUNw4decFHiXsoUzXgf0=;
+        b=BS8pOU8LbKxILcbplPHUorIvlYKs1TZO++4A9GvrZQdCzlP7UPBNzVv3OTNGOVU5IG
+         cppSdbA88NvuVM6Rs5rk2p7mibsj+xjAuG+/Jn9fiFh/8xnt3UtozTce/avqOpFsVWTA
+         PNXH+vnJxnijwCqMsHGjzZYcQJ/298DmNtD/ApA386WIMmjdq4qIkAZ77EBksL6wDFqp
+         3Hbu+GtbedRAJD4K7QatkxE68yecZUq42q9bRtBsDSFUzs8adeSqUGlc/hAFBgkDP2QU
+         vZw9ThVcKfHPOYNPmP6y3r+3raieDvKDkcUTvtllT9VavZbL79RWh6JvM/JsmQZWthM0
+         dOyw==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779940380; x=1780545180;
-        h=to:cc:date:message-id:subject:mime-version
-         :content-transfer-encoding:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8dMrYjvINrkHP2I7aJF9Y7W20M5jqPVJtuCbsMxY9Mo=;
-        b=lgOgedAaYwBp7xQpjmXFpQ1XXDhQ3uPKU+fjN9w/d+pLhxWYQAWDianRAvmKLT8KcE
-         ih9WazN7Asz15HJCNfBcgziBX6igpD15arvXPBJcbH0zo9if4XDCqePVVxGLsLORNDik
-         NShvxSaKwyGrBivZHW6UI5S3G3IN+QjYUuyrdhAeqnI9pv0Uh3V1befXQCku9zJgr7Ph
-         wFK5xBXDJMU+bofXx6vGX+9XNGFbXOrbYr1ESRueDaaz22I+qKRgYH+qkeWiZXZY2IAk
-         J+acULqIMn/WuqQFKgA+mDFPHqt7Q/B0WntTBXWWUKn60hYwGXvz2R0nntg2RpzGofwL
-         ilcA==
-X-Gm-Message-State: AOJu0YwZj5JZVBhRHVwltvajFzUmuCxFmgzo+rOmUeRJNSVQ5N6a6gOf
-	IZooP5sETnEf8WdDA/XRhDYMiF4my0R+2nXBoB1DW2SLHuu2Bh1dFg26jIUWhLAa
-X-Gm-Gg: Acq92OFVqdlhf62At0uuwqqpfb44A6oWORaFQQ3lZNOwBAc8Yj/jD93hpGOT7096MVy
-	C/T5BOF7NIr76CeKappysAap5GGpd7groB0V+Yl8AdpNgtHZWmS7LeQURFq1s2vZtyiGQtqpF4B
-	GetgoVYWMSKHlpxpFZ+d9TnavRucwSu0juV44qUcILiYBuzVIZ5TZRmPDB4WBTq75cnQV9GDtMa
-	mRXM7sIbEkcXTid+WhLMv5p1xhindasTQ8hTWRxpc3XrA6Rxl+JE/xrSv1Y3l/q/kK+ymXPWd8Z
-	OfksYpMlunouRDlNDKDGClBaMKglHC1DpfRoDOVJOtd+nUl7bTO6NzNTcIWDNr7POISpK6Y2Xbz
-	L3V7sm6V3zexswkKSKvQSo1jVUqR7QC9xseIaM/vtUbSkdbuZhqcYLDysE8iSGiDQ9u9KYcA4Ga
-	FhTA/rtNKuq48GGXuglzrvSbGTj8W7gCMQ8trCyp/Nf22yA0HkfnVz/cEMkGbxeZ2BLh1+fiAuB
-	G8=
-X-Received: by 2002:a05:622a:134f:b0:50d:6b06:a453 with SMTP id d75a77b69052e-516d445ee68mr358347531cf.18.1779940379892;
-        Wed, 27 May 2026 20:52:59 -0700 (PDT)
-Received: from smtpclient.apple ([2601:985:4601:5df0:e825:366f:655c:9bfd])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-51706b081c7sm62479651cf.28.2026.05.27.20.52.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 May 2026 20:52:59 -0700 (PDT)
-From: Shuangpeng <shuangpeng.kernel@gmail.com>
-Content-Type: text/plain;
-	charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        d=1e100.net; s=20251104; t=1779944135; x=1780548935;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=2lex2yvH679GF+7VuxlXdYUBKG+oUT1Bop2JInZINhU=;
+        b=s/r1ojLV/0IZizgNcvWOTqXNZ1TmrXGsPk7Obew+eoBSQBFlCvstZ3NjMr/PWVG36Z
+         tA2CkwvuxDQURRHyqZDgk25MSSwHcOULp+de9X6J+HErkClHJ3cT20Ri65BPfrvFMDmk
+         dUvSX6xc1iuQQGzvGl7ZlsnDrwyhevo7zsl8jRo9MmkCvlQ802jRo6AAiCH4rbtKL5Lm
+         bWPUsbtDW56GF8VqxpQTKYpodMk7jqlXDOMMuUudG3na0HBUBREzB8ZUgeGR27E7Iiy9
+         F4Vziph4v1CcaJDdrqGltbBrg6Q3Kgc80HBmGnAEdCF0YWBZpa2N7NhoUhIP/LKHiW3r
+         L1Sg==
+X-Forwarded-Encrypted: i=1; AFNElJ9Be/d+aWzi48kX68x8dQkEB3GD0swMcLFDCyhUUeL2kDtuYvmjRhg5qJjVfhPoz6xnN3w3Jevl2Jdr@vger.kernel.org
+X-Gm-Message-State: AOJu0YyUjbwK1q0nb0C2SROoOlDd5u/QEUrALvMDdnSNFe1Wy4+uXwDW
+	+M6B/9ZDfAwKmTNAMdcuRAABI3gHdmS/ZlHxH40NFOV+v74TAIV7ZoU/fYmS0qJqFzRYgJrA1UV
+	h6qP7M1NGQHPpWQD0fx6FzOEJejFMbp39KfBM2CurlcSytmssK2Fv7U425xyLW19GonvcAkOicx
+	5ECRSqfcUvfu5r8LQuPQmgXfHhSvKBMIduO0jB
+X-Gm-Gg: Acq92OEd8yJODMJfFdbWUUpvKSX9PeWO/I9gCRtXoABM9T5pdJPTOzTyvgUxLn2Dcgs
+	fWaCT4f21tZozoFYlO9uON4o0yZFj/bA+kEyUxjAnwJ7K2TvpE7FfP9/9kA0lAsCn7GuYvMesAs
+	7PN8cXllBPgY+RQCae0uXC0fFbEyersUwucDnMwR6pAIY4lA8B1FmHEuKspb7qUQZ5mwHMEfBrC
+	Y6hfZmcwOfmezdhOcuBJ0S5vFs2nN9NOQksn3KiRQRi5ejbKJc=
+X-Received: by 2002:a05:6830:452a:b0:7d9:7209:4378 with SMTP id 46e09a7af769-7e5fee23f0bmr17184405a34.17.1779944134688;
+        Wed, 27 May 2026 21:55:34 -0700 (PDT)
+X-Received: by 2002:a05:6830:452a:b0:7d9:7209:4378 with SMTP id
+ 46e09a7af769-7e5fee23f0bmr17184388a34.17.1779944134274; Wed, 27 May 2026
+ 21:55:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.600.51.1.1\))
-Subject: [BUG] KASAN: slab-use-after-free in siw_cm_work_handler
-Message-Id: <FFC7BFD6-EDB5-49AE-ACB5-A2F940D8F687@gmail.com>
-Date: Wed, 27 May 2026 23:52:48 -0400
-Cc: linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-To: bernard.metzler@linux.dev,
- jgg@ziepe.ca,
- leon@kernel.org
-X-Mailer: Apple Mail (2.3864.600.51.1.1)
-X-Spamd-Result: default: False [-1.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MV_CASE(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+MIME-Version: 1.0
+References: <20260526144401.1485788-1-zhipingz@meta.com> <a8cd01ab-d7aa-465d-bfa3-431f78f33ee1@amd.com>
+ <20260527121438.GJ2487554@ziepe.ca> <ff247643-73e7-44e2-b3d5-8ac0a8efb871@amd.com>
+ <20260527123634.GK2487554@ziepe.ca> <a5ff1930-e9fb-43f5-82ab-9875d7a28421@amd.com>
+In-Reply-To: <a5ff1930-e9fb-43f5-82ab-9875d7a28421@amd.com>
+From: Zhiping Zhang <zhipingz@meta.com>
+Date: Wed, 27 May 2026 21:55:23 -0700
+X-Gm-Features: AVHnY4KjB7ggvEym3yYxunms23zRrE8n2XXaWHSRU_rJj67WeYLMsK98_vs1TJk
+Message-ID: <CAH3zFs2KALuHXReLZG_uoqvBBWvBzU6rHKakmt6HBV7PZEsD=w@mail.gmail.com>
+Subject: Re: [PATCH v5 0/4] vfio/dma-buf: add TPH support for peer-to-peer access
+To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Alex Williamson <alex@shazbot.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Bjorn Helgaas <helgaas@kernel.org>, kvm@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Keith Busch <kbusch@kernel.org>, Yochai Cohen <yochai@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-ORIG-GUID: 5vEJFjdBDxaFsK21rZ64YkpvANd-tW0y
+X-Authority-Analysis: v=2.4 cv=UYZhjqSN c=1 sm=1 tr=0 ts=6a17cac7 cx=c_pps
+ a=z9lCQkyTxNhZyzAvolXo/A==:117 a=IkcTkHD0fZMA:10 a=NGcC8JguVDcA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=7x6HtfJdh03M6CCDgxCd:22 a=_1IyUuN4QrATX339ibzo:22
+ a=zd2uoN0lAAAA:8 a=Vls0teBZlVDq3xJ5GeUA:9 a=QEXdDO2ut3YA:10
+ a=EyFUmsFV_t8cxB2kMr4A:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTI4MDA0NSBTYWx0ZWRfX6kCuufptnsA7
+ 21SKZ6WK9/McBNJODrBkcr1MwY9+nYP6PO9ht4AP+dwlGrWJ1AEVUiGlwYAq0PCPboy3mtJMzXh
+ s9GXU3xEFcMMWGXIAp/gTMoqDgV3QjgAXp1VQDOJCYdHYemP7Xn2I+kSJHHFdiyKgoGu+qQS+cG
+ 0SzDpfPQI4b/c1TH+w86M1Fm4SyNrScZKEv/6aMN7iO5GF6SSUBrYT4ClV8uS8oCoo8tJfKNQBH
+ fWbqzm/9PBmY8o80C+CGViXah3um6aEMz6IHW6J9dvgWW/GUiB6Lzmi88Zis4qvenegJYDslycj
+ SG2PLv8LY+B19iaf3TRm+WVNt2Sg+J3RNfZd+WJc7FyQ4gObXD/qy5jsz8hXwV3Ax2bBqo4X8aM
+ 8QMYFbzSiQgul5tyX98HZKXYl/1DBmBpnMTLj6TDBuqbsiknJfGaoqjXTZOFW6vO0noMD3Vb/yz
+ 4d3ikWglbKid0CoV/Ng==
+X-Proofpoint-GUID: 5vEJFjdBDxaFsK21rZ64YkpvANd-tW0y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
+ definitions=2026-05-28_01,2026-05-26_03,2025-10-01_01
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[meta.com,reject];
+	R_DKIM_ALLOW(-0.20)[meta.com:s=s2048-2025-q2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TAGGED_FROM(0.00)[bounces-21410-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21411-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
+	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	DKIM_TRACE(0.00)[meta.com:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shuangpengkernel@gmail.com,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_NONE(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[zhipingz@meta.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: C36225EC4D7
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,mail.gmail.com:mid,amd.com:email,meta.com:dkim]
+X-Rspamd-Queue-Id: A07F75EC947
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi Kernel Maintainers,
+On Wed, May 27, 2026 at 5:53=E2=80=AFAM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> >
+> On 5/27/26 14:36, Jason Gunthorpe wrote:
+> > On Wed, May 27, 2026 at 02:23:46PM +0200, Christian K=C3=B6nig wrote:
+> >
+> >> Yeah that's a good point, I should probably rephrase the question.
+> >>
+> >> I'm aware of how TPH works by adding the extra ST to the TLP.
+> >>
+> >> But my question is how is that useful to a PCIe endpoint? What is the =
+effect of the ST here?
+> >
+> > TBH I've never heard Meta explain what their device is doing with
+> > it. At least it seems to be super important to their device..
+>
+> Yeah I think at least a brief description of what is going on here would =
+be necessary for the review.
+>
+> Otherwise we have only the info that the exporter wants to give an opaque=
+ ST for the importer to use and no technical description what that is good =
+for, how to test it etc...
+>
+> Regards,
+> Christian.
+>
+> >
+> > Jason
+>
 
-I hit the following KASAN report while testing current upstream kernel:
+Fair point =E2=80=94 I'll add a couple of paragraphs to the v6 cover letter=
+ and the
+patch's changelog as well.
 
-KASAN: slab-use-after-free in siw_cm_work_handler
+The short version: in this series the vfio-pci device is the completer
+of the P2P
+writes and mlx5 is the requester. As Jason noted, ST semantics on the compl=
+eter
+are implementation-defined, so only the driver that owns the completer (her=
+e,
+vfio-pci on behalf of its userspace owner) can hand out a meaningful ST; the
+importer treats it as opaque and just places it on the TLP.
 
-on commit: e8c2f9fdadee7cbc75134dc463c1e0d856d6e5c7 (May 25 2026)
+Validation occurs at two levels: PCIe analyzer captures on P2P TLPs, and the
+ end-to-end P2P workload yields only expected results.
 
-The reproducer, detailed document, and .config files are here:
-https://gist.github.com/shuangpengbai/f8a60ffa1b95c54672433bd9ee82e8ce
-
-I=E2=80=99m happy to test debug patches or provide additional =
-information.
-
-Reported-by: Shuangpeng Bai <shuangpeng.kernel@gmail.com>
-
-
-
-[   60.059964][  T817] =
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-[   60.060980][  T817] BUG: KASAN: slab-use-after-free in =
-siw_cm_work_handler (drivers/infiniband/sw/siw/siw_cm.c:1053 =
-drivers/infiniband/sw/siw/siw_cm.c:1075)
-[   60.062008][  T817] Write of size 8 at addr ffff888170c8ac70 by task =
-kworker/u8:1/817
-[   60.063033][  T817]
-[   60.063347][  T817] Hardware name: QEMU Ubuntu 24.04 PC v2 (i440FX + =
-PIIX, arch_caps fix, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-[   60.063350][  T817] Workqueue: siw_cm_wq siw_cm_work_handler
-[   60.063356][  T817] Call Trace:
-[   60.063359][  T817]  <TASK>
-[   60.063361][  T817]  dump_stack_lvl (lib/dump_stack.c:94 =
-lib/dump_stack.c:120)
-[   60.063369][  T817]  print_report (mm/kasan/report.c:378 =
-mm/kasan/report.c:482)
-[   60.063385][  T817]  kasan_report (mm/kasan/report.c:595)
-[   60.063399][  T817]  siw_cm_work_handler =
-(drivers/infiniband/sw/siw/siw_cm.c:1053 =
-drivers/infiniband/sw/siw/siw_cm.c:1075)
-[   60.063472][  T817]  process_scheduled_works (kernel/workqueue.c:3314 =
-kernel/workqueue.c:3397)
-[   60.063477][  T817]  worker_thread (kernel/workqueue.c:3478)
-[   60.063484][  T817]  kthread (kernel/kthread.c:436)
-[   60.063495][  T817]  ret_from_fork (arch/x86/kernel/process.c:158)
-[   60.063511][  T817]  ret_from_fork_asm =
-(arch/x86/entry/entry_64.S:245)
-[   60.063515][  T817]  </TASK>
-[   60.063516][  T817]
-[   60.087529][  T817] Freed by task 817 on cpu 1 at 60.059899s:
-[   60.088264][  T817]  kasan_save_track (mm/kasan/common.c:57 =
-mm/kasan/common.c:78)
-[   60.088821][  T817]  kasan_save_free_info (mm/kasan/generic.c:584)
-[   60.089385][  T817]  __kasan_slab_free (mm/kasan/common.c:253 =
-mm/kasan/common.c:285)
-[   60.089940][  T817]  kfree (./include/linux/kasan.h:235 =
-mm/slub.c:2689 mm/slub.c:6251 mm/slub.c:6566)
-[   60.090383][  T817]  siw_cm_work_handler =
-(drivers/infiniband/sw/siw/siw_cm.c:141 =
-drivers/infiniband/sw/siw/siw_cm.c:1051 =
-drivers/infiniband/sw/siw/siw_cm.c:1075)
-[   60.090979][  T817]  process_scheduled_works (kernel/workqueue.c:3314 =
-kernel/workqueue.c:3397)
-[   60.091616][  T817]  worker_thread (kernel/workqueue.c:3478)
-[   60.092191][  T817]  kthread (kernel/kthread.c:436)
-[   60.092637][  T817]  ret_from_fork (arch/x86/kernel/process.c:158)
-[   60.093226][  T817]  ret_from_fork_asm =
-(arch/x86/entry/entry_64.S:245)
-[   60.093782][  T817]
-[   60.094033][  T817] The buggy address belongs to the object at =
-ffff888170c8ac00
-[   60.094033][  T817]  which belongs to the cache kmalloc-256 of size =
-256
-[   60.095541][  T817] The buggy address is located 112 bytes inside of
-[   60.095541][  T817]  freed 256-byte region [ffff888170c8ac00, =
-ffff888170c8ad00)
-
-
-
-
-Best,
-Shuangpeng
-
+Thanks,
+Zhiping
 
