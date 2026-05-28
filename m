@@ -1,219 +1,159 @@
-Return-Path: <linux-rdma+bounces-21458-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21459-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0FiULhCWGGoMlQgAu9opvQ
-	(envelope-from <linux-rdma+bounces-21458-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 21:22:56 +0200
+	id uFNLMKSWGGqklQgAu9opvQ
+	(envelope-from <linux-rdma+bounces-21459-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 21:25:24 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 018CE5F7039
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 21:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 30B215F7098
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 21:25:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B9D28302E40E
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 19:17:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1B436318DC58
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2026 19:18:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DBA933120C;
-	Thu, 28 May 2026 19:17:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40C20403EAC;
+	Thu, 28 May 2026 19:18:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y7piyDc8"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="xeuAPYEZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DC923F8EAF;
-	Thu, 28 May 2026 19:17:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 021852EFD9B;
+	Thu, 28 May 2026 19:18:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779995822; cv=none; b=gR5oDCG/x4yBU27Y8SkJH6FY8bDkyobbTonk/k32Mscl0I8VyRKB838dtmgCFX5aA9lc03NKtZA2fjcUeAbY9uH6HNtf3/m+N1Ud0yJKXGih2P2npd6Ti/m97sP5DyPCUt4z6REcnN1JYk18KJIzNcEtxmhOrRdXHW1+7vV6mwM=
+	t=1779995891; cv=none; b=YKEF77Mjf8BvXjxCw+2pEpZpMVHCYAp0JxaKgMgtXBvGAmku2O35KChWqB4j3YHvlhvi+jLG93XeBHRVDB2NCyiIbGftP2Z5/iO2KSlHBwAFVM5HP/TRUVvk4ANHnmhcPM4q07l/mwyU+MRnjYTgCdkrWSEWQBk+c5QFRoqSk1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779995822; c=relaxed/simple;
-	bh=RBIQDllAdTkrpUimCKcZpFTnvXCRtGl8e7WGWHgFIP8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=knszAOhbSpsUY1l0utUG0+LsdIf1woWTXnxA+fvFcFeBpTvyfgx6pfA0lZ1zseHW8JTJSk3NX//YCCWCio5BCrQmmlgoncXxC3jD+kr1SsUUhx21yURFSZKkUyUEROklf138aOgZ7gmjLkHm1IMBg1/5oe2dyKzHhINQ93P+Vq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y7piyDc8; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1779995821; x=1811531821;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=RBIQDllAdTkrpUimCKcZpFTnvXCRtGl8e7WGWHgFIP8=;
-  b=Y7piyDc8AIiHv5lCObJzNSmho/78f+C2AnKfvksKMBZLbNAuBH7oPpma
-   noRyUCsgh0zrrDrn9IQZYBETZg9l1eJVRNlXQ4Vx9LbOe39JVaKGJgmm3
-   45cZpuWqIht6SPE6oQpQRtAjtKRILTncODMXWy50AO5ECish0FYgAA2Qk
-   AL9a29PmtjiNTroWGE3yRDxo88ACDK6Kx/DkElQprhzq+LkV0f0xC/WCJ
-   WLZkx2ZDDMw8g3ybPlggH/BMDtjYlnyTG1NUKpt5wjK7oAT+k8G5XHvvv
-   g7NkiSOPN4Hq8JfCkFS73ZbFZc1FSe/Y742pGP4TTTyCgbyM5y1Aia6Sa
-   Q==;
-X-CSE-ConnectionGUID: Q3ZfTa4hRa6NUfgv/0hKBw==
-X-CSE-MsgGUID: xk/Uo3TSQ4WHd/lafqonSA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11800"; a="84705736"
-X-IronPort-AV: E=Sophos;i="6.24,174,1774335600"; 
-   d="scan'208";a="84705736"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2026 12:17:01 -0700
-X-CSE-ConnectionGUID: uHgSdsX9Qke+VPnnLKpdxg==
-X-CSE-MsgGUID: qI68ScWCSL+3XYVn5Dy3/A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,174,1774335600"; 
-   d="scan'208";a="238443679"
-Received: from lkp-server01.sh.intel.com (HELO f0d55cb201f0) ([10.239.97.150])
-  by fmviesa010.fm.intel.com with ESMTP; 28 May 2026 12:16:59 -0700
-Received: from kbuild by f0d55cb201f0 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1wSgDw-000000006Ly-447t;
-	Thu, 28 May 2026 19:16:56 +0000
-Date: Fri, 29 May 2026 03:16:24 +0800
-From: kernel test robot <lkp@intel.com>
-To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev,
-	Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-Subject: Re: [PATCH rdma-next v4] RDMA: Change capability fields in
- ib_device_attr from int to u32
-Message-ID: <202605290321.lRxnXfw4-lkp@intel.com>
-References: <20260526194225.1338210-1-ernis@linux.microsoft.com>
+	s=arc-20240116; t=1779995891; c=relaxed/simple;
+	bh=Onv23E/0vmhrIlHseGCGNslegQshHM9VZQaSHUI4LXI=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=dlz/WHeLkVAj8bc7LPi4Jwt22mK7BtYjtVEN7W8gNS562immTQz91DV2iPbT9+5w+veISEl6aJjY+wFBrz1z0pRDGw2/wX+dwzNZkrOyb2l2JXm2F+Y0L0w5MMOGb/eYlXAulWlB7kTYyDeCSm/L7K7lXe252hf31xwkZ+ASUOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=xeuAPYEZ; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 468F61F000E9;
+	Thu, 28 May 2026 19:18:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux-foundation.org; s=korg; t=1779995889;
+	bh=Ir8iU0d381Bl8diafHd1bBGaGKtd10rJAv1XyjVdWDg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=xeuAPYEZUVLnSxRyYCz4I9aGX07le7zxUwEI88HQ0OzLXuz7PQD+jEo75ksqEWczO
+	 KVuLk9KTY9ygfmH8DaX0v2cG2XsYKSxE0/FM8zHN+44tZszrU7LLWMR31TUGb+6lmK
+	 gP6ik/Q/RUjqOh0z2IwvVSzOnVcXrshU7xNTe5fA=
+Date: Thu, 28 May 2026 12:18:06 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Yury Norov <ynorov@nvidia.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>, Russell King
+ <linux@armlinux.org.uk>, Frank Li <Frank.Li@nxp.com>, Sascha Hauer
+ <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, Madhavan Srinivasan
+ <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas
+ Piggin <npiggin@gmail.com>, "Christophe Leroy (CS GROUP)"
+ <chleroy@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar
+ <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung
+ Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
+ Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa
+ <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter
+ <adrian.hunter@intel.com>, James Clark <james.clark@linaro.org>, Thomas
+ Gleixner <tglx@kernel.org>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, Danilo Krummrich
+ <dakr@kernel.org>, Chanwoo Choi <cw00.choi@samsung.com>, MyungJoo Ham
+ <myungjoo.ham@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>,
+ Heiko Stuebner <heiko@sntech.de>, Lorenzo Pieralisi
+ <lpieralisi@kernel.org>, Xu Yilun <yilun.xu@intel.com>, Tom Rix
+ <trix@redhat.com>, Moritz Fischer <mdf@kernel.org>, Yicong Yang
+ <yangyicong@hisilicon.com>, Jonathan Cameron <jic23@kernel.org>, Dennis
+ Dalessandro <dennis.dalessandro@cornelisnetworks.com>, Jason Gunthorpe
+ <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Dan Williams
+ <djbw@kernel.org>, Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang
+ <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>, Bjorn Helgaas
+ <bhelgaas@google.com>, Shuai Xue <xueshuai@linux.alibaba.com>, Will Deacon
+ <will@kernel.org>, Jiucheng Xu <jiucheng.xu@amlogic.com>, Neil Armstrong
+ <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, Jerome
+ Brunet <jbrunet@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Robin Murphy <robin.murphy@arm.com>,
+ Jing Zhang <renyu.zj@linux.alibaba.com>, Xu Yang <xu.yang_2@nxp.com>, Linu
+ Cherian <lcherian@marvell.com>, Gowthami Thiagarajan
+ <gthiagarajan@marvell.com>, Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
+ Khuong Dinh <khuong@os.amperecomputing.com>, Daniel Lezcano
+ <daniel.lezcano@kernel.org>, Zhang Rui <rui.zhang@intel.com>, Lukasz Luba
+ <lukasz.luba@arm.com>, Yury Norov <yury.norov@gmail.com>, Kees Cook
+ <kees@kernel.org>, Thomas =?ISO-8859-1?Q?Wei=DFschuh?=
+ <thomas.weissschuh@linutronix.de>, Aboorva Devarajan
+ <aboorvad@linux.ibm.com>, "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+ Ilkka Koskinen <ilkka@os.amperecomputing.com>, Besar Wicaksono
+ <bwicaksono@nvidia.com>, Ma Ke <make24@iscas.ac.cn>, Chengwen Feng
+ <fengchengwen@huawei.com>, linux-arm-kernel@lists.infradead.org,
+ imx@lists.linux.dev, linux-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-perf-users@vger.kernel.org,
+ linux-acpi@vger.kernel.org, driver-core@lists.linux.dev,
+ linux-pm@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ linux-fpga@vger.kernel.org, linux-rdma@vger.kernel.org,
+ nvdimm@lists.linux.dev, linux-pci@vger.kernel.org,
+ linux-amlogic@lists.infradead.org, linux-cxl@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 00/16] lib/cpumask: get rid of cpumap_print_to_pagebuf()
+Message-Id: <20260528121806.2b54606ba6e42f7f371d95c3@linux-foundation.org>
+In-Reply-To: <20260528183625.870813-1-ynorov@nvidia.com>
+References: <20260528183625.870813-1-ynorov@nvidia.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260526194225.1338210-1-ernis@linux.microsoft.com>
-X-Spamd-Result: default: False [-1.16 / 15.00];
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	MV_CASE(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_DKIM_ALLOW(-0.20)[linux-foundation.org:s=korg];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
+	FREEMAIL_CC(0.00)[rasmusvillemoes.dk,armlinux.org.uk,nxp.com,pengutronix.de,gmail.com,linux.ibm.com,ellerman.id.au,kernel.org,infradead.org,redhat.com,arm.com,linux.intel.com,google.com,intel.com,linaro.org,alien8.de,zytor.com,linuxfoundation.org,samsung.com,sntech.de,hisilicon.com,cornelisnetworks.com,ziepe.ca,linux.alibaba.com,amlogic.com,baylibre.com,googlemail.com,marvell.com,starfivetech.com,os.amperecomputing.com,linutronix.de,nvidia.com,iscas.ac.cn,huawei.com,lists.infradead.org,lists.linux.dev,vger.kernel.org,lists.ozlabs.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21459-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21458-lists,linux-rdma=lfdr.de];
-	MISSING_XM_UA(0.00)[];
+	DKIM_TRACE(0.00)[linux-foundation.org:+];
+	DMARC_NA(0.00)[linux-foundation.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_GT_50(0.00)[89];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[akpm@linux-foundation.org,linux-rdma@vger.kernel.org];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_COUNT_FIVE(0.00)[6];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	NEURAL_HAM(-0.00)[-1.000];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 018CE5F7039
+X-Rspamd-Queue-Id: 30B215F7098
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi Erni,
+On Thu, 28 May 2026 14:36:07 -0400 Yury Norov <ynorov@nvidia.com> wrote:
 
-kernel test robot noticed the following build errors:
+> cpumap_print_to_pagebuf() is the equivalent for the "&*pb[l]" notation
+> in printk-like functions. In some cases, it makes people to create
+> temporary buffers for the printed cpumasks, where it can be avoided.
+> 
+> Get rid of it in a favor of more standard printing API.
+> 
+> Each patch, except for the last one, is independent and may be moved with
+> the corresponding subsystem. Or I can take it in bitmap-for-next, at
+> maintainers' discretion.
+> 
+> On top of bitmap-for-next.
 
-[auto build test ERROR on rdma/for-next]
-[also build test ERROR on linus/master v7.1-rc5 next-20260528]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Erni-Sri-Satya-Vennela/RDMA-Change-capability-fields-in-ib_device_attr-from-int-to-u32/20260527-040218
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-patch link:    https://lore.kernel.org/r/20260526194225.1338210-1-ernis%40linux.microsoft.com
-patch subject: [PATCH rdma-next v4] RDMA: Change capability fields in ib_device_attr from int to u32
-config: x86_64-rhel-9.4 (https://download.01.org/0day-ci/archive/20260529/202605290321.lRxnXfw4-lkp@intel.com/config)
-compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260529/202605290321.lRxnXfw4-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202605290321.lRxnXfw4-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from <command-line>:
-   drivers/infiniband/hw/qedr/verbs.c: In function 'qedr_query_device':
->> include/linux/compiler_types.h:699:45: error: call to '__compiletime_assert_818' declared with attribute error: min(1 << (fls(qattr->max_qp_resp_rd_atomic_resc) - 1), attr->max_qp_init_rd_atom) signedness error
-     699 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |                                             ^
-   include/linux/compiler_types.h:680:25: note: in definition of macro '__compiletime_assert'
-     680 |                         prefix ## suffix();                             \
-         |                         ^~~~~~
-   include/linux/compiler_types.h:699:9: note: in expansion of macro '_compiletime_assert'
-     699 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:40:37: note: in expansion of macro 'compiletime_assert'
-      40 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/minmax.h:93:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      93 |         BUILD_BUG_ON_MSG(!__types_ok(ux, uy),           \
-         |         ^~~~~~~~~~~~~~~~
-   include/linux/minmax.h:98:9: note: in expansion of macro '__careful_cmp_once'
-      98 |         __careful_cmp_once(op, x, y, __UNIQUE_ID(x_), __UNIQUE_ID(y_))
-         |         ^~~~~~~~~~~~~~~~~~
-   include/linux/minmax.h:105:25: note: in expansion of macro '__careful_cmp'
-     105 | #define min(x, y)       __careful_cmp(min, x, y)
-         |                         ^~~~~~~~~~~~~
-   drivers/infiniband/hw/qedr/verbs.c:146:13: note: in expansion of macro 'min'
-     146 |             min(1 << (fls(qattr->max_qp_resp_rd_atomic_resc) - 1),
-         |             ^~~
---
-   In file included from <command-line>:
-   verbs.c: In function 'qedr_query_device':
->> include/linux/compiler_types.h:699:45: error: call to '__compiletime_assert_818' declared with attribute error: min(1 << (fls(qattr->max_qp_resp_rd_atomic_resc) - 1), attr->max_qp_init_rd_atom) signedness error
-     699 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |                                             ^
-   include/linux/compiler_types.h:680:25: note: in definition of macro '__compiletime_assert'
-     680 |                         prefix ## suffix();                             \
-         |                         ^~~~~~
-   include/linux/compiler_types.h:699:9: note: in expansion of macro '_compiletime_assert'
-     699 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:40:37: note: in expansion of macro 'compiletime_assert'
-      40 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/minmax.h:93:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      93 |         BUILD_BUG_ON_MSG(!__types_ok(ux, uy),           \
-         |         ^~~~~~~~~~~~~~~~
-   include/linux/minmax.h:98:9: note: in expansion of macro '__careful_cmp_once'
-      98 |         __careful_cmp_once(op, x, y, __UNIQUE_ID(x_), __UNIQUE_ID(y_))
-         |         ^~~~~~~~~~~~~~~~~~
-   include/linux/minmax.h:105:25: note: in expansion of macro '__careful_cmp'
-     105 | #define min(x, y)       __careful_cmp(min, x, y)
-         |                         ^~~~~~~~~~~~~
-   verbs.c:146:13: note: in expansion of macro 'min'
-     146 |             min(1 << (fls(qattr->max_qp_resp_rd_atomic_resc) - 1),
-         |             ^~~
-
-
-vim +/__compiletime_assert_818 +699 include/linux/compiler_types.h
-
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  685  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  686  #define _compiletime_assert(condition, msg, prefix, suffix) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  687  	__compiletime_assert(condition, msg, prefix, suffix)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  688  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  689  /**
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  690   * compiletime_assert - break build and emit msg if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  691   * @condition: a compile-time constant condition to check
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  692   * @msg:       a message to emit if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  693   *
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  694   * In tradition of POSIX assert, this macro will break the build if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  695   * supplied condition is *false*, emitting the supplied error message if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  696   * compiler has support to do so.
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  697   */
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  698  #define compiletime_assert(condition, msg) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21 @699  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  700  
-
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Sashiko doesn't attempt bitmap-for-next, so it couldn't apply this series.
+	https://sashiko.dev/#/patchset/20260528183625.870813-1-ynorov@nvidia.com
 
