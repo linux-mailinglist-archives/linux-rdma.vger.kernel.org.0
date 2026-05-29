@@ -1,487 +1,603 @@
-Return-Path: <linux-rdma+bounces-21491-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21492-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6FTVODhqGWrGwQgAu9opvQ
-	(envelope-from <linux-rdma+bounces-21491-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 12:28:08 +0200
+	id 4FTtDyBzGWoQwwgAu9opvQ
+	(envelope-from <linux-rdma+bounces-21492-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 13:06:08 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47A5D600CEF
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 12:28:07 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0701601517
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 13:06:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 458483024950
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 10:25:40 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id A11A03039559
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 11:05:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C8D73C4141;
-	Fri, 29 May 2026 10:25:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B64703D16EB;
+	Fri, 29 May 2026 11:05:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="yKetUNKZ"
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="DAsJR0Dw"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A14E83BE65C
-	for <linux-rdma@vger.kernel.org>; Fri, 29 May 2026 10:25:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEB283C4178;
+	Fri, 29 May 2026 11:05:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780050339; cv=none; b=hsqjQsC6FDzetUXYWqEEs+2HPIGo1sIGzYZJCvx/OX36A1pS44IZ4WcF+adxXAnvrdKE4eYunz6EASm896mK15/YJjqKSMu8X+fa+YMYkIEHjZNeOXCosI0SuAvvL1+kE6ULdU/etPyOIt4n4M60zSmNpSgeaFNITFd2hx4mRM8=
+	t=1780052737; cv=none; b=DB2F3nyB7H/ZdkobE8GjhaCvsc9XYygn4AH3+Tc8P99TwNwYy3tFo6eQXejDtl+mMy4UXy103P52D6SJECNEVmL/hgop96ttsYZ/IDD1L6YOZUu4JpRYlJ3CDB8zs5qY/ZzdQs5OzLhLksN6ha3ZqlFH1vouVMssFL89eZyoTKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780050339; c=relaxed/simple;
-	bh=hZdiciRf7GduXcXbVm4Vk1hA9JOZko9BRjeDEqiVcIg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aiclC4qlgEdWyHSLX4dZIWuv7YgVWzOgwJ/WaX38Wde9vBlUKK/Vv3SfqUwTJf55cr3Q9IMEHsotERUTpeMRV4w2saF3OYfBid8vaaRuMaECa5gy/SQgAnGgA6SQOoeykS68r2ODXmNcRS6nt2u2QmGsg8F+e7Tm/JYomMhp4Dk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=yKetUNKZ; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4905e190c71so64088015e9.3
-        for <linux-rdma@vger.kernel.org>; Fri, 29 May 2026 03:25:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1780050333; x=1780655133; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JgtlNA99ibd00JHFfLFvSWZDOdItSPRT9Y5BN+K0sUE=;
-        b=yKetUNKZi6rsvq+sHOmWrCOxpx+Ieb6fNzmlo7y784P07W2nC4Hnhzihe+J6LAh5w2
-         +b4s1eD/8mcCi8blrP1pfagTSMVYKjQ9GBPGyUFmPHrQTp84oyYUgUtUG1L6PmPm3S9u
-         onE3HEOCHbQwlU9e5jVRBXqBegMPHFQYUJqyG+N4qWAimpYMZ192jddkvLCHN3LrKirr
-         lWMAaC8T5NWvVNEq+rG3GOZCzacAKAyDsdxe7Sj3T5JNxUv3eAGAfT/FVjPeaRQ5/ssc
-         V2sxWa730QSTYsvW2D9JIRsKLucHIY++4V71/jVbudL7nPEX1d9Y5qPLF6ayqA2RFBUu
-         WK6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780050333; x=1780655133;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JgtlNA99ibd00JHFfLFvSWZDOdItSPRT9Y5BN+K0sUE=;
-        b=FQaY8ERFI/1efLbm151PytKFu6c/bGu98j9bpwsTrUsoEytBr/+GkcZEq2J8tpLsPQ
-         i3c6YvNEvFepUKZINujLtCUuWWXmGWpz0QFZSIt46ISZAtWUG2xcgRBfRvyHHu2yTQzq
-         40JGbfjbdUNMLov8y8CDLh+1eGkXGmJNBgNqEvBu90iaCFsZu9XMDLZEC0WwsLNy4+P1
-         b1TqUL68cy/wzRgoUi1M8oZEPSXwgDgZ2Yd3ZZ/H7X8iR4V8OYS9PPE71P+aeqW6F+i9
-         tcqjWtUFLChvFvpwQxwPKFHca9jE+N2B/VzEleSvPyoN4LxlWNMNmjIIp79jVmhqmKTV
-         4QKw==
-X-Forwarded-Encrypted: i=1; AFNElJ9qO2wBOTbkuz72+WQUXSANX3iEQXky3mgTnEwuK5uvPNRvATUk6ch7tCFzyNwWwdw2Lxmq6HHai3ou@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzsyq2wZrzXo8bze9FTFxDAG6b69ucc0Wl4+rm9ovG9g61W8QSd
-	dYmeY/v2oAnkWyPuxnKot15s5afxrFcZdNRKEz8YANuXvdao7S4yrKjLi2eXJotP+7M=
-X-Gm-Gg: Acq92OFJUCXA770JGETJUO9nuxcPOnvJPAFiTCJArwqnzxYAtdItZ6XIqkU9wSGCyAd
-	551wtNMOPfDURZgS2uqKeEuI9iSc/Tdbr10uwI4MMfcnBK0xXTOstXr41XTYL1LAkpozb2KRCaW
-	0eju0Yagm3/tMC5LsJm5NLanq3lGySUUqokAv6crk7Ks4gdG61GAWaFNOjMdoDSkWNpytV1R36Q
-	FmnUAW3BL9iwPQ7xnDhfxV5BuuR9PzKPx4ax9HTAnU18qEo+3xb1aEkemfnBiMo9q+imoDWs01l
-	XS7x+WH8CQcFRpFah0ZyREzXMTusqb/EaHB9rmeuUlN0whuEfq7i/rqu/9yhJLzfJUYyPVxAtAo
-	Z7zlk9Layw4K2nYVQd103BlTDIOhoD6/GUIw1KeZ0CgeggBo51Yn7mcY80I+yzpCE3kDeUwRN5T
-	kN7B2EeP1t7kpBWe0mFezWNs9kamzqKBPVPKxPjGVwEw==
-X-Received: by 2002:a05:600c:3f19:b0:490:9d1b:f086 with SMTP id 5b1f17b1804b1-4909d1bf171mr42154205e9.14.1780050332793;
-        Fri, 29 May 2026 03:25:32 -0700 (PDT)
-Received: from localhost ([128.77.52.126])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45ef3587072sm2492262f8f.34.2026.05.29.03.25.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2026 03:25:32 -0700 (PDT)
-Date: Fri, 29 May 2026 12:25:28 +0200
-From: Jiri Pirko <jiri@resnulli.us>
-To: Mark Bloch <mbloch@nvidia.com>
-Cc: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
-	Simon Horman <horms@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, 
-	Leon Romanovsky <leon@kernel.org>, "Borislav Petkov (AMD)" <bp@alien8.de>, 
-	Andrew Morton <akpm@linux-foundation.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Thomas Gleixner <tglx@kernel.org>, Petr Mladek <pmladek@suse.com>, 
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>, Tejun Heo <tj@kernel.org>, Vlastimil Babka <vbabka@kernel.org>, 
-	Feng Tang <feng.tang@linux.alibaba.com>, Christian Brauner <brauner@kernel.org>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, Dapeng Mi <dapeng1.mi@linux.intel.com>, 
-	Kees Cook <kees@kernel.org>, Marco Elver <elver@google.com>, 
-	Li RongQing <lirongqing@baidu.com>, Eric Biggers <ebiggers@kernel.org>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org, Gal Pressman <gal@nvidia.com>, 
-	Dragos Tatulea <dtatulea@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, Shay Drori <shayd@nvidia.com>, 
-	Moshe Shemesh <moshe@nvidia.com>
-Subject: Re: [PATCH net-next 3/3] net/mlx5: Apply devlink default eswitch
- mode during init
-Message-ID: <ahlpjJ4CCZAwqFVi@FV6GYCPJ69>
-References: <ahVPASuh4BZGOfx0@FV6GYCPJ69>
- <8c8df8da-62a9-49e8-84eb-572d54cfeb1f@nvidia.com>
- <ahWm4NXph9gdazV_@FV6GYCPJ69>
- <9aa7c295-35cb-428b-9031-13a2f507ae4b@nvidia.com>
- <ahXF2aQZNOwHdCG_@FV6GYCPJ69>
- <b9105eb7-de56-496e-998f-7c49c660b880@nvidia.com>
- <ahZ9CgIWdjny4N4D@FV6GYCPJ69>
- <b26b9866-440b-45bf-9d2f-7c4d3193c793@nvidia.com>
- <ahafaNDr0x-lzA7F@FV6GYCPJ69>
- <e4f4a6a5-9be0-462b-b4d7-8bbf57001cb4@nvidia.com>
+	s=arc-20240116; t=1780052737; c=relaxed/simple;
+	bh=d3TvFloVjXp7jxtda0yZHPpM1vpYD1QTXYtlqXtjvGU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cS8zW/8N/KBK53KNqCuElOBOfZWnzqybUYj/LvYpP8ZETlhRQLMA/fgEDoCvO/F/c6fPa74FfRFiUHV/aNfG/HTUojoSkpcP0GgCn3kn2NdjphX4S6WCZbw+wPXUhqjec31rehRinM7xDcQ0//I4MvOZqa6lWIRR1/7Ws5UsgSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=DAsJR0Dw; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0C4E22103;
+	Fri, 29 May 2026 04:05:28 -0700 (PDT)
+Received: from [10.57.37.50] (unknown [10.57.37.50])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0CFF63F905;
+	Fri, 29 May 2026 04:05:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1780052733; bh=d3TvFloVjXp7jxtda0yZHPpM1vpYD1QTXYtlqXtjvGU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=DAsJR0DwEuqwrcbbAhQKfEWRfrKoVIciblB1nygN1dpzf9G6PnfvRYPm32njy+OP1
+	 +a4/D5U4oWBimNcRm+3LXT04e1uGl1FV74M8e3WB+jGsZ/rAkFQC+ccIpiHHWZECuv
+	 eOISYfG5dhloA3ifmavJkgdFGKk8EOTtAHiafsYs=
+Message-ID: <7e980b99-1e4e-408b-8ebd-4d28116e7ad5@arm.com>
+Date: Fri, 29 May 2026 12:05:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e4f4a6a5-9be0-462b-b4d7-8bbf57001cb4@nvidia.com>
-X-Spamd-Result: default: False [0.34 / 15.00];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 13/16] perf: Use sysfs_emit() for cpumask show callbacks
+To: Yury Norov <ynorov@nvidia.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Russell King <linux@armlinux.org.uk>, Frank Li <Frank.Li@nxp.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, Madhavan Srinivasan
+ <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>,
+ "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, James Clark
+ <james.clark@linaro.org>, Thomas Gleixner <tglx@kernel.org>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Len Brown <lenb@kernel.org>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Danilo Krummrich <dakr@kernel.org>,
+ Chanwoo Choi <cw00.choi@samsung.com>, MyungJoo Ham
+ <myungjoo.ham@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>,
+ Heiko Stuebner <heiko@sntech.de>, Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+ Moritz Fischer <mdf@kernel.org>, Yicong Yang <yangyicong@hisilicon.com>,
+ Jonathan Cameron <jic23@kernel.org>,
+ Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ Dan Williams <djbw@kernel.org>, Vishal Verma <vishal.l.verma@intel.com>,
+ Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, Shuai Xue <xueshuai@linux.alibaba.com>,
+ Will Deacon <will@kernel.org>, Jiucheng Xu <jiucheng.xu@amlogic.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Jing Zhang <renyu.zj@linux.alibaba.com>, Xu Yang <xu.yang_2@nxp.com>,
+ Linu Cherian <lcherian@marvell.com>,
+ Gowthami Thiagarajan <gthiagarajan@marvell.com>,
+ Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
+ Khuong Dinh <khuong@os.amperecomputing.com>,
+ Daniel Lezcano <daniel.lezcano@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+ Lukasz Luba <lukasz.luba@arm.com>, Yury Norov <yury.norov@gmail.com>,
+ Kees Cook <kees@kernel.org>,
+ =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
+ Aboorva Devarajan <aboorvad@linux.ibm.com>,
+ "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+ Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+ Besar Wicaksono <bwicaksono@nvidia.com>, Ma Ke <make24@iscas.ac.cn>,
+ Chengwen Feng <fengchengwen@huawei.com>,
+ linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev,
+ linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-perf-users@vger.kernel.org, linux-acpi@vger.kernel.org,
+ driver-core@lists.linux.dev, linux-pm@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-fpga@vger.kernel.org,
+ linux-rdma@vger.kernel.org, nvdimm@lists.linux.dev,
+ linux-pci@vger.kernel.org, linux-amlogic@lists.infradead.org,
+ linux-cxl@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20260528183625.870813-1-ynorov@nvidia.com>
+ <20260528183625.870813-14-ynorov@nvidia.com>
+From: Robin Murphy <robin.murphy@arm.com>
+Content-Language: en-GB
+In-Reply-To: <20260528183625.870813-14-ynorov@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[arm.com,none];
+	R_DKIM_ALLOW(-0.20)[arm.com:s=foss];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[resnulli.us];
-	TAGGED_FROM(0.00)[bounces-21491-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[38];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[armlinux.org.uk,nxp.com,pengutronix.de,gmail.com,linux.ibm.com,ellerman.id.au,kernel.org,infradead.org,redhat.com,arm.com,linux.intel.com,google.com,intel.com,linaro.org,alien8.de,zytor.com,linuxfoundation.org,samsung.com,sntech.de,hisilicon.com,cornelisnetworks.com,ziepe.ca,linux.alibaba.com,amlogic.com,baylibre.com,googlemail.com,marvell.com,starfivetech.com,os.amperecomputing.com,linutronix.de,nvidia.com,iscas.ac.cn,huawei.com,lists.infradead.org,lists.linux.dev,vger.kernel.org,lists.ozlabs.org];
+	DKIM_TRACE(0.00)[arm.com:+];
+	TAGGED_FROM(0.00)[bounces-21492-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
+	FROM_NEQ_ENVFROM(0.00)[robin.murphy@arm.com,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCPT_COUNT_GT_50(0.00)[89];
+	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,resnulli-us.20251104.gappssmtp.com:dkim]
-X-Rspamd-Queue-Id: 47A5D600CEF
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,nvidia.com:email]
+X-Rspamd-Queue-Id: A0701601517
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Thu, May 28, 2026 at 10:15:44AM +0200, mbloch@nvidia.com wrote:
->
->
->On 27/05/2026 14:18, Jiri Pirko wrote:
->> Wed, May 27, 2026 at 09:03:26AM +0200, mbloch@nvidia.com wrote:
->>>
->>>
->>> On 27/05/2026 8:14, Jiri Pirko wrote:
->>>> Tue, May 26, 2026 at 07:13:46PM +0200, mbloch@nvidia.com wrote:
->>>>>
->>>>>
->>>>> On 26/05/2026 19:23, Jiri Pirko wrote:
->>>>>> Tue, May 26, 2026 at 05:03:57PM +0200, mbloch@nvidia.com wrote:
->>>>>>>
->>>>>>>
->>>>>>> On 26/05/2026 17:07, Jiri Pirko wrote:
->>>>>>>> Tue, May 26, 2026 at 11:44:46AM +0200, mbloch@nvidia.com wrote:
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> On 26/05/2026 10:44, Jiri Pirko wrote:
->>>>>>>>>> Thu, May 21, 2026 at 09:24:34AM +0200, tariqt@nvidia.com wrote:
->>>>>>>>>>> From: Mark Bloch <mbloch@nvidia.com>
->>>>>>>>>>>
->>>>>>>>>>> Apply devlink default eswitch mode for mlx5 devices after successful
->>>>>>>>>>> device initialization while holding the devlink instance lock.
->>>>>>>>>>>
->>>>>>>>>>> At this point the devlink instance is registered and the mlx5 devlink
->>>>>>>>>>> operations are available, so the default eswitch mode can be applied to
->>>>>>>>>>> the matching PCI devlink handle.
->>>>>>>>>>>
->>>>>>>>>>> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
->>>>>>>>>>> Reviewed-by: Shay Drori <shayd@nvidia.com>
->>>>>>>>>>> Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
->>>>>>>>>>> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
->>>>>>>>>>> ---
->>>>>>>>>>> drivers/net/ethernet/mellanox/mlx5/core/main.c | 17 +++++++++++++++++
->>>>>>>>>>> 1 file changed, 17 insertions(+)
->>>>>>>>>>>
->>>>>>>>>>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
->>>>>>>>>>> index 0c6e4efe38c8..4528097f3d84 100644
->>>>>>>>>>> --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
->>>>>>>>>>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
->>>>>>>>>>> @@ -1391,6 +1391,21 @@ static void mlx5_unload(struct mlx5_core_dev *dev)
->>>>>>>>>>> 	mlx5_free_bfreg(dev, &dev->priv.bfreg);
->>>>>>>>>>> }
->>>>>>>>>>>
->>>>>>>>>>> +static void mlx5_devl_apply_default_esw_mode(struct mlx5_core_dev *dev)
->>>>>>>>>>> +{
->>>>>>>>>>> +	struct devlink *devlink = priv_to_devlink(dev);
->>>>>>>>>>> +	int err;
->>>>>>>>>>> +
->>>>>>>>>>> +	if (!MLX5_ESWITCH_MANAGER(dev))
->>>>>>>>>>> +		return;
->>>>>>>>>>> +
->>>>>>>>>>> +	devl_assert_locked(devlink);
->>>>>>>>>>> +	err = devl_apply_default_esw_mode(devlink);
->>>>>>>>>>> +	if (err)
->>>>>>>>>>> +		mlx5_core_warn(dev, "Couldn't apply default eswitch mode, err %d\n",
->>>>>>>>>>> +			       err);
->>>>>>>>>>> +}
->>>>>>>>>>> +
->>>>>>>>>>> int mlx5_init_one_devl_locked(struct mlx5_core_dev *dev)
->>>>>>>>>>> {
->>>>>>>>>>> 	bool light_probe = mlx5_dev_is_lightweight(dev);
->>>>>>>>>>> @@ -1437,6 +1452,7 @@ int mlx5_init_one_devl_locked(struct mlx5_core_dev *dev)
->>>>>>>>>>> 		mlx5_core_err(dev, "mlx5_hwmon_dev_register failed with error code %d\n", err);
->>>>>>>>>>>
->>>>>>>>>>> 	mutex_unlock(&dev->intf_state_mutex);
->>>>>>>>>>> +	mlx5_devl_apply_default_esw_mode(dev);
->>>>>>>>>>
->>>>>>>>>> I wonder how we can make this work for all. I mean, other driver would
->>>>>>>>>> silently ignore this command like arg, right? Any idea how to make all
->>>>>>>>>> drivers follow the arg from very beginning?
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> I have a follow-up series that adds the call to all drivers which support
->>>>>>>>> setting eswitch mode. When going over the other drivers, what I found is
->>>>>>>>> that the right point to apply the default is driver specific, drivers
->>>>>>>>> I have patch for:
->>>>>>>>>
->>>>>>>>> 46e16c6d9836 net: Apply devlink esw mode defaults
->>>>>>>>> ab4f54102ba9 bnxt_en: Apply devlink default eswitch mode during init
->>>>>>>>> b48cce1607bb liquidio: Apply devlink default eswitch mode during init
->>>>>>>>> 4ea54b0fe04a ice: Apply devlink default eswitch mode during init
->>>>>>>>> b7faddaa1c90 octeontx2-af: Apply devlink default eswitch mode during init
->>>>>>>>> 74b0c22c47b9 octeontx2-pf: Apply devlink default eswitch mode during init
->>>>>>>>> 5000e4c3d768 nfp: Apply devlink default eswitch mode during init
->>>>>>>>> 97a218e95e41 netdevsim: Apply devlink default eswitch mode during init
->>>>>>>>>
->>>>>>>>> I don't think doing this generically from devlink is realistic. devlink
->>>>>>>>> doesn't really know when a given driver is ready to change eswitch mode.
->>>>>>>>> Some drivers need SR-IOV state, representor setup, or other init pieces to
->>>>>>>>> be ready first, and the locking is not identical across drivers either.
->>>>>>>>
->>>>>>>>
->>>>>>>> Low hanging fruit would be just to call ops->eswitch_mode_set at the end
->>>>>>>> of register. Multiple reasons:
->>>>>>>>
->>>>>>>> 1) end of devl_register is exactly the point userspace is free to issue
->>>>>>>>    the eswitch mode set. Driver should be ready to handle it.
->>>>>>>> 2) all drivers would transparently get this functionality, without
->>>>>>>>    actually knowing this kernel command line arg ever existed, without
->>>>>>>>    odd wiring call of related exported function. I prefer that stongly.
->>>>>>>> 3) you should add a there warning for the case this arg is passed yet
->>>>>>>>    the driver does not implement eswitch_mode_set. User should
->>>>>>>>    get a feedback like this, not silent ignore.
->>>>>>>>
->>>>>>>> The only loose end is see it the void return of devl_register().
->>>>>>>> Multiple ways to handle the possibly failed eswitch_mode_set(). I would
->>>>>>>> probably just go for pr_warn, seems to be the most correct.
->>>>>>>>
->>>>>>>> Make sense?
->>>>>>>
->>>>>>> I see the point, but I don't think devl_register() (at least not the only place)
->>>>>>> is the right place.
->>>>>>>
->>>>>>> There is a small but important difference between userspace doing
->>>>>>> "devlink eswitch set" after register is done, and devlink core calling
->>>>>>> eswitch_mode_set() from inside the register flow.
->>>>>>>
->>>>>>> Some drivers call devlink_register() while holding the device lock.
->>>>>>> liquidio is one example. If devlink core calls ops->eswitch_mode_set() from
->>>>>>> there, we may start the full eswitch mode change while holding that lock.
->>>>>>> That mode change can create representors, register netdevs, take rtnl,
->>>>>>> allocate resources, etc. I don't think we want this to become an implicit
->>>>>>> side effect of devlink registration.
->>>>>>
->>>>>> I believe your AI may untagle liquidio locking :)
->>>>>
->>>>> I didn't try to solve that one with ai. Most drivers were fairly simple 
->>>>> so I didn't use ai at all. bnxt was the one where I needed a bit of help :)
->>>>>
->>>>>>
->>>>>>
->>>>>>>
->>>>>>> For mlx5, the placement after intf_state_mutex is also intentional:
->>>>>>>
->>>>>>> mutex_unlock(&dev->intf_state_mutex);
->>>>>>> mlx5_devl_apply_default_esw_mode(dev);
->>>>>>>
->>>>>>> We can't call it while holding intf_state_mutex because the mode set path
->>>>>>> takes it internally, and switchdev mode may also create IB representors.
->>>>>>>
->>>>>>> Also, devl_register() only covers the first registration. The mlx5 call in
->>>>>>> mlx5_load_one_devl_locked() is for reload/fw reset recovery kind of flows.
->>>>>>> In those flows devlink is already registered, so devl_register() is not
->>>>>>> called again, but the driver state was rebuilt and we may need to apply the
->>>>>>> default again.
->>>>>>
->>>>>> Call it from reload too, right?
->>>>>
->>>>> Yes, that was my first thought: apply it from devl_register() for the first
->>>>> registration and from devlink_reload() after a successful DRIVER_REINIT.
->>>>>
->>>>> That covers the clean devlink reload path but....(see bellow)
->>>>>
->>>>>>
->>>>>>
->>>>>>>
->>>>>>> Same for reload, fw reset and pci recovery in general. If the driver tears
->>>>>>> down and rebuilds eswitch related state, the place to apply the default is
->>>>>>> in that driver's reinit flow, not in devl_register().
->>>>>>>
->>>>>>> When I went over the other drivers, the right place was not always the same
->>>>>>> as devlink registration. I'm not an expert in any of them, so I hope I got
->>>>>>> the details right, but for example octeontx2 AF needs sr-iov and the
->>>>>>> representor switch state to be initialized first. nfp can do it after
->>>>>>> app/vNIC init while the devlink lock is already held. liquidio should do it
->>>>>>> only after dropping the PCI device lock.
->>>>>>
->>>>>> Idk, perhaps do it from devlink_post_register_work of some kind? That
->>>>>> would allow you to have the same locking ordering as a userspace cal
->>>>> l.
->>>>>
->>>>> I thought about a workqueue too, it was actually my first idea.
->>>>>
->>>>> The problem is that then we race with userspace. In the mlx5 version here the
->>>>> default is applied while the devlink lock is still held, before userspace can
->>>>> come in and issue its own eswitch set. If we defer it to post-register work,
->>>>> the devlink instance is already visible and userspace can get there first
->>>>> and then we might change the user configuration.
->>>>
->>>> Figure that out and expose to user by setting xa_mark only after the
->>>> work is done? This is doable.
->>>
->>> I agree that if devlink can keep the instance hidden/unavailable until the
->>> post register work is done, that solves the initial userspace race.
->>>
->>> The other part is the reinit/recovery case. For that I think devlink core
->>> needs some explicit indication from the driver that the device is now in
->>> reinit. Something like (at least that's the code I had initially, but something
->>> along those lines):
->>>
->>> void devl_dev_reinit_begin(struct devlink *devlink);
->>> void devl_dev_reinit_end(struct devlink *devlink);
->>> void devl_dev_reinit_abort(struct devlink *devlink);
->>>
->>> The core can then mark the instance as temporarily unavailable/in reinit
->>> between begin/end, and the relevant lookup/dump paths, for example
->>> devlink_get_from_attrs_lock() and devlink_nl_inst_iter_dumpit(), can reject
->>> or skip it while reinit is in progress. devlink_reload() can probably mark
->>> this state by itself around DRIVER_REINIT.
->> 
->> I believe this is orthogonal to the problem you are trying to solve in
->> this patchset. Not sure why you bring it in to the conversation...
->> 
->
->I brought it up because I was also thinking about reinit/recovery flows, but
->I guess I can tackle that later.
->
->For now I can focus on the generic devlink path, move drivers to register
->devlink only after the device is ready. Then devlink core can apply the default
->before exposing the instance to userspace.
->
->I think it is better to fix the ordering for all devlink drivers, not only the
->ones that support eswitch mode set. That gives us a consistent model and makes
->future defaults easier.
->
->Reload can be handled from devlink after successful DRIVER_REINIT.
->
->Does this sound ok?
+On 2026-05-28 7:36 pm, Yury Norov wrote:
+> These callbacks are sysfs show paths.
+> 
+> Use sysfs_emit() and cpumask_pr_args() to emit the masks.
+> 
+> This prepares for removing cpumap_print_to_pagebuf().
 
-Yes. Thanks!
+TBH, looking at this diff I think it only shows the value of having a 
+helper to abstract the boilerplate...
 
+I'm not sure I agree with the argument of removing something entirely 
+just because it may occasionally be misused, but could we at least have 
+something like:
 
->
->Mark
->
->> 
->>>
->>> Then mlx5 would look more or less like:
->>> 	devl_lock(devlink);
->>> 	devl_dev_reinit_begin(devlink);
->>> 	ret = mlx5_load_one_devl_locked(dev, recovery);
->>> 	if (!ret)
->>> 		devl_dev_reinit_end(devlink);
->>> 	else
->>> 		devl_dev_reinit_abort(devlink);
->>> 	devl_unlock(devlink);
->>>
->>> This gives devlink core a way to know that the devlink instance is registered,
->>> but should not be used by userspace at the moment. It also allows keeping the
->>> default/config apply logic in devlink instead of adding driver specific calls
->>> to apply it in each init path.
->>>
->>> But this still means the generic solution needs some driver help. Drivers need
->>> to register devlink at a point where the post-register default apply is safe,
->>> and full reinit paths need to be marked with this begin/end API.
->>>
->>>>
->>>>
->>>>>
->>>>> Also, the bigger issue for mlx5 is not only initial registration or devlink
->>>>> reload. Some recovery paths, pci resume, and fw reset flows rebuild the driver
->>>>> state without going through devlink at all. I did not find a clean way for
->>>>> devlink core to infer all those points by itself.
->>>>
->>>> If you don't obey current configuration for example in pci resume, it is
->>>> bug and you should fix it. All these flows should obey current eswitch
->>>> mode configuration.
->>>>
->>>
->>> I agree that the device should come back according
->>> to the intended high level policy. But I don't think full reinit can be treated
->>> as restoring the whole previous runtime state. There may be user created
->>> steering rules and other objects which the driver cannot keep or replay. Today
->>> full reinit brings the device back to a clean initialized state, and that is
->>> intentional.
->>>
->>> So the split I have in mind is:
->>>
->>> - full runtime state is not preserved across full reinit;
->>> - high level devlink policy/configuration should be applied when the device is
->>>  initialized again;
->>> - the command line default should not blindly override a later explicit
->>>  userspace eswitch mode selection.
->>>
->>> I am not against moving this into devlink core, and I am willing to work on it.
->>>
->>> But before I rework the series, I want to make sure we agree on the direction.
->>> As I see it, doing this cleanly needs a devlink state like "registered but
->>> unavailable/in reinit", plus driver annotations for the reinit paths.
->>>
->>> If this is not the direction you want, I prefer to know now rather than spend
->>> time on a version that will be rejected anyway.
->>>
->>> Mark
->>>
->>>>
->>>>>
->>>>> To handle that from devlink I would still need to add some api for the driver
->>>>> to tell devlink "I just reinitialized, apply the default now". but nce I had
->>>>> that driver call , it felt simpler and clearer to let the driver call
->>>>> the helper directly at the points where it knows eswitch mode is safe.
->>>>>
->>>>> I agree that handling all of this inside devlink would be the better option.
->>>>> I just couldn't make it work in a clean way.
->>>>>
->>>>> Mark
->>>>>
->>>>>>
->>>>>>>
->>>>>>> Mark
->>>>>>>
->>>>>>>>
->>>>>>>>
->>>>>>>>>
->>>>>>>>> Also, since this knob is only about eswitch mode, I don't think we need to
->>>>>>>>> touch every devlink driver. Drivers that don't implement eswitch_mode_set()
->>>>>>>>> would just ignore it anyway. The follow-up only wires the default into
->>>>>>>>> drivers that actually support changing eswitch mode.
->>>>>>>>>
->>>>>>>>> Mark
->>>>>>>>>
->>>>>>>>>>
->>>>>>>>>>> 	return 0;
->>>>>>>>>>>
->>>>>>>>>>> err_register:
->>>>>>>>>>> @@ -1538,6 +1554,7 @@ int mlx5_load_one_devl_locked(struct mlx5_core_dev *dev, bool recovery)
->>>>>>>>>>> 		goto err_attach;
->>>>>>>>>>>
->>>>>>>>>>> 	mutex_unlock(&dev->intf_state_mutex);
->>>>>>>>>>> +	mlx5_devl_apply_default_esw_mode(dev);
->>>>>>>>>>> 	return 0;
->>>>>>>>>>>
->>>>>>>>>>> err_attach:
->>>>>>>>>>> -- 
->>>>>>>>>>> 2.44.0
->>>>>>>>>>>
->>>>>>>>>
->>>>>>>
->>>>>
->>>
->
+#define sysfs_emit_cpumask(buf, mask) \
+	sysfs_emit((buf), "%*pbl\n", cpumask_pr_args(mask))
+
+to save the mess in all the many places where the current 
+cpumap_print_to_pagebuf() usage _is_ entirely appropriate?
+
+Thansk,
+Robin.
+
+> Signed-off-by: Yury Norov <ynorov@nvidia.com>
+> ---
+>   drivers/perf/alibaba_uncore_drw_pmu.c       | 2 +-
+>   drivers/perf/amlogic/meson_ddr_pmu_core.c   | 2 +-
+>   drivers/perf/arm-cci.c                      | 2 +-
+>   drivers/perf/arm-ccn.c                      | 2 +-
+>   drivers/perf/arm-cmn.c                      | 2 +-
+>   drivers/perf/arm-ni.c                       | 2 +-
+>   drivers/perf/arm_cspmu/arm_cspmu.c          | 2 +-
+>   drivers/perf/arm_dmc620_pmu.c               | 4 ++--
+>   drivers/perf/arm_dsu_pmu.c                  | 2 +-
+>   drivers/perf/arm_pmu.c                      | 2 +-
+>   drivers/perf/arm_smmuv3_pmu.c               | 2 +-
+>   drivers/perf/arm_spe_pmu.c                  | 2 +-
+>   drivers/perf/cxl_pmu.c                      | 2 +-
+>   drivers/perf/dwc_pcie_pmu.c                 | 2 +-
+>   drivers/perf/fsl_imx8_ddr_perf.c            | 2 +-
+>   drivers/perf/fsl_imx9_ddr_perf.c            | 2 +-
+>   drivers/perf/fujitsu_uncore_pmu.c           | 2 +-
+>   drivers/perf/hisilicon/hisi_pcie_pmu.c      | 2 +-
+>   drivers/perf/hisilicon/hisi_uncore_pmu.c    | 2 +-
+>   drivers/perf/marvell_cn10k_ddr_pmu.c        | 2 +-
+>   drivers/perf/marvell_cn10k_tad_pmu.c        | 2 +-
+>   drivers/perf/marvell_pem_pmu.c              | 2 +-
+>   drivers/perf/nvidia_t410_c2c_pmu.c          | 2 +-
+>   drivers/perf/nvidia_t410_cmem_latency_pmu.c | 2 +-
+>   drivers/perf/qcom_l2_pmu.c                  | 2 +-
+>   drivers/perf/qcom_l3_pmu.c                  | 2 +-
+>   drivers/perf/starfive_starlink_pmu.c        | 2 +-
+>   drivers/perf/thunderx2_pmu.c                | 2 +-
+>   drivers/perf/xgene_pmu.c                    | 2 +-
+>   kernel/events/core.c                        | 2 +-
+>   30 files changed, 31 insertions(+), 31 deletions(-)
+> 
+> diff --git a/drivers/perf/alibaba_uncore_drw_pmu.c b/drivers/perf/alibaba_uncore_drw_pmu.c
+> index ac49d3b2dad6..74786a5dd6a2 100644
+> --- a/drivers/perf/alibaba_uncore_drw_pmu.c
+> +++ b/drivers/perf/alibaba_uncore_drw_pmu.c
+> @@ -221,7 +221,7 @@ static ssize_t ali_drw_pmu_cpumask_show(struct device *dev,
+>   {
+>   	struct ali_drw_pmu *drw_pmu = to_ali_drw_pmu(dev_get_drvdata(dev));
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask_of(drw_pmu->cpu));
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask_of(drw_pmu->cpu)));
+>   }
+>   
+>   static struct device_attribute ali_drw_pmu_cpumask_attr =
+> diff --git a/drivers/perf/amlogic/meson_ddr_pmu_core.c b/drivers/perf/amlogic/meson_ddr_pmu_core.c
+> index c1e755c356a3..f614aa3434a5 100644
+> --- a/drivers/perf/amlogic/meson_ddr_pmu_core.c
+> +++ b/drivers/perf/amlogic/meson_ddr_pmu_core.c
+> @@ -191,7 +191,7 @@ static ssize_t meson_ddr_perf_cpumask_show(struct device *dev,
+>   {
+>   	struct ddr_pmu *pmu = dev_get_drvdata(dev);
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask_of(pmu->cpu));
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask_of(pmu->cpu)));
+>   }
+>   
+>   static struct device_attribute meson_ddr_perf_cpumask_attr =
+> diff --git a/drivers/perf/arm-cci.c b/drivers/perf/arm-cci.c
+> index 1cc3214d6b6d..f0ef0a679e74 100644
+> --- a/drivers/perf/arm-cci.c
+> +++ b/drivers/perf/arm-cci.c
+> @@ -1351,7 +1351,7 @@ static ssize_t pmu_cpumask_attr_show(struct device *dev,
+>   	struct pmu *pmu = dev_get_drvdata(dev);
+>   	struct cci_pmu *cci_pmu = to_cci_pmu(pmu);
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask_of(cci_pmu->cpu));
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask_of(cci_pmu->cpu)));
+>   }
+>   
+>   static struct device_attribute pmu_cpumask_attr =
+> diff --git a/drivers/perf/arm-ccn.c b/drivers/perf/arm-ccn.c
+> index 8af3563fdf60..d5dcb4280434 100644
+> --- a/drivers/perf/arm-ccn.c
+> +++ b/drivers/perf/arm-ccn.c
+> @@ -538,7 +538,7 @@ static ssize_t arm_ccn_pmu_cpumask_show(struct device *dev,
+>   {
+>   	struct arm_ccn *ccn = pmu_to_arm_ccn(dev_get_drvdata(dev));
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask_of(ccn->dt.cpu));
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask_of(ccn->dt.cpu)));
+>   }
+>   
+>   static struct device_attribute arm_ccn_pmu_cpumask_attr =
+> diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
+> index f5305c8fdca4..2187ba763b72 100644
+> --- a/drivers/perf/arm-cmn.c
+> +++ b/drivers/perf/arm-cmn.c
+> @@ -1326,7 +1326,7 @@ static ssize_t arm_cmn_cpumask_show(struct device *dev,
+>   {
+>   	struct arm_cmn *cmn = to_cmn(dev_get_drvdata(dev));
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask_of(cmn->cpu));
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask_of(cmn->cpu)));
+>   }
+>   
+>   static struct device_attribute arm_cmn_cpumask_attr =
+> diff --git a/drivers/perf/arm-ni.c b/drivers/perf/arm-ni.c
+> index 66858c65215d..03a1c6bf9223 100644
+> --- a/drivers/perf/arm-ni.c
+> +++ b/drivers/perf/arm-ni.c
+> @@ -239,7 +239,7 @@ static ssize_t arm_ni_cpumask_show(struct device *dev,
+>   {
+>   	struct arm_ni *ni = cd_to_ni(pmu_to_cd(dev_get_drvdata(dev)));
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask_of(ni->cpu));
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask_of(ni->cpu)));
+>   }
+>   
+>   static struct device_attribute arm_ni_cpumask_attr =
+> diff --git a/drivers/perf/arm_cspmu/arm_cspmu.c b/drivers/perf/arm_cspmu/arm_cspmu.c
+> index 80fb314d5135..e6292021f653 100644
+> --- a/drivers/perf/arm_cspmu/arm_cspmu.c
+> +++ b/drivers/perf/arm_cspmu/arm_cspmu.c
+> @@ -305,7 +305,7 @@ static ssize_t arm_cspmu_cpumask_show(struct device *dev,
+>   	default:
+>   		return 0;
+>   	}
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask);
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask));
+>   }
+>   
+>   static struct attribute *arm_cspmu_cpumask_attrs[] = {
+> diff --git a/drivers/perf/arm_dmc620_pmu.c b/drivers/perf/arm_dmc620_pmu.c
+> index 4f6b196160f8..467147a05eec 100644
+> --- a/drivers/perf/arm_dmc620_pmu.c
+> +++ b/drivers/perf/arm_dmc620_pmu.c
+> @@ -237,8 +237,8 @@ static ssize_t dmc620_pmu_cpumask_show(struct device *dev,
+>   {
+>   	struct dmc620_pmu *dmc620_pmu = to_dmc620_pmu(dev_get_drvdata(dev));
+>   
+> -	return cpumap_print_to_pagebuf(true, buf,
+> -				       cpumask_of(dmc620_pmu->irq->cpu));
+> +	return sysfs_emit(buf, "%*pbl\n",
+> +			  cpumask_pr_args(cpumask_of(dmc620_pmu->irq->cpu)));
+>   }
+>   
+>   static struct device_attribute dmc620_pmu_cpumask_attr =
+> diff --git a/drivers/perf/arm_dsu_pmu.c b/drivers/perf/arm_dsu_pmu.c
+> index 32b0dd7c693b..bcbd19e075a5 100644
+> --- a/drivers/perf/arm_dsu_pmu.c
+> +++ b/drivers/perf/arm_dsu_pmu.c
+> @@ -157,7 +157,7 @@ static ssize_t dsu_pmu_cpumask_show(struct device *dev,
+>   	default:
+>   		return 0;
+>   	}
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask);
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask));
+>   }
+>   
+>   static struct attribute *dsu_pmu_format_attrs[] = {
+> diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
+> index 939bcbd433aa..51ab6cc52ca0 100644
+> --- a/drivers/perf/arm_pmu.c
+> +++ b/drivers/perf/arm_pmu.c
+> @@ -570,7 +570,7 @@ static ssize_t cpus_show(struct device *dev,
+>   			 struct device_attribute *attr, char *buf)
+>   {
+>   	struct arm_pmu *armpmu = to_arm_pmu(dev_get_drvdata(dev));
+> -	return cpumap_print_to_pagebuf(true, buf, &armpmu->supported_cpus);
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(&armpmu->supported_cpus));
+>   }
+>   
+>   static DEVICE_ATTR_RO(cpus);
+> diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
+> index 621f02a7f43b..8ce34e6bb82b 100644
+> --- a/drivers/perf/arm_smmuv3_pmu.c
+> +++ b/drivers/perf/arm_smmuv3_pmu.c
+> @@ -537,7 +537,7 @@ static ssize_t smmu_pmu_cpumask_show(struct device *dev,
+>   {
+>   	struct smmu_pmu *smmu_pmu = to_smmu_pmu(dev_get_drvdata(dev));
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask_of(smmu_pmu->on_cpu));
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask_of(smmu_pmu->on_cpu)));
+>   }
+>   
+>   static struct device_attribute smmu_pmu_cpumask_attr =
+> diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
+> index dbd0da111639..9f786fd48cdd 100644
+> --- a/drivers/perf/arm_spe_pmu.c
+> +++ b/drivers/perf/arm_spe_pmu.c
+> @@ -343,7 +343,7 @@ static ssize_t cpumask_show(struct device *dev,
+>   {
+>   	struct arm_spe_pmu *spe_pmu = dev_get_drvdata(dev);
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, &spe_pmu->supported_cpus);
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(&spe_pmu->supported_cpus));
+>   }
+>   static DEVICE_ATTR_RO(cpumask);
+>   
+> diff --git a/drivers/perf/cxl_pmu.c b/drivers/perf/cxl_pmu.c
+> index 68a54d97d2a8..0735eb33f5f3 100644
+> --- a/drivers/perf/cxl_pmu.c
+> +++ b/drivers/perf/cxl_pmu.c
+> @@ -493,7 +493,7 @@ static ssize_t cpumask_show(struct device *dev, struct device_attribute *attr,
+>   {
+>   	struct cxl_pmu_info *info = dev_get_drvdata(dev);
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask_of(info->on_cpu));
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask_of(info->on_cpu)));
+>   }
+>   static DEVICE_ATTR_RO(cpumask);
+>   
+> diff --git a/drivers/perf/dwc_pcie_pmu.c b/drivers/perf/dwc_pcie_pmu.c
+> index 5385401fa9cf..291e776d6f6a 100644
+> --- a/drivers/perf/dwc_pcie_pmu.c
+> +++ b/drivers/perf/dwc_pcie_pmu.c
+> @@ -117,7 +117,7 @@ static ssize_t cpumask_show(struct device *dev,
+>   {
+>   	struct dwc_pcie_pmu *pcie_pmu = to_dwc_pcie_pmu(dev_get_drvdata(dev));
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask_of(pcie_pmu->on_cpu));
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask_of(pcie_pmu->on_cpu)));
+>   }
+>   static DEVICE_ATTR_RO(cpumask);
+>   
+> diff --git a/drivers/perf/fsl_imx8_ddr_perf.c b/drivers/perf/fsl_imx8_ddr_perf.c
+> index bcdf5575d71c..3760ebe02674 100644
+> --- a/drivers/perf/fsl_imx8_ddr_perf.c
+> +++ b/drivers/perf/fsl_imx8_ddr_perf.c
+> @@ -237,7 +237,7 @@ static ssize_t ddr_perf_cpumask_show(struct device *dev,
+>   {
+>   	struct ddr_pmu *pmu = dev_get_drvdata(dev);
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask_of(pmu->cpu));
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask_of(pmu->cpu)));
+>   }
+>   
+>   static struct device_attribute ddr_perf_cpumask_attr =
+> diff --git a/drivers/perf/fsl_imx9_ddr_perf.c b/drivers/perf/fsl_imx9_ddr_perf.c
+> index 7050b48c0467..6fee5eb5087a 100644
+> --- a/drivers/perf/fsl_imx9_ddr_perf.c
+> +++ b/drivers/perf/fsl_imx9_ddr_perf.c
+> @@ -159,7 +159,7 @@ static ssize_t ddr_perf_cpumask_show(struct device *dev,
+>   {
+>   	struct ddr_pmu *pmu = dev_get_drvdata(dev);
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask_of(pmu->cpu));
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask_of(pmu->cpu)));
+>   }
+>   
+>   static struct device_attribute ddr_perf_cpumask_attr =
+> diff --git a/drivers/perf/fujitsu_uncore_pmu.c b/drivers/perf/fujitsu_uncore_pmu.c
+> index c3c6f56474ad..a07877632d53 100644
+> --- a/drivers/perf/fujitsu_uncore_pmu.c
+> +++ b/drivers/perf/fujitsu_uncore_pmu.c
+> @@ -374,7 +374,7 @@ static ssize_t cpumask_show(struct device *dev,
+>   {
+>   	struct uncore_pmu *uncorepmu = to_uncore_pmu(dev_get_drvdata(dev));
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask_of(uncorepmu->cpu));
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask_of(uncorepmu->cpu)));
+>   }
+>   static DEVICE_ATTR_RO(cpumask);
+>   
+> diff --git a/drivers/perf/hisilicon/hisi_pcie_pmu.c b/drivers/perf/hisilicon/hisi_pcie_pmu.c
+> index c5394d007b61..0f55d871c67e 100644
+> --- a/drivers/perf/hisilicon/hisi_pcie_pmu.c
+> +++ b/drivers/perf/hisilicon/hisi_pcie_pmu.c
+> @@ -121,7 +121,7 @@ static ssize_t cpumask_show(struct device *dev, struct device_attribute *attr, c
+>   {
+>   	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(dev_get_drvdata(dev));
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask_of(pcie_pmu->on_cpu));
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask_of(pcie_pmu->on_cpu)));
+>   }
+>   static DEVICE_ATTR_RO(cpumask);
+>   
+> diff --git a/drivers/perf/hisilicon/hisi_uncore_pmu.c b/drivers/perf/hisilicon/hisi_uncore_pmu.c
+> index de71dcf11653..0ff2fdf4b3e2 100644
+> --- a/drivers/perf/hisilicon/hisi_uncore_pmu.c
+> +++ b/drivers/perf/hisilicon/hisi_uncore_pmu.c
+> @@ -56,7 +56,7 @@ static ssize_t hisi_associated_cpus_sysfs_show(struct device *dev,
+>   {
+>   	struct hisi_pmu *hisi_pmu = to_hisi_pmu(dev_get_drvdata(dev));
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, &hisi_pmu->associated_cpus);
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(&hisi_pmu->associated_cpus));
+>   }
+>   static DEVICE_ATTR(associated_cpus, 0444, hisi_associated_cpus_sysfs_show, NULL);
+>   
+> diff --git a/drivers/perf/marvell_cn10k_ddr_pmu.c b/drivers/perf/marvell_cn10k_ddr_pmu.c
+> index 72ac17efd846..8681e8715cb3 100644
+> --- a/drivers/perf/marvell_cn10k_ddr_pmu.c
+> +++ b/drivers/perf/marvell_cn10k_ddr_pmu.c
+> @@ -364,7 +364,7 @@ static ssize_t cn10k_ddr_perf_cpumask_show(struct device *dev,
+>   {
+>   	struct cn10k_ddr_pmu *pmu = dev_get_drvdata(dev);
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask_of(pmu->cpu));
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask_of(pmu->cpu)));
+>   }
+>   
+>   static struct device_attribute cn10k_ddr_perf_cpumask_attr =
+> diff --git a/drivers/perf/marvell_cn10k_tad_pmu.c b/drivers/perf/marvell_cn10k_tad_pmu.c
+> index 51ccb0befa05..54909d0031b7 100644
+> --- a/drivers/perf/marvell_cn10k_tad_pmu.c
+> +++ b/drivers/perf/marvell_cn10k_tad_pmu.c
+> @@ -258,7 +258,7 @@ static ssize_t tad_pmu_cpumask_show(struct device *dev,
+>   {
+>   	struct tad_pmu *tad_pmu = to_tad_pmu(dev_get_drvdata(dev));
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask_of(tad_pmu->cpu));
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask_of(tad_pmu->cpu)));
+>   }
+>   
+>   static DEVICE_ATTR(cpumask, 0444, tad_pmu_cpumask_show, NULL);
+> diff --git a/drivers/perf/marvell_pem_pmu.c b/drivers/perf/marvell_pem_pmu.c
+> index 29fbcd1848e4..cf1d8cdb1318 100644
+> --- a/drivers/perf/marvell_pem_pmu.c
+> +++ b/drivers/perf/marvell_pem_pmu.c
+> @@ -164,7 +164,7 @@ static ssize_t pem_perf_cpumask_show(struct device *dev,
+>   {
+>   	struct pem_pmu *pmu = dev_get_drvdata(dev);
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask_of(pmu->cpu));
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask_of(pmu->cpu)));
+>   }
+>   
+>   static struct device_attribute pem_perf_cpumask_attr =
+> diff --git a/drivers/perf/nvidia_t410_c2c_pmu.c b/drivers/perf/nvidia_t410_c2c_pmu.c
+> index 411987153ff3..bff875f4f625 100644
+> --- a/drivers/perf/nvidia_t410_c2c_pmu.c
+> +++ b/drivers/perf/nvidia_t410_c2c_pmu.c
+> @@ -658,7 +658,7 @@ static ssize_t nv_c2c_pmu_cpumask_show(struct device *dev,
+>   	default:
+>   		return 0;
+>   	}
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask);
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask));
+>   }
+>   
+>   #define NV_C2C_PMU_CPUMASK_ATTR(_name, _config)			\
+> diff --git a/drivers/perf/nvidia_t410_cmem_latency_pmu.c b/drivers/perf/nvidia_t410_cmem_latency_pmu.c
+> index acb8f5571522..6c8e41598ec1 100644
+> --- a/drivers/perf/nvidia_t410_cmem_latency_pmu.c
+> +++ b/drivers/perf/nvidia_t410_cmem_latency_pmu.c
+> @@ -501,7 +501,7 @@ static ssize_t cmem_lat_pmu_cpumask_show(struct device *dev,
+>   	default:
+>   		return 0;
+>   	}
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask);
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask));
+>   }
+>   
+>   #define NV_PMU_CPUMASK_ATTR(_name, _config)			\
+> diff --git a/drivers/perf/qcom_l2_pmu.c b/drivers/perf/qcom_l2_pmu.c
+> index ea8c85729937..c0c522b10b72 100644
+> --- a/drivers/perf/qcom_l2_pmu.c
+> +++ b/drivers/perf/qcom_l2_pmu.c
+> @@ -638,7 +638,7 @@ static ssize_t l2_cache_pmu_cpumask_show(struct device *dev,
+>   {
+>   	struct l2cache_pmu *l2cache_pmu = to_l2cache_pmu(dev_get_drvdata(dev));
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, &l2cache_pmu->cpumask);
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(&l2cache_pmu->cpumask));
+>   }
+>   
+>   static struct device_attribute l2_cache_pmu_cpumask_attr =
+> diff --git a/drivers/perf/qcom_l3_pmu.c b/drivers/perf/qcom_l3_pmu.c
+> index 66e6cabd6fff..c8d259dd1f80 100644
+> --- a/drivers/perf/qcom_l3_pmu.c
+> +++ b/drivers/perf/qcom_l3_pmu.c
+> @@ -663,7 +663,7 @@ static ssize_t cpumask_show(struct device *dev,
+>   {
+>   	struct l3cache_pmu *l3pmu = to_l3cache_pmu(dev_get_drvdata(dev));
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, &l3pmu->cpumask);
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(&l3pmu->cpumask));
+>   }
+>   
+>   static DEVICE_ATTR_RO(cpumask);
+> diff --git a/drivers/perf/starfive_starlink_pmu.c b/drivers/perf/starfive_starlink_pmu.c
+> index 964897c2baa9..222a0a34e211 100644
+> --- a/drivers/perf/starfive_starlink_pmu.c
+> +++ b/drivers/perf/starfive_starlink_pmu.c
+> @@ -131,7 +131,7 @@ cpumask_show(struct device *dev, struct device_attribute *attr, char *buf)
+>   {
+>   	struct starlink_pmu *starlink_pmu = to_starlink_pmu(dev_get_drvdata(dev));
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, &starlink_pmu->cpumask);
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(&starlink_pmu->cpumask));
+>   }
+>   
+>   static DEVICE_ATTR_RO(cpumask);
+> diff --git a/drivers/perf/thunderx2_pmu.c b/drivers/perf/thunderx2_pmu.c
+> index 6ed4707bd6bb..a69c02d2d874 100644
+> --- a/drivers/perf/thunderx2_pmu.c
+> +++ b/drivers/perf/thunderx2_pmu.c
+> @@ -254,7 +254,7 @@ static ssize_t cpumask_show(struct device *dev, struct device_attribute *attr,
+>   	struct tx2_uncore_pmu *tx2_pmu;
+>   
+>   	tx2_pmu = pmu_to_tx2_pmu(dev_get_drvdata(dev));
+> -	return cpumap_print_to_pagebuf(true, buf, cpumask_of(tx2_pmu->cpu));
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpumask_of(tx2_pmu->cpu)));
+>   }
+>   static DEVICE_ATTR_RO(cpumask);
+>   
+> diff --git a/drivers/perf/xgene_pmu.c b/drivers/perf/xgene_pmu.c
+> index 33b5497bdc06..e9e4871db08d 100644
+> --- a/drivers/perf/xgene_pmu.c
+> +++ b/drivers/perf/xgene_pmu.c
+> @@ -595,7 +595,7 @@ static ssize_t cpumask_show(struct device *dev,
+>   {
+>   	struct xgene_pmu_dev *pmu_dev = to_pmu_dev(dev_get_drvdata(dev));
+>   
+> -	return cpumap_print_to_pagebuf(true, buf, &pmu_dev->parent->cpu);
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(&pmu_dev->parent->cpu));
+>   }
+>   
+>   static DEVICE_ATTR_RO(cpumask);
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 7935d5663944..61689d348abd 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -12657,7 +12657,7 @@ static ssize_t cpumask_show(struct device *dev, struct device_attribute *attr,
+>   	struct cpumask *mask = perf_scope_cpumask(pmu->scope);
+>   
+>   	if (mask)
+> -		return cpumap_print_to_pagebuf(true, buf, mask);
+> +		return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(mask));
+>   	return 0;
+>   }
+>   
+
 
