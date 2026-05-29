@@ -1,185 +1,151 @@
-Return-Path: <linux-rdma+bounces-21489-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21490-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oAhjCFZYGWqtvggAu9opvQ
-	(envelope-from <linux-rdma+bounces-21489-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 11:11:50 +0200
+	id CJLpCC9iGWrDvwgAu9opvQ
+	(envelope-from <linux-rdma+bounces-21490-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 11:53:51 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 181265FFBC7
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 11:11:49 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCB47600413
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 11:53:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 9F0743045B3D
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 09:08:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E6DE630AF121
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 09:50:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 433393BB13E;
-	Fri, 29 May 2026 09:08:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A86513C3BE5;
+	Fri, 29 May 2026 09:50:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oS3P7Zvb"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="Uw8+YmgH"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE3263ACF1E
-	for <linux-rdma@vger.kernel.org>; Fri, 29 May 2026 09:07:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B6433BF692
+	for <linux-rdma@vger.kernel.org>; Fri, 29 May 2026 09:50:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780045681; cv=none; b=ixF1mWzoEdd3FXxtO/dA91cMrWIhFnRR7ELhlTbogyh7FcQvEl6XeD22NDN7YhA/DDh6DFI8nj2/hYbkiBu5P19vjNLuTfSLtrHTtkQYNhcpedNSY3PzfiW2qJz7T3SUmRQYBwME8Ix//ODEz+cz0V2SIS/UK5QI/ySw/aqRTwA=
+	t=1780048230; cv=none; b=fnIgA/ob3S1tajZOtFGpEPxI52FwILgA/9EwWkDopvdp26P8N0O/oFEI1+EEL5yXsJO+KiofscLMXvKy2YHkSOnpoEaZziDttiPNgHAwbwrHGac9LtUSR9o1NVKdq7Kr6hUw/X7m2EI1B72GAWdOKmU3LD+t78opTpuTHTUOK/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780045681; c=relaxed/simple;
-	bh=c/81EIBYKuNviJ2mRN5ZbUg3jgv+/+UIOpbxXJBbgIg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BEOxCfBdrDBo02ca3LbK6kxqnhPCj2SQDOKNW5M7MIjEGqqFyIuEbT0drd+hr+uJfF7ux6IC7RwN3Q1jfnNWxcx2dhrqAUNpus3901XIpyijlDIOR3TkyIas2x+AuHL1X5QlPl6EMaMpPX8ZPIfjQoAgyeZEApNo+G0WKy+7cEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oS3P7Zvb; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1780045678;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hmJAP4aZOaxiUto1Kunt2nTEBh0r3j2YyJk3QPS9rI0=;
-	b=oS3P7Zvb9AhTICkGjO+yQ/jQqCbP5ACLfglzjLNW7twk0pwEU7+q7l/BPWVJMNm/95Dhk4
-	Sl6DQg1wbvzls6+JKt3ishyE1j03f7HPjHsOD3mY3IIZrXDnU+LQlHvrD44iB6fATUAjJG
-	SdJsf3KEi7rrBz4KwVCR1nRJSjxNiN0=
-From: Tao Cui <cui.tao@linux.dev>
-To: tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com,
-	leon@kernel.org,
-	jgg@ziepe.ca
-Cc: linux-rdma@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	Tao Cui <cuitao@kylinos.cn>
-Subject: [PATCH rdma-next v2 3/3] cgroup/rdma: update cgroup resource list for MR_MEM
-Date: Fri, 29 May 2026 17:07:33 +0800
-Message-ID: <20260529090733.2242822-4-cui.tao@linux.dev>
-In-Reply-To: <20260529090733.2242822-1-cui.tao@linux.dev>
-References: <20260529090733.2242822-1-cui.tao@linux.dev>
+	s=arc-20240116; t=1780048230; c=relaxed/simple;
+	bh=noZUE1IsUXwbMFZP5oM/PyOkLNyKjBND2J+rs0wlh3o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GBnw26DMA5Cn2REd1G24brbHWadN4CRkcJol4FIgGitEcK1XFlRrI/2ViwnQZekFuKBtXpdZlMzgXbFTBZLDRfxg9UTFqAvzFYdKWrRUyTUF1R5Rlkps5+bzu8uLMngntElAKzA3Wbg1huGi/pbr/CuDNmsv9FEzZIiJ/KDKgJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=Uw8+YmgH; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-45ef372c58aso211045f8f.0
+        for <linux-rdma@vger.kernel.org>; Fri, 29 May 2026 02:50:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1780048225; x=1780653025; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=noZUE1IsUXwbMFZP5oM/PyOkLNyKjBND2J+rs0wlh3o=;
+        b=Uw8+YmgH0VYSod7/gUgbBpnNZhzmW3Y+wSosHBWnPyjXK2zzJ3kCrYrkk/GrZnCX5g
+         GhzYHAn54BL4awyJFYIzc2jc2SaoCAw2utl+SLIi3kscJtPtkZLvmoMRrDeGU/BDAlzJ
+         smmWUHezOcC+s0HkVe0DzS754kYY7qKKaZ6UdAnmTiuJFLvAZ3ha6Lt+4btm5eIU6zcq
+         FvS4qZAP9oFQuLFWYReUKNRhomuQ52eQxnp11jA9S8YNjGvzwRKkelwZKhvvd6dZpvA4
+         U+Z/IHEk8Muwa0t6nayR2Vh4M53L/MK3fybY6f4H/ZI7OQgrkwDF8KFiMlQJS8V77s+c
+         A2xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780048225; x=1780653025;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=noZUE1IsUXwbMFZP5oM/PyOkLNyKjBND2J+rs0wlh3o=;
+        b=XgJAg3kB78qH80fM2/+Dg9lRmzyqx7QqkvL0E9ZK92ioGVpnjJPlie4sbbxpQtVr3z
+         1xvLTX0jtxbKjHBli46TdRn39ofjXl0KimLsrMkwE5EMausGjSU8wXA3oOEkZfSBXEoz
+         mkQg1H58cnUWPXXVZIPkEePGa/6BmmrbyJPE2fAiDEsnaxLSeEFBOde2ByGcl1EODYgv
+         K927MOL7dVU1sn3mvjaNgp1ElKP7QxITaglr9sDm9cUYWiQlYXAmws79sNUN29PtcQrj
+         zC/9dHxCfK6SVGZ8J8MYVwx4I/XrGyZdKiK0MHlSHczOJg2ylKBKyS1sRJGAdS5pjPNn
+         IEAg==
+X-Forwarded-Encrypted: i=1; AFNElJ9OUQBCIKDbMwtwo45e7cEW8verazNYeU1GKpVbsCaJEwz1opc+zjMI5+5b9f9QqlUAMxi4p8wc6hqK@vger.kernel.org
+X-Gm-Message-State: AOJu0YzA442k+HrlPT8YMYaM1gh5jupGuFHzYcJJNyUfQt/gg7CNAqQ3
+	e6v34cNbT/oDOz+wiBrCD/ZCD172oeSzFfqGDfWTC5n9ufh2wJNQnaAWOFJGKPBBMRQ=
+X-Gm-Gg: Acq92OH7qR+sN6G0kPJyiaQbQ2ly10hLCv01I313RvTijKur+weGKFGqEuz6GHe4JcR
+	9fyX7bDrsVfsgHQ993w7LVzeUiLG0y2ATRxQTt0zENFm0Ff42KSuKEwzVgzsiL+OrzCUY/V9S2s
+	hIvGR5VRvp/TnDK2wkYCiBWprxIYtMxiLS/hEOLfZ7Me/bnko26wfSZj4RSO5ca67vuUpvPCpUi
+	zIEpQyWOMuamwudaeRgVzK0ZOtYW8cTkRfHojeUHj3ohgXDK3Q5hUZomTE7unbjCbZX4RNfgaPX
+	tLNgw/CwHByScQ18iQi9Shay2tH1tLT2X43cF1axaHu8QDgdIBDpbaNPnCvJ/uws8ZlML9LQM0/
+	0Twv/fZDSdhXCLguJttZ7Wz5l6vIt7SYXS9AkMm8jPrlCxO7HOTxd/wmfIiz7Hhjs76LAVz0A/H
+	+qagw1SXRCYNlwDvBnUGN8VWAoD2gnOlg1xt9JcxrBdw==
+X-Received: by 2002:a05:6000:21c6:b0:45e:7418:a3f2 with SMTP id ffacd0b85a97d-45ef14481a4mr2488243f8f.26.1780048225062;
+        Fri, 29 May 2026 02:50:25 -0700 (PDT)
+Received: from localhost ([128.77.52.126])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45ef354bb7asm2425833f8f.20.2026.05.29.02.50.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2026 02:50:24 -0700 (PDT)
+Date: Fri, 29 May 2026 11:50:19 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Mark Bloch <mbloch@nvidia.com>
+Cc: Jiri Pirko <jiri@nvidia.com>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
+	Tariq Toukan <tariqt@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
+	Saeed Mahameed <saeedm@nvidia.com>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>
+Subject: Re: [PATCH net] devlink: Release nested relation on devlink free
+Message-ID: <ahlhVnY0CGHV67Eq@FV6GYCPJ69>
+References: <20260528191411.3270532-1-mbloch@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-0.66 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260528191411.3270532-1-mbloch@nvidia.com>
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21489-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cui.tao@linux.dev,linux-rdma@vger.kernel.org];
+	DMARC_NA(0.00)[resnulli.us];
+	TAGGED_FROM(0.00)[bounces-21490-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,rdma.events:url,kylinos.cn:email,linux.dev:mid,linux.dev:dkim]
-X-Rspamd-Queue-Id: 181265FFBC7
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: BCB47600413
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Tao Cui <cuitao@kylinos.cn>
+Thu, May 28, 2026 at 09:14:10PM +0200, mbloch@nvidia.com wrote:
+>devlink relation state is normally released from devl_unregister(), which
+>calls devlink_rel_put(). This misses devlink instances that get a nested
+>relation before registration and then fail probe before devl_register() is
+>reached.
+>
+>That flow can happen for SFs. The child devlink gets linked to its
+>parent before registration, then a later probe error calls devlink_free()
+>directly. Since the instance was never registered, devl_unregister() is not
+>called and devlink->rel is leaked.
+>
+>Release any pending relation from devlink_free() as well. The registered
+>path is unchanged because devl_unregister() already clears devlink->rel
+>before devlink_free() runs.
+>
+>Fixes: c137743bce02 ("devlink: introduce object and nested devlink relationship infra")
+>Signed-off-by: Mark Bloch <mbloch@nvidia.com>
 
-The RDMA cgroup now supports MR memory size tracking via the new
-mr_mem resource.  Update the cgroup-v2 documentation to describe
-the new resource and revise the usage examples accordingly.
-
-The mr_mem resource tracks the cumulative size of memory registered
-through Memory Regions per device per cgroup, providing a DMA
-registration budget that is orthogonal to the existing hca_object
-counter.
-
-Signed-off-by: Tao Cui <cuitao@kylinos.cn>
----
- Documentation/admin-guide/cgroup-v2.rst | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 993446ab66d0..08d80e6f79ec 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2766,15 +2766,16 @@ RDMA Interface Files
- 
- 	The following nested keys are defined.
- 
--	  ==========	=============================
-+	  ==========	================================================
- 	  hca_handle	Maximum number of HCA Handles
- 	  hca_object 	Maximum number of HCA Objects
--	  ==========	=============================
-+	  mr_mem	Maximum cumulative MR memory size in bytes
-+	  ==========	================================================
- 
- 	An example for mlx4 and ocrdma device follows::
- 
--	  mlx4_0 hca_handle=2 hca_object=2000
--	  ocrdma1 hca_handle=3 hca_object=max
-+	  mlx4_0 hca_handle=2 hca_object=2000 mr_mem=1073741824
-+	  ocrdma1 hca_handle=3 hca_object=max mr_mem=max
- 
-   rdma.current
- 	A read-only file that describes current resource usage.
-@@ -2782,8 +2783,8 @@ RDMA Interface Files
- 
- 	An example for mlx4 and ocrdma device follows::
- 
--	  mlx4_0 hca_handle=1 hca_object=20
--	  ocrdma1 hca_handle=1 hca_object=23
-+	  mlx4_0 hca_handle=1 hca_object=20 mr_mem=1048576
-+	  ocrdma1 hca_handle=1 hca_object=23 mr_mem=0
- 
-   rdma.peak
- 	A read-only nested-keyed file that exists for all the cgroups
-@@ -2792,8 +2793,8 @@ RDMA Interface Files
- 
- 	An example for mlx4 and ocrdma device follows::
- 
--	  mlx4_0 hca_handle=1 hca_object=20
--	  ocrdma1 hca_handle=0 hca_object=23
-+	  mlx4_0 hca_handle=1 hca_object=20 mr_mem=1048576
-+	  ocrdma1 hca_handle=0 hca_object=23 mr_mem=0
- 
-   rdma.events
- 	A read-only nested-keyed file which exists on non-root
-@@ -2815,7 +2816,7 @@ RDMA Interface Files
- 
- 	An example for mlx4 device follows::
- 
--	  mlx4_0 hca_handle.max=5 hca_handle.alloc_fail=3 hca_object.max=0 hca_object.alloc_fail=0
-+	  mlx4_0 hca_handle.max=5 hca_handle.alloc_fail=3 hca_object.max=0 hca_object.alloc_fail=0 mr_mem.max=0 mr_mem.alloc_fail=0
- 
-   rdma.events.local
- 	Similar to rdma.events but the fields in the file are local
-@@ -2836,7 +2837,7 @@ RDMA Interface Files
- 
- 	An example for mlx4 device follows::
- 
--	  mlx4_0 hca_handle.max=5 hca_handle.alloc_fail=0 hca_object.max=0 hca_object.alloc_fail=0
-+	  mlx4_0 hca_handle.max=5 hca_handle.alloc_fail=0 hca_object.max=0 hca_object.alloc_fail=0 mr_mem.max=0 mr_mem.alloc_fail=0
- 
- DMEM
- ----
--- 
-2.43.0
-
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 
