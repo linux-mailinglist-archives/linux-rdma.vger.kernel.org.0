@@ -1,213 +1,256 @@
-Return-Path: <linux-rdma+bounces-21481-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21482-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IOdCEM8pGWp/rQgAu9opvQ
-	(envelope-from <linux-rdma+bounces-21481-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 07:53:19 +0200
+	id OCVgM6IzGWqDsggAu9opvQ
+	(envelope-from <linux-rdma+bounces-21482-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 08:35:14 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6B0F5FDA3C
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 07:53:18 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B3C95FDFD6
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 08:35:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id EEE38302AD30
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 05:53:17 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id A98513050F11
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 06:34:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF48C3A987B;
-	Fri, 29 May 2026 05:53:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2FD43AA182;
+	Fri, 29 May 2026 06:34:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nBnr6Sl2"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="tE2F1C3+"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5DF63A9D8B;
-	Fri, 29 May 2026 05:53:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780033993; cv=none; b=pnAksVpT4KZLmBzBwXSzpD3wnsXApUc6Snyn0rHFZ3mQ3aSexbvT7hpriHWNKeQBV6/BqAiNpcUZnwoHb9g6/b9OkyctQAM0eGC0KYEONOIIqMUa2SbK38+f+Q3X96AkX0F4tkHVifEKyAAXtk8RgCIkXqEB0osM39xtFjXr/ZE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780033993; c=relaxed/simple;
-	bh=6b98PknAu9fnpPh28wu/W0lGM30VoCmrxBLkz3uDFlw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GOEzKZSkk/7tqQhhpoAzzLmy1Nk+U/mA5Nrad//wo76zc4distAxje7tnoMkkc+zuZv0EHLgn7y/m5Wvn1kwlMgXAv8peLCcIXfIMi0uKD04ZY9QpB+5ffGgQW2fJ0lhwVxuF44+/0EE157mLa+w6qCaR58KX6Lz3nMs2YpKoDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nBnr6Sl2; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 64SLlpSJ1467924;
-	Fri, 29 May 2026 05:53:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 298603A3E88
+	for <linux-rdma@vger.kernel.org>; Fri, 29 May 2026 06:34:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.153.30
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780036493; cv=fail; b=GVFLpIWVF2MxdKTclDy7Fi/X5NR+oPEOEuYfuDGGaRweWSRSo1iOZv4pFWZeB+m4LwQslWHkfxK8eTaCo7Q2Z9TSCKI+DI6cSOqgr8QGUS0Bm0awz2Aph1M2+aJwSxeQsYG9wvR7seduIVxV3oyRvGVDQqT4Y9rIRi+w+krhlzA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780036493; c=relaxed/simple;
+	bh=ZiT8x+cfHgSyrwMnA66rNUoxHkXDnwIwkwrIcOdA0Bc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HuBic7kaIy62AS8xr/2mLCmK/uGgUWk8MQ6T2rQsicOIPxSGL4eUKkEUKWjJrdDKEAbzBROmniwgnHmpTfpWO6SJQn0rgaDXeIIHGMBFiMy5tkC2CR7WaVHVDqR8xm3Dz+YIH/E0TzU11cBC1rfBU413wc5pJhvuaunGum/hs6s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=tE2F1C3+; arc=fail smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 64T0l29D2027065
+	for <linux-rdma@vger.kernel.org>; Thu, 28 May 2026 23:34:51 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=3DHzLI
-	UUaF3VlEBHn0hM3pfNHNDJcNenZO1Icp2QhDs=; b=nBnr6Sl2GzJtkoeQpR0s1X
-	zB6CAABKvhdFZZYi6k3Zk/K97BG6S74GtRWJCGTABRoxDxeGoPMO6FreU3HT3fD7
-	qGQVvwRuxxviJPrknWT7/WqrEPzxt66H+SXWgkdyWtLDSs2b3qlswUW08YJI0fX7
-	jI/bsAT4ivIPmd1kFgKPNODP4Kf9QzLqc0VD9C8Oo4sT5aiegWZlH4r86xBMejwZ
-	IghyVMhVJRKAbQ1Za4gjjt+ahRNKdwx7u4ZGhlUKDV78EhjBUMmEcLvr6rgQozWj
-	KtTZzvbhvXQWgEjwyPU2vmsznqkqUWbGtE1cwpfUfufoHPaFdVeMwG+pnJ4rsgaQ
-	==
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4ee886eu64-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 May 2026 05:53:01 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 64T5d5Em023578;
-	Fri, 29 May 2026 05:53:00 GMT
-Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4edjrbbte9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 May 2026 05:53:00 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
-	by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 64T5qxkp22348360
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 29 May 2026 05:52:59 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2D4015805D;
-	Fri, 29 May 2026 05:52:59 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1598D5805C;
-	Fri, 29 May 2026 05:52:57 +0000 (GMT)
-Received: from [9.61.52.163] (unknown [9.61.52.163])
-	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 29 May 2026 05:52:56 +0000 (GMT)
-Message-ID: <6734f050-d660-4d82-b59e-bef28ff332bc@linux.ibm.com>
-Date: Fri, 29 May 2026 11:22:55 +0530
+	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
+	 bh=ZiT8x+cfHgSyrwMnA66rNUoxHkXDnwIwkwrIcOdA0Bc=; b=tE2F1C3+IWIc
+	hD6uPAo9NgDmLx3SiAIqN6xdU/vi1BTlNSH50fpgV8+w2z56TbYNWRvwyATimLcQ
+	6gBB7u+bSsBhHZxDEcSgqK3/4LhMs0I3XhEpCctNiBQjacxzZ64Ht3GAKINKXsRe
+	2a4b6ZZDgp7DFIXB6NZzeM/x8uiRnSviRZdPNOFY+C+No5faqHXGRxg3ix2FcSdL
+	ETSBtsgPPA9Za6p83WxjzQ6xcL+i2YajrLWFKyrDiNGr07q5cwUoyo4ikTdnEkY3
+	yiwI4qfRPsWTAFXgnVqxw2XBZSbFpE5+g2k/neK+34pAldo7nom/u4tzd6ac5WIM
+	FzG4O2F7ag==
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4ee7x1j3yt-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <linux-rdma@vger.kernel.org>; Thu, 28 May 2026 23:34:51 -0700 (PDT)
+Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-7e4de59797fso22424092a34.3
+        for <linux-rdma@vger.kernel.org>; Thu, 28 May 2026 23:34:50 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1780036490; cv=none;
+        d=google.com; s=arc-20240605;
+        b=YqdPlTJKAwUBE3ReX5vhinA9mg4m2bJ10oPdxnGw3Z92ZYa5/0Gz+P2l4bsQB93aKg
+         zZ1pvWZoxfjAJo+OFOjM3ysUyTNVp0SWWMp5BnGzd0b+QDAecpqERCfeD9tEMccyg9uy
+         NrDrVeLRNzLaE+bWtN9uvG+gO9RU2qiGOEIqcjbNbVVu8F3XLSkYbkDu+2crNWg9N/zv
+         ND3BUJnlbRiW8iHE158/3O2rm35hx02XRz05N6xnuPJXGRbwwYydPXa6uQH/dWXR5akn
+         CwpzVVjbqRz7Ueb5knkI9LPBvK/JV07+VHnOxQuqfxsfd5Cjb6HCM0yDf4xgS2nv5G+g
+         R+pw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version;
+        bh=sjBZwiGe18mw6X67+Um2SWVYDlncy8HfxAJKV10muTE=;
+        fh=4z7mmjAfHVY9vmJYwZSLAsqtuGZGuTGLXFHgIR1FHgw=;
+        b=W33buKuzEZcIKyTjumFaI5Vr3BJyHddAYBqwKm8DMypSJmfXU1AI+YqbkgU3rVv85L
+         JZegI7qgEcE8vhFz4H0WMcjd+ne+LRfQ5VScR8UeZOUTp1ie7Jd4dCVXe4Pz+kV822ae
+         d1Xk4HhnoryyhAv0tZvf8h1/xHupbZDyboctAYZDJKYdxK/70eiVlfrMU4TmrBRxvo8w
+         9Vj8ba3fY36e6wh/mBIPFbSmAFRPmULsQHwW1zlK0v6nIRCV4jZmslSziRDFm3RCwcYV
+         lLqJ8DtPy0pZpkNVIElT5O2nhd/CSGVFuaYpQzX8kV5kaMgzvO3adqf70CsaX7GrMaFX
+         irZQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780036490; x=1780641290;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=sjBZwiGe18mw6X67+Um2SWVYDlncy8HfxAJKV10muTE=;
+        b=glWZcFKNN08uLPOW9BB/gUZeq2b+FVV5naPCnIDop6NIS5wVxqzc94gy14oUmNJHWW
+         n061LyjXa/X3/bPfpUfVXsd5fNXZtPQIM++t5jgKE68rOwB6yCCzFHHg6b6XMIIyEfXP
+         1s0GjGcgi6nRA05hTsTJJYZIqZmLjK+I1q/j3L8KfvaP9puoUiWOGVmWB74BNUzfSMOp
+         I1qMlDMtMF2xIVlBtYzfGRnEo/c1R8uZGeNe55TkmAL9SWSWpoUJZEB0Xtqbm38G/JCQ
+         KqrPoUSdjZOVPWxxv0+Wgfn5HAVhfvdnVNMfnWM+vVCfu23s1P7dVCrY81TG/fxJcqfx
+         Jl3A==
+X-Forwarded-Encrypted: i=1; AFNElJ8AjdUU11aGhAR/Qteb+HTJXtcXEg10z1pdXzgZu+JBcsZ8/41TYkr/mvlI40zyUzfL2oErm3s+2HsN@vger.kernel.org
+X-Gm-Message-State: AOJu0YxYAUV+aBkQUXu1v9qLg1hpRsNER6IqTBZRd0Hc4Y+VvoqfXVia
+	6Jz5cOmJLnaD3JBwd6XIUN7gbQU1cXWQ71y6ryhqKBaK9cGyKR7rQmSpfUnXKehlOkkkAE94Ovx
+	Kaz/0PtpS+NEFLLppyKG/dozVH8vdPX0nKQg9VnV/Q9Vcq/SKcESv015JZtuCDEI5mEaUts7sFU
+	RH1/RRQad2wV4R3d7tAA+JMKYNqa3kuAcMS0WC6P8Bybdwquw=
+X-Gm-Gg: Acq92OEPc3KwT3xoyYM9wED8l99SWLrzwBalE7aYHTjugURvZAdwRMHvvyB0lmORHOe
+	WfkshJF7WGoP8yT2Im2WAyVCccWoV+iGdNOBNul2+iy4OPQIyhzd6b19VlFTyYOj7eD5SIcck4B
+	568Z+XK16McaKlV64YxPLXQ2e8H/08sPe87MgHBt5L869ZpHXh0geFu9GqxiPAQ56RDsxdW8cwn
+	miLLak8JnUxDN1IcYExwbSqyM7CmnABBr1m5aezgg/qrFgvrzw=
+X-Received: by 2002:a05:6830:8285:b0:7d9:d2b6:1568 with SMTP id 46e09a7af769-7e694dc2b7cmr1101948a34.17.1780036490385;
+        Thu, 28 May 2026 23:34:50 -0700 (PDT)
+X-Received: by 2002:a05:6830:8285:b0:7d9:d2b6:1568 with SMTP id
+ 46e09a7af769-7e694dc2b7cmr1101924a34.17.1780036489896; Thu, 28 May 2026
+ 23:34:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: blktests failures with v7.1-rc1 kernel
-To: "Shin'ichiro Kawasaki" <shinichiro.kawasaki@wdc.com>
-Cc: "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        nbd@other.debian.org, linux-rdma@vger.kernel.org
-References: <afB5syZbUrppgsDQ@shinmob>
- <c4ddc101-184a-4e4f-82ca-c3123bce5e34@linux.ibm.com>
- <ahfQFHuVx2G7OFLE@shinmob>
-Content-Language: en-US
-From: Nilay Shroff <nilay@linux.ibm.com>
-In-Reply-To: <ahfQFHuVx2G7OFLE@shinmob>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: C75PYe2PrWZW72uUhRwham0EPvUjY0df
-X-Authority-Analysis: v=2.4 cv=Z8Dc2nRA c=1 sm=1 tr=0 ts=6a1929bd cx=c_pps
- a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
- a=IkcTkHD0fZMA:10 a=NGcC8JguVDcA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=U7nrCbtTmkRpXpFmAIza:22 a=VwQbUJbxAAAA:8
- a=Ikd4Dj_1AAAA:8 a=TbhEY_3gdXjHXVBi0OcA:9 a=QEXdDO2ut3YA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTI5MDA1MiBTYWx0ZWRfXxGeOl4O3/her
- OaD/kjRlCoezqfXBhqZA8BF6CznskLhFOTgkMYj6EBDbkh4WRPuZJ0UU6MQ4GIOYvEujDIktKt4
- 4+s/71EunVXADL+hu3rf1mat6F3QlmTHl+zrBL9rsU+uGvO/kgQr+DGnKOvaeo+2W63K1YYZhcV
- FrVZ0AxlUrfcsxT8thx+y+UNqhfPqpW2hVwLGIVWhElZSLPTYSzRocY6EwMv6NVcIQdqSOhlKJE
- GUxaRby7yyfTWQeicBICr61zYtRybwBTmJVtt/dwwrqy8aVMKtUPqpBu9G1f89G9OeHyd8z+edB
- t8BapD5CxoEpyu6aGe73doDGUxsz0is0lRqkxzQN3G6RPYgCpyobPV07mG4avqoA4reH7N8nlqj
- REsTxF3b0M0nv/sG0sNGiXphRYNGe1xvhiwCwJAoZNWkSOSpBi0ExMk1pJvC6qZpU7IhcLK0K6T
- AOxXhPA7/mDX6fLXvAA==
-X-Proofpoint-ORIG-GUID: C75PYe2PrWZW72uUhRwham0EPvUjY0df
+References: <20260526144401.1485788-1-zhipingz@meta.com> <a8cd01ab-d7aa-465d-bfa3-431f78f33ee1@amd.com>
+ <20260527121438.GJ2487554@ziepe.ca> <ff247643-73e7-44e2-b3d5-8ac0a8efb871@amd.com>
+ <20260527123634.GK2487554@ziepe.ca> <a5ff1930-e9fb-43f5-82ab-9875d7a28421@amd.com>
+ <CAH3zFs2KALuHXReLZG_uoqvBBWvBzU6rHKakmt6HBV7PZEsD=w@mail.gmail.com> <71302a7a-6b9f-40da-af81-b1862dbd637a@amd.com>
+In-Reply-To: <71302a7a-6b9f-40da-af81-b1862dbd637a@amd.com>
+From: Zhiping Zhang <zhipingz@meta.com>
+Date: Thu, 28 May 2026 23:34:39 -0700
+X-Gm-Features: AVHnY4LezOs9bV0UClJoUOHcNCdwbl4qfviQEKqNUnQx0j2Atcq5JV3HHpZqmfs
+Message-ID: <CAH3zFs036sr93duQKx613pCyOYw4t0_x_TdSza1xBCaEmqijyA@mail.gmail.com>
+Subject: Re: [PATCH v5 0/4] vfio/dma-buf: add TPH support for peer-to-peer access
+To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Alex Williamson <alex@shazbot.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Bjorn Helgaas <helgaas@kernel.org>, kvm@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Keith Busch <kbusch@kernel.org>, Yochai Cohen <yochai@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-GUID: H9tSPD6-mE0KU8mRSrv0VdDLwDpimF_s
+X-Authority-Analysis: v=2.4 cv=Yu8/gYYX c=1 sm=1 tr=0 ts=6a19338b cx=c_pps
+ a=+3WqYijBVYhDct2f5Fivkw==:117 a=IkcTkHD0fZMA:10 a=NGcC8JguVDcA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=7x6HtfJdh03M6CCDgxCd:22 a=xtH7KyWI9dI7BmFOsl-x:22
+ a=zd2uoN0lAAAA:8 a=f7uq7ceqOUF8L-MFIRoA:9 a=QEXdDO2ut3YA:10
+ a=eYe2g0i6gJ5uXG_o6N4q:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTI5MDA2MSBTYWx0ZWRfX7FvD68RTRc5y
+ 0TmI5Vj5E1FEumRFWG4JXTHWv7LqbfkFKhS8GuB5T7mIWIlckF54g/H9c0lqH4VTfF1otWxkP4c
+ EQ/e8pmJ7eVOveCbdmimLd/kPadip/EObvTnboz4WNJ6JobMG2RDTHHO5xAE0XKpGnR0p1N8cIL
+ c9EPHA6G2JWzRJ5JnR3zXxofBhwbu7j6iupWGodQeMvkMuV4D8lZyiBvKQtheT75IlyA3k1gR/r
+ b0zYRDg+Jn0pX1v+jpQms5lOrO0NMlAvk+iZwMHGtWHVGewJRKOHCqb64TE2oGm9TeoS+00Mjle
+ RwfwMvtGUTaPuaQs15IqNNw6+smlQLdx0KKw6wzkWG5P7zkYE3qXrG4Csa0ly+8bXLjSVr2L3US
+ pNMZbdc8d5X+AvYnhfzs/WgsKkKMXirQiGb9oGoEIThl72Hm0bH68iSZ1SmRf7eh049fGA0cyre
+ 9esZNELC1405LgnEcpQ==
+X-Proofpoint-ORIG-GUID: H9tSPD6-mE0KU8mRSrv0VdDLwDpimF_s
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
  definitions=2026-05-29_01,2026-05-28_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 spamscore=0 bulkscore=0 impostorscore=0 priorityscore=1501
- malwarescore=0 phishscore=0 suspectscore=0 adultscore=0 lowpriorityscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2605210000 definitions=main-2605290052
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[ibm.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[ibm.com:s=pp1];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[meta.com,reject];
+	R_DKIM_ALLOW(-0.20)[meta.com:s=s2048-2025-q2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21481-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21482-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	URIBL_MULTI_FAIL(0.00)[sto.lore.kernel.org:server fail,linux.ibm.com:server fail];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,linux.ibm.com:mid];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[nilay@linux.ibm.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[ibm.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	DKIM_TRACE(0.00)[meta.com:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[zhipingz@meta.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	RCVD_COUNT_SEVEN(0.00)[11]
-X-Rspamd-Queue-Id: D6B0F5FDA3C
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,amd.com:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,meta.com:dkim]
+X-Rspamd-Queue-Id: 6B3C95FDFD6
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 5/28/26 10:54 AM, Shin'ichiro Kawasaki wrote:
-> On May 25, 2026 / 18:14, Nilay Shroff wrote:
->> hi Shinichiro,
->>
->> On 4/28/26 2:43 PM, Shin'ichiro Kawasaki wrote:
-> [...]
->>> #1: nvme/005,063 (tcp transport)
->>>
->>>       The test cases nvme/005 and 063 fail for tcp transport due to the lockdep
->>>       WARN related to the three locks q->q_usage_counter, q->elevator_lock and
->>>       set->srcu. The failure was reported first time for nvme/063 and v6.16-rc1
->>>       kernel [2].
->>>
->>>       Chaitanya provided a fix patch (thanks!), and it is queued for v7.1-rcX tags
->>>       [3]. However, nvme/005 and 063 still fail even when I apply the fix patch to
->>>       v7.1-rc1 kernel. The call traces of the lockdep WARN are different between
->>>       "v7.1-rc1" kernel [4] and "v7.1-rc1+the fix patch" kernel [5]. I guess that
->>>       there exist two lockdep problems with similar symptoms and patch [3] fixed
->>>       one of them. I guess that still one problem is left.
->>>
->>>       [2]https://lore.kernel.org/linux-block/4fdm37so3o4xricdgfosgmohn63aa7wj3ua4e5vpihoamwg3ui@fq42f5q5t5ic/
->>>       [3]https://lore.kernel.org/all/20260413171628.6204-1-kch@nvidia.com/
->>
->>
->> I looked into this lockdep warning, and it seems that Chaitanya's patch indeed fixes the
->> original issue reported in [4]. However, the new warning reported in [5] appears to be a
->> separate lockdep splat and, from what I can tell, likely a false positive. There are two
->> reasons why I think so:
->>
->> 1. The lockdep report suggests that thread #1 is sending data over a TCP socket while
->>     another thread #2 is still in the process of establishing that same socket connection.
->>     In practice, this should not be possible because request dispatch over the socket can
->>     only happen after the connection setup has completed successfully.
->>
->> 2. The warning also suggests that while thread #0 is deleting the gendisk and unregistering
->>     the corresponding request queue, another thread #5 is concurrently attempting to change
->>     the queue elevator. However, once gendisk deletion starts, elevator switching is already
->>     inhibited for that queue (see disable_elv_switch()), so the reported locking scenario
->>     should not be reachable in practice.
->>
->> Based on the above, I suspect this is a lockdep false positive caused by dependency tracking
->> across different queue/socket lifecycle phases. We may need to suppress lock dependency tracking
->> in some of these paths to avoid the false warning.
-> 
-> Hi Nilay, thank you very much looking into this. It is good to know that
-> Chaitanya's patch fixed one problem, and the other problem looks like a false-
-> positive.
-> 
-> To confirm that "lockdep false positive caused by dependency tracking across
-> different queue/socket lifecycle phases", I created the patch attached. It
-> uses dynamic lockdep keys for the sockets of nvme-tcp controllers. With this
-> patch, the WARN at nvme/005 disappears! I think this indicates that your
-> suspect is correct. I will do some more testing and post the patch.
+On Thu, May 28, 2026 at 12:46=E2=80=AFAM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> >
+> On 5/28/26 06:55, Zhiping Zhang wrote:
+> > On Wed, May 27, 2026 at 5:53=E2=80=AFAM Christian K=C3=B6nig
+> > <christian.koenig@amd.com> wrote:
+> >>
+> >>>
+> >> On 5/27/26 14:36, Jason Gunthorpe wrote:
+> >>> On Wed, May 27, 2026 at 02:23:46PM +0200, Christian K=C3=B6nig wrote:
+> >>>
+> >>>> Yeah that's a good point, I should probably rephrase the question.
+> >>>>
+> >>>> I'm aware of how TPH works by adding the extra ST to the TLP.
+> >>>>
+> >>>> But my question is how is that useful to a PCIe endpoint? What is th=
+e effect of the ST here?
+> >>>
+> >>> TBH I've never heard Meta explain what their device is doing with
+> >>> it. At least it seems to be super important to their device..
+> >>
+> >> Yeah I think at least a brief description of what is going on here wou=
+ld be necessary for the review.
+> >>
+> >> Otherwise we have only the info that the exporter wants to give an opa=
+que ST for the importer to use and no technical description what that is go=
+od for, how to test it etc...
+> >>
+> >> Regards,
+> >> Christian.
+> >>
+> >>>
+> >>> Jason
+> >>
+> >
+> > Fair point =E2=80=94 I'll add a couple of paragraphs to the v6 cover le=
+tter and the
+> > patch's changelog as well.
+> >
+> > The short version: in this series the vfio-pci device is the completer
+> > of the P2P
+> > writes and mlx5 is the requester. As Jason noted, ST semantics on the c=
+ompleter
+> > are implementation-defined, so only the driver that owns the completer =
+(here,
+> > vfio-pci on behalf of its userspace owner) can hand out a meaningful ST=
+; the
+> > importer treats it as opaque and just places it on the TLP.
+>
+> Yeah but that is not really sufficient to justify a driver 2 driver inter=
+face.
+>
+> Which PF driver is backing the vfio-pci and what effect does sending TLPs=
+ with ST to it compared to TLPs without an ST?
+>
+> Regards,
+> Christian.
+>
 
-Thanks for working on the patch! I reviewed it and the changes look good to me.
-I agree assigning a unique lockdep key to each nvmf-tcp socket is the right
-solution.
+
+There's no in-tree vendor PF driver =E2=80=94 the device is a Meta MTIA
+accelerator managed entirely from userspace via VFIO passthrough.
+That's why the ST has to flow through a uAPI: userspace owns the
+device and its ST table, so it's the only entity that can publish a
+meaningful value for a given dma-buf.
+
+On the effect: the endpoint's PCIe ingress block uses the 8-bit ST as
+an in-band instruction for the incoming P2P TLP =E2=80=94 selecting a target
+cache partition and, on writes, an in-flight operation on the data
+before it lands. The dma-buf callback keeps this opaque to the
+framework =E2=80=94 only the producer (userspace owner of the VFIO device) =
+and
+the consumer (endpoint block) need to interpret the value.
+
+will include these words into v6's cover letter.
 
 Thanks,
---Nilay
-
+Zhiping
 
