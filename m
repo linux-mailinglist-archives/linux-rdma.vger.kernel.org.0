@@ -1,81 +1,81 @@
-Return-Path: <linux-rdma+bounces-21511-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21512-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uKilMHOZGWrVxggAu9opvQ
-	(envelope-from <linux-rdma+bounces-21511-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 15:49:39 +0200
+	id AI7WCXGZGWrVxggAu9opvQ
+	(envelope-from <linux-rdma+bounces-21512-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 15:49:37 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3823D60316E
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 15:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 72534603165
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 15:49:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 34BC330F94F0
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 13:43:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2FC893108F69
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 13:43:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C56A533B6FC;
-	Fri, 29 May 2026 13:43:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8E912C0260;
+	Fri, 29 May 2026 13:43:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="DmoOD5mr"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="SccUL2Ih"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F12338906
-	for <linux-rdma@vger.kernel.org>; Fri, 29 May 2026 13:43:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADE0B33CE88
+	for <linux-rdma@vger.kernel.org>; Fri, 29 May 2026 13:43:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780062234; cv=none; b=sKloVgF3FYQqX+hxGakfkfzVUOaKRb9Y2LN6f46DNksDxvk6QgAEGu3OPYckJEBwCrosqdeOX3YXgQTuIUDLdhTc4quP4LlNNxBuhJh4uN/f+dZNkbuEkZFRQlyU9g/zwNivCVDIXTwMTVoMpKyFK3iefw+x5EErj6mw5Qwh0rs=
+	t=1780062237; cv=none; b=kkVR2wBvRh+QsZU+edTTDI5N43bomwe77NJcJELQeXDUlC+uKNfK4/4z5zpsjsx+PjBtMFp7pYH1acPfGmk4amm16/lu85VFvy7oTWMz1kpbuPy26jPSOXBSHKzmaEqwEg6Vrjc3OBrr3YFNiOtN42M4YO32Y9dXrgdM5TN65wU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780062234; c=relaxed/simple;
-	bh=MNCi2V/FiZPZZYwF3A+Ih5UGlD3+4tB+7jFbqCrPvTM=;
+	s=arc-20240116; t=1780062237; c=relaxed/simple;
+	bh=+wL1FcN1eICk2dnt8zTL2y63dZGFrP9K3uAsYbtQs3M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UeX81+IF+48o0+sHjKsjRWcgVSJDItqg4yV0SCmn8k7xZrEIniKEBm9eAxGW8hCZLsJOpVG75h39TiEqY5Wjrsr16IszVuqQOKNZIQrwioGVgCLnX8Z/X5PczkBv05PmFUu/SAKUAaH1SImtKxe5sYwCerqoJ7xF6uOXnyLFuEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=DmoOD5mr; arc=none smtp.client-ip=209.85.221.44
+	 MIME-Version; b=eMEVhbeXTqCBmlBGBulTAZn5eVZpRahtCNiciqGnrhvu6C7NxgzctA2iufIRf03jD7thW9JAht6UWAyJdZZHpBboYWOkJgthWwdEBgUhJZx+9JePK9HoaF+MZdTt8pgVZoRFwbocznxSMMoiDF6T3gy8am7GwXDpjNGP5xqjLGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=SccUL2Ih; arc=none smtp.client-ip=209.85.128.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-45ef4223be7so351454f8f.2
-        for <linux-rdma@vger.kernel.org>; Fri, 29 May 2026 06:43:52 -0700 (PDT)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4903f7a90d1so68358445e9.2
+        for <linux-rdma@vger.kernel.org>; Fri, 29 May 2026 06:43:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1780062231; x=1780667031; darn=vger.kernel.org;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1780062234; x=1780667034; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lefASPGl126/P0qKbYoiAvc8H8UkNkTWTI7MaDX9LEc=;
-        b=DmoOD5mrPzabqMDyGH0fHOZy88968K4PC6TrqCDTAFWHRgsQhWjPaaCRJZOjiie2vQ
-         3oIzHXGLqQfxg6n4YgHvp5vBj/QjE3yqQESVXnTz7rBuO/JxOsb11B+vJbbRI9YlSmU7
-         fiUFKOb/BBevFcVbmnGESg+QxsKW8/Y08tE2E9v2k80qAQoaHRDiCPeQ5W1U22eEsr1k
-         jh2m8bghaiNrxg+t//j8LpNnZ4QLhgW4H/q4AYDoaB8hmKBeNFlFJtFhGmkr23ahMsLa
-         /uH16fJcT9QS390Liy2+/x1Vh00I7zglIdLNovsbDVd2m2jSAybvtuctJ5I2AQiLkvsf
-         n/6Q==
+        bh=mCJSlalGXxlF7SxA7Qmp6JgjO0XPwfr98mt2V8cAV9I=;
+        b=SccUL2IhyJzcxGTYu/F5peEprOt720Ri26zz56G+xHcdORueWn3pQXVebXZ3NkEa5k
+         txmF1olioJFUnWHFct9pgaqtWf5j/pEbB73o55/euuKtpAcwccS7ksZNyYj0cs5zr7l8
+         ufNj++OGdsv+9W0X/K59Jf5G2SgRhA5TVcTqOldbSpWQtztVE2I4OlhlxRWF4nIQGEg5
+         pRkmpC2E9sFUeYW7sXwq8oSUpkMs1ow8ZrrxoKpgjMR8qq+a/lNSedtAoAaXfmoKsc7I
+         5AU7HzqquBRVyZpOc9oX8/NrNjQynUl+PPr77T63f+f0a5Djj9l27yze9Byz4LFRBSES
+         todQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780062231; x=1780667031;
+        d=1e100.net; s=20251104; t=1780062234; x=1780667034;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=lefASPGl126/P0qKbYoiAvc8H8UkNkTWTI7MaDX9LEc=;
-        b=JAGRjcJcNEEtK2saUo90Oj8sjMYbhiQSukiGE/xH2NE2A4L09MEg86ZWpCifsa2YJm
-         aM7LD5QA2wf3rcmyjfgKFQUoaoZULqK8RFhepMCfyPiQ1nZkkeY4XCE0U+sl6E4OoaUl
-         CCf8qWH4DtKeeaGe/GqTFv4LEUT87iir0ooDzLGPb2k9wDQPqwo+aYwhQRjPJOC5wwgP
-         1W0js7aADFoNSBqw0GWD2WnZ1GtTXcrA2dy043k5RJUDr1T4AUh8DEpHZ9dDTQ9zAYtN
-         +P4tFkj/t1jksKzUaPdU2q/FWWVdnDgX+RjigvzKHcYWHuWdVg38b71tz2qErlzOAOHI
-         VS7g==
-X-Gm-Message-State: AOJu0YxUMJCZVrMEc+XYLl/JQmE3s/0MA9x1zYRPozSDKvOdNjlnhmNb
-	e34WyYi3/0Ktwts78xlOHD4fVFJFZirKZXZPE/JF0aaeJ5IL2dSVFN/GOzm4exjTAoucCWCFsoY
-	/gPQnflIYDg==
-X-Gm-Gg: Acq92OEZsosazMJJr06OMRAG0c+qorUHUwgDu5RwMge25Z6FrWsafC8+ABEXKGbUN9d
-	TFdQB/Km8iq9slu/MDMJDDc4HqWX291KO0E8z+95TnBwX1X9WxUFgN83Z9QUYCsZi+/jkMWDiwf
-	f4nVEhvDr2gVEbWCiyFUe9npC6iW1F6AlvxMH9FSZ0TkhsxYypFFAtzC3Vi6TlEgCIKEiKAa/W1
-	Q+feDqlMSqaskRnYlmTR9LKujFrtF6LzxhHaJE0OUYQCbw32HzlAot8smPbNnbvQYNYS/qGhuVe
-	LfCDW091h4Fmk8WqQl/yvWgsNBFqPcsBifF0AC3A4XGCQWsOZkh1uLh4Pp8mA+HFweWwlKq0aSX
-	Q1fabhEn/wTuuZm+f1GM0UlvibAH7xnb6VlUWZb+MYlbvGGeyk7qZjcr24xkF5IpePDLFqXdITv
-	t8+I8i4185XOgJK80DxahqQTklUr6pPEasSGd3iNR/EG4=
-X-Received: by 2002:a05:600c:348f:b0:490:9df1:f0d5 with SMTP id 5b1f17b1804b1-4909df1f2c0mr43307095e9.28.1780062230967;
-        Fri, 29 May 2026 06:43:50 -0700 (PDT)
+        bh=mCJSlalGXxlF7SxA7Qmp6JgjO0XPwfr98mt2V8cAV9I=;
+        b=dM4wizcyu0mmR75BIOPxOG4sogSI7Xe6gZiUdIGDrCYxBOgENTqsfcBcMT5oc0LvrR
+         wueB7W0NFUiT9AIK4uzk1CH1CI2M7pdK+aosAMKcXMNsR0XbX+JFMMuLS6ptWnUZ1ovx
+         +sEiwKFLdOYHFKveCt2vP3/YPMqiZCmntvQMOb3iV7dam2aS6MqZd5BKEdkmDe3SGdq5
+         SdyyZlXBkcot83HuDVVJy7q3Pbd8SWmYN3hgf1e1iM75d0gKPmcJrcQXdHgz2C3Oz2zA
+         wa+r1of7U/BoioVL5//oxVFbrxjfo4XkHCi33teeaYzwAIT5vKVuhHpVxBOjFDHgCHEZ
+         Ek8Q==
+X-Gm-Message-State: AOJu0YynyGBAh25Gaxc9cw9azg2EAY2ls/XpA4CxE9SH4OE6UawIRtkX
+	5tP3hBM3A5xHCsnpI0ooTKGnpOG9WzqYl/esaDBhsJcVbnf3ua1V5ODk0Ukzh6d/TeaFWUuf10r
+	4+03p1KZoDQ==
+X-Gm-Gg: Acq92OH8oPmaxt6vXZbJUsLvD+GmYctkno4Fy6HyzwcovE+kgY2NpqF9pNL3F4a8ulp
+	zWSTX0ILUlwqY4vJNF7ye9NRrd2sgeC8S6mSa6qkJEwY1/Ldkr/W8c8Fk/3V7iyx0qLOwHWgzBg
+	cNyAsSsuZLb0YAOMbhL9AA3an6n3cZ2HZmuP8q6ud4IW77PduJiVUM8fvko+jeZZQd0pJgycRs9
+	9y0elCi8bcVojvwyNxsOtcMTHL2kgEWvjLfJkVTtzvlipvrT+HwH/UhE6SIsrkC+RehItdNZNwD
+	QHFMZ4qm8ozXbIju6rulMdejLjIQH0m1amT+jC7J5sL0gsK6lBVMZv5BGesK6iIpcqoo/f66QKz
+	eoTuW5mShdG58KNPSvPeqlndDs4dlnaJRSNLfkDDbSIbXLDvO8DaE7WcGcf1LGvQFlhGx1RqoSL
+	rHuoW7FKMQLjLpa7f0iwf2aCJh5Zf8o2tWPCgrXKTMOaM=
+X-Received: by 2002:a05:600c:a40c:b0:48a:6fd4:d3d3 with SMTP id 5b1f17b1804b1-4909c0ba8bdmr32508295e9.20.1780062234052;
+        Fri, 29 May 2026 06:43:54 -0700 (PDT)
 Received: from localhost ([140.209.217.212])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4909d6975e2sm65573075e9.6.2026.05.29.06.43.50
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4909c6319ddsm47575895e9.0.2026.05.29.06.43.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2026 06:43:50 -0700 (PDT)
+        Fri, 29 May 2026 06:43:53 -0700 (PDT)
 From: Jiri Pirko <jiri@resnulli.us>
 To: linux-rdma@vger.kernel.org
 Cc: jgg@ziepe.ca,
@@ -101,9 +101,9 @@ Cc: jgg@ziepe.ca,
 	andrew.gospodarek@broadcom.com,
 	selvin.xavier@broadcom.com,
 	jmoroni@google.com
-Subject: [PATCH rdma-next v9 11/16] RDMA/uverbs: Remove legacy umem field from struct ib_cq
-Date: Fri, 29 May 2026 15:43:07 +0200
-Message-ID: <20260529134312.2836341-12-jiri@resnulli.us>
+Subject: [PATCH rdma-next v9 12/16] RDMA/uverbs: Use UMEM attributes for QP creation
+Date: Fri, 29 May 2026 15:43:08 +0200
+Message-ID: <20260529134312.2836341-13-jiri@resnulli.us>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260529134312.2836341-1-jiri@resnulli.us>
 References: <20260529134312.2836341-1-jiri@resnulli.us>
@@ -123,11 +123,11 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21511-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21512-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	DMARC_NA(0.00)[resnulli.us];
-	URIBL_MULTI_FAIL(0.00)[resnulli-us.20251104.gappssmtp.com:server fail,resnulli.us:server fail,sea.lore.kernel.org:server fail,nvidia.com:server fail];
+	URIBL_MULTI_FAIL(0.00)[resnulli-us.20251104.gappssmtp.com:server fail,resnulli.us:server fail,nvidia.com:server fail,sea.lore.kernel.org:server fail];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -142,204 +142,100 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	RCPT_COUNT_TWELVE(0.00)[24];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,nvidia.com:email,resnulli-us.20251104.gappssmtp.com:dkim,resnulli.us:mid]
-X-Rspamd-Queue-Id: 3823D60316E
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,resnulli-us.20251104.gappssmtp.com:dkim,nvidia.com:email,resnulli.us:mid]
+X-Rspamd-Queue-Id: 72534603165
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Jiri Pirko <jiri@nvidia.com>
 
-Now that all drivers use helper to get umem and manage the lifetime,
-legacy umem field in struct ib_cq is no longer needed. Remove it
-along with ib_umem_get_cq_tmp() helper that populated it and both
-error and destroy paths.
+Apply the per-attribute UMEM model to the QP create method. Add
+three optional UMEM attributes that drivers pick from based on
+how their user ABI lays out the QP rings:
+
+- CREATE_QP_BUF_UMEM is a single user buffer that backs both
+  the SQ and RQ of one QP. This is the common case where
+  userspace pins one contiguous WQE region for the QP.
+- CREATE_QP_SQ_BUF_UMEM and CREATE_QP_RQ_BUF_UMEM are a pair
+  of user buffers backing the SQ and RQ independently, used
+  when the two rings live in physically distinct user
+  allocations and must be pinned and addressed separately.
+
+Existing drivers would map their current umems as follows:
+
+- mlx5: BUF for normal QPs (one ucmd->buf_addr covers SQ+RQ);
+  for IB_QPT_RAW_PACKET and IB_QP_CREATE_SOURCE_QPN, the RQ
+  side comes from ucmd->buf_addr (RQ-sized) via RQ_BUF and
+  the SQ from ucmd->sq_buf_addr via SQ_BUF.
+- mlx4: BUF, single ucmd.buf_addr covering SQ+RQ.
+- hns: BUF, single ucmd.buf_addr covering SQ + ext-SGE + RQ.
+- erdma: BUF, single ureq.qbuf_va sliced by the kernel into
+  SQ at offset 0 and RQ at rq_offset.
+- bnxt_re: SQ_BUF (ureq->qpsva) + RQ_BUF (ureq->qprva, the
+  RQ side is skipped when the QP uses an SRQ).
+- vmw_pvrdma: SQ_BUF (sbuf_addr) + RQ_BUF (rbuf_addr, the RQ
+  side is skipped when the QP uses an SRQ).
+- qedr: SQ_BUF (sq_addr) + RQ_BUF (rq_addr) for whichever
+  side the QP type actually has (no SQ for XRC_TGT/GSI; no
+  RQ for XRC_INI/XRC_TGT/SRQ).
+- ionic: SQ_BUF (req.sq.addr) + RQ_BUF (req.rq.addr); both
+  are skipped when the rings are placed in CMB instead of
+  host memory.
+- mana: raw-packet QP uses SQ_BUF (sq_buf_addr) only; the RC
+  path uses multiple per-queue user buffers (ucmd.queue_buf[])
+  that do not fit the SQ/RQ pair semantics of these attrs and
+  stays on the legacy UHW path.
+- efa, irdma, hfi1, ocrdma, mthca, cxgb4 and usnic do not pin
+  a QP WQE buffer via umem; none of these attributes apply.
 
 Signed-off-by: Jiri Pirko <jiri@nvidia.com>
 ---
+v3->v4:
+- extended patch description with BUF vs SQ_BUF/RQ_BUF semantics
+  and per-driver attr usage mapping
 v2->v3:
-- rebased on top of umem_list removal
+- replaced the array-form UVERBS_ATTR_BUFFERS attribute and its
+  uverbs_buf_qp_slots enum with per-attribute UMEM attrs
+- dropped qp->umem_list field, handler allocation, write-path NULL
+  arg, and the umem_list parameter on ib_create_qp_user()
+v1->v2:
+- fixed umem_list double free
 ---
- drivers/infiniband/core/umem.c                | 29 -------------------
- drivers/infiniband/core/uverbs_cmd.c          |  1 -
- drivers/infiniband/core/uverbs_std_types_cq.c | 17 -----------
- drivers/infiniband/core/verbs.c               |  7 -----
- include/rdma/ib_umem.h                        |  7 -----
- include/rdma/ib_verbs.h                       |  1 -
- 6 files changed, 62 deletions(-)
+ drivers/infiniband/core/uverbs_std_types_qp.c | 6 ++++++
+ include/uapi/rdma/ib_user_ioctl_cmds.h        | 3 +++
+ 2 files changed, 9 insertions(+)
 
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index b3261b924a71..89311fe65619 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -602,35 +602,6 @@ struct ib_umem *ib_umem_get_cq_buf_or_va(struct ib_device *device,
- }
- EXPORT_SYMBOL(ib_umem_get_cq_buf_or_va);
+diff --git a/drivers/infiniband/core/uverbs_std_types_qp.c b/drivers/infiniband/core/uverbs_std_types_qp.c
+index be0730e8509e..e44974abc6b5 100644
+--- a/drivers/infiniband/core/uverbs_std_types_qp.c
++++ b/drivers/infiniband/core/uverbs_std_types_qp.c
+@@ -340,6 +340,12 @@ DECLARE_UVERBS_NAMED_METHOD(
+ 	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_CREATE_QP_RESP_QP_NUM,
+ 			   UVERBS_ATTR_TYPE(u32),
+ 			   UA_MANDATORY),
++	UVERBS_ATTR_UMEM(UVERBS_ATTR_CREATE_QP_BUF_UMEM,
++			 UA_OPTIONAL),
++	UVERBS_ATTR_UMEM(UVERBS_ATTR_CREATE_QP_RQ_BUF_UMEM,
++			 UA_OPTIONAL),
++	UVERBS_ATTR_UMEM(UVERBS_ATTR_CREATE_QP_SQ_BUF_UMEM,
++			 UA_OPTIONAL),
+ 	UVERBS_ATTR_UHW());
  
--/**
-- * ib_umem_get_cq_tmp - Temporary CQ buffer umem getter.
-- * @device: IB device.
-- * @attrs:  uverbs attribute bundle.
-- *
-- * Pins a CQ buffer described by the legacy CQ buffer attributes.
-- * Returns NULL when none are supplied.
-- *
-- * Will be removed once all CQ drivers have switched to get
-- * their buffer directly.
-- *
-- * Return: caller-owned umem on success; NULL when no legacy attribute
-- * is supplied; ERR_PTR(...) on error.
-- */
--struct ib_umem *ib_umem_get_cq_tmp(struct ib_device *device,
--				   struct uverbs_attr_bundle *attrs)
--{
--	struct ib_uverbs_buffer_desc desc = {};
--	int ret;
--
--	ret = uverbs_create_cq_get_buffer_desc(attrs, &desc);
--	if (ret == -ENODATA)
--		return NULL;
--	if (ret)
--		return ERR_PTR(ret);
--	return ib_umem_get_desc(device, &desc, IB_ACCESS_LOCAL_WRITE);
--}
--EXPORT_SYMBOL(ib_umem_get_cq_tmp);
--
- /**
-  * ib_umem_release - release pinned memory
-  * @umem: umem struct to release
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index 32914007bae6..86df7ec83b3a 100644
---- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -1084,7 +1084,6 @@ static int create_cq(struct uverbs_attr_bundle *attrs,
- 	return uverbs_response(attrs, &resp, sizeof(resp));
+ static int UVERBS_HANDLER(UVERBS_METHOD_QP_DESTROY)(
+diff --git a/include/uapi/rdma/ib_user_ioctl_cmds.h b/include/uapi/rdma/ib_user_ioctl_cmds.h
+index 02835b7fd76d..839835bd4b23 100644
+--- a/include/uapi/rdma/ib_user_ioctl_cmds.h
++++ b/include/uapi/rdma/ib_user_ioctl_cmds.h
+@@ -159,6 +159,9 @@ enum uverbs_attrs_create_qp_cmd_attr_ids {
+ 	UVERBS_ATTR_CREATE_QP_EVENT_FD,
+ 	UVERBS_ATTR_CREATE_QP_RESP_CAP,
+ 	UVERBS_ATTR_CREATE_QP_RESP_QP_NUM,
++	UVERBS_ATTR_CREATE_QP_BUF_UMEM,
++	UVERBS_ATTR_CREATE_QP_RQ_BUF_UMEM,
++	UVERBS_ATTR_CREATE_QP_SQ_BUF_UMEM,
+ };
  
- err_free:
--	ib_umem_release(cq->umem);
- 	rdma_restrack_put(&cq->res);
- 	kfree(cq);
- err_file:
-diff --git a/drivers/infiniband/core/uverbs_std_types_cq.c b/drivers/infiniband/core/uverbs_std_types_cq.c
-index 05d1294762c0..148cdd180dab 100644
---- a/drivers/infiniband/core/uverbs_std_types_cq.c
-+++ b/drivers/infiniband/core/uverbs_std_types_cq.c
-@@ -68,7 +68,6 @@ static int UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE)(
- 	struct ib_device *ib_dev = attrs->context->device;
- 	struct ib_cq_init_attr attr = {};
- 	struct ib_uobject *ev_file_uobj;
--	struct ib_umem *umem = NULL;
- 	struct ib_cq *cq;
- 	u64 user_handle;
- 	int ret;
-@@ -117,16 +116,9 @@ static int UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE)(
- 	INIT_LIST_HEAD(&obj->comp_list);
- 	INIT_LIST_HEAD(&obj->uevent.event_list);
- 
--	umem = ib_umem_get_cq_tmp(ib_dev, attrs);
--	if (IS_ERR(umem)) {
--		ret = PTR_ERR(umem);
--		goto err_event_file;
--	}
--
- 	cq = rdma_zalloc_drv_obj(ib_dev, ib_cq);
- 	if (!cq) {
- 		ret = -ENOMEM;
--		ib_umem_release(umem);
- 		goto err_event_file;
- 	}
- 
-@@ -135,11 +127,6 @@ static int UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE)(
- 	cq->comp_handler  = ib_uverbs_comp_handler;
- 	cq->event_handler = ib_uverbs_cq_event_handler;
- 	cq->cq_context    = ev_file ? &ev_file->ev_queue : NULL;
--	/*
--	 * If UMEM is not provided here, legacy drivers will set it during
--	 * CQ creation based on their internal udata.
--	 */
--	cq->umem = umem;
- 	atomic_set(&cq->usecnt, 0);
- 
- 	rdma_restrack_new(&cq->res, RDMA_RESTRACK_CQ);
-@@ -152,9 +139,6 @@ static int UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE)(
- 	if (ret)
- 		goto err_free;
- 
--	/* Check that driver didn't overrun existing umem */
--	WARN_ON(umem && cq->umem != umem);
--
- 	obj->uevent.uobject.object = cq;
- 	obj->uevent.uobject.user_handle = user_handle;
- 	rdma_restrack_add(&cq->res);
-@@ -165,7 +149,6 @@ static int UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE)(
- 	return ret;
- 
- err_free:
--	ib_umem_release(cq->umem);
- 	rdma_restrack_put(&cq->res);
- 	kfree(cq);
- err_event_file:
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index bac87de9cc67..de7d19fabd75 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -2221,12 +2221,6 @@ struct ib_cq *__ib_create_cq(struct ib_device *device,
- 		kfree(cq);
- 		return ERR_PTR(ret);
- 	}
--	/*
--	 * We are in kernel verbs flow and drivers are not allowed
--	 * to set umem pointer, it needs to stay NULL.
--	 */
--	WARN_ON_ONCE(cq->umem);
--
- 	rdma_restrack_add(&cq->res);
- 	return cq;
- }
-@@ -2257,7 +2251,6 @@ int ib_destroy_cq_user(struct ib_cq *cq, struct ib_udata *udata)
- 	if (ret)
- 		return ret;
- 
--	ib_umem_release(cq->umem);
- 	rdma_restrack_del(&cq->res);
- 	kfree(cq);
- 	return ret;
-diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
-index 492c8d365730..370d802f0e63 100644
---- a/include/rdma/ib_umem.h
-+++ b/include/rdma/ib_umem.h
-@@ -96,8 +96,6 @@ struct ib_umem *ib_umem_get_cq_buf(struct ib_device *device,
- struct ib_umem *ib_umem_get_cq_buf_or_va(struct ib_device *device,
- 					 const struct uverbs_attr_bundle *attrs,
- 					 u64 addr, size_t size, int access);
--struct ib_umem *ib_umem_get_cq_tmp(struct ib_device *device,
--				   struct uverbs_attr_bundle *attrs);
- 
- static inline struct ib_umem *ib_umem_get_va(struct ib_device *device,
- 					     unsigned long addr, size_t size,
-@@ -229,11 +227,6 @@ ib_umem_get_cq_buf_or_va(struct ib_device *device,
- {
- 	return ERR_PTR(-EOPNOTSUPP);
- }
--static inline struct ib_umem *
--ib_umem_get_cq_tmp(struct ib_device *device, struct uverbs_attr_bundle *attrs)
--{
--	return ERR_PTR(-EOPNOTSUPP);
--}
- static inline void ib_umem_release(struct ib_umem *umem) { }
- static inline int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_t offset,
- 		      		    size_t length) {
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 01e0eea0703f..893cb5b73951 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -1738,7 +1738,6 @@ struct ib_cq {
- 	u8 interrupt:1;
- 	u8 shared:1;
- 	unsigned int comp_vector;
--	struct ib_umem *umem;
- 
- 	/*
- 	 * Implementation details of the RDMA core, don't use in drivers:
+ enum uverbs_attrs_destroy_qp_cmd_attr_ids {
 -- 
 2.54.0
 
