@@ -1,151 +1,170 @@
-Return-Path: <linux-rdma+bounces-21520-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21521-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eHihBEnLGWqvzAgAu9opvQ
-	(envelope-from <linux-rdma+bounces-21520-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 19:22:17 +0200
+	id YObRAJ7HGWoIzAgAu9opvQ
+	(envelope-from <linux-rdma+bounces-21521-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 19:06:38 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 620536065A2
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 19:22:16 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A3B66061B2
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 19:06:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D55D031E3C3E
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 16:19:43 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id A50E1300C387
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2026 16:57:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 955C03CD8A9;
-	Fri, 29 May 2026 16:19:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C833F888D;
+	Fri, 29 May 2026 16:55:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g+ok9+ls"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aiTUy1Op"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32436344D8C;
-	Fri, 29 May 2026 16:19:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A50173F8712
+	for <linux-rdma@vger.kernel.org>; Fri, 29 May 2026 16:55:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780071581; cv=none; b=hewABN8ltMCr6N+AS1ugOqQWqukDUJ4nQNACpEV9GpkH4vmBE4M+D5hjwksrQpZn1riQqymrmStvoglPTRZD4sW6q1pZ4enwnDBEFemLB/gMt2yMRPEolgAVVFN+N/ZQnI+0vCIIE/I6OrIswXtk5RAW4PEMibEGjwJoE5HQjC8=
+	t=1780073721; cv=none; b=IZ0ZaERrjYK9lCzY1zaqur9Wi/ql51DVquZdd6PiI5HqE8rQ9nySFfzFyfxJSkA0z61ePilyeyCBckp3oYSb3B7o3wx02Ne6Q/Z2SnltEJMjbGdnAtj+k+/Jmdo2kUXGpD6arttzeXMrRzRBNAogrXxEzjIYS/BCyQ03jeefkTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780071581; c=relaxed/simple;
-	bh=EYp/jAynC172ymkPlBs938kKNz8BDeBeyLFCV6NsZSQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KIWaUjwXCR1df1A+fjgXpLCukIC1u/opdPbDDmk58cE+z9Dl0gjpR+Op+sfW0lHLMoxU44XDYhWB14i21Jql8zjkEph8B7hyIkF9ugXbWF7LtqdOuBOluV6fDy6kXjismAUj49O72vCsRsVwDyMiarKzxVBu1IKOanNOXuNOxoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g+ok9+ls; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1780071580; x=1811607580;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EYp/jAynC172ymkPlBs938kKNz8BDeBeyLFCV6NsZSQ=;
-  b=g+ok9+lsDycWf0giZaCMpG+cKYwTbrk3Yj710JDJZ7HQR53DZE5hPQeP
-   oPQiTEjcKWdWIYbFPcglXgQmevwkjQ9WnE7CErG6wwDOVaZMcrTFpnl8+
-   pkbLZPnUv3a8SWba62J70rw/NuS82k/8QRbyOFFIbgUJEPNFWrVimzjdD
-   BHxPkXeOgSxGocX2O/i6dBwM3iR1bqsT5ix2ODXHzbP9Q47f0SjS5t9ry
-   d/Ue8+eiZNjxOwTKsYIFfsAozlbHS27svLeg8uoF1x1byPZYmoqjWFvCQ
-   mMxP4zsZ3s61NlGDwfHGy7RnGtKawNzTyWdWBi2ImHU/j9httNp5bpomU
-   g==;
-X-CSE-ConnectionGUID: GYX416i1Qke5Kh2RGpodCw==
-X-CSE-MsgGUID: Z5L5RtQwReSWMs9uRVwwog==
-X-IronPort-AV: E=McAfee;i="6800,10657,11801"; a="80901041"
-X-IronPort-AV: E=Sophos;i="6.24,175,1774335600"; 
-   d="scan'208";a="80901041"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 May 2026 09:19:39 -0700
-X-CSE-ConnectionGUID: uTyt/F+0Q9G5VrvCvb6AiA==
-X-CSE-MsgGUID: EfFBoTWxSZK9YE6bc6REDw==
-X-ExtLoop1: 1
-Received: from igk-lkp-server01.igk.intel.com (HELO 892db79562d4) ([10.211.93.152])
-  by fmviesa003.fm.intel.com with ESMTP; 29 May 2026 09:19:37 -0700
-Received: from kbuild by 892db79562d4 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1wSzvr-000000000uj-2NX8;
-	Fri, 29 May 2026 16:19:35 +0000
-Date: Fri, 29 May 2026 18:18:49 +0200
-From: kernel test robot <lkp@intel.com>
-To: Tao Cui <cui.tao@linux.dev>, tj@kernel.org, hannes@cmpxchg.org,
-	mkoutny@suse.com, leon@kernel.org, jgg@ziepe.ca
-Cc: oe-kbuild-all@lists.linux.dev, linux-rdma@vger.kernel.org,
-	cgroups@vger.kernel.org, Tao Cui <cuitao@kylinos.cn>
-Subject: Re: [PATCH rdma-next v2 3/3] cgroup/rdma: update cgroup resource
- list for MR_MEM
-Message-ID: <202605291816.15AyhoZE-lkp@intel.com>
-References: <20260529090733.2242822-4-cui.tao@linux.dev>
+	s=arc-20240116; t=1780073721; c=relaxed/simple;
+	bh=llW4OxFvtKWFyEC9eRxy9VUDdqj1IBqiGVZmNBrPlP8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=IWh+ChPrZfjZouYk1GBckc5L55uPcUHSMr5Kr4eUOMdciXAdF/CKoU6fsKCMogQWHBnXjdg5/fkKj4Ua+++Pe2ar8twwnAOwYe4zTvWy/6RfvaLcH7tTNUd2Dm7TBtYc9Ioad+/EJ/YiGWClWhu4Le3mQvcvn/5nA211WAN5JK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aiTUy1Op; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-49041fb8c23so62369335e9.0
+        for <linux-rdma@vger.kernel.org>; Fri, 29 May 2026 09:55:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1780073718; x=1780678518; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kg88DDtH/8BXfFFdiCpH0Ax+iqDzN9Cpw3OqPjVLSd0=;
+        b=aiTUy1Op+lYKoApuLxe7JXrRYO2t/I3uULvMmUsOHz0HkpZGDgZ1iZf97sCp1yHLvu
+         0cFlLa4hBdMNEMS4IppVax/VaoCcuiXYFrV6iUupCMRo/7pxUNM/J+AkB9L6yFWBIlvx
+         4kJUlQ2ZaPeZXfAqqoyHLvTfRguwpAhCKAPNdV3UtuA8HC7FicRQQM5lUwxOop3dvql8
+         loAh1Y6Sto5lfxtAQjA2G+L48fYNc6emeJoUO+JT8W2pvC7jgZA4AzH9qC14GWoU8kgq
+         b2VFTb5VW3ECBBPZv2CpkIPqkoZ66dzgC+dQvzLlYbqnAl6H0GQv/2LAdQnXvp7M36bY
+         Kepw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780073718; x=1780678518;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=kg88DDtH/8BXfFFdiCpH0Ax+iqDzN9Cpw3OqPjVLSd0=;
+        b=fVwJghhXaIUENnE0Kl+nsO9ViEDtolbB+aeihC7EKUhwQB8ABAV1BH7ACMtNS4S3/h
+         hlE7geJurvdMSDqytEcIghWFfo8dpRqvKOK3X9Iyx4ycAT/mBChLz/CtWM7CiTZW4iAv
+         lKzvB5aO7y+gF46PG++bByiRsTQQbL/OpLoliYmYjWGWGxrJeBWyUhAROyR/ChXUT73Y
+         jqCO+0AukGEu0Eq9uhzmISXqfb/gvjiH8WAlv0uYxzl5Td4SUTSFueXv6RKtb9LM8CiF
+         dwMOJgp2qJAA9nFEmph519FD2XJcZBqrkriDhM+Ysh/VXXYGzSuoH6v4SGZD97WQ6tKk
+         Svmw==
+X-Forwarded-Encrypted: i=1; AFNElJ+MAVV7bQFKaaV9GmUrVOr0H7CbQ024hlxJaA80MWan39cm8GvUStkmLiTB/St0y0EcHCG/lZpWzmyF@vger.kernel.org
+X-Gm-Message-State: AOJu0YyujONBnWKU5buFq2VQWux8hBi0IENSfk+VAYI079f+7LaSh0bk
+	DfACxgyu9ekw/Bx4F9pgFDDxvEY1I3T8DfmXCB/PiZTA5YbfgWqvHldGYFG9RGwr
+X-Gm-Gg: Acq92OFX1cWDtl8vwcti8+4aKklpPVivIdpoWfQe1nAj2JxpjVmJGGLqm30uTbi7VhB
+	KP9/xq4GyzWNcJ/2oA9kojAekE0YH+j7CMdy5GTN8yBMoM4WWLVdH2HNYFpDjwxE19rZRjPjriY
+	KF2Ru1JP3W3tMB3rEyF7pTkdBYIdfFmUDPajtGSRPRF2AWDRf9irygeIVN0eqhyOtBaX0d9wUbp
+	A0jBOcmrn9snjL95kZeJxQW3KjyAHuVM7EEISbS+je99v6Ww/e52cYjPW03p0k2vpgJcooHMQCb
+	AExnnn/JyXEXXZn7KTC9MnjhLP4watRRf1YdfWw1ORYB6j0mvrEMT4eOxXSW7c3NA4RpQ9H9C1N
+	yktHrtZ5irreXqqg9KZ0/g8YkXFmmr8xUDHlJHUzU3bRmvC896fW/bBLX20E2diTxC1DqDGP/Yj
+	YFwQkiQt5IXfpKviZSYXAReG4puUGPynCviqRdwZX3aMXwp4S+3g28e69BucSpIIipsd7FHfE=
+X-Received: by 2002:a7b:c3c3:0:b0:490:5191:6e26 with SMTP id 5b1f17b1804b1-490a2941d7emr4738915e9.18.1780073717867;
+        Fri, 29 May 2026 09:55:17 -0700 (PDT)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4909d6a0a89sm68444645e9.7.2026.05.29.09.55.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2026 09:55:17 -0700 (PDT)
+Date: Fri, 29 May 2026 17:55:16 +0100
+From: David Laight <david.laight.linux@gmail.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: David Matlack <dmatlack@google.com>, Alex Williamson <alex@shazbot.org>,
+ kvm@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
+ linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org, Mark Bloch
+ <mbloch@nvidia.com>, netdev@vger.kernel.org, Saeed Mahameed
+ <saeedm@nvidia.com>, Shuah Khan <shuah@kernel.org>, Tariq Toukan
+ <tariqt@nvidia.com>, patches@lists.linux.dev
+Subject: Re: [PATCH v2 06/11] selftests: Fix arm64 IO barriers to match
+ kernel
+Message-ID: <20260529175516.06d5788f@pumpkin>
+In-Reply-To: <20260529134947.GA128816@nvidia.com>
+References: <0-v2-72e9640932fd+2c64-mlx5st_jgg@nvidia.com>
+	<6-v2-72e9640932fd+2c64-mlx5st_jgg@nvidia.com>
+	<ahiFxtmspbETiqWw@google.com>
+	<20260529134947.GA128816@nvidia.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260529090733.2242822-4-cui.tao@linux.dev>
-X-Spamd-Result: default: False [-1.16 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
-	TAGGED_FROM(0.00)[bounces-21520-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-21521-lists,linux-rdma=lfdr.de];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	RCPT_COUNT_SEVEN(0.00)[10];
+	FROM_NEQ_ENVFROM(0.00)[davidlaightlinux@gmail.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,intel.com:email,intel.com:mid,intel.com:dkim]
-X-Rspamd-Queue-Id: 620536065A2
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,nvidia.com:email]
+X-Rspamd-Queue-Id: 3A3B66061B2
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi Tao,
+On Fri, 29 May 2026 10:49:47 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-kernel test robot noticed the following build warnings:
+> On Thu, May 28, 2026 at 06:13:26PM +0000, David Matlack wrote:
+> 
+> > Let's put these in tools/arch/arm64/include/asm/io.h so that the tools
+> > headers are more aligned with the kernel headers, and so that the arm64
+> > io.h overrides are done in the same way as the x86 overrides in
+> > tools/arch/x86/include/asm/io.h.
+> > 
+> > Something like this (untested):  
+> 
+> Okay, the disassembly says it works:
+> 
+>     1db8:       ca080108        eor     x8, x8, x8
+>     1dbc:       b5000008        cbnz    x8, 1dbc <readl+0x58>
+>     1dc0:       f9000fe8        str     x8, [sp, #24]
 
-[auto build test WARNING on tj-cgroup/for-next]
-[also build test WARNING on next-20260528]
-[cannot apply to linus/master v7.1-rc5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+That looks strange, I suspect the C didn't match any usual pattern.
+Normally 'tmp' would get thrown away and 'v' would get kept.
+But you seem to have discarded 'v' and written 'tmp' to stack.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Tao-Cui/cgroup-rdma-extend-charge-uncharge-API-with-s64-amount-parameter/20260529-171623
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-patch link:    https://lore.kernel.org/r/20260529090733.2242822-4-cui.tao%40linux.dev
-patch subject: [PATCH rdma-next v2 3/3] cgroup/rdma: update cgroup resource list for MR_MEM
-config: i386-allnoconfig-bpf (https://download.01.org/0day-ci/archive/20260529/202605291816.15AyhoZE-lkp@intel.com/config)
-compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260529/202605291816.15AyhoZE-lkp@intel.com/reproduce)
+I'm probably being stupid again, but how does that work?
+The cpu can speculate straight through the control dependency into
+the following instructions.
+An 'eor x1, x8, x8' may not even have a data-dependency on x8.
+(Most x86 cpus just generate a zero for the equivalent instruction.)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202605291816.15AyhoZE-lkp@intel.com/
+-- David
 
-All warnings (new ones prefixed by >>):
+> 
+> Jason
+> 
 
->> Warning: kernel/cgroup/rdma.c:210 function parameter 'amount' not described in 'uncharge_cg_locked'
->> Warning: kernel/cgroup/rdma.c:312 function parameter 'amount' not described in 'rdmacg_uncharge_hierarchy'
->> Warning: kernel/cgroup/rdma.c:335 function parameter 'amount' not described in 'rdmacg_uncharge'
->> Warning: kernel/cgroup/rdma.c:210 function parameter 'amount' not described in 'uncharge_cg_locked'
->> Warning: kernel/cgroup/rdma.c:312 function parameter 'amount' not described in 'rdmacg_uncharge_hierarchy'
->> Warning: kernel/cgroup/rdma.c:335 function parameter 'amount' not described in 'rdmacg_uncharge'
-
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
