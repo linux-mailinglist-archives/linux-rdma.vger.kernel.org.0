@@ -1,307 +1,204 @@
-Return-Path: <linux-rdma+bounces-21536-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21537-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WLpBEKlpGmoY4QgAu9opvQ
-	(envelope-from <linux-rdma+bounces-21536-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 May 2026 06:38:01 +0200
+	id gFqhFc2tGmqU7QgAu9opvQ
+	(envelope-from <linux-rdma+bounces-21537-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 May 2026 11:28:45 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 419AF60B431
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 May 2026 06:37:59 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABFC460BDB7
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 May 2026 11:28:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 9133C301C914
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 May 2026 04:37:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 16FC03011BC8
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 May 2026 09:28:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30F80348C7B;
-	Sat, 30 May 2026 04:37:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 476D6381B01;
+	Sat, 30 May 2026 09:28:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iGLkmWOK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aEiIiZ8g"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5036B31E848
-	for <linux-rdma@vger.kernel.org>; Sat, 30 May 2026 04:37:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B311A399342
+	for <linux-rdma@vger.kernel.org>; Sat, 30 May 2026 09:28:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780115869; cv=none; b=fOI06SWWbVSIavNFi5BmcNDkoxvEZzw+d/abeyJ4Ax7SHwIc/BOBnnkiRPHSA0XaCQUDUOyFH1CyjDORB12S4COQoGYAmFBme8lLJ7ctvK7Vh6OMfn460C9Mncwq17YiU6gk8ODlZfbIqMqEDuyXX8tslaxNsUzqTDNI+0/w+vQ=
+	t=1780133310; cv=none; b=Dy6WznTnzXnwd9/6fcCH8sQcIZt3rqv0bPTRiZ8kbDKPxWFufH4kkjxyS4+ivzY6k0EbPAxq2tDhzSQ0R3gg0ZwMtfdR3+KvnW3zi/hRBrOMuXjZa6cuWbGF9WaWiOh5Y1Qse1ndlJHzLaGj9tqHoFREa27BtgsRYbzm/XVWMPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780115869; c=relaxed/simple;
-	bh=nQbwH/d5mkUA4nJttq+UluSVAgUeMFJ8KwLxit0i6BA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qhSrSUMq1dWEanIRZyZxLGQco45ZuHaRhSGLNhDKltYI7AtPqDv1jz5qwjZbBseQiaQWccrrBbJZVFTwpTGnKL8bCR7bkXRH+YcX9WppsVewyeLj94fmJ+Pz55xbat1psnsAcTn2hSosRD8Zg1lcgVnhHlf29uOhXuH1h5tn8SM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iGLkmWOK; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a671f568-30d3-4565-b951-efdd640ef891@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1780115855;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7xfIlwYTEB8CjsXMc/LptJjgpEfExSIX+oI2TngdEuc=;
-	b=iGLkmWOKh9D0xTNG/YBCRTunsJdLX7OKCqVSW6DXgN6rtO/wANyFDjyqs441TN0A00I6+h
-	qyIyH99kMu5CwDWnuV2EXfd3JWFVscmQMkPYAEiPH7v1LhcPy3z6nU0ul62/4amr4WBXSo
-	grVhi2cBG/VKKZXtkuHewEbRffQwG68=
-Date: Fri, 29 May 2026 21:37:31 -0700
+	s=arc-20240116; t=1780133310; c=relaxed/simple;
+	bh=Axu2q9OiQlW7NrUR5/tN+MxVX+YXj5nOsIeGUL7II+w=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tmVBL0F10IKiPY+ecvGQQ9IF9qeiFU2fR2dpcC2OWD3j9+77689EtUToarn9LymQILOhF4YnpjY4gc6X+fjcqXg2bbFJzumj5wcEbGHmhrS73nRSYM3+bUCqeH306IrjylwGt5fzhUuySM1aoiiJqO/kx6l6w5Zle7Yue7TDFxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aEiIiZ8g; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-49039a8851fso89384995e9.2
+        for <linux-rdma@vger.kernel.org>; Sat, 30 May 2026 02:28:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1780133307; x=1780738107; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AVGWNyN/0YK3gFgYNwL3zKk91DjUbWVPzRQNZkauQoA=;
+        b=aEiIiZ8g0hy0yB/O+bDn7Qw4lOfN43CRMMIOFofGOKWKSLeutjNpsZecxl1PpF6dGq
+         XUr13spfzUEBtwv04kv+5AwqvczVql4/rFzglnoFDWJiGLSUG9LMAKcVLLAPgsa/kU9t
+         zluLvPFhdhGFedsiuZiYQhWDrDHb6RPbzb+RIt1hN1uaQ4DaUE4c2eOFaiBq+m6UXu62
+         vqjV0taBTZDPRazx4yOVz0wossMHj2fIJMBAmv/mXMjZ1WgM365BRb+3Zxn9aYNcpHXd
+         0Zcst7R72wcLfComJvvpx853k9BfRth+OczB8+jks6+1OILp1F2ltb7V2sIbLEMprH8k
+         Me6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780133307; x=1780738107;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=AVGWNyN/0YK3gFgYNwL3zKk91DjUbWVPzRQNZkauQoA=;
+        b=kwubp3SaYIWJexq1MEWTP0m7xhePE9pHYT7GNdlPY8gp7alwCgL6zuQYUwfNNtzcjW
+         DFfbpS+yR8IgBkwR+OA+7yXbJwdeoMCTKJ1bleUmOuT6vS4K2JrUuA0PDPCOrVa/jhFI
+         YZBUyYoznX5/fBBU/KJne+E65h5lbjgUzNBwyk0yMjG9xXSqvVbOJMHFT9PResADemu6
+         xSMECu//0eF0783c+9sb9wwSMf39pfed8WirlAfrnmmLoPU3NWi0LbDTC/UbWfqyQh5p
+         p9GYS9nreZf8IgHmHbaPH4AMYyqrJOrYINTFDEs7NzKIPczepryUoDKEAiisqs6YhxTQ
+         6E5w==
+X-Forwarded-Encrypted: i=1; AFNElJ9PXaASId9F1H3HJhaS5HiwHhovANj4STBR1ceMOzHD/dGY+LmoXHO3YZQbGkvTyObkwFy2P5xha9Kn@vger.kernel.org
+X-Gm-Message-State: AOJu0YyEj1xyXA4gnSXkKocLdoxfXgvwcP1xYolAVCHuIuXVaRQj7itR
+	lFC3g8OcNY85oMDuV2dyjpYN4vnwshtFfVajJ+9b5wzcW6ivifby2HI3
+X-Gm-Gg: Acq92OFGHRfWAvhw8a4KUqP2CBmOOu3EbW4KCrSfWwzdq2qVDhDWrL7RGISEF+ITsgR
+	gy8zp1sK9kKiOdXkhcToIuNJ3BJ4WsoyDIOL2tMnnFXdcWUK7rCKX5htuRq+l8ec5ah7SdHIoY9
+	ak1XKDunPvS05Zcsn5L0J1tio1nLVsywuFEgKQxDgB1g5OTCDhXSH6eLL1yMhEQXyoxqSHSK1Rt
+	lqBAcymXFXnuJCNKes14gTgJLUfeqy+Yr3K+A7Skflh8d4kyPcv1pHS5JVEpuxpvM5KvDlY7Dsm
+	KvStlWZWq+6WOdGhwfeL40WtxaiuUKYQ5l9OyAVsXiJctcp64CAvvGiOz4TN1z0KbvtItYqnQxv
+	25zu9MIAVx5Y+cBme96FkEfnd+tSIJYz40ScCiFvVuZDFgzJ3ttP821Z1lt54/c4Ru/Ws5xlAhI
+	B+aXB9fOQB/+cqPOr7ttWa+55qvmzRIv38j+OO1oAzQAVFWEGZYS/Ow4mZqe7nVgijtrsP5N0=
+X-Received: by 2002:a05:600c:3147:b0:48f:e230:80a3 with SMTP id 5b1f17b1804b1-490a297304bmr47960185e9.33.1780133306950;
+        Sat, 30 May 2026 02:28:26 -0700 (PDT)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4909c09acd3sm30659185e9.4.2026.05.30.02.28.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 May 2026 02:28:26 -0700 (PDT)
+Date: Sat, 30 May 2026 10:28:24 +0100
+From: David Laight <david.laight.linux@gmail.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: David Matlack <dmatlack@google.com>, Alex Williamson <alex@shazbot.org>,
+ kvm@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
+ linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org, Mark Bloch
+ <mbloch@nvidia.com>, netdev@vger.kernel.org, Saeed Mahameed
+ <saeedm@nvidia.com>, Shuah Khan <shuah@kernel.org>, Tariq Toukan
+ <tariqt@nvidia.com>, patches@lists.linux.dev
+Subject: Re: [PATCH v2 06/11] selftests: Fix arm64 IO barriers to match
+ kernel
+Message-ID: <20260530102824.65ceb098@pumpkin>
+In-Reply-To: <20260529224442.11d7320d@pumpkin>
+References: <0-v2-72e9640932fd+2c64-mlx5st_jgg@nvidia.com>
+	<6-v2-72e9640932fd+2c64-mlx5st_jgg@nvidia.com>
+	<ahiFxtmspbETiqWw@google.com>
+	<20260529134947.GA128816@nvidia.com>
+	<20260529175516.06d5788f@pumpkin>
+	<20260529192933.GD3195266@nvidia.com>
+	<20260529224442.11d7320d@pumpkin>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] RDMA/rxe: fix UDP tunnel socket leak on rxe_newlink
- failure
-To: Purushothaman Ramalingam <purush.ramalingam@gmail.com>,
- Zhu Yanjun <zyjzyj2000@gmail.com>,
- "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20260530001251.11136-1-purush.ramalingam@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20260530001251.11136-1-purush.ramalingam@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21536-lists,linux-rdma=lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com,linux.dev];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[7];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 419AF60B431
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-21537-lists,linux-rdma=lfdr.de];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[davidlaightlinux@gmail.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: ABFC460BDB7
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-在 2026/5/29 17:12, Purushothaman Ramalingam 写道:
-> rxe_newlink() calls rxe_net_init() to set up the per-net-namespace UDP
-> tunnel sockets before calling rxe_net_add() to create and register the
-> rxe device. rxe_net_init() takes a reference on the IPv4 and IPv6 tunnel
-> sockets, creating them if they do not already exist.
+On Fri, 29 May 2026 22:44:42 +0100
+David Laight <david.laight.linux@gmail.com> wrote:
+
+> On Fri, 29 May 2026 16:29:34 -0300
+> Jason Gunthorpe <jgg@nvidia.com> wrote:
 > 
-> If rxe_net_add() subsequently fails, rxe_newlink() returns the error
-> without releasing those socket references. The normal teardown path,
-> rxe_net_del(), is never reached because rxe_net_add() has already
-> deallocated the rxe device on failure. As a result the tunnel socket
-> references are leaked and the per-net sockets bound to UDP port 4791 can
-> never be released.
+> > On Fri, May 29, 2026 at 05:55:16PM +0100, David Laight wrote:  
+...
+> > I can't say, this is copied from the kernel and Will made it:
+> > 
+> >     arm64: io: Ensure calls to delay routines are ordered against prior readX()
+> >     
+> >     A relatively standard idiom for ensuring that a pair of MMIO writes to a
+> >     device arrive at that device with a specified minimum delay between them
+> >     is as follows:
+> >     
+> >             writel_relaxed(42, dev_base + CTL1);
+> >             readl(dev_base + CTL1);
+> >             udelay(10);
+> >             writel_relaxed(42, dev_base + CTL2);
+> >     
+> >     the intention being that the read-back from the device will push the
+> >     prior write to CTL1, and the udelay will hold up the write to CTL1 until
+> >     at least 10us have elapsed.
+> >     
+> >     Unfortunately, on arm64 where the underlying delay loop is implemented
+> >     as a read of the architected counter, the CPU does not guarantee
+> >     ordering from the readl() to the delay loop and therefore the delay loop
+> >     could in theory be speculated and not provide the desired interval
+> >     between the two writes.
+> >     
+> >     Fix this in a similar manner to PowerPC by introducing a dummy control
+> >     dependency on the output of readX() which, combined with the ISB in the
+> >     read of the architected counter, guarantees that a subsequent delay loop
+> >     can not be executed until the readX() has returned its result.  
 > 
-> Release the references on the error path by adding rxe_net_uninit(),
-> which performs the same socket teardown as rxe_net_del(). The shared
-> release logic is factored into a helper to avoid duplication.
+> Hmmm...
 > 
-> Fixes: f1327abd6abe ("RDMA/rxe: Support RDMA link creation and destruction per net namespace")
-> Signed-off-by: Purushothaman Ramalingam <purush.ramalingam@gmail.com>
-> ---
->   drivers/infiniband/sw/rxe/rxe.c     |  1 +
->   drivers/infiniband/sw/rxe/rxe_net.c | 32 ++++++++++++++++++++---------
->   drivers/infiniband/sw/rxe/rxe_net.h |  1 +
->   3 files changed, 24 insertions(+), 10 deletions(-)
+> Ok so there is some subtlety with the read of the counter that might
+> make it all work.
 > 
-> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-> index af39209d0fcf..bcc72b96ee00 100644
-> --- a/drivers/infiniband/sw/rxe/rxe.c
-> +++ b/drivers/infiniband/sw/rxe/rxe.c
-> @@ -243,6 +243,7 @@ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
->   	err = rxe_net_add(ibdev_name, ndev);
->   	if (err) {
->   		rxe_err("failed to add %s\n", ndev->name);
-> +		rxe_net_uninit(ndev);
->   		goto err;
+> It is better to make the delay loop have a data dependency on the result
+> of the readl().
+> Something like:
+> 	u32 z = 0;
+> 	OPTIMIZER_HIDE_VAR(z);
+> 	writel_relaxed(42, dev_base + CTL1);
+> 	udelay(10 + (z & readl(dev_base + CTL1)));
+> 	writel_relaxed(42, dev_base + CTL2);
+> That avoids the potentially mispredicted branch and only adds instructions
+> when a delay follows.
+> That sequence is safe for all cpu and doesn't cost much for cpu (like x86)
+> where it (probably) isn't needed (maybe unless you patch the scale for udelay
+> into the code so there are no memory reads, just code).
+> 
+> Probably best refactored as udelay_depends(10, readl(dev_base + CTL1)).
+> Or maybe udelay_after().
 
-To avoid introducing an unnecessary single-line wrapper helper 
-(rxe_net_uninit), we have refactored the cleanup logic by directly 
-exporting the core rxe_release_sockets(struct net *net) function. Since 
-the tunnel sockets are managed per network namespace, passing struct net 
-* aligns perfectly with the network subsystem's conventions.
+Sleeping on it, all the code can be put in udelay().
+You just need a read memory barrier, followed by a memory read (of anywhere
+'hot') and then use a data dependency (as above) from the second read
+into the delay loop.
 
-Additionally, we have removed the now-redundant err: label from 
-rxe_newlink() to keep the error path clean and idiomatic.
-
-Here is the updated patch:
-"
-diff --git a/drivers/infiniband/sw/rxe/rxe.c 
-b/drivers/infiniband/sw/rxe/rxe.c
-index b0714f9abe3d..a83512afd388 100644
---- a/drivers/infiniband/sw/rxe/rxe.c
-+++ b/drivers/infiniband/sw/rxe/rxe.c
-@@ -243,7 +243,7 @@ static int rxe_newlink(const char *ibdev_name, 
-struct net_device *ndev)
-         err = rxe_net_add(ibdev_name, ndev);
-         if (err) {
-                 rxe_err("failed to add %s\n", ndev->name);
--               goto err;
-+               rxe_release_sockets(dev_net(ndev));
-         }
-  err:
-         return err;
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c 
-b/drivers/infiniband/sw/rxe/rxe_net.c
-index 50a2cb5405e2..f540a9b8a094 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -642,18 +642,10 @@ static void rxe_sock_put(struct sock *sk,
-         }
-  }
-
--void rxe_net_del(struct ib_device *dev)
-+/* release the per-net-namespace tunnel socket references held for @net */
-+void rxe_release_sockets(struct net *net)
-  {
--       struct rxe_dev *rxe = container_of(dev, struct rxe_dev, ib_dev);
--       struct net_device *ndev;
-         struct sock *sk;
--       struct net *net;
--
--       ndev = rxe_ib_device_get_netdev(&rxe->ib_dev);
--       if (!ndev)
--               return;
--
--       net = dev_net(ndev);
-
-         sk = rxe_ns_pernet_sk4(net);
-         if (sk)
-@@ -662,6 +654,18 @@ void rxe_net_del(struct ib_device *dev)
-         sk = rxe_ns_pernet_sk6(net);
-         if (sk)
-                 rxe_sock_put(sk, rxe_ns_pernet_set_sk6, net);
-+}
-+
-+void rxe_net_del(struct ib_device *dev)
-+{
-+       struct rxe_dev *rxe = container_of(dev, struct rxe_dev, ib_dev);
-+       struct net_device *ndev;
-+
-+       ndev = rxe_ib_device_get_netdev(&rxe->ib_dev);
-+       if (!ndev)
-+               return;
-+
-+       rxe_release_sockets(dev_net(ndev));
-
-         dev_put(ndev);
-  }
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.h 
-b/drivers/infiniband/sw/rxe/rxe_net.h
-index 56249677d692..c8605de62bbd 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.h
-+++ b/drivers/infiniband/sw/rxe/rxe_net.h
-@@ -16,6 +16,7 @@ void rxe_net_del(struct ib_device *dev);
-
-  int rxe_register_notifier(void);
-  int rxe_net_init(struct net_device *ndev);
-+void rxe_release_sockets(struct net *net);
-  void rxe_net_exit(void);
-
-  #endif /* RXE_NET_H */
-"
-
-Another commit is related to this issue and is currently on the waiting 
-list:
-
-https://patchwork.kernel.org/project/linux-rdma/patch/20260519023541.8594-1-yanjun.zhu@linux.dev/
-
-The two commits conflict with each other. Once one of them is merged, 
-the other will need to be updated accordingly.
-
-Let's keep an eye on both commits and make any necessary changes after 
-the merge decision is made.
-
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-
-Zhu Yanjun
-
-
->   	}
->   err:
-> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-> index 50a2cb5405e2..b98f66099dea 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_net.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
-> @@ -642,18 +642,10 @@ static void rxe_sock_put(struct sock *sk,
->   	}
->   }
->   
-> -void rxe_net_del(struct ib_device *dev)
-> +/* release the per-net-namespace tunnel socket references held for @net */
-> +static void rxe_release_sockets(struct net *net)
->   {
-> -	struct rxe_dev *rxe = container_of(dev, struct rxe_dev, ib_dev);
-> -	struct net_device *ndev;
->   	struct sock *sk;
-> -	struct net *net;
-> -
-> -	ndev = rxe_ib_device_get_netdev(&rxe->ib_dev);
-> -	if (!ndev)
-> -		return;
-> -
-> -	net = dev_net(ndev);
->   
->   	sk = rxe_ns_pernet_sk4(net);
->   	if (sk)
-> @@ -662,6 +654,26 @@ void rxe_net_del(struct ib_device *dev)
->   	sk = rxe_ns_pernet_sk6(net);
->   	if (sk)
->   		rxe_sock_put(sk, rxe_ns_pernet_set_sk6, net);
-> +}
-> +
-> +/* release the socket references taken by a successful rxe_net_init() when a
-> + * later step of device creation fails and rxe_net_del() will not be called
-> + */
-> +void rxe_net_uninit(struct net_device *ndev)
-> +{
-> +	rxe_release_sockets(dev_net(ndev));
-> +}
-> +
-> +void rxe_net_del(struct ib_device *dev)
-> +{
-> +	struct rxe_dev *rxe = container_of(dev, struct rxe_dev, ib_dev);
-> +	struct net_device *ndev;
-> +
-> +	ndev = rxe_ib_device_get_netdev(&rxe->ib_dev);
-> +	if (!ndev)
-> +		return;
-> +
-> +	rxe_release_sockets(dev_net(ndev));
->   
->   	dev_put(ndev);
->   }
-> diff --git a/drivers/infiniband/sw/rxe/rxe_net.h b/drivers/infiniband/sw/rxe/rxe_net.h
-> index 56249677d692..d55aacce2905 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_net.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_net.h
-> @@ -16,6 +16,7 @@ void rxe_net_del(struct ib_device *dev);
->   
->   int rxe_register_notifier(void);
->   int rxe_net_init(struct net_device *ndev);
-> +void rxe_net_uninit(struct net_device *ndev);
->   void rxe_net_exit(void);
->   
->   #endif /* RXE_NET_H */
+-- David
 
 
