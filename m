@@ -1,146 +1,135 @@
-Return-Path: <linux-rdma+bounces-21598-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21599-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eN3+Cp/fHWpsfQkAu9opvQ
-	(envelope-from <linux-rdma+bounces-21598-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 01 Jun 2026 21:38:07 +0200
+	id 8PQ1ErPfHWpsfQkAu9opvQ
+	(envelope-from <linux-rdma+bounces-21599-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 01 Jun 2026 21:38:27 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95E57624B5E
-	for <lists+linux-rdma@lfdr.de>; Mon, 01 Jun 2026 21:38:06 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4784624B74
+	for <lists+linux-rdma@lfdr.de>; Mon, 01 Jun 2026 21:38:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C3063300C99B
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Jun 2026 19:38:03 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DCDA6300F16E
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Jun 2026 19:38:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33B8337D11C;
-	Mon,  1 Jun 2026 19:38:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F5C637F73E;
+	Mon,  1 Jun 2026 19:38:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jLnQ3VbW"
+	dkim=pass (2048-bit key) header.d=theesfeld.net header.i=@theesfeld.net header.b="eqV5FG75"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mail-244108.protonmail.ch (mail-244108.protonmail.ch [109.224.244.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D242237BE7B
-	for <linux-rdma@vger.kernel.org>; Mon,  1 Jun 2026 19:37:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFF4737D10F
+	for <linux-rdma@vger.kernel.org>; Mon,  1 Jun 2026 19:38:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.224.244.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780342681; cv=none; b=T7Z+qBl6fKbI21ms97Hdl3btlDJQICWs0KyXEjj84uutxraRHfZW0BiM5Va6FO1kqkXYZ9GLHfWgm5+ak/7Q5YhBozFvDccx6B1nnFEa9NZldfk58lTmm+g4o6lrhlS3n7pTQ4/2uabJ2+t+EoBGCfPsjc3Gx4RmvyD9dAU+z/U=
+	t=1780342693; cv=none; b=KVDl0UNYtHYcWc7v5s9y6c8oxWm4ug5HYPns4sBGCHRNAn4WjNy0a2oQrWQ69PdKt2ytcalb+PiHMghYAiWw05HY0o3P705mxSfrSdCNU9rvubyvN1Ub0Vw757o6a7tHH9+IseN5WcmlmmC4abK3AFqQVWDyRKibK6xX1+cYwQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780342681; c=relaxed/simple;
-	bh=RZwfx2Cy8waa2CiHzdx6e4LQ7j8PBgK4eRmLFoiWfdw=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=g1xv2/iFV0LGcNKHZmOe1e9c1Uo0OOK6LqMbo38Ps1uB4hNRtFFCKOu87eBf/ubckPNxQ2gS3ucMT/ZmWQVkc3dqDV91GFLCTHzsFkyjpb4Va72TYyrQNA+ZV+De8Qul62ZUMNoOXH/sjK/eGqR2LXbGfhW3VBgJYzotQhw1yIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jLnQ3VbW; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EEE41F00893
-	for <linux-rdma@vger.kernel.org>; Mon,  1 Jun 2026 19:37:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780342678;
-	bh=cTwQTuxteOCW47yBfAymiKdO4MdtIGqY81dtB3SfFbM=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject;
-	b=jLnQ3VbWUKQNmHI+bMFlRW9gsxqY7G9q7uMyfVd9RNS2GQUOrRA2nVvHJufHa2r7V
-	 saysnqU2fBQjSn0VyNN42vs5QiRTskXqSE1C4PPdYPBejSzYBHTSNGdflrobRze09s
-	 nh2u/ACsdGjB5as+y8aQc5WShkrGrmBkNL7Fz77OV3JdK5adc7Vx60XdegC9RHNmLe
-	 pLJSgasO/hdFL8D/E0Aqdn54P9iZgtB8da4ImDfhBVQi8OB27GSIlWNBT3shlw8kHu
-	 q0DZnj1zxzQmer5i6HfCh2NzQs6pa0HryE/9LzwxRokKZqpaGihk4cywrKanRomNya
-	 7wfS+zrxbhZ3A==
-Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 66658F40076;
-	Mon,  1 Jun 2026 15:37:57 -0400 (EDT)
-Received: from phl-imap-04 ([10.202.2.82])
-  by phl-compute-02.internal (MEProxy); Mon, 01 Jun 2026 15:37:57 -0400
-X-ME-Sender: <xms:ld8dapnPHGWHv6sKYuj2gihShGQa7O7CfxzLIudZ6iKXlO9H2w0liw>
-    <xme:ld8davqtYtq9GNH93bJNb0hsNbv-o10MyzcqDjXZ-SuOkhlwTHvcB9rNINC6gnJt7
-    eLNeGnbFAirDlfSKEb2NpiO2AGxlA21GL5gcxX89KwJBVitSfxju_E>
-X-ME-Proxy-Cause: dmFkZTFdherPbTLRdGkkaNKQCTWX2LyVjQI28CB4If2Nui3jmvKdLBbq81ieJAjRNIug63
-    GUXyteG9ShDxUy8hzHIVn4uRWAxp4nY8xqkNQlFHwyaRhaKcN0OyOlcLziN4FeeuYuc6Kx
-    wz29rm+/9FTICrtgNYVcGfpOu1Hs0SMi24URpbG5hnT0LD10swTSXSk/OAZ4m5807B94sT
-    pJtrC95ifdisgRrdmagx8idZnW4CHTpJ67lJHtcjdzxFo0GUYJmFB04WSzYyo8m4BrijmF
-    wh/W99Am0TDi/ajchij3vFbJ/dPc5msio1iaGVirEvm/GBzuAyR8ckaXb7jlTKGm+VSBL/
-    fbwfXtf9PCVvygrvz8CsrK4VZe7pwxPJnrEj4/ZexH0fZG4fi+2QRbkniYOzvwf0TbtOHU
-    vQ5Mf5TuqRPQ1rOtPv6bOtP93f4sK+82c2csPQjCDMSkV5AARiENdmilqwZ2tTr8bAuKn7
-    7WiMLJt8nG8Y+RtJtoywUX629a9fqiKbUArkuRZzm0qVGPg7K1JDvqG1ygJ51ZydnvWVAl
-    rRz8UYc8Us/ZtyXWVppWHcu0+BKkwSuAnZ6NhlcO5RVBHZeiHIykL4w2Efx23KRLVVmtV3
-    jIrNXkWmKQnbaA8J16Vsd9yQhJNwLs1aKPYpc/ijwigrixl/N1+Q3nFWVVkA
-X-ME-Proxy: <xmx:ld8dasu0g--GI4lPCw8Giahcrc4y3SS4YaBuIqlSxd9nIbJPnqC0dA>
-    <xmx:ld8dak6qPFOjCpV_pcT4_up2UrfuUkRkHR3KBRfnRLTXtoKa5NqfKg>
-    <xmx:ld8darSqqR07RHJBtv4xiyb8NZ4GnLFBa4q5KWlfwsqtzf_Aw8iSQQ>
-    <xmx:ld8dajpNuKE7xP270WjNqLLuv9I2n6eyzm09IUrFl-IbYXUSh5MAzA>
-    <xmx:ld8dapKQZZFxPkRTsmfkpGGuc7RfgNnhusw7ulj0SuOKbY-D--41mfxs>
-Feedback-ID: i20964851:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 49449B6006E; Mon,  1 Jun 2026 15:37:57 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1780342693; c=relaxed/simple;
+	bh=r9mJlcWklKmtokMJ1n5QpD07n+PIUangyhZE/GTYoTc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ezDRk+1Y8Y7MGePh/kPHmWbpHxJa0AXND7P92aJvNUQHMj5/Xjb0InnjAu7JoE1xnhRn+geJ49OJ3pmU1CQZ0JIY3pZpAw0eCtmWX8jHcCB2f1d0TFC01lIMJFB0RQes+eNnFdDZ7JsOvSZqJI59QG0N5OC8WAYka3WyggRKCZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=theesfeld.net; spf=pass smtp.mailfrom=theesfeld.net; dkim=pass (2048-bit key) header.d=theesfeld.net header.i=@theesfeld.net header.b=eqV5FG75; arc=none smtp.client-ip=109.224.244.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=theesfeld.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=theesfeld.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=theesfeld.net;
+	s=protonmail2; t=1780342683; x=1780601883;
+	bh=9wrJNg+FxScttXG57uNVoUp25+imnVKPCNzJdOd95RQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:From:To:Cc:Date:Subject:
+	 Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=eqV5FG75GjCsdvHm7g1EvY4g3BBUCauxnXU6GZBNXfMuW8tWFwcD40MgKobSkusKn
+	 B2bItjSShhWZzrDsR8BPa8UdeHGLvEj2jEFhtVxQRXrRztIQyBJ2XYiUv0TYa+xgYn
+	 kCIRBrHYyQr9XZ0uo57Ns2U7SZ4d+W/PhUmav3p5+U1GN50kaTHKB1L6otShSJNEEG
+	 Z1zKqVK9jgikAZj1qhBsQi6swjlh9nsIbcnyaxu7AC8qR34xmGbppD18L388WEKpDh
+	 AyxllU9CxuHMNX+2h3wCPDJ0+eXBRrpCtrWLwj2KQKNJ1YxJMkgSOI/K9L07OfDxpV
+	 9+VLjohHk98yw==
+X-Pm-Submission-Id: 4gTklD022Sz2Scpw
+From: William Theesfeld <william@theesfeld.net>
+To: Saeed Mahameed <saeedm@nvidia.com>
+Cc: Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Mark Bloch <mbloch@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] net/mlx5: convert miss_list allocation to kvmalloc_array()
+Date: Mon,  1 Jun 2026 15:37:58 -0400
+Message-ID: <20260601193758.626537-1-william@theesfeld.net>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AZZdtypb3CBF
-Date: Mon, 01 Jun 2026 15:37:37 -0400
-From: "Anna Schumaker" <anna@kernel.org>
-To: "Chuck Lever" <cel@kernel.org>
-Cc: linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org,
- "Chuck Lever" <chuck.lever@oracle.com>
-Message-Id: <e839b7ca-33b3-4818-925e-3112fdc59ab7@app.fastmail.com>
-In-Reply-To: <20260601175413.29544-1-cel@kernel.org>
-References: <20260601175413.29544-1-cel@kernel.org>
-Subject: Re: [PATCH 0/2] follow-up to "Decouple req recycling"
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-2.15 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[theesfeld.net,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[theesfeld.net:s=protonmail2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	XM_UA_NO_VERSION(0.01)[];
-	TAGGED_FROM(0.00)[bounces-21598-lists,linux-rdma=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	TAGGED_FROM(0.00)[bounces-21599-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[anna@kernel.org,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[william@theesfeld.net,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[theesfeld.net:+];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 95E57624B5E
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[theesfeld.net:email,theesfeld.net:mid,theesfeld.net:dkim,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: D4784624B74
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi Chuck,
+dr_icm_buddy_init_ste_cache() allocates the per-buddy miss_list using
+the open-coded kvmalloc(n * sizeof(*p), ...) form.  The neighbouring
+allocations in the same function already use the kvcalloc()/
+kvzalloc_objs() forms; switch this last one to kvmalloc_array() for
+consistency and for the size_mul overflow check that kvmalloc_array()
+performs.
 
-On Mon, Jun 1, 2026, at 1:54 PM, Chuck Lever wrote:
-> From: Chuck Lever <chuck.lever@oracle.com>
->
-> Here are a couple of trivial fixes to the recent "xprtrdma: Decouple
-> req recycling from RPC completion" series.
+The semantics are unchanged: kvmalloc_array() returns a non-zeroed
+buffer, just like the previous kvmalloc() call.  Existing callers of
+buddy->miss_list initialise each list_head before use.
 
-Thanks for the extra fixes! I've added them to my testing branch
-which should be pushed out by the end of the day.
+Signed-off-by: William Theesfeld <william@theesfeld.net>
+---
+ .../net/ethernet/mellanox/mlx5/core/steering/sws/dr_icm_pool.c  | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Anna
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_icm_pool.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_icm_pool.c
+index 7a0a15822..fa4d24b3d 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_icm_pool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_icm_pool.c
+@@ -239,7 +239,7 @@ static int dr_icm_buddy_init_ste_cache(struct mlx5dr_icm_buddy_mem *buddy)
+ 	if (!buddy->hw_ste_arr)
+ 		goto free_ste_arr;
+ 
+-	buddy->miss_list = kvmalloc(num_of_entries * sizeof(struct list_head), GFP_KERNEL);
++	buddy->miss_list = kvmalloc_array(num_of_entries, sizeof(struct list_head), GFP_KERNEL);
+ 	if (!buddy->miss_list)
+ 		goto free_hw_ste_arr;
+ 
+-- 
+2.54.0
 
->
-> Chuck Lever (2):
->   xprtrdma: Fix I3 invariant comment in rpcrdma_complete_rqst
->   xprtrdma: Remove tautological I2 assertion in rpcrdma_reply_put
->
->  net/sunrpc/xprtrdma/rpc_rdma.c | 4 ++--
->  net/sunrpc/xprtrdma/verbs.c    | 4 ----
->  2 files changed, 2 insertions(+), 6 deletions(-)
->
-> -- 
-> 2.54.0
 
