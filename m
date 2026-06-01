@@ -1,743 +1,794 @@
-Return-Path: <linux-rdma+bounces-21571-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21572-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4EiQCntRHWpfYwkAu9opvQ
-	(envelope-from <linux-rdma+bounces-21571-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 01 Jun 2026 11:31:39 +0200
+	id wO3WAv5UHWqnYwkAu9opvQ
+	(envelope-from <linux-rdma+bounces-21572-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 01 Jun 2026 11:46:38 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD20761C791
-	for <lists+linux-rdma@lfdr.de>; Mon, 01 Jun 2026 11:31:38 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59B8F61CB51
+	for <lists+linux-rdma@lfdr.de>; Mon, 01 Jun 2026 11:46:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 67A58304F224
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Jun 2026 09:26:05 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 326E1307CBA4
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Jun 2026 09:39:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9541D39061D;
-	Mon,  1 Jun 2026 09:26:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C295438F239;
+	Mon,  1 Jun 2026 09:39:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="YhQZhvp+"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hXfdMxPs"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DAC73905EE;
-	Mon,  1 Jun 2026 09:26:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780305963; cv=none; b=OPVdoa0/6+0uF/ype6dADPWDA0YRTLsB40eAzjTd8BbZ0YYm0ut/qtOnxbe86Bvy20lTqUu3Fr7e0kaS2kBYZSnjf4ye2oH9L9Vu6Av1B4vErQMtXcDcSfwR8gxpAjYitI2P3wA/jqwma343AvJin+TyJEF7rRExSjpJxFFAemM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780305963; c=relaxed/simple;
-	bh=g0Qn17WuiJfYW1mtzTggVteztmmFFv/1No4E7NGncjY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XU2kwd7F/WRwhfK6c2okYXJQqbL3jsMP2jiDOoS0r461rRJxA8Zji5AGlfsccEm9gj9RVIpmw/MVvGLd2p+yXrMlOfEJw0SyTEL+yICYcM3eW2WEXXxeqCdwGkRduyhxj6gdojSoza9XTaq60Z6EkdH6V9qntO0lCKRvulZ3qcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=YhQZhvp+; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1173)
-	id 37BF220B7168; Mon,  1 Jun 2026 02:25:48 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 37BF220B7168
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1780305948;
-	bh=BFX78O88CjQY7Y/2w6tN7zdXgkfzRGM2fLKan91nyeM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=YhQZhvp+4kezuyxW+zI3oJ5OX/Kde7aBxRAqF5BBU0jS+/Ob7sdaDghDaC1rktdgQ
-	 1J0v6Lm3vkt0+woPell8kmvbe2cm10VJzReObeHH2L+pOgorQGR0PW+sJmCY8pDbNs
-	 +jnDfDNUmqj213NRaMzICItf/K6StUWBpSZJPw10=
-From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-To: mkalderon@marvell.com,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	zyjzyj2000@gmail.com,
-	sagi@grimberg.me,
-	mgurtovoy@nvidia.com,
-	haris.iqbal@ionos.com,
-	jinpu.wang@ionos.com,
-	bvanassche@acm.org,
-	kbusch@kernel.org,
-	Jens Axboe <axboe@kernel.dk>,
-	Christoph Hellwig <hch@lst.de>,
-	kch@nvidia.com,
-	smfrench@gmail.com,
-	linkinjeon@kernel.org,
-	metze@samba.org,
-	tom@talpey.com,
-	chuck.lever@oracle.com,
-	jlayton@kernel.org,
-	neil@brown.name,
-	okorniev@redhat.com,
-	Dai.Ngo@oracle.com,
-	trondmy@kernel.org,
-	anna@kernel.org,
-	achender@kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	kees@kernel.org,
-	andriy.shevchenko@linux.intel.com,
-	ebadger@purestorage.com,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	target-devel@vger.kernel.org,
-	linux-nvme@lists.infradead.org,
-	linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org,
-	linux-nfs@vger.kernel.org,
-	netdev@vger.kernel.org,
-	rds-devel@oss.oracle.com
-Cc: Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
-	Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH rdma-next v6] RDMA: Change capability fields in ib_device_attr from int to u32
-Date: Mon,  1 Jun 2026 02:25:15 -0700
-Message-ID: <20260601092534.1764560-1-ernis@linux.microsoft.com>
-X-Mailer: git-send-email 2.43.7
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A416391E52;
+	Mon,  1 Jun 2026 09:39:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.18
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780306759; cv=fail; b=Yp7AE3akRIs5gYqNBxxFT8m3NPJ4GSxWFCPG8G2aIuvlL89hbcUe8NJQJYYZjIu0hfsdUe9R2lY6FJCfJgPzZ/OVQoLURiqjRTx999qZVZmwq5rvwowHk8ykyZ7+tWk8vBfZFj2d9ynLBluZYJ+IWFjQvLJGKalFKozTLKRuRHE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780306759; c=relaxed/simple;
+	bh=VhM1XTfHqvfuDFpYmHN3FvTMYdNkWEgNW0W+ZmH8asg=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ErfGwoBK9PEH7mtr1149K/USsFoWUim+PlEWl3SlXyxYOnEXnpsTX1rtH25Fg0u4ZhXcHQUKQShL3N5TLUxHCod+D9auanGVjR69A7l87jZRt02HFs3qkULbajAn0bZ7VzdQ1ZXMmIHMYbf7LRMhWeoLes2MREH7jh9moBkeZiY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hXfdMxPs; arc=fail smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1780306754; x=1811842754;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=VhM1XTfHqvfuDFpYmHN3FvTMYdNkWEgNW0W+ZmH8asg=;
+  b=hXfdMxPsINBccfsTWo0Sm5KJQ3RXdzmU5GfVWSYQTQCar5++GegatT3x
+   iv8bo9/PAQZ9N6+N4Pc98ZhCNgkTP/NJmmZJDZq+r0+PljXNNrbiqh158
+   64vefhbof7UrBzU4tUrBLn5NDJlc0OJyiKwzG8xf/8LSViEJfRTS5MdNl
+   +ruPagRKSrtRFwm/NMxq1wJ9Q1UneXtcZfLdZ7tX215r+lFxhru7CsWNJ
+   kL/bYpQyqTi9sazU4wMkqcm2YJlm0lOjCv8C7KotcDBMM5pFG6MVTd0xT
+   xMkHZuvRpQh3fERF7wS0CJd88mu4l+IEQ1f943YBS3EIhuEDAhx4FUJh3
+   A==;
+X-CSE-ConnectionGUID: KYIioGGdRhalElc5/gdD6Q==
+X-CSE-MsgGUID: ZPjqydwURXesLwXVNvzMOw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11803"; a="80200573"
+X-IronPort-AV: E=Sophos;i="6.24,181,1774335600"; 
+   d="scan'208";a="80200573"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2026 02:39:13 -0700
+X-CSE-ConnectionGUID: 6jvRNQd3QqSGmqnyNJAK9g==
+X-CSE-MsgGUID: HWoEBbZOTaSkq2Vzi9/7rw==
+X-ExtLoop1: 1
+Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
+  by fmviesa003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2026 02:39:13 -0700
+Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37; Mon, 1 Jun 2026 02:39:12 -0700
+Received: from ORSEDG903.ED.cps.intel.com (10.7.248.13) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37 via Frontend Transport; Mon, 1 Jun 2026 02:39:12 -0700
+Received: from CH4PR04CU002.outbound.protection.outlook.com (40.107.201.48) by
+ edgegateway.intel.com (134.134.137.113) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37; Mon, 1 Jun 2026 02:39:09 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=nAvAkL8u7yinRma+jo9nYBd6XR7ZD3y58/L7eaAB+C86C0iKdReZwCNf03vwJU45FK0Bff3prmldcbqVJ454b9sbBkCY6UnXGvvesPLIEC213uqFPy5U4H3hKeLcbIG6KLmnbe0fjQgjRnayZyYEY8AWFNTcuEFE5B3q2tw7+DqIvZNmoVcjr7NB0xf2GcXOwARBgqfWk6Q5IpuEXwHmFw3a2uB6uNiQHNyUmVxItDSjVot/5t23MUTypM0fLDd8SHRAWg5iswSZClaXKz8oOWx377nCbKOsS4fb7RP5ZyjxqYwqOPG9RidUfpPEvhZV9q9ANl7p178n9yc+0hljHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BUlVSsM+WY9zimR/lSnrPM+Aul9rnonLZd/PbjHhRbQ=;
+ b=YxkMXpuk/OZW0ZZ8wSpbGfCR/CW6UrwgN2kPG4UOJaVz1ifU6FbfrUQ3D8R5BZO4QcCZCLPbx/DbIKAQWDvokbJPc5QtmEpJ1ztMva3+4J9oVQfhqCiOh4zzwnEnL6Tg+qKxM/ja9gHpXcrhLpraEAgee6PeLkx/DCE9i7XBiw8VEQh2WXFN98wVNQICK9Yj/Ee8pTdtOb2yyT7kA7PhkeZAqp4tuVrnORZhwsJwl/PAyzDHJEMzd/YfL8/Uihnv5790QmALO5nKBh/qbsM0AvZRA7mZhb9J2i8H2DkNl478/IJQvTcpTep2yq+Ya8P24Lbu0ejZG7FMhjKx9uMkzQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from PH0PR11MB5902.namprd11.prod.outlook.com (2603:10b6:510:14d::19)
+ by PH0PR11MB4853.namprd11.prod.outlook.com (2603:10b6:510:40::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.71.17; Mon, 1 Jun 2026
+ 09:39:03 +0000
+Received: from PH0PR11MB5902.namprd11.prod.outlook.com
+ ([fe80::f95a:602a:34d3:5d37]) by PH0PR11MB5902.namprd11.prod.outlook.com
+ ([fe80::f95a:602a:34d3:5d37%5]) with mapi id 15.21.0071.014; Mon, 1 Jun 2026
+ 09:39:03 +0000
+From: "Jagielski, Jedrzej" <jedrzej.jagielski@intel.com>
+To: Haiyang Zhang <haiyangz@linux.microsoft.com>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, "K. Y. Srinivasan"
+	<kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu
+	<wei.liu@kernel.org>, "Cui, Dexuan" <decui@microsoft.com>, Long Li
+	<longli@microsoft.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, "Jakub
+ Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, "Konstantin
+ Taranov" <kotaranov@microsoft.com>, Simon Horman <horms@kernel.org>, "Shradha
+ Gupta" <shradhagupta@linux.microsoft.com>, Erni Sri Satya Vennela
+	<ernis@linux.microsoft.com>, Dipayaan Roy <dipayanroy@linux.microsoft.com>,
+	Aditya Garg <gargaditya@linux.microsoft.com>, Kees Cook <kees@kernel.org>,
+	Breno Leitao <leitao@debian.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-rdma@vger.kernel.org"
+	<linux-rdma@vger.kernel.org>
+CC: "paulros@microsoft.com" <paulros@microsoft.com>
+Subject: RE: [PATCH net-next] net: mana: Add Interrupt Moderation support
+Thread-Topic: [PATCH net-next] net: mana: Add Interrupt Moderation support
+Thread-Index: AQHc8G3cP6JgEcjkJE66Sabw1tStBbYpcf9w
+Date: Mon, 1 Jun 2026 09:39:02 +0000
+Message-ID: <PH0PR11MB590230F0CEBE8B1DEAA15F82F0152@PH0PR11MB5902.namprd11.prod.outlook.com>
+References: <20260530194957.1690459-1-haiyangz@linux.microsoft.com>
+In-Reply-To: <20260530194957.1690459-1-haiyangz@linux.microsoft.com>
+Accept-Language: pl-PL, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR11MB5902:EE_|PH0PR11MB4853:EE_
+x-ms-office365-filtering-correlation-id: 6ae852c5-8447-416b-1f91-08debfc19dd0
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|7416014|376014|366016|6133799003|22082099003|18002099003|3023799007|11063799006|56012099006|38070700021|921020;
+x-microsoft-antispam-message-info: ugKVxl++9PktOoruiDymLrsT/RGbmeu4UAoG1z296sqyBJCt3WDgeO3nRchyU5EyuUZ81dExVmnXB22QBKWJfpZpeIhd9IAO9y+chuNGRqF3zsx9owLPBwxqqIAABO4zFqfg5z3/j8Vod6F2rilLwTNcKTBAjT47Nzi2MQf3UoBfcnIqjEYAt1ultjzDCk/QTxgHEimq2jin47vmHULLYnTXwrmFqoOBZSf0Li+E96Mn+dpx1snFJwQECEpabUEDvamuJ4klRjv9IOU/lNzscrKAQpI7s5kYI9VM6/rhlKOA3rsBnqADoNOEiUHD5CeyNF172x65vLnCa8+DgE7RR4eBh1lDg0vEFiQyJVIqigsluhHiHfLAVbxJAT+063ai45Y1+KXBynKhKM+Y4P6R5jsl9fTADB1U06aelQz4rIwJkISB1oefrGVVufXVPA9IPTogiNI7DY0TZEKoWny+xg+Fpy7Ht0PL4vwN1R7SQBdaiaOO1QgiMHbqTic3cgEJna26PsFgTmRHDXOxZesLZGghwgi77O8e1ASzBNZNngIyge7iSwALiqZtDceKDh+4WtlYekVEJVfSxXaHyqXGZQpoicfn+1viqtfjmI1gg4EcSDMK9Z6tlhjiLVRRag+SHrVzEcrEj7VXdneCDuCmWian3p4r7/w+wwAn5z9JhBLZmrYQ33FZDdBoCfiTDk2SW2lZuUjzea9vAj5hsP7c5OuH049I00PPXU3U+90Ayy6mNtX87WjGeAt7LYMElcDQCDKRsiPF8OM5lihue2uv1Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5902.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016)(6133799003)(22082099003)(18002099003)(3023799007)(11063799006)(56012099006)(38070700021)(921020);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?tRULBndkY3Ph3zv2PBVuASk0dMeUULDxduAJLDKeFjcSma3K2xoM5nN/q6Gj?=
+ =?us-ascii?Q?KR3DT9W2u6pxbXRsPYLPmKbJ1Su9g6hz35WS0QwdPFoRHB3SeRh2K/IsEdRV?=
+ =?us-ascii?Q?mIizseLyfBgaqkHN+Fjua+oLwztR7xuzVD4XgFIVDPTeiN1Lq4WN5XJq7qvu?=
+ =?us-ascii?Q?qVoXcaudVG94Lxrzi0d4OpAmxsO+WFCgyhswE/A8ptd7rWFUqIL5p/quulOU?=
+ =?us-ascii?Q?lOHHz8aH7gEspA+6Pukui9Dz1RatnxQopgCllV+BrTdYWESEj/n5c9nEy6JK?=
+ =?us-ascii?Q?ulLneptE8DeScgxeLC72JAYGWm0lKiLpq9mSrc8mthV8luqIlqKhq+nxBUqD?=
+ =?us-ascii?Q?Yof26a1MYa5sG8IFOtB0DzbV9qdEf0GHw7hcUt6BqV1v+KWTfxWRmb7fWfqu?=
+ =?us-ascii?Q?RyJHEAxa+YlRizSz91Xbf8tg5Ua2CIRai/BDexJU+KDZQhXAJe9W6R8jiFcm?=
+ =?us-ascii?Q?BHFTNTrLHZnSgR1Zy0X6zlKyjUL84rD+U/nCRNRIoexc+hdzyABVNSNdNC6k?=
+ =?us-ascii?Q?MSZTO5XRLRHTDE1vbccgY3oDLxMMwwI+JTTuLfTV/dikKQBkl2Us7uh+zxwc?=
+ =?us-ascii?Q?k6Pzx0xmmFBxXleeP2w5cYYT9JGTOWL3SiITLCaVoJegkQER8Xx9Gyzg5/tN?=
+ =?us-ascii?Q?02fGnNwqZdliZGyRNctOsA28m3kyw66zMmhGZPUqbRZZDFzXgct6vykU12dt?=
+ =?us-ascii?Q?rVk3DJ8VD6MmM3fKNnTyWYOz9sQ6Q7ciD7uxhzHn6CnkcQStGwBKyP6P6sT0?=
+ =?us-ascii?Q?BQ0O6Q66zhmhE6X7gdY3n5AcIhLzY0PZepMQbH9KvkcGMjT10/KotJY4o0Ev?=
+ =?us-ascii?Q?6njeeGOvxQyfLbc9JoL6E8YEr4ntmDhx6HpV9ftPAZVI7J7TgYVowURooj+R?=
+ =?us-ascii?Q?5U+fLpFgWVqxTJQY4TurN7O236gCqwL3Ax6RhXCSfcwDIt+LcCCkP4bebF2A?=
+ =?us-ascii?Q?Mo1bCY9Tq3/yFipcuFYaGquTu7mG3ISJmKq3s8jt1q/R5gz205yW8WVzWizr?=
+ =?us-ascii?Q?N2A4lEuvSFZi1lTwi1aaNCNtuO6KCFIgTL8V7U9TkRyoAVAeEBewchGQzgyb?=
+ =?us-ascii?Q?PyFu7IOb7I9qo7MXTSrffdJfEW6W3Yc4FCaKCY50qbmSj5xOpqkKoa1k4KwP?=
+ =?us-ascii?Q?+cgo+aDz5Lex5VzgSMgHyczv9901uomDpfKLO8O8eGOZzZS8qmBR208W4QA/?=
+ =?us-ascii?Q?o42GHWubYLLat5WcnLP3boROPELQfn5tR0J+f7L9NPJ/+waRh6dxaToOU0t0?=
+ =?us-ascii?Q?t/w/qc7L1MMcESBqjngZarJnAmK5aXFvqWEnKC17ri7tsbpnjkkQOSbMCMMP?=
+ =?us-ascii?Q?ywXe+mpS1Eu45WEeMI0Y6/PjMiy11ot5VHC2pV5iuP6O8ELhCpW0+mhhH80W?=
+ =?us-ascii?Q?cEsVG02W23XttgwzsKekj1LeIZK68WmWqsWePK7Ik9g9EKaxlZ435KDvQK9I?=
+ =?us-ascii?Q?NKabbk3osJdFPrgpRNwmyybw6uXwbBoqM1N0/eC7s8vM+ABLlsRMsGT3qZbK?=
+ =?us-ascii?Q?xNwEDZl9tKUCqvWrlST0o5ut3e/1kEdyUfOL22IvYA55dJAJyA7RdsZ9bPRw?=
+ =?us-ascii?Q?hPuQELELfeVAPOXBlishi9kLZVyrsWUBU6ihdxlDsLLbPBCdh21Y4GKOWHlN?=
+ =?us-ascii?Q?ApbcTsec+jd++MNHGb3lmeKNEyAML8lmGVhETE3ms6CH/cLE/R1rZ/51W6TZ?=
+ =?us-ascii?Q?hfJS9EXcFeRV04/FRhvzHGr8HZfIvdy+nGTi2DrZCgMBYeSEQKnvzieu94RM?=
+ =?us-ascii?Q?xZt69ZYU3w=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+X-Exchange-RoutingPolicyChecked: ZQN1iXWarXWBtwXnWhmgVcydDr5DUNZpgOBVihxaywoOcw8ciZAKJRba69K9PCPQ2ODtx2Dp/zLakKLaoGtlR3KQj+V8b10D6d+CZcj2h/shdXZRhcTzyPF35rQDYlqXusR5n0OLGEo+ghRT2vCzeNEDsry0Zm4UiSAYuHRPo8mPgDZAKqHi0LVGKNFrcA+QDaoilI09Cyo/H9KG/xkkSFAk2xHYUUu3mwvfSQAF5SFpmzcEpk616nydAysJLSyPMTah+vYNPZgvJDd5AbIuw2Pw7VRewHZTURib5equTBuTZ3NE6HO2d21adqw2LH9lCS/g1OO8id5Mo1HnCBvHMw==
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5902.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ae852c5-8447-416b-1f91-08debfc19dd0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jun 2026 09:39:03.0132
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YjFUyfmUnwYLjZwBw2OlWZ5FsT8lRmqPsYJ7HuWJ0eJ8e9lPIzK9RrzWnSLlMzGAqjjp5mxph+fvQRcJShgzd0C14iAjNkrhDUdJ9QsMeiM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4853
+X-OriginatorOrg: intel.com
+X-Spamd-Result: default: False [1.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21571-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-21572-lists,linux-rdma=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,intel.com:dkim,PH0PR11MB5902.namprd11.prod.outlook.com:mid];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[44];
+	RCPT_COUNT_TWELVE(0.00)[24];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[marvell.com,ziepe.ca,kernel.org,gmail.com,grimberg.me,nvidia.com,ionos.com,acm.org,kernel.dk,lst.de,samba.org,talpey.com,oracle.com,brown.name,redhat.com,davemloft.net,google.com,linux.intel.com,purestorage.com,vger.kernel.org,lists.infradead.org,lists.samba.org,oss.oracle.com];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[intel.com:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ernis@linux.microsoft.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.microsoft.com:mid,linux.microsoft.com:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,nvidia.com:email]
-X-Rspamd-Queue-Id: BD20761C791
+	FROM_NEQ_ENVFROM(0.00)[jedrzej.jagielski@intel.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	NEURAL_HAM(-0.00)[-0.998];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[10]
+X-Rspamd-Queue-Id: 59B8F61CB51
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-The capability counter fields in struct ib_device_attr are declared
-as signed int, but these values are inherently non-negative. Drivers
-maintain their cached caps as u32 and assign them directly into these
-int fields; if a cap exceeds INT_MAX the implicit narrowing yields a
-negative value visible to the IB core.
+From: Haiyang Zhang <haiyangz@linux.microsoft.com>=20
+Sent: Saturday, May 30, 2026 9:50 PM
 
-Change the signed int capability fields to u32 to match the
-underlying nature of the data. Also update consumers across the IB
-core, ULPs, NVMe-oF target, RDS, and NFS/RDMA so the new u32 values
-are not forced back through signed int or u8 via min()/min_t() or
-narrowing local variables.
+>From: Haiyang Zhang <haiyangz@microsoft.com>
+>
+>Add Static and Dynamic Interrupt Moderation (DIM) support for
+>Rx and Tx.
+>Update queue creation procedure with new data struct with the related
+>settings.
+>Add functions to collect stat for DIM, and workers to update DIM data
+>and settings.
+>Update ethtool handler to get/set the moderation settings from a user.
+>By default, adaptive-rx/tx (DIM) are enabled.
+>
+>Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+>---
+> drivers/net/ethernet/microsoft/Kconfig        |   1 +
+> .../net/ethernet/microsoft/mana/gdma_main.c   |  27 ++++
+> drivers/net/ethernet/microsoft/mana/mana_en.c | 101 ++++++++++++++-
+> .../ethernet/microsoft/mana/mana_ethtool.c    | 120 +++++++++++++++++-
+> include/net/mana/gdma.h                       |  24 +++-
+> include/net/mana/mana.h                       |  42 ++++++
+> 6 files changed, 309 insertions(+), 6 deletions(-)
+>
+>diff --git a/drivers/net/ethernet/microsoft/Kconfig b/drivers/net/ethernet=
+/microsoft/Kconfig
+>index 3f36ee6a8ece..e9be18c92ca5 100644
+>--- a/drivers/net/ethernet/microsoft/Kconfig
+>+++ b/drivers/net/ethernet/microsoft/Kconfig
+>@@ -21,6 +21,7 @@ config MICROSOFT_MANA
+> 	depends on X86_64 || (ARM64 && !CPU_BIG_ENDIAN)
+> 	depends on PCI_HYPERV
+> 	select AUXILIARY_BUS
+>+	select DIMLIB
+> 	select PAGE_POOL
+> 	select NET_SHAPER
+> 	help
+>diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net=
+/ethernet/microsoft/mana/gdma_main.c
+>index 712a0881d720..5aa0ea794a00 100644
+>--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+>+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+>@@ -405,6 +405,7 @@ static int mana_gd_disable_queue(struct gdma_queue *qu=
+eue)
+> #define DOORBELL_OFFSET_RQ	0x400
+> #define DOORBELL_OFFSET_CQ	0x800
+> #define DOORBELL_OFFSET_EQ	0xFF8
+>+#define DOORBELL_OFFSET_DIM	0x820
+>=20
+> static void mana_gd_ring_doorbell(struct gdma_context *gc, u32 db_index,
+> 				  enum gdma_queue_type q_type, u32 qid,
+>@@ -445,6 +446,16 @@ static void mana_gd_ring_doorbell(struct gdma_context=
+ *gc, u32 db_index,
+> 		addr +=3D DOORBELL_OFFSET_SQ;
+> 		break;
+>=20
+>+	case GDMA_DIM:
+>+		e.dim.id =3D qid;
+>+		e.dim.mod_usec =3D tail_ptr;
+>+		e.dim.mod_usec_vld =3D tail_ptr >> 15;
+>+		e.dim.mod_comps =3D tail_ptr >> 16;
 
-Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
----
-Changes in v6:
-* Fix subject prefix: net-next -> rdma-next.
-Changes in v5:
-* Add U8_MAX clamps in iser_verbs, nvme/host, nvme/target, isert, rds/ib_cm,
-  smbdirect/connect and smbdirect/accept where u32 capability fields were
-  directly narrowed into u8 rdma_conn_param fields without clamping
-* Guard the inline_sge_count calculation in nvmet_rdma_find_get_device() to
-  prevent u32 underflow when both max_sge_rd and max_recv_sge are zero
-* Expand type migration to 9 additional fields (max_mw, max_raw_ethy_qp,
-  max_mcast_grp, max_mcast_qp_attach, max_total_mcast_qp_attach, max_ah,
-  max_srq, max_srq_wr, max_srq_sge)
-* Fix min_t(int,...) in svc_rdma_transport; min_t(u32,...) in ipoib, srpt,
-  nvme/target, rds/ib, rtrs-clt, rtrs-srv, xprtrdma/verbs
-* Fix frwr_ops.c u32 underflow guard (reorder check before subtraction)
-* Change sc_max_send_sges to unsigned int, inline_sge_count to u32
-* Fix %d -> %u in rxe_qp, rxe_srq, ipoib_cm, ib_isert, svc_rdma_transport
-* Update commit message.
-Changes in v4:
-* Drop clamping the values in mana_ib_query_device, instead update
-  the props values from int to u32.
-Changes in v3:
-* Drop clamping from mana_ib_gd_query_adapter_caps(). The internal u32
-  caps cache does not need to be clamped.
-* Move all clamping exclusively to mana_ib_query_device(), which is the
-  only place the cached u32 values are narrowed into the signed int
-  fields of struct ib_device_attr.
-* Reframe commit message: this is a u32-to-int type boundary fix, not a
-  CVM/untrusted-hardware hardening patch.
-Changes in v2:
-* Update patch title.
----
- drivers/infiniband/hw/qedr/verbs.c       |  4 +--
- drivers/infiniband/sw/rxe/rxe_qp.c       | 16 ++++-----
- drivers/infiniband/sw/rxe/rxe_srq.c      | 16 ++++-----
- drivers/infiniband/ulp/ipoib/ipoib_cm.c  |  7 ++--
- drivers/infiniband/ulp/iser/iser_verbs.c |  2 +-
- drivers/infiniband/ulp/isert/ib_isert.c  |  8 ++---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c   | 12 +++----
- drivers/infiniband/ulp/rtrs/rtrs-srv.c   |  6 ++--
- drivers/infiniband/ulp/srp/ib_srp.c      |  2 +-
- drivers/infiniband/ulp/srpt/ib_srpt.c    |  6 ++--
- drivers/nvme/host/rdma.c                 |  3 +-
- drivers/nvme/target/rdma.c               | 17 +++++-----
- fs/smb/smbdirect/accept.c                |  4 +--
- fs/smb/smbdirect/connect.c               |  4 +--
- include/linux/sunrpc/svc_rdma.h          |  2 +-
- include/rdma/ib_verbs.h                  | 42 ++++++++++++------------
- net/rds/ib.c                             |  4 +--
- net/rds/ib_cm.c                          |  6 ++--
- net/sunrpc/xprtrdma/frwr_ops.c           |  7 ++--
- net/sunrpc/xprtrdma/svc_rdma_transport.c |  4 +--
- net/sunrpc/xprtrdma/verbs.c              |  2 +-
- 21 files changed, 90 insertions(+), 84 deletions(-)
+please use defines instead of magic
 
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 679aa6f3a63b..64ea72529682 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -151,8 +151,8 @@ int qedr_query_device(struct ib_device *ibdev,
- 	attr->max_qp_init_rd_atom =
- 	    1 << (fls(qattr->max_qp_req_rd_atomic_resc) - 1);
- 	attr->max_qp_rd_atom =
--	    min(1 << (fls(qattr->max_qp_resp_rd_atomic_resc) - 1),
--		attr->max_qp_init_rd_atom);
-+	    min_t(u32, 1 << (fls(qattr->max_qp_resp_rd_atomic_resc) - 1),
-+		  attr->max_qp_init_rd_atom);
- 
- 	attr->max_srq = qattr->max_srq;
- 	attr->max_srq_sge = qattr->max_srq_sge;
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index f3dff1aea96a..b25bbf6606f8 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -67,27 +67,27 @@ static int rxe_qp_chk_cap(struct rxe_dev *rxe, struct ib_qp_cap *cap,
- 			  int has_srq)
- {
- 	if (cap->max_send_wr > rxe->attr.max_qp_wr) {
--		rxe_dbg_dev(rxe, "invalid send wr = %u > %d\n",
--			 cap->max_send_wr, rxe->attr.max_qp_wr);
-+		rxe_dbg_dev(rxe, "invalid send wr = %u > %u\n",
-+			    cap->max_send_wr, rxe->attr.max_qp_wr);
- 		goto err1;
- 	}
- 
- 	if (cap->max_send_sge > rxe->attr.max_send_sge) {
--		rxe_dbg_dev(rxe, "invalid send sge = %u > %d\n",
--			 cap->max_send_sge, rxe->attr.max_send_sge);
-+		rxe_dbg_dev(rxe, "invalid send sge = %u > %u\n",
-+			    cap->max_send_sge, rxe->attr.max_send_sge);
- 		goto err1;
- 	}
- 
- 	if (!has_srq) {
- 		if (cap->max_recv_wr > rxe->attr.max_qp_wr) {
--			rxe_dbg_dev(rxe, "invalid recv wr = %u > %d\n",
--				 cap->max_recv_wr, rxe->attr.max_qp_wr);
-+			rxe_dbg_dev(rxe, "invalid recv wr = %u > %u\n",
-+				    cap->max_recv_wr, rxe->attr.max_qp_wr);
- 			goto err1;
- 		}
- 
- 		if (cap->max_recv_sge > rxe->attr.max_recv_sge) {
--			rxe_dbg_dev(rxe, "invalid recv sge = %u > %d\n",
--				 cap->max_recv_sge, rxe->attr.max_recv_sge);
-+			rxe_dbg_dev(rxe, "invalid recv sge = %u > %u\n",
-+				    cap->max_recv_sge, rxe->attr.max_recv_sge);
- 			goto err1;
- 		}
- 	}
-diff --git a/drivers/infiniband/sw/rxe/rxe_srq.c b/drivers/infiniband/sw/rxe/rxe_srq.c
-index c9a7cd38953d..74904a6fdf2b 100644
---- a/drivers/infiniband/sw/rxe/rxe_srq.c
-+++ b/drivers/infiniband/sw/rxe/rxe_srq.c
-@@ -13,8 +13,8 @@ int rxe_srq_chk_init(struct rxe_dev *rxe, struct ib_srq_init_attr *init)
- 	struct ib_srq_attr *attr = &init->attr;
- 
- 	if (attr->max_wr > rxe->attr.max_srq_wr) {
--		rxe_dbg_dev(rxe, "max_wr(%d) > max_srq_wr(%d)\n",
--			attr->max_wr, rxe->attr.max_srq_wr);
-+		rxe_dbg_dev(rxe, "max_wr(%u) > max_srq_wr(%u)\n",
-+			    attr->max_wr, rxe->attr.max_srq_wr);
- 		goto err1;
- 	}
- 
-@@ -27,8 +27,8 @@ int rxe_srq_chk_init(struct rxe_dev *rxe, struct ib_srq_init_attr *init)
- 		attr->max_wr = RXE_MIN_SRQ_WR;
- 
- 	if (attr->max_sge > rxe->attr.max_srq_sge) {
--		rxe_dbg_dev(rxe, "max_sge(%d) > max_srq_sge(%d)\n",
--			attr->max_sge, rxe->attr.max_srq_sge);
-+		rxe_dbg_dev(rxe, "max_sge(%u) > max_srq_sge(%u)\n",
-+			    attr->max_sge, rxe->attr.max_srq_sge);
- 		goto err1;
- 	}
- 
-@@ -107,8 +107,8 @@ int rxe_srq_chk_attr(struct rxe_dev *rxe, struct rxe_srq *srq,
- 
- 	if (mask & IB_SRQ_MAX_WR) {
- 		if (attr->max_wr > rxe->attr.max_srq_wr) {
--			rxe_dbg_srq(srq, "max_wr(%d) > max_srq_wr(%d)\n",
--				attr->max_wr, rxe->attr.max_srq_wr);
-+			rxe_dbg_srq(srq, "max_wr(%u) > max_srq_wr(%u)\n",
-+				    attr->max_wr, rxe->attr.max_srq_wr);
- 			goto err1;
- 		}
- 
-@@ -129,8 +129,8 @@ int rxe_srq_chk_attr(struct rxe_dev *rxe, struct rxe_srq *srq,
- 
- 	if (mask & IB_SRQ_LIMIT) {
- 		if (attr->srq_limit > rxe->attr.max_srq_wr) {
--			rxe_dbg_srq(srq, "srq_limit(%d) > max_srq_wr(%d)\n",
--				attr->srq_limit, rxe->attr.max_srq_wr);
-+			rxe_dbg_srq(srq, "srq_limit(%u) > max_srq_wr(%u)\n",
-+				    attr->srq_limit, rxe->attr.max_srq_wr);
- 			goto err1;
- 		}
- 
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_cm.c b/drivers/infiniband/ulp/ipoib/ipoib_cm.c
-index 57fec88a1629..58606501bcd7 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_cm.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_cm.c
-@@ -1582,7 +1582,8 @@ static void ipoib_cm_create_srq(struct net_device *dev, int max_sge)
- int ipoib_cm_dev_init(struct net_device *dev)
- {
- 	struct ipoib_dev_priv *priv = ipoib_priv(dev);
--	int max_srq_sge, i;
-+	int i;
-+	u32 max_srq_sge;
- 	u8 addr;
- 
- 	INIT_LIST_HEAD(&priv->cm.passive_ids);
-@@ -1600,9 +1601,9 @@ int ipoib_cm_dev_init(struct net_device *dev)
- 
- 	skb_queue_head_init(&priv->cm.skb_queue);
- 
--	ipoib_dbg(priv, "max_srq_sge=%d\n", priv->ca->attrs.max_srq_sge);
-+	ipoib_dbg(priv, "max_srq_sge=%u\n", priv->ca->attrs.max_srq_sge);
- 
--	max_srq_sge = min_t(int, IPOIB_CM_RX_SG, priv->ca->attrs.max_srq_sge);
-+	max_srq_sge = min_t(u32, IPOIB_CM_RX_SG, priv->ca->attrs.max_srq_sge);
- 	ipoib_cm_create_srq(dev, max_srq_sge);
- 	if (ipoib_cm_has_srq(dev)) {
- 		priv->cm.max_cm_mtu = max_srq_sge * PAGE_SIZE - 0x10;
-diff --git a/drivers/infiniband/ulp/iser/iser_verbs.c b/drivers/infiniband/ulp/iser/iser_verbs.c
-index f03b3bb3c0c4..a9a366fb3a34 100644
---- a/drivers/infiniband/ulp/iser/iser_verbs.c
-+++ b/drivers/infiniband/ulp/iser/iser_verbs.c
-@@ -589,7 +589,7 @@ static void iser_route_handler(struct rdma_cm_id *cma_id)
- 		goto failure;
- 
- 	memset(&conn_param, 0, sizeof conn_param);
--	conn_param.responder_resources = ib_dev->attrs.max_qp_rd_atom;
-+	conn_param.responder_resources = min_t(u32, U8_MAX, ib_dev->attrs.max_qp_rd_atom);
- 	conn_param.initiator_depth = 1;
- 	conn_param.retry_count = 7;
- 	conn_param.rnr_retry_count = 6;
-diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
-index 348005e71891..3bebf99f600c 100644
---- a/drivers/infiniband/ulp/isert/ib_isert.c
-+++ b/drivers/infiniband/ulp/isert/ib_isert.c
-@@ -214,9 +214,9 @@ isert_create_device_ib_res(struct isert_device *device)
- 	struct ib_device *ib_dev = device->ib_device;
- 	int ret;
- 
--	isert_dbg("devattr->max_send_sge: %d devattr->max_recv_sge %d\n",
-+	isert_dbg("devattr->max_send_sge: %u devattr->max_recv_sge %u\n",
- 		  ib_dev->attrs.max_send_sge, ib_dev->attrs.max_recv_sge);
--	isert_dbg("devattr->max_sge_rd: %d\n", ib_dev->attrs.max_sge_rd);
-+	isert_dbg("devattr->max_sge_rd: %u\n", ib_dev->attrs.max_sge_rd);
- 
- 	device->pd = ib_alloc_pd(ib_dev, 0);
- 	if (IS_ERR(device->pd)) {
-@@ -381,8 +381,8 @@ isert_set_nego_params(struct isert_conn *isert_conn,
- 	struct ib_device_attr *attr = &isert_conn->device->ib_device->attrs;
- 
- 	/* Set max inflight RDMA READ requests */
--	isert_conn->initiator_depth = min_t(u8, param->initiator_depth,
--				attr->max_qp_init_rd_atom);
-+	isert_conn->initiator_depth = min_t(u32, param->initiator_depth,
-+					    attr->max_qp_init_rd_atom);
- 	isert_dbg("Using initiator_depth: %u\n", isert_conn->initiator_depth);
- 
- 	if (param->private_data) {
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index e351552733df..5245b4b7fb4e 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -1682,7 +1682,7 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
- 		 * in case qp gets into error state.
- 		 */
- 		max_send_wr =
--			min_t(int, wr_limit, SERVICE_CON_QUEUE_DEPTH * 2 + 2);
-+			min_t(u32, wr_limit, SERVICE_CON_QUEUE_DEPTH * 2 + 2);
- 		max_recv_wr = max_send_wr;
- 	} else {
- 		/*
-@@ -1698,11 +1698,11 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
- 		wr_limit = clt_path->s.dev->ib_dev->attrs.max_qp_wr;
- 		/* Shared between connections */
- 		clt_path->s.dev_ref++;
--		max_send_wr = min_t(int, wr_limit,
--			      /* QD * (REQ + RSP + FR REGS or INVS) + drain */
--			      clt_path->queue_depth * 4 + 1);
--		max_recv_wr = min_t(int, wr_limit,
--			      clt_path->queue_depth * 3 + 1);
-+		max_send_wr = min_t(u32, wr_limit,
-+				    /* QD * (REQ + RSP + FR REGS or INVS) + drain */
-+				    clt_path->queue_depth * 4 + 1);
-+		max_recv_wr = min_t(u32, wr_limit,
-+				    clt_path->queue_depth * 3 + 1);
- 		max_send_sge = 2;
- 	}
- 	atomic_set(&con->c.sq_wr_avail, max_send_wr);
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 6482ad859bd1..852213365ecd 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -1731,7 +1731,7 @@ static int create_con(struct rtrs_srv_path *srv_path,
- 		 * All receive and all send (each requiring invalidate)
- 		 * + 2 for drain and heartbeat
- 		 */
--		max_send_wr = min_t(int, wr_limit,
-+		max_send_wr = min_t(u32, wr_limit,
- 				    SERVICE_CON_QUEUE_DEPTH * 2 + 2);
- 		max_recv_wr = max_send_wr;
- 		s->signal_interval = min_not_zero(srv->queue_depth,
-@@ -1740,11 +1740,11 @@ static int create_con(struct rtrs_srv_path *srv_path,
- 		/* when always_invlaidate enalbed, we need linv+rinv+mr+imm */
- 		if (always_invalidate)
- 			max_send_wr =
--				min_t(int, wr_limit,
-+				min_t(u32, wr_limit,
- 				      srv->queue_depth * (1 + 4) + 1);
- 		else
- 			max_send_wr =
--				min_t(int, wr_limit,
-+				min_t(u32, wr_limit,
- 				      srv->queue_depth * (1 + 2) + 1);
- 
- 		max_recv_wr = srv->queue_depth + 1;
-diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-index b58868e1cf11..dc30d069ab3d 100644
---- a/drivers/infiniband/ulp/srp/ib_srp.c
-+++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -557,7 +557,7 @@ static int srp_create_ch_ib(struct srp_rdma_ch *ch)
- 	init_attr->cap.max_send_wr     = m * target->queue_size;
- 	init_attr->cap.max_recv_wr     = target->queue_size + 1;
- 	init_attr->cap.max_recv_sge    = 1;
--	init_attr->cap.max_send_sge    = min(SRP_MAX_SGE, attr->max_send_sge);
-+	init_attr->cap.max_send_sge    = min_t(u32, SRP_MAX_SGE, attr->max_send_sge);
- 	init_attr->sq_sig_type         = IB_SIGNAL_REQ_WR;
- 	init_attr->qp_type             = IB_QPT_RC;
- 	init_attr->send_cq             = send_cq;
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-index 9aec5d80117f..2ffa4f54cd4e 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-@@ -1884,7 +1884,7 @@ static int srpt_create_ch_ib(struct srpt_rdma_ch *ch)
- 	 * both both, as RDMA contexts will also post completions for the
- 	 * RDMA READ case.
- 	 */
--	qp_init->cap.max_send_wr = min(sq_size / 2, attrs->max_qp_wr);
-+	qp_init->cap.max_send_wr = min_t(u32, sq_size / 2, attrs->max_qp_wr);
- 	qp_init->cap.max_rdma_ctxs = sq_size / 2;
- 	qp_init->cap.max_send_sge = attrs->max_send_sge;
- 	qp_init->cap.max_recv_sge = 1;
-@@ -2298,7 +2298,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
- 	 * depth to avoid that the initiator driver has to report QUEUE_FULL
- 	 * to the SCSI mid-layer.
- 	 */
--	ch->rq_size = min(MAX_SRPT_RQ_SIZE, sdev->device->attrs.max_qp_wr);
-+	ch->rq_size = min_t(u32, MAX_SRPT_RQ_SIZE, sdev->device->attrs.max_qp_wr);
- 	spin_lock_init(&ch->spinlock);
- 	ch->state = CH_CONNECTING;
- 	INIT_LIST_HEAD(&ch->cmd_wait_list);
-@@ -3225,7 +3225,7 @@ static int srpt_add_one(struct ib_device *device)
- 
- 	sdev->lkey = sdev->pd->local_dma_lkey;
- 
--	sdev->srq_size = min(srpt_srq_size, sdev->device->attrs.max_srq_wr);
-+	sdev->srq_size = min_t(u32, srpt_srq_size, sdev->device->attrs.max_srq_wr);
- 
- 	srpt_use_srq(sdev, sdev->port[0].port_attrib.use_srq);
- 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index f77c960f7632..f45d79816bc8 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -1845,7 +1845,8 @@ static int nvme_rdma_route_resolved(struct nvme_rdma_queue *queue)
- 	param.qp_num = queue->qp->qp_num;
- 	param.flow_control = 1;
- 
--	param.responder_resources = queue->device->dev->attrs.max_qp_rd_atom;
-+	param.responder_resources = min_t(u32, U8_MAX,
-+					  queue->device->dev->attrs.max_qp_rd_atom);
- 	/* maximum retry count */
- 	param.retry_count = 7;
- 	param.rnr_retry_count = 7;
-diff --git a/drivers/nvme/target/rdma.c b/drivers/nvme/target/rdma.c
-index e6e2c3f9afdf..fd6923198ec1 100644
---- a/drivers/nvme/target/rdma.c
-+++ b/drivers/nvme/target/rdma.c
-@@ -1149,10 +1149,10 @@ static int nvmet_rdma_init_srqs(struct nvmet_rdma_device *ndev)
- 		return 0;
- 	}
- 
--	ndev->srq_size = min(ndev->device->attrs.max_srq_wr,
--			     nvmet_rdma_srq_size);
--	ndev->srq_count = min(ndev->device->num_comp_vectors,
--			      ndev->device->attrs.max_srq);
-+	ndev->srq_size = min_t(u32, ndev->device->attrs.max_srq_wr,
-+			       nvmet_rdma_srq_size);
-+	ndev->srq_count = min_t(u32, ndev->device->num_comp_vectors,
-+				ndev->device->attrs.max_srq);
- 
- 	ndev->srqs = kzalloc_objs(*ndev->srqs, ndev->srq_count);
- 	if (!ndev->srqs)
-@@ -1197,7 +1197,7 @@ nvmet_rdma_find_get_device(struct rdma_cm_id *cm_id)
- 	struct nvmet_port *nport = port->nport;
- 	struct nvmet_rdma_device *ndev;
- 	int inline_page_count;
--	int inline_sge_count;
-+	u32 inline_sge_count;
- 	int ret;
- 
- 	mutex_lock(&device_list_mutex);
-@@ -1213,7 +1213,8 @@ nvmet_rdma_find_get_device(struct rdma_cm_id *cm_id)
- 
- 	inline_page_count = num_pages(nport->inline_data_size);
- 	inline_sge_count = max(cm_id->device->attrs.max_sge_rd,
--				cm_id->device->attrs.max_recv_sge) - 1;
-+				cm_id->device->attrs.max_recv_sge);
-+	inline_sge_count = inline_sge_count ? inline_sge_count - 1 : 0;
- 	if (inline_page_count > inline_sge_count) {
- 		pr_warn("inline_data_size %d cannot be supported by device %s. Reducing to %lu.\n",
- 			nport->inline_data_size, cm_id->device->name,
-@@ -1553,8 +1554,8 @@ static int nvmet_rdma_cm_accept(struct rdma_cm_id *cm_id,
- 
- 	param.rnr_retry_count = 7;
- 	param.flow_control = 1;
--	param.initiator_depth = min_t(u8, p->initiator_depth,
--		queue->dev->device->attrs.max_qp_init_rd_atom);
-+	param.initiator_depth = (u8)min_t(u32, p->initiator_depth,
-+		min_t(u32, U8_MAX, queue->dev->device->attrs.max_qp_init_rd_atom));
- 	param.private_data = &priv;
- 	param.private_data_len = sizeof(priv);
- 	priv.recfmt = cpu_to_le16(NVME_RDMA_CM_FMT_1_0);
-diff --git a/fs/smb/smbdirect/accept.c b/fs/smb/smbdirect/accept.c
-index 529740005838..890ce6985f4d 100644
---- a/fs/smb/smbdirect/accept.c
-+++ b/fs/smb/smbdirect/accept.c
-@@ -32,8 +32,8 @@ int smbdirect_accept_connect_request(struct smbdirect_socket *sc,
- 	/*
- 	 * First set what the we as server are able to support
- 	 */
--	sp->initiator_depth = min_t(u8, sp->initiator_depth,
--				    sc->ib.dev->attrs.max_qp_rd_atom);
-+	sp->initiator_depth = min_t(u32, sp->initiator_depth,
-+				    min_t(u32, U8_MAX, sc->ib.dev->attrs.max_qp_rd_atom));
- 
- 	peer_initiator_depth = param->initiator_depth;
- 	peer_responder_resources = param->responder_resources;
-diff --git a/fs/smb/smbdirect/connect.c b/fs/smb/smbdirect/connect.c
-index cd726b399afe..1a38772bb08c 100644
---- a/fs/smb/smbdirect/connect.c
-+++ b/fs/smb/smbdirect/connect.c
-@@ -182,8 +182,8 @@ static int smbdirect_connect_rdma_connect(struct smbdirect_socket *sc)
- 	if (sc->ib.dev->attrs.kernel_cap_flags & IBK_SG_GAPS_REG)
- 		sc->mr_io.type = IB_MR_TYPE_SG_GAPS;
- 
--	sp->responder_resources = min_t(u8, sp->responder_resources,
--					sc->ib.dev->attrs.max_qp_rd_atom);
-+	sp->responder_resources = min_t(u32, sp->responder_resources,
-+					min_t(u32, U8_MAX, sc->ib.dev->attrs.max_qp_rd_atom));
- 	smbdirect_log_rdma_mr(sc, SMBDIRECT_LOG_INFO,
- 		"responder_resources=%d\n",
- 		sp->responder_resources);
-diff --git a/include/linux/sunrpc/svc_rdma.h b/include/linux/sunrpc/svc_rdma.h
-index df6e08aaad57..05935e9f5530 100644
---- a/include/linux/sunrpc/svc_rdma.h
-+++ b/include/linux/sunrpc/svc_rdma.h
-@@ -79,7 +79,7 @@ struct svcxprt_rdma {
- 	struct list_head     sc_accept_q;	/* Conn. waiting accept */
- 	struct rpcrdma_notification sc_rn;	/* removal notification */
- 	int		     sc_ord;		/* RDMA read limit */
--	int                  sc_max_send_sges;
-+	unsigned int         sc_max_send_sges;
- 	bool		     sc_snd_w_inv;	/* OK to use Send With Invalidate */
- 
- 	atomic_t             sc_sq_avail;	/* SQEs ready to be consumed */
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 9dd76f489a0b..987309b9a675 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -406,36 +406,36 @@ struct ib_device_attr {
- 	u32			vendor_id;
- 	u32			vendor_part_id;
- 	u32			hw_ver;
--	int			max_qp;
--	int			max_qp_wr;
-+	u32			max_qp;
-+	u32			max_qp_wr;
- 	u64			device_cap_flags;
- 	u64			kernel_cap_flags;
--	int			max_send_sge;
--	int			max_recv_sge;
--	int			max_sge_rd;
--	int			max_cq;
--	int			max_cqe;
--	int			max_mr;
--	int			max_pd;
--	int			max_qp_rd_atom;
-+	u32			max_send_sge;
-+	u32			max_recv_sge;
-+	u32			max_sge_rd;
-+	u32			max_cq;
-+	u32			max_cqe;
-+	u32			max_mr;
-+	u32			max_pd;
-+	u32			max_qp_rd_atom;
- 	int			max_ee_rd_atom;
--	int			max_res_rd_atom;
--	int			max_qp_init_rd_atom;
-+	u32			max_res_rd_atom;
-+	u32			max_qp_init_rd_atom;
- 	int			max_ee_init_rd_atom;
- 	enum ib_atomic_cap	atomic_cap;
- 	enum ib_atomic_cap	masked_atomic_cap;
- 	int			max_ee;
- 	int			max_rdd;
--	int			max_mw;
-+	u32			max_mw;
- 	int			max_raw_ipv6_qp;
--	int			max_raw_ethy_qp;
--	int			max_mcast_grp;
--	int			max_mcast_qp_attach;
--	int			max_total_mcast_qp_attach;
--	int			max_ah;
--	int			max_srq;
--	int			max_srq_wr;
--	int			max_srq_sge;
-+	u32			max_raw_ethy_qp;
-+	u32			max_mcast_grp;
-+	u32			max_mcast_qp_attach;
-+	u32			max_total_mcast_qp_attach;
-+	u32			max_ah;
-+	u32			max_srq;
-+	u32			max_srq_wr;
-+	u32			max_srq_sge;
- 	unsigned int		max_fast_reg_page_list_len;
- 	unsigned int		max_pi_fast_reg_page_list_len;
- 	u16			max_pkeys;
-diff --git a/net/rds/ib.c b/net/rds/ib.c
-index 39f87272e071..d493bdd2d3e9 100644
---- a/net/rds/ib.c
-+++ b/net/rds/ib.c
-@@ -151,7 +151,7 @@ static int rds_ib_add_one(struct ib_device *device)
- 	INIT_LIST_HEAD(&rds_ibdev->conn_list);
- 
- 	rds_ibdev->max_wrs = device->attrs.max_qp_wr;
--	rds_ibdev->max_sge = min(device->attrs.max_send_sge, RDS_IB_MAX_SGE);
-+	rds_ibdev->max_sge = min_t(u32, device->attrs.max_send_sge, RDS_IB_MAX_SGE);
- 
- 	rds_ibdev->odp_capable =
- 		!!(device->attrs.kernel_cap_flags &
-@@ -204,7 +204,7 @@ static int rds_ib_add_one(struct ib_device *device)
- 		goto put_dev;
- 	}
- 
--	rdsdebug("RDS/IB: max_mr = %d, max_wrs = %d, max_sge = %d, max_1m_mrs = %d, max_8k_mrs = %d\n",
-+	rdsdebug("RDS/IB: max_mr = %u, max_wrs = %d, max_sge = %d, max_1m_mrs = %d, max_8k_mrs = %d\n",
- 		 device->attrs.max_mr, rds_ibdev->max_wrs, rds_ibdev->max_sge,
- 		 rds_ibdev->max_1m_mrs, rds_ibdev->max_8k_mrs);
- 
-diff --git a/net/rds/ib_cm.c b/net/rds/ib_cm.c
-index 0c64c504f79d..50292dc9884f 100644
---- a/net/rds/ib_cm.c
-+++ b/net/rds/ib_cm.c
-@@ -174,9 +174,11 @@ static void rds_ib_cm_fill_conn_param(struct rds_connection *conn,
- 	memset(conn_param, 0, sizeof(struct rdma_conn_param));
- 
- 	conn_param->responder_resources =
--		min_t(u32, rds_ibdev->max_responder_resources, max_responder_resources);
-+		(u8)min3(rds_ibdev->max_responder_resources,
-+			 max_responder_resources, (unsigned int)U8_MAX);
- 	conn_param->initiator_depth =
--		min_t(u32, rds_ibdev->max_initiator_depth, max_initiator_depth);
-+		(u8)min3(rds_ibdev->max_initiator_depth,
-+			 max_initiator_depth, (unsigned int)U8_MAX);
- 	conn_param->retry_count = min_t(unsigned int, rds_ib_retry_count, 7);
- 	conn_param->rnr_retry_count = 7;
- 
-diff --git a/net/sunrpc/xprtrdma/frwr_ops.c b/net/sunrpc/xprtrdma/frwr_ops.c
-index 7f79a0a2601e..19f7088a7b54 100644
---- a/net/sunrpc/xprtrdma/frwr_ops.c
-+++ b/net/sunrpc/xprtrdma/frwr_ops.c
-@@ -172,7 +172,8 @@ int frwr_mr_init(struct rpcrdma_xprt *r_xprt, struct rpcrdma_mr *mr)
- int frwr_query_device(struct rpcrdma_ep *ep, const struct ib_device *device)
- {
- 	const struct ib_device_attr *attrs = &device->attrs;
--	int max_qp_wr, depth, delta;
-+	u32 max_qp_wr;
-+	int depth, delta;
- 	unsigned int max_sge;
- 
- 	if (!(attrs->device_cap_flags & IB_DEVICE_MEM_MGT_EXTENSIONS) ||
-@@ -229,10 +230,10 @@ int frwr_query_device(struct rpcrdma_ep *ep, const struct ib_device *device)
- 	}
- 
- 	max_qp_wr = attrs->max_qp_wr;
-+	if (max_qp_wr < RPCRDMA_BACKWARD_WRS + 1 + RPCRDMA_MIN_SLOT_TABLE)
-+		return -ENOMEM;
- 	max_qp_wr -= RPCRDMA_BACKWARD_WRS;
- 	max_qp_wr -= 1;
--	if (max_qp_wr < RPCRDMA_MIN_SLOT_TABLE)
--		return -ENOMEM;
- 	if (ep->re_max_requests > max_qp_wr)
- 		ep->re_max_requests = max_qp_wr;
- 	ep->re_attr.cap.max_send_wr = ep->re_max_requests * depth;
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_transport.c b/net/sunrpc/xprtrdma/svc_rdma_transport.c
-index f18bc60d9f4f..a2ff2752a591 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_transport.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_transport.c
-@@ -544,7 +544,7 @@ static struct svc_xprt *svc_rdma_accept(struct svc_xprt *xprt)
- 	set_bit(RDMAXPRT_CONN_PENDING, &newxprt->sc_flags);
- 	memset(&conn_param, 0, sizeof conn_param);
- 	conn_param.responder_resources = 0;
--	conn_param.initiator_depth = min_t(int, newxprt->sc_ord,
-+	conn_param.initiator_depth = min_t(u32, newxprt->sc_ord,
- 					   dev->attrs.max_qp_init_rd_atom);
- 	if (!conn_param.initiator_depth) {
- 		ret = -EINVAL;
-@@ -570,7 +570,7 @@ static struct svc_xprt *svc_rdma_accept(struct svc_xprt *xprt)
- 		dprintk("    local address   : %pIS:%u\n", sap, rpc_get_port(sap));
- 		sap = (struct sockaddr *)&newxprt->sc_cm_id->route.addr.dst_addr;
- 		dprintk("    remote address  : %pIS:%u\n", sap, rpc_get_port(sap));
--		dprintk("    max_sge         : %d\n", newxprt->sc_max_send_sges);
-+		dprintk("    max_sge         : %u\n", newxprt->sc_max_send_sges);
- 		dprintk("    sq_depth        : %d\n", newxprt->sc_sq_depth);
- 		dprintk("    rdma_rw_ctxs    : %d\n", ctxts);
- 		dprintk("    max_requests    : %d\n", newxprt->sc_max_requests);
-diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
-index aecf9c0a153f..236ec233c579 100644
---- a/net/sunrpc/xprtrdma/verbs.c
-+++ b/net/sunrpc/xprtrdma/verbs.c
-@@ -453,7 +453,7 @@ static int rpcrdma_ep_create(struct rpcrdma_xprt *r_xprt)
- 	/* Client offers RDMA Read but does not initiate */
- 	ep->re_remote_cma.initiator_depth = 0;
- 	ep->re_remote_cma.responder_resources =
--		min_t(int, U8_MAX, device->attrs.max_qp_rd_atom);
-+		min_t(u32, U8_MAX, device->attrs.max_qp_rd_atom);
- 
- 	/* Limit transport retries so client can detect server
- 	 * GID changes quickly. RPC layer handles re-establishing
--- 
-2.34.1
+>+		e.dim.mod_comps_vld =3D num_req;
+>+
+>+		addr +=3D DOORBELL_OFFSET_DIM;
+>+		break;
+>+
+> 	default:
+> 		WARN_ON(1);
+> 		return;
+>@@ -479,6 +490,22 @@ void mana_gd_ring_cq(struct gdma_queue *cq, u8 arm_bi=
+t)
+> }
+> EXPORT_SYMBOL_NS(mana_gd_ring_cq, "NET_MANA");
+>=20
+>+void mana_gd_ring_dim(struct gdma_queue *cq, u32 mod_usec, bool mod_usec_=
+vld,
+>+		      u32 mod_comps, bool mod_comps_vld)
+>+{
+>+	struct gdma_context *gc =3D cq->gdma_dev->gdma_context;
+>+	u32 dim_val;
+>+
+>+	/* Convert the DIM values to doorbell parameters */
+>+	dim_val =3D (mod_usec & MANA_INTR_MODR_USEC_MAX) |
+>+		  (((u32)mod_usec_vld & 1) << 15) |
+>+		  ((mod_comps & MANA_INTR_MODR_COMP_MAX) << 16);
+
+i believe FIELD_PREP if preferrable in such cases
+
+>+
+>+	mana_gd_ring_doorbell(gc, cq->gdma_dev->doorbell, GDMA_DIM, cq->id,
+>+			      dim_val, (u8)mod_comps_vld & 1);
+>+}
+>+EXPORT_SYMBOL_NS(mana_gd_ring_dim, "NET_MANA");
+>+
+> #define MANA_SERVICE_PERIOD 10
+>=20
+> static void mana_serv_rescan(struct pci_dev *pdev)
+>diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/e=
+thernet/microsoft/mana/mana_en.c
+>index 82f1461a48e9..f1a16f8aca66 100644
+>--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+>+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+>@@ -1551,6 +1551,9 @@ int mana_create_wq_obj(struct mana_port_context *apc=
+,
+>=20
+> 	mana_gd_init_req_hdr(&req.hdr, MANA_CREATE_WQ_OBJ,
+> 			     sizeof(req), sizeof(resp));
+>+
+>+	req.hdr.req.msg_version =3D GDMA_MESSAGE_V3;
+>+	req.hdr.resp.msg_version =3D GDMA_MESSAGE_V2;
+> 	req.vport =3D vport;
+> 	req.wq_type =3D wq_type;
+> 	req.wq_gdma_region =3D wq_spec->gdma_region;
+>@@ -1559,6 +1562,9 @@ int mana_create_wq_obj(struct mana_port_context *apc=
+,
+> 	req.cq_size =3D cq_spec->queue_size;
+> 	req.cq_moderation_ctx_id =3D cq_spec->modr_ctx_id;
+> 	req.cq_parent_qid =3D cq_spec->attached_eq;
+>+	req.req_cq_moderation =3D cq_spec->req_cq_moderation;
+>+	req.cq_moderation_comp =3D cq_spec->cq_moderation_comp;
+>+	req.cq_moderation_usec =3D cq_spec->cq_moderation_usec;
+>=20
+> 	err =3D mana_send_request(apc->ac, &req, sizeof(req), &resp,
+> 				sizeof(resp));
+>@@ -2253,6 +2259,66 @@ static void mana_poll_rx_cq(struct mana_cq *cq)
+> 		xdp_do_flush();
+> }
+>=20
+>+static void mana_rx_dim_work(struct work_struct *work)
+>+{
+>+	struct dim *dim =3D container_of(work, struct dim, work);
+>+	struct mana_cq *cq =3D container_of(dim, struct mana_cq, dim);
+>+	struct dim_cq_moder cur_moder =3D
+>+		net_dim_get_rx_moderation(dim->mode, dim->profile_ix);
+
+RCT; here and for following
+
+>+
+>+	cur_moder.usec =3D min_t(u16, cur_moder.usec, MANA_INTR_MODR_USEC_MAX);
+>+	cur_moder.pkts =3D min_t(u16, cur_moder.pkts, MANA_INTR_MODR_COMP_MAX);
+>+
+>+	mana_gd_ring_dim(cq->gdma_cq, cur_moder.usec, true,
+>+			 cur_moder.pkts, true);
+>+
+>+	dim->state =3D DIM_START_MEASURE;
+>+}
+>+
+>+static void mana_tx_dim_work(struct work_struct *work)
+>+{
+>+	struct dim *dim =3D container_of(work, struct dim, work);
+>+	struct mana_cq *cq =3D container_of(dim, struct mana_cq, dim);
+>+	struct dim_cq_moder cur_moder =3D
+>+		net_dim_get_tx_moderation(dim->mode, dim->profile_ix);
+>+
+>+	cur_moder.usec =3D min_t(u16, cur_moder.usec, MANA_INTR_MODR_USEC_MAX);
+>+	cur_moder.pkts =3D min_t(u16, cur_moder.pkts, MANA_INTR_MODR_COMP_MAX);
+>+
+>+	mana_gd_ring_dim(cq->gdma_cq, cur_moder.usec, true,
+>+			 cur_moder.pkts, true);
+>+
+>+	dim->state =3D DIM_START_MEASURE;
+>+}
+>+
+>+static void mana_update_rx_dim(struct mana_cq *cq)
+>+{
+>+	struct mana_rxq *rxq =3D cq->rxq;
+>+	struct mana_port_context *apc =3D netdev_priv(rxq->ndev);
+>+	struct dim_sample dim_sample =3D {};
+>+
+>+	if (!apc->rx_dim_enabled)
+>+		return;
+>+
+>+	dim_update_sample(READ_ONCE(cq->dim_event_ctr), rxq->stats.packets,
+>+			  rxq->stats.bytes, &dim_sample);
+>+	net_dim(&cq->dim, &dim_sample);
+>+}
+>+
+>+static void mana_update_tx_dim(struct mana_cq *cq)
+>+{
+>+	struct mana_txq *txq =3D cq->txq;
+>+	struct mana_port_context *apc =3D netdev_priv(txq->ndev);
+>+	struct dim_sample dim_sample =3D {};
+>+
+>+	if (!apc->tx_dim_enabled)
+>+		return;
+>+
+>+	dim_update_sample(READ_ONCE(cq->dim_event_ctr), txq->stats.packets,
+>+			  txq->stats.bytes, &dim_sample);
+>+	net_dim(&cq->dim, &dim_sample);
+>+}
+>+
+> static int mana_cq_handler(void *context, struct gdma_queue *gdma_queue)
+> {
+> 	struct mana_cq *cq =3D context;
+>@@ -2271,7 +2337,13 @@ static int mana_cq_handler(void *context, struct gd=
+ma_queue *gdma_queue)
+> 	if (w < cq->budget) {
+> 		mana_gd_ring_cq(gdma_queue, SET_ARM_BIT);
+> 		cq->work_done_since_doorbell =3D 0;
+>-		napi_complete_done(&cq->napi, w);
+>+
+>+		if (napi_complete_done(&cq->napi, w)) {
+>+			if (cq->type =3D=3D MANA_CQ_TYPE_RX)
+>+				mana_update_rx_dim(cq);
+>+			else
+>+				mana_update_tx_dim(cq);
+>+		}
+> 	} else if (cq->work_done_since_doorbell >=3D
+> 		   (cq->gdma_cq->queue_size / COMP_ENTRY_SIZE) * 4) {
+> 		/* MANA hardware requires at least one doorbell ring every 8
+>@@ -2303,6 +2375,7 @@ static void mana_schedule_napi(void *context, struct=
+ gdma_queue *gdma_queue)
+> {
+> 	struct mana_cq *cq =3D context;
+>=20
+>+	WRITE_ONCE(cq->dim_event_ctr, cq->dim_event_ctr + 1);
+> 	napi_schedule_irqoff(&cq->napi);
+> }
+>=20
+>@@ -2345,6 +2418,7 @@ static void mana_destroy_txq(struct mana_port_contex=
+t *apc)
+> 		if (apc->tx_qp[i]->txq.napi_initialized) {
+> 			napi_synchronize(napi);
+> 			napi_disable_locked(napi);
+>+			cancel_work_sync(&apc->tx_qp[i]->tx_cq.dim.work);
+> 			netif_napi_del_locked(napi);
+> 			apc->tx_qp[i]->txq.napi_initialized =3D false;
+> 		}
+>@@ -2475,6 +2549,10 @@ static int mana_create_txq(struct mana_port_context=
+ *apc,
+> 		cq_spec.queue_size =3D cq->gdma_cq->queue_size;
+> 		cq_spec.modr_ctx_id =3D 0;
+> 		cq_spec.attached_eq =3D cq->gdma_cq->cq.parent->id;
+>+		cq_spec.req_cq_moderation =3D apc->tx_dim_enabled ||
+>+			(apc->intr_modr_tx_usec && apc->intr_modr_tx_comp);
+>+		cq_spec.cq_moderation_usec =3D apc->intr_modr_tx_usec;
+>+		cq_spec.cq_moderation_comp =3D apc->intr_modr_tx_comp;
+>=20
+> 		err =3D mana_create_wq_obj(apc, apc->port_handle, GDMA_SQ,
+> 					 &wq_spec, &cq_spec,
+>@@ -2509,6 +2587,9 @@ static int mana_create_txq(struct mana_port_context =
+*apc,
+> 		napi_enable_locked(&cq->napi);
+> 		txq->napi_initialized =3D true;
+>=20
+>+		INIT_WORK(&cq->dim.work, mana_tx_dim_work);
+>+		cq->dim.mode =3D DIM_CQ_PERIOD_MODE_START_FROM_EQE;
+>+
+> 		mana_gd_ring_cq(cq->gdma_cq, SET_ARM_BIT);
+> 	}
+>=20
+>@@ -2543,6 +2624,7 @@ static void mana_destroy_rxq(struct mana_port_contex=
+t *apc,
+> 		napi_synchronize(napi);
+>=20
+> 		napi_disable_locked(napi);
+>+		cancel_work_sync(&rxq->rx_cq.dim.work);
+> 		netif_napi_del_locked(napi);
+> 	}
+>=20
+>@@ -2780,6 +2862,10 @@ static struct mana_rxq *mana_create_rxq(struct mana=
+_port_context *apc,
+> 	cq_spec.queue_size =3D cq->gdma_cq->queue_size;
+> 	cq_spec.modr_ctx_id =3D 0;
+> 	cq_spec.attached_eq =3D cq->gdma_cq->cq.parent->id;
+>+	cq_spec.req_cq_moderation =3D apc->rx_dim_enabled ||
+>+		(apc->intr_modr_rx_usec && apc->intr_modr_rx_comp);
+>+	cq_spec.cq_moderation_usec =3D apc->intr_modr_rx_usec;
+>+	cq_spec.cq_moderation_comp =3D apc->intr_modr_rx_comp;
+>=20
+> 	err =3D mana_create_wq_obj(apc, apc->port_handle, GDMA_RQ,
+> 				 &wq_spec, &cq_spec, &rxq->rxobj);
+>@@ -2815,6 +2901,9 @@ static struct mana_rxq *mana_create_rxq(struct mana_=
+port_context *apc,
+>=20
+> 	napi_enable_locked(&cq->napi);
+>=20
+>+	INIT_WORK(&cq->dim.work, mana_rx_dim_work);
+>+	cq->dim.mode =3D DIM_CQ_PERIOD_MODE_START_FROM_EQE;
+>+
+> 	mana_gd_ring_cq(cq->gdma_cq, SET_ARM_BIT);
+> out:
+> 	if (!err)
+>@@ -3432,6 +3521,16 @@ static int mana_probe_port(struct mana_context *ac,=
+ int port_idx,
+> 	apc->port_idx =3D port_idx;
+> 	apc->cqe_coalescing_enable =3D 0;
+>=20
+>+	/* Initialize interrupt moderation settings if supported by HW */
+>+	if (gc->pf_cap_flags1 & GDMA_PF_CAP_FLAG_1_DYN_INTERRUPT_MODERATION) {
+>+		apc->intr_modr_rx_usec =3D MANA_INTR_MODR_USEC_DEF;
+>+		apc->intr_modr_rx_comp =3D MANA_INTR_MODR_COMP_DEF;
+>+		apc->intr_modr_tx_usec =3D MANA_INTR_MODR_USEC_DEF;
+>+		apc->intr_modr_tx_comp =3D MANA_INTR_MODR_COMP_DEF;
+>+		apc->rx_dim_enabled =3D MANA_ADAPTIVE_RX_DEF;
+>+		apc->tx_dim_enabled =3D MANA_ADAPTIVE_TX_DEF;
+>+	}
+>+
+> 	mutex_init(&apc->vport_mutex);
+> 	apc->vport_use_count =3D 0;
+>=20
+>diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/=
+net/ethernet/microsoft/mana/mana_ethtool.c
+>index 04350973e19e..a90216eba794 100644
+>--- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+>+++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+>@@ -419,6 +419,15 @@ static int mana_get_coalesce(struct net_device *ndev,
+> 	    !kernel_coal->rx_cqe_nsecs)
+> 		kernel_coal->rx_cqe_nsecs =3D MANA_RX_CQE_NSEC_DEF;
+>=20
+>+	ec->rx_coalesce_usecs =3D apc->intr_modr_rx_usec;
+>+	ec->rx_max_coalesced_frames =3D apc->intr_modr_rx_comp;
+>+
+>+	ec->tx_coalesce_usecs =3D apc->intr_modr_tx_usec;
+>+	ec->tx_max_coalesced_frames =3D apc->intr_modr_tx_comp;
+>+
+>+	ec->use_adaptive_rx_coalesce =3D apc->rx_dim_enabled;
+>+	ec->use_adaptive_tx_coalesce =3D apc->tx_dim_enabled;
+>+
+> 	return 0;
+> }
+>=20
+>@@ -429,8 +438,28 @@ static int mana_set_coalesce(struct net_device *ndev,
+> {
+> 	struct mana_port_context *apc =3D netdev_priv(ndev);
+> 	u8 saved_cqe_coalescing_enable;
+>+	u16 old_rx_usec, old_rx_comp;
+>+	u16 old_tx_usec, old_tx_comp;
+>+	bool old_rx_dim, old_tx_dim;
+
+how about using some sort of struct instead of declaring a number
+of params for bookkeeping? imho would be cleaner
+
+>+	bool modr_changed =3D false;
+>+	bool dim_changed =3D false;
+>+	struct gdma_context *gc;
+> 	int err;
+>=20
+>+	gc =3D apc->ac->gdma_dev->gdma_context;
+>+
+>+	/* Both static and dynamic interrupt moderation (DIM) rely on the
+>+	 * same HW capability advertised by the PF.
+>+	 */
+>+	if ((ec->use_adaptive_rx_coalesce || ec->use_adaptive_tx_coalesce ||
+>+	     ec->rx_coalesce_usecs || ec->tx_coalesce_usecs ||
+>+	     ec->rx_max_coalesced_frames || ec->tx_max_coalesced_frames) &&
+>+	    !(gc->pf_cap_flags1 & GDMA_PF_CAP_FLAG_1_DYN_INTERRUPT_MODERATION)) =
+{
+>+		NL_SET_ERR_MSG(extack,
+>+			       "Interrupt Moderation is not supported by HW");
+>+		return -EOPNOTSUPP;
+>+	}
+>+
+> 	if (kernel_coal->rx_cqe_frames !=3D 1 &&
+> 	    kernel_coal->rx_cqe_frames !=3D MANA_RXCOMP_OOB_NUM_PPI) {
+> 		NL_SET_ERR_MSG_FMT(extack,
+>@@ -440,6 +469,47 @@ static int mana_set_coalesce(struct net_device *ndev,
+> 		return -EINVAL;
+> 	}
+>=20
+>+	if (ec->rx_coalesce_usecs > MANA_INTR_MODR_USEC_MAX ||
+>+	    ec->tx_coalesce_usecs > MANA_INTR_MODR_USEC_MAX) {
+>+		NL_SET_ERR_MSG_FMT(extack,
+>+				   "coalesce usecs must be <=3D %u",
+>+				   MANA_INTR_MODR_USEC_MAX);
+>+		return -EINVAL;
+>+	}
+>+
+>+	if (ec->rx_max_coalesced_frames > MANA_INTR_MODR_COMP_MAX ||
+>+	    ec->tx_max_coalesced_frames > MANA_INTR_MODR_COMP_MAX) {
+>+		NL_SET_ERR_MSG_FMT(extack,
+>+				   "coalesce frames must be <=3D %u",
+>+				   MANA_INTR_MODR_COMP_MAX);
+>+		return -EINVAL;
+>+	}
+>+
+>+	if (ec->rx_coalesce_usecs !=3D apc->intr_modr_rx_usec ||
+>+	    ec->rx_max_coalesced_frames !=3D apc->intr_modr_rx_comp ||
+>+	    ec->tx_coalesce_usecs !=3D apc->intr_modr_tx_usec ||
+>+	    ec->tx_max_coalesced_frames !=3D apc->intr_modr_tx_comp)
+>+		modr_changed =3D true;
+>+
+>+	old_rx_usec =3D apc->intr_modr_rx_usec;
+>+	old_rx_comp =3D apc->intr_modr_rx_comp;
+>+	old_tx_usec =3D apc->intr_modr_tx_usec;
+>+	old_tx_comp =3D apc->intr_modr_tx_comp;
+>+
+>+	apc->intr_modr_rx_usec =3D ec->rx_coalesce_usecs;
+>+	apc->intr_modr_rx_comp =3D ec->rx_max_coalesced_frames;
+>+	apc->intr_modr_tx_usec =3D ec->tx_coalesce_usecs;
+>+	apc->intr_modr_tx_comp =3D ec->tx_max_coalesced_frames;
+>+
+>+	if (!!ec->use_adaptive_rx_coalesce !=3D apc->rx_dim_enabled ||
+>+	    !!ec->use_adaptive_tx_coalesce !=3D apc->tx_dim_enabled)
+>+		dim_changed =3D true;
+>+
+>+	old_rx_dim =3D apc->rx_dim_enabled;
+>+	old_tx_dim =3D apc->tx_dim_enabled;
+>+	apc->rx_dim_enabled =3D !!ec->use_adaptive_rx_coalesce;
+>+	apc->tx_dim_enabled =3D !!ec->use_adaptive_tx_coalesce;
+>+
+> 	saved_cqe_coalescing_enable =3D apc->cqe_coalescing_enable;
+> 	apc->cqe_coalescing_enable =3D
+> 		kernel_coal->rx_cqe_frames =3D=3D MANA_RXCOMP_OOB_NUM_PPI;
+>@@ -447,10 +517,46 @@ static int mana_set_coalesce(struct net_device *ndev=
+,
+> 	if (!apc->port_is_up)
+> 		return 0;
+>=20
+>-	err =3D mana_config_rss(apc, TRI_STATE_TRUE, false, false);
+>-	if (err)
+>-		apc->cqe_coalescing_enable =3D saved_cqe_coalescing_enable;
+>+	if (apc->cqe_coalescing_enable !=3D saved_cqe_coalescing_enable &&
+>+	    !modr_changed && !dim_changed) {
+>+		/* If only CQE coalescing setting is changed, we can just update
+>+		 * RSS configuration.
+>+		 */
+>+		err =3D mana_config_rss(apc, TRI_STATE_TRUE, false, false);
+>+		if (err) {
+>+			netdev_err(ndev, "Change CQE coalescing failed: %d\n",
+>+				   err);
+>+			apc->cqe_coalescing_enable =3D
+>+				saved_cqe_coalescing_enable;
+>+			return err;
+>+		}
+>+		return 0;
+>+	}
+>+
+>+	if (modr_changed || dim_changed) {
+>+		err =3D mana_detach(ndev, false);
+>+		if (err) {
+>+			netdev_err(ndev, "mana_detach failed: %d\n", err);
+>+			goto restore_modr;
+>+		}
+>+
+>+		err =3D mana_attach(ndev);
+>+		if (err) {
+>+			netdev_err(ndev, "mana_attach failed: %d\n", err);
+>+			goto restore_modr;
+
+i see there is already such pattern in the mana code; how about
+creating a helper?
+
+>+		}
+>+	}
+>+
+>+	return 0;
+>=20
+>+restore_modr:
+>+	apc->cqe_coalescing_enable =3D saved_cqe_coalescing_enable;
+>+	apc->intr_modr_rx_usec =3D old_rx_usec;
+>+	apc->intr_modr_rx_comp =3D old_rx_comp;
+>+	apc->intr_modr_tx_usec =3D old_tx_usec;
+>+	apc->intr_modr_tx_comp =3D old_tx_comp;
+>+	apc->rx_dim_enabled =3D old_rx_dim;
+>+	apc->tx_dim_enabled =3D old_tx_dim;
+> 	return err;
+> }
+>=20
+>@@ -574,7 +680,13 @@ static int mana_get_link_ksettings(struct net_device =
+*ndev,
+> }
+>=20
+> const struct ethtool_ops mana_ethtool_ops =3D {
+>-	.supported_coalesce_params =3D ETHTOOL_COALESCE_RX_CQE_FRAMES,
+>+	.supported_coalesce_params =3D ETHTOOL_COALESCE_RX_CQE_FRAMES |
+>+				    ETHTOOL_COALESCE_RX_USECS |
+>+				    ETHTOOL_COALESCE_RX_MAX_FRAMES |
+>+				    ETHTOOL_COALESCE_TX_USECS |
+>+				    ETHTOOL_COALESCE_TX_MAX_FRAMES |
+>+				    ETHTOOL_COALESCE_USE_ADAPTIVE_RX |
+>+				    ETHTOOL_COALESCE_USE_ADAPTIVE_TX,
+> 	.get_ethtool_stats	=3D mana_get_ethtool_stats,
+> 	.get_sset_count		=3D mana_get_sset_count,
+> 	.get_strings		=3D mana_get_strings,
+>diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+>index 70d62bc32837..0a0cc7b080d3 100644
+>--- a/include/net/mana/gdma.h
+>+++ b/include/net/mana/gdma.h
+>@@ -47,6 +47,7 @@ enum gdma_queue_type {
+> 	GDMA_RQ,
+> 	GDMA_CQ,
+> 	GDMA_EQ,
+>+	GDMA_DIM,
+> };
+>=20
+> enum gdma_work_request_flags {
+>@@ -126,6 +127,17 @@ union gdma_doorbell_entry {
+> 		u64 tail_ptr	: 31;
+> 		u64 arm		: 1;
+> 	} eq;
+>+
+>+	struct {
+>+		u64 id           : 24;
+>+		u64 reserved     : 8;
+>+		u64 mod_usec     : 10;
+>+		u64 reserve1     : 5;
+>+		u64 mod_usec_vld : 1;
+>+		u64 mod_comps    : 8;
+>+		u64 reserve2     : 7;
+>+		u64 mod_comps_vld: 1;
+>+	} dim;
+> }; /* HW DATA */
+>=20
+> struct gdma_msg_hdr {
+>@@ -484,6 +496,9 @@ void mana_gd_ring_cq(struct gdma_queue *cq, u8 arm_bit=
+);
+>=20
+> int mana_schedule_serv_work(struct gdma_context *gc, enum gdma_eqe_type t=
+ype);
+>=20
+>+void mana_gd_ring_dim(struct gdma_queue *cq, u32 mod_usec, bool mod_usec_=
+vld,
+>+		      u32 mod_comps, bool mod_comps_vld);
+>+
+> struct gdma_wqe {
+> 	u32 reserved	:24;
+> 	u32 last_vbytes	:8;
+>@@ -629,6 +644,9 @@ enum {
+> /* Driver supports self recovery on Hardware Channel timeouts */
+> #define GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECOVERY BIT(25)
+>=20
+>+/* Driver supports dynamic interrupt moderation - DIM */
+>+#define GDMA_DRV_CAP_FLAG_1_DYN_INTERRUPT_MODERATION BIT(27)
+>+
+> #define GDMA_DRV_CAP_FLAGS1 \
+> 	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
+> 	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
+>@@ -643,7 +661,8 @@ enum {
+> 	 GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE | \
+> 	 GDMA_DRV_CAP_FLAG_1_PROBE_RECOVERY | \
+> 	 GDMA_DRV_CAP_FLAG_1_HANDLE_STALL_SQ_RECOVERY | \
+>-	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECOVERY)
+>+	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECOVERY | \
+>+	 GDMA_DRV_CAP_FLAG_1_DYN_INTERRUPT_MODERATION)
+>=20
+> #define GDMA_DRV_CAP_FLAGS2 0
+>=20
+>@@ -679,6 +698,9 @@ struct gdma_verify_ver_req {
+> 	u8 os_ver_str4[128];
+> }; /* HW DATA */
+>=20
+>+/* HW supports dynamic interrupt moderation - DIM */
+>+#define GDMA_PF_CAP_FLAG_1_DYN_INTERRUPT_MODERATION BIT(15)
+>+
+> struct gdma_verify_ver_resp {
+> 	struct gdma_resp_hdr hdr;
+> 	u64 gdma_protocol_ver;
+>diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+>index d9c27310fd04..57868a79f23d 100644
+>--- a/include/net/mana/mana.h
+>+++ b/include/net/mana/mana.h
+>@@ -4,6 +4,7 @@
+> #ifndef _MANA_H
+> #define _MANA_H
+>=20
+>+#include <linux/dim.h>
+> #include <net/xdp.h>
+> #include <net/net_shaper.h>
+>=20
+>@@ -64,6 +65,16 @@ enum TRI_STATE {
+> /* Maximum number of packets per coalesced CQE */
+> #define MANA_RXCOMP_OOB_NUM_PPI 4
+>=20
+>+/* Default/max interrupt moderation settings */
+>+#define MANA_INTR_MODR_USEC_DEF 0
+>+#define MANA_INTR_MODR_COMP_DEF 0
+>+
+>+#define MANA_ADAPTIVE_RX_DEF true
+>+#define MANA_ADAPTIVE_TX_DEF true
+>+
+>+#define MANA_INTR_MODR_USEC_MAX 1023
+>+#define MANA_INTR_MODR_COMP_MAX 255
+
+used as a limiter and mask - for mask case i believe
+GENMASK cand be used
 
 
