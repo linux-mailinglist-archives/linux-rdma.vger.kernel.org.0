@@ -1,163 +1,152 @@
-Return-Path: <linux-rdma+bounces-21579-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21580-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kPbAF8h5HWrEbAkAu9opvQ
-	(envelope-from <linux-rdma+bounces-21579-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 01 Jun 2026 14:23:36 +0200
+	id wMm4CAuCHWpwbQkAu9opvQ
+	(envelope-from <linux-rdma+bounces-21580-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 01 Jun 2026 14:58:51 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB19D61F34E
-	for <lists+linux-rdma@lfdr.de>; Mon, 01 Jun 2026 14:23:35 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4EDC61FADC
+	for <lists+linux-rdma@lfdr.de>; Mon, 01 Jun 2026 14:58:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 09C41305F0B6
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Jun 2026 12:14:25 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 8165F300A32F
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Jun 2026 12:58:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25F633769EE;
-	Mon,  1 Jun 2026 12:14:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F41637C11E;
+	Mon,  1 Jun 2026 12:58:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k3Ae9hAh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MYNNB4HN"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A946733F5A4
-	for <linux-rdma@vger.kernel.org>; Mon,  1 Jun 2026 12:14:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2CE4371D08;
+	Mon,  1 Jun 2026 12:58:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780316062; cv=none; b=fuxCAmQ6+hqFz0juCIfoH17An7T2zL39O++j8ODxXoYBkMYr752UGfpjiHn0BfoNa5Os0GDd123A3m16rvL2BBfuR0J7mCOch+F+R+c8Xbv24MRo9j7FIwKJQiA55KKU1bMWHqxi15BSPJlqKjRYhCGPQcMh8Q6l1NowzXy6xis=
+	t=1780318725; cv=none; b=rLAUFs3kC+6Zl644CyZWLrZjOnFGGdED6hgSDZosCul3EPaY2SfxtXTrmtpQ0I+L89TJJ74qmyp5Vq4NL2WSGurc0DciKuIvbrV0hfUEUYq4sZvJ1MX9kYo5N+SxE4LvgBTHUx1ZwNOUAt91nUKBst8Me8JpoPud2btNiE8P7Mc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780316062; c=relaxed/simple;
-	bh=ckB/0OrsFAl0uXjbvDISsyp9MLSMakEeAmw4BaJPm88=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NLOEBDgPVeYCVgxo0a/yybgY4MBfwBetO0z2IyxFDLsdN+DncA6dO1Vc+bDq0yOvoCCNKgB9ewPg/+uNWRIumCDEnZc3mRqJ3n+22VaeF+DzhJeoLDXLI8/HkbnDmBKRtJIJfJbg5ejayMc8fjEWA9STgXUid6+13mleZicCIL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k3Ae9hAh; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4903997fcb5so103334465e9.2
-        for <linux-rdma@vger.kernel.org>; Mon, 01 Jun 2026 05:14:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1780316060; x=1780920860; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LspmPQV/lHUgHA9RJ7Trmk5tXDicO37E7l+XwVPkr/U=;
-        b=k3Ae9hAhCViAGBd5kkfRnCmIEDj9nPEiC2h1k27d6xLf004gk0YZhyqL1jRyZmHOTy
-         3cQvR9UIgL4aWarHwzEXeWXrfZ8tDlHLkjfGeQgsZu1TW8aWJSbppEbXmlmpv5wXpPoj
-         Km2mZe72gDI0c+idsg+Kjwx6R60JfZBlgEqTJcmwuG4+/mVC1BArdt864f9hVoriEfx9
-         Z6xEuq+uj9ID52x/QPtYV4+NRsWJBLI4m4oI7rL3yyLxsbVgJfRHr+4pxVGMPe5m+4mx
-         PfwQpTDH829FiunORZkzoqZt42542qhsB3V03Vfj0tHotgS+Vb89cDSs1lMRIJpvMAUl
-         YVSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780316060; x=1780920860;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=LspmPQV/lHUgHA9RJ7Trmk5tXDicO37E7l+XwVPkr/U=;
-        b=boC+fyeGSkPWVd/kT/oomXA42chxssAwzG6hWSr529X/WQwl5CIdwic/QZliNaUM9c
-         8SRH6erzacPasaiLouhDWdQEnMZMfl+GdZpRMS1OaVjdVpCfDuJW98pgEUqfDAYYgFWv
-         bFr4zG4LusQgL/17ucRxGkEUcuKsaA7nDy4FBbkYAJKD6jslemJY6GYTvbVHIPsqXUlx
-         +u7Vck6xyDqOwPbWrwxHud1dk4HKl24W/1VTkT0siB5L7LYgPLf+bUe7PB5LdsxfnZQU
-         qNTPrjGQ/y08dRRYg6eDI1oSYRV6eCIX6e2O640/nxv/WvW8gZEhDt7LGF8Ov+JLClA5
-         JGkA==
-X-Forwarded-Encrypted: i=1; AFNElJ9QNxaCkx7r6O6ah/W5WRsh2QIqShvJ5jjsHbZH0Z/icKidIq0HMqEV7QWllL/2TK++TodzuzosFfE1@vger.kernel.org
-X-Gm-Message-State: AOJu0YzCulrnKwED6yOlsn4cU7xrm584VMoZAkh40wiwOjNa0GwwqL0D
-	7PUwlW/R99pxMIJ1QRn+tEfmmg3J14dnqNx9TrdRXsehYO3Mpts1jFSW
-X-Gm-Gg: Acq92OGhoUv14/ri7u8xc9+gMp9jU6Jb+hjoluY2Y8E27yRy47CVsL+SkO2EMm60G00
-	UB/u5YTDc4HKVaibWUXN79SG68CH0n54Y00pI5deOeJ7Ao/0Ixh4UBcZUvhIxZbhp1YEgkchj9N
-	dS/FX2RLL/eeaR1oL2+TjVkrHa9v4ezugsNkonZ9MI+XZCjvJL5skYx/QDeSEAah8UfwXIvyS7m
-	4bBp+9yYwfFxUmwawsLYy7A05oHUQjd4MPqx6dITvwHvsS8FcRMXbZbu7jw9k57eAeN0N9CAbkc
-	AMq83DEl0IzasGWHRwMQBaNPQ2QmOfyOxM5wU3pAc6isl8HBE1qL1X/QjO7dYog24SORtD4JuMJ
-	n+/3oSNQ9P7eSFeSfy5VwYnKrqlHF4MReC0PvN1czGIMftR8zWeHiuLI0+b/GTvcbUXE9fXS4pg
-	lCF5Q2vI5zAuZlli2ZSOeMntUFOW3FggYpBnRDbwyz6hMIpuMR/ozxTkI4Ow/padinFYnaGlQ=
-X-Received: by 2002:a05:600c:3b09:b0:490:a7ab:bbee with SMTP id 5b1f17b1804b1-490a7abbdcfmr141119495e9.15.1780316059659;
-        Mon, 01 Jun 2026 05:14:19 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4909c127befsm77948305e9.31.2026.06.01.05.14.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2026 05:14:19 -0700 (PDT)
-Date: Mon, 1 Jun 2026 13:14:16 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: Yao Sang <sangyao@kylinos.cn>, "David S . Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Andrew
- Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, "Gustavo
- A . R . Silva" <gustavoars@kernel.org>, netdev <netdev@vger.kernel.org>,
- linux-rdma <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH net] net/mlx4: avoid GCC 10 __bad_copy_from() false
- positive
-Message-ID: <20260601131416.318cfbd6@pumpkin>
-In-Reply-To: <7a018189-021c-44d1-a46d-a75016818a0b@nvidia.com>
-References: <20260520102130.423044-1-sangyao@kylinos.cn>
-	<1780035629778309.247.seg@mailgw.kylinos.cn>
-	<20260529064521.4i5pyilf32au4cnf@sang-pc>
-	<7a018189-021c-44d1-a46d-a75016818a0b@nvidia.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	s=arc-20240116; t=1780318725; c=relaxed/simple;
+	bh=6Y5HJCUfZOnFUQa4AatktWigr2XfKiuV2TQs0zIUxQo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c9G0pGdc7erakn/YZhCyuiYUMmTvYxjE1WMa6NXT1FxXYRWvZ7Dh0fa+Rwu5X0h0j/M4imgKbvfmvOQD0R+j/SmE4E6Seh6CZTUH4vsU5sMSnUUm9BH+6+FgWchiPoBU8WMV6xOjT1HY4MnDUOLofQSWvmQYODTMOHSNwboGJEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MYNNB4HN; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCC2D1F00893;
+	Mon,  1 Jun 2026 12:58:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1780318724;
+	bh=P7rDevCZnFjkWVTnN7LsLiTYCzqFkr5n/NYFmJGjz+Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=MYNNB4HNONIG/b/z1lxMw17uWiLW2/iSk8HouiQQvxi78qlWwzikTRMoBb7l90tSz
+	 +yALZ1WhIRogzCT/8TU7Yy+fASCh5FyB1xSuLK3blHn8EH3qy6eCJS9oDlpMHSRB4y
+	 TDjG53L/Kwzksych4gwMlq6pL8BLvpllYnskDDR7eAgmh4C/vbryfSnxlVSc8YmJy6
+	 tvKxgulPJKf9Mv9rgVVkVa2WWULCoSijzdNE94pKHd7szHUoVI6B2nNROge7Q8qnOE
+	 HslnChmi3f0sBiU1naABH6YB3OZRAn9+OklyQ9LHPg7pKObukwMF0pO0mTMUffKf37
+	 NqOvD3uNTumXw==
+Date: Mon, 1 Jun 2026 13:58:38 +0100
+From: Will Deacon <will@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: David Laight <david.laight.linux@gmail.com>,
+	David Matlack <dmatlack@google.com>,
+	Alex Williamson <alex@shazbot.org>, kvm@vger.kernel.org,
+	Leon Romanovsky <leon@kernel.org>, linux-kselftest@vger.kernel.org,
+	linux-rdma@vger.kernel.org, Mark Bloch <mbloch@nvidia.com>,
+	netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+	Shuah Khan <shuah@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+	patches@lists.linux.dev
+Subject: Re: [PATCH v2 06/11] selftests: Fix arm64 IO barriers to match kernel
+Message-ID: <ah2B_mzQabiEYSWt@willie-the-truck>
+References: <0-v2-72e9640932fd+2c64-mlx5st_jgg@nvidia.com>
+ <6-v2-72e9640932fd+2c64-mlx5st_jgg@nvidia.com>
+ <ahiFxtmspbETiqWw@google.com>
+ <20260529134947.GA128816@nvidia.com>
+ <20260529175516.06d5788f@pumpkin>
+ <20260529192933.GD3195266@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260529192933.GD3195266@nvidia.com>
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21579-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21580-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TO_DN_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[davidlaightlinux@gmail.com,linux-rdma@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[gmail.com,google.com,shazbot.org,vger.kernel.org,kernel.org,nvidia.com,lists.linux.dev];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	RCPT_COUNT_SEVEN(0.00)[10];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[will@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,nvidia.com:email]
-X-Rspamd-Queue-Id: EB19D61F34E
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,nvidia.com:email]
+X-Rspamd-Queue-Id: B4EDC61FADC
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, 1 Jun 2026 14:00:15 +0300
-Tariq Toukan <tariqt@nvidia.com> wrote:
-
-> On 29/05/2026 9:45, Yao Sang wrote:
-> > On Mon, May 25, 2026 at 01:47:59PM +0300, Tariq Toukan wrote:  
-...
-> > Regarding David's suggestion of using a memset_user() loop, I've also
-> > looked into it, but couldn't locate either of those APIs in the kernel
-> > after check.Please let me know if you have any additional information
-> > or suggestions.
+On Fri, May 29, 2026 at 04:29:34PM -0300, Jason Gunthorpe wrote:
+> On Fri, May 29, 2026 at 05:55:16PM +0100, David Laight wrote:
+> > On Fri, 29 May 2026 10:49:47 -0300
+> > Jason Gunthorpe <jgg@nvidia.com> wrote:
 > > 
-> > If this approach looks good to you, I'll send out the full v2 patch shortly.
-> >   
+> > > On Thu, May 28, 2026 at 06:13:26PM +0000, David Matlack wrote:
+> > > 
+> > > > Let's put these in tools/arch/arm64/include/asm/io.h so that the tools
+> > > > headers are more aligned with the kernel headers, and so that the arm64
+> > > > io.h overrides are done in the same way as the x86 overrides in
+> > > > tools/arch/x86/include/asm/io.h.
+> > > > 
+> > > > Something like this (untested):  
+> > > 
+> > > Okay, the disassembly says it works:
+> > > 
+> > >     1db8:       ca080108        eor     x8, x8, x8
+> > >     1dbc:       b5000008        cbnz    x8, 1dbc <readl+0x58>
+> > >     1dc0:       f9000fe8        str     x8, [sp, #24]
+> > 
+> > That looks strange, I suspect the C didn't match any usual pattern.
+> > Normally 'tmp' would get thrown away and 'v' would get kept.
+> > But you seem to have discarded 'v' and written 'tmp' to stack.
 > 
-> That would work.
-> Thanks.
+> Oh interesting the optimizer isn't turned on for selftest builds. So
+> the str is dutifully writing tmp to the stack. Another register has
+> the actual value.
 > 
+> > I'm probably being stupid again, but how does that work?
+> > The cpu can speculate straight through the control dependency into
+> > the following instructions.
+> > An 'eor x1, x8, x8' may not even have a data-dependency on x8.
+> > (Most x86 cpus just generate a zero for the equivalent instruction.)
+> 
+> I can't say, this is copied from the kernel and Will made it:
+> 
+>     arm64: io: Ensure calls to delay routines are ordered against prior readX()
 
-I wasn't at all sure there was one, but a loop using a 'reasonable size'
-buffer will be reasonably simple and fast.
-I suspect an on-stack 256 byte buffer would be good enough.
-If it were a really hot path there are other options, but this looked
-like initialisation so performance isn't that critical.
-(But you don't want a loop of put_user() because that will be slow.)
+This is specifically for ordering counter accesses against prior
+barriered MMIO reads. Userspace should really be using the vDSO instead
+of accessing the counter directly, so you could probably drop this for
+the tools headers tbh and just have the dma_rmb().
 
--- David
-
+Will
 
