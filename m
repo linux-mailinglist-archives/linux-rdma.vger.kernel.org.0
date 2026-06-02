@@ -1,79 +1,82 @@
-Return-Path: <linux-rdma+bounces-21652-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21653-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id jRqMGQlPH2ookAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-21652-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 02 Jun 2026 23:45:45 +0200
+	id 1hy1NXlPH2pKkAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-21653-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 02 Jun 2026 23:47:37 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3047B6322E3
-	for <lists+linux-rdma@lfdr.de>; Tue, 02 Jun 2026 23:45:45 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id B176A63230D
+	for <lists+linux-rdma@lfdr.de>; Tue, 02 Jun 2026 23:47:36 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=google.com header.s=20251104 header.b=g6lu8TOM;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21652-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21652-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=google.com header.s=20251104 header.b=NFwHNAEy;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21653-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21653-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=reject) header.from=google.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 9DCE830404A6
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jun 2026 21:45:29 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 8723A3028619
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jun 2026 21:45:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBC293AB466;
-	Tue,  2 Jun 2026 21:45:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A4A3AE19B;
+	Tue,  2 Jun 2026 21:45:19 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f74.google.com (mail-qv1-f74.google.com [209.85.219.74])
+Received: from mail-qk1-f202.google.com (mail-qk1-f202.google.com [209.85.222.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DC45203710
-	for <linux-rdma@vger.kernel.org>; Tue,  2 Jun 2026 21:45:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E02743AA1B8
+	for <linux-rdma@vger.kernel.org>; Tue,  2 Jun 2026 21:45:17 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780436717; cv=none; b=S/F2AkjSxdJ5mOz0jMEs1Jq9UBHC4W5IYiGUJO+oCMhQE/HMUWdnEx4dj6snm3feG2OAdU4zfatyvXQsTEJhYjdqxuLKQw+GFsJUL+XeArlC/tc94Q6WGpMBHe+IisZdVaoQslfX0TwWdiN0IKNUI0YCW/Riya2k4W8nQuTlFak=
+	t=1780436719; cv=none; b=R4FeQTF/nww0q9C7E7bUjw5En//8hQ8tMQ+FHNq0QDjfL1tMFvWhQcXKwTmsc8RYKMp0jX6M2jOuUaonPv8mi5xpRH8NubAxuE+pg0ybkKINjdg/RvYL+3gHZv6sjSBuezNd/W6AEXR9yYJsuJ6/zJMAGDMn14LC1a4ILwM4Hyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780436717; c=relaxed/simple;
-	bh=dQe1Hie47eex+U2zDIAul2hhVeOFxiwvLQlcvOLtdD4=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=GcozdgriWU2YwaWbsi2pS6dVpiCnoKlrkSv4R+3SF4PHtC64OEJv+3adg8dhUrgDwaJJnzngI3pEBaTQOi/PildqEJ9xOlAmUz2hGQa3MMehiSStg8+8cGYnDKqT2QIEisb3lKqhyhNEh4ks5Z1UmKUYy22uuF3UllqEf4DkKT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=g6lu8TOM; arc=none smtp.client-ip=209.85.219.74
-Received: by mail-qv1-f74.google.com with SMTP id 6a1803df08f44-8ce9de04835so88980976d6.0
-        for <linux-rdma@vger.kernel.org>; Tue, 02 Jun 2026 14:45:16 -0700 (PDT)
+	s=arc-20240116; t=1780436719; c=relaxed/simple;
+	bh=CHDCMffsguUENrDXKkXKIZ7/ZjvN8+mrkp2Rbuqb0PQ=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=KUxHSCP1jvfgd/uh/1dNZP5+wL6R4em0QwbkTtB/BtWgvZGY68Lnefj2SY4e51kvce7hhFGZ+aqr0pgx9sV7jgaR1bNO330zlZn+Pd8CL3A/ckTr6fPTD/cx7vyV96sQkKccOY+Fa0u9OWv5+xNs/z81lQaaybieNh4iqjeuyg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NFwHNAEy; arc=none smtp.client-ip=209.85.222.202
+Received: by mail-qk1-f202.google.com with SMTP id af79cd13be357-9157f453a27so192794385a.1
+        for <linux-rdma@vger.kernel.org>; Tue, 02 Jun 2026 14:45:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1780436715; x=1781041515; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=OMrqm1KbwSnMRaDmHRuy0ZpQql8lqXS3V8rSv/zBF2s=;
-        b=g6lu8TOMjJrKRCgZrQVNix+x4dS6NQTPbznuD2niFR0QRaKQVWKwy6oMniXVsgvvJT
-         TRkAnswLPYTK6fswd+lEP5lH88Ng3dteezyJfUF5lgXPL17LQscPUU5TmxFpVy2c9MER
-         don+IGaYjZoAlDlmuW5qB2pqDnr/wmTh6Z/D7/pQoIauQB2u+KlE3KX2MzJowwPwpsa8
-         4xrBnnENWkFDv4EuoYwuCJyoFfqUaLHo1B1WXMXYeDiC/c7GTOK4yb79TzhNTAlGb5/e
-         VJpFfGxtY+SsJcbUO2gWb+oG6fQBeptWS9Xs2R0I2ltB9UafNIMv5ePh/WNk2GTKskUZ
-         xIug==
+        d=google.com; s=20251104; t=1780436717; x=1781041517; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hqcs/O7zspAFRNMX5NHRdQd+ViJqqE//kVJ3KWT/ht4=;
+        b=NFwHNAEy5MlHoxi+/YrtEz/IoNHUhkYnptPFoaPJLfw6gHFHcQKfQZjK/2GXreNejF
+         ZiunG613BVkW2ryJxjmQyRlk5W33JuvsKWFovcnwvYjyO8RHmOmwKNBvsA0uJIfKdaWp
+         mOEq+jwmEHko1NHq/+GRJYm6v+3PTghFk8pg2Z4tYLYOW5sQ7p+osdGrU3ii3YGUmKIC
+         R8ZeBMBZqriCYO4r2/ib+QSWze4LAl4IeuskfcQErvoWsKnVkFbtUbXYPuOmLDHakpOT
+         aLZaPBMgjXZJNGtyD+NBjVXENzXgOsL61QHQ8n785zeRfaQW7WtRJx5ovRARwlNoOuIu
+         +qfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780436715; x=1781041515;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OMrqm1KbwSnMRaDmHRuy0ZpQql8lqXS3V8rSv/zBF2s=;
-        b=LPwonfG/wlnFE4/In9uTSy0nFM3Bxdl0umAq2gN84q+8spniRkjXa4lQGW1OSUzttz
-         DjEV2M907jlP0lw2+/xIa/dZK/+yZ9vdAivLx0WdC2v7Ps63hVvjvUu+hky6/+Qb7FC5
-         L1H4isVX/v81CUvDdphBqv8F/qk7SqcfYWBfwLzx5HyDSYOyg8tRBs7yKmJYg9gIwl5G
-         8PeHIbKn8imric4LjjQcFue8wgfYodI9rtKYt6Mo+09SKcevoS+oicgLeZWJVl1Maj4o
-         y80RMmzTRkUbjzq9aJzDKgS7lsZofqfF/dBPGl6cWryImdlmbqL1eSO28NoGrG77w7Sn
-         T0LQ==
-X-Gm-Message-State: AOJu0YxDRD/uM905ekH1rX1iPCE6wTWTiNSBkZDIJ7zvOrYUZWmVbtrS
-	XjoOQnNaMAx4WNcCZeA8EKn3LARnKJIC2jpGSHb2jElMMGMzVHHlI8ivaOmrR8APhw4Sux8kNFh
-	SJnUGxhQQlw==
-X-Received: from qvbgw4.prod.google.com ([2002:a05:6214:f04:b0:8c6:6d4a:bd05])
- (user=jmoroni job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6214:c24:b0:8a4:58ff:f0f8
- with SMTP id 6a1803df08f44-8cecdf0c4f4mr6152626d6.29.1780436715054; Tue, 02
- Jun 2026 14:45:15 -0700 (PDT)
-Date: Tue,  2 Jun 2026 21:44:22 +0000
+        d=1e100.net; s=20251104; t=1780436717; x=1781041517;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hqcs/O7zspAFRNMX5NHRdQd+ViJqqE//kVJ3KWT/ht4=;
+        b=RASHAA0lfuGGovvrPC4uFiiUVvoPpbE+YLchdONTrYhrXI+rl7uIZBV9vMq61emv3e
+         KBErQ7Iz9d3BALcpMOTuYI5WwhVdhiY/kHrrhuMt7RisDVpshEkM6we8/RpTpX0JoN8E
+         CQJQAE17WqogUcqbdx4DWS0v/UTbmtuXHrFRdH9gX13WcfWRjY3rhuewFFW+DDwx3FGI
+         4JMb2vimOh2Pl1BHdp4SLZ4PY9wxaGgescBSglrP8LpPdPM9tiXKWKBVSotPwf2r4rY0
+         V5B8ZVxym8D0FRa/hz3RdAj9wYXbjBYcyJ+tjrkk/5PLvb5P6rGvJXSTQy1VjY16Tryu
+         hKmg==
+X-Gm-Message-State: AOJu0YxbLw0v1QRFFh6KmtHl424GPF9G3uRiicAUiikyTFOmALUhFYZc
+	IoJ7g/z3pA57hs0qjIsIW1kLm1o1YHyr+g0/lhRPs4ntHgEFsne2x6zZU9mbSBB8DvFLH9OfRIN
+	4oCgY0zwCHQ==
+X-Received: from qkbde6.prod.google.com ([2002:a05:620a:3706:b0:912:add7:777d])
+ (user=jmoroni job=prod-delivery.src-stubby-dispatcher) by 2002:a05:620a:258f:b0:914:babf:9f53
+ with SMTP id af79cd13be357-9158a6f9e27mr152180085a.26.1780436716691; Tue, 02
+ Jun 2026 14:45:16 -0700 (PDT)
+Date: Tue,  2 Jun 2026 21:44:23 +0000
+In-Reply-To: <20260602214423.1315105-1-jmoroni@google.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20260602214423.1315105-1-jmoroni@google.com>
 X-Mailer: git-send-email 2.54.0.1032.g2f8565e1d1-goog
-Message-ID: <20260602214423.1315105-1-jmoroni@google.com>
-Subject: [PATCH rdma-next 1/2] RDMA/irdma: Remove redundant legacy_mode checks
+Message-ID: <20260602214423.1315105-2-jmoroni@google.com>
+Subject: [PATCH rdma-next 2/2] RDMA/irdma: Fix OOB read during CQ MR registration
 From: Jacob Moroni <jmoroni@google.com>
 To: tatyana.e.nikolova@intel.com, jgg@ziepe.ca, leon@kernel.org
 Cc: linux-rdma@vger.kernel.org, Jacob Moroni <jmoroni@google.com>
@@ -85,7 +88,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
 	MV_CASE(0.50)[];
 	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -98,7 +101,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-21652-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21653-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCPT_COUNT_FIVE(0.00)[5];
 	FORGED_SENDER_FORWARDING(0.00)[];
@@ -108,105 +111,73 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 3047B6322E3
+X-Rspamd-Queue-Id: B176A63230D
 
-The driver has the following invariants:
+Sashiko pointed out an unrelated bug during a previous patch:
+https://sashiko.dev/#/patchset/20260512183852.614045-1-jmoroni%40google.com
 
-1. legacy_mode is only allowed on GEN_1 hardware (enforced
-   in irdma_alloc_ucontext).
+This change fixes the bug by eliminating the cqmr->split field which
+was not being set properly and instead just checks the CQ resize
+feature flag directly.
 
-2. GEN_1 hardware does not set IRDMA_FEATURE_CQ_RESIZE or
-   IRDMA_FEATURE_RTS_AE. These feature flags are only set
-   for GEN_2 and GEN_3 hardware.
+The cqmr->split field essentially tracks whether IRDMA_FEATURE_CQ_RESIZE
+is set, but it was not being set until CQ creation time, which is _after_
+CQ memory registration (the only other place where it is referenced).
 
-Therefore, legacy_mode is always false if IRDMA_FEATURE_CQ_RESIZE
-or IRDMA_FEATURE_RTS_AE is set, so remove the redundant checks.
+As a result, it would always be false during MR registration and would
+therefore cause irdma_handle_q_mem to populate cqmr->shadow even for GEN_2
+HW and beyond:
 
+    cqmr->shadow = (dma_addr_t)arr[req->cq_pages];
+
+The issue is that for GEN_2 and beyond, req->cq_pages may be exactly equal
+to iwmr->page_cnt and therefore equal to the size of arr, which would cause
+an OOB read by one.
+
+Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
 Signed-off-by: Jacob Moroni <jmoroni@google.com>
 ---
- drivers/infiniband/hw/irdma/uk.c    | 9 +++------
- drivers/infiniband/hw/irdma/user.h  | 1 -
- drivers/infiniband/hw/irdma/verbs.c | 7 +------
- 3 files changed, 4 insertions(+), 13 deletions(-)
+ drivers/infiniband/hw/irdma/verbs.c | 4 ++--
+ drivers/infiniband/hw/irdma/verbs.h | 1 -
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/irdma/uk.c b/drivers/infiniband/hw/irdma/uk.c
-index 4718acf6c6fd..a34883fe9983 100644
---- a/drivers/infiniband/hw/irdma/uk.c
-+++ b/drivers/infiniband/hw/irdma/uk.c
-@@ -1568,15 +1568,12 @@ static const struct irdma_wqe_uk_ops iw_wqe_uk_ops_gen_1 = {
-  * irdma_setup_connection_wqes - setup WQEs necessary to complete
-  * connection.
-  * @qp: hw qp (user and kernel)
-- * @info: qp initialization info
-  */
--static void irdma_setup_connection_wqes(struct irdma_qp_uk *qp,
--					struct irdma_qp_uk_init_info *info)
-+static void irdma_setup_connection_wqes(struct irdma_qp_uk *qp)
- {
- 	u16 move_cnt = 1;
- 
--	if (!info->legacy_mode &&
--	    (qp->uk_attrs->feature_flags & IRDMA_FEATURE_RTS_AE))
-+	if (qp->uk_attrs->feature_flags & IRDMA_FEATURE_RTS_AE)
- 		move_cnt = 3;
- 
- 	qp->conn_wqes = move_cnt;
-@@ -1727,7 +1724,7 @@ int irdma_uk_qp_init(struct irdma_qp_uk *qp, struct irdma_qp_uk_init_info *info)
- 	sq_ring_size = qp->sq_size << info->sq_shift;
- 	IRDMA_RING_INIT(qp->sq_ring, sq_ring_size);
- 	if (info->first_sq_wq) {
--		irdma_setup_connection_wqes(qp, info);
-+		irdma_setup_connection_wqes(qp);
- 		qp->swqe_polarity = 1;
- 		qp->first_sq_wq = true;
- 	} else {
-diff --git a/drivers/infiniband/hw/irdma/user.h b/drivers/infiniband/hw/irdma/user.h
-index 008af1acc928..4dd3776a4cdd 100644
---- a/drivers/infiniband/hw/irdma/user.h
-+++ b/drivers/infiniband/hw/irdma/user.h
-@@ -563,7 +563,6 @@ struct irdma_qp_uk_init_info {
- 	u8 sq_shift;
- 	u8 rq_shift;
- 	int abi_ver;
--	bool legacy_mode;
- 	struct irdma_srq_uk *srq_uk;
- };
- 
 diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index b30e81d2b933..670b0e0f9200 100644
+index 670b0e0f9200..4a96e14d1418 100644
 --- a/drivers/infiniband/hw/irdma/verbs.c
 +++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -634,7 +634,6 @@ static int irdma_setup_umode_qp(struct ib_udata *udata,
- 	iwqp->ctx_info.qp_compl_ctx = req.user_compl_ctx;
- 	iwqp->user_mode = 1;
- 	if (req.user_wqe_bufs) {
--		info->qp_uk_init_info.legacy_mode = ucontext->legacy_mode;
- 		spin_lock_irqsave(&ucontext->qp_reg_mem_list_lock, flags);
- 		iwqp->iwpbl = irdma_get_pbl((unsigned long)req.user_wqe_bufs,
- 					    &ucontext->qp_reg_mem_list);
-@@ -2074,10 +2073,6 @@ static int irdma_resize_cq(struct ib_cq *ibcq, unsigned int entries,
- 			rdma_udata_to_drv_context(udata, struct irdma_ucontext,
- 						  ibucontext);
+@@ -2567,7 +2567,6 @@ static int irdma_create_cq(struct ib_cq *ibcq,
+ 			}
+ 			cqmr_shadow = &iwpbl_shadow->cq_mr;
+ 			info.shadow_area_pa = cqmr_shadow->cq_pbl.addr;
+-			cqmr->split = true;
+ 		} else {
+ 			info.shadow_area_pa = cqmr->shadow;
+ 		}
+@@ -2975,7 +2974,8 @@ static int irdma_handle_q_mem(struct irdma_device *iwdev,
+ 	case IRDMA_MEMREG_TYPE_CQ:
+ 		hmc_p = &cqmr->cq_pbl;
  
--		/* CQ resize not supported with legacy GEN_1 libi40iw */
--		if (ucontext->legacy_mode)
--			return -EOPNOTSUPP;
--
- 		if (ib_copy_from_udata(&req, udata,
- 				       min(sizeof(req), udata->inlen)))
- 			return -EINVAL;
-@@ -2559,7 +2554,7 @@ static int irdma_create_cq(struct ib_cq *ibcq,
- 		cqmr = &iwpbl->cq_mr;
+-		if (!cqmr->split)
++		if (!(iwdev->rf->sc_dev.hw_attrs.uk_attrs.feature_flags &
++		      IRDMA_FEATURE_CQ_RESIZE))
+ 			cqmr->shadow = (dma_addr_t)arr[req->cq_pages];
  
- 		if (rf->sc_dev.hw_attrs.uk_attrs.feature_flags &
--		    IRDMA_FEATURE_CQ_RESIZE && !ucontext->legacy_mode) {
-+		    IRDMA_FEATURE_CQ_RESIZE) {
- 			spin_lock_irqsave(&ucontext->cq_reg_mem_list_lock, flags);
- 			iwpbl_shadow = irdma_get_pbl(
- 					(unsigned long)req.user_shadow_area,
+ 		if (lvl)
+diff --git a/drivers/infiniband/hw/irdma/verbs.h b/drivers/infiniband/hw/irdma/verbs.h
+index aabbb3442098..289ebc9b23ca 100644
+--- a/drivers/infiniband/hw/irdma/verbs.h
++++ b/drivers/infiniband/hw/irdma/verbs.h
+@@ -65,7 +65,6 @@ struct irdma_hmc_pble {
+ struct irdma_cq_mr {
+ 	struct irdma_hmc_pble cq_pbl;
+ 	dma_addr_t shadow;
+-	bool split;
+ };
+ 
+ struct irdma_srq_mr {
 -- 
 2.54.0.1032.g2f8565e1d1-goog
 
