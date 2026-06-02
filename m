@@ -1,139 +1,206 @@
-Return-Path: <linux-rdma+bounces-21630-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21631-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 0qkMF78TH2qAfAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-21630-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 02 Jun 2026 19:32:47 +0200
+	id ilEHFP0bH2rqgAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-21631-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 02 Jun 2026 20:07:57 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8917630BC3
-	for <lists+linux-rdma@lfdr.de>; Tue, 02 Jun 2026 19:32:46 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3796630F14
+	for <lists+linux-rdma@lfdr.de>; Tue, 02 Jun 2026 20:07:56 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=e7i8x2gO;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21630-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21630-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=Nvidia.com header.s=selector2 header.b=VlyMhfgR;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21631-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21631-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=nvidia.com;
+	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9A924300F19D
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jun 2026 17:32:11 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 787FE3055E90
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jun 2026 18:01:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35AE9364E84;
-	Tue,  2 Jun 2026 17:32:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A61E315D58;
+	Tue,  2 Jun 2026 18:01:56 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012025.outbound.protection.outlook.com [40.107.209.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CEFC2D3EC7;
-	Tue,  2 Jun 2026 17:32:09 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780421530; cv=none; b=fa/xMeeBYkrQmRRyymp/iNrovJGboLbjfwtYHVl3sYtxHjPxpCyIhzptNu2YOYkxskk9CmvtYuXoxL/IRdQBksAlY7F8Gfyk0JZg/rpBeUDsUXvwejJTrCSpOkRRa9yg9CZGw6VVYwwOh8ROlMUA4pIp33gcBQjuQT1xbJCeo7E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780421530; c=relaxed/simple;
-	bh=Q8RAfVmtkJ+IPg7BYVEkPBRKt9ntB+TJqcyjR3LZpv0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IYALg48I8NR8uvIV63vfJO3vzr1EDFpHMX9H6P0f4SA2jdTCH5klMkyYtTZ6c/k9KaTI9/g+7QGE/0Wv3VnSyB/hRGif+rZY7MPgtVPVJtMwKOleiXkTG4hSZHYKkJYSsnUoQSFDadUGnekAGkK155lNg8H6v1OilxhjzmPoGo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e7i8x2gO; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 018B61F00893;
-	Tue,  2 Jun 2026 17:32:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780421529;
-	bh=IT/hnXtjUfBU0YvE7YTAxpftFLi1PmAVY52XpGJ9Rvo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=e7i8x2gO5tbHBLsNcfUaXSL+6NHFT9g6XtATvuG3GNTWbVerEEtb7oJFYB66HRW05
-	 73IR+ZTqDdsQfa2A0B97KQ1IycOMKVdCuqzHrVOcjbKO9wz55jnNAdXPH2WvHlEpCL
-	 Ry5IElmuJXPoF5fQoUgt3A1rWDkF1CMME2Csm24pAKDcmsyjywt6YzKpYk36dTB/7N
-	 kZKOvXyxvEBdMfq+QC29FZGZ4wngeoWTTY5kwl/sYvfgHujQor1MXZOb9TDde+zG+Z
-	 zzAk7tGp/afF/b683OA31sm4ni/Y+98j6ef/xxGXCJthAu2zM3729ffJjoNDeN5tyH
-	 yMS30FBAgv1ww==
-Date: Tue, 2 Jun 2026 10:32:08 -0700
-From: Kees Cook <kees@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	Doug Ledford <dledford@redhat.com>,
-	"Michael J. Ruhl" <michael.j.ruhl@intel.com>,
-	Mike Marciniszyn <mike.marciniszyn@intel.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Marco Crivellari <marco.crivellari@suse.com>,
-	Dean Luick <dean.luick@cornelisnetworks.com>,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: Re: [PATCH] [v2] RDMA/hfi1, rdmavt: open-code rvt_set_ibdev_name()
-Message-ID: <202606021032.F864729@keescook>
-References: <20260602140453.3542427-1-arnd@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D42E314B8F
+	for <linux-rdma@vger.kernel.org>; Tue,  2 Jun 2026 18:01:54 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780423315; cv=fail; b=S3J0/DsZNNaUSGtOe/+JfBEqUlvuP2olvWFk6b/UnrQ96nr6thFr6vh6sDPAmGhJ1rLiRC4qfXznlNcH6AmxuzmnVXaTta9WIo6xYsRIuyarDniNN6rixKyBUFe2Vq+nW8vGu+/E1tjQfep9V+Cs64udjRx4PB9aVxIXitAp4Gc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780423315; c=relaxed/simple;
+	bh=GCKVqU1yEKp9uLArf7WCGYrMqaj+FoMrf6XD+T94MVw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=qTOYq+7NV45RhV+ofsyIDdMpAMqUVQ6nZ0GGAvEvipvjivxe6+m1dKIi3GMBTC4YOSIvtgPxCxllwJx5qkjAuo1tHRoum9ADdpxtcO+lSSVw+SLDp/saPfLHMmtltc51FnEUwixyCbaMctP5Bu5VowhCx75cM1GIA7e855rWn3o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=VlyMhfgR; arc=fail smtp.client-ip=40.107.209.25
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=yAj+c/tb2QU52f+4qcibt2bH6mAjEM30laxxASJ3+tAGjdsST10cRlkR6DL2m4NJzjm4uZJgMM9XhhLRCsiHm+4RPbBzP0//jLNVCqkGSY2S3wiUeswQQs3Szy6VYSA3Bj7/sWeF6rp7xGkNPIfWn4WdxHb/GbBeDDBy3I8VhUr3XRVlR7Y1vyF4beWIEAX5DyYohtpqhKS1A2X4mIiaKlenmyezMg8OgE0+Umiq6whWkf8diiYi318HnGE4GLPVzyh+8fkjqxwNIh752+QqnTbrP8T/xH/f96Unvt/o+8jAnyrJWj8QbJE5hJKgJnmS5ZbNr7VFzn8N5ZO7gmim/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lg1tlLiygntmMnooZX7x27JpZWF7pfKBEP1lnyszBV8=;
+ b=yHfA2Eknze3lfPtbJEjjk07asZlCTq3Y/uQdu2fZ/uqlO2NNFbpI57J2eqYyZgi308ExYjV5jWm6nb59uarZAU4fnWPLJjFBdBSpsjfbyDEanePJNOJnjVDlFzbVdc0yGItVl5SH2AC2c0T8+dmaVKrLgKEmjM7rpMnbkRlEUNRf4rzEe0pdtU1nDHnNeEajJQxqsl03APjHy5gbnnEgJO0hEy0zMbfmZXeCpxB7M7YCSGfHS6eGUPe24K+7iEP3UIQncYE7z2Y3r1dUMxGz7xv3gYB77AAcUj2dAvqpQADiabFY4N5VYbTBvOJ3RXA7hkgvjaeefsxsubOiz8yF2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lg1tlLiygntmMnooZX7x27JpZWF7pfKBEP1lnyszBV8=;
+ b=VlyMhfgRMYo55WTJRz6IWRugwCHzusdqbJfFzpTZP7HFjGtR4kI2zpSO4RzHAvy0UqllwnzhQ77BcVUxi3y0QMorNswLZQx0lMSpsMq5/+IAHEW1VQD7mHc4AZuSY+h3pt6AcnuqdoCen19ecZQhpLjk/LDy/GR1tFHOI5GBmaDiJiyiCBXRv7sn2/b47me3A+U/+B+oCwZuCNcog4wqaVaSwZsGCHnQc+iUiAZcITAlo7RGeKSgIIot1VCbvs/SuzAj0uMzJFcnQfrQOgNxUDpoWn27fdqPeQXAfNzvcBx2FYVhp/GLeoVvLRb67cUWeUDlm6V125iwGziVFNeW9w==
+Received: from LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19)
+ by BL4PR12MB9722.namprd12.prod.outlook.com (2603:10b6:208:4ed::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.7; Tue, 2 Jun 2026
+ 18:01:50 +0000
+Received: from LV8PR12MB9620.namprd12.prod.outlook.com
+ ([fe80::299d:f5e0:3550:1528]) by LV8PR12MB9620.namprd12.prod.outlook.com
+ ([fe80::299d:f5e0:3550:1528%4]) with mapi id 15.21.0071.015; Tue, 2 Jun 2026
+ 18:01:50 +0000
+Date: Tue, 2 Jun 2026 15:01:49 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Yonatan Nachum <ynachum@amazon.com>
+Cc: leon@kernel.org, linux-rdma@vger.kernel.org, mrgolin@amazon.com,
+	sleybo@amazon.com, matua@amazon.com, gal.pressman@linux.dev
+Subject: Re: [PATCH for-rc] RDMA/efa: Validate SQ ring size against max LLQ
+ sizey
+Message-ID: <20260602180149.GT3195266@nvidia.com>
+References: <20260526081536.1203553-1-ynachum@amazon.com>
+ <20260602003005.GA648279@nvidia.com>
+ <20260602065103.GA18111@dev-dsk-ynachum-1b-aa121316.eu-west-1.amazon.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260602065103.GA18111@dev-dsk-ynachum-1b-aa121316.eu-west-1.amazon.com>
+X-ClientProxiedBy: YT4PR01CA0081.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:ff::15) To LV8PR12MB9620.namprd12.prod.outlook.com
+ (2603:10b6:408:2a1::19)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260602140453.3542427-1-arnd@kernel.org>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV8PR12MB9620:EE_|BL4PR12MB9722:EE_
+X-MS-Office365-Filtering-Correlation-Id: 717514a6-f81f-4c9f-fe47-08dec0d10579
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|1800799024|376014|22082099003|18002099003|56012099006|4143699003|11063799006;
+X-Microsoft-Antispam-Message-Info:
+	UJjXhS9/WIRm6QdCtiXXlIwxgl/uI9rfJimHGKsotrpQQD0e3Y3vhHP1ObilWHpxSVMcxXSgjEe8lE796hOTP5QjqcFnJafat1vlpmLqogW6WiRiKwlKrAtkW6HTUlHcbcRLJVKkDhLZ5VaKxW6Bc7PsRpD/Gcrx1JI6XyKLsPDLvVDgKpzq8R5SwR+dNhAWzaHfpvTDRTLJc13xCPKqr4kXhqCP+DC504Xc0CKQQnnR2byIfzzmCHLt0/opNwgDgd6/EjGw4w8t/SKTKFSd0rvpPhzp3BQBGpaVkXLawrvQh6Bs92FWEuHsgW1CFzo9dDygUo3nFzvDyOybGahD0SHG4o1OLmEvw/a83voBS7AGVXDxWKHH+dCFcR1FjsJd4kx89NuDOmcMDFtK2Pym3NNh8irlvky00exITA0g1G/2FVBNJAZ14hFxz4qygnMlT4HQnbrv7TWPa6nMHNrvAW+LL2IVSKEpHV1PdvNrQTaziD8iIh0KVWgORXOOmCrJqbF1We1WKBiecTKu0kdbnvkgn9Uh0FCDA/voj99ybNTfIctXy/s3cnrkqeCE0w3EeLGzWIoyKzTk/b+Jn5auC9O8EBBytTuuPxGw6CQ3aryvdazObBPIveGiaTZdwWyGgR4LHhkj2CMyd96fRN05kRzUYhuB4vCW+gA1MrySVZXZvkJ83FE+k7akdEvwzsIf
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9620.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(22082099003)(18002099003)(56012099006)(4143699003)(11063799006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?vFC+1u8vNpks/qn7xzNFqSgLojIkPoGS91AiN4s5V7hFrveKl8II+0F/e0Gh?=
+ =?us-ascii?Q?p5SnIhSzZf6mPMX08J1BmJB6xPLCi+veLFhRT3/8Zy20n2ZuEQL0khwI1CZA?=
+ =?us-ascii?Q?vZ4lYYlwXE9x6/MKFbDXn5hz+1ZZuTrautVSGX++DdDjGJfDcZ/hj8DO85In?=
+ =?us-ascii?Q?Syx1xvZ51TgKwXZU48/VYNtn5U9RewiDS+W7aeOY4jONGOaQHCT4QHnRIUxl?=
+ =?us-ascii?Q?h+bihQSD9bZ0kCguiG+udE1vwrLL4M2mfOSGwqhcRk25Wjq/TUZnEGuqLY/d?=
+ =?us-ascii?Q?JAp9xuzuyVUz2wMvBu11489+CaOWSNkr07l+jRBzp3DQIYhGYZyIvAjs32mD?=
+ =?us-ascii?Q?ioAUBx0ASZfsk4jA8TKyRHy08m6CKkkUwg6aNhzcT16/OmjLNg1Pviu6TPwF?=
+ =?us-ascii?Q?bIy96TlzQhQMkn2bHe6Xc4gMREcjkHuuJk3Bu48xK1eWYpdFLNepjSczbxFk?=
+ =?us-ascii?Q?03GTwpH27rmxphrPy+iP+4vQg8ZDybZ/fpSW+lCv1OWe3hUDdmB6uER/kciE?=
+ =?us-ascii?Q?vs8ktx/V28h7pg8euQkRl/DxcxCkJt1Sc08WxTqRyF0E9sqH2Isx3xfz7aVh?=
+ =?us-ascii?Q?2fQcE9ZIrmabhGdRTaOsO93rgFNR3RSJ6VDPLzNetujXNXY1ey1bWHhj8PVR?=
+ =?us-ascii?Q?PIb/2KK3dMwd5qqxxET9F1AP5lVYBMhK36FzWmOM2KOTNZGt4UBxDRQB5hVz?=
+ =?us-ascii?Q?vxh1bF7E5zcsgsYlfe0nhvIa6EU5skKdFeQtDvKnRwjxCLPh7PPu5m0BYYvx?=
+ =?us-ascii?Q?WvLH/2PysYZhxzzCHNZ4hWpcLHKek8swfH6j2y7E7DApsdekC4SHawR1jvHL?=
+ =?us-ascii?Q?4xPQDfLa6G4cNakIyaXW4tZ93oP5VreoyeSIVVJoenWESHvVBsgJweJX9kWy?=
+ =?us-ascii?Q?x7fi2jsYhw1kPua3aEjrsSXu+s4UppfI8NLgDgyFS48zpkWjCPKZn/Lwu7Hn?=
+ =?us-ascii?Q?9YBkyjoNJYsjdq33L8AgB3HpMjz4a2gLeTFB9cCYxNJedAQnpAepb62P8YDU?=
+ =?us-ascii?Q?H0kq3D9+KU8EqKz7ae1UWVj9PpN/IwndBtarq7H38tdn8bAoLgReULmg0YNa?=
+ =?us-ascii?Q?hIWmmluH5x6sJBvoNYGxwLJbIOSh5ae6l2dhBG0gAbtiCt+8fShAx/lsWomS?=
+ =?us-ascii?Q?AHscfYYAx2On2nH9AjbTKI0Z2GBHwHnYDvs/0NL/RVEi5epJTj/RrbVDu9qb?=
+ =?us-ascii?Q?tQR5BtIw4GicT3key4FMTtr3ue5WulMxL5pP0s2ngkChbwiA2WX+4WolqSAY?=
+ =?us-ascii?Q?5GOz7A75QxVdZIjifBijYlWvaBZB5H0Oka1bqC22pHCZVCAQBTO4iuQFQjg9?=
+ =?us-ascii?Q?fpZCN4HkvKd8uI1ATopqs8Q7PKrMbBdPxm2s3ug17O/cnC39F12ijqIbhqFQ?=
+ =?us-ascii?Q?EYEolkvfwJoMezaGA19+oJyU6yiPb7PolgSDt1DPvqcQ2FH/sLeXJ7/KLKdW?=
+ =?us-ascii?Q?G1iNdHMEVjSNLSMVEvySfwljBXUFD5QJoSi2oNp6edPZgexAQ06tk/+PC2bs?=
+ =?us-ascii?Q?pSl09IVCFzHtd0brTx3dbkL99sjAjWAXSCYtdi43uFi7zWORy2HfYX7Tl9mg?=
+ =?us-ascii?Q?QLi/nDd/Hh3znnKWj7LWzX54+EkV8wIv5R12zCKtAE1RQ2wxH39Bud9dl37K?=
+ =?us-ascii?Q?UWLYB4vVi+S0TzHAIuzknD6h7dlxxNsNT45sxhNxyZcEU1+1t/1NoMIyEagD?=
+ =?us-ascii?Q?/ennwadGrKBcqZXWL9KWakq6DZU4xjDobUjos3oHXWmFpr/M?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 717514a6-f81f-4c9f-fe47-08dec0d10579
+X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9620.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2026 18:01:50.7645
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qn8GiuanohZnFxi23DUtNZlM6+f0Pwze7uZ3cDfKt+vUrZzTgUXW9/OG4y4eIa9n
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL4PR12MB9722
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21630-lists,linux-rdma=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:arnd@kernel.org,m:dennis.dalessandro@cornelisnetworks.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:dledford@redhat.com,m:michael.j.ruhl@intel.com,m:mike.marciniszyn@intel.com,m:arnd@arndb.de,m:nathan@kernel.org,m:nick.desaulniers+lkml@gmail.com,m:marco.crivellari@suse.com,m:dean.luick@cornelisnetworks.com,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:llvm@lists.linux.dev,m:nickdesaulniers@gmail.com,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	FORGED_SENDER(0.00)[kees@kernel.org,linux-rdma@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21631-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kees@kernel.org,linux-rdma@vger.kernel.org];
-	FREEMAIL_CC(0.00)[cornelisnetworks.com,ziepe.ca,kernel.org,redhat.com,intel.com,arndb.de,gmail.com,suse.com,vger.kernel.org,lists.linux.dev];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:ynachum@amazon.com,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:mrgolin@amazon.com,m:sleybo@amazon.com,m:matua@amazon.com,m:gal.pressman@linux.dev,s:lists@lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[jgg@nvidia.com,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,lkml];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[arndb.de:email,vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,keescook:mid]
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jgg@nvidia.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: B8917630BC3
+X-Rspamd-Queue-Id: B3796630F14
 
-On Tue, Jun 02, 2026 at 04:04:34PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Tue, Jun 02, 2026 at 06:51:03AM +0000, Yonatan Nachum wrote:
+> On Mon, Jun 01, 2026 at 09:30:05PM -0300, Jason Gunthorpe wrote:
+> > On Tue, May 26, 2026 at 08:15:36AM +0000, Yonatan Nachum wrote:
+> > > Validate the SQ ring size against the device's max LLQ size. This
+> > > ensures that when using 128-byte WQEs, userspace cannot exceed the queue
+> > > limits.
+> > > 
+> > > On create QP, userspace provides the SQ ring size (depth x WQE size)
+> > > which is validated against the max LLQ size.
+> > > 
+> > > Fixes: 40909f664d27 ("RDMA/efa: Add EFA verbs implementation")
+> > > Reviewed-by: Michael Margolin <mrgolin@amazon.com>
+> > > Signed-off-by: Yonatan Nachum <ynachum@amazon.com>
+> > > ---
+> > >  drivers/infiniband/hw/efa/efa_verbs.c | 27 ++++++++++++++++++---------
+> > >  1 file changed, 18 insertions(+), 9 deletions(-)
+> > 
+> > The Sashiko comments look like they are worth addressing
+> > 
+> > https://sashiko.dev/#/patchset/20260517175216.614494-1-ynachum%40amazon.com
+> > 
+> > Jason
 > 
-> clang warns about a function missing a printf attribute:
-> 
-> include/rdma/rdma_vt.h:457:47: error: diagnostic behavior may be improved by adding the 'format(printf, 2, 3)' attribute to the declaration of 'rvt_set_ibdev_name' [-Werror,-Wmissing-format-attribute]
->   447 | static inline void rvt_set_ibdev_name(struct rvt_dev_info *rdi,
->       | __attribute__((format(printf, 2, 3)))
->   448 |                                       const char *fmt, const char *name,
->   449 |                                       const int unit)
-> 
-> The helper was originally added as an abstraction for the hfi1 and
-> qib drivers needing the same thing, but now qib is gone, and hfi1
-> is the only remaining user of rdma_vt.
-> 
-> Avoid the warning and allow the compiler to check the format string by
-> open-coding the helper and directly assigning the device name.
-> 
-> Fixes: 5084c8ff21f2 ("IB/{rdmavt, hfi1, qib}: Self determine driver name")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Hi, thanks for the answer.
+> That is not the Sashiko link for the patch, its this:
+> https://sashiko.dev/#/patchset/20260526081536.1203553-1-ynachum%40amazon.com
 
-Reviewed-by: Kees Cook <kees@kernel.org>
+Oh boy, it is annoying to get the right one up :\
 
--- 
-Kees Cook
+> I reviewed the comments and none of them is relevant for the patch.
+
+Ok, applied to for-rc
+
+Thanks,
+Jason
 
