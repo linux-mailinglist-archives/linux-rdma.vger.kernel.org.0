@@ -1,155 +1,150 @@
-Return-Path: <linux-rdma+bounces-21614-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21615-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4H9HJn1lHmrCiwkAu9opvQ
-	(envelope-from <linux-rdma+bounces-21614-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 02 Jun 2026 07:09:17 +0200
+	id EKgWGO19HmrnjgkAu9opvQ
+	(envelope-from <linux-rdma+bounces-21615-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 02 Jun 2026 08:53:33 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52735628670
-	for <lists+linux-rdma@lfdr.de>; Tue, 02 Jun 2026 07:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D9B2B629338
+	for <lists+linux-rdma@lfdr.de>; Tue, 02 Jun 2026 08:53:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 34A20306C322
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jun 2026 05:07:16 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0CD92305C522
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jun 2026 06:51:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 792FD30FC1D;
-	Tue,  2 Jun 2026 05:07:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9287D3A962E;
+	Tue,  2 Jun 2026 06:51:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UeN/pKUs"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="YZguX6Br"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from pdx-out-013.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-013.esa.us-west-2.outbound.mail-perimeter.amazon.com [34.218.115.239])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5039D301704;
-	Tue,  2 Jun 2026 05:07:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C6FC3A6EFC
+	for <linux-rdma@vger.kernel.org>; Tue,  2 Jun 2026 06:51:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=34.218.115.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780376823; cv=none; b=QTJEqfXADppX1vy84t6lZHcV+oOB1WEZ9EPRTF7OYKuxUVHyRavmTzmtqH6xT6ZQKULnFMzIJCH0W3OnkLeoHzz6orRFbdJXoIR4HCthoLCh2+UeWYFAo15+g6OtCre7J8r8VbQiy+yjOUZeENzbM8Zkq3p2k+7EuFo0IcdtVlw=
+	t=1780383088; cv=none; b=DjEZQGbzNtm7l8XVWA4EMmNijgaKgoZnVylg1+nW6gnJHfYzXi9hammT6DfvIoMkyfq9g9IRmsKfoXjVqhobchxigXY7D2JK/UvsW7BytS4rHkLQyQrkADLa8FeyerWo2Zy80aLFP9D0/rxpAkmpUMtDyYlg4I6FHbFGdN9UyTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780376823; c=relaxed/simple;
-	bh=2xw4z+denoQtaqUQTWsmf3BYesfCsapdpHSs5vga+Qw=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=MrPUQJtQSKCabMLYUeBDgJgKaboDrLCJm7rOrUPQRBWmjp8b2t3MIoh+4lrnRoELJfAvmH4YoWijfI6sO6vSu2Or+JQ4UYb2aD4XVtIiOOEVWvibavU34ups20/2ygj/5E+HFmxUkRwXzoUejYF/h/40/uYd7xCWzPMHGf04UoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UeN/pKUs; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C4321F0089A;
-	Tue,  2 Jun 2026 05:07:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780376822;
-	bh=gFJ8W6CrDyhZmev0pJLOWqhXjFC1ddwFDwPpjpyRgXk=;
-	h=From:To:Subject:Date:In-Reply-To:References;
-	b=UeN/pKUsymmpU95tafi+ZF8dofQOQsE2iqGDbtkpmfL7NVdZEbOMciEjFhT/kzxPn
-	 ppclcD9USPu5PSxvLNDwjt0UP+LDB6yvYMzGz9/13SmVyvB6iBWpMkHmN3NednYMsu
-	 +ecQsIextJsXphEZq1ysJcfk7AEi1CMixPscqCzub8CA4gygG6WKQfqVHm86F6lVsq
-	 TgyFrEHSBMwUXxMpl+D+vxiZj86uuUdfY701D9I4nVecuNkGfP2Nkx41exoFcPyM1D
-	 NGgkYo6f2cF7jATVFFQ57/Rv+A6dCQVZY4m0eEBXquP4azu10y4RS4YETS5qqZfux3
-	 J5J8VG2WyGsdg==
-From: Allison Henderson <achender@kernel.org>
-To: netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	kuba@kernel.org,
-	horms@kernel.org,
-	linux-rdma@vger.kernel.org,
-	achender@kernel.org,
-	linux-kselftest@vger.kernel.org,
-	shuah@kernel.org
-Subject: [PATCH net-next v3 4/4] selftests: rds: report missing RDMA prereqs as XFAIL
-Date: Mon,  1 Jun 2026 22:06:57 -0700
-Message-Id: <20260602050657.26389-5-achender@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20260602050657.26389-1-achender@kernel.org>
-References: <20260602050657.26389-1-achender@kernel.org>
+	s=arc-20240116; t=1780383088; c=relaxed/simple;
+	bh=p1NyNvK98bwbtrbcELzy79wYit9tJ2YegwiQSmo37O0=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y88MmXNpHVpuKp5U/4EXkoQbFtwjEHKP5HdDJJCWGoYUEvxq0ocgTvjOkaj+mz9njeTRhzI3ASOLO6lJpQydHiarYhtXU2Nvy4C3poCoBeWPd6qw2kmI8qdWSKVr0r5ob11KpUSXVDiwjf85xluzwbB7PQMmFRhhJHCq+Kt7yaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=YZguX6Br; arc=none smtp.client-ip=34.218.115.239
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1780383087; x=1811919087;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8l6wervai1SZ9un4cQAdVStzASRtmRPeCe5skJH7ZII=;
+  b=YZguX6Brj72vMiet9HYcpS5e8Nqkml37HsN6vbJVFgyCKvN20weKuDbI
+   PtARmn03bhrT5/FSmkXIF4KeYReJFzq0Dtap5uhzvhyNMnLt16C/xYFdC
+   0U0CLVHaLadt3euVhoq7iBO2MQisv6FHD6QdERLDwzF+p1rCkVvAwRPCB
+   RgStpDBB8tuz7yX4h6ML6ZTHDa2jpAze53UXKsI0Y/Npm4UzNpFQrKKcO
+   iZivFGWNcr41EgUKQEdwAhmh8Uc+Kb7naZFbka1gz1YNT6gVuFeCK51yt
+   pCGNPFM3Ek8va3UyHACqs/0O3YkLiJ0UU43+PdTsh+l+ue8CQZ/gyC2Sx
+   Q==;
+X-CSE-ConnectionGUID: ZQy6Qcd1RWCIUDcZvxxPAA==
+X-CSE-MsgGUID: UbSPNrfdR5iU+1Cww9zeKw==
+X-IronPort-AV: E=Sophos;i="6.24,182,1774310400"; 
+   d="scan'208";a="20696796"
+Received: from ip-10-5-0-115.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.0.115])
+  by internal-pdx-out-013.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2026 06:51:23 +0000
+Received: from EX19MTAUWB002.ant.amazon.com [205.251.233.111:13296]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.47.73:2525] with esmtp (Farcaster)
+ id 0239e136-276f-43ed-80d4-15532a53a183; Tue, 2 Jun 2026 06:51:23 +0000 (UTC)
+X-Farcaster-Flow-ID: 0239e136-276f-43ed-80d4-15532a53a183
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
+ Tue, 2 Jun 2026 06:51:23 +0000
+Received: from dev-dsk-ynachum-1b-aa121316.eu-west-1.amazon.com
+ (10.253.69.224) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37; Tue, 2 Jun 2026
+ 06:51:21 +0000
+Date: Tue, 2 Jun 2026 06:51:03 +0000
+From: Yonatan Nachum <ynachum@amazon.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+CC: <leon@kernel.org>, <linux-rdma@vger.kernel.org>, <mrgolin@amazon.com>,
+	<sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>
+Subject: Re: [PATCH for-rc] RDMA/efa: Validate SQ ring size against max LLQ
+ sizey
+Message-ID: <20260602065103.GA18111@dev-dsk-ynachum-1b-aa121316.eu-west-1.amazon.com>
+References: <20260526081536.1203553-1-ynachum@amazon.com>
+ <20260602003005.GA648279@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20260602003005.GA648279@nvidia.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-ClientProxiedBy: EX19D040UWA004.ant.amazon.com (10.13.139.93) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
+X-Spamd-Result: default: False [-9.16 / 15.00];
+	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-21614-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[amazon.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21615-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TO_DN_NONE(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	NEURAL_HAM(-0.00)[-1.000];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,sashiko.dev:url];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 52735628670
+	FROM_NEQ_ENVFROM(0.00)[ynachum@amazon.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: D9B2B629338
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Make the RDMA test return XFAIL rather than skip when RXE is not
-available, since the RDMA datapath is not run in netdev CI.
+On Mon, Jun 01, 2026 at 09:30:05PM -0300, Jason Gunthorpe wrote:
+> On Tue, May 26, 2026 at 08:15:36AM +0000, Yonatan Nachum wrote:
+> > Validate the SQ ring size against the device's max LLQ size. This
+> > ensures that when using 128-byte WQEs, userspace cannot exceed the queue
+> > limits.
+> > 
+> > On create QP, userspace provides the SQ ring size (depth x WQE size)
+> > which is validated against the max LLQ size.
+> > 
+> > Fixes: 40909f664d27 ("RDMA/efa: Add EFA verbs implementation")
+> > Reviewed-by: Michael Margolin <mrgolin@amazon.com>
+> > Signed-off-by: Yonatan Nachum <ynachum@amazon.com>
+> > ---
+> >  drivers/infiniband/hw/efa/efa_verbs.c | 27 ++++++++++++++++++---------
+> >  1 file changed, 18 insertions(+), 9 deletions(-)
+> 
+> The Sashiko comments look like they are worth addressing
+> 
+> https://sashiko.dev/#/patchset/20260517175216.614494-1-ynachum%40amazon.com
+> 
+> Jason
 
-Change the three RDMA-prerequisite checks in check_rdma_conf() and
-check_rdma_conf_enabled() to exit with KSFT_XFAIL (2) and tag their
-messages [XFAIL] instead of [SKIP].
+Hi, thanks for the answer.
+That is not the Sashiko link for the patch, its this:
+https://sashiko.dev/#/patchset/20260526081536.1203553-1-ynachum%40amazon.com
 
-Signed-off-by: Allison Henderson <achender@kernel.org>
----
- tools/testing/selftests/net/rds/rds_run.sh | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+I reviewed the comments and none of them is relevant for the patch.
 
-diff --git a/tools/testing/selftests/net/rds/rds_run.sh b/tools/testing/selftests/net/rds/rds_run.sh
-index f01c81415331f..cdf487ec97dcc 100755
---- a/tools/testing/selftests/net/rds/rds_run.sh
-+++ b/tools/testing/selftests/net/rds/rds_run.sh
-@@ -123,10 +123,10 @@ check_rdma_conf_enabled() {
- 		probe_module "$2"
- 		return
- 	fi
--	echo "selftests: [SKIP] rdma transport requires $1 enabled"
-+	echo "selftests: [XFAIL] rdma transport requires $1 enabled"
- 	echo "To enable, run" \
- 	     "tools/testing/selftests/net/rds/config.sh -r and rebuild"
--	exit 4
-+	exit 2
- }
- 
- # Load the module backing a config that is built as a loadable module
-@@ -148,7 +148,7 @@ check_conf() {
- }
- 
- # Check kernel config and host environment for RDS-RDMA support.
--# Exits with SKIP (4) if the user requested rdma but prerequisites
-+# Exits with XFAIL (2) if the user requested rdma but prerequisites
- # are not met.
- check_rdma_conf()
- {
-@@ -163,9 +163,9 @@ check_rdma_conf()
- 	check_rdma_conf_enabled CONFIG_RDS_RDMA rds_rdma
- 
- 	if ! which rdma > /dev/null 2>&1; then
--		echo "selftests: [SKIP] rdma transport requires the 'rdma'" \
--		      " tool (iproute2)"
--		exit 4
-+		echo "selftests: [XFAIL] rdma transport requires the 'rdma'" \
-+		      "tool (iproute2)"
-+		exit 2
- 	fi
- }
- 
--- 
-2.25.1
-
+Thanks 
 
