@@ -1,179 +1,229 @@
-Return-Path: <linux-rdma+bounces-21634-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21635-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id +srEMkopH2oriQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-21634-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 02 Jun 2026 21:04:42 +0200
+	id IGnONPUpH2pGiQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-21635-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 02 Jun 2026 21:07:33 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 303C463147B
-	for <lists+linux-rdma@lfdr.de>; Tue, 02 Jun 2026 21:04:42 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AF406314C6
+	for <lists+linux-rdma@lfdr.de>; Tue, 02 Jun 2026 21:07:33 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=intel.com header.s=Intel header.b=Yo582DSO;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21634-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21634-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=intel.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=Nvidia.com header.s=selector2 header.b=SQTSuLf0;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21635-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21635-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=nvidia.com;
+	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3B1C43068FF9
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jun 2026 18:59:16 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 19BCE303B4D6
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jun 2026 19:07:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A9939BFE7;
-	Tue,  2 Jun 2026 18:59:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 263443A453C;
+	Tue,  2 Jun 2026 19:07:15 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+Received: from SN4PR0501CU005.outbound.protection.outlook.com (mail-southcentralusazon11011020.outbound.protection.outlook.com [40.93.194.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F19282F39B9;
-	Tue,  2 Jun 2026 18:59:12 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780426755; cv=none; b=ReAvA/Lb2NUtzfKTVD0QQJYAsDY2OAAydWNDJruFhbiw4CLofid0O7v4/HRfOcKM2XlSseQNYyv7b/EYzOCOZ+8Ek8d/mU/ekThs0oUMwS13YdqijMAFzJnkEA30HwIuvEulM8VtWJNcXtwX6xMu4eaLjcCKLWBCMXR1h46yQt0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780426755; c=relaxed/simple;
-	bh=GvyU1VHG9G0bx3iqtGiPUhz+SeLDv9qe2ZeDnh9OQ+E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ubTyGfYNVV6TO4A6gd/Qan1h6jGQhOAWn6RkerhOUlNh3Gw99zdQno8XLjj3hG5iWC7+kJjfTML93q6S28APOhcieMKZOyOZDWjw7J4aY9J948IYok8gE6gYq17+eL/9fr+Rz/8Rc9ZlebUegsCvL+aA6pKZ3Vjur9Br3RN5q0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Yo582DSO; arc=none smtp.client-ip=198.175.65.11
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1780426753; x=1811962753;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GvyU1VHG9G0bx3iqtGiPUhz+SeLDv9qe2ZeDnh9OQ+E=;
-  b=Yo582DSOXev/Cy49uul4q2uaLqOBtHFQOJOy7ptHQwkR11paBf8Hk4hg
-   aBn6/9iZH0SKBgTta7LDHTMb4rnCYLSPaQyNxLIYsqCQ4CQEDZvSKgIz+
-   6FOPrFiAJNUEIPDdSpik59y5OK1Ieu8f4n8mj4WVkMsLwfmncHPksJXx3
-   vqfFGgB4MRG/KD1HakJlQj3qv29CBVuOfHLfcsWu39VyAESZnOPyZhiJY
-   44h4HzLm5RZZQ6sLCbYEjG/2VWs9C58LrupWJVo+NgyRAN80O7abnltah
-   RhbWJniKCm1VCBV1kmwJU8v7BtHumVLnb+0etEGAM1ulHADnu/2/z9+/s
-   w==;
-X-CSE-ConnectionGUID: 7pyuHn8LSE+T4+g/vrALeA==
-X-CSE-MsgGUID: TT1U3Vx6TWaKxMnXDvnPCQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11805"; a="91533739"
-X-IronPort-AV: E=Sophos;i="6.24,183,1774335600"; 
-   d="scan'208";a="91533739"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2026 11:59:13 -0700
-X-CSE-ConnectionGUID: RQzM3udfSO6EFJ+AdhTWXg==
-X-CSE-MsgGUID: NLFQCh7FSO6e1Hvs+jok5A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,183,1774335600"; 
-   d="scan'208";a="239543956"
-Received: from mkosciow-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.229])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2026 11:59:07 -0700
-Date: Tue, 2 Jun 2026 21:59:04 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Petr Mladek <pmladek@suse.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	Arend van Spriel <arend.vanspriel@broadcom.com>,
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Vlastimil Babka <vbabka@kernel.org>, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-	brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
-	linux-trace-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH 1/2] tracing: work around -Wmissing-format-attribute
- warning
-Message-ID: <ah8n-Nk305S5hRwN@ashevche-desk.local>
-References: <20260602150904.2258624-1-arnd@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEA5739E18E;
+	Tue,  2 Jun 2026 19:07:13 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780427234; cv=fail; b=sSvAkSt0gal76vhuC7uoViWF7L8xK34lSdrbaA9TIIGnOljmFHMu00evNZiMqgyxpQE1Gpt14BcHd/AUq+tLlLcNemDAu+ohoAdRh2O3R4qB/bj4MVEH+AYKK2TB0/lrZrA2N1KfoQWDPJNhd16tk5bfGWtJtWqhDO+Qw8iYM2E=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780427234; c=relaxed/simple;
+	bh=GhakwcoqIy0EwJ166UZV8ObjP1dU/3g164ArUwGoNFo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=S8tEGp2bGnMAPCj0wDjEXBbc3hGe+4xb+YOThcWLM1CF4aIkpXB+Wx+9xv4peOtzWCIbrGBFkomMt8Xxm1TZcma0Knu3I+Vq+6+lS33b8c7tEK81k/smR11mhmirwQiaMS26HaYP8kA/t3iQvJxwq/WD+NY+GgRreKKavDo7la0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=SQTSuLf0; arc=fail smtp.client-ip=40.93.194.20
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=YUBm2C38U70Y2YOXoty7k1qHzQlnyfAhDmEqkPySk/yWJ99FR179xirUAi/5RqEO7qjSmvTFnBavY44q0wtc32HN4kda8kEU9H7iUTQ7mVhCJwpFvw7kwWofQI5cOb7gszsmM1geDespjxUNYmALGWp9pVrD5us7FDeTgNFkZOuCYitidTa/YoNDGx8qQVHbtAFcGg/9xLEDaMolDhs4fNZ7AfHR+vm7i1nFc0ZNIMm0YxHtmQiBFIySQXfZiQlGoSlj7O3igBBNZSaqTrcC1mnVzg1k/XuPhWIXTrdj5QV519y9Y4QJyRMTQplM3WVuhvHG5LVmPhnmYQXvj68O7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=enq0NzkH2xbSzOzw/UvYJwF/3OywQRy0GfT3hj54Mq0=;
+ b=a0QrRM5TM+Q1s+fIcADXtiwV13UcPDQubYvBa8Jskz82QmdAlzluQbmofM45khDvEtir2f88wPvQJmwFMDvCx+fFV4KU3Usv5uZssarx4LkOl9PsR80yWtoDXkibNHNiHpWO/ehOI8EHTCWtNSE5Fhz3NTKPA2Wyvxo84UleognEy+pWBYawlNP+YaVkXy2Q0dbaDE8R7WyCj7+WxzbAEEE1CoJL7S4v+80f2SyKzRKyRNwGe9VJP2LOGXN9eRRo+MYMtYPCIuqImiHmWjqU1f1qL9jdO9a4+mN87p2PvHQFuVylYU4EVEbmG3WKp6ZgDup58yTNqZc+hgqYh62AuQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=enq0NzkH2xbSzOzw/UvYJwF/3OywQRy0GfT3hj54Mq0=;
+ b=SQTSuLf0lqp7iQtOCRC0ghjTKVB7Lc4CzsTTlt2BYiTzhVeZzGB4A9gAujh/kWnGgLneVTgcgxLU5ayJiA7nIjkDq+646VtLFbu5Ld1VtuUxtkrwuHynJPObM/ysiank9Utizp6OtbyTwaSFqIcKbYuMA+VToRE+Zh52hneg2fffhg2HHFvlrEyXbX0HCUCgdKssivMZ4EWxzjaPC5AHGg0R5rDPvF/d18A3dR3i4cZAlKCZPmgeaa3z5UTwI2N3ozOzAYjerFp22YbELM4pfokMk95hUJ9u/VZxmWGP1ebKfkMjfCVb63OJ0twIzqHli9fSoiISbvIa1O8/sVsD1A==
+Received: from LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19)
+ by DM4PR12MB6398.namprd12.prod.outlook.com (2603:10b6:8:b5::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.7; Tue, 2 Jun 2026
+ 19:07:08 +0000
+Received: from LV8PR12MB9620.namprd12.prod.outlook.com
+ ([fe80::299d:f5e0:3550:1528]) by LV8PR12MB9620.namprd12.prod.outlook.com
+ ([fe80::299d:f5e0:3550:1528%4]) with mapi id 15.21.0071.015; Tue, 2 Jun 2026
+ 19:07:08 +0000
+Date: Tue, 2 Jun 2026 16:07:06 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+Cc: yishaih@nvidia.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, anand.a.khoje@oracle.com,
+	manjunath.b.patil@oracle.com
+Subject: Re: [PATCH] IB/mlx4: delete allocated id_map_entry while sending REJ
+Message-ID: <20260602190706.GA1054315@nvidia.com>
+References: <20260506090824.359239-1-praveen.kannoju@oracle.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260506090824.359239-1-praveen.kannoju@oracle.com>
+X-ClientProxiedBy: YT3PR01CA0065.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:84::33) To LV8PR12MB9620.namprd12.prod.outlook.com
+ (2603:10b6:408:2a1::19)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260602150904.2258624-1-arnd@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
- krs, Bertel Jungin Aukio 5, 02600 Espoo
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV8PR12MB9620:EE_|DM4PR12MB6398:EE_
+X-MS-Office365-Filtering-Correlation-Id: 907eff14-a151-4f91-3d1a-08dec0da248c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|1800799024|376014|56012099006|22082099003|18002099003|11063799006;
+X-Microsoft-Antispam-Message-Info:
+	zTO34Zf3SLjQrR8MUaLjSPG79T3KHqeBVg6VjWkOuyGB+Sxf0F5TLJRsEFswxhMSrIMB2h/lrDT6uA0o5SJ3zezAyrewUnPnQd7Ny/Z+LXRghYUcpASwcelkapKD7jWRaEQTbedWcTCzIILLIizq2q+OwwhY5aReiGJDKpQmw5rmqoAe3GbsKxGmof7j20sgYb00hxMoohm8Rt5KqX1IPEVKSNhtzC5EoTJZ9JpUQF2E/OvPuwY5oNfm0Jy7M056vhMsXYgGRDcEN65nGns8oiyKf/euz2QDPa3bmTub8p5qKPAhAaWogL6fuhReqznBCI1+Qqh2uzchM+sYts4kHuwZxkhZ2HZO5NNJZa0yQwrhzTUZ8RWgQLMn4d073EkmtsI8LUw9pr8R/zMSyu9rX2myuOm3Swpo2hQ2uEhI2K+VLM1B82e8DY07y/DV0q3gWXfS8kXipnkBvrqn6sOPS84Fjk70SpG7tW9f8seBtpl6U/ZC+ek/ExGxvCMgGrSs2dkcRSN3vaDSXktfrI5iQHUFmKSVFp30GoecCd+S4/u7s3o72eNtmXt/knOrG/PklMAbDFT99GmJtF2WD0k3sYtOJSuWGuLwDcN03iyCZ3OUnc/184rXrYwUAIerUpmRbEH/Tey9vvmXVuQSdWT4HQ+SqVBTkszw8fuyOmc+1nO24uvJ5ZyyUUW5xA2Xyna0
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9620.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(56012099006)(22082099003)(18002099003)(11063799006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?udiZDaBH5sMUlv5b1Vf1+OJGoSvdgKfvXU7D74lEFkblm7pTlBTuuOYxbX/X?=
+ =?us-ascii?Q?ykgAJeBzaR54IDq2VQUOuLx0tzuaRreiwX09WkTS7ZPjPWyfuSofAZztAEjC?=
+ =?us-ascii?Q?JxYxCPmnmx3T2IR0pDA0vhxyGtOZQJELT9HlmnDbdkysbEVsJ54mq+9vlw8U?=
+ =?us-ascii?Q?FstBpvm1VwAHXfN8S5L6Fd5onzq8WzT9JpqNtcQgUKbZcTZGZo4lK2DxPIBm?=
+ =?us-ascii?Q?KTUWJfWKJKBuFwX0AqGskyx5RLDMUwnh5u7KX5L6iNzUK3xhfF/KLUnIRI7P?=
+ =?us-ascii?Q?ugGrkqHRc58ppMa3CLSrp2cmKraDHOLLA5Y1W4asKWFvuZGcQgIJ9uz4bfza?=
+ =?us-ascii?Q?8IsuiOAx1rIhKfz6Q/9Blwlmc1WaDoQ8XgIKtvQch0Te3pYKrU6bQPylC+7c?=
+ =?us-ascii?Q?O6vCoLPtNWhQOa6La4p9ZbIB7tlVrX90zbDc1/qo8/y0hLj+0bRKp5icYkIG?=
+ =?us-ascii?Q?jNTJ0qVU4o5zcUR4zT4BahMQy8rlxrcHW1Aai+CQbF7y8D+qIDTMN2G6nQwK?=
+ =?us-ascii?Q?J3xN+DO7QWw+CYdkdf2jNEojCHuqmZAa7KlRqFMvQjg6A+SxrXKGtGS9FuC8?=
+ =?us-ascii?Q?D0JRygxQeNTqlNevgJxtP/0vuuK5RpHUuLc9RaQcIxBWs4ZrXte8RkWDRItE?=
+ =?us-ascii?Q?/nJS++A9TME78qbK41K5Ycl6jZVkLAt+SSmbSfvyBNMSqWsomgxEkZLEG5ql?=
+ =?us-ascii?Q?N1fQ5QpZdenOzGreQWwenLz3/1XAF0I1Ygo0bb4PivpqbBtih3Z4SVR1PKsO?=
+ =?us-ascii?Q?vD22YYmyqbbzj631nmlr02I/4nJHg+P1IM6kvZG0wC7t2PVcyxecaUrEw6oE?=
+ =?us-ascii?Q?fMA8zmhvxt3+a+OuTpQaWHiCY8dr5dNrQu+YbIkYElxdlTBE2h1lXdZiDEsT?=
+ =?us-ascii?Q?/Lt/9EAcJcJu2LEugojMTMErsUSGo11/NZz4m2do23hCTe9hdNR5+hPm8F8+?=
+ =?us-ascii?Q?+rbCcJdqq0lpR9fka6V9BV/17rCDq3Xy8BNZdZaVtJj4R+jlrA5WOInd2JkZ?=
+ =?us-ascii?Q?RNSJonJGTlIs+ZVga9honFSIhSQmfAKJ41xBkvFBQfd/dArlyqKe2Bf2BT/M?=
+ =?us-ascii?Q?DEkC433NzrGZMvRlO31k9WOTfSPbgj9VkjPnNzzi075LUsyAfMNeXAUBDKjX?=
+ =?us-ascii?Q?ttBGGVgoyZh97WYIxBonvJkKNb+XHFT9NlZx4jPCDKIcEtRoAPN/W4vYUYmL?=
+ =?us-ascii?Q?kiaeXBakZFUc3aJpGmbzhgX0t5KsqaVUZ2gJBLgffKgAIOQyS1KDoXbx2Pif?=
+ =?us-ascii?Q?UCg/lg9747KWt6DjEBbFHQkhDqZlzxTfRBvR2ClmcFhqO236kKfXj0J7M8Pb?=
+ =?us-ascii?Q?Wt4Zd9QNW1zf4uLcnQtvkes4IcbAxlHXirvXALzYwro96Tzl8KKpLHSUkPcJ?=
+ =?us-ascii?Q?1a1KKJdPaD8VpgIzKGOmlajQfsmi8yr5ZRjt0WxOGjfH++MTcnZrvicklLvS?=
+ =?us-ascii?Q?niulyb88omrW1KEYMBp/2ubQ/WPLqFyMroCf16xmpP24ts2Ngrg3znF90Mzi?=
+ =?us-ascii?Q?d94yFFKb9eQVd2jKbSR+Jx0WyLiPwbdQF0PHO9U2a6ZiN5fJA/U9/J3DXcUY?=
+ =?us-ascii?Q?7pgxEMf81Fg/b0uE8xoqefMJD9hadS0wVJaV8E8Y5GrzdTAQSBuVpXSJ9uUD?=
+ =?us-ascii?Q?37R9Z0pjoR1t3s2i/yCLAVXmEQuox5nQ6ilMMOpc3LsvyUKHFBJ/3NTqugGx?=
+ =?us-ascii?Q?uVCiQuuG9QJkXFyZgRfP831ihzJuiC0K4WBokzbbMG18ticG?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 907eff14-a151-4f91-3d1a-08dec0da248c
+X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9620.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2026 19:07:08.3580
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 84wEAwfwOM2Bjj1lbVffHXg67ITXr+AXgctZwZj119B6Uv9Udm7rVKQq/O7JK6Fb
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6398
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21634-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:arnd@kernel.org,m:rostedt@goodmis.org,m:mhiramat@kernel.org,m:akpm@linux-foundation.org,m:pmladek@suse.com,m:nathan@kernel.org,m:arnd@arndb.de,m:dennis.dalessandro@cornelisnetworks.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:arend.vanspriel@broadcom.com,m:miriam.rachel.korenblit@intel.com,m:mathieu.desnoyers@efficios.com,m:linux@rasmusvillemoes.dk,m:senozhatsky@chromium.org,m:nick.desaulniers+lkml@gmail.com,m:morbo@google.com,m:justinstitt@google.com,m:vbabka@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-wireless@vger.kernel.org,m:brcm80211@lists.linux.dev,m:brcm80211-dev-list.pdl@broadcom.com,m:linux-trace-kernel@vger.kernel.org,m:llvm@lists.linux.dev,m:nickdesaulniers@gmail.com,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[andriy.shevchenko@linux.intel.com,linux-rdma@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[26];
-	FREEMAIL_CC(0.00)[goodmis.org,kernel.org,linux-foundation.org,suse.com,arndb.de,cornelisnetworks.com,ziepe.ca,broadcom.com,intel.com,efficios.com,rasmusvillemoes.dk,chromium.org,gmail.com,google.com,vger.kernel.org,lists.linux.dev];
-	MIME_TRACE(0.00)[0:+];
-	HAS_ORG_HEADER(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[andriy.shevchenko@linux.intel.com,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-21635-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:praveen.kannoju@oracle.com,m:yishaih@nvidia.com,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:anand.a.khoje@oracle.com,m:manjunath.b.patil@oracle.com,s:lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[jgg@nvidia.com,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jgg@nvidia.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,lkml];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,ashevche-desk.local:mid,intel.com:dkim,linux.intel.com:from_mime]
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,nvidia.com:from_mime,nvidia.com:mid,Nvidia.com:dkim]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 303C463147B
+X-Rspamd-Queue-Id: 4AF406314C6
 
-On Tue, Jun 02, 2026 at 05:07:05PM +0200, Arnd Bergmann wrote:
+On Wed, May 06, 2026 at 09:08:24AM +0000, Praveen Kumar Kannoju wrote:
+> During scenarios where a REJ is sent after a REQ or REP, the allocated
+> is_map_entry remains in memory, resulting in a memory leak. Scheduling the
+> entry for deletion during REJ handling, if it is not NULL, resolves the
+> issue.
+
+Well, the leak seems quite likely, but I'm not sure about this fix.
+
+This code looks quite odd and it seems to have other races as well, so
+IDK..
+
+> Signed-off-by: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+> ---
+>  drivers/infiniband/hw/mlx4/cm.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> A number of tracing headers turn off -Wsuggest-attribute=format for
-> gcc, but they don't turn it off for clang, so the same warning still
-> happens on new versions of clang that support the format attribute.
-> 
-> To avoid duplicating the same thing in each tracing header, as well
-> as changing all of them to also turn it off for clang, add a new
-> __vsnprintf() helper that is not annotated this way in linux/sprintf.h
-> but is defined to work the same way as the regular vsprintf.
+> diff --git a/drivers/infiniband/hw/mlx4/cm.c b/drivers/infiniband/hw/mlx4/cm.c
+> index 63a868a3822f..21f2f401ed61 100644
+> --- a/drivers/infiniband/hw/mlx4/cm.c
+> +++ b/drivers/infiniband/hw/mlx4/cm.c
+> @@ -321,10 +321,9 @@ int mlx4_ib_multiplex_cm_handler(struct ib_device *ibdev, int port, int slave_id
+>  				__func__, slave_id, sl_cm_id);
+>  			return PTR_ERR(id);
+>  		}
+> -	} else if (mad->mad_hdr.attr_id == CM_REJ_ATTR_ID ||
+> -		   mad->mad_hdr.attr_id == CM_SIDR_REP_ATTR_ID) {
+> +	} else if (mad->mad_hdr.attr_id == CM_SIDR_REP_ATTR_ID)
+>  		return 0;
+> -	} else {
+> +	else {
+>  		sl_cm_id = get_local_comm_id(mad);
+>  		id = id_map_get(ibdev, &pv_cm_id, slave_id, sl_cm_id);
+>  	}
 
-vsprintf()
+What is this change for?
 
-> Aside from tracing, the same thing can be used in va_format(),
-> which is part of lib/vsprintf.c itself.
+It does look like ignoring the rej isn't right, but then also why does
+this rej just search and free but the rej in the prior stanza is
+allocating too?
 
-...
+> @@ -338,7 +337,8 @@ int mlx4_ib_multiplex_cm_handler(struct ib_device *ibdev, int port, int slave_id
+>  cont:
+>  	set_local_comm_id(mad, id->pv_cm_id);
+>  
+> -	if (mad->mad_hdr.attr_id == CM_DREQ_ATTR_ID)
+> +	if (mad->mad_hdr.attr_id == CM_DREQ_ATTR_ID ||
+> +	    mad->mad_hdr.attr_id == CM_REJ_ATTR_ID)
+>  		schedule_delayed(ibdev, id);
+>  	return 0;
+>  }
 
-> --- a/include/linux/sprintf.h
-> +++ b/include/linux/sprintf.h
-> @@ -12,6 +12,7 @@ __printf(2, 3) int sprintf(char *buf, const char * fmt, ...);
->  __printf(2, 0) int vsprintf(char *buf, const char *, va_list);
->  __printf(3, 4) int snprintf(char *buf, size_t size, const char *fmt, ...);
->  __printf(3, 0) int vsnprintf(char *buf, size_t size, const char *fmt, va_list args);
-> +int __vsnprintf(char *buf, size_t size, const char *fmt, va_list args);
+SIDR seems troubled as well.
 
-Why the __printf() annotation is in the C file and not here?
-Is this all about headers as the second paragraph in the commit message explains?
-I would add a comment to explain it here, otherwise we might see false patches to
-"make things consistent" in a wrong way.
+AI pointed out the use of id like this is racey too.
 
->  __printf(3, 4) int scnprintf(char *buf, size_t size, const char *fmt, ...);
->  __printf(3, 0) int vscnprintf(char *buf, size_t size, const char *fmt, va_list args);
->  __printf(2, 3) __malloc char *kasprintf(gfp_t gfp, const char *fmt, ...);
+But broadly this seems like it might be the right direction, but the
+commit message should explain what this logic is alot better
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Jason
 
