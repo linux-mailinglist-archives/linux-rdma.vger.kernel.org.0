@@ -1,156 +1,178 @@
-Return-Path: <linux-rdma+bounces-21665-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21666-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 4E4uL7HAH2q8pQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-21665-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 03 Jun 2026 07:50:41 +0200
+	id nN3sNX7FH2rlpgAAu9opvQ
+	(envelope-from <linux-rdma+bounces-21666-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 03 Jun 2026 08:11:10 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id C51FB634625
-	for <lists+linux-rdma@lfdr.de>; Wed, 03 Jun 2026 07:50:40 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AAA26348DD
+	for <lists+linux-rdma@lfdr.de>; Wed, 03 Jun 2026 08:11:10 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=intel.com header.s=Intel header.b=UdSzM+U+;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21665-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21665-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=intel.com;
+	dkim=none;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21666-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21666-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 2E3EE3042FCF
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2026 05:47:10 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C384F3026A94
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2026 06:11:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77FF23D2FFC;
-	Wed,  3 Jun 2026 05:47:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 235843E714C;
+	Wed,  3 Jun 2026 06:11:00 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBC52380FEC;
-	Wed,  3 Jun 2026 05:47:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A935D387371;
+	Wed,  3 Jun 2026 06:10:56 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780465627; cv=none; b=t1kDmuK0o6EpJUhOL+B3CqXTZhziZAz5UiCRIJNPSDdffqyXSzsGZuHmt9DRjmJ3TFbd+HIDk7wakvltkSJZnnsQH/cGhIhijU85GaUa4N2wiT7m8rlHrx12sUO2mfy6b6CV5xHjwW8AhgqrhobKwJ/CmVQsXQONWqAIJYgO9R4=
+	t=1780467060; cv=none; b=L4P1K9kKGgJ1ELEiOTqlUCOVLD1xDpgaTgWQml1364h1I5/gNXyS77dIUzeGtw3X5poCIS0u6+t8XUH2/6/7gFlphfQxL14zEElEafZR0VvYMQ4GlDlJ6JEVqdryB6v9qxKYhu+vsv6LEGnUAGxcqgM5YzIYqHy1iN8xU1LljQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780465627; c=relaxed/simple;
-	bh=/FLTeWNgbJxy3Ry7en1bPUx4V4oTJRJksctul9uRdys=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I2kuMDdc6Px0YOc7f15hwIjbTqZHagNiWGPdsPAykCe0/8wXdQ65YgCIB6Dq++6Mnc5h7CkTtqj/99eL1cYeAUZVdVb1EdcMh8rAZQ3cETo2YhdKZJVYjT9P3wSUo501VV1s4MOL3x1XjXAzxCGZ3f0z3d2t0oT39a39gLz+iYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UdSzM+U+; arc=none smtp.client-ip=192.198.163.13
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1780465626; x=1812001626;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/FLTeWNgbJxy3Ry7en1bPUx4V4oTJRJksctul9uRdys=;
-  b=UdSzM+U+EplFsOf4XNA2qaf1T+vx6hptvRRxtl/KhEWlhBZ/kK8dx3bR
-   UrqnTYgYJXYMDxGJiO/dYI1lCu5ffh8v/0NpwSt3rD9nt3fcOXu/i5OTo
-   LIuTRUgM941gZ99qNV7T+yn7tIQk3t9it15PWFw+f9uM2UsB73qGVIXH1
-   2k15QiSZGbal2ODtdhaf22a1yruuv0GirdhD7DFk9Ps658MWSMDzWRTuV
-   D8Swyx0a++xHMz6ELqXgZwN9p/TrujUI2a1Y27W65P4eJdQs9NAiMtiTX
-   8/8bkV42Kypb+ExwUmbLiB5f3A0imYBTi8MiTeLRjY+bLLloEE9zSeQ87
-   w==;
-X-CSE-ConnectionGUID: 2xudbGA8SI+V1JUMrs9lnA==
-X-CSE-MsgGUID: mPRSC03bSjCgzO+gCOE2qA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11805"; a="83842268"
-X-IronPort-AV: E=Sophos;i="6.24,184,1774335600"; 
-   d="scan'208";a="83842268"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2026 22:47:05 -0700
-X-CSE-ConnectionGUID: FNlwVWqVTf2houfD4TQfCw==
-X-CSE-MsgGUID: WZFOE495REOFrIL2m/+VhQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,184,1774335600"; 
-   d="scan'208";a="243966295"
-Received: from pgcooper-mobl3.ger.corp.intel.com (HELO localhost) ([10.245.244.116])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2026 22:46:59 -0700
-Date: Wed, 3 Jun 2026 08:46:57 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Arnd Bergmann <arnd@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Petr Mladek <pmladek@suse.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	Arend van Spriel <arend.vanspriel@broadcom.com>,
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Vlastimil Babka <vbabka@kernel.org>, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-	brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
-	linux-trace-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH 1/2] tracing: work around -Wmissing-format-attribute
- warning
-Message-ID: <ah-_0aAnev7pHU57@ashevche-desk.local>
-References: <20260602150904.2258624-1-arnd@kernel.org>
- <20260603105842.1e0ef8cb4a55cb776d6a4971@kernel.org>
+	s=arc-20240116; t=1780467060; c=relaxed/simple;
+	bh=ZtZ9+OkZM/ukGS9yEpCX+EYQAgio+pDuDHp0B+3iM68=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WdgRagOU8Eeccj28Veu75ZFvm/8Vx9h+N8vVQOhZns0Ft/8jQvSGcGz9MpFcVsqOnigX3O+/BnDjf+VArjoKqTk9kJmTD382F4wUpUE+GzDDGwGS3YTFX1jq7TF0dRrab8USaYKbcuhU16iaU1MqYDz4cv7unQo9u+qivZMAHAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+X-UUID: f67189d65f1211f1aa26b74ffac11d73-20260603
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
+	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
+	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
+	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_EXISTED
+	SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, CIE_GOOD
+	CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU, AMN_GOOD
+	ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.12,REQID:0cabf303-66dd-4b56-801b-c05b48b06cb5,IP:20,
+	URL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-5
+X-CID-INFO: VERSION:1.3.12,REQID:0cabf303-66dd-4b56-801b-c05b48b06cb5,IP:20,UR
+	L:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:e7bac3a,CLOUDID:6567f242b6bbf23a7d4f6cbab4407c3a,BulkI
+	D:260603112500KXG3KUKT,BulkQuantity:1,Recheck:0,SF:17|19|38|66|78|102|127|
+	850|865|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk
+	:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,B
+	RE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: f67189d65f1211f1aa26b74ffac11d73-20260603
+X-User: sangyao@kylinos.cn
+Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <sangyao@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 2035302038; Wed, 03 Jun 2026 14:10:47 +0800
+From: Yao Sang <sangyao@kylinos.cn>
+To: Tariq Toukan <tariqt@nvidia.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	Yao Sang <sangyao@kylinos.cn>
+Subject: [PATCH net v2] net/mlx4: avoid GCC 10 __bad_copy_from() false positive
+Date: Wed,  3 Jun 2026 14:10:44 +0800
+Message-Id: <20260603061044.2055155-1-sangyao@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260603105842.1e0ef8cb4a55cb776d6a4971@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
- krs, Bertel Jungin Aukio 5, 02600 Espoo
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [1.54 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21665-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:mhiramat@kernel.org,m:arnd@kernel.org,m:rostedt@goodmis.org,m:akpm@linux-foundation.org,m:pmladek@suse.com,m:nathan@kernel.org,m:arnd@arndb.de,m:dennis.dalessandro@cornelisnetworks.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:arend.vanspriel@broadcom.com,m:miriam.rachel.korenblit@intel.com,m:mathieu.desnoyers@efficios.com,m:linux@rasmusvillemoes.dk,m:senozhatsky@chromium.org,m:nick.desaulniers+lkml@gmail.com,m:morbo@google.com,m:justinstitt@google.com,m:vbabka@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-wireless@vger.kernel.org,m:brcm80211@lists.linux.dev,m:brcm80211-dev-list.pdl@broadcom.com,m:linux-trace-kernel@vger.kernel.org,m:llvm@lists.linux.dev,m:nickdesaulniers@gmail.com,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[andriy.shevchenko@linux.intel.com,linux-rdma@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[26];
-	FREEMAIL_CC(0.00)[kernel.org,goodmis.org,linux-foundation.org,suse.com,arndb.de,cornelisnetworks.com,ziepe.ca,broadcom.com,intel.com,efficios.com,rasmusvillemoes.dk,chromium.org,gmail.com,google.com,vger.kernel.org,lists.linux.dev];
 	MIME_TRACE(0.00)[0:+];
-	HAS_ORG_HEADER(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21666-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER(0.00)[sangyao@kylinos.cn,linux-rdma@vger.kernel.org];
+	DMARC_NA(0.00)[kylinos.cn];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:tariqt@nvidia.com,m:davem@davemloft.net,m:kuba@kernel.org,m:pabeni@redhat.com,m:andrew+netdev@lunn.ch,m:edumazet@google.com,m:gustavoars@kernel.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:sangyao@kylinos.cn,m:andrew@lunn.ch,s:lists@lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[andriy.shevchenko@linux.intel.com,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[sangyao@kylinos.cn,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,lkml];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,intel.com:dkim,ashevche-desk.local:mid,linux.intel.com:from_mime,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+	RCPT_COUNT_SEVEN(0.00)[10];
+	R_DKIM_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: C51FB634625
+X-Rspamd-Queue-Id: 3AAA26348DD
 
-On Wed, Jun 03, 2026 at 10:58:42AM +0900, Masami Hiramatsu wrote:
-> On Tue,  2 Jun 2026 17:07:05 +0200
-> Arnd Bergmann <arnd@kernel.org> wrote:
+mlx4_init_user_cqes() fills a scratch buffer with the CQE
+initialization pattern and then copies from that buffer to userspace.
 
-...
+In the single-copy path, the copy length is array_size(entries,
+cqe_size), but the scratch buffer is allocated with PAGE_SIZE. GCC 10
+does not carry the branch invariant strongly enough through the object
+size checks and falsely triggers __bad_copy_from().
 
-> I think this is a slightly confusing name. What about vsnprintf_nocheck()?
+Size the scratch buffer to the actual copy length for the active path,
+keep array_size() for the single-copy case, and retain a WARN_ON_ONCE()
+guard for the PAGE_SIZE invariant before allocating the buffer.
 
-What check? If you want to be more precise: vsnprintf_no_printf_attr() or
-vsnprintf_no_format_check(). But they also seem to me not the good choices.
-(Just slight preference to the latter one no_format_check.)
+Fixes: f69bf5dee7ef ("net/mlx4: Use array_size() helper in copy_to_user()")
+Signed-off-by: Yao Sang <sangyao@kylinos.cn>
+---
+Changes in v2:
+- Replace silent clamping with WARN_ON_ONCE guard for array_size()
+  over PAGE_SIZE, return -EINVAL.
 
+ drivers/net/ethernet/mellanox/mlx4/cq.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx4/cq.c b/drivers/net/ethernet/mellanox/mlx4/cq.c
+index e130e7259275..5c55971abbf0 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/cq.c
++++ b/drivers/net/ethernet/mellanox/mlx4/cq.c
+@@ -290,6 +290,7 @@ static void mlx4_cq_free_icm(struct mlx4_dev *dev, int cqn)
+ static int mlx4_init_user_cqes(void *buf, int entries, int cqe_size)
+ {
+ 	int entries_per_copy = PAGE_SIZE / cqe_size;
++	size_t copy_bytes;
+ 	void *init_ents;
+ 	int err = 0;
+ 	int i;
+@@ -314,8 +315,14 @@ static int mlx4_init_user_cqes(void *buf, int entries, int cqe_size)
+ 			buf += PAGE_SIZE;
+ 		}
+ 	} else {
++		copy_bytes = array_size(entries, cqe_size);
++		if (WARN_ON_ONCE(copy_bytes > PAGE_SIZE)) {
++			err = -EINVAL;
++			goto out;
++		}
++
+ 		err = copy_to_user((void __user *)buf, init_ents,
+-				   array_size(entries, cqe_size)) ?
++				   copy_bytes) ?
+ 			-EFAULT : 0;
+ 	}
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
 
