@@ -1,159 +1,268 @@
-Return-Path: <linux-rdma+bounces-21680-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21681-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id hygAIxkiIGprwgAAu9opvQ
-	(envelope-from <linux-rdma+bounces-21680-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 03 Jun 2026 14:46:17 +0200
+	id h95bE+cjIGqSwwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-21681-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 03 Jun 2026 14:53:59 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92072637AAD
-	for <lists+linux-rdma@lfdr.de>; Wed, 03 Jun 2026 14:46:16 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1EF2637B8B
+	for <lists+linux-rdma@lfdr.de>; Wed, 03 Jun 2026 14:53:58 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=f63Jgjq1;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21680-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21680-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=prevas.dk header.s=selector1 header.b="Ymlz/BTy";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21681-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21681-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=prevas.dk;
+	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 2876130225D5
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2026 12:42:36 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B2D01307CD80
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2026 12:49:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9888244CF29;
-	Wed,  3 Jun 2026 12:42:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE06F271456;
+	Wed,  3 Jun 2026 12:49:29 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazon11012005.outbound.protection.outlook.com [52.101.66.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 443F520FA81
-	for <linux-rdma@vger.kernel.org>; Wed,  3 Jun 2026 12:42:33 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780490554; cv=none; b=C3s4k2c7sXe0m/d8cCWEuuUlbyvn9VUyrtMhVbGS9bvTBPTkstWQ/nRPMJ7FtA1bprlvs48aMnmks6vZOnTkiwg80lOm4J5VQhzshsY60RUIOPkbJsHdqV4xKzaLgvzyE3us1Ipg6TY4yh+1uNH/7aA05fVcsMbcPWRKJoZWneM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780490554; c=relaxed/simple;
-	bh=W45UheOnEo6xoVkJQ1bKfCsHdmCm5iK51xyJNLoBVoQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tMdk3wo9Uc5ZhokpZVSRqBcDgjaLg7w/FCfVphsC1oLWK6oRlBNCLZWBIrXl8cPCZn+RugpSk/VZ1HKJ+j4dJc6ajDbzBQHiwgkvmvfdp+6Pg5+IGmLjXmxW9M56DwZuBVDS4iR00jYK0Z2v1lWDOunzvu/wHkRCAhvFKq5RIJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f63Jgjq1; arc=none smtp.client-ip=209.85.208.178
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-39677aed4d3so33751801fa.2
-        for <linux-rdma@vger.kernel.org>; Wed, 03 Jun 2026 05:42:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1780490551; x=1781095351; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LDtZiNqgwPDv3Sul4nimrZPm2bZQA1f3gdfMwdog6fo=;
-        b=f63Jgjq1hbiRXPvkB56dsXESilnieQ7md0DtpAgkc1fPyO0cdPaYlm89o3EzH0RGub
-         e6O2W+mgQuPLCjSzFN7rsOh2iQJfYeU31w+FhmQuomXg8J0ZJeiH3PH83QUI+eWOSktm
-         VldorI6NtUm6NYcIAbcpHOAP8QbnNx5+zb7APqpH32gTrcVfs/1pX7b3N672ThWxocbX
-         VvI/TchUhFe9gqhZcCtXM3zNZmZXatF80Iqyi7pXIlNpSwfzTs+JzYs66M8zhntZFyFB
-         gCdFcTh3EOImLfTRKjL0IaLX3eYHPxf5yqegkORgqE74nGMOk53cMdfqtqWuhO0PXZnv
-         PyDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780490551; x=1781095351;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=LDtZiNqgwPDv3Sul4nimrZPm2bZQA1f3gdfMwdog6fo=;
-        b=m78vrCBKhn4NghS4dvS549a7Xnkix37h918/p7sp1wUBqmzcAqw15wrSru7A8JbCU8
-         uc+Iwq3ahwV2DEZgO+OxtNUMMKtXCPekR1x9SZoaGcVyfJrC+88Hne+4jyAbtaUUB+80
-         sJ64YTqGcPOky4dJK+CfTdFSplwicHXl3Az3LwqFoOEdV64M/Yszr9InXunQyI9OYQVj
-         +kA7XmvybXntlOM2EUPpHBJN0GbDVY5sefy1p2P6xjXIxBwr8Gfa0osV9jgZkQsXv+B3
-         2THLt9i9MolDSX9+wjXAv9dg/N47AHNCCJwrXUf56AwgqYlFpP7b60aZ3JKRSb3uiQcR
-         N/XQ==
-X-Forwarded-Encrypted: i=1; AFNElJ98Jqkg5YLMGvhUpoBFQWkiVtBiv63WElKB4zzvSdB4y8tD67D6p4O48JSJUhBW09x3be67CykVpUeq@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy+E0NekgHKC38ptl4QtI//WqxOBU8ZbK5PGbgPAc4i61kx0LpK
-	KcIGK09eYT6PBN5FsC54cPeWcEGGJ6++vE5YeRkGChzlDLPy4EMpE/+w
-X-Gm-Gg: Acq92OHPP3JI0tnSqMIZnTMqoxCwabI6Gh8M76HgwRrLI+DRpq6cRozn79tieR6gYtu
-	ua+5vfw0B/llwdqGdYcSzuvqhgV3FZi1MXK/UBQcHQCwZSMCKGsTRLX1/hv6bZIfkgpPV0wvsz8
-	V2okiyfvMg1GWwdVTPniAYGW+IhFHQFgjdYjmjZGTs+JNgNcfCdUPyp6LF0ix5AchA+1cwE5E85
-	ItonrPmgulitKYJU2q2XShtbDDXpHefB5fQLGW80avMFaCGMBjeagUC1Vf5ahyrse4tle4xk4bN
-	r6FEJVpzy6b9vUULSj2b7ir7f5GGtERLdlx6ityoxXJvUEuRBViLYkusdbdbxR0dGbcGgDAyjbC
-	kDnYyHmZKnmk7tGnz1KYchEaauHTp9rUEVkhPaRSFNLHMsnKO64LV4WwdmM8oiloySUBXQavq7Q
-	J8SoyEtDxJQQ70j3FstKLVLI/0/QS1OcTnoJ5VDzrSauTFd6TGYn2oN8f2mAoFe5WEacOF
-X-Received: by 2002:a05:6512:33c5:b0:5aa:6d0f:1dd3 with SMTP id 2adb3069b0e04-5aa7c0feb53mr1122592e87.20.1780490551272;
-        Wed, 03 Jun 2026 05:42:31 -0700 (PDT)
-Received: from c0624c666cc5.devsec.astralinux.ru ([93.188.205.42])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5aa7b97ac3fsm631197e87.42.2026.06.03.05.42.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jun 2026 05:42:30 -0700 (PDT)
-From: Vladislav Nikolaev <vlad102nikolaev@gmail.com>
-To: Fedor Pchelkin <pchelkin@ispras.ru>
-Cc: Vladislav Nikolaev <vlad102nikolaev@gmail.com>,
-	stable@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Zhu Yanjun <zyjzyj2000@gmail.com>,
-	Doug Ledford <dledford@redhat.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Haggai Eran <haggaie@mellanox.com>,
-	Kamal Heib <kamalh@mellanox.com>,
-	Amir Vadai <amirv@mellanox.com>,
-	Moni Shoua <monis@mellanox.com>,
-	Yonatan Cohen <yonatanc@mellanox.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Zhu Yanjun <yanjunz@nvidia.com>,
-	lvc-project@linuxtesting.org
-Subject: Re: [PATCH 5.10/5.15] RDMA/rxe: Fix the error "trying to register non-static key in rxe_cleanup_task"
-Date: Wed,  3 Jun 2026 15:42:24 +0300
-Message-ID: <20260603124226.296-1-vlad102nikolaev@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260601165404-4e37c4ba7b9a60b739186cc0-pchelkin@ispras>
-References: <20260601165404-4e37c4ba7b9a60b739186cc0-pchelkin@ispras>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E2953D669C;
+	Wed,  3 Jun 2026 12:49:25 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780490969; cv=fail; b=Z2R4Uf5ZmVbtq9KonOFRKOSNb9GV2C2UubF2kHJnk0bCXwarKfVVo6XR8HdcfpPQnNjfrs8tLlUdBo1N/8vvk4Bv8/crg+2WyO9vrfWpt0FMDpCQvGyNJnj0iZq60ENmxXFjCOmnEd2xQ5BP7FhWjTSjxYsmyB4mKxR9g37bEcQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780490969; c=relaxed/simple;
+	bh=lJAhqtEnAGYI/M0inpQ/yNbH3yxhkaMNkXTq1i1fzh8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 Content-Type:MIME-Version; b=heqcxgngjWn0J+lifunsTtWZLNMILvLKzV4GTv14E130gLXyXKifEN6x8KgG4zv/M1zWk6/ydMIEmW3Pt3PjOL1YRDVT8HFomABUCu8jlPmNEjf5l/rnKF1Zt3SQQkeGswK/CJnyk2Akxsbnju7kI3PNA9mYlWmC0g1msRoIzsA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=prevas.dk; spf=pass smtp.mailfrom=prevas.dk; dkim=pass (1024-bit key) header.d=prevas.dk header.i=@prevas.dk header.b=Ymlz/BTy; arc=fail smtp.client-ip=52.101.66.5
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=IeuRyLKCIy8ZVY2u6CZoBcnaFg5Fs+K7MASsIzQH2JgnS+9FyFSjHwfy5e/2xrKCEpYYI3+dgmFc62TEwZlAzPiqBbVMz/EmvkoEXvSQVP5p6xrbH5o6lU0W6V58KyLGAwF+h602fVKRKFVR1rI8q5wRPqj+8ABf80wZoBNTPwS1f5AwRbuwvkk/3FBjJcGBvSZcR4/8/mTFgsfEFaoIvoZhDWDza1f6GSqBu1ajWFExF5/WNwaO/VhtBtr73t8K/ln7H2Al5mBK+aCdFoRWZkpKt2urviwFY3EgIl+hO3SOfQs130GgPRfolHTyoFVPzt5ueLZbkvbjmsdMEKTpyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VAZbrhAsQ3EzdG55w24NXdb7XkL1n92bID843FSTc/s=;
+ b=ZlfWTEUTlmDBkgJ+McYdKU3SfYjOsmX3hDuesN/oVc/MlhAzeKswAKX25Yw0YCCwksPR8l0SKAIGMQBxxV5tWGhkZ+lf5wYSm183P+cgW1tyIWqnACV8zWrUBTWfEzc7cWyoCsVRZ2E4F3TcOwQjlxjecIE1W4Wtnnnzo0Kd8aCU7lu6qmlg8KCKSo8jnPdkv9/BFNIoEshWFdJN9EPADPpCmMTHNCEjZwz+j/KeptrLa2guY9Hozz9wbfTlnMisLUVpj2qO/gainwz83X8zmG6SX4wWeNkaOTpIE0q9/u2LePPDtuqdPEUernK4K2G+B75MMY5ThFYqzZOGpwVuKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
+ dkim=pass header.d=prevas.dk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VAZbrhAsQ3EzdG55w24NXdb7XkL1n92bID843FSTc/s=;
+ b=Ymlz/BTya/JOkXY5MI3ZxEFoRaDqUhus6JnN2OCJmGL/xqb3FFSErwIkwpTmrAhjDkuYYLANKdBTzcIBB4tfFvcQ+wtj4pvd2am6W2xCv5DXQa/D6XBuFi9UXUiYyYDu0yuMCXntMxlWA+AAy0+4qT7NgvdUWFlDTLlYFcNvS4w=
+Received: from AS5PR10MB8243.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:681::18)
+ by DB8PR10MB3323.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:11c::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.7; Wed, 3 Jun 2026
+ 12:49:20 +0000
+Received: from AS5PR10MB8243.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::ebc6:4e0d:5d6b:95d8]) by AS5PR10MB8243.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::ebc6:4e0d:5d6b:95d8%6]) with mapi id 15.21.0092.006; Wed, 3 Jun 2026
+ 12:49:20 +0000
+From: Rasmus Villemoes <ravi@prevas.dk>
+To: "Arnd Bergmann" <arnd@arndb.de>
+Cc: "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,  "Arnd Bergmann"
+ <arnd@kernel.org>,  "Steven Rostedt" <rostedt@goodmis.org>,  "Masami
+ Hiramatsu" <mhiramat@kernel.org>,  "Andrew Morton"
+ <akpm@linux-foundation.org>,  "Petr Mladek" <pmladek@suse.com>,  "Nathan
+ Chancellor" <nathan@kernel.org>,  "Dennis Dalessandro"
+ <dennis.dalessandro@cornelisnetworks.com>,  "Jason Gunthorpe"
+ <jgg@ziepe.ca>,  "Leon Romanovsky" <leon@kernel.org>,  "Arend van Spriel"
+ <arend.vanspriel@broadcom.com>,  "Miri Korenblit"
+ <miriam.rachel.korenblit@intel.com>,  "Mathieu Desnoyers"
+ <mathieu.desnoyers@efficios.com>,  "Sergey Senozhatsky"
+ <senozhatsky@chromium.org>,  "Nick Desaulniers"
+ <nick.desaulniers+lkml@gmail.com>,  "Bill Wendling" <morbo@google.com>,
+  "Justin Stitt" <justinstitt@google.com>,  "Vlastimil Babka (SUSE)"
+ <vbabka@kernel.org>,  <linux-rdma@vger.kernel.org>,
+  <linux-kernel@vger.kernel.org>,  <linux-wireless@vger.kernel.org>,
+  <brcm80211@lists.linux.dev>,  <brcm80211-dev-list.pdl@broadcom.com>,
+  <linux-trace-kernel@vger.kernel.org>,  <llvm@lists.linux.dev>
+Subject: Re: [PATCH 1/2] tracing: work around -Wmissing-format-attribute
+ warning
+In-Reply-To: <aafe201a-64a6-438f-89a3-d1cd10a357a7@app.fastmail.com> (Arnd
+	Bergmann's message of "Wed, 03 Jun 2026 10:41:18 +0200")
+References: <20260602150904.2258624-1-arnd@kernel.org>
+	<ah8n-Nk305S5hRwN@ashevche-desk.local>
+	<WPQQfPHOiGJbSxrXRdFDy9jURhS7JMpNu9sD54Vfe5wB-JOjyGY6xPQyACz3MSGg0xGp79eOYCyZ2Hi2CsPeUg==@protonmail.internalid>
+	<35c1ba62-e74d-4abc-aa73-ccd35968ff89@app.fastmail.com>
+	<875x40hz7k.fsf@prevas.dk>
+	<cODLVx6ZlerCiOgdpsG7OSsC2YRA6pXmq2jBdTjRB2UQoTIY4hI-yhV1lrumRNBH1hTT2aJRS-MgtlbhNWUTEw==@protonmail.internalid>
+	<aafe201a-64a6-438f-89a3-d1cd10a357a7@app.fastmail.com>
+Date: Wed, 03 Jun 2026 14:49:18 +0200
+Message-ID: <87zf1bhjqp.fsf@prevas.dk>
+User-Agent: Gnus/5.13 (Gnus v5.13)
+Content-Type: text/plain
+X-ClientProxiedBy: GV2PEPF00023989.SWEP280.PROD.OUTLOOK.COM
+ (2603:10a6:158:400::366) To AS5PR10MB8243.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:20b:681::18)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS5PR10MB8243:EE_|DB8PR10MB3323:EE_
+X-MS-Office365-Filtering-Correlation-Id: d40e37ea-4692-4789-33ba-08dec16e87f1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|7416014|376014|1800799024|3023799007|22082099003|18002099003|4143699003|11063799006|6133799003|56012099006;
+X-Microsoft-Antispam-Message-Info:
+	2hwtOGHiqQ9Taob/DXxXNKGwwENxmTsM6wwqwbqEZG7LeSX25e6MhSAsLsFqnUVQ9K30Uc1s59/d6rWvnkQUVqnbMi9EYnDeqDZy5Lj5hYOzJpD5pamsxxtDvuVk66aNRefsSTsTv6mH2NhB8cW6M6VW5YJ3r6VSlEx/+g/FZQdXxvIM+2YF338klUJE3ir0Nm9mVUmkeSfilv2NSzpz/gwXbUpRy1TCEQ4ouBafQscDHLYStOntcbpTyuBmcieK8ED10MDXXzDUSfkbCiSpOFz2FDUZlb18zzWdDruhkqhtWOTcDQvFVA3oV4euKzSk/lQbRU63tArdd8NIJQA+YhhyODmN5KFOqgyvYR9jSF2Ebkhc5zMNhIaJOgrmv9USDJWvyAxVcgpeAT7G8ZG7g6yy9ojY2tGRZ7byBhX/fFujeEWTjF+cUD0EOCZ5IgoaZr7I5Tq7aQhpTSMPHa+P4Gh0JkVyUok0x3YlbmdZyTuprJQM2IpdncTaVcmrV6B6od1NzFeBp8D0SzqhL2ayfF4f27Z56Uno4QHQsKQ6Toof8jgJiUXAiOB7etTVFw3KYZVC0vrXj3Qc2frEFRRVV7j2nUhxJ44Zyrg+NwXJOu/rFDduMqLxdW/3X2Bw7r+eI7DmR/CjIl+5BoGe+wIy4AXeaIdP+8zXKrKbarYj9vmeO5KWZKKsubHLMj8wSDJh
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS5PR10MB8243.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024)(3023799007)(22082099003)(18002099003)(4143699003)(11063799006)(6133799003)(56012099006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?RA6C5FdOO+tjjw1+zzXfb44vBIBqVDEJAxSb/395wY6BnhDsyD6ksskatHfg?=
+ =?us-ascii?Q?GId+y5SZPxFhwc7MZfvT+NK74rnyQy1veq622AzTQfQNDHLqdbVAF/zVGPEg?=
+ =?us-ascii?Q?WrGt9c6r3uqPWe78fiqJAfdigAifInGGN6c1q0dqjgb4vb/HySknfBIBfUqj?=
+ =?us-ascii?Q?+qaTxjHXmfftFkWA/Q3mLMTzNJuDz+O3Lep3GtfYJk8pk9POzcWjaXJF/Kec?=
+ =?us-ascii?Q?FD9o07r0pMMGxfTEILR2lFgjvvp6mz7Cj2gCfdQ8MoTOTkdoG3/tX07QB/LL?=
+ =?us-ascii?Q?M93rcPOg5D5VKMCwAKFlAyrjCxMrTAq/QXKkkoUBVlQUmYYwhekZqyMcf2OO?=
+ =?us-ascii?Q?/FQE9lCv+dA/3S6sygYo6jjoSUAPe6ccm3UDrdNt5TUOXSTvenVsL40MYYMn?=
+ =?us-ascii?Q?3Gn+N1acjMq9GhNiG7gk6jTdLE1XfKko6HZHo5f92SPexURlxQl/e6vw32RJ?=
+ =?us-ascii?Q?jA+X5RzYDs+R6ch/eeDAcAPXf/V2Coe7lDgbgU1LpH+r47POMpfKXuDdSQ8E?=
+ =?us-ascii?Q?yCnYAykqHzZdwOezTrnf/pTsjX8lxL8LTsCn19NRh9keqlF4D4jWGBZy/ueW?=
+ =?us-ascii?Q?cXlM0PhqaBIGwdKyxDdNijCd6Xgkg7DrQuiRDxeRIrvLcDeJ09C6YcbAXvHp?=
+ =?us-ascii?Q?W+AejfSBgWF/LANluxwzjynVWa0REc+hYENB3kIoolpQQb9UvmOyEQ1pOjCM?=
+ =?us-ascii?Q?bczUB65qHrBbpgGWX3cp5ctx67eCi0bPhI4keemmMkwMeo9LOAwiVMvumi/x?=
+ =?us-ascii?Q?UMhYBXruUziWsqg4AQya2evpc/tSRUq52fsSb+dIOCePU3z5VUloMnFCQOD8?=
+ =?us-ascii?Q?pYjoLYqv7EfvY/AsOeQo6UkV4FoA/YjRY/kKQP+h27rjmhAd1oghwJAsCC6j?=
+ =?us-ascii?Q?2CutafZ423eSezaPVfeFn6glZzKzaJDSwMfm2DBY2xylirAWsYrpy9qqqOCc?=
+ =?us-ascii?Q?ekwxRsXHqYFnhWzdGDB4XoRahJV6LOz25aqgu5rPQP6NqWU5cbc+nt5trMCv?=
+ =?us-ascii?Q?FGUXAZczAoof6mHqM1YPKJ3mr2upc+224pUxN13wws6mpRwynYGtrzOzZRgJ?=
+ =?us-ascii?Q?MNZrV+V18V43zRM48DuunXZGJnbjDOh/KeNlNGSoRSBvQPIAazydGJeVQXP3?=
+ =?us-ascii?Q?1cmGv2Jhm+owaLCGJPCZ69APcLX06F1H/7pNh2qcH+qNPIELiqnO+UH7du2s?=
+ =?us-ascii?Q?HVNVMICkCDaIAQS761TG+M0eQvn/dIaSPxP7myTiw1VkRKvBez0h6Wrh+jpl?=
+ =?us-ascii?Q?VyGffdFNVUHID7FQybOUbLGExvSCMfDTcpoL7i/7xPhUnNAzY629uamtS3Ce?=
+ =?us-ascii?Q?H3O28hS/xE46GvNJEoQVNN2OabbFi1+CUkWWWqY3GHh51V2B8JJchVEhPK4+?=
+ =?us-ascii?Q?IFXqE9pSsZHT85n2KjN5YYa7Tkz6TfF8M7uq+QWWTgMEpWbErNSkNzU5q76E?=
+ =?us-ascii?Q?nm2fQyoAEDnnf0Z2IvGkNTZC4N1YtL6kKVDNhoQ1lz9lQPzz5zQARzeNUqGb?=
+ =?us-ascii?Q?9phIBIOGQ0ZAbWx/0jn8WgFR4F9p0+1l69JQBN6uv0BqvNi6VucJUadpHazZ?=
+ =?us-ascii?Q?bSoND7C7Xd9R8hIV3O3yAZ2xoVi9HmcxBpTHeHIxLnbihRfSxtWckJAbW/7E?=
+ =?us-ascii?Q?MOaKtw7dNZvlgG881nYYxljJb+K+v8nZ4NPf433JKatbIrUFEACZSaI1+rDA?=
+ =?us-ascii?Q?cLCUwV12b35Rs1lQhlwpOmnz00Slx8DdZCNQrLxuQN9OAIyr7+WgBcE7Zlnq?=
+ =?us-ascii?Q?lVkUJy9+grTqK+LCdtIXb65p7YIty2c=3D?=
+X-OriginatorOrg: prevas.dk
+X-MS-Exchange-CrossTenant-Network-Message-Id: d40e37ea-4692-4789-33ba-08dec16e87f1
+X-MS-Exchange-CrossTenant-AuthSource: AS5PR10MB8243.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2026 12:49:20.7290
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: S9039GmgpCOjqjI8gtuFf2XcyEjf8STTB+ETy37Dipne9vsw8xuFEYKdBIVrgmjaO5FtykKy3c/f8S74/jNVIL5Xt1up9ypticMkI3qmgNE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR10MB3323
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+X-Spamd-Result: default: False [1.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[prevas.dk,reject];
+	R_DKIM_ALLOW(-0.20)[prevas.dk:s=selector1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,linuxfoundation.org,redhat.com,ziepe.ca,mellanox.com,kernel.org,nvidia.com,linuxtesting.org];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-21680-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:pchelkin@ispras.ru,m:vlad102nikolaev@gmail.com,m:stable@vger.kernel.org,m:gregkh@linuxfoundation.org,m:zyjzyj2000@gmail.com,m:dledford@redhat.com,m:jgg@ziepe.ca,m:haggaie@mellanox.com,m:kamalh@mellanox.com,m:amirv@mellanox.com,m:monis@mellanox.com,m:yonatanc@mellanox.com,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:yanjunz@nvidia.com,m:lvc-project@linuxtesting.org,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER(0.00)[vlad102nikolaev@gmail.com,linux-rdma@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[17];
+	RCPT_COUNT_TWELVE(0.00)[26];
+	TAGGED_FROM(0.00)[bounces-21681-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER(0.00)[ravi@prevas.dk,linux-rdma@vger.kernel.org];
+	FREEMAIL_CC(0.00)[linux.intel.com,kernel.org,goodmis.org,linux-foundation.org,suse.com,cornelisnetworks.com,ziepe.ca,broadcom.com,intel.com,efficios.com,chromium.org,gmail.com,google.com,vger.kernel.org,lists.linux.dev];
+	FORGED_RECIPIENTS(0.00)[m:arnd@arndb.de,m:andriy.shevchenko@linux.intel.com,m:arnd@kernel.org,m:rostedt@goodmis.org,m:mhiramat@kernel.org,m:akpm@linux-foundation.org,m:pmladek@suse.com,m:nathan@kernel.org,m:dennis.dalessandro@cornelisnetworks.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:arend.vanspriel@broadcom.com,m:miriam.rachel.korenblit@intel.com,m:mathieu.desnoyers@efficios.com,m:senozhatsky@chromium.org,m:nick.desaulniers+lkml@gmail.com,m:morbo@google.com,m:justinstitt@google.com,m:vbabka@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-wireless@vger.kernel.org,m:brcm80211@lists.linux.dev,m:brcm80211-dev-list.pdl@broadcom.com,m:linux-trace-kernel@vger.kernel.org,m:llvm@lists.linux.dev,m:nickdesaulniers@gmail.com,s:lists@lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[vlad102nikolaev@gmail.com,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[ravi@prevas.dk,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	DKIM_TRACE(0.00)[prevas.dk:+];
 	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	ALIAS_RESOLVED(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+	TAGGED_RCPT(0.00)[linux-rdma,lkml];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,arndb.de:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,prevas.dk:mid,prevas.dk:from_mime,prevas.dk:dkim]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 92072637AAD
+X-Rspamd-Queue-Id: D1EF2637B8B
 
-On Mon, 1 Jun 2026 at 06:59:11 -0700, Fedor Pchelkin wrote:
-> There is another
->
->     rxe_cleanup_task(&qp->resp.task);
->
-> call at the start of rxe_qp_destroy() in 5.10/5.15 kernels.  Should that
-> be taken into account as well, like in upstream commit?
+On Wed, Jun 03 2026, "Arnd Bergmann" <arnd@arndb.de> wrote:
 
-Thanks for the review. Yes, you are right. I have sent v2 which takes
-the responder task cleanup into account by matching the upstream cleanup
-order and adding the missing qp->resp.task.func check.
+> On Wed, Jun 3, 2026, at 09:15, Rasmus Villemoes wrote:
+>> On Tue, Jun 02 2026, "Arnd Bergmann" <arnd@arndb.de> wrote:
+>>> On Tue, Jun 2, 2026, at 20:59, Andy Shevchenko wrote:
+>>>> On Tue, Jun 02, 2026 at 05:07:05PM +0200, Arnd Bergmann wrote:
+>>
+>> May I suggest a different approach, that avoids having that extra
+>> function emitted (which presumably compiles to a single jump
+>> instruction, but still, with retpoline and CFI and all that it all adds
+>> up): Keep the declaration of __vsnprintf() in the header without the
+>> __print() attribute, but then do
+>>
+>> int __vsnprintf(char *buf, size_t size, const char *fmt_str, va_list args)
+>>    __alias(vsnprintf);
+>>
+>> in vsprintf.c. Aside from reusing the same entry point, I could well
+>> imagine a compiler some day complaining about seeing the printf
+>> attribute applied in a local extra declaration but not having it in the
+>> header file.
+>>
+>> Presumably it will need its own EXPORT_SYMBOL if any of the intended
+>> users are modular, and it certainly still needs a comment.
+>
+> I had tried that earlier but given up because the attributes have to
+> match exactly.
+>
+> This definition works with all currently supported versions of gcc,
+> but may have to change when the there is a new version that adds
+> even more attributes:
+>
+> int
+> __printf(3, 0)
+> __attribute__((nothrow))
+> __attribute__((nonnull(1)))
+> __vsnprintf(char *__restrict buf, size_t size,
+>             const char * __restrict fmt_str, va_list args)
+>                __alias(vsnprintf);
+>
+
+Ah, I see. The documentation for the alias attribute does say that the
+types have to match, but I didn't know that the nothrow and nonnull
+attributes were considered part of the type identity. Oddly enough, if
+one does
+
+  typeof(vsnprintf) __vsnprintf __alias(vsnprintf);
+
+that still fails, but only complains about nothrow, not nonnull.
+
+I don't remember what minimum gcc we currently require, but gcc 9
+introduced another attribute that is apperently meant for cases like
+this: 'copy'. This seems to build:
+
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index 9f359b31c8d1..c1402d375429 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -2988,6 +2988,9 @@ int vsnprintf(char *buf, size_t size, const char *fmt_str, va_list args)
+ }
+ EXPORT_SYMBOL(vsnprintf);
+ 
++int __vsnprintf(char *buf, size_t size, const char *fmt_str, va_list args)
++       __alias(vsnprintf) __attribute__((__copy__(vsnprintf)));
++
+ /**
+  * vscnprintf - Format a string and place it in a buffer
+  * @buf: The buffer to place the result into
+
+That at least should handle any future "gcc knows this-or-that about the
+vsnprintf function". But I don't know if clang supports that copy
+mechanism or if the minimum supported gcc is too old.
+
+Rasmus
 
