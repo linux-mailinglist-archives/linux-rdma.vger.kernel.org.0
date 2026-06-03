@@ -1,58 +1,59 @@
-Return-Path: <linux-rdma+bounces-21691-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21693-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id pcEqACpcIGqe1wAAu9opvQ
-	(envelope-from <linux-rdma+bounces-21691-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 03 Jun 2026 18:54:02 +0200
+	id pXZVCOpTIGq71AAAu9opvQ
+	(envelope-from <linux-rdma+bounces-21693-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 03 Jun 2026 18:18:50 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48B34639F36
-	for <lists+linux-rdma@lfdr.de>; Wed, 03 Jun 2026 18:54:01 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2687639A28
+	for <lists+linux-rdma@lfdr.de>; Wed, 03 Jun 2026 18:18:49 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=debian.org header.s=smtpauto.stravinsky header.b="H/HUtQBC";
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21691-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21691-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=debian.org header.s=smtpauto.stravinsky header.b=RzPAShWT;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21693-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21693-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=none) header.from=debian.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 30843320374A
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2026 16:12:57 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 54B4F3017E5A
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2026 16:13:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0077A3E9F93;
-	Wed,  3 Jun 2026 16:11:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 322F7402438;
+	Wed,  3 Jun 2026 16:12:03 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from stravinsky.debian.org (stravinsky.debian.org [82.195.75.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 827923E9F8D;
-	Wed,  3 Jun 2026 16:11:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 219EA3E4C94;
+	Wed,  3 Jun 2026 16:11:56 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780503117; cv=none; b=fsO3DkRkmMY/dwjhvXoiSQF88G1lmZekwUoS6SkB4WRvFh86/GqvTA5k14NPc9DmCqMo7mgVSQY77XoTeXMn13F2eiMOh2A/YcFAleVXHZNUi461NQPfiK37cpxWiJiTfSDXrSFsTSfpAuy2BR+eKEutdb7JGSatDUeIZQwis9A=
+	t=1780503122; cv=none; b=lCbhzgymj3oDVCZ/zJsJFroCpLdoXKHAJrBMgDBPLVHGx73bQo1KwAKgKsb1XPreo9a+enVbEz0PcDMNVMlVzQ03rpkKh8SUWRHX9gdim6EulY0QxQFIf+AJdUzwACxDEh73ygNVmv+w0D5XHNh5bHCH5pOIZBFHUC4Klsx3W8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780503117; c=relaxed/simple;
-	bh=6fMELYGkhYE50ppwIKhYlMn+RLtbDS8gK474KPu3eXo=;
+	s=arc-20240116; t=1780503122; c=relaxed/simple;
+	bh=vgaIXB9ODb1iWfG/DxrrQY6ja3Nb0by41Ez40fau7zQ=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=CuUEx8EsapYbDoIMD0Puq3WoLeMf4qOhRvYwska+vQkanWwJR1G34q9c0aCXVhyB0uhs4/GmJSwgHjWzNAZ+EE6xh9St4fPUzxDmbd/StgW8SjokLbO8MMBALkSn9WP8DC8B78mP+cYL+8CxsQ/815BaAofmbot9xoWAsf8cCdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=debian.org; dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b=H/HUtQBC; arc=none smtp.client-ip=82.195.75.108
+	 In-Reply-To:To:Cc; b=FVkC8ouh+3csnUhX3INC447obe2z6RRxCSUDD4yoMxrbZoqkb41zt17B1vKAurXWKATagZtneK98PNhX+V8GukgrSD9BFWF17dsVSBVTOHwCoMn2g+COV35bBSCm0dOrqLPKEOIyRcLHBTV0oVZDu6fY/eSEDbiYLTRFxlsnOgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=debian.org; dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b=RzPAShWT; arc=none smtp.client-ip=82.195.75.108
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
 	s=smtpauto.stravinsky; h=X-Debian-User:Cc:To:In-Reply-To:References:
 	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description;
-	bh=nUK84ZQmWp56Pci5yTo1v82qsWxJDWZ4hzDMHV7htNE=; b=H/HUtQBCCMC/Jdp/u9WFvnTm1/
-	EW8h1/r7Xwv4azW/l6OjO8O9FoaJYTFkRIHlTG4Hpj93zCN/GWYPXXWF2UYzTJw0qDZFkx+/+1Srv
-	ukLhBZcNU6h5+r9fqCvOsisk6fz9bFqFqlj03Io2npvjXyMb4pEKhaNfTSvZY4KroJLmOjg90b21l
-	0WXy0xmjDjCNH2fjg5/ztLF4fo1gRMjuCJfDJyWzmD8c1AW86ROaE1UVdWD4y9mW/YTAp5G9R57sM
-	I+uSXBBtNHcgBtb9bnDU02oaYjmXdAiPn4qBd71UrDrW+Q7woGAfenKCf1p1DAROxcu9UJnUvEhSr
-	oFW62Xig==;
+	bh=7brWS/9bcNV3+TdU1s0SdLQUSR+tgsRw5rTeUkYjkys=; b=RzPAShWTg/IUJLYWfH0ZR9A9vZ
+	VwwHThEjEcEZcMJylSwxiIGKp2tHhTSvEl9DTGDuwdT5x9tWQ+CuuzwD6W2468Arouj6VZyvNG49Q
+	X0mCN1eJ4OIzjszpEj0VKf57cPJDA1EqaSz5qw0HGmh9bn/1MEN9+F9bHprrWscAkyq7DCpIfiGzL
+	WIpDJXZFoT2w3JNmyGhJ7omJewlJtKPXV+ssFOv1rdVK9AotK8YPFATG5CFB1xwXNlZERaU8UbuCI
+	Env8/lnf75UQQvc8quxuBvpL+7w158SR4pcXDiLc/wmoPXoUMqE/2cmlc5wLQDLYHkNSfGj2Smg6J
+	oDEhi2Aw==;
 Received: from authenticated-user
 	by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.96)
 	(envelope-from <leitao@debian.org>)
-	id 1wUoC3-003rAW-1a;
-	Wed, 03 Jun 2026 16:11:47 +0000
+	id 1wUoC8-003rAe-0G;
+	Wed, 03 Jun 2026 16:11:52 +0000
 From: Breno Leitao <leitao@debian.org>
-Date: Wed, 03 Jun 2026 09:11:33 -0700
-Subject: [PATCH net-next 1/2] rds: convert to getsockopt_iter
+Date: Wed, 03 Jun 2026 09:11:34 -0700
+Subject: [PATCH net-next 2/2] selftests: net: rds: add getsockopt()
+ conversion test
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -61,7 +62,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260603-getsock_more-v1-1-43b8d40c8849@debian.org>
+Message-Id: <20260603-getsock_more-v1-2-43b8d40c8849@debian.org>
 References: <20260603-getsock_more-v1-0-43b8d40c8849@debian.org>
 In-Reply-To: <20260603-getsock_more-v1-0-43b8d40c8849@debian.org>
 To: Allison Henderson <achender@kernel.org>, 
@@ -73,20 +74,20 @@ Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
  linux-kselftest@vger.kernel.org, Breno Leitao <leitao@debian.org>, 
  kernel-team@meta.com
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8848; i=leitao@debian.org;
- h=from:subject:message-id; bh=6fMELYGkhYE50ppwIKhYlMn+RLtbDS8gK474KPu3eXo=;
- b=owEBbQKS/ZANAwAIATWjk5/8eHdtAcsmYgBqIFI54xERf3HKv9fRnwrZYoDWPrZc/q4TWM+cp
- o5t+7nguBuJAjMEAAEIAB0WIQSshTmm6PRnAspKQ5s1o5Of/Hh3bQUCaiBSOQAKCRA1o5Of/Hh3
- bd9uD/0Zy8WOwm5ZZSvViRUzQ+SQwktiWDMJYRlBNegXvX+tmnzMG8auh48CDzKX7G06JoKNGH8
- ObrMItZUquyOSmEcmEebV0omB3Lhe9+cQ1tw8e9oX4Fr3oRnJrftz4pE0cJToJUgKMYSd562483
- zt5MwH3VMXgKNYrUjHMlpqyXwiItfFGLd5+43QNQwl0RwB20GU92bkZiSHwmi2nfg6McHr0O8PL
- hJrCmvET8L8d0AtdRjaHhGcsBfKcBEXuQ9fn3CqAKqmkDqLJUMS8iQLZqte8mWGFRPhAajFwU5c
- L4TQt+/Pv4nCkSaPserCvvJ3aCX+mgFz+6l0YgcWavf2HBLBZi+bGrfohuzCNz+7U8bufEELaMv
- DU1din+OKu9l9XWq0YRAQ8yqecwDJqZW9E39VLpltSlILsPMtJGpEK6rjzItMRajkVq8ZYwN0GV
- 09oZ4lY0IHkRWyg48XksxLDdNZImNJXLUpTW6DN2RaMsXfUc3S0yHszxqOoRSyNJWrn9fXmMcOx
- r2HUwhPFSUZSXoeVMPCDvPxX2pdKzcqzu3SZZM/ZOZTeENEaiucqTJ4b3C3h//5pymy4GRmhNvh
- 3CyIC0bgN5TQ1Ii+Zh1LvPGijg/3+ju13odJ6VK8xmIH3glAgYewqzQ0HfHOOR8V7x0Hi+X4bEY
- dzwf08rCAetxs4w==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7647; i=leitao@debian.org;
+ h=from:subject:message-id; bh=vgaIXB9ODb1iWfG/DxrrQY6ja3Nb0by41Ez40fau7zQ=;
+ b=owEBbQKS/ZANAwAIATWjk5/8eHdtAcsmYgBqIFI5CNb/hVz4+ZqPhHvxFT4QgHtChY4rzcvZ9
+ V1AVfOyXl2JAjMEAAEIAB0WIQSshTmm6PRnAspKQ5s1o5Of/Hh3bQUCaiBSOQAKCRA1o5Of/Hh3
+ bRhUD/44srPU3UoeRnwAMlrnZxIFh8PC1Po2Hknw/W4cU/JEcsYYqbR9noaBR1JX2Qan85S5+X5
+ NgJgkz4UwInSVyyiM2pa/plD+oBX1PsEDLZbPROM71MZU89bsiDNBRb6qnnf5VZ69H95bu6X6LQ
+ 2+iONkEXT1miMn7ZR73/ahMKTRABG/nMPOQA9/xEC48lePe/Dzh7TbniOtkRa4R414E2la3YVG2
+ ikrMpf2DLBOlcomShN8T4rJkV0KrO/81rdRU+iVmAn77Ck2ouFlAKqm6H1T0LvczXYPOpzAgx2H
+ 0xjHR9dCdxwZdjpBxPw5hsY2T5CQ/4i7AnG/W4Y/ZaxPBowW+zOAQyaMRaeja6c4XQYQLLLOZpD
+ QN1DF4ssWo+ScC0jQ4OEZ2oOOMV5a5AmiuBeHKfWaP6XXS4b+VEymmHjkmRjIEfd5VXbac5exlz
+ Fh60KjS0mPc4jReZTtVFktAVwFnoo4Y6BCYXqL9kvrAVkmzmTroKaelxK2eI6g1TERPg95urleL
+ 4HlsNgbmPD6dZDUqNQ0M1FihR16/sKtpr89/EcY8Iw6GVcWwIxUE1Ix+WaYsMLONlfd0MFXxFvW
+ MG0Jzj8LKEOt32+Mi+VqkTphF2eAqAmMoOcvbM5KkUztYdqiAxHvY6IOD752X7YZsB3t3W8jCJW
+ 1g33RbRE69+w7Gg==
 X-Developer-Key: i=leitao@debian.org; a=openpgp;
  fpr=AC8539A6E8F46702CA4A439B35A3939FFC78776D
 X-Debian-User: leitao
@@ -94,22 +95,22 @@ X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[debian.org,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	R_DKIM_ALLOW(-0.20)[debian.org:s=smtpauto.stravinsky];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:achender@kernel.org,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:shuah@kernel.org,m:linux-kernel@vger.kernel.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:rds-devel@oss.oracle.com,m:linux-kselftest@vger.kernel.org,m:leitao@debian.org,m:kernel-team@meta.com,s:lists@lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:achender@kernel.org,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:shuah@kernel.org,m:linux-kernel@vger.kernel.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:rds-devel@oss.oracle.com,m:linux-kselftest@vger.kernel.org,m:leitao@debian.org,m:kernel-team@meta.com,s:lists@lfdr.de];
 	FORGED_SENDER(0.00)[leitao@debian.org,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[14];
-	TAGGED_FROM(0.00)[bounces-21691-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21693-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
@@ -121,279 +122,261 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,vger.kernel.org:from_smtp,include.sh:url]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 48B34639F36
+X-Rspamd-Queue-Id: B2687639A28
 
-Convert RDS socket's getsockopt implementation to use the new
-getsockopt_iter callback with sockopt_t.
+Add a kselftest that exercises the RDS getsockopt() paths converted to
+the getsockopt_iter() / sockopt_t callback:
 
-Key changes:
-- Replace (char __user *optval, int __user *optlen) with sockopt_t *opt
-- Use opt->optlen for buffer length (input) and returned size (output)
-- Use copy_to_iter() instead of put_user()/copy_to_user()
+- RDS_RECVERR and SO_RDS_TRANSPORT, which return their int value through
+  copy_to_iter() and report the written length in opt->optlen.
 
-The RDS_INFO_* snapshot path in rds_info_getsockopt() used to pin the
-userspace buffer with pin_user_pages_fast() on the raw optval address;
-the info producers then memcpy into those pages under a spinlock via
-kmap_atomic() and so must not fault. Obtain the same page array and
-starting offset from opt->iter_out with iov_iter_extract_pages(), which
-pins for write because iter_out is ITER_DEST.
-
-The page array is preallocated here (sized with iov_iter_npages()) and
-passed in, so iov_iter_extract_pages() fills it in place rather than
-allocating one for us; RDS therefore keeps ownership of the array on
-every return path and frees it itself. The rds_info_iterator /
-rds_info_copy machinery and all producer callbacks are unchanged.
-
-Kernel buffers (ITER_KVEC) are not page-backed in a way the info
-producers can use, so the RDS_INFO path returns -EOPNOTSUPP for them;
-this matches the previous behaviour, where a kernel-buffer getsockopt
-hit the WARN_ONCE() path in do_sock_getsockopt() and returned
--EOPNOTSUPP. The simple RDS_RECVERR and SO_RDS_TRANSPORT options keep
-working for kernel buffers via copy_to_iter().
+- RDS_INFO_*, which obtains the userspace buffer pages with
+  iov_iter_extract_pages() (including a non-zero starting page offset)
+  and lets the info producers copy the snapshot in under a spinlock.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- net/rds/af_rds.c | 36 ++++++++++++++++-------------
- net/rds/info.c   | 70 +++++++++++++++++++++++++++++++-------------------------
- net/rds/info.h   |  3 +--
- 3 files changed, 60 insertions(+), 49 deletions(-)
+ tools/testing/selftests/net/rds/.gitignore   |   1 +
+ tools/testing/selftests/net/rds/Makefile     |   4 +
+ tools/testing/selftests/net/rds/getsockopt.c | 201 +++++++++++++++++++++++++++
+ 3 files changed, 206 insertions(+)
 
-diff --git a/net/rds/af_rds.c b/net/rds/af_rds.c
-index 6f4f9cf352bd..d5defe9172e3 100644
---- a/net/rds/af_rds.c
-+++ b/net/rds/af_rds.c
-@@ -37,6 +37,7 @@
- #include <linux/in.h>
- #include <linux/ipv6.h>
- #include <linux/poll.h>
-+#include <linux/uio.h>
- #include <net/sock.h>
+diff --git a/tools/testing/selftests/net/rds/.gitignore b/tools/testing/selftests/net/rds/.gitignore
+index 1c6f04e2aa11..7ca4b1440f51 100644
+--- a/tools/testing/selftests/net/rds/.gitignore
++++ b/tools/testing/selftests/net/rds/.gitignore
+@@ -1 +1,2 @@
+ include.sh
++getsockopt
+diff --git a/tools/testing/selftests/net/rds/Makefile b/tools/testing/selftests/net/rds/Makefile
+index fe363be8e358..0700d8298eec 100644
+--- a/tools/testing/selftests/net/rds/Makefile
++++ b/tools/testing/selftests/net/rds/Makefile
+@@ -5,6 +5,8 @@ all:
  
- #include "rds.h"
-@@ -485,35 +486,36 @@ static int rds_setsockopt(struct socket *sock, int level, int optname,
- }
+ TEST_PROGS := run.sh
  
- static int rds_getsockopt(struct socket *sock, int level, int optname,
--			  char __user *optval, int __user *optlen)
-+			  sockopt_t *opt)
- {
- 	struct rds_sock *rs = rds_sk_to_rs(sock->sk);
- 	int ret = -ENOPROTOOPT, len;
- 	int trans;
-+	int val;
++TEST_GEN_PROGS := getsockopt
++
+ TEST_FILES := \
+ 	include.sh \
+ 	settings \
+@@ -16,4 +18,6 @@ EXTRA_CLEAN := \
+ 	/tmp/rds_logs \
+ # end of EXTRA_CLEAN
  
- 	if (level != SOL_RDS)
- 		goto out;
- 
--	if (get_user(len, optlen)) {
--		ret = -EFAULT;
--		goto out;
--	}
-+	len = opt->optlen;
- 
- 	switch (optname) {
- 	case RDS_INFO_FIRST ... RDS_INFO_LAST:
--		ret = rds_info_getsockopt(sock, optname, optval,
--					  optlen);
-+		ret = rds_info_getsockopt(sock, optname, opt);
- 		break;
- 
- 	case RDS_RECVERR:
--		if (len < sizeof(int))
-+		if (len < sizeof(int)) {
- 			ret = -EINVAL;
--		else
--		if (put_user(rs->rs_recverr, (int __user *) optval) ||
--		    put_user(sizeof(int), optlen))
-+			break;
-+		}
-+		val = rs->rs_recverr;
-+		if (copy_to_iter(&val, sizeof(int), &opt->iter_out) !=
-+		    sizeof(int)) {
- 			ret = -EFAULT;
--		else
-+		} else {
-+			opt->optlen = sizeof(int);
- 			ret = 0;
-+		}
- 		break;
- 	case SO_RDS_TRANSPORT:
- 		if (len < sizeof(int)) {
-@@ -522,11 +524,13 @@ static int rds_getsockopt(struct socket *sock, int level, int optname,
- 		}
- 		trans = (rs->rs_transport ? rs->rs_transport->t_type :
- 			 RDS_TRANS_NONE); /* unbound */
--		if (put_user(trans, (int __user *)optval) ||
--		    put_user(sizeof(int), optlen))
-+		if (copy_to_iter(&trans, sizeof(int), &opt->iter_out) !=
-+		    sizeof(int)) {
- 			ret = -EFAULT;
--		else
-+		} else {
-+			opt->optlen = sizeof(int);
- 			ret = 0;
-+		}
- 		break;
- 	default:
- 		break;
-@@ -653,7 +657,7 @@ static const struct proto_ops rds_proto_ops = {
- 	.listen =	sock_no_listen,
- 	.shutdown =	sock_no_shutdown,
- 	.setsockopt =	rds_setsockopt,
--	.getsockopt =	rds_getsockopt,
-+	.getsockopt_iter =	rds_getsockopt,
- 	.sendmsg =	rds_sendmsg,
- 	.recvmsg =	rds_recvmsg,
- 	.mmap =		sock_no_mmap,
-diff --git a/net/rds/info.c b/net/rds/info.c
-index f1b29994934a..171838782595 100644
---- a/net/rds/info.c
-+++ b/net/rds/info.c
-@@ -35,6 +35,7 @@
- #include <linux/slab.h>
- #include <linux/proc_fs.h>
- #include <linux/export.h>
-+#include <linux/uio.h>
- 
- #include "rds.h"
- 
-@@ -144,60 +145,68 @@ void rds_info_copy(struct rds_info_iterator *iter, void *data,
- EXPORT_SYMBOL_GPL(rds_info_copy);
- 
- /*
-- * @optval points to the userspace buffer that the information snapshot
-- * will be copied into.
-- *
-- * @optlen on input is the size of the buffer in userspace.  @optlen
-- * on output is the size of the requested snapshot in bytes.
-+ * @opt->iter_out describes the buffer that the information snapshot will be
-+ * copied into, and @opt->optlen is the size of that buffer on input.  On
-+ * output @opt->optlen is set to the size of the requested snapshot in bytes.
-  *
-  * This function returns -errno if there is a failure, particularly -ENOSPC
-- * if the given userspace buffer was not large enough to fit the snapshot.
-- * On success it returns the positive number of bytes of each array element
-- * in the snapshot.
-+ * if the given buffer was not large enough to fit the snapshot.  On success
-+ * it returns the positive number of bytes of each array element in the
-+ * snapshot.
-  */
--int rds_info_getsockopt(struct socket *sock, int optname, char __user *optval,
--			int __user *optlen)
-+int rds_info_getsockopt(struct socket *sock, int optname, sockopt_t *opt)
- {
- 	struct rds_info_iterator iter;
- 	struct rds_info_lengths lens;
- 	unsigned long nr_pages = 0;
--	unsigned long start;
- 	rds_info_func func;
- 	struct page **pages = NULL;
-+	size_t offset0 = 0;
-+	int npages = 0;
- 	int ret;
- 	int len;
- 	int total;
- 
--	if (get_user(len, optlen)) {
--		ret = -EFAULT;
--		goto out;
--	}
-+	len = opt->optlen;
- 
- 	/* check for all kinds of wrapping and the like */
--	start = (unsigned long)optval;
--	if (len < 0 || len > INT_MAX - PAGE_SIZE + 1 || start + len < start) {
-+	if (len < 0 || len > INT_MAX - PAGE_SIZE + 1) {
- 		ret = -EINVAL;
- 		goto out;
- 	}
- 
-+	/* The info producers write into the pages with kmap_atomic() while
-+	 * holding a spinlock, so they need a genuine page-backed user buffer.
++CFLAGS += $(KHDR_INCLUDES)
++
+ include ../../lib.mk
+diff --git a/tools/testing/selftests/net/rds/getsockopt.c b/tools/testing/selftests/net/rds/getsockopt.c
+new file mode 100644
+index 000000000000..a82ffe4871c2
+--- /dev/null
++++ b/tools/testing/selftests/net/rds/getsockopt.c
+@@ -0,0 +1,201 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Exercise the RDS getsockopt() paths that were converted to the
++ * getsockopt_iter() / sockopt_t callback.
++ *
++ * Three distinct paths are covered:
++ *
++ *   - RDS_RECVERR and SO_RDS_TRANSPORT, which now return their int value
++ *     through copy_to_iter() and report the written length in opt->optlen.
++ *
++ *   - RDS_INFO_*, which pins the userspace buffer with
++ *     iov_iter_extract_pages() (including a non-zero starting page offset)
++ *     and lets the info producers memcpy the snapshot in under a spinlock.
++ *
++ * The kvec (in-kernel buffer) -> -EOPNOTSUPP path of rds_info_getsockopt()
++ * is not reachable from a userspace getsockopt() and so is not tested here.
++ */
++#include <errno.h>
++#include <stdint.h>
++#include <string.h>
++#include <unistd.h>
++#include <sys/mman.h>
++#include <sys/socket.h>
++#include <linux/rds.h>
++
++#include "../../kselftest_harness.h"
++
++#ifndef AF_RDS
++#define AF_RDS 21
++#endif
++
++FIXTURE(rds) {
++	int fd;
++};
++
++FIXTURE_SETUP(rds)
++{
++	self->fd = socket(AF_RDS, SOCK_SEQPACKET, 0);
++	if (self->fd < 0)
++		SKIP(return, "AF_RDS unavailable (errno %d) - load the rds module",
++		     errno);
++}
++
++FIXTURE_TEARDOWN(rds)
++{
++	if (self->fd >= 0)
++		close(self->fd);
++}
++
++/* RDS_RECVERR defaults to 0 and is reported back as a 4-byte int. */
++TEST_F(rds, recverr_default)
++{
++	socklen_t len = sizeof(int);
++	int val = 0xdeadbeef;
++
++	ASSERT_EQ(0, getsockopt(self->fd, SOL_RDS, RDS_RECVERR, &val, &len));
++	EXPECT_EQ(sizeof(int), len);
++	EXPECT_EQ(0, val);
++}
++
++/* A value set via setsockopt() must be readable back unchanged. */
++TEST_F(rds, recverr_set_get)
++{
++	socklen_t len = sizeof(int);
++	int val = 1;
++
++	ASSERT_EQ(0, setsockopt(self->fd, SOL_RDS, RDS_RECVERR, &val, len));
++
++	val = 0;
++	ASSERT_EQ(0, getsockopt(self->fd, SOL_RDS, RDS_RECVERR, &val, &len));
++	EXPECT_EQ(sizeof(int), len);
++	EXPECT_EQ(1, val);
++}
++
++/* A buffer smaller than an int is rejected with EINVAL, not silently. */
++TEST_F(rds, recverr_short_buffer)
++{
++	socklen_t len = sizeof(int) - 1;
++	char buf[sizeof(int)];
++
++	EXPECT_EQ(-1, getsockopt(self->fd, SOL_RDS, RDS_RECVERR, buf, &len));
++	EXPECT_EQ(EINVAL, errno);
++}
++
++/* An unbound socket reports RDS_TRANS_NONE for SO_RDS_TRANSPORT. */
++TEST_F(rds, transport_unbound)
++{
++	socklen_t len = sizeof(int);
++	int val = 0;
++
++	ASSERT_EQ(0, getsockopt(self->fd, SOL_RDS, SO_RDS_TRANSPORT, &val,
++				&len));
++	EXPECT_EQ(sizeof(int), len);
++	EXPECT_EQ(RDS_TRANS_NONE, (unsigned int)val);
++}
++
++TEST_F(rds, transport_short_buffer)
++{
++	socklen_t len = sizeof(int) - 1;
++	char buf[sizeof(int)];
++
++	EXPECT_EQ(-1, getsockopt(self->fd, SOL_RDS, SO_RDS_TRANSPORT, buf,
++				 &len));
++	EXPECT_EQ(EINVAL, errno);
++}
++
++/*
++ * RDS_INFO_COUNTERS with a zero-length buffer is the "probe" call: it must
++ * fail with ENOSPC and report the required snapshot size in optlen.
++ */
++TEST_F(rds, info_counters_probe)
++{
++	socklen_t len = 0;
++
++	EXPECT_EQ(-1, getsockopt(self->fd, SOL_RDS, RDS_INFO_COUNTERS, NULL,
++				 &len));
++	EXPECT_EQ(ENOSPC, errno);
++	EXPECT_GT(len, 0);
++	/* The snapshot is an array of fixed-size counter records. */
++	EXPECT_EQ(0, len % (socklen_t)sizeof(struct rds_info_counter));
++}
++
++/*
++ * A real snapshot into an unaligned userspace buffer exercises the
++ * iov_iter_extract_pages() path, including the non-zero offset0 handling
++ * that the patch reworked. Place the buffer at a non-page-aligned address
++ * spanning into the next page to make sure multi-page pinning works too.
++ */
++TEST_F(rds, info_counters_snapshot)
++{
++	struct rds_info_counter *ctr;
++	socklen_t need = 0, len;
++	long pagesz = sysconf(_SC_PAGESIZE);
++	unsigned int i, n;
++	char *region, *buf;
++	int ret;
++
++	/* Probe for the required size. */
++	getsockopt(self->fd, SOL_RDS, RDS_INFO_COUNTERS, NULL, &need);
++	ASSERT_GT(need, 0);
++
++	region = mmap(NULL, 2 * pagesz, PROT_READ | PROT_WRITE,
++		      MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++	ASSERT_NE(MAP_FAILED, region);
++
++	/* Unaligned start that runs past the first page boundary. */
++	buf = region + pagesz - 64;
++	ASSERT_LE(need, (socklen_t)(pagesz + 64));
++
++	/*
++	 * On success the RDS_INFO path returns the positive per-element size
++	 * (lens.each) rather than 0, and writes the full snapshot length back
++	 * into optlen.
 +	 */
-+	if (iov_iter_is_kvec(&opt->iter_out)) {
-+		ret = -EOPNOTSUPP;
-+		goto out;
++	len = need;
++	ret = getsockopt(self->fd, SOL_RDS, RDS_INFO_COUNTERS, buf, &len);
++	ASSERT_GE(ret, 0) {
++		TH_LOG("getsockopt snapshot failed: errno %d", errno);
++	}
++	EXPECT_EQ(sizeof(struct rds_info_counter), ret);
++	EXPECT_EQ(need, len);
++
++	/* The counter names must be NUL-terminated, non-empty strings. */
++	ctr = (struct rds_info_counter *)buf;
++	n = len / sizeof(*ctr);
++	ASSERT_GT(n, 0);
++	for (i = 0; i < n; i++) {
++		size_t namelen = strnlen((char *)ctr[i].name,
++					 sizeof(ctr[i].name));
++
++		EXPECT_GT(namelen, 0);
++		EXPECT_LT(namelen, sizeof(ctr[i].name));
 +	}
 +
- 	/* a 0 len call is just trying to probe its length */
- 	if (len == 0)
- 		goto call_func;
- 
--	nr_pages = (PAGE_ALIGN(start + len) - (start & PAGE_MASK))
--			>> PAGE_SHIFT;
--
--	pages = kmalloc_objs(struct page *, nr_pages);
-+	/*
-+	 * Preallocate the page array and pass it in so that
-+	 * iov_iter_extract_pages() fills it in place rather than allocating
-+	 * one for us.  Handing it a non-NULL array keeps ownership of the
-+	 * array with us on every return path, instead of depending on the
-+	 * iterator code to allocate and hand it back.
-+	 */
-+	npages = iov_iter_npages(&opt->iter_out, INT_MAX);
-+	pages = kvmalloc_array(npages, sizeof(*pages), GFP_KERNEL);
- 	if (!pages) {
- 		ret = -ENOMEM;
- 		goto out;
- 	}
--	ret = pin_user_pages_fast(start, nr_pages, FOLL_WRITE, pages);
--	if (ret != nr_pages) {
--		if (ret > 0)
--			nr_pages = ret;
--		else
--			nr_pages = 0;
++	munmap(region, 2 * pagesz);
++}
 +
-+	ret = iov_iter_extract_pages(&opt->iter_out, &pages, len, npages,
-+				     0, &offset0);
-+	if (ret < 0)
-+		goto out;
-+	nr_pages = DIV_ROUND_UP(offset0 + ret, PAGE_SIZE);
-+	if (ret != len) {
- 		ret = -EAGAIN; /* XXX ? */
- 		goto out;
- 	}
-@@ -213,7 +222,7 @@ int rds_info_getsockopt(struct socket *sock, int optname, char __user *optval,
- 
- 	iter.pages = pages;
- 	iter.addr = NULL;
--	iter.offset = start & (PAGE_SIZE - 1);
-+	iter.offset = offset0;
- 
- 	func(sock, len, &iter, &lens);
- 	BUG_ON(lens.each == 0);
-@@ -230,13 +239,12 @@ int rds_info_getsockopt(struct socket *sock, int optname, char __user *optval,
- 		ret = lens.each;
- 	}
- 
--	if (put_user(len, optlen))
--		ret = -EFAULT;
-+	opt->optlen = len;
- 
- out:
- 	if (pages)
- 		unpin_user_pages(pages, nr_pages);
--	kfree(pages);
-+	kvfree(pages);
- 
- 	return ret;
- }
-diff --git a/net/rds/info.h b/net/rds/info.h
-index a069b51c4679..1aab62ab6d00 100644
---- a/net/rds/info.h
-+++ b/net/rds/info.h
-@@ -21,8 +21,7 @@ typedef void (*rds_info_func)(struct socket *sock, unsigned int len,
- 
- void rds_info_register_func(int optname, rds_info_func func);
- void rds_info_deregister_func(int optname, rds_info_func func);
--int rds_info_getsockopt(struct socket *sock, int optname, char __user *optval,
--			int __user *optlen);
-+int rds_info_getsockopt(struct socket *sock, int optname, sockopt_t *opt);
- void rds_info_copy(struct rds_info_iterator *iter, void *data,
- 		   unsigned long bytes);
- void rds_info_iter_unmap(struct rds_info_iterator *iter);
++/*
++ * A non-zero but too-small buffer must report ENOSPC and the full required
++ * length, without corrupting memory past the buffer.
++ */
++TEST_F(rds, info_counters_short_buffer)
++{
++	socklen_t need = 0, len;
++	char small[sizeof(struct rds_info_counter)];
++
++	getsockopt(self->fd, SOL_RDS, RDS_INFO_COUNTERS, NULL, &need);
++	ASSERT_GT(need, 0);
++
++	/* Ask with a buffer guaranteed smaller than the full snapshot. */
++	if (need <= (socklen_t)sizeof(small))
++		SKIP(return, "snapshot fits in one record; nothing to test");
++
++	len = 1; /* < sizeof(struct rds_info_counter) */
++	EXPECT_EQ(-1, getsockopt(self->fd, SOL_RDS, RDS_INFO_COUNTERS, small,
++				 &len));
++	EXPECT_EQ(ENOSPC, errno);
++	EXPECT_EQ(need, len);
++}
++
++TEST_HARNESS_MAIN
 
 -- 
 2.54.0
