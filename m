@@ -1,155 +1,354 @@
-Return-Path: <linux-rdma+bounces-21663-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21664-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 2gqWHOuKH2oOnAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-21663-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 03 Jun 2026 04:01:15 +0200
+	id CpfACO+QH2rtnAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-21664-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 03 Jun 2026 04:26:55 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFC9F63392B
-	for <lists+linux-rdma@lfdr.de>; Wed, 03 Jun 2026 04:01:14 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C223633A34
+	for <lists+linux-rdma@lfdr.de>; Wed, 03 Jun 2026 04:26:54 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=l+5sfnW9;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21663-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21663-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=DV1Os+GL;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21664-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21664-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 668F23024CB8
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2026 01:59:10 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 5A4A73014A09
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2026 02:26:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 720A5395AD8;
-	Wed,  3 Jun 2026 01:58:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69A3D3DB632;
+	Wed,  3 Jun 2026 02:26:49 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEF42391E5B;
-	Wed,  3 Jun 2026 01:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 107A63D8115;
+	Wed,  3 Jun 2026 02:26:47 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780451935; cv=none; b=eXTY1y/kVurb77qaCVrztjZtdVsz1BHsZ6qJ+78lO71I3nwENNt3Y0u8OuZV5wQu5TIgrXLk3bjJPnlDVcrhYOcyykygVstKYlvD0meHxG+4VozrHB6vxkXgozaqo3s4U1lN0hLgGUQNvI50tSVrb3zoXUb8xYyxBzgswQdAAtc=
+	t=1780453609; cv=none; b=jBrSTPC2N+gxxd3GrZh6YxXZ9kQvZ3QBkUnwkZyKbOEJZzOQEmPKkl2MevhdPWKBNpaZ1nNfYrEbpq9cjzxGKFT3yOkck4koqKcImx4+f+8/c4wdDdaY6Y5WgF6iST7kI+zgVWyr5SejRNKyEEldoblBNwfz674mrB7wHtZwCOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780451935; c=relaxed/simple;
-	bh=4UAkSHyts2wKV6GLVSbcpPizHATKVgcPbqwRbKwlcws=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=Rs+La6GiZX1/XTkesT57wQ/lu1AxmnruV/Z0EYCji9efvyyOv6+BXjUdNWW+KCbqvFtST9t4TRdRhijABI1yPi9pablvW/R9IruQF7i95VM9nywL6AvUH4NlLbWQPpXnLaK8zNPRpdHmw50suD5jd9elgvy9xblKS2EfilRy1PU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l+5sfnW9; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B351D1F00893;
-	Wed,  3 Jun 2026 01:58:44 +0000 (UTC)
+	s=arc-20240116; t=1780453609; c=relaxed/simple;
+	bh=JSUPrEJnDx7Y0UKcp3Wag0GnuEXQ80bx31RIsTPY6wk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=CmvjuA1ZOmhEz0PrKREH2oz36CV6hXMNn4RiQhvfsMyuCy3ZRBufx6dJEGAF67QdDhO7dn3xuuwBziGqpls/es+5lnnEpwqadn1y1tcmLlDqSp/yiTUg1ygg9qxueDzaiGCQl75rPiQwQNLugB2ruLxBdrw/MxtjGL0OZOuuA28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DV1Os+GL; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EAEA1F00893;
+	Wed,  3 Jun 2026 02:26:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780451930;
-	bh=4B3KvEc1dwO0ujpKZjsPorwmzZfs0UtyayL3dg0Jit0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=l+5sfnW9I+psIYVAHnfBUxg6AzMOz+5FBRafH/qS+Lm0TfTM3dsjbmAo3imnzJlYQ
-	 nGvZz5lzqIWg41OHihB6R8SxevOXlYuoiwHavowZ+huQQaYQLBZ7cDNIINsTHiCTgt
-	 kKafzuz5rY/triV+BUJBm1RwmA1zctPsIuhKn0M1NE/FDtl8GiSvGiFfAnEBvNRjEO
-	 XKJ+iXSnfqnd/VCD4aUa3rTxarj8t65Bh3ZuWqn0hYJ5vcUk10HCSUqDZ8PcIO0pN0
-	 NALjlnTyDZGdcvFcqg0Ptj4vlIBCPfhb7jkdVb5KK42fbd6r+LKn7qlGeHhCgaISbg
-	 YvekgMjDUq2sA==
-Date: Wed, 3 Jun 2026 10:58:42 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Andrew Morton
- <akpm@linux-foundation.org>, Petr Mladek <pmladek@suse.com>, Nathan
- Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Dennis
- Dalessandro <dennis.dalessandro@cornelisnetworks.com>, Jason Gunthorpe
- <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Arend van Spriel
- <arend.vanspriel@broadcom.com>, Miri Korenblit
- <miriam.rachel.korenblit@intel.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, Rasmus Villemoes
- <linux@rasmusvillemoes.dk>, Sergey Senozhatsky <senozhatsky@chromium.org>,
- Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Bill Wendling
- <morbo@google.com>, Justin Stitt <justinstitt@google.com>, Vlastimil Babka
- <vbabka@kernel.org>, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
- brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
- linux-trace-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH 1/2] tracing: work around -Wmissing-format-attribute
- warning
-Message-Id: <20260603105842.1e0ef8cb4a55cb776d6a4971@kernel.org>
-In-Reply-To: <20260602150904.2258624-1-arnd@kernel.org>
-References: <20260602150904.2258624-1-arnd@kernel.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=k20260515; t=1780453607;
+	bh=N0fLh43R86usJ8b+pqssco8QjhfpmkspzOkkU1T3cgA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=DV1Os+GLiUUBUTukFYUZdDDaUuxx+E9yUM6VtjSCxMnPQL+AuxO5Pw5W8zhrmcoKL
+	 bXRM444HpieyB9Ox4o7m2fUJ8S6V3V8VD+B7w+z4rRpwQvds7HubHp1Gvr9vCALyeV
+	 ky0jToTuVxQ2hlcK82t4gOLNEsL+ROKzA5JifKTnYkMJBLbVVAMliZfCT1yxT4kaeB
+	 W5BaYA3L04Lu/KaOd8mwyjcOHTItW4RUbt/XhiJolv8UM7DB3YNB0i6K8DeoytePNq
+	 LkAw+0GaDesHccPfLk3w8B1t6A2XhuKjMAmcoF4YIFfCpxBjirpaBQZ6+K+WiQ2QdU
+	 DYeMNrdneB2ng==
+From: Jakub Kicinski <kuba@kernel.org>
+To: tariqt@nvidia.com
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	saeedm@nvidia.com,
+	leon@kernel.org,
+	mbloch@nvidia.com,
+	noren@nvidia.com,
+	ychemla@nvidia.com,
+	shayd@nvidia.com,
+	ohartoov@nvidia.com,
+	edwards@nvidia.com,
+	horms@kernel.org,
+	msanalla@nvidia.com,
+	parav@nvidia.com,
+	kees@kernel.org,
+	phaddad@nvidia.com,
+	moshe@nvidia.com,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	gal@nvidia.com,
+	jacob.e.keller@intel.com
+Subject: Re: [PATCH net-next V2 12/13] net/mlx5e: TC, enable steering for SD LAG
+Date: Tue,  2 Jun 2026 19:26:45 -0700
+Message-ID: <20260603022645.2298955-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260531113954.395443-13-tariqt@nvidia.com>
+References: <20260531113954.395443-13-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	MV_CASE(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21663-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[mhiramat@kernel.org,linux-rdma@vger.kernel.org];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[26];
-	FORGED_RECIPIENTS(0.00)[m:arnd@kernel.org,m:rostedt@goodmis.org,m:akpm@linux-foundation.org,m:pmladek@suse.com,m:nathan@kernel.org,m:arnd@arndb.de,m:dennis.dalessandro@cornelisnetworks.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:arend.vanspriel@broadcom.com,m:miriam.rachel.korenblit@intel.com,m:mathieu.desnoyers@efficios.com,m:andriy.shevchenko@linux.intel.com,m:linux@rasmusvillemoes.dk,m:senozhatsky@chromium.org,m:nick.desaulniers+lkml@gmail.com,m:morbo@google.com,m:justinstitt@google.com,m:vbabka@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-wireless@vger.kernel.org,m:brcm80211@lists.linux.dev,m:brcm80211-dev-list.pdl@broadcom.com,m:linux-trace-kernel@vger.kernel.org,m:llvm@lists.linux.dev,m:nickdesaulniers@gmail.com,s:lists@lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[25];
+	TAGGED_FROM(0.00)[bounces-21664-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:tariqt@nvidia.com,m:kuba@kernel.org,m:edumazet@google.com,m:pabeni@redhat.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:saeedm@nvidia.com,m:leon@kernel.org,m:mbloch@nvidia.com,m:noren@nvidia.com,m:ychemla@nvidia.com,m:shayd@nvidia.com,m:ohartoov@nvidia.com,m:edwards@nvidia.com,m:horms@kernel.org,m:msanalla@nvidia.com,m:parav@nvidia.com,m:kees@kernel.org,m:phaddad@nvidia.com,m:moshe@nvidia.com,m:linux-kernel@vger.kernel.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:gal@nvidia.com,m:jacob.e.keller@intel.com,m:andrew@lunn.ch,s:lists@lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[goodmis.org,linux-foundation.org,suse.com,kernel.org,arndb.de,cornelisnetworks.com,ziepe.ca,broadcom.com,intel.com,efficios.com,linux.intel.com,rasmusvillemoes.dk,chromium.org,gmail.com,google.com,vger.kernel.org,lists.linux.dev];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mhiramat@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_SENDER(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,lkml];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	FROM_HAS_DN(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: BFC9F63392B
+X-Rspamd-Queue-Id: 3C223633A34
 
-On Tue,  2 Jun 2026 17:07:05 +0200
-Arnd Bergmann <arnd@kernel.org> wrote:
+This is an AI-generated review of your patch. The human sending this
+email has considered the AI review valid, or at least plausible.
+---
+net/mlx5e: TC, enable steering for SD LAG
 
-> diff --git a/include/linux/sprintf.h b/include/linux/sprintf.h
-> index f06f7b785091..036a247b7c1e 100644
-> --- a/include/linux/sprintf.h
-> +++ b/include/linux/sprintf.h
-> @@ -12,6 +12,7 @@ __printf(2, 3) int sprintf(char *buf, const char * fmt, ...);
->  __printf(2, 0) int vsprintf(char *buf, const char *, va_list);
->  __printf(3, 4) int snprintf(char *buf, size_t size, const char *fmt, ...);
->  __printf(3, 0) int vsnprintf(char *buf, size_t size, const char *fmt, va_list args);
-> +int __vsnprintf(char *buf, size_t size, const char *fmt, va_list args);
->  __printf(3, 4) int scnprintf(char *buf, size_t size, const char *fmt, ...);
->  __printf(3, 0) int vscnprintf(char *buf, size_t size, const char *fmt, va_list args);
->  __printf(2, 3) __malloc char *kasprintf(gfp_t gfp, const char *fmt, ...);
-> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-> index d49338c44014..4715330c7b6b 100644
-> --- a/include/linux/trace_events.h
-> +++ b/include/linux/trace_events.h
-> @@ -962,7 +962,7 @@ perf_trace_buf_submit(void *raw_data, int size, int rctx, u16 type,
->  	int __ret;					\
->  							\
->  	va_copy(__ap, *(va));				\
-> -	__ret = vsnprintf(NULL, 0, fmt, __ap) + 1;	\
-> +	__ret = __vsnprintf(NULL, 0, fmt, __ap) + 1;	\
->  	va_end(__ap);					\
->  							\
->  	min(__ret, TRACE_EVENT_STR_MAX);		\
+Extends TC flow steering to support the SD LAG mode by adding
+mlx5_lag_is_sd()/mlx5_sd_is_primary() helpers, redirecting uplink
+priv/proto_dev queries to the primary eswitch in SD setups, and adding
+peer-flow handling for secondary devices.
 
-I think this is a slightly confusing name. What about vsnprintf_nocheck()?
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+> index 2a16368a948e..910492eb51f2 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
 
-Thanks,
+[ ... ]
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> @@ -4196,9 +4197,26 @@ static bool is_lag_dev(struct mlx5e_priv *priv,
+>  		 same_hw_reps(priv, peer_netdev));
+>  }
+>  
+> +static bool is_sd_eligible(struct mlx5e_priv *priv,
+> +			   struct net_device *peer_netdev)
+> +{
+> +	struct mlx5e_priv *peer_priv;
+> +
+> +	peer_priv = netdev_priv(peer_netdev);
+> +	return same_hw_reps(priv, peer_netdev) &&
+> +		mlx5_lag_is_sd(priv->mdev) &&
+> +		(mlx5_sd_get_primary(priv->mdev) ==
+> +		 mlx5_sd_get_primary(peer_priv->mdev));
+> +}
+
+[Medium]
+With the redefinition of mlx5_sd_get_primary() to return NULL when
+sd->devcom is not ready, can both calls here legitimately return NULL
+during a teardown race and make the equality test succeed?
+
+In that situation is_sd_eligible() would report two unrelated devices
+as belonging to the same SD primary.
+
+Would something like this be more robust:
+
+    struct mlx5_core_dev *primary = mlx5_sd_get_primary(priv->mdev);
+
+    return same_hw_reps(priv, peer_netdev) &&
+           mlx5_lag_is_sd(priv->mdev) &&
+           primary &&
+           primary == mlx5_sd_get_primary(peer_priv->mdev);
+
+> +
+>  static bool is_multiport_eligible(struct mlx5e_priv *priv, struct net_device *out_dev)
+>  {
+> -	return same_hw_reps(priv, out_dev) && mlx5_lag_is_mpesw(priv->mdev);
+> +	struct mlx5_core_dev *primary = mlx5_sd_get_primary(priv->mdev);
+> +
+> +	if (!primary)
+> +		return false;
+> +
+> +	return same_hw_reps(priv, out_dev) && mlx5_lag_is_mpesw(primary);
+>  }
+
+[ ... ]
+
+> @@ -4351,7 +4372,7 @@ static struct rhashtable *get_tc_ht(struct mlx5e_priv *priv,
+>  		return &tc->ht;
+>  }
+>  
+> -static bool is_peer_flow_needed(struct mlx5e_tc_flow *flow)
+> +static bool is_peer_flow_needed(struct mlx5e_tc_flow *flow, bool *is_sd)
+>  {
+>  	struct mlx5_esw_flow_attr *esw_attr = flow->attr->esw_attr;
+>  	struct mlx5_flow_attr *attr = flow->attr;
+> @@ -4372,6 +4393,13 @@ static bool is_peer_flow_needed(struct mlx5e_tc_flow *flow)
+>  	if (mlx5_lag_is_mpesw(esw_attr->in_mdev))
+>  		return true;
+>  
+> +	if (mlx5_lag_is_sd(esw_attr->in_mdev) &&
+> +	    !mlx5_sd_is_primary(esw_attr->in_mdev)) {
+> +		if (!mlx5_lag_is_mpesw(mlx5_sd_get_primary(esw_attr->in_mdev)))
+> +			*is_sd = true;
+> +		return true;
+> +	}
+> +
+>  	return false;
+>  }
+
+[High]
+Can mlx5_sd_get_primary(esw_attr->in_mdev) return NULL here?
+
+The patch updates mlx5_sd_get_primary() to return NULL when
+sd->devcom is not ready:
+
+    struct mlx5_core_dev *mlx5_sd_get_primary(struct mlx5_core_dev *dev)
+    {
+        struct mlx5_sd *sd = mlx5_get_sd(dev);
+
+        if (!sd)
+            return dev;
+
+        if (!mlx5_devcom_comp_is_ready(sd->devcom))
+            return NULL;
+
+        return sd->primary ? dev : sd->primary_dev;
+    }
+
+The result is then handed straight to mlx5_lag_is_mpesw(), which
+dereferences its argument:
+
+    bool mlx5_lag_is_mpesw(struct mlx5_core_dev *dev)
+    {
+        struct mlx5_lag *ldev = mlx5_lag_dev(dev);
+
+        return ldev && ldev->mode == MLX5_LAG_MODE_MPESW;
+    }
+
+mlx5_lag_dev(NULL) evaluates NULL->priv.lag.
+
+Note that the companion is_multiport_eligible() helper added in the
+same patch does add the if (!primary) return false; guard for the
+same reason; would the same guard be appropriate here?
+
+Could the sequence "mlx5_lag_is_sd() returns true (group_id != 0
+observed under lag_lock) but mlx5_sd_get_primary() returns NULL
+(devcom->ready observed false)" occur if SD teardown runs concurrently
+with a TC flow add?
+
+[Medium]
+On the topic of unsynchronized SD-state reads in this branch, the
+writer (mlx5_sd_cleanup) updates sd->primary and devcom->ready under
+the devcom rwsem, but the readers introduced by this patch take none
+of those locks:
+
+  - mlx5_sd_is_primary() reads sd->primary with no lock and no
+    READ_ONCE.
+  - mlx5_sd_get_primary() pairs READ_ONCE(ready) with a plain read of
+    sd->primary and sd->primary_dev.
+  - mlx5_lag_is_sd() reads pf->group_id under lag_lock, which does
+    not order against the devcom rwsem at all.
+
+Since sd->primary also selects which arm of the union in struct
+mlx5_sd is valid (secondaries[] vs primary_dev), can a torn or stale
+read of sd->primary make these helpers read the wrong union member?
+
+> @@ -4628,19 +4657,26 @@ mlx5e_add_fdb_flow(struct mlx5e_priv *priv,
+>  		   struct mlx5e_tc_flow **__flow)
+>  {
+>  	struct mlx5_devcom_comp_dev *devcom = priv->mdev->priv.eswitch->devcom, *pos;
+> +	struct netlink_ext_ack *extack = f->common.extack;
+>  	struct mlx5e_rep_priv *rpriv = priv->ppriv;
+>  	struct mlx5_eswitch_rep *in_rep = rpriv->rep;
+>  	struct mlx5_core_dev *in_mdev = priv->mdev;
+>  	struct mlx5_eswitch *peer_esw;
+>  	struct mlx5e_tc_flow *flow;
+> +	bool is_sd = false;
+>  	int err;
+>  
+> +	if (mlx5_lag_is_sd(in_mdev) && !mlx5_lag_is_active(in_mdev)) {
+> +		NL_SET_ERR_MSG_MOD(extack, "SD shared FDB not yet active");
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+>  	flow = __mlx5e_add_fdb_flow(priv, f, flow_flags, filter_dev, in_rep,
+>  				    in_mdev);
+>  	if (IS_ERR(flow))
+>  		return PTR_ERR(flow);
+>  
+> -	if (!is_peer_flow_needed(flow)) {
+> +	if (!is_peer_flow_needed(flow, &is_sd)) {
+>  		*__flow = flow;
+>  		return 0;
+>  	}
+> @@ -4651,6 +4687,15 @@ mlx5e_add_fdb_flow(struct mlx5e_priv *priv,
+>  	}
+>  
+>  	mlx5_devcom_for_each_peer_entry(devcom, peer_esw, pos) {
+> +		if (is_sd) {
+> +			/* SD shared FDB: only the matching SD primary. */
+> +			if (mlx5_sd_get_primary(in_mdev) !=
+> +			    mlx5_sd_get_primary(peer_esw->dev))
+> +				continue;
+> +		} else {
+> +			if (!mlx5_sd_is_primary(peer_esw->dev))
+> +				continue;
+> +		}
+>  		err = mlx5e_tc_add_fdb_peer_flow(f, flow, flow_flags, peer_esw);
+>  		if (err)
+>  			goto peer_clean;
+
+[Medium]
+Same NULL == NULL question applies here. The devcom being iterated is
+priv->mdev->priv.eswitch->devcom, i.e. the eswitch devcom, so peer_esw
+entries are not necessarily SD peers and may belong to different SD
+groups (or to none).
+
+If mlx5_sd_get_primary() can transiently return NULL on either side
+during an SD teardown race, both sides may evaluate to NULL and the
+!= test will not skip the unrelated peer:
+
+    if (mlx5_sd_get_primary(in_mdev) !=
+        mlx5_sd_get_primary(peer_esw->dev))
+        continue;
+
+Would explicitly requiring a non-NULL primary on at least one side, or
+caching mlx5_sd_get_primary(in_mdev) once and rejecting NULL up front,
+be more correct?
+
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c
+> index ec606851feb8..25286ecd724e 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c
+> @@ -49,13 +49,16 @@ static int mlx5_sd_get_host_buses(struct mlx5_core_dev *dev)
+>  	return sd->host_buses;
+>  }
+>  
+> -static struct mlx5_core_dev *mlx5_sd_get_primary(struct mlx5_core_dev *dev)
+> +struct mlx5_core_dev *mlx5_sd_get_primary(struct mlx5_core_dev *dev)
+>  {
+>  	struct mlx5_sd *sd = mlx5_get_sd(dev);
+>  
+>  	if (!sd)
+>  		return dev;
+>  
+> +	if (!mlx5_devcom_comp_is_ready(sd->devcom))
+> +		return NULL;
+> +
+>  	return sd->primary ? dev : sd->primary_dev;
+>  }
+
+[ ... ]
 
