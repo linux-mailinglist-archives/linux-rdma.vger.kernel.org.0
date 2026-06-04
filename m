@@ -1,290 +1,227 @@
-Return-Path: <linux-rdma+bounces-21803-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21804-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id +bLkMEvTIWrTPAEAu9opvQ
-	(envelope-from <linux-rdma+bounces-21803-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 21:34:35 +0200
+	id V30VC2TVIWqbPQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-21804-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 21:43:32 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D1ED642ED1
-	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 21:34:35 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91827642FDC
+	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 21:43:31 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=intel.com header.s=Intel header.b="iGd/RYOs";
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21803-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21803-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=intel.com;
-	arc=reject ("cv is fail on i=2")
+	dkim=pass header.d=proton.me header.s=pidt2ukzyrggdauwg4b2q6m3ty.protonmail header.b=gO6rlClG;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21804-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21804-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=proton.me;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 98BFE300CFDA
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jun 2026 19:30:47 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2E0F4306DACF
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jun 2026 19:37:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 362D83BFE3C;
-	Thu,  4 Jun 2026 19:30:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2532A3BD22E;
+	Thu,  4 Jun 2026 19:37:19 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from mail-106118.protonmail.ch (mail-106118.protonmail.ch [79.135.106.118])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B12D13B6C00;
-	Thu,  4 Jun 2026 19:30:43 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780601445; cv=fail; b=sfyEOTwYebtPAQbPXhMGRPMNr4/mXONS8aDkErfoGea2g9D4fmRNPdr7X/5MkWoXvU1pmkR+7zGnYgw9jckWgUfd38gpDiiqMoSHVHjIuvSFbl7sSI/LJPRU7kngSy4Rded3/n6qx5T2Wx1tPGGKBLIhPU+Izxw7M6EoBqayll4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780601445; c=relaxed/simple;
-	bh=4km51Gc6OIHJjJ5ixIBQCuSNdCwMui2gyy/yu/3L5l8=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ZAtkhMhN5b5SfWmxZ+KIGOwM5msVte94eeL4jswuGi1J3wBedFebZm0NyhSNtErqSRRaNa19ZEr6yiEEOA3FR91/N/DWAdPDMf+KmocdsEMCfNJ+zBqcjn+x/1TnoSpwUg4ddPOz/4XsqZm9qxfZNGJYxoHA1Be3LrxyaoGZpyU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iGd/RYOs; arc=fail smtp.client-ip=198.175.65.10
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1780601444; x=1812137444;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=4km51Gc6OIHJjJ5ixIBQCuSNdCwMui2gyy/yu/3L5l8=;
-  b=iGd/RYOs1+sPUql2E/4Dh+YvwzB/6nrgXZdMLvW8OkwOCOl/9KZxyedV
-   c0Ehd6b9MdFeRjiwU4H5KrgzWWmK4XEZC40BqhK4CFnFtHLogdMbt2922
-   4Cb2INkGDn1c0yMhszIQf4VaZDMrCSYZcs2fRMjrIxYlgKPk+uGIC5pJx
-   8nYDiKQ1zaYbvXDGg6AmJF1BG8yog8uAvTcoFdNAx3CR/U73+fpy2FhLk
-   EisLhhIfIY07qwwxK0h63XNJ6ynLA4rHcCh5iXHx134gTmaa/TNTOAcqN
-   R57Zck3Yw9/5GLLq5gLO89S/devOBkKRrdDVWKWZWYUvPBawclWXx846W
-   w==;
-X-CSE-ConnectionGUID: Rfrkx9JSRya2L7qoBH4czw==
-X-CSE-MsgGUID: 5DCzPDwMQKeUPEzG+pFTBw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11807"; a="98855115"
-X-IronPort-AV: E=Sophos;i="6.24,187,1774335600"; 
-   d="scan'208";a="98855115"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2026 12:30:43 -0700
-X-CSE-ConnectionGUID: i0X+kGLNQuyI3elFVGHjlQ==
-X-CSE-MsgGUID: gPbpIT0gQtGYc7TVLSN8UA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,187,1774335600"; 
-   d="scan'208";a="248566900"
-Received: from fmsmsx901.amr.corp.intel.com ([10.18.126.90])
-  by orviesa003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2026 12:30:42 -0700
-Received: from FMSMSX902.amr.corp.intel.com (10.18.126.91) by
- fmsmsx901.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37; Thu, 4 Jun 2026 12:30:41 -0700
-Received: from fmsedg903.ED.cps.intel.com (10.1.192.145) by
- FMSMSX902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37 via Frontend Transport; Thu, 4 Jun 2026 12:30:41 -0700
-Received: from BN8PR05CU002.outbound.protection.outlook.com (52.101.57.29) by
- edgegateway.intel.com (192.55.55.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37; Thu, 4 Jun 2026 12:30:40 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=cA0z2/AaKNxYXyRguJAK+8umuCa7SGRw+LF9zrLEvinDZKK0xnhx0eelU3iIm1RJ5AMdByTm87z7rorEcMyAxgLj/aD3gM7zAkALpdiS3fRrjgplExnXUIF1/9K2UOvvAQKKHO/ugoOEJG7vE+j+yfmJqdafePkLCchXLLIYWTPXmqMuxKkkdwzJFOX9Nr+QwWQ6v1GPQD0DD4t+N4osG/b0RhhK/dC3eAI4ehgMNOAzHgPaQ/tIwhagWtZGoMxOrxXzkeDJPXd1Q7YI2VVA5ywxxqBELlum8ipthu8sC49IkSfC53KWA4hq88kuBv4wy6SGtk1dxtQEZWlQWgAffw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=++BXL357pm95WfOWXJkTb3DbEfvDi548sdv40OD26oA=;
- b=Id52RbSIzLBiQPprdyhzDCsG+o+XuRKxZSS3RDzhJBjwLv9svnkF7IZYWG21KLVFhMr8VzXqpczd8vMtZc0HJYD95ufL1dSE5fdUFcC3ggxx4GMhRW6WY7dCUPj7NNX/ymRh4JptmIaynb+2+VIB1lMxm1X7pVZRa51nsWrk4TCIdOeRdCYYI8hM2j7mguY1bQpQMdC4TUJss0bG6YAs9JelG5y6wTXWk4bKDuvbIdv6M/RF2pjgr/xzxppAfHELHwn17gzGnW/z0MHh1mhlTWhDYrxiOUd9prYtvkeIOY8WCgWe98tI+c+OyHps0WXTgGPFI+VXJsm0Ca5jCOGx7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from DS0PR11MB7381.namprd11.prod.outlook.com (2603:10b6:8:134::14)
- by SN7PR11MB8067.namprd11.prod.outlook.com (2603:10b6:806:2e8::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.7; Thu, 4 Jun 2026
- 19:30:36 +0000
-Received: from DS0PR11MB7381.namprd11.prod.outlook.com
- ([fe80::4c39:dfe6:d6dc:6f58]) by DS0PR11MB7381.namprd11.prod.outlook.com
- ([fe80::4c39:dfe6:d6dc:6f58%5]) with mapi id 15.21.0092.007; Thu, 4 Jun 2026
- 19:30:36 +0000
-Message-ID: <ffb1c6a3-825f-403f-876f-8f138f29163c@intel.com>
-Date: Thu, 4 Jun 2026 12:30:32 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 4/4] net/mlx5e: Fix publication race for
- priv->channel_stats[]
-To: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, "Andrew
- Lunn" <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>
-CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	Mark Bloch <mbloch@nvidia.com>, Eran Ben Elisha <eranbe@nvidia.com>, Feng Liu
-	<feliu@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, Gal Pressman
-	<gal@nvidia.com>, Simon Horman <horms@kernel.org>, Alexei Lazar
-	<alazar@nvidia.com>, Nimrod Oren <noren@nvidia.com>, Carolina Jubran
-	<cjubran@nvidia.com>, Kees Cook <kees@kernel.org>, Lama Kayal
-	<lkayal@nvidia.com>, Eran Ben Elisha <eranbe@mellanox.com>, Saeed Mahameed
-	<saeedm@mellanox.com>, Haiyang Zhang <haiyangz@microsoft.com>, Joe Damato
-	<joe@dama.to>, <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20260604135041.455754-1-tariqt@nvidia.com>
- <20260604135041.455754-5-tariqt@nvidia.com>
-Content-Language: en-US
-From: Jacob Keller <jacob.e.keller@intel.com>
-In-Reply-To: <20260604135041.455754-5-tariqt@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0283.namprd03.prod.outlook.com
- (2603:10b6:303:b5::18) To DS0PR11MB7381.namprd11.prod.outlook.com
- (2603:10b6:8:134::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AA7C3B9927
+	for <linux-rdma@vger.kernel.org>; Thu,  4 Jun 2026 19:37:10 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780601837; cv=none; b=N2m/W5bEJkQhJqgewlsYDJm2a3OwlXXNFEyMZSp7kxvJyHmnTf32HTemFqGJC2LJsOrAApxknUQyGowHFmjY9OmSxTCWaqXT+q/xCYLj9ouPq4glGJnYR83agkeL6Hn1hCfOu3XndCoOjxpDgEsQ6PrP0ukDdbIyqZ48jzR8qKo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780601837; c=relaxed/simple;
+	bh=oS7NxEacAgL0HYtv5WvCgJkETMPNe0vdRBVK6cP564w=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BUvMvvzMPVwdufYM+Brh5tbAa+O7Np7j9DwlaCyplq1GMghCCR61KSJ3HEL+Jp9Wie9rXrikOxGyySUG/z4jnKeFsQRxUk0LQdmZs7ouzBreYO4xCrELw/EZ4nV1gYGwqjXiRp6lfN7QY5mt2OrvCD6jF2uJsdzoj+fYLn1+eOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=gO6rlClG; arc=none smtp.client-ip=79.135.106.118
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=pidt2ukzyrggdauwg4b2q6m3ty.protonmail; t=1780601819; x=1780861019;
+	bh=ujDKy6SWWWi8FQFzqh264wUeyQqzjQjB5x1dbv93N9A=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=gO6rlClGX2rUj1P/zjADI2XSlrzTs/Z8DIcwM6+vGcKbbPTHF944ed7AHU/svnDAB
+	 lKZdpDbDXFiErt27KaRWARK7g37jnGakUYP7SKuatzc9d0/q6F5fX9mbTOgUVyJJTg
+	 gtxameNyvkRyftqodHv98Tg6ahoZgSu03F8XjQC3OIXEo4EwWSDA2l04HKKxrhNl5n
+	 6STdQgx4i9RvHBTJ1vZCaZmMX95BR9wgLKc8OichtUO1J0CntObHzHt44mnZdWi0DD
+	 76zOssE3t82y4aGjHPGsrN+xhu4EGdGtlYd4O81cIQ26+01LiJeay2tg0pnjRJdfII
+	 G5BSGnLCnUQdw==
+Date: Thu, 04 Jun 2026 19:36:54 +0000
+To: Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>, Chaitanya Kulkarni <kch@nvidia.com>
+From: Bryam Vargas <hexlabsecurity@proton.me>
+Cc: linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org, linux-block@vger.kernel.org
+Subject: [PATCH v2] nvmet-rdma: handle inline data with a nonzero offset
+Message-ID: <20260604193645.178350-1-hexlabsecurity@proton.me>
+In-Reply-To: <aiFR81yE9_BIsNbM@kbusch-mbp>
+References: <LM21QIR-1-qJb7PViyJKCnGBnUzizeiNJVWQ3wb7ZwGezodjgKg3f-iobqOyequ-sT1jFCKJImfqNO_BKU3KO80xFITnaI5GTV_GxLUNDDc=@proton.me> <ahm6Ksr3rfGdnOsN@kbusch-mbp> <20260604084624.120032-1-hexlabsecurity@proton.me> <aiFR81yE9_BIsNbM@kbusch-mbp>
+Feedback-ID: 199661219:user:proton
+X-Pm-Message-ID: e669ea10f8438003e78f5e4cf1408c764e65c494
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB7381:EE_|SN7PR11MB8067:EE_
-X-MS-Office365-Filtering-Correlation-Id: 50d6b593-8899-411d-1a6e-08dec26fc071
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|7416014|22082099003|18002099003|56012099006|11063799006|4143699003;
-X-Microsoft-Antispam-Message-Info: pqM/O3ypesIm2JvxnwxhUcquAxGSGZnSXYKuxqqucBFH6bsPm6FzS1+3fPTJkHFFcj55b4hzdlaFBUBjSQv+nVj+CfKRS7MTRkqCKClMVrspI3NH/J5U7aqNEHiTPMQ4Mxnw+0pS+jlO0YkSgi5jmt7WtGJ8QnkwQv6c2I+pAcbcBdmXOF+9X54e7Zbm0312cN9MCgEZBSORzYW8TR8IX9u+zaJLs1dmxBjs3aH0ggE8Kz+B65MlYo5/FW2TAvErNWoa8AD03TCtZ9L/lkF1AYMTFp/3q+ZjOsEP5Gyb7j+EU0uIMrENiRMX85dit0SzBqZRChn9rYNiPceAKsI5pGD8e94R30qWtM8S/P0yLA1GIoqhHD8Nd1j6//D4z6phEyTNtJT8fEfCPWrCHThOsLT4cy0ENZoA6bO0LpL8W+TKxT1gPot7ciQUXzPdxVJqg1nTAU8mFVFmmcrh4Bot3L8Mnc6PQljIxMaangdukY9wPDsscHNsOPIBtFukNQ6g61EnFVC7eBy5KsgOos4GFw3Rk4d4bLIdj/wVFadgEKDxgC0cfEUndyIHVf0y7AUvEcbCRYjE/vXvu/m28aFAbHx3yTr5DVRBmKJIi/8VjV9J+dPlNBvHnNxTXkjy3k7qgYbX/mI2JWVnFXRMquSHmy+tzKx8MFcjLlU7wXSXmzUfZ1zFt87GbRINtOPEPPpf
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7381.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014)(22082099003)(18002099003)(56012099006)(11063799006)(4143699003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UlVXNFhLcTQxYzRmNHZaeEVRS3N5aGpEY0w1OXdUMklvWjljOG1GWjZHVHJm?=
- =?utf-8?B?Nkt5WTZIVUFYVDNrckdvWlF0UTJNMjYydWZSVDFRK0JsZU11Y0cvTzAxbVJM?=
- =?utf-8?B?RlBRQjhJeGdHc1pEb3VIRHB3ZEdLVVhTa0pIT014TERrSE1yaEV2YlI3MG1E?=
- =?utf-8?B?ZStWbEVTVmkva0FUM25sOHN0cld2OVBKSWJHYXV3eEo2ZEN5VXdDbGZ2Q2Ju?=
- =?utf-8?B?LzV6cjBXaTFnMzc4NlNhWTI4a20xTjFVWEVSUkJpcnRFVzBFcWh3NXZmQ2RT?=
- =?utf-8?B?ZlZkNkUxQ3I0dnUra2V2WVlyaHJKQVZ1L1N2QTVCWXUrenovTlNlQThnSTZU?=
- =?utf-8?B?UGk0dGJBWm5RRjg3bmE3N0Z0ZjJlWDdlTU9tNUlpaFpFcTRvMkhMS1JIWWNj?=
- =?utf-8?B?NEpTTzhqZVBXeHpDUlNmcUNXZWF4ODJ6MkJscThReCtCOGpmTitnTmlPRjJB?=
- =?utf-8?B?dHRLRitrSXZRcDRHSFpYbTI1SmVUZGM5cFlzYmZWQjRhYmlCK21BdFozQ3NN?=
- =?utf-8?B?QjhXVVZTSFlBY0tSTEwzTjRaQU4raS8rZnNYbGg5azFOOVpEZ2dFV29vZldV?=
- =?utf-8?B?TlcxYVlaZGNOS1FtT2lsa1psN2NSK29zOU5UL1MrTkxhM1dmK0FMRm1CZW1z?=
- =?utf-8?B?K2I0c3lxYUIyMWlBbWUzQXZUdTgxOHZ3aDM1UHNCU0F1OG1oQThRVlNrbFhR?=
- =?utf-8?B?NnNjTFpIT3h0b0tUMkQ5dkxRNmFRWURDQ21jUmxabXJSYlZFNkRSU0pJeUg0?=
- =?utf-8?B?TjdwRFAzeUpvekxINFIxYk5uOHprZVdOWkpUZVJzSHowZEYxYjROaytRYXV6?=
- =?utf-8?B?aGliQXJ3dWszUFdqa0JjMGFVc0l0VzZzaVlHUk1jOEkzcXY3RFJWdmVNa1hO?=
- =?utf-8?B?Umhidk5sYS9NMXAwaWM4eEFTWWZzNEgvU2JIL1lBdnROYnk5eEIrRG5xakd5?=
- =?utf-8?B?UDNveVAyNTBNUzhCVG8vei91Nk9qSWRCenhmdUk5M0xFcTJYR3EzZEI4NGUr?=
- =?utf-8?B?TmlRYjJjdkpYeUJKcVVLY3JwcjVBbHhmbkVuQi9za1U1Zitycm5DWlAva1pm?=
- =?utf-8?B?OE1QcGRybVRlbXFhYVZ6QWdyOUZUY2Q1ak9URy84ZVRXTkZqaHAya1ZBdXlw?=
- =?utf-8?B?SVpRSjBZbFY4Ym12MVhieGVQTlFURUZFNEJNU0tkUkg0UTdsSG5jdVlyVkZ6?=
- =?utf-8?B?TkRWeGQzYkFsc0JzbklUS1lpVFlxSC9YUG9ZVmZja0NkejYyYTRiQmUwVCt0?=
- =?utf-8?B?K1NaQ2FmT3piVUxNVyt4VE1xRis2cXN2MVVQeDRBSVQ5VytvRnVzREZNZlQ0?=
- =?utf-8?B?RitRNE41K0lnU0x3Ni96NGZzUDlkZXNPY0R4d2NScFlEb2ZjRk5TeFdZZUVy?=
- =?utf-8?B?NGdQeXpDUVlxdnRtUWxsaVJITDFnSG1RZ1RobEZvaEV6ZXN3OGozSzZZRnFZ?=
- =?utf-8?B?bzV1eHNqN1YreHRGVlVhbVFsLzBqMGcwTnlsMXFpN21yUDJsSk9ZYXREM0ts?=
- =?utf-8?B?em5NTmZZMzVqYmlSMXZqV3hHYWw1c2J3UWhHWC9EU0VKZS83dDB4UHdkWXZ4?=
- =?utf-8?B?ZkZVenZ4TnRlL0xDVGNlcHBnLzhPOWpuc0JkK2Vpb1hiV2ZUOEFQRXA1Uy83?=
- =?utf-8?B?djlDZThzZzJzUElmaHoyd2grRWNGRXVBRmhnTEJlVzY5WnBMMlNnRDVxRW5D?=
- =?utf-8?B?VUlBbnZrZHYxZHNnVVEwUmc1VXdKSmtuWUx4cVRWRFQrQTc3ZDlSTk5oRllo?=
- =?utf-8?B?K05VejlWMm1XcnhwWHBMMWY3Sjdzblg1VVNqUVdRa3JQa0tCUFovU3VzbWpR?=
- =?utf-8?B?ak5oNndNL0tZQUtQNE0vaE5FbTNMeVdPbjhwdmdodmZrdk9CV2JsZkxmbUhD?=
- =?utf-8?B?eHB6RXJRVTJpZlBvYkRUV3pnR3QzK05vYlRrSXZJeVVIbGVFN3Nnd0xqaUFq?=
- =?utf-8?B?Qld1Tkk4OWhLVExjcU16d2YvQWZxNC9kU2JlUTdIVitRQlNJaEpLVjZlSEV0?=
- =?utf-8?B?QjlsVXVvdHFlaWVZVWttRFFlK1FodE9XRk5nR3dRdldEdEZTK29MemNlZXNv?=
- =?utf-8?B?ZXFuN3FTQjI5djh5bjRUSEtySTA1VldaaWk0dTBzYktzaWxkOExGWnlOSVls?=
- =?utf-8?B?L0ZHM2dFTlA1VVBiVENkcG5uYXBWTVZXUVhMb0RxQWtrc3dnYUJ1bS92UlhU?=
- =?utf-8?B?WVFSRHFhMmxrRVJ6VFNPc1c0SThDR1lTSjBNVlJLTjg4MjR0Tk5GZVd0MElx?=
- =?utf-8?B?alg4dnNtS2FRNEJ3VXF0alVHRUtKSzFNMnJrMEw4bzNaVUdJdjVibVJMeHR3?=
- =?utf-8?B?U1hyTzJWMTlyL2xvaUhUWkpVUEU3Y3dHWm1oaEFCRDkvdzlITmpVSzZKM0tv?=
- =?utf-8?Q?5WtzCbXOJt5LGfSQ=3D?=
-X-Exchange-RoutingPolicyChecked: CZ7uLMSowj10glc5md39UTk+K/JQe10l+A0/E+zg0COFr2dZMkr3I8XNbrpgQ4zJ0W3rfJd/8davNjLkAbaPEyeXLR65ZhWWxa7yPCGCfgdkfkEuTYkre1P3EUN5O+2+dgXqy1vmi8RJfwAoy8udrcZYkiEQdeZSK92ey/YmGSFDora8E9PnoCeJN6l1kmCWtGqvTUpe4O1V2BoLDzSDt0qZsJ78A1iXcK/Xq0fukqFXUFEEuLxz2xKz4IZ5ymhnlVw4ghp0XplFRAKOhUyK0wus8gTMx/+Ek0l2e5jMXFS7oZtupL80mbJFIq4I3lessfdJe5jPYq21Y4X6GEZK2A==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 50d6b593-8899-411d-1a6e-08dec26fc071
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7381.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2026 19:30:36.1218
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iG5LKvkHVxX2Jh8so/1YXRDgNEPIkbBja7OpPT0rSpjWEvRebxjrQlBzDna/B6EEPI53F+Xka74LNjs3ouZ5kDmAkrQaxginoFjQwSrBv8c=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB8067
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [1.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+X-Spamd-Result: default: False [-1.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[proton.me,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[proton.me:s=pidt2ukzyrggdauwg4b2q6m3ty.protonmail];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[26];
-	TAGGED_FROM(0.00)[bounces-21803-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21804-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:tariqt@nvidia.com,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:saeedm@nvidia.com,m:leon@kernel.org,m:mbloch@nvidia.com,m:eranbe@nvidia.com,m:feliu@nvidia.com,m:cratiu@nvidia.com,m:gal@nvidia.com,m:horms@kernel.org,m:alazar@nvidia.com,m:noren@nvidia.com,m:cjubran@nvidia.com,m:kees@kernel.org,m:lkayal@nvidia.com,m:eranbe@mellanox.com,m:saeedm@mellanox.com,m:haiyangz@microsoft.com,m:joe@dama.to,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER(0.00)[hexlabsecurity@proton.me,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:hch@lst.de,m:sagi@grimberg.me,m:kbusch@kernel.org,m:kch@nvidia.com,m:linux-nvme@lists.infradead.org,m:linux-rdma@vger.kernel.org,m:linux-block@vger.kernel.org,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[jacob.e.keller@intel.com,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:mid,intel.com:dkim,intel.com:from_mime,intel.com:email,nvidia.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jacob.e.keller@intel.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hexlabsecurity@proton.me,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[proton.me:+];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	TAGGED_RCPT(0.00)[linux-rdma];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	RCVD_COUNT_SEVEN(0.00)[10]
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,proton.me:mid,proton.me:dkim,proton.me:from_mime,proton.me:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 3D1ED642ED1
+X-Rspamd-Queue-Id: 91827642FDC
 
-On 6/4/2026 6:50 AM, Tariq Toukan wrote:
-> From: Feng Liu <feliu@nvidia.com>
-> 
-> mlx5e_channel_stats_alloc() publishes a new entry to
-> priv->channel_stats[] and then increments priv->stats_nch as a
-> publication token, but neither store carries any memory barrier:
-> 
-> 	priv->channel_stats[ix] = kvzalloc_node(...);
-> 	if (!priv->channel_stats[ix])
-> 		return -ENOMEM;
-> 	priv->stats_nch++;
-> 
-> Concurrent readers compute the loop bound from priv->stats_nch and
-> then dereference priv->channel_stats[i] using plain accesses, e.g.
-> 
-> 	for (i = 0; i < priv->stats_nch; i++) {
-> 		struct mlx5e_channel_stats *cs = priv->channel_stats[i];
-> 		... cs->rq.packets ...
-> 	}
-> 
-> On weakly-ordered architectures (ARM, PowerPC, RISC-V) the writes to
-> channel_stats[ix] and stats_nch may become visible to other CPUs out
-> of program order. A reader can observe stats_nch == N while still
-> seeing channel_stats[N-1] == NULL, leading to a NULL pointer
-> dereference in the channel_stats loop.
-> 
-> This has been observed in production on BlueField-3 DPUs (arm64),
-> where ovs-vswitchd queries netdev statistics over netlink during NIC
-> bringup, racing mlx5e_open_channel() -> mlx5e_channel_stats_alloc()
-> on another CPU:
-> 
->   Unable to handle kernel NULL pointer dereference at virtual address 0x840
->   Hardware name: BlueField-3 DPU
->   pc : mlx5e_fold_sw_stats64+0x30/0x180 [mlx5_core]
->   Call trace:
->    mlx5e_fold_sw_stats64+0x30/0x180 [mlx5_core]
->    dev_get_stats+0x50/0xc0
->    ovs_vport_get_stats+0x38/0xac [openvswitch]
->    ovs_vport_cmd_fill_info+0x194/0x290 [openvswitch]
->    ovs_vport_cmd_get+0xbc/0x10c [openvswitch]
->    genl_family_rcv_msg_doit+0xd0/0x160
->    genl_rcv_msg+0xec/0x1f0
->    netlink_rcv_skb+0x64/0x130
->    genl_rcv+0x40/0x60
->    netlink_unicast+0x2fc/0x370
->    netlink_sendmsg+0x1dc/0x454
->    ...
->    __arm64_sys_sendmsg+0x2c/0x40
-> 
-> Order the stats_nch increment through smp_store_release() in the
-> writer, paired with smp_load_acquire() of stats_nch in every reader.
-> The release/acquire pair establishes the contract:
-> 
->   stats_nch == N  =>  channel_stats[0..N-1] are visible and non-NULL.
-> 
-> Update all readers of priv->stats_nch in mlx5e RX/TX queue stats,
-> mlx5e_get_base_stats(), ethtool channels stats, IPoIB stats, the
-> sw_stats fold and the HV VHCA stats agent to use smp_load_acquire().
-> mlx5e_channel_stats_alloc() (the writer, serialized by state_lock)
-> and mlx5e_priv_cleanup() (single-owner teardown) are intentionally
-> not modified.
-> 
+nvmet_rdma_use_inline_sg() maps the host-controlled inline data offset
+into the per-command inline scatterlist.  The bounds check admits any
+offset with off + len <=3D inline_data_size, but the mapping still assumes
+the data begins in the first inline page:
 
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+=09sg->offset =3D off;
+=09sg->length =3D min_t(int, len, PAGE_SIZE - off);
+
+When a port is configured with inline_data_size > PAGE_SIZE (settable up
+to max(SZ_16K, PAGE_SIZE)), an offset in (PAGE_SIZE, inline_data_size]
+makes "PAGE_SIZE - off" underflow, so sg->length is set to ~4 GiB and
+the block backend reads far past the first inline page.  num_pages(len)
+also ignores the offset, so an in-bounds offset whose [off, off+len)
+span crosses a page boundary under-counts the scatterlist.
+
+Map the offset properly: split it into a page index and an in-page
+offset, start the scatterlist at that page, and size the page count from
+page_off + len.  Because the request scatterlist may now start at
+inline_sg[page_idx] rather than inline_sg[0], generalize the inline-SGL
+identity test in nvmet_rdma_release_rsp() to a range test; otherwise the
+persistent inline scatterlist is mistaken for an allocated one and
+nvmet_req_free_sgls() frees an inline page (and warns in
+free_large_kmalloc()).
+
+Fixes: 0d5ee2b2ab4f ("nvmet-rdma: support max(16KB, PAGE_SIZE) inline data"=
+)
+Cc: stable@vger.kernel.org
+Suggested-by: Keith Busch <kbusch@kernel.org>
+Reported-by: Bryam Vargas <hexlabsecurity@proton.me>
+Signed-off-by: Bryam Vargas <hexlabsecurity@proton.me>
+---
+v1 rejected a nonzero offset; per Keith's note a nonzero in-capsule SGL
+offset is legitimate (it is the per-command SGL Offset field, distinct
+from the controller ICDOFF attribute that nvme_rdma_setup_ctrl() refuses
+when nonzero), so v2 handles it instead, using Keith's suggested
+page_idx/page_off form for nvmet_rdma_use_inline_sg().
+
+Review context (not for the commit log):
+
+Bound safety: with off + len <=3D inline_data_size the highest inline_sg[]
+index touched is page_idx + sg_count - 1 =3D floor((off + len - 1) /
+PAGE_SIZE) <=3D num_pages(inline_data_size) - 1 =3D inline_page_count - 1
+(<=3D NVMET_RDMA_MAX_INLINE_SGE - 1), and page_off < PAGE_SIZE so
+PAGE_SIZE - page_off cannot underflow.  The release_rsp range test is a
+strict generalization of the old "!=3D inline_sg" test: inline_sg[0] is in
+range (unchanged: not freed), allocated/keyed SGLs are outside it (still
+freed), and only the new inline_sg[1..] starts are additionally treated
+as inline.
+
+Decides identically on 32- and 64-bit builds: off is u64, so the offset
+arithmetic and PAGE_SIZE - page_off are evaluated in 64-bit on both ABIs;
+num_pages() sees page_off + len <=3D 16384 (positive, int-safe on both);
+the release_rsp comparison is a pointer comparison, identical semantics
+on ILP32 and LP64.  (-m32/-m64 model output identical.)
+
+A/B on a KASAN build (inline_data_size =3D 16384) over an rdma_rxe
+loopback nvmet-rdma target with a block backend, inline write:
+  - offset 0: succeeds, clean (control + no regression).
+  - offset 8192: before this patch the block backend reads out of bounds
+      BUG: KASAN: slab-out-of-bounds in copy_folio_from_iter_atomic
+      (sg->length =3D 0xfffff000); with this patch it is served from the
+      correct inline page, in bounds, no KASAN and no free_large_kmalloc
+      warning.
+  - the use_inline_sg() rework alone (without the release_rsp change)
+      trips on offset 8192:
+      WARNING: ... free_large_kmalloc ... Not a kmalloc allocation
+        nvmet_req_free_sgls <- nvmet_rdma_release_rsp <- nvmet_rdma_send_do=
+ne
+
+ drivers/nvme/target/rdma.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/nvme/target/rdma.c b/drivers/nvme/target/rdma.c
+index 565183a20007..eb975fbd74a1 100644
+--- a/drivers/nvme/target/rdma.c
++++ b/drivers/nvme/target/rdma.c
+@@ -666,7 +666,8 @@ static void nvmet_rdma_release_rsp(struct nvmet_rdma_rs=
+p *rsp)
+ =09if (rsp->n_rdma)
+ =09=09nvmet_rdma_rw_ctx_destroy(rsp);
+
+-=09if (rsp->req.sg !=3D rsp->cmd->inline_sg)
++=09if (rsp->req.sg < rsp->cmd->inline_sg ||
++=09    rsp->req.sg >=3D rsp->cmd->inline_sg + queue->dev->inline_page_coun=
+t)
+ =09=09nvmet_req_free_sgls(&rsp->req);
+
+ =09if (unlikely(!list_empty_careful(&queue->rsp_wr_wait_list)))
+@@ -821,24 +822,25 @@ static void nvmet_rdma_write_data_done(struct ib_cq *=
+cq, struct ib_wc *wc)
+ static void nvmet_rdma_use_inline_sg(struct nvmet_rdma_rsp *rsp, u32 len,
+ =09=09u64 off)
+ {
+-=09int sg_count =3D num_pages(len);
++=09u64 page_off =3D off % PAGE_SIZE;
++=09u64 page_idx =3D off / PAGE_SIZE;
++=09int sg_count =3D num_pages(page_off + len);
+ =09struct scatterlist *sg;
+ =09int i;
+
+-=09sg =3D rsp->cmd->inline_sg;
++=09sg =3D &rsp->cmd->inline_sg[page_idx];
+ =09for (i =3D 0; i < sg_count; i++, sg++) {
+ =09=09if (i < sg_count - 1)
+ =09=09=09sg_unmark_end(sg);
+ =09=09else
+ =09=09=09sg_mark_end(sg);
+-=09=09sg->offset =3D off;
+-=09=09sg->length =3D min_t(int, len, PAGE_SIZE - off);
++=09=09sg->offset =3D page_off;
++=09=09sg->length =3D min_t(u64, len, PAGE_SIZE - page_off);
+ =09=09len -=3D sg->length;
+-=09=09if (!i)
+-=09=09=09off =3D 0;
++=09=09page_off =3D 0;
+ =09}
+
+-=09rsp->req.sg =3D rsp->cmd->inline_sg;
++=09rsp->req.sg =3D &rsp->cmd->inline_sg[page_idx];
+ =09rsp->req.sg_cnt =3D sg_count;
+ }
+
+--
+2.43.0
+
 
