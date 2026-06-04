@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-21779-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21780-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 9ptsItyHIWruIAEAu9opvQ
-	(envelope-from <linux-rdma+bounces-21779-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 16:12:44 +0200
+	id b5OXDN6HIWrvIAEAu9opvQ
+	(envelope-from <linux-rdma+bounces-21780-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 16:12:46 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82909640B88
-	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 16:12:43 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84D8A640B8D
+	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 16:12:45 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=Nvidia.com header.s=selector2 header.b=DPC69VB5;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21779-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21779-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=Nvidia.com header.s=selector2 header.b=Q1Y1Bsxh;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21780-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21780-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=reject) header.from=nvidia.com;
 	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id F232630526E5
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jun 2026 13:52:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4A7BA3192847
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jun 2026 13:52:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68744219EA;
-	Thu,  4 Jun 2026 13:52:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F43647F2C6;
+	Thu,  4 Jun 2026 13:52:13 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012039.outbound.protection.outlook.com [40.107.209.39])
+Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012011.outbound.protection.outlook.com [40.107.209.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43FAD47ECD4;
-	Thu,  4 Jun 2026 13:52:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C699147ECCB;
+	Thu,  4 Jun 2026 13:52:11 +0000 (UTC)
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780581124; cv=fail; b=Mu5UIJuvaM/5oKEXghThBPhuaBVH3kSk43BO1Q0pp2fP2Ut1JHM9Xply62ZY2u1HewAF8BFtGNFytez71MnOc2XPJ8dY2+H977lsu3WsNfG/P03CPGj0TuVmC0Xn6S5pRjSDyiz8WAgSOl6gbWiDTQD5tpTf/wMQ+iT41sqPNXw=
+	t=1780581133; cv=fail; b=u4X+dEjvogh4raiEKodiWM51xquqFw8DwM0a/u1wnRl0XS2fcHpEj/cpAsl14vLlcmYxANoi8tq48rwTEUyByGypmqAhnpQhKjGSECSkYuXPA/Ktkvee1t2TueL9SQLEJlbzJUQJfluNk+cZS3+INA9stcvg7/Dpp8lzCUVlvNY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780581124; c=relaxed/simple;
-	bh=JfH7eC2xir5DBHqDXIG+9CPUaPIG27tBCjW+tcXmhWY=;
+	s=arc-20240116; t=1780581133; c=relaxed/simple;
+	bh=LpdaMvFNnPJLVeWUSoSb8fviGJQA+wM27clxRxKX3oE=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ONEZINX4Lw9C2v6clKvsV/hcRwHw8mZ9sixvwzmOfG4cDM+bQXaPkFWz+lQZUFYaPuLC6DMxfFzPKF3I0uRBfOiFgJesKYCiECjU+ScQpxX/gNMMWDUoPOnXYxnVUvZCkikTCd8u53cak/+xDe93Qqi3xPcx3Hxx1PwMUXG72ek=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=DPC69VB5; arc=fail smtp.client-ip=40.107.209.39
+	 MIME-Version:Content-Type; b=DvINDevMknuAbO2VOPbfIdxdTBVpJZ+LYFKxhtPnZamF9xtQXfHN+CMk/CCb37CLyvU2V+OBIP6h8n4zvCZWtbR+JMrZLYFBS4qI9e2NS1HTQU+Sqhz3NG5WAyOvthse3+Q4s2ZjryE6XIPeSf5JNlCG8CUcs5a/cZoe75qssls=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Q1Y1Bsxh; arc=fail smtp.client-ip=40.107.209.11
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=rKpViOUgCh0Dx9/29QjJFcg/tsprqguFrsdRfkVew3tnicSZ2PcMaCq5yvmJ7WOySX4tbxhR+cNNpXH+QphHloQbKL4qmJoNdcYioAw5rS14nvODQTLx4p1JxtClgDvf5DXHQZvw6iHEFeus4IfzoevtqHQr1l7USfC7U+q6txdQHvq0omgycujdE4GOkdDt/O7Dx2zBwY3nANYdcW+VGtvKwBRf7airgaU8d/+/nLCkPiU6YhfdEp6tT4+AJeSvOLwqpd69f6GF+rdbmMgDPYYYn/ojzPW2hlpfqtJ+NuCUZMIQcnQmGfX5CuTKbHaVXCr2FOb/M5zSv80KkzmTvw==
+ b=UBSAACv0sBuhXlMoJF4sNgHHcGNsRBytTdRAz/ZYmweZwfABSEgHFGA52sdHXInutlZktQJJ4S/nnyC12KrSX3RhRWstk41X8Rc5+0zXMF5NBSgWcEX7Wzx/8aUFlkFiSCzxr2egfGnvWJc0OVxMkaWGKnpeNB+fPSx4DaQ9RYnmQ6Akh1UwfrN2Y8Se86iH5vH7rdCHFmPjulrp29eAybVw4CbmOeTIj/T8odzaufGc1IVqSrByWOHoLqYlbZ/Mu2w8x/ECHj8hVdBsdTGtoN9ADHqe4aGDM4yopKH8cSU9qqoLj6YBbKg9tWLbyqcIwiC7Y1qdNs1yLX5ymm2L5w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PITvRE9bCzSQhcb5Q+awJpCDPK9jgj5CL5MlHF/hwRs=;
- b=Itnjr1iIm+aG13nwlZnLKs3+5qu3AjKwcsVXWTRjqp8gkJ4C/5QmY+TBxeBXWQr4keXY2k+RE9P843awG8sOb6U8PdL+9WKiJgDP9EzkIR+TG7G1wm6tc/T/ZIfibkLf1uY+03EuWK4Ii9qd2BsgFFCVHmMKJtBsh62ZItCWxFtwP0UyHWj8gCLCH4I4ZXdzfpLbOnytzfbOux7XGCSROOo1GxSsgoGP7m+GXchOsk+j79tgtW6p/LZ4PMuogtTFtSxC1joPTofrQ2Uyp9AJybjcgKgbQfrTwm6hHlpXELF4WFiNpDhmyVPUraoSctAVnOV6egKmuq8G60dGY0guQw==
+ bh=z0K5e4mrUgNtQo4YqNdaChmxqWfZZ+KtHkOqkA6VdPA=;
+ b=PCTXmQbkX7oZB2ZzdMjIYiNz8d1GXi/Ytf42XSjaYMvDMeVnSkURb11dHPyNQ9q9Z0gQtQlT77Xc31OgB4pX3r9ghvR60TTul6WLrLKvIhTxRXA/LafGTkhZRkWGf4narRq8BCdJc29U8dMyiN+GGOZuCdd7r1gv0QT1YLV34H2+RecxAPlbNsis9FsmI06J+NJgRQYQmwgNAZW1JSOZzXec6UWBqMt1akrNpq+fQp2OY+XdyaldomKQ6ScgB5dCiic5xqhWlq3nZIyQ3wXCZ4BMdG0cITW4goSWVH7RnhpG3JblkiRyTUdMSY8etKo+LV4syOIz7TAxgNM7Ac4kfg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -48,18 +48,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PITvRE9bCzSQhcb5Q+awJpCDPK9jgj5CL5MlHF/hwRs=;
- b=DPC69VB5DjoyhaRBnkMEeGT4IYtpiBL5n6+TMOM8qXmbHGUbXw4DLHEhkUyAAKJk4V/pAQ/Xii38V+1yfrpYwY2vtXKLlrc1We+nGnp4uvA5hg8zbM60dIL9i6jjE0VBlGyBb6KGEKu3Svp4LYtv2UktPlpioqmJXEBbJUh4x9kQl/+93gJkwoyt0ycDhXLqht2qc9qknpHUG17fMbbc+9MyyLjvpXBFLGvEu82ixG0ybKeYX+IrYdMIJCRZrTuJUV1DLPOv3tDQDr6tt+P+wPrJR/E7pwhkqHJMkJNBaok6TfQlXxGdKLmvFRLsGuqi697gpultwDXUrY4J0JYBsA==
-Received: from PH8PR07CA0045.namprd07.prod.outlook.com (2603:10b6:510:2cf::14)
- by PH7PR12MB6953.namprd12.prod.outlook.com (2603:10b6:510:1ac::21) with
+ bh=z0K5e4mrUgNtQo4YqNdaChmxqWfZZ+KtHkOqkA6VdPA=;
+ b=Q1Y1Bsxh5DGroNMXs+VMz9oJczix50OF/uDD1RMQ+O2P4XWCe2bketl75yXsYtiERRvjFzFuTvL4hQ+00n57eS8eRcBcjSBtTF9MMu/pMxahoTV+f6G8DvvEwZssHlNhyv+Zz/9ptmOhF5zg7r+2ZPVPpr7CfjxRc84n4y4+z0IPfFWdxHqtRO1zQVQfQUuv5VLe5KJGgtEo+Rn+RBWWY7p/17HVLveaTHQEXbWXATJG+m465hqm5sCmGw5jhIfbxdYsvvd6SXvDFRz5oVrQ4vDsK7B2i1036SVKnmfK+ZiKeyfiYgYv7EbLxX3j0wFMlIh2HkkJZE39wp/ld3gdZQ==
+Received: from SA1P222CA0092.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:35e::12)
+ by DM4PR12MB6352.namprd12.prod.outlook.com (2603:10b6:8:a0::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.8; Thu, 4 Jun 2026
- 13:51:53 +0000
-Received: from SN1PEPF00036F3D.namprd05.prod.outlook.com
- (2603:10b6:510:2cf:cafe::a2) by PH8PR07CA0045.outlook.office365.com
- (2603:10b6:510:2cf::14) with Microsoft SMTP Server (version=TLS1_3,
+ 13:52:00 +0000
+Received: from SN1PEPF00036F41.namprd05.prod.outlook.com
+ (2603:10b6:806:35e:cafe::11) by SA1P222CA0092.outlook.office365.com
+ (2603:10b6:806:35e::12) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.21.92.8 via Frontend Transport; Thu, 4
- Jun 2026 13:51:53 +0000
+ Jun 2026 13:51:59 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -67,20 +67,20 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.117.161 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.117.161) by
- SN1PEPF00036F3D.mail.protection.outlook.com (10.167.248.21) with Microsoft
+ SN1PEPF00036F41.mail.protection.outlook.com (10.167.248.25) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.92.5 via Frontend Transport; Thu, 4 Jun 2026 13:51:53 +0000
+ 15.21.92.5 via Frontend Transport; Thu, 4 Jun 2026 13:51:59 +0000
 Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
  (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 4 Jun
- 2026 06:51:35 -0700
+ 2026 06:51:41 -0700
 Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail203.nvidia.com
  (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 4 Jun
- 2026 06:51:34 -0700
+ 2026 06:51:41 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.7)
  with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Thu, 4 Jun
- 2026 06:51:28 -0700
+ 2026 06:51:35 -0700
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -95,9 +95,9 @@ CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
 	<eranbe@mellanox.com>, Saeed Mahameed <saeedm@mellanox.com>, Haiyang Zhang
 	<haiyangz@microsoft.com>, Joe Damato <joe@dama.to>, <netdev@vger.kernel.org>,
 	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net 1/4] net/mlx5e: Fix HV VHCA stats zero-sized buffer allocation
-Date: Thu, 4 Jun 2026 16:50:38 +0300
-Message-ID: <20260604135041.455754-2-tariqt@nvidia.com>
+Subject: [PATCH net 2/4] net/mlx5e: Fix HV VHCA stats agent registration race
+Date: Thu, 4 Jun 2026 16:50:39 +0300
+Message-ID: <20260604135041.455754-3-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20260604135041.455754-1-tariqt@nvidia.com>
 References: <20260604135041.455754-1-tariqt@nvidia.com>
@@ -112,31 +112,31 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF00036F3D:EE_|PH7PR12MB6953:EE_
-X-MS-Office365-Filtering-Correlation-Id: ed5924d6-d902-4607-f9f5-08dec2406f4f
+X-MS-TrafficTypeDiagnostic: SN1PEPF00036F41:EE_|DM4PR12MB6352:EE_
+X-MS-Office365-Filtering-Correlation-Id: 059b32bb-20af-48a7-a77c-08dec240731a
 X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|7416014|82310400026|376014|36860700016|56012099006|22082099003|18002099003|11063799006;
+	BCL:0;ARA:13230040|1800799024|7416014|82310400026|376014|36860700016|6133799003|3023799007|56012099006|5023799004|22082099003|18002099003|11063799006;
 X-Microsoft-Antispam-Message-Info:
-	wGmNmjjwv34j8ZavyhAxvJXjwiAeZoJ/Phh6Svnf+YYBws5Kn2Z5DBlkQQ6OJwLOCc4qZCR9dQoVuF0N6DqcK8lU6G5thc6JaYe6kxtX/6b7bLDRlAgZPn7/oH0HiMa4eaL6DPmz765zVGrI+eLcC/jhIPukNnjYI54KwM03Nq2ojvq0Kf5Z9y0jUeBV2r7tNSy/1yHilAE117DgXw0t2Pzz4jGxe0602zGkOdpL0q0ifGZB2QMR1aU3umJdGxCd00XDNzaektgTAKZnAAh+m4YAAqskhiM97dQtSFwxVN6x6CYg88hdqCb0z12Cd6nRV98bXXuBy7QfeytD+RwAdSrAWJAr1KDSYTSybCKb7IYo7hrxW1r/X8U8RI16+vuQa2llbn0Ztm2gfJgmKIDPI6jK93v0y6TmiXKwgkmZKg9RLd5/HZOZnUbSC0FwjIpcHQXmFL9VRAG/n5ZGalJPgct346+68ciLKWm5cNMb3TSLiWh7rgJg5jGeoX/wmsg/xBVlHnDZY2+SAeaN/56pv6/pYYLS60rv31n4/X89SEbju/1MDjDd/wRFdrL2FW/yyawJJRmClMTacZb86yq2voLv0VQshCQfUdGkly2TSYZdhMk/xInxV91qDDh8vokV2UvTdOz1nbSFb1QfE49ENk7qTd3DbhB4U2arCv5GvKYXbjCo/hWe7SXHBlFfbXaXeSNzIpwCSfKX50foGOP8auhs85o0S2RB0j95o3jul5k=
+	GRGKG3p7X0A82dcy1b/eJWhMgJCLAHtJQ0h80EzYenvYop5kIeVHfKFBz+rfC6DKjvGKX55Tz/1LkQc6eLH/sl0lSsXJYGKqu/ZMpRJetvAdGHlqPfYsSOqVd9TvQQ2SolFoxh6dxyMwgc8PzJp71dLYqIKYs0L/T2p5FkP1O65cVfStLDUS2i5M8lc+C3tCkdvK0GFhw7fvB1+H8jFjleyf4sTvz4oHBcACr2tFGJcgjwdnRUTqmrs+GxU3pN/9jT57Rg6NENKvTlrcoDZHrIQPCSvQMw8Zm3wfKqE2Qluad7mWn8TjZeeV8ZP1pj/NM4rg+F2O+dKVpDuDL+Oa3kE7nN0yHF9SYgs2bBw97bMPkoAKoAJq8CGPr7DeGeKvPA9yvgpxUC9z4xak/J78uy6EAOisM45LFqK1+12jxze0/9Z758lH1qqX2f1rZTlnlNp59ZRrHGs17A805d7WqGow9Y1R+cDFWr4UctQ+deJ4k1SwDNSWQeBgdSoaCPrDc126Zj88D9kGgiAK3Ojr4xDsPOz/9JYiFg4jpWqN5hM5leCAVYGtiPGwYs2HUJn6RPlQJGQzYnovxePhSdx/sYWyfT5rDjQxKD8AM19us34CHT8RkIXiwClftDIzGbUETPh1Sa/IDuOVUIkTXrDLnIcPe86GWLgFGVqCoGb++Vtkv1sjiyNILZiXz96q6zUU+osTHZL0CYx2ef+R9i1ECb/UTP+O/RIUKJN9iGCDka4=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(82310400026)(376014)(36860700016)(56012099006)(22082099003)(18002099003)(11063799006);DIR:OUT;SFP:1101;
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(82310400026)(376014)(36860700016)(6133799003)(3023799007)(56012099006)(5023799004)(22082099003)(18002099003)(11063799006);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	sv52emaWWIzzrB7lnry97scBVI6+92smeLu1909IuUq5ONlthodaA4cvo/zh3zIzG/0s7jF3KbshGLDdvW35zs66PRgWSjWoPfYHQf1cgaeaw1lvamaPiz0phWE43RiHH+dPxcQ0ijABh/oK96zxzDa6ascnzdnCeaD+KY16RJD6Oilh76d9oR++PVY3Oj/W/re0S6vNtmkMggJDE6MK3VbAvV5VRGZGRJ3dnQK+7x8gTK9N1FrEjXJZQWyFao7i3MybxfvL3AUwJrfHUGiHlxjsKHnusRwmGKZd2QiTrD15HUZIOqz1UraqC4/MkhIj4xXvUa8xc391Q0rBhGZSdqqVrcqBxYgaBdxUvAMFpWSS88FY7G8vZH1fNkxFl9vCBH5Ye0cC9rCc4nRCPm8lrOxS0KlmOxKUry6Ez0H2/0gs+dI/NEeIVR8+OB5Kc5lO
+	2PnfmvjleszzMFlI9v0ZiuoRuwXNQezoyRnXjC182ZsjTtmd0rsWcGfDU7R07FZLDUamLpvA71hd6IZbvHxFmWRqQU1tIVLY2lClUhOzj8aY0u/qJtIo0zHOa6GoqClkd8ESORNzLhTTG5WDlxXil87/C9WmTRum5GkBnhx1rfx6UlSSvMbwNaQSOqpmDVTNPYkjGVJfoTHg9MbM0ZB4mkWbvIPWeuKPA8fns/hvSETuC3InzgHHt4eleOAengcpuYzB3YNEK2s9OLq05xHesaysgKnDRJRE7jIo7m5zsdjQI+qZInWuspD722jIsU4MWQ2aG3BsnvR9RDG1v/mRXSw3Ql6jCoRbnch5cvNZyD6BWylRoQqUJxN/R0+qij+vjg6V/weh07hEM0LYYCf4w3gSDoEI3rt4r+8ghVgGB+qtud2ibwuUWTqEsYbqK0e3
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2026 13:51:53.3288
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2026 13:51:59.6704
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed5924d6-d902-4607-f9f5-08dec2406f4f
+X-MS-Exchange-CrossTenant-Network-Message-Id: 059b32bb-20af-48a7-a77c-08dec240731a
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF00036F3D.namprd05.prod.outlook.com
+	SN1PEPF00036F41.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6953
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6352
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [2.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -145,14 +145,14 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
 	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
 	RCPT_COUNT_TWELVE(0.00)[26];
-	TAGGED_FROM(0.00)[bounces-21779-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21780-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -164,90 +164,195 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,vger.kernel.org:from_smtp,Nvidia.com:dkim,nvidia.com:mid,nvidia.com:from_mime,nvidia.com:email];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[Nvidia.com:dkim,vger.kernel.org:from_smtp,nvidia.com:mid,nvidia.com:from_mime,nvidia.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	RCVD_COUNT_SEVEN(0.00)[9]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 82909640B88
+X-Rspamd-Queue-Id: 84D8A640B8D
 
 From: Feng Liu <feliu@nvidia.com>
 
-mlx5e_hv_vhca_stats_create() is called from mlx5e_nic_enable(),
-before mlx5e_open(). At that point priv->stats_nch is still zero,
-because it is only ever incremented in mlx5e_channel_stats_alloc(),
-which is reached only from mlx5e_open_channel().
+mlx5e_hv_vhca_stats_create() registers the stats agent through
+mlx5_hv_vhca_agent_create(). The helper publishes the agent in
+hv_vhca->agents[type] under agents_lock and immediately schedules an
+asynchronous control invalidation on the HV VHCA workqueue before
+returning to mlx5e.
 
-mlx5e_hv_vhca_stats_buf_size() therefore returns 0, and
-kvzalloc(0, GFP_KERNEL) returns ZERO_SIZE_PTR ((void *)16) rather
-than NULL. The "if (!buf)" guard does not catch this, and
-mlx5e_hv_vhca_stats_create() completes "successfully" with
-priv->stats_agent.buf set to ZERO_SIZE_PTR.
+The asynchronous invalidation invokes the control agent's invalidate
+callback, which reads the hypervisor control block and forwards the
+command to mlx5e_hv_vhca_stats_control(). That callback may either:
 
-Once channels are opened (priv->stats_nch > 0) and the hypervisor
-enables stats reporting, mlx5e_hv_vhca_stats_work() recomputes
-buf_len using the new non-zero stats_nch and calls
-memset(buf, 0, buf_len) on ZERO_SIZE_PTR, faulting at address 0x10.
+  - call cancel_delayed_work_sync(&priv->stats_agent.work), or
+  - call queue_delayed_work(priv->wq, &sagent->work, sagent->delay).
 
-Allocate the buffer based on priv->max_nch, which is set in
-mlx5e_priv_init() and is the upper bound on stats_nch:
+However, the delayed_work and priv->stats_agent.agent are only
+initialized after mlx5_hv_vhca_agent_create() returns to mlx5e:
 
-  - Add a separate helper mlx5e_hv_vhca_stats_buf_max_size() that
-    returns sizeof(per_ring_stats) * max(max_nch, stats_nch), and
-    use it for the kvzalloc() in mlx5e_hv_vhca_stats_create().
-  - Keep mlx5e_hv_vhca_stats_buf_size() (which returns based on
-    stats_nch) for the worker's active payload size, so the wire
-    format (block->rings = stats_nch) and the amount of data filled
-    by mlx5e_hv_vhca_fill_stats() are unchanged.
+    agent = mlx5_hv_vhca_agent_create(...);   /* publish + invalidate */
+    ...
+    priv->stats_agent.agent = agent;          /* too late */
+    INIT_DELAYED_WORK(&priv->stats_agent.work, ...); /* too late */
 
-The max(max_nch, stats_nch) guard handles the rare case where
-mlx5e_attach_netdev() recomputes max_nch downward across a
-detach/resume cycle while priv->stats_nch persists (mlx5e_detach_netdev
-does not call mlx5e_priv_cleanup, so stats_nch is only reset when
-the netdev is destroyed). Without the guard, the worker could compute
-buf_len from stats_nch and overrun the smaller buffer allocated based
-on the reduced max_nch.
+If the asynchronous control path runs before the two assignments
+above, it can:
 
-This mirrors the existing mlx5e pattern of preallocating arrays of
-size max_nch (e.g. priv->channel_stats) and lazily populating
-entries up to stats_nch on demand.
+  - Operate on an uninitialized delayed_work whose timer.function is
+    NULL. queue_delayed_work() calls add_timer() unconditionally, so
+    when the timer expires the timer softirq invokes a NULL function
+    pointer.
+  - Re-initialize the timer later through INIT_DELAYED_WORK() while
+    the timer is already enqueued in the timer wheel, corrupting the
+    hlist (entry.pprev cleared while the previous bucket node still
+    points at this entry).
+  - When the worker eventually runs, mlx5e_hv_vhca_stats_work() reads
+    sagent->agent (NULL) and dereferences it inside
+    mlx5_hv_vhca_agent_write().
 
-Fixes: fa691d0c9c08 ("net/mlx5e: Allocate per-channel stats dynamically at first usage")
+Fix this by:
+
+  - Initializing priv->stats_agent.work before invoking
+    mlx5_hv_vhca_agent_create(), so the work is always in a valid
+    state when the control callback observes it.
+  - Adding a struct mlx5_hv_vhca_agent **ctx_update out-parameter
+    to mlx5_hv_vhca_agent_create(). The helper writes the agent
+    pointer to *ctx_update before publishing into hv_vhca->agents[]
+    and triggering the agents_update flow, so any callback
+    subsequently invoked from that flow already sees a valid
+    priv->stats_agent.agent. This avoids having the control
+    callback participate in agent initialization.
+
+While at it, clear priv->stats_agent.{agent,buf} after teardown and
+on the agent_create() failure path. Without this, an enable/disable
+cycle hitting an early-return in create can lead to a UAF or
+double-destroy of stale pointers from the previous cycle.
+
+Fixes: cef35af34d6d ("net/mlx5e: Add mlx5e HV VHCA stats agent")
 Signed-off-by: Feng Liu <feliu@nvidia.com>
 Reviewed-by: Eran Ben Elisha <eranbe@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- .../net/ethernet/mellanox/mlx5/core/en/hv_vhca_stats.c    | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ .../mellanox/mlx5/core/en/hv_vhca_stats.c     | 22 ++++++++++++-------
+ .../ethernet/mellanox/mlx5/core/lib/hv_vhca.c |  8 +++++--
+ .../ethernet/mellanox/mlx5/core/lib/hv_vhca.h |  6 +++--
+ 3 files changed, 24 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/hv_vhca_stats.c b/drivers/net/ethernet/mellanox/mlx5/core/en/hv_vhca_stats.c
-index 195863b2c013..06cbd49d4e98 100644
+index 06cbd49d4e98..2e495442a547 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/en/hv_vhca_stats.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/hv_vhca_stats.c
-@@ -54,6 +54,12 @@ static int mlx5e_hv_vhca_stats_buf_size(struct mlx5e_priv *priv)
- 		priv->stats_nch);
+@@ -73,7 +73,7 @@ static void mlx5e_hv_vhca_stats_work(struct work_struct *work)
+ 	sagent = container_of(dwork, struct mlx5e_hv_vhca_stats_agent, work);
+ 	priv = container_of(sagent, struct mlx5e_priv, stats_agent);
+ 	buf_len = mlx5e_hv_vhca_stats_buf_size(priv);
+-	agent = sagent->agent;
++	agent = READ_ONCE(sagent->agent);
+ 	buf = sagent->buf;
+ 
+ 	memset(buf, 0, buf_len);
+@@ -135,11 +135,14 @@ void mlx5e_hv_vhca_stats_create(struct mlx5e_priv *priv)
+ 	if (!priv->stats_agent.buf)
+ 		return;
+ 
++	INIT_DELAYED_WORK(&priv->stats_agent.work, mlx5e_hv_vhca_stats_work);
++
+ 	agent = mlx5_hv_vhca_agent_create(priv->mdev->hv_vhca,
+ 					  MLX5_HV_VHCA_AGENT_STATS,
+ 					  mlx5e_hv_vhca_stats_control, NULL,
+ 					  mlx5e_hv_vhca_stats_cleanup,
+-					  priv);
++					  priv,
++					  &priv->stats_agent.agent);
+ 
+ 	if (IS_ERR_OR_NULL(agent)) {
+ 		if (IS_ERR(agent))
+@@ -148,18 +151,21 @@ void mlx5e_hv_vhca_stats_create(struct mlx5e_priv *priv)
+ 				    agent);
+ 
+ 		kvfree(priv->stats_agent.buf);
+-		return;
++		priv->stats_agent.buf = NULL;
+ 	}
+-
+-	priv->stats_agent.agent = agent;
+-	INIT_DELAYED_WORK(&priv->stats_agent.work, mlx5e_hv_vhca_stats_work);
  }
  
-+static int mlx5e_hv_vhca_stats_buf_max_size(struct mlx5e_priv *priv)
-+{
-+	return (sizeof(struct mlx5e_hv_vhca_per_ring_stats) *
-+		max(priv->max_nch, priv->stats_nch));
-+}
+ void mlx5e_hv_vhca_stats_destroy(struct mlx5e_priv *priv)
+ {
+-	if (IS_ERR_OR_NULL(priv->stats_agent.agent))
++	struct mlx5_hv_vhca_agent *agent;
 +
- static void mlx5e_hv_vhca_stats_work(struct work_struct *work)
- {
- 	struct mlx5e_hv_vhca_stats_agent *sagent;
-@@ -122,7 +128,7 @@ static void mlx5e_hv_vhca_stats_cleanup(struct mlx5_hv_vhca_agent *agent)
++	agent = READ_ONCE(priv->stats_agent.agent);
++	if (IS_ERR_OR_NULL(agent))
+ 		return;
  
- void mlx5e_hv_vhca_stats_create(struct mlx5e_priv *priv)
+-	mlx5_hv_vhca_agent_destroy(priv->stats_agent.agent);
++	mlx5_hv_vhca_agent_destroy(agent);
+ 	kvfree(priv->stats_agent.buf);
++
++	WRITE_ONCE(priv->stats_agent.agent, NULL);
++	priv->stats_agent.buf = NULL;
+ }
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/hv_vhca.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/hv_vhca.c
+index d6dc7bce855e..305752dab7bd 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/hv_vhca.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/hv_vhca.c
+@@ -190,7 +190,7 @@ mlx5_hv_vhca_control_agent_create(struct mlx5_hv_vhca *hv_vhca)
+ 	return mlx5_hv_vhca_agent_create(hv_vhca, MLX5_HV_VHCA_AGENT_CONTROL,
+ 					 NULL,
+ 					 mlx5_hv_vhca_control_agent_invalidate,
+-					 NULL, NULL);
++					 NULL, NULL, NULL);
+ }
+ 
+ static void mlx5_hv_vhca_control_agent_destroy(struct mlx5_hv_vhca_agent *agent)
+@@ -256,7 +256,8 @@ mlx5_hv_vhca_agent_create(struct mlx5_hv_vhca *hv_vhca,
+ 			  void (*invalidate)(struct mlx5_hv_vhca_agent*,
+ 					     u64 block_mask),
+ 			  void (*cleaup)(struct mlx5_hv_vhca_agent *agent),
+-			  void *priv)
++			  void *priv,
++			  struct mlx5_hv_vhca_agent **ctx_update)
  {
--	int buf_len = mlx5e_hv_vhca_stats_buf_size(priv);
-+	int buf_len = mlx5e_hv_vhca_stats_buf_max_size(priv);
  	struct mlx5_hv_vhca_agent *agent;
  
- 	priv->stats_agent.buf = kvzalloc(buf_len, GFP_KERNEL);
+@@ -284,6 +285,9 @@ mlx5_hv_vhca_agent_create(struct mlx5_hv_vhca *hv_vhca,
+ 	agent->invalidate = invalidate;
+ 	agent->cleanup   = cleaup;
+ 
++	if (ctx_update)
++		WRITE_ONCE(*ctx_update, agent);
++
+ 	mutex_lock(&hv_vhca->agents_lock);
+ 	hv_vhca->agents[type] = agent;
+ 	mutex_unlock(&hv_vhca->agents_lock);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/hv_vhca.h b/drivers/net/ethernet/mellanox/mlx5/core/lib/hv_vhca.h
+index f240ffe5116c..8b3974cf0ee4 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/hv_vhca.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/hv_vhca.h
+@@ -43,7 +43,8 @@ mlx5_hv_vhca_agent_create(struct mlx5_hv_vhca *hv_vhca,
+ 			  void (*invalidate)(struct mlx5_hv_vhca_agent*,
+ 					     u64 block_mask),
+ 			  void (*cleanup)(struct mlx5_hv_vhca_agent *agent),
+-			  void *context);
++			  void *context,
++			  struct mlx5_hv_vhca_agent **ctx_update);
+ 
+ void mlx5_hv_vhca_agent_destroy(struct mlx5_hv_vhca_agent *agent);
+ int mlx5_hv_vhca_agent_write(struct mlx5_hv_vhca_agent *agent,
+@@ -84,7 +85,8 @@ mlx5_hv_vhca_agent_create(struct mlx5_hv_vhca *hv_vhca,
+ 			  void (*invalidate)(struct mlx5_hv_vhca_agent*,
+ 					     u64 block_mask),
+ 			  void (*cleanup)(struct mlx5_hv_vhca_agent *agent),
+-			  void *context)
++			  void *context,
++			  struct mlx5_hv_vhca_agent **ctx_update)
+ {
+ 	return NULL;
+ }
 -- 
 2.44.0
 
