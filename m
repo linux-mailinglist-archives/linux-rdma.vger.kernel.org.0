@@ -1,54 +1,54 @@
-Return-Path: <linux-rdma+bounces-21727-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21724-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id +i0IFPHUIGo08QAAu9opvQ
-	(envelope-from <linux-rdma+bounces-21727-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 03:29:21 +0200
+	id 3nT/LObUIGoy8QAAu9opvQ
+	(envelope-from <linux-rdma+bounces-21724-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 03:29:10 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2FA763C339
-	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 03:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D9DA63C331
+	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 03:29:10 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=Nvidia.com header.s=selector2 header.b=Gl+BhzhL;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21727-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21727-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=Nvidia.com header.s=selector2 header.b="luin/KPF";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21724-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21724-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=reject) header.from=nvidia.com;
 	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 192513041A0E
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jun 2026 01:28:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C02C1303C629
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jun 2026 01:28:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C14401A6817;
-	Thu,  4 Jun 2026 01:28:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 537B9269CE7;
+	Thu,  4 Jun 2026 01:28:05 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazon11013033.outbound.protection.outlook.com [40.107.201.33])
+Received: from BL0PR03CU003.outbound.protection.outlook.com (mail-eastusazon11012017.outbound.protection.outlook.com [52.101.53.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9D0E266B46
-	for <linux-rdma@vger.kernel.org>; Thu,  4 Jun 2026 01:28:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8651261B8A
+	for <linux-rdma@vger.kernel.org>; Thu,  4 Jun 2026 01:28:03 +0000 (UTC)
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780536488; cv=fail; b=nZ1OKyb6CuQrBLGjupyc/bgt0+szvkVx2oFYSRKNes1Mi4T0hXUoCeQ70IKF/LlTooOWf8kjf7PWhfBmmo7ATjDk/RAODmEZX5NvuYU900yA2HM1TOmQZnqtB6iwtBn2BIGr+zTxokg3kHUNXdyWDN0UfytvDsgf9epWa11Rej0=
+	t=1780536485; cv=fail; b=DuR0ln9MlgmgVjlfJRxGBsFcd9yQeXDxXfhhEVPtoNFbvFH38JTYdy0q/an2JUxskfTuRxNQG1gKRDa2D+rmTX9c4x3u5OMQmaNn2zW5dAvNNIs20O6Q0Iv5jPt5b3qGolvaVaQwyTjzkdogGO9s8+0ompGDsrP045zFCXB16tY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780536488; c=relaxed/simple;
-	bh=pPc8V/s+H14s8uTChzVLgopQ3U5f47mspsUjW0hTQoI=;
+	s=arc-20240116; t=1780536485; c=relaxed/simple;
+	bh=0X9MpUq9Md6FnrKXnGhbNQv41xEYJssBUDg5quWYhfU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=BfXQXwfw0I+O7LZbdOzmkl+LpKOpQC7K7CgDouayXLO7l+RmE2DHP8tt15gL1wUYCNQPEGlu0gb0/gbqTM4GdOh4nc1ok/QXaZCIxMAsLHigoD+hlc8d8D1DbAAZe59NH7x+O/b6m1rh0XgeXH1EKFp36NfOTQuRak4I0raSbMs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Gl+BhzhL; arc=fail smtp.client-ip=40.107.201.33
+	 Content-Type:MIME-Version; b=tthJ3eIIQGWhiYYA4zRAgD63wEREA9yS2QdMgZiMkgHEOEh6Anu1lQ9paQdz3WID4nNDApKPt/sbTSxL5K93CbTRfrAarbnI6Z0oEtDInsdqxd13bMzdgS3xaDQ9+Oh8Lieo+7a/4fP55+BKtlCAfv9bDwXeSwmeMViLkC5ehiY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=luin/KPF; arc=fail smtp.client-ip=52.101.53.17
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=deZh/PS/vMtM78cJZIRHCb5Id/w9TuGk7Nyw5riWWOE6nSdt82h/UjYkyZOHfqhbvcJdfdhSOXMn3xwXTwyyyt/OVgJXugCkZB9f3Px6rMAJZfBl9XlTdQoW4EzxKutjEAY7r/UxyWjb/IjPfUhIozKNpqRrUCCKEpM8oCP9uOBCsozpZ/863yAR5Nm/WXbndY+udXqcBWuJiefA/Uo5VpvGj2+panfLKMLwHI97QUCc1iJkCQiRfxd3Y15uSQWoHozVe00GG6Uy5uCBqyFCsnR0Auc7D9euyH9uH+zSem96kEfAuo6UzTBK4ecQWD3e+k1RJWsnFK22s7uL+UjcCA==
+ b=kdv+YrecjDn26ZavGIry2ILHGmNiZ92RcrjKYrPvmRLHJZ4denAzRqL/frtMf4JgiczFWC6HALaYMV/dW5KnrUfDPonccy+SMbiPK/q4fk1U2+otMjgpQOFsYyPtcJDddK/7oGR/VvYhalO+AmFNTQPJBC8+g0zqLVNF0NDbRqo8+w1Eg8H3/QzggW/6j+u22VSQF8W5HGnz0W/lFFxE9VzsLvYYGOrhMB/mdgowkf0Dv4B/Bcfg8T7dBBwdeTvtDKvp09KfQ8H1dJm0FDOzvrxHvQ7Mmuaff0StyFIwksQRMjwaJM1Oi4pYOKOqzqLWs9dS9ft7YfkbhCq/KU2EiA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pEf/wVlwzo0VK2plDLKsWqfitL+xwcz9GWP9y678OUU=;
- b=xXVP3CZRIPziBULXQIK//tLSUICJDOK8YSkvhhzhJVMfl1NNVneyYvepLLfKoynuAouSrYA9H1n4l3GjlVXjAImzAzkEf0YyVmSWt1TNxzE+gPTw9wd1kYr6yskOgtKXHP8KJzEisjhk27uVtYJCk1Vk0iP5XNL3LTLuEw65WBfT1l1pJ7VXMqmGU4tJtwQDlUYXl/cXZOJ4p5E0dwFCndh7/UNUG8VXSrK4YE94EEAL9KPWnOsREHzzMzOCICNV5kNEBdeS5v4cw0+o9mn8O2EQFAFzMxN7QxO/OnAt9G3P8RxcqT8II79pzO2iMBBf7I4crHB7u7uAnXkES6K3lg==
+ bh=SGBGKYw7oz2M8QxXeKKqe8YxIDPwlFLk2hYzI2WMBGM=;
+ b=MTYBFa4DDXWXRXs5tomaIYHJ9Z/zJMfXsD7YolMb4h9Vb3ht37cdb2W5M1BXf8CBqVJ9K25B1yAfMFa/20d88ZVkoAiQdplxUu++FruZQfI7KVPU3B172Gu+fWBt3ZXhCFS3iDkRPT0WzsZ1lwRf5k7mzkVabWEPWtoFoZjOsvLEr5qX0Bcy23YeDz9u+aH4EQjapy1mJBQ3bgz1Nx4f9r6BmGykgu4nD0Wnj8NenkE7XdaJUKf6pT/IXsI5e/I+dAwy7rMqBlVln2Ze+8C58imohXrue3g24k7hMNuhzXtxFAPN+y5UuJ4PilgXk37UPmaqCID8Ka1MnbxX7dCZYQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pEf/wVlwzo0VK2plDLKsWqfitL+xwcz9GWP9y678OUU=;
- b=Gl+BhzhLA5iab5tCX7U1rboylJPFshJE5ZSvhcwcFADMhekHB/Hu8vCTstSIbUw2c5AMGvlaahtpGWdW1+w3USaCqV9/zIrvGu+7cv3QyFPpQPN8smHBi63Y1RvdMnMSA3495PzDzlWh1lzPIeD97IQLSsq9SJYnCcqtoiUDIKsOP4BDq5IEKAOKOG5SAZVDSotKF3fqlnFQ2DfnDa61j4E9W4Rqfhtjw7fO5gAp4DHNzj+HjuqOt4OazCMdAREdiVj4eGX2AcPxVs5lrGIfdRXqWAgiSJ+nVGxcFdpWaGmNUfX83P2ujGVea0wFqhpsiTUbFVxhWww4WTbB6VklQg==
+ bh=SGBGKYw7oz2M8QxXeKKqe8YxIDPwlFLk2hYzI2WMBGM=;
+ b=luin/KPFgRXE8HkCPUbFlfBf6C2TzXyCbGb9ifZZYae9HKESZCqAxj8DZ/jGKtkhwheal8UeBxPlnfI3hhT4tyTQbQnkNIEmZJGpWV0k83/FcFoLkdtfqmF/w+Jq1hjOk757OUvnfqhzcTPLJwc8sxzpF2Fzxwtk7KTJRZ2gMCrLyeyIGREer0k0UoqCuwv8AAkCYSNrROK88fxco6vTdrneiNr/J7TShxuoh+PneGGSrfG1kMbWPn1pzt5qOCsdrH+wMNhgSq0HyaTaZYJ6jhG9FT5tDjvINF487zfAeAePXfLt3p0z063JcjxoRi/ozj+Q7c6HtVf3jXpoOgsUAQ==
 Received: from LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19)
  by IA0PR12MB8981.namprd12.prod.outlook.com (2603:10b6:208:484::18) with
  Microsoft SMTP Server (version=TLS1_2,
@@ -70,15 +70,15 @@ Cc: Doug Ledford <dledford@redhat.com>,
 	Noa Osherovich <noaos@mellanox.com>,
 	patches@lists.linux.dev,
 	Steve Wise <swise@opengridcomputing.com>
-Subject: [PATCH 09/10] IB/mlx5: Push pdn above pagfault_real_mr()
-Date: Wed,  3 Jun 2026 22:27:48 -0300
-Message-ID: <9-v1-29ebd2c229b5+fd5-ib_mr_pd_jgg@nvidia.com>
+Subject: [PATCH 10/10] IB/mlx5: Push pdn above pagefault_dmabuf_mr()
+Date: Wed,  3 Jun 2026 22:27:49 -0300
+Message-ID: <10-v1-29ebd2c229b5+fd5-ib_mr_pd_jgg@nvidia.com>
 In-Reply-To: <0-v1-29ebd2c229b5+fd5-ib_mr_pd_jgg@nvidia.com>
 References:
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: YT4P288CA0096.CANP288.PROD.OUTLOOK.COM
- (2603:10b6:b01:d0::25) To LV8PR12MB9620.namprd12.prod.outlook.com
+X-ClientProxiedBy: YT3PR01CA0032.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:82::31) To LV8PR12MB9620.namprd12.prod.outlook.com
  (2603:10b6:408:2a1::19)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -88,56 +88,56 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: LV8PR12MB9620:EE_|IA0PR12MB8981:EE_
-X-MS-Office365-Filtering-Correlation-Id: 963ceb20-ebc0-43a1-292a-08dec1d87f95
+X-MS-Office365-Filtering-Correlation-Id: 340764e1-4d13-43ce-d306-08dec1d87fab
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230040|366016|1800799024|376014|18002099003|22082099003|56012099006|11063799006;
 X-Microsoft-Antispam-Message-Info:
-	lVx+kB0dTK1wdBOnJRM5PXEYcq7kYolPqyaszbwGZpfvqsFi4LMsVFwppSZSJBXEEvLYAsEkHEh87NeLxpKSgoRBtR56IRe4gj2+4DDc8JrnowhfYCJU0lqDsiydNtQBOunK2xyPrizQhDGDlMQRpBPJ23xN6B5QJ+/7a2NHuziQjzbKUb0fSijO7aL2VlFxfhzdTtKlG2qMXGqoML39zK7jOI1OJoWcfokk5tqMyJVjVrgM9VKvHVYsDIzj123KjWBWsLDYeHC0RKpPNWoEmqEwqDpU97TaPBYcNYjeDk43jPMSb0Ffok/OunsK9bA8Va5gS0eiRaVugZe9aM7lS0g82NEDm7Iwvl6cEmHGyCUYwtMKENQiIN3D/AKdGV4PdRLHE7urXiffJCdhp8gM7xl8cSydQaLNBFPpABBGuh3/VGiLwDimuk4dgDboJi5J9ysynJcozDt0Xdri+0HdCD2iWZ56/Im8q/SYWj2s3lGM/Cy9T+gzvF1+OoFpUNRozAwLM5T0p1swz+wdHWf9YIOp8M8QbAwPt4nsmjSZEKuRPreRxV0fK2JBM/Wp45vBVbgiUE4wY4popFdnSw15lgrrl0c8O1NUBycvXeadN16C8zFl5QiDucVCIUXnVAjq/Wjn8xV56AsRQCpJzGKXIQI/7ID9wC4HVNxsNu8RR7A6lr+Y77Kh+nZPN8jsqtLN
+	+A0vstcoaVkPjYPJcGsNI3xY435MjxMnUvyLg9FaDayCrn9/fW8Dy+XqejJuZBtj6TsA8iS96ApMdm/5RT/NAlRX7ajVF277dh5mxqwg15ZWK5sztYZ0tcC+Tv5ujM4JPJtlcnCFV0hebWP8boVIEaA++6pzCunORnbn0m6Wy6AOYROXIu0yV8gVlIwT7aYH7F/+fPTTX6Uzlqe8oEb3psHKtzVy6qUfwBebDKIvU/GapbaKP7pXu1gTGNQjka/m0nZ47ADcBoBFBgD992xElk3RcqBL7wFmNzofxkddZfudnKqS6JXzb/x3E0ut2faGQadRtacXQlnvkkeVDibT3Ai4klT7nX4oDWJBXnbmig+XQ6tl30ZokDZAGRk1YoJF0eW0xkCGNASNbKXyQQIVG3gNh7OdKboBavwjZhUNR/h5lWn1hXOnFJmn5pQ2gyX4C5Ro/IIjibqs1fCntEMr8GdLpRX8D4ikug3PDFZR1h8VSykktGNFwz03PPro/UYbtNNPtv1rHBiwlNUT4NJ3MX7b/utl4TIFp/ijdb4GDS9A5Gp5f7KueEX4xOQiUenQuolYx94zGkbGoOkJauMxHEPn6gyJOhnv/h8IEg9sZt5VlNGcINvKOxmbBh8Be5NAtPEHYV5xP10C2WyuhXT5cANzBCceQzlYc/IdzAoI08iM/AyMV+uviN5CHL+vpxJ+
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9620.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(18002099003)(22082099003)(56012099006)(11063799006);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?3YJ8Fv0AeB2nzT2zC8lP9lfEfYkZ1JZK46q1pkSq5Z6oR7mfyEKb+5MZzCkS?=
- =?us-ascii?Q?ozYGmTHvbvBJIuZcTWsku/clYJ9zzd6gen4akBQnrt4mJbLktpr4RPMgs7sR?=
- =?us-ascii?Q?WKOUyA5O24ehx7FFZfyHCaMPKKo30v066fi78hy7pyS3/IKjVOfBMloaM0yg?=
- =?us-ascii?Q?xEpaV/J1yJSYnVzW1Qf8UhbudJNxYJ7iZlH4yD2lWQVuQ0WztAWRmfd3Q9qd?=
- =?us-ascii?Q?1lKYKQG3Atqmrn3T6+GsUPJ7iocZTkxbRwUuCZogx/G2g7vRH5SeGEzNzSU6?=
- =?us-ascii?Q?FdOfmcJKIHbGhDyMYbHDeWq0JwBk5UxyLMSiJAsAPR+oNDPB/sweN5JbbP42?=
- =?us-ascii?Q?juXuT5Z/HCI2E6YQD/nWIKig8HzvKkUgDjBacuZUhZOVXN6aVOOQsRa+yaYN?=
- =?us-ascii?Q?K99Qb2W9VbIrJ+LA7AKSw4ZAlONdYqecO9RtoIzV5C/TwXUf4ndZARVgsFRs?=
- =?us-ascii?Q?OCW2x49J1kXlrkA6mi1UVIMbLTvr7+ALU+TrEb5UGnrQMROmXt6YMvyJU7P0?=
- =?us-ascii?Q?7A1bLnaDo9+QY37M5+LqsPrIxnGXJBOkZGPb1CF0XrFvjS8l9/7Dr3dGNlbT?=
- =?us-ascii?Q?fAZ+bkTMK74/OVj4eoSBmje0p1ot/1FwW5hF8OIFeIoxSRJT3/eV5I5hHpFr?=
- =?us-ascii?Q?uzKY3u2ZBSPDAyz9fbFZ75wibLmf3jI0ZdU+DgmfuUuqmgh9AOEPg8apAzSN?=
- =?us-ascii?Q?x14taxHgZoYGLPxCDbQbgDAgJaevwFaxLuHgLiaF/vxQ7/ejqP0vrN+TsBpd?=
- =?us-ascii?Q?G+bZOe/MUUrjf7dkA8+FINH+xKOFQmXdECYTVQcyMcFAaPf+09z0IKS7bnQ4?=
- =?us-ascii?Q?cYR6DBeJlQRCLz48u/iRXvnnc2UhrT3fDM5Wxa4Zyuv9p0MzPwKFhiTL2hsV?=
- =?us-ascii?Q?ypdOKXGCu59w3Teb0Bv6ZJex5+Y22a+GlGDe86QOnApZSjTZU4Lt5vrExASf?=
- =?us-ascii?Q?M2SE04ktDE2qgh3Wb/GAP8/VQJ+QgjR5lBCtfHElfZV0K1DTf6JdvyzeIa4k?=
- =?us-ascii?Q?FCqMcWTTOgIJfbJfLRiGXI6Fm3fh14mI0JnUz0obasGtdasIn9fCJHzRNAYL?=
- =?us-ascii?Q?nxYb7aY2wlv2x/d6JlNs+gjVVJYkP3XFbddCFWZ/g3g0nP+slMbcnMyPF0xB?=
- =?us-ascii?Q?HnjKRi9wkuOJ3KVywYNCkfDOKUmyt0blNnpeyW3PcvLM8eu2rirfOZOKSRwm?=
- =?us-ascii?Q?+/mDV3HUPSHPHNfgYi6XW2i/4pWgGTTAXv2a8UbUct4IbAhn3XiypiDo19o9?=
- =?us-ascii?Q?hYWgH0EOiGrWDAVA2LX+GtFvtWJpp5y4haVTGbwgzrLNrozRr4cKQ97HKffr?=
- =?us-ascii?Q?4DIla4c6/e/tDts8kFJbnoIkI5kAfReq8+Z9sH0+y+iiuRE9Iu/FHq6SP2+f?=
- =?us-ascii?Q?zm+PijASqbR6ODEcVra0XwsK2L4k4f0aw45JyPuFnGhKm1/a8qOt3yFi4G8Z?=
- =?us-ascii?Q?c9vuF7moJpQLPGeUEYXuLC5Ylw/1O0tevrFMAayovkpXPR1Q+m6gmcj8HHZE?=
- =?us-ascii?Q?FA49gP/PmrCRw/pxOCB9MGdDN06es8InPxaIV1d8aU/i1gV92a/XyK+BOqWG?=
- =?us-ascii?Q?CoAh+fzvqOf7Vdy9sZlRfV6uUVHY47e7PfTjwq8z5CO6stk+ILeEEx6+AKKl?=
- =?us-ascii?Q?IVu2vB2wIo5L4nAm7OYLBzHxULTuyE/63FUY3UhZ1zF5EamJXpEy8g46QKMw?=
- =?us-ascii?Q?38e171T3dyM8EjaU+U2tyep/UzzDTs7+EzrHHxUQwx1mKlB8?=
+	=?us-ascii?Q?HG4S5VVJkRishujDDIARO7EGQUBth34U8I8+Cr0vFEmVXy/6rzngZMpalCRx?=
+ =?us-ascii?Q?oLCuH+L6UUybNOC71bD79H7y5xxG+hBYBwKTAhGIjIy7W9h0ZXatjukH3Rhe?=
+ =?us-ascii?Q?MFymFic3FD9f6Ql/vaDgDdD+bpzE9NEQj4irJ7srtWQnF/LBWZVIvRyF+Zbv?=
+ =?us-ascii?Q?YbzTBOK46DgWbG3aARwhvWWaphlcbplXR+OehGtdKc6WxSC4lffM2fkpLr6t?=
+ =?us-ascii?Q?KgnInmTt11PdDR7yncWRmGemvDcGdnE5yUQRCN5Zr2JH3OVfasYT16SVrprA?=
+ =?us-ascii?Q?AreNUcaCFXQUazqKDXrzS0hbe3AM8lBDCsYG+pkE1orAA+V5/WG1JnRoRlCS?=
+ =?us-ascii?Q?hfmTIyh/2y17VGJGZhlT/znX2zF8oQVwXmeb1yRc+YZT/98DqWktgks6Pm0o?=
+ =?us-ascii?Q?dbAJt1uY/flyDhC1777gaqy+mTYuFyPg5LlYMtO4xolsTKRz+izRn7FuUUBY?=
+ =?us-ascii?Q?2irtWNr8pgkfNKHyhAvQojyvaZ9C3Vq6jvinCSjQOyAeZyGkKpSBC0VnKJvo?=
+ =?us-ascii?Q?rPlsCE4tXLFzx/ckEgO1L5spfBqWdFNNtkgr5pQuwqaV7nP3HrgQ5z0TBlVF?=
+ =?us-ascii?Q?23ky19xnu/IKfuGI0PP1h53XzTEHeAjYfo/W6iLTm22OG1PJgDaSuKsqvJIU?=
+ =?us-ascii?Q?srnEnBaBnb8r793cMrLDw1qaXLHh3YgBl7LZ2BZvUk7OiCaeUt0YWgyls7x8?=
+ =?us-ascii?Q?qpkzzv9rPsn9iq8iRNwjLVlZNHPkQMyMKe9yhiOBtJRMueN4eKQ6/iH33wFn?=
+ =?us-ascii?Q?lcJ+hYk78a4fUuNx4g+aORViqDWy1Od2Q7La+U0qxTdF9ySazBkL12RDuKNV?=
+ =?us-ascii?Q?MFMotCUADitXFQnw1TuqCxKFH7KYaTkF51JmuceonHQTvqUp1fVaxiosMI7q?=
+ =?us-ascii?Q?O7yvCTSUtXP8ue2i/hnEi1Ch2et9uL1uBsy+GC9V+iygz41EWmSP45zOFGs3?=
+ =?us-ascii?Q?GfqA7wgdMsKDLvBmx6LaqkK7dkXDu5gyksDaWfNBMa2TgAIPwmASZ8tGRVw1?=
+ =?us-ascii?Q?89e3p8LnldCVRoyk8rSOEEtyMzHQIXE18pncgAF5ynWPABTJ2yCXX/Mb2dTm?=
+ =?us-ascii?Q?BR11dLcXZQuikWIZhhYWu56WMZ3K6bMFLhF2G2eqQdrLR/91LaBPLvId2Auu?=
+ =?us-ascii?Q?AFsyLHaUHtpKsYFMNqN2Jg3SZoydUsyVX/fpP+vPjrvj51i6xWZ7zpPhnHUb?=
+ =?us-ascii?Q?nESlmWYIsExwgYfbUTgnlwMCUPROz55w8eIOsd4m+K99HvpZTwo3eLD/dWzm?=
+ =?us-ascii?Q?1l7w4l4VNYFy7Oax9MSyJNExapysqVIZaAibxipGJoQbZxsM2l+pGBq0wvA/?=
+ =?us-ascii?Q?lhp6OseVhFE8/GXSiPOXRWj7eVHuJplaWsqjIjdDj37mswfYzpMv1qNMG6qc?=
+ =?us-ascii?Q?w1TvJUfte4WIalwoY/zHc47K3hhaht1GVcuyYWgOPfJMUfY71iy4H/GHr/4Z?=
+ =?us-ascii?Q?zg+7hbm7HZRCFJHCqiyRgBa804ixbKDjOPeV3VH+z9ckbnjxvTGFtqhEkAtc?=
+ =?us-ascii?Q?v46US5CEw3T4mA5sGU+pVWAVQ2DtI3fXrMD8KK79jsw9I4uO3WGkDPGemqZP?=
+ =?us-ascii?Q?0HUkHRnaUVtf1xmRUMQN8cP59e70KDDrI6uu+Qnh4hsCARn1AjzuL/1yLcDI?=
+ =?us-ascii?Q?GCB9iLeTc58HoMsKTgvdSLH3xQsLOvEJouAd2ml4/kqNIySzp085Vl7rU9B+?=
+ =?us-ascii?Q?vHnBYLSGowpfmwM+4aaDudoEZ1PWtC3Gpnyu7qye4U+I2yeB?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 963ceb20-ebc0-43a1-292a-08dec1d87f95
+X-MS-Exchange-CrossTenant-Network-Message-Id: 340764e1-4d13-43ce-d306-08dec1d87fab
 X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9620.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2026 01:27:53.3863
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2026 01:27:53.5395
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: s0Dz0rntAfXjnjdvwM/mxnljptWri8yF6Lm97JFWRKCYs4rUXwOI2VVNi/Km1AKY
+X-MS-Exchange-CrossTenant-UserPrincipalName: qoUqHqcwe+b0C8mdB+xcgF3X6/jA9D9wxbFqr+aevSeDJDsL30vNtAwen1rNDDdC
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8981
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [1.34 / 15.00];
@@ -153,7 +153,7 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21727-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21724-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS(0.00)[m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:dledford@redhat.com,m:edwards@nvidia.com,m:leonro@mellanox.com,m:leonro@nvidia.com,m:matanb@mellanox.com,m:michaelgur@nvidia.com,m:noaos@mellanox.com,m:patches@lists.linux.dev,m:swise@opengridcomputing.com,s:lists@lfdr.de];
 	FORGED_SENDER(0.00)[jgg@nvidia.com,linux-rdma@vger.kernel.org];
@@ -171,131 +171,132 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[Nvidia.com:dkim,vger.kernel.org:from_smtp,nvidia.com:mid,nvidia.com:from_mime,nvidia.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:mid,nvidia.com:from_mime,nvidia.com:email,vger.kernel.org:from_smtp,Nvidia.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: A2FA763C339
+X-Rspamd-Queue-Id: 0D9DA63C331
 
-Remove the mlx5_mr_pdn() in pagefault_real_mr() by pushing the pdn up, all
-the callers use 0 since they don't pass MLX5_PF_FLAGS_ENABLE except the
-ioctl reg_mr path which can use the ioctl pd.
+Remove the mlx5_mr_pdn() inside pagefault_dmabuf_mr(), the only user of
+the pdn is the init path which is inside an ioctl.
 
-Assisted-by: Codex:gpt-5-5
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  4 ++--
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |  9 ++-------
  drivers/infiniband/hw/mlx5/mr.c      |  2 +-
- drivers/infiniband/hw/mlx5/odp.c     | 20 ++++++++++++--------
- 3 files changed, 15 insertions(+), 11 deletions(-)
+ drivers/infiniband/hw/mlx5/odp.c     | 21 +++++++++++----------
+ 3 files changed, 14 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 0a2b8ede0d818a..1c88a11f8dfc93 100644
+index 1c88a11f8dfc93..74613f53483384 100644
 --- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
 +++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1422,7 +1422,7 @@ int mlx5_odp_populate_xlt(void *xlt, size_t idx, size_t nentries,
- int mlx5_ib_advise_mr_prefetch(struct ib_pd *pd,
+@@ -1213,11 +1213,6 @@ static inline struct mlx5_ib_pd *to_mpd(struct ib_pd *ibpd)
+ 	return container_of(ibpd, struct mlx5_ib_pd, ibpd);
+ }
+ 
+-static inline u32 mlx5_mr_pdn(struct mlx5_ib_mr *mr)
+-{
+-	return to_mpd(mr->ibmr.pd)->pdn;
+-}
+-
+ static inline struct mlx5_ib_srq *to_msrq(struct ib_srq *ibsrq)
+ {
+ 	return container_of(ibsrq, struct mlx5_ib_srq, ibsrq);
+@@ -1423,7 +1418,7 @@ int mlx5_ib_advise_mr_prefetch(struct ib_pd *pd,
  			       enum ib_uverbs_advise_mr_advice advice,
  			       u32 flags, struct ib_sge *sg_list, u32 num_sge);
--int mlx5_ib_init_odp_mr(struct mlx5_ib_mr *mr);
-+int mlx5_ib_init_odp_mr(struct mlx5_ib_mr *mr, struct ib_pd *pd);
- int mlx5_ib_init_dmabuf_mr(struct mlx5_ib_mr *mr);
+ int mlx5_ib_init_odp_mr(struct mlx5_ib_mr *mr, struct ib_pd *pd);
+-int mlx5_ib_init_dmabuf_mr(struct mlx5_ib_mr *mr);
++int mlx5_ib_init_dmabuf_mr(struct mlx5_ib_mr *mr, struct ib_pd *pd);
  #else /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
  static inline int mlx5_ib_odp_init_one(struct mlx5_ib_dev *ibdev) { return 0; }
-@@ -1451,7 +1451,7 @@ mlx5_ib_advise_mr_prefetch(struct ib_pd *pd,
+ static inline int mlx5r_odp_create_eq(struct mlx5_ib_dev *dev,
+@@ -1455,7 +1450,7 @@ static inline int mlx5_ib_init_odp_mr(struct mlx5_ib_mr *mr, struct ib_pd *pd)
  {
  	return -EOPNOTSUPP;
  }
--static inline int mlx5_ib_init_odp_mr(struct mlx5_ib_mr *mr)
-+static inline int mlx5_ib_init_odp_mr(struct mlx5_ib_mr *mr, struct ib_pd *pd)
+-static inline int mlx5_ib_init_dmabuf_mr(struct mlx5_ib_mr *mr)
++static inline int mlx5_ib_init_dmabuf_mr(struct mlx5_ib_mr *mr, struct ib_pd *pd)
  {
  	return -EOPNOTSUPP;
  }
 diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index a56443b9053734..46847054491f50 100644
+index 46847054491f50..193f874482edf1 100644
 --- a/drivers/infiniband/hw/mlx5/mr.c
 +++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -842,7 +842,7 @@ static struct ib_mr *create_user_odp_mr(struct ib_pd *pd, u64 start, u64 length,
- 	if (err)
- 		goto err_dereg_mr;
+@@ -969,7 +969,7 @@ reg_user_mr_dmabuf(struct ib_pd *pd, struct device *dma_device,
+ 		mr->data_direct = true;
+ 	}
  
--	err = mlx5_ib_init_odp_mr(mr);
-+	err = mlx5_ib_init_odp_mr(mr, pd);
+-	err = mlx5_ib_init_dmabuf_mr(mr);
++	err = mlx5_ib_init_dmabuf_mr(mr, pd);
  	if (err)
  		goto err_dereg_mr;
  	return &mr->ibmr;
 diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index 50804b4c90e477..2dcc4f5339f9d3 100644
+index 2dcc4f5339f9d3..1badec9bf52708 100644
 --- a/drivers/infiniband/hw/mlx5/odp.c
 +++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -687,12 +687,16 @@ void mlx5_ib_free_odp_mr(struct mlx5_ib_mr *mr)
- 	}
+@@ -836,17 +836,15 @@ static int pagefault_implicit_mr(struct mlx5_ib_mr *imr,
  }
  
-+/*
-+ * pdn must be valid only when xlt_flags updates the mkey PD. In this path that
-+ * is only MLX5_PF_FLAGS_ENABLE. DOWNGRADE and SNAPSHOT leave the PD masked out.
-+ */
- #define MLX5_PF_FLAGS_DOWNGRADE BIT(1)
- #define MLX5_PF_FLAGS_SNAPSHOT BIT(2)
- #define MLX5_PF_FLAGS_ENABLE BIT(3)
- static int pagefault_real_mr(struct mlx5_ib_mr *mr, struct ib_umem_odp *odp,
- 			     u64 user_va, size_t bcnt, u32 *bytes_mapped,
--			     u32 flags)
-+			     u32 flags, u32 pdn)
+ static int pagefault_dmabuf_mr(struct mlx5_ib_mr *mr, size_t bcnt,
+-			       u32 *bytes_mapped, u32 flags)
++			       u32 *bytes_mapped, u32 flags, u32 pdn)
  {
- 	int page_shift, ret, np;
- 	bool downgrade = flags & MLX5_PF_FLAGS_DOWNGRADE;
-@@ -722,7 +726,7 @@ static int pagefault_real_mr(struct mlx5_ib_mr *mr, struct ib_umem_odp *odp,
- 	 * ib_umem_odp_map_dma_and_lock already checks this.
- 	 */
- 	ret = mlx5r_umr_update_xlt(mr, start_idx, np, page_shift, xlt_flags,
--				   mlx5_mr_pdn(mr));
-+				   pdn);
- 	mutex_unlock(&odp->umem_mutex);
+ 	struct ib_umem_dmabuf *umem_dmabuf = to_ib_umem_dmabuf(mr->umem);
+-	struct mlx5_ib_dev *dev = mr_to_mdev(mr);
+ 	int access_mode = mr->data_direct ? MLX5_MKC_ACCESS_MODE_KSM :
+ 					    MLX5_MKC_ACCESS_MODE_MTT;
+ 	unsigned int old_page_shift = mr->page_shift;
+ 	unsigned int page_shift;
+ 	unsigned long page_size;
+ 	u32 xlt_flags = 0;
+-	u32 pdn = 0;
+ 	int err;
  
- 	if (ret < 0) {
-@@ -788,7 +792,7 @@ static int pagefault_implicit_mr(struct mlx5_ib_mr *imr,
- 		      user_va;
+ 	if (flags & MLX5_PF_FLAGS_ENABLE)
+@@ -865,10 +863,6 @@ static int pagefault_dmabuf_mr(struct mlx5_ib_mr *mr, size_t bcnt,
+ 		err = -EINVAL;
+ 	} else {
+ 		page_shift = order_base_2(page_size);
+-		if (mr->data_direct)
+-			pdn = dev->ddr.pdn;
+-		else
+-			pdn = mlx5_mr_pdn(mr);
+ 		if (page_shift != mr->page_shift && mr->dmabuf_faulted) {
+ 			err = mlx5r_umr_dmabuf_update_pgsz(mr, xlt_flags, pdn,
+ 							   page_shift);
+@@ -915,7 +909,7 @@ static int pagefault_mr(struct mlx5_ib_mr *mr, u64 io_virt, size_t bcnt,
+ 		return -EFAULT;
  
- 		ret = pagefault_real_mr(mtt, umem_odp, user_va, len,
--					bytes_mapped, flags);
-+					bytes_mapped, flags, 0);
+ 	if (mr->umem->is_dmabuf)
+-		return pagefault_dmabuf_mr(mr, bcnt, bytes_mapped, flags);
++		return pagefault_dmabuf_mr(mr, bcnt, bytes_mapped, flags, 0);
  
- 		mlx5r_deref_odp_mkey(&mtt->mmkey);
- 
-@@ -930,19 +934,20 @@ static int pagefault_mr(struct mlx5_ib_mr *mr, u64 io_virt, size_t bcnt,
- 				    ib_umem_end(odp) - user_va < bcnt))
- 			return -EFAULT;
- 		return pagefault_real_mr(mr, odp, user_va, bcnt, bytes_mapped,
--					 flags);
-+					 flags, 0);
- 	}
- 	return pagefault_implicit_mr(mr, odp, io_virt, bcnt, bytes_mapped,
- 				     flags);
- }
- 
--int mlx5_ib_init_odp_mr(struct mlx5_ib_mr *mr)
-+int mlx5_ib_init_odp_mr(struct mlx5_ib_mr *mr, struct ib_pd *pd)
- {
- 	int ret;
- 
- 	ret = pagefault_real_mr(mr, to_ib_umem_odp(mr->umem), mr->umem->address,
- 				mr->umem->length, NULL,
--				MLX5_PF_FLAGS_SNAPSHOT | MLX5_PF_FLAGS_ENABLE);
-+				MLX5_PF_FLAGS_SNAPSHOT | MLX5_PF_FLAGS_ENABLE,
-+				to_mpd(pd)->pdn);
+ 	if (!odp->is_implicit_odp) {
+ 		u64 offset = io_virt < mr->ibmr.iova ? 0 : io_virt - mr->ibmr.iova;
+@@ -951,12 +945,19 @@ int mlx5_ib_init_odp_mr(struct mlx5_ib_mr *mr, struct ib_pd *pd)
  	return ret >= 0 ? 0 : ret;
  }
  
-@@ -1575,8 +1580,7 @@ static void mlx5_ib_mr_memory_pfault_handler(struct mlx5_ib_dev *dev,
- 	ret = pagefault_mr(mr, prefetch_va, prefetch_size, NULL, 0, true);
- 	if (ret < 0) {
- 		ret = pagefault_mr(mr, pfault->memory.va,
--				   pfault->memory.fault_byte_count, NULL, 0,
--				   true);
-+				   pfault->memory.fault_byte_count, NULL, 0, true);
- 		if (ret < 0)
- 			goto err;
- 	}
+-int mlx5_ib_init_dmabuf_mr(struct mlx5_ib_mr *mr)
++int mlx5_ib_init_dmabuf_mr(struct mlx5_ib_mr *mr, struct ib_pd *pd)
+ {
++	struct mlx5_ib_dev *dev = mr_to_mdev(mr);
++	u32 pdn;
+ 	int ret;
+ 
++	if (mr->data_direct)
++		pdn = dev->ddr.pdn;
++	else
++		pdn = to_mpd(pd)->pdn;
++
+ 	ret = pagefault_dmabuf_mr(mr, mr->umem->length, NULL,
+-				  MLX5_PF_FLAGS_ENABLE);
++				  MLX5_PF_FLAGS_ENABLE, pdn);
+ 
+ 	return ret >= 0 ? 0 : ret;
+ }
 -- 
 2.43.0
 
