@@ -1,455 +1,252 @@
-Return-Path: <linux-rdma+bounces-21734-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21735-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id dfN6AiUCIWqL+QAAu9opvQ
-	(envelope-from <linux-rdma+bounces-21734-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 06:42:13 +0200
+	id VdOlHEoUIWrZ+wAAu9opvQ
+	(envelope-from <linux-rdma+bounces-21735-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 07:59:38 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53E4163CDB0
-	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 06:42:12 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C21B963D1C6
+	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 07:59:37 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=WK37mGsL;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21734-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21734-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.dev;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=Nvidia.com header.s=selector2 header.b="AX/WXJWM";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21735-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21735-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=nvidia.com;
+	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7003F303DD5F
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jun 2026 04:40:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6E3F0306BAA4
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jun 2026 05:53:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B60963B9DBB;
-	Thu,  4 Jun 2026 04:40:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F92D3CC33F;
+	Thu,  4 Jun 2026 05:53:57 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from PH0PR06CU001.outbound.protection.outlook.com (mail-westus3azon11011008.outbound.protection.outlook.com [40.107.208.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56A4D2517A5
-	for <linux-rdma@vger.kernel.org>; Thu,  4 Jun 2026 04:40:39 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780548041; cv=none; b=EN8jfxoa9uRgo9FqiDGP78cwHr1kWPZfOHpsKlutJycN0WEoMR70BZfaqalzO37f6R8qYQFHknhOMMSQiRlJQv17dL3Jg5hadwRqtMQm2ds+U0F3Cq9mDPEoRiUp0iRriHkitB4iz9ZiXigRnIuNSMatGVZomj/EZHTjec/GBDM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780548041; c=relaxed/simple;
-	bh=Se/jpcR0YS6ZihnX5z5G9N78MSWfitP8blKAo2jCwtE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=C+FrH8Gyd0c6a9f4VctOgXrr8QOezDVsHY69XyCwspu7b5L9zj0pNO0EhJ+xdK/+frFBU/zSIO5pIlwE2PqKDc3/0i69IOF0kXpsQ1nqhD3tpErt5M5X9Y63lvhDAbXNoEOtbZoMQCs0YJBoVhgN2HtK4FXPGqkyRf3nkeGGqRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WK37mGsL; arc=none smtp.client-ip=95.215.58.172
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1780548037;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=+w/4YGzm05KxNdk3HGGNwvv1raY6Bd7aEJq0GKWTgOg=;
-	b=WK37mGsLvaaFzO/GMZwEZlMyQ+JMo+KvToTKxLOW9EKzzj4+8X7OyWUSldYvTen0ZP+VLp
-	Xw+HYE2N5FK6/upps/B+r2+US1aR7BLoEBorrGBQvlJaHjBlfSRpZodVWINqSevErQ2J4E
-	+vHhmup7IXHx/GG1763NEIpinDQ3oLE=
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-To: yanjun.zhu@linux.dev,
-	zyjzyj2000@gmail.com,
-	jgg@ziepe.ca,
-	leon@kernel.org,
-	linux-rdma@vger.kernel.org
-Cc: syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
-Subject: [PATCH v4 1/1] RDMA/rxe: Fix Use-After-Free problem in rxe_net_del
-Date: Thu,  4 Jun 2026 06:39:54 +0200
-Message-ID: <20260604043954.463666-1-yanjun.zhu@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EA2D39A4DF;
+	Thu,  4 Jun 2026 05:53:55 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780552437; cv=fail; b=PyfiuwGAkJ1TQcIAh7tzxWJhgmXaFUsc7dtc0o2OSNqJbTw0bEVKoCa55RppMxVTAL39/Ovqi39S6s8UYOTc40bhYM8u8sBhW1HLCkJSUEvgxTJhMSe6kCQRHCXvg0Qa/2Mf8X8CESIZcyZjWUkpVx9EnwIlDirJ75mRjnRiWjU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780552437; c=relaxed/simple;
+	bh=qe9N3qYHF+6WMMCJeKQcW8lyM5v9ukysWU8F8kt84ko=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=itiqqoUUeNE3RJyPq1SVB0Em1i5QIVNlqNS1zgICMuqpmNaEcOs4wLiOJOsKvNuo4vQgAJ7rORT7AIEeEV6MmxN+gLsvsTAMF4AUoMdPX+C5BoOtLjhxVWg+bRq0oqZ2bQKXouJUjRzvmODtA9V8ghw5eQHYVaJhrWhMEiXk4/g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=AX/WXJWM; arc=fail smtp.client-ip=40.107.208.8
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=OxDKjkmzC0CowG5gBEwokZLhDxfqCq58fhaeeVee1SwRtvDyDD9Ky1ni38GR4ie8/07tKaImyNrL0ZMuuC8M67Dt5zLLgtcq20482k23msu9T+VSlWKuAmIxdjzmBkYYj0TBjswRAJzzQyWgqKrrLMrCdCLUP8Tz1NN/UzGNZvXkgoq04P/e5tpjDbB1Ose0wQCArKEqjNeTh147b/Wfj5AP0lvXG26YsbSzlSpD9p7cMrwOC0PGKSozYr5UwSlHMW+GNKIMdz2P/iDgESwxSXPi0DDnyuyYYPrOWOW3X0npt6EVvANCNGIlWom+Zbkb45mw4TswMk0dvhND3yYBWA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mV4LYmun7RFNekCmv8yEaoEGT4JGY5anNONBZniHsf4=;
+ b=iVa5mo4BNVoguqXXvgFS5hAQ6FJcdhGJ/zZputMAWFYbMwWWTLzqT+upD6Ty2NBtuhoSeLASKAYK9+ST4uV1qZzAjTC5X92iv8EKc3K9dOwfSAeKirBaPa60k5oSwzlPO1jFYsq8aIpwhDDiV2w1YC4hihqkDEPuH4IY39fUsZ9jtJbASRHXfh9C58UmBej8LS8inkH/mdz2qp8Zld3oUw4VZzeOSSl0/l6vy5XIE69ne+/mZedD3orT3yWNKdM6cw2sZwcebJjLZURpBx95fsAzhsbwYHatAtv1DxaV1n3hVu69QbBE1nr+m0ezAOpjVQm4/hoPUjVfNKYBKPFA5A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=linux.dev smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mV4LYmun7RFNekCmv8yEaoEGT4JGY5anNONBZniHsf4=;
+ b=AX/WXJWMKPCTawHPfidL3ioPHSBYhE3HEJW1JaB3HWSstSMp3RZCpHzbQ6+/h11OVZGQpfBT07+5Sa0JOr6ADTajl6vqP9c9JSFPP+mWcwNiOKgYtMFEu8I4myh7hmvM52U8u8vvTa5iyFWd+FlAg0DHoZFDIbCPpJhStU7BSFXAmI4t528I2jC8i/MJuXL3v+JlGIvQQhXB9Iywbqkk2Y7GfiHzMLhohD2HgTbUMzqGYxzl/dkk9Vm9ve7JmGMF95Nv5llnSu8og5QGvg2REl0a2AxuEd7n7Y8qWpUzapUqhqsl2TVdDtIZmJ1e487HSbwHbq5ltyfZP+VeiLLkog==
+Received: from PH8P220CA0031.NAMP220.PROD.OUTLOOK.COM (2603:10b6:510:348::14)
+ by IA0PPFD7DCFAC03.namprd12.prod.outlook.com (2603:10b6:20f:fc04::be7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.7; Thu, 4 Jun 2026
+ 05:53:47 +0000
+Received: from CY4PEPF0000EE38.namprd03.prod.outlook.com
+ (2603:10b6:510:348:cafe::6e) by PH8P220CA0031.outlook.office365.com
+ (2603:10b6:510:348::14) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.92.8 via Frontend Transport; Thu, 4
+ Jun 2026 05:53:47 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ CY4PEPF0000EE38.mail.protection.outlook.com (10.167.242.10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.92.5 via Frontend Transport; Thu, 4 Jun 2026 05:53:45 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 3 Jun
+ 2026 22:53:28 -0700
+Received: from [10.221.198.226] (10.126.231.37) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 3 Jun
+ 2026 22:53:23 -0700
+Message-ID: <7018a27a-29fb-4c8e-84cf-dc90d1b3bd9c@nvidia.com>
+Date: Thu, 4 Jun 2026 08:53:22 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] net/mlx5: Only consider online CPUs in affinity
+ subset check
+To: Fushuai Wang <fushuai.wang@linux.dev>, <saeedm@nvidia.com>,
+	<leon@kernel.org>, <tariqt@nvidia.com>, <mbloch@nvidia.com>,
+	<andrew+netdev@lunn.ch>, <davem@davemloft.net>, <edumazet@google.com>,
+	<kuba@kernel.org>, <pabeni@redhat.com>, <parav@nvidia.com>,
+	<moshe@nvidia.com>
+CC: <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <wangfushuai@baidu.com>
+References: <20260603072657.10868-1-fushuai.wang@linux.dev>
+ <20260603072657.10868-3-fushuai.wang@linux.dev>
+Content-Language: en-US
+From: Shay Drori <shayd@nvidia.com>
+In-Reply-To: <20260603072657.10868-3-fushuai.wang@linux.dev>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE38:EE_|IA0PPFD7DCFAC03:EE_
+X-MS-Office365-Filtering-Correlation-Id: ba2201ae-5450-4942-2c29-08dec1fda42e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|36860700016|1800799024|82310400026|7416014|376014|56012099006|18002099003|22082099003|4143699003|11063799006|921020;
+X-Microsoft-Antispam-Message-Info:
+	4wtGmnI3rvJ598KtXIfrjC7uaa0XoDbpnEJxHXKD+GHbCo+MVNsoyNbK2B68JNjQjq+iMMjiqpNDIrsU9rpAgxN7Pz1Ns8xahhIhHNGu1yVOwS7ueEHjpsNQmGlLIFWNQjFTPYP90rikOGgx4AQSb8NQupaGRCteDsfatdDNF0cCm71H/ueby7XoU2F1TxGpYWtp+tid/lKCmk02/INDpLZva0jfVaCCFYH5ETG1Pc5SnU+Sx8E7fqkYa/VaBobH3CEcT/t9R3i73uEQotIHYj0gW9HEp1HvlskVvtHFfP/0GPuu1RcCphH7j+hDWhoUF62feDL2mNsm9lly4P1x5Br3VDO3IahlfH7EHEYmvROOknvKDUxWLyaBzOLwHoYeljO/8LDfCd9Yfz5kgG6zRrgDO8Vi4ZLnAP9hKwCKXj385NpB2p//XGiRgXht5avlFTamiBsn/w9vEyGE5A8dCAXCLHjDaGx0qZPFifrE+pqGjnD4IEn1mJXOXdqRXFFh6Epnc73O/nJPByH4OPAjabDpw3IbGe32YQirfMf1ZYPGFZdMzmcHMcm/S67/x/pMRCqzeCzM38Epazi/j1u4F11LnN4Rf0V7UBcIbat0+asVN15oWzEqP/AKMm+PT7VQOgiwblCG1TS5DVPpM41xYe3DiJKa5YAjttVJx8ruT9JWdxMTKaK+ezblanFHLH6ofJNnipaKsTyePoVAm+n20tiVqIrwibQH6/5xrFFTXDP173CojepeazaTGY7KPDaA0EcgAC18dLPvvCsXtnimQw==
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(36860700016)(1800799024)(82310400026)(7416014)(376014)(56012099006)(18002099003)(22082099003)(4143699003)(11063799006)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	6XL3R6Zr6ybEdYDu5hzAvzzEaK2BS4yXvQqXzDeBlRGmBpPpc2GHDdg+NNaWAlO4q52ZPALHfyp3m65QDKXz+68IoBdnWB1V32odO/X6hnw3rB22lRUnyxjucKrYWg4RDa2bh2IUIhybgp06FoeHg7OmqY/pgq8syZqJ9k3LcmBR80JTvjAC8pgOud5Pl4dMgSMMTJZaZvAn9/guh+G4ll6ToV8WIjKLcovg6C/YQYd1201UNNfuq3YGGHK81EODhs6KR01QgNlkCv2CONJXR8LUDlVvaseihlWSCTidCTC+unJqbtM7bSw6CBAb5fZ4psI70LxzMCC2UDBoefMqFL/UTpcn9KWr9l/ClbN6eDa3eFTxXot8yLyNMz68/skX0UiygTRxzTV9qJEz2hCkBRfwQYkkRKqsj/hQQG8P3nLojtiJTeJDqTvp7JYkN2D3
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2026 05:53:45.7114
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba2201ae-5450-4942-2c29-08dec1fda42e
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000EE38.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PPFD7DCFAC03
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.84 / 15.00];
+X-Spamd-Result: default: False [1.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21734-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:yanjun.zhu@linux.dev,m:zyjzyj2000@gmail.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com,m:syzbot@syzkaller.appspotmail.com,s:lists@lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	TAGGED_FROM(0.00)[bounces-21735-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:fushuai.wang@linux.dev,m:saeedm@nvidia.com,m:leon@kernel.org,m:tariqt@nvidia.com,m:mbloch@nvidia.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:parav@nvidia.com,m:moshe@nvidia.com,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:wangfushuai@baidu.com,m:andrew@lunn.ch,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	FORGED_SENDER(0.00)[shayd@nvidia.com,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[linux.dev,gmail.com,ziepe.ca,kernel.org,vger.kernel.org];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,Nvidia.com:dkim,nvidia.com:from_mime,nvidia.com:mid];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[shayd@nvidia.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	TO_DN_NONE(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,d8f76778263ab65c2b21];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[syzkaller.appspot.com:url,vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,appspotmail.com:email,linux.dev:mid,linux.dev:dkim,linux.dev:from_mime,linux.dev:email]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	RCVD_COUNT_SEVEN(0.00)[8]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 53E4163CDB0
+X-Rspamd-Queue-Id: C21B963D1C6
 
-syzbot reported a general protection fault (KASAN: null-ptr-deref) in
-kernel_sock_shutdown() called during the software RoCE (rxe) link
-deletion path (rxe_dellink -> rxe_net_del).
 
-The call trace is as below:
-"
-rdma_rxe: rxe_newlink: failed to add lo
-Oops: gen[  127.022080][ T5982] Oops: general protection fault, probably for non-canonical address 0xdffffc0000000004: 0000 [#1] SMP KASAN PTI
-KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
-CPU: 1 UID: 0 PID: 5982 Comm: syz.3.20 Not tainted syzkaller #0 PREEMPT_{RT,(full)}
-...
-Call Trace:
- <TASK>
- udp_tunnel_sock_release+0x6d/0x80 net/ipv4/udp_tunnel_core.c:197
- rxe_release_udp_tunnel drivers/infiniband/sw/rxe/rxe_net.c:294 [inline]
- rxe_sock_put drivers/infiniband/sw/rxe/rxe_net.c:639 [inline]
- rxe_net_del+0xfb/0x290 drivers/infiniband/sw/rxe/rxe_net.c:660
- rxe_dellink+0x15/0x20 drivers/infiniband/sw/rxe/rxe.c:254
- nldev_dellink+0x304/0x3d0 drivers/infiniband/core/nldev.c:1849
- rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:-1 [inline]
- rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
- rdma_nl_rcv+0x6d7/0xa10 drivers/infiniband/core/netlink.c:259
- netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
- netlink_unicast+0x780/0x920 net/netlink/af_netlink.c:1345
- netlink_sendmsg+0x813/0xb40 net/netlink/af_netlink.c:1895
- sock_sendmsg_nosec+0x112/0x150 net/socket.c:797
- __sock_sendmsg net/socket.c:812 [inline]
- ____sys_sendmsg+0x55c/0x870 net/socket.c:2716
- ___sys_sendmsg+0x2a5/0x360 net/socket.c:2770
- __sys_sendmsg net/socket.c:2802 [inline]
- __do_sys_sendmsg net/socket.c:2807 [inline]
- __se_sys_sendmsg net/socket.c:2805 [inline]
- __x64_sys_sendmsg+0x1c3/0x2a0 net/socket.c:2805
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x15f/0xf80 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f89172fcdd9
-RSP: 002b:00007ffe8bf8c018 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f8917575fa0 RCX: 00007f89172fcdd9
-RDX: 0000000000000000 RSI: 00002000000002c0 RDI: 0000000000000006
-RBP: 00007f8917392d69 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f8917575fac R14: 00007f8917575fa0 R15: 00007f8917575fa0
- </TASK>
-"
 
-The root cause is a TOCTOU (Time-of-Check to Time-of-Use) race condition
-in rxe_net_del(). Previously, the function fetched the socket pointer
-via rxe_ns_pernet_sk4/6() outside the critical section, and then
-acquired the lock to release it via rxe_sock_put().
+On 03/06/2026 10:26, Fushuai Wang wrote:
+> External email: Use caution opening links or attachments
+> 
+> 
+> From: Fushuai Wang <wangfushuai@baidu.com>
+> 
+> When an SF is created after a CPU has been taken offline, the IRQ pool may
+> contain IRQs with affinity masks that include the offline CPU. Since only
+> online CPUs should be considered for IRQ placement, cpumask_subset() check
+> would fail because the iter_mask contains offline CPUs that are not present
+> in req_mask, causing SF creation to fail.
 
-In a highly concurrent teardown environment, another thread could close
-and clear the pernet socket after it was fetched but before the lock
-was acquired. This causes rxe_sock_put() to operate on a dangling or
-already cleared socket pointer, leading to a NULL pointer dereference
-when kernel_sock_shutdown() attempts to access sock->sk.
+Thank for the patch!
 
-Fix this by introducing a dedicated, per-netns mutex 'release_lock'
-and extending its scope. The socket pointers are now fetched, checked,
-and released entirely within the same locked critical section. This
-ensures the atomicity of the socket lookup and teardown sequence.
+can you please provide a full example? for simplicity, lets say the SF
+pool is of size of 2 IRQs.
 
-Since new mutex lock is introduced, remove the unnecessary rcu locks.
+> 
+> Filter the affinity mask to only include online CPUs before checking if it's
+> a subset of the requested mask, 
 
-Reported-by: syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=d8f76778263ab65c2b21
-Fixes: f1327abd6abe ("RDMA/rxe: Support RDMA link creation and destruction per net namespace")
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
-V3 -> V4: Replace rxe_sock_put with sock_put, suggested from Sashiko.
-V2 -> V3: Fix the UAF problem, suggested by Sashiko.
-V1 -> V2: Remove the unnecessary rcu locks, following Leon's advice.
----
- drivers/infiniband/sw/rxe/rxe_net.c | 50 ++++++++++++++++++++-----
- drivers/infiniband/sw/rxe/rxe_ns.c  | 58 ++++++++++++++++-------------
- drivers/infiniband/sw/rxe/rxe_ns.h  |  3 ++
- 3 files changed, 75 insertions(+), 36 deletions(-)
+won't this cause the affinity mask to be empty, which is kind of missing
+the point of this API... :(
+can you check if irq_get_effective_affinity_mask() will solve the issue?
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index 50a2cb5405e2..b7fe71faff57 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -135,13 +135,22 @@ static struct dst_entry *rxe_find_route6(struct rxe_qp *qp,
- {
- 	struct dst_entry *ndst;
- 	struct flowi6 fl6 = {};
-+	struct sock *sk;
- 
- 	fl6.flowi6_oif = ndev->ifindex;
- 	memcpy(&fl6.saddr, saddr, sizeof(*saddr));
- 	memcpy(&fl6.daddr, daddr, sizeof(*daddr));
- 	fl6.flowi6_proto = IPPROTO_UDP;
- 
--	ndst = ip6_dst_lookup_flow(net, rxe_ns_pernet_sk6(net), &fl6, NULL);
-+	rxe_ns_lock(net);
-+	sk = rxe_ns_pernet_sk6(net);
-+	if (sk)
-+		sock_hold(sk);
-+	rxe_ns_unlock(net);
-+
-+	ndst = ip6_dst_lookup_flow(net, sk, &fl6, NULL);
-+	if (sk)
-+		sock_put(sk);
- 	if (IS_ERR(ndst)) {
- 		rxe_dbg_qp(qp, "no route to %pI6\n", daddr);
- 		return NULL;
-@@ -655,6 +664,8 @@ void rxe_net_del(struct ib_device *dev)
- 
- 	net = dev_net(ndev);
- 
-+	rxe_ns_lock(net);
-+
- 	sk = rxe_ns_pernet_sk4(net);
- 	if (sk)
- 		rxe_sock_put(sk, rxe_ns_pernet_set_sk4, net);
-@@ -663,6 +674,8 @@ void rxe_net_del(struct ib_device *dev)
- 	if (sk)
- 		rxe_sock_put(sk, rxe_ns_pernet_set_sk6, net);
- 
-+	rxe_ns_unlock(net);
-+
- 	dev_put(ndev);
- }
- 
-@@ -754,52 +767,67 @@ static struct notifier_block rxe_net_notifier = {
- 
- static int rxe_net_ipv4_init(struct net *net)
- {
--	struct sock *sk;
- 	struct socket *sock;
-+	struct sock *sk;
-+	int ret = 0;
- 
-+	rxe_ns_lock(net);
- 	sk = rxe_ns_pernet_sk4(net);
- 	if (sk) {
- 		sock_hold(sk);
--		return 0;
-+		ret = 0;
-+		goto out_unlock;
- 	}
- 
- 	sock = rxe_setup_udp_tunnel(net, htons(ROCE_V2_UDP_DPORT), false);
- 	if (IS_ERR(sock)) {
- 		pr_err("Failed to create IPv4 UDP tunnel\n");
--		return -1;
-+		ret = -1;
-+		goto out_unlock;
- 	}
-+
- 	rxe_ns_pernet_set_sk4(net, sock->sk);
- 
--	return 0;
-+out_unlock:
-+	rxe_ns_unlock(net);
-+	return ret;
- }
- 
- static int rxe_net_ipv6_init(struct net *net)
- {
-+	int ret = 0;
- #if IS_ENABLED(CONFIG_IPV6)
--	struct sock *sk;
- 	struct socket *sock;
-+	struct sock *sk;
- 
-+	rxe_ns_lock(net);
- 	sk = rxe_ns_pernet_sk6(net);
- 	if (sk) {
- 		sock_hold(sk);
--		return 0;
-+		ret = 0;
-+		goto out_unlock;
- 	}
- 
- 	sock = rxe_setup_udp_tunnel(net, htons(ROCE_V2_UDP_DPORT), true);
- 	if (PTR_ERR(sock) == -EAFNOSUPPORT) {
- 		pr_warn("IPv6 is not supported, can not create a UDPv6 socket\n");
--		return 0;
-+		ret = 0;
-+		goto out_unlock;
- 	}
- 
- 	if (IS_ERR(sock)) {
- 		pr_err("Failed to create IPv6 UDP tunnel\n");
--		return -1;
-+		ret = -1;
-+		goto out_unlock;
- 	}
- 
- 	rxe_ns_pernet_set_sk6(net, sock->sk);
- 
-+out_unlock:
-+	rxe_ns_unlock(net);
-+
- #endif
--	return 0;
-+	return ret;
- }
- 
- int rxe_register_notifier(void)
-@@ -840,9 +868,11 @@ int rxe_net_init(struct net_device *ndev)
- 
- err_out:
- 	/* If ipv6 error, release ipv4 resource */
-+	rxe_ns_lock(net);
- 	sk = rxe_ns_pernet_sk4(net);
- 	if (sk)
- 		rxe_sock_put(sk, rxe_ns_pernet_set_sk4, net);
-+	rxe_ns_unlock(net);
- 
- 	return err;
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_ns.c b/drivers/infiniband/sw/rxe/rxe_ns.c
-index 8b9d734229b2..744a3d16f963 100644
---- a/drivers/infiniband/sw/rxe/rxe_ns.c
-+++ b/drivers/infiniband/sw/rxe/rxe_ns.c
-@@ -14,8 +14,9 @@
-  * Per network namespace data
-  */
- struct rxe_ns_sock {
--	struct sock __rcu *rxe_sk4;
--	struct sock __rcu *rxe_sk6;
-+	struct sock	*rxe_sk4;
-+	struct sock	*rxe_sk6;
-+	struct mutex	ns_mutex_lock;
- };
- 
- /*
-@@ -31,10 +32,26 @@ static int rxe_ns_init(struct net *net)
- 	/* defer socket create in the namespace to the first
- 	 * device create.
- 	 */
-+	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
- 
-+	mutex_init(&ns_sk->ns_mutex_lock);
- 	return 0;
- }
- 
-+void rxe_ns_lock(struct net *net)
-+{
-+	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
-+
-+	mutex_lock(&ns_sk->ns_mutex_lock);
-+}
-+
-+void rxe_ns_unlock(struct net *net)
-+{
-+	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
-+
-+	mutex_unlock(&ns_sk->ns_mutex_lock);
-+}
-+
- static void rxe_ns_exit(struct net *net)
- {
- 	/* called when the network namespace is removed
-@@ -42,23 +59,24 @@ static void rxe_ns_exit(struct net *net)
- 	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
- 	struct sock *sk;
- 
--	rcu_read_lock();
--	sk = rcu_dereference(ns_sk->rxe_sk4);
--	rcu_read_unlock();
-+	rxe_ns_lock(net);
-+	sk = ns_sk->rxe_sk4;
- 	if (sk) {
--		rcu_assign_pointer(ns_sk->rxe_sk4, NULL);
-+		ns_sk->rxe_sk4 = NULL;
- 		udp_tunnel_sock_release(sk->sk_socket);
- 	}
- 
- #if IS_ENABLED(CONFIG_IPV6)
--	rcu_read_lock();
--	sk = rcu_dereference(ns_sk->rxe_sk6);
--	rcu_read_unlock();
-+	sk = ns_sk->rxe_sk6;
- 	if (sk) {
--		rcu_assign_pointer(ns_sk->rxe_sk6, NULL);
-+		ns_sk->rxe_sk6 = NULL;
- 		udp_tunnel_sock_release(sk->sk_socket);
- 	}
- #endif
-+
-+	rxe_ns_unlock(net);
-+
-+	mutex_destroy(&ns_sk->ns_mutex_lock);
- }
- 
- /*
-@@ -74,42 +92,30 @@ static struct pernet_operations rxe_net_ops = {
- struct sock *rxe_ns_pernet_sk4(struct net *net)
- {
- 	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
--	struct sock *sk;
--
--	rcu_read_lock();
--	sk = rcu_dereference(ns_sk->rxe_sk4);
--	rcu_read_unlock();
- 
--	return sk;
-+	return ns_sk->rxe_sk4;
- }
- 
- void rxe_ns_pernet_set_sk4(struct net *net, struct sock *sk)
- {
- 	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
- 
--	rcu_assign_pointer(ns_sk->rxe_sk4, sk);
--	synchronize_rcu();
-+	ns_sk->rxe_sk4 = sk;
- }
- 
- #if IS_ENABLED(CONFIG_IPV6)
- struct sock *rxe_ns_pernet_sk6(struct net *net)
- {
- 	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
--	struct sock *sk;
--
--	rcu_read_lock();
--	sk = rcu_dereference(ns_sk->rxe_sk6);
--	rcu_read_unlock();
- 
--	return sk;
-+	return ns_sk->rxe_sk6;
- }
- 
- void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk)
- {
- 	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
- 
--	rcu_assign_pointer(ns_sk->rxe_sk6, sk);
--	synchronize_rcu();
-+	ns_sk->rxe_sk6 = sk;
- }
- #endif /* IPV6 */
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_ns.h b/drivers/infiniband/sw/rxe/rxe_ns.h
-index 4da2709e6b71..e6cc6b5a4806 100644
---- a/drivers/infiniband/sw/rxe/rxe_ns.h
-+++ b/drivers/infiniband/sw/rxe/rxe_ns.h
-@@ -20,6 +20,9 @@ static inline void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk)
- }
- #endif /* IPv6 */
- 
-+void rxe_ns_lock(struct net *net);
-+void rxe_ns_unlock(struct net *net);
-+
- int rxe_namespace_init(void);
- void rxe_namespace_exit(void);
- 
--- 
-2.43.0
+Thanks
+
+> ensuring SF creation succeeds in this scenario.
+> 
+> Fixes: 061f5b23588a ("net/mlx5: SF, Use all available cpu for setting cpu affinity")
+> Signed-off-by: Fushuai Wang <wangfushuai@baidu.com>
+> ---
+>   .../net/ethernet/mellanox/mlx5/core/irq_affinity.c | 14 ++++++++++++--
+>   1 file changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
+> index 994fe83da4be..8c0df240b888 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
+> @@ -102,18 +102,26 @@ irq_pool_find_least_loaded(struct mlx5_irq_pool *pool, const struct cpumask *req
+>          struct mlx5_irq *iter;
+>          int irq_refcount = 0;
+>          unsigned long index;
+> +       cpumask_var_t tmp;
+> 
+>          lockdep_assert_held(&pool->lock);
+> +
+> +       if (!alloc_cpumask_var(&tmp, GFP_ATOMIC))
+> +               return NULL;
+> +
+>          xa_for_each_range(&pool->irqs, index, iter, start, end) {
+>                  struct cpumask *iter_mask = mlx5_irq_get_affinity_mask(iter);
+>                  int iter_refcount = mlx5_irq_read_locked(iter);
+> 
+> -               if (!cpumask_subset(iter_mask, req_mask))
+> +               cpumask_and(tmp, iter_mask, cpu_online_mask);
+> +               if (!cpumask_subset(tmp, req_mask))
+>                          /* skip IRQs with a mask which is not subset of req_mask */
+>                          continue;
+> -               if (iter_refcount < pool->min_threshold)
+> +               if (iter_refcount < pool->min_threshold) {
+>                          /* If we found an IRQ with less than min_thres, return it */
+> +                       free_cpumask_var(tmp);
+>                          return iter;
+> +               }
+>                  if (!irq || iter_refcount < irq_refcount) {
+>                          /* In case we won't find an IRQ with less than min_thres,
+>                           * keep a pointer to the least used IRQ
+> @@ -122,6 +130,8 @@ irq_pool_find_least_loaded(struct mlx5_irq_pool *pool, const struct cpumask *req
+>                          irq = iter;
+>                  }
+>          }
+> +
+> +       free_cpumask_var(tmp);
+>          return irq;
+>   }
+> 
+> --
+> 2.36.1
+> 
 
 
