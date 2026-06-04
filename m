@@ -1,337 +1,196 @@
-Return-Path: <linux-rdma+bounces-21738-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21739-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id CRNNAYg7IWo3BgEAu9opvQ
-	(envelope-from <linux-rdma+bounces-21738-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 10:47:04 +0200
+	id 7egeAbw+IWplBwEAu9opvQ
+	(envelope-from <linux-rdma+bounces-21739-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 11:00:44 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D036B63E201
-	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 10:47:02 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61BA663E441
+	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 11:00:43 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b="CC+UpIE/";
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21738-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21738-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=redhat.com;
+	dkim=pass header.d=proton.me header.s=protonmail header.b=FutPsjt6;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21739-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21739-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=proton.me;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id D36473072416
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jun 2026 08:37:09 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 350AB318BC98
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jun 2026 08:47:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D25A03E275F;
-	Thu,  4 Jun 2026 08:36:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7190A3D5254;
+	Thu,  4 Jun 2026 08:46:51 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mail-106120.protonmail.ch (mail-106120.protonmail.ch [79.135.106.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A22C3E1696
-	for <linux-rdma@vger.kernel.org>; Thu,  4 Jun 2026 08:36:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A2873AFAE6
+	for <linux-rdma@vger.kernel.org>; Thu,  4 Jun 2026 08:46:43 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780562218; cv=none; b=nJxzMWmH2ZLv3/hXsDGVi81792izvPm6U1LzdVJBqfEYEOQ5HG1LOEjh3B0Xax5ZCZc49UQijhltlPUUIDa0PDsesok8aUp5IUCyP2Cq74VwvW1b1nYVYLMaVumG5T6fzgQsdmADZ6AJUlp++AhEvpm2o1tddyjidnhv1bohjmo=
+	t=1780562811; cv=none; b=i0Lhzes7My/NwYTmcDeoJ+hCdZhdFy8ItsZRTqTNh7M1sSsn6VdfuwIUoCkEWV7MXRGFdIelV1k7pICgK6ss9QAqOGqZMtg1ntpnzQaU/zo9ufU3Uj+eVKy6jJ64jxhD3SmEuq0O8xfQsAa/dDTkK00FP0bgg/BMCkvWZL5diVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780562218; c=relaxed/simple;
-	bh=nprcEBE1NGKw2i4OlDzdzgm0LU77LybYr+IdaJAH+j4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=V2SpAnG7S4RBSXIIjNuI3WbqK3tV6XCgvWLkUd20yfMT9Gzlf+ePRyaBnJkwbS40IME/eu2Dm17LZfhpQ64MNDtB173ejXqj8LWrBeBDSVCF1Ge95Xdb1VtU2/Te3b0yF+FRCWU9a/TufESNXkhReDo/oAbPFVPti+omGjVrtLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CC+UpIE/; arc=none smtp.client-ip=170.10.129.124
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1780562216;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ahCppztDq6+HeauIzaJ6zc0IwFK9+tiuCYjSpFg9FQY=;
-	b=CC+UpIE/cVCl8DZaM2+qDS03lOBch8mZyCqfdZGch38jwAOF07RM3imlXJhtkZLlMbuub5
-	wukW1RBr8XXLrR5wkKT5avs/sY91qDuHffNfFJ/TthjpGXUrWpwg916vijK9EJMXMgq5yA
-	/T2kDoyl+Qcy9r2oAyurdl4dwvkxt7w=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-635-AwHBzJWyOfCMpnNX2-oKBg-1; Thu,
- 04 Jun 2026 04:36:52 -0400
-X-MC-Unique: AwHBzJWyOfCMpnNX2-oKBg-1
-X-Mimecast-MFC-AGG-ID: AwHBzJWyOfCMpnNX2-oKBg_1780562210
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 8B17C18004BB;
-	Thu,  4 Jun 2026 08:36:49 +0000 (UTC)
-Received: from gerbillo.redhat.com (unknown [10.44.49.23])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 670851800347;
-	Thu,  4 Jun 2026 08:36:42 +0000 (UTC)
-From: Paolo Abeni <pabeni@redhat.com>
-To: alibuda@linux.alibaba.com
-Cc: davem@davemloft.net,
-	dust.li@linux.alibaba.com,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	sidraya@linux.ibm.com,
-	wenjia@linux.ibm.com,
-	mjambigi@linux.ibm.com,
-	horms@kernel.org,
-	tonylu@linux.alibaba.com,
-	guwen@linux.alibaba.com,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	netdev@vger.kernel.org,
-	oliver.yang@linux.alibaba.com,
-	pasic@linux.ibm.com,
-	leonro@nvidia.com
-Subject: Re: [PATCH net-next v2 1/2] net/smc: transition to RDMA core CQ pooling
-Date: Thu,  4 Jun 2026 10:36:37 +0200
-Message-ID: <20260604083637.61737-1-pabeni@redhat.com>
-In-Reply-To: <20260528084819.6059-2-alibuda@linux.alibaba.com>
-References: <20260528084819.6059-2-alibuda@linux.alibaba.com>
+	s=arc-20240116; t=1780562811; c=relaxed/simple;
+	bh=LkTVa6Mrd5wcDW88pb6hCQTL1717kz7S2mTiZEgeiSg=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=s1S1DIVWxwAjYSAaajjeeoXgMwFKKtJRQ+I+pk63VFe19KAUaZLua2Ip1EDysBP5nk7ZKU8XcPge0YSS2VgNLRMKEZ2FiOrHncQ0QcDNMqVhXKs5It+PgNb2+LTdnOVPs260GJ7QzGrQh8HonXDe/Pz6my/lcIHc41aDN/T9S58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=FutPsjt6; arc=none smtp.client-ip=79.135.106.120
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1780562801; x=1780822001;
+	bh=dI9hVL01c71ih5HvIFpqlh4uVw1MCRSvG/NKiWvcWLQ=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=FutPsjt6ixwu6+7P7T7PGrHGeO39WDWshmwGRwgTwRbsLMmKPbrHYmFG4mOCLQvsL
+	 Sjj3+ESf+ngf1Tt1Q46V5uw/8qmc775mEU/AyTgh0pjEIcjlZ5/B98oFzwKtVydQV2
+	 JXWA9SgYjV8x+WS7dyN4+WYLNhPYCR1a2ZrTfzWwYBu3OeOEb0DcK/WWraoowefi0l
+	 R8I0AD1l7dMY/cRVuzDuZmUU519gfQnFXvHrnyjMUELrcI7zB8X1/cO6JJ1NRfiY83
+	 nRB7FntcL2ztrHGTRyo/tSn8BQUYF4kJKQufyl5b+W/Qcn5Lg0j6K5NL5LiXs9Fxtm
+	 QYjP6OEXPf0fw==
+Date: Thu, 04 Jun 2026 08:46:33 +0000
+To: Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>, Chaitanya Kulkarni <kch@nvidia.com>
+From: Bryam Vargas <hexlabsecurity@proton.me>
+Cc: linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org, linux-block@vger.kernel.org
+Subject: [PATCH] nvmet-rdma: reject inline data with a nonzero offset
+Message-ID: <20260604084624.120032-1-hexlabsecurity@proton.me>
+In-Reply-To: <ahm6Ksr3rfGdnOsN@kbusch-mbp>
+References: <LM21QIR-1-qJb7PViyJKCnGBnUzizeiNJVWQ3wb7ZwGezodjgKg3f-iobqOyequ-sT1jFCKJImfqNO_BKU3KO80xFITnaI5GTV_GxLUNDDc=@proton.me> <ahm6Ksr3rfGdnOsN@kbusch-mbp>
+Feedback-ID: 199661219:user:proton
+X-Pm-Message-ID: 30d429d49ffc879a29fff9a077634f43f6f5c5dc
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[proton.me,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[proton.me:s=protonmail];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	FORGED_SENDER(0.00)[pabeni@redhat.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS(0.00)[m:alibuda@linux.alibaba.com,m:davem@davemloft.net,m:dust.li@linux.alibaba.com,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:sidraya@linux.ibm.com,m:wenjia@linux.ibm.com,m:mjambigi@linux.ibm.com,m:horms@kernel.org,m:tonylu@linux.alibaba.com,m:guwen@linux.alibaba.com,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-s390@vger.kernel.org,m:netdev@vger.kernel.org,m:oliver.yang@linux.alibaba.com,m:pasic@linux.ibm.com,m:leonro@nvidia.com,s:lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-21738-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21739-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pabeni@redhat.com,linux-rdma@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER(0.00)[hexlabsecurity@proton.me,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:hch@lst.de,m:sagi@grimberg.me,m:kbusch@kernel.org,m:kch@nvidia.com,m:linux-nvme@lists.infradead.org,m:linux-rdma@vger.kernel.org,m:linux-block@vger.kernel.org,s:lists@lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	TO_DN_NONE(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hexlabsecurity@proton.me,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[proton.me:+];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,sashiko.dev:url,vger.kernel.org:from_smtp]
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[proton.me:mid,proton.me:dkim,proton.me:from_mime,proton.me:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: D036B63E201
+X-Rspamd-Queue-Id: 61BA663E441
 
-From: AI Reviewer <ai@example.com>
+nvmet_rdma_map_sgl_inline() takes a host-controlled offset and length
+from the inline SGL descriptor and bounds-checks them against the
+per-port inline_data_size:
 
-This is an AI-generated review of your patch. The human sending this
-email has considered the AI review valid, or at least plausible.
-Full review at: https://sashiko.dev/
+=09u64 off =3D le64_to_cpu(sgl->addr);
+=09u32 len =3D le32_to_cpu(sgl->length);
+=09...
+=09if (off + len > rsp->queue->dev->inline_data_size)
+=09=09return NVME_SC_SGL_INVALID_OFFSET | NVME_STATUS_DNR;
+
+This is unsound whenever the offset is nonzero:
+
+ - "off + len" is evaluated in u64 and wraps modulo 2^64.  A descriptor
+   with addr =3D 0xfffffffffffffe00 and length =3D 0x1000 wraps the sum to
+   0xe00 and passes the check.  nvmet_rdma_use_inline_sg() then stores
+   the offset into scatterlist::offset (unsigned int) and the block
+   layer reads out of bounds of the inline page; a large len also makes
+   num_pages(len) exceed NVMET_RDMA_MAX_INLINE_SGE and overruns the
+   fixed-size inline_sg[] array.
+
+ - Even computed without wrapping, inline_data_size is configurable up
+   to max(SZ_16K, PAGE_SIZE).  An offset in (PAGE_SIZE, inline_data_size]
+   passes the bound and then "PAGE_SIZE - off" in
+   nvmet_rdma_use_inline_sg() underflows, leaving scatterlist::length at
+   ~4 GiB and the offset pointing past the first inline page.
+
+A nonzero inline offset is never legitimate here.  nvmet advertises
+icdoff =3D 0, nvme_rdma_setup_ctrl() refuses to use a controller that
+reports a nonzero icdoff ("icdoff is not supported!"), and
+nvme_rdma_map_sg_inline() sets the inline descriptor addr to icdoff, so
+a compliant initiator always sends offset 0.  nvmet_rdma_use_inline_sg()
+likewise assumes the inline data begins at the start of the first inline
+page (the RNIC DMAs it to page offset 0); any nonzero offset also
+mis-describes the scatterlist even when it is in bounds.
+
+Reject a nonzero offset directly.  This closes the u64 overflow, the
+inline_sg[] overrun and the PAGE_SIZE - off underflow together, and is
+simpler than bounding the offset.
+
+Fixes: 0d5ee2b2ab4f ("nvmet-rdma: support max(16KB, PAGE_SIZE) inline data"=
+)
+Cc: stable@vger.kernel.org
+Reported-by: Bryam Vargas <hexlabsecurity@proton.me>
+Signed-off-by: Bryam Vargas <hexlabsecurity@proton.me>
 ---
-net/smc: transition to RDMA core CQ pooling
+Keith, thanks for the suggested form
 
-The current SMC-R implementation relies on global per-device CQs
-and manual polling within tasklets, which introduces severe
-scalability bottlenecks due to global lock contention and tasklet
-scheduling overhead, resulting in poor performance as concurrency
-increases.
+=09if (off > rsp->queue->dev->inline_data_size ||
+=09    len > rsp->queue->dev->inline_data_size - off)
 
-Refactor the completion handling to utilize the ib_cqe API and
-standard RDMA core CQ pooling.
+It does stop the u64 overflow, but while testing it I found it is still
+incomplete when a port is configured with inline_data_size > PAGE_SIZE
+(it is settable up to max(SZ_16K, PAGE_SIZE)): an offset in
+(PAGE_SIZE, inline_data_size] passes that bound and then "PAGE_SIZE - off"
+in nvmet_rdma_use_inline_sg() underflows, leaving scatterlist::length at
+~4 GiB pointing past the first inline page. The block backend then
+executes the out-of-bounds read (KASAN trace below). Since a compliant
+initiator never sends a nonzero inline offset (nvmet advertises
+icdoff =3D 0 and nvme_rdma_setup_ctrl() refuses a nonzero icdoff),
+rejecting off !=3D 0 closes that case too and is even simpler, so this
+formal patch uses that instead of bounding the offset.
 
-> diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c
-> index 9bb495707445e..a6d6b81830d38 100644
-> --- a/net/smc/smc_ib.c
-> +++ b/net/smc/smc_ib.c
+Verified on a KASAN build (inline_data_size =3D 16384) over an rdma_rxe
+soft-RoCE loopback nvmet-rdma target with a block backend:
+  - offset 0, 4 KiB inline write: succeeds, clean (control).
+  - offset 8192, len 4096: without this patch the bounds check passes
+    and the block backend executes the out-of-bounds read
+      BUG: KASAN: slab-out-of-bounds in copy_folio_from_iter_atomic
+      Read of size 4096 ...
+    with this patch it is rejected ("invalid inline data offset!").
+  - offset 4095 (< PAGE_SIZE): without this patch it is in bounds but
+    mis-describes the SGL (NVME_SC_SGL_INVALID_DATA, no OOB); with this
+    patch it is rejected up front.
+  - offset 0 keeps working (no regression for compliant initiators).
 
-[ ... ]
+ drivers/nvme/target/rdma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> @@ -657,38 +645,59 @@ void smc_ib_destroy_queue_pair(struct smc_link *lnk)
->  	if (lnk->roce_qp)
->  		ib_destroy_qp(lnk->roce_qp);
->  	lnk->roce_qp = NULL;
-> +	if (lnk->ib_cq) {
-> +		ib_cq_pool_put(lnk->ib_cq, lnk->nr_cqe);
-> +		lnk->ib_cq = NULL;
-> +	}
->  }
->  
->  /* create a queue pair within the protection domain for a link */
->  int smc_ib_create_queue_pair(struct smc_link *lnk)
->  {
-> +	int max_send_wr, max_recv_wr, rc;
-> +	struct ib_cq *cq;
-> +
-> +	/* include unsolicited rdma_writes as well,
-> +	 * there are max. 2 RDMA_WRITE per 1 WR_SEND.
-> +	 */
-> +	max_send_wr = 3 * lnk->lgr->max_send_wr + 1;	/* +1 for ib_drain_sq() */
+diff --git a/drivers/nvme/target/rdma.c b/drivers/nvme/target/rdma.c
+--- a/drivers/nvme/target/rdma.c
++++ b/drivers/nvme/target/rdma.c
+@@ -854,7 +854,7 @@ static u16 nvmet_rdma_map_sgl_inline(struct nvmet_rdma_=
+rsp *rsp)
+ =09=09return NVME_SC_INVALID_FIELD | NVME_STATUS_DNR;
+ =09}
 
-[Severity: High]
-Does this calculation account for all possible work requests?
-
-To support ib_drain_sq(), this patch increases SQ capacity by exactly 1,
-assuming standard data transmissions consume up to 3 WRs each. However, SMC
-also posts FastReg WRs (smc_wr_reg_send) and SMC-Rv2 LLC control messages
-(smc_wr_tx_v2_send) to the same SQ.
-
-If these independent WRs are posted while data TX slots are saturated, the
-total in-flight WRs will consume the remaining +1 slot reserved for the drain
-WR.
-
-When teardown occurs, ib_drain_sq() will attempt to post its dummy WR, but
-ib_post_send() will fail with -ENOMEM because the SQ is full. ib_drain_sq()
-responds to this failure by returning immediately without waiting for
-completions, unblocking teardown and freeing link structures while the
-hardware is still asynchronously flushing the SQ. When the softirq polls the
-flushed CQEs, it will access the freed ib_cqe pointers, leading to a
-use-after-free.
-
-> +	max_recv_wr = lnk->lgr->max_recv_wr + 1;	/* +1 for ib_drain_rq() */
-> +
-> +	cq = ib_cq_pool_get(lnk->smcibdev->ibdev, max_send_wr + max_recv_wr, -1,
-> +			    IB_POLL_SOFTIRQ);
-
-[ ... ]
-
-> diff --git a/net/smc/smc_wr.c b/net/smc/smc_wr.c
-> index 59c92b46945c5..130bc6c26fb31 100644
-> --- a/net/smc/smc_wr.c
-> +++ b/net/smc/smc_wr.c
-
-[ ... ]
-
-> @@ -63,109 +60,67 @@ void smc_wr_tx_wait_no_pending_sends(struct smc_link *link)
-
-[ ... ]
-
->  	if (pnd_snd_idx == link->wr_tx_cnt) {
-> -		if (link->lgr->smc_version != SMC_V2 ||
-> -		    link->wr_tx_v2_pend->wr_id != wc->wr_id)
-> -			return;
-> -		link->wr_tx_v2_pend->wc_status = wc->status;
-> -		memcpy(&pnd_snd, link->wr_tx_v2_pend, sizeof(pnd_snd));
-> -		/* clear the full struct smc_wr_tx_pend including .priv */
-> -		memset(link->wr_tx_v2_pend, 0,
-> -		       sizeof(*link->wr_tx_v2_pend));
->  		memset(link->lgr->wr_tx_buf_v2, 0,
->  		       sizeof(*link->lgr->wr_tx_buf_v2));
-
-[Severity: High]
-This is a pre-existing issue, but while reviewing this code I noticed a
-potential memory leak and NULL pointer dereference in smc_wr_tx_put_slot().
-
-In the error path of smc_wr_tx_put_slot(), the code attempts to clear the V2
-pending slots:
-
-net/smc/smc_wr.c:smc_wr_tx_put_slot() {
-    ...
-	} else if (link->lgr->smc_version == SMC_V2 &&
-		   pend->idx == link->wr_tx_cnt) {
-		/* Large v2 buffer */
-		memset(&link->wr_tx_v2_pend, 0,
-		       sizeof(link->wr_tx_v2_pend));
-		memset(&link->lgr->wr_tx_buf_v2, 0,
-		       sizeof(link->lgr->wr_tx_buf_v2));
-    ...
-}
-
-Because these target variables are pointers, sizeof evaluates to 8 bytes. The
-memset() call zeroes the pointer variable itself rather than clearing the
-underlying structure, which leaks the allocated memory.
-
-If smc_wr_tx_get_v2_slot() is called subsequently, it will attempt to
-dereference the now-NULL link->wr_tx_v2_pend, leading to a direct NULL pointer
-dereference.
-
-Could this be updated to use sizeof(*link->wr_tx_v2_pend) similar to the code
-removed above?
-
-[ ... ]
-
-> @@ -431,94 +367,74 @@ static inline void smc_wr_rx_demultiplex(struct ib_wc *wc)
->  {
-
-[ ... ]
-
->  }
->  
-> -static inline void smc_wr_rx_process_cqes(struct ib_wc wc[], int num)
-> +static void smc_wr_rx_process_cqe(struct ib_cq *cq, struct ib_wc *wc)
->  {
-> -	struct smc_link *link;
-> -	int i;
-> +	struct smc_link *link = wc->qp->qp_context;
->  
-> -	for (i = 0; i < num; i++) {
-> -		link = wc[i].qp->qp_context;
-> -		link->wr_rx_id_compl = wc[i].wr_id;
-> -		if (wc[i].status == IB_WC_SUCCESS) {
-> -			link->wr_rx_tstamp = jiffies;
-> -			smc_wr_rx_demultiplex(&wc[i]);
-> -			smc_wr_rx_post(link); /* refill WR RX */
-> -		} else {
-> -			/* handle status errors */
-> -			switch (wc[i].status) {
-> -			case IB_WC_RETRY_EXC_ERR:
-> -			case IB_WC_RNR_RETRY_EXC_ERR:
-> -			case IB_WC_WR_FLUSH_ERR:
-> -				smcr_link_down_cond_sched(link);
-> -				if (link->wr_rx_id_compl == link->wr_rx_id)
-> -					wake_up(&link->wr_rx_empty_wait);
-> -				break;
-> -			default:
-> -				smc_wr_rx_post(link); /* refill WR RX */
-> -				break;
-> -			}
-> +	if (wc->status == IB_WC_SUCCESS) {
-> +		link->wr_rx_tstamp = jiffies;
-> +		smc_wr_rx_demultiplex(wc);
-> +		smc_wr_rx_post(link, wc->wr_cqe); /* refill WR RX */
-
-[Severity: Critical]
-Can this cause a use-after-free when racing with queue teardown?
-
-The patch replaces smc_wr_drain_cq() with ib_drain_qp().
-ib_drain_rq() transitions the QP to IB_QPS_ERR and posts a dummy drain WR to
-wait for completions.
-
-However, smc_wr_rx_process_cqe() unconditionally reposts a new WR when
-processing a successful packet completion. If a valid RX completion is polled
-in the softirq concurrently with ib_drain_rq(), the softirq will post a new WR
-after the drain WR has been posted.
-
-Since the QP is in the ERR state, the new WR will be immediately completed
-with a flush error, but its CQE will be generated after the drain WR's CQE.
-This allows ib_drain_rq() to return and unblock link teardown, freeing
-link->wr_rx_ibs.
-
-When the softirq subsequently polls the flush CQE for the newly posted WR,
-it will dereference wc->wr_cqe->done. Since wc->wr_cqe points to the freed
-smc_ib_recv_wr, this results in a use-after-free.
-
-> +	} else {
-> +		/* handle status errors */
-> +		switch (wc->status) {
-> +		case IB_WC_RETRY_EXC_ERR:
-> +		case IB_WC_RNR_RETRY_EXC_ERR:
-> +		case IB_WC_WR_FLUSH_ERR:
-> +			smcr_link_down_cond_sched(link);
-> +			break;
-> +		default:
-> +			smc_wr_rx_post(link, wc->wr_cqe); /* refill WR RX */
-> +			break;
->  		}
->  	}
->  }
--- 
-This is an AI-generated review.
+-=09if (off + len > rsp->queue->dev->inline_data_size) {
++=09if (off || len > rsp->queue->dev->inline_data_size) {
+ =09=09pr_err("invalid inline data offset!\n");
+ =09=09return NVME_SC_SGL_INVALID_OFFSET | NVME_STATUS_DNR;
+ =09}
+--
+2.43.0
 
 
