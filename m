@@ -1,679 +1,196 @@
-Return-Path: <linux-rdma+bounces-21774-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21775-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id ShAhLk+CIWrAHgEAu9opvQ
-	(envelope-from <linux-rdma+bounces-21774-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 15:49:03 +0200
+	id 2kXmE8l+IWrHHQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-21775-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 15:34:01 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA8F8640828
-	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 15:49:02 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF6236405E0
+	for <lists+linux-rdma@lfdr.de>; Thu, 04 Jun 2026 15:34:00 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=amazon.com header.s=amazoncorp2 header.b=e8VY7rf3;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21774-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21774-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=amazon.com;
+	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=R1iHIvJt;
+	dkim=pass header.d=redhat.com header.s=google header.b=OkORXdCY;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21775-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21775-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=redhat.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 411B331A224C
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jun 2026 13:31:37 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 9202D309012E
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jun 2026 13:32:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4678747ECCD;
-	Thu,  4 Jun 2026 13:30:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A711175A81;
+	Thu,  4 Jun 2026 13:32:08 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from pdx-out-002.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-002.esa.us-west-2.outbound.mail-perimeter.amazon.com [44.246.1.125])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 393152116F4
-	for <linux-rdma@vger.kernel.org>; Thu,  4 Jun 2026 13:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 252F1449EA9
+	for <linux-rdma@vger.kernel.org>; Thu,  4 Jun 2026 13:32:06 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780579832; cv=none; b=UGwmJfYsv+tO90XVY+5Hp9guUW8OUg4fBy3mnWr2LDeuMePmazDXnKuo7MPgyzXUMrZdst/8qRTvMWTeIHKCsxIfiyMHQPSH76NqtRQY8iwR075lUv+pG3Tv4O1jlof2Fb/vjmnDTc3Xdml+u43wNSROc0IwyjVU6f7xhTfQSK4=
+	t=1780579928; cv=none; b=KEMrGn6khN1C40wvI8sthvZmSZqBaiQNua/NUoF5IpOJkyugLJ76nZCyadF5fp4u1EqV2Ejxq/4ycb+sRkz9A8u11j0VzkI7qM4yc/UJsHDnHOi0CwwTwDanSaxpV3SKdxT42tqoZ7vrz+UuF3T0k9Fvtc5Iy9hISvafZPMe5MM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780579832; c=relaxed/simple;
-	bh=zBWVNu8etXAYwaamllkf9of0ayD7W8Si6K6IASnaxH4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=muRZwW52a5vpTr5mG1PaQ1WbHvqiuVQmiB2+OU0Sa/gz35AOW+zHLnI9cqh+GRnEfOW38BJnkCTPdXiuH1z+2wzKAIS9DUf2gFnqjxfRLnpLO3btHcHKeWe/JOtc/wbeHj9VcJP8W+ps6bRhNAANLGWTnsY8iG4ic7doD1ivUeg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=e8VY7rf3; arc=none smtp.client-ip=44.246.1.125
+	s=arc-20240116; t=1780579928; c=relaxed/simple;
+	bh=ZkQWGgFZCoFSBhFJf3coWEqHeUyuA2PzIM81IX4gGR8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aKMj9JTz83VaUj89HnXsqIG2RfIVUvFXLMMqI1fFIqAzCLGtJt4HewbT2SrDr0f2yPC1mzIdrc01W2QaU2KB8Ie5C/uvLzeZ/A5HBICv4MgZBAvn9IdinEiS4Um7SYhdaq0inBPwWMp5R15pf0rRex8OkwcaYaPzLjJ4LL1Yy8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=R1iHIvJt; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=OkORXdCY; arc=none smtp.client-ip=170.10.133.124
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1780579926;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kP12h1LonZWRO930Aw/hrU8SVFS9Dh8cN/DqNFBNMzw=;
+	b=R1iHIvJt4mJY0TxKFXNskQLZsrGu7Be3xF2/4GXWb3A9cKeQMjx2L/DixWq9NIaGEk60HB
+	5+ub3daYTY0fMG79bczPoUoKrgzGTe0b6q88V6xsIqetOQuoe9y+xI3/Fa4M/h79q8BAvp
+	U4c6KXI3HMnuqqgo3ToBgh9dDcW3s2M=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-624-RyZAccAcO8CzmbXwAvWuOQ-1; Thu, 04 Jun 2026 09:32:02 -0400
+X-MC-Unique: RyZAccAcO8CzmbXwAvWuOQ-1
+X-Mimecast-MFC-AGG-ID: RyZAccAcO8CzmbXwAvWuOQ_1780579921
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-490aadb1386so9097395e9.0
+        for <linux-rdma@vger.kernel.org>; Thu, 04 Jun 2026 06:32:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1780579830; x=1812115830;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=YrDwckHEqG75BLswBvuk739lV0YVy7IJ7RcIb89bzrg=;
-  b=e8VY7rf3GrQOibBHlim/VfTTb4KDCf/WqG/xibdAXeDtThgo5+gaVWL3
-   ovde36D/6Wp5Sb1AK+FA3gptBVsCCVUxcLbx2DFVgdvf8yw04KJMiHoj+
-   KSSGjs0opkaNaBBbQ+zeCkJlUV85MydTad8uaDD8HjAhjmCQ3r/E23Q8n
-   vX096jOAzmLzxOo1T0DX2B3ibxPlAps9hXTnD0rWwUaIANkcWrO4VyDfc
-   d/TW9O5MMpl4mQERbXepCFIBfHWKE4rqXIBSp6gVn/50Djf83jR3Ja3Vw
-   oPgOGRtn4YPwLIAMwIKeAGwR4zUblFKaMe5M8NwSyfptJR9WP0FY7GV1I
-   Q==;
-X-CSE-ConnectionGUID: OaNdi6L8SMyP+owIFYSmLQ==
-X-CSE-MsgGUID: g/KlXdmvRi62YlNCiiGcTA==
-X-IronPort-AV: E=Sophos;i="6.24,187,1774310400"; 
-   d="scan'208";a="21095419"
-Received: from ip-10-5-12-219.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.12.219])
-  by internal-pdx-out-002.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2026 13:30:27 +0000
-Received: from EX19MTAUWB001.ant.amazon.com [205.251.233.51:19930]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.53.239:2525] with esmtp (Farcaster)
- id d1c8ffbf-6f78-45a0-8848-597bbac84988; Thu, 4 Jun 2026 13:30:27 +0000 (UTC)
-X-Farcaster-Flow-ID: d1c8ffbf-6f78-45a0-8848-597bbac84988
-Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
- Thu, 4 Jun 2026 13:30:27 +0000
-Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
- (10.253.103.172) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37; Thu, 4 Jun 2026
- 13:30:25 +0000
-From: Michael Margolin <mrgolin@amazon.com>
-To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
-CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>,
-	"Yonatan Nachum" <ynachum@amazon.com>
-Subject: [PATCH for-next v6 5/5] RDMA/efa: Add Completion Counters support
-Date: Thu, 4 Jun 2026 13:30:23 +0000
-Message-ID: <20260604133023.23664-1-mrgolin@amazon.com>
-X-Mailer: git-send-email 2.47.3
+        d=redhat.com; s=google; t=1780579921; x=1781184721; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kP12h1LonZWRO930Aw/hrU8SVFS9Dh8cN/DqNFBNMzw=;
+        b=OkORXdCYvmlXpYgTipIP5dCBW9WeIweyG9wTvVyNsa4ti1trnBMuKoeI1YXcoVc9lp
+         v/zuuzBEjShXNWG0ydz8sfLK4TWX1+PBOMRxClD4M/E83lyU311Nh7CV26RVlOyQ/WQe
+         EmTt+XZCYzxXvRG9+wXQH8nj8OdBWj0DkHbDY5TglJQbBYWa6Pp86MpV8K0zL1PZi97N
+         4JgclbROIWua19OOASLxnARECcxQCJxIWbAT5FA1mGkYNuILivRjdTQwTFH/I7N+LAQs
+         F82yrcaPuiHc55xy+SiVw1k04cPN1QK9RbHZDqkdKCGPuErfbmk8yp3TqgqFA6rYOHwP
+         b+LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780579921; x=1781184721;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kP12h1LonZWRO930Aw/hrU8SVFS9Dh8cN/DqNFBNMzw=;
+        b=Vcj2v8p0KGKRCmhrZytQKRiNYHIhkpjQG3Mjp824UJzAa8WfdJZH0DiGG5PMSPXxS/
+         OtjiG4Dy+1OR9A+wjiZZ2WBXRsEVCcwtF1b101bmwWJYxC0QaDt8vE3BQW+DiKShNvDE
+         retaeFpo/o4cS/zCMg1YaILo9Q5ME/Hbix27Cp1zV8VPcwlM9ZSgQ5yTz2rq7BtRR0BY
+         /gjXQX1TnlDyNwOdOdA48EnFm8cnP6Y5AuOWFJPjIf8CasG/7+MIxF8GVjjmGQkPmHX2
+         xMJtTOOCZ+LCZfeT1UHs+1n1Jpq1D/EnTXj+UGb43FfyMiN1nTvZyBscdMXqVIomLlkU
+         ugnA==
+X-Forwarded-Encrypted: i=1; AFNElJ+rpr88rD/onwD01v1n5nKDftpSbNZ5vcHKbvuZvKVa2NZJ4KySP5k4epzn69z3USw84NoRu4KsEQdl@vger.kernel.org
+X-Gm-Message-State: AOJu0Yye+jnYuPXEP8nD/u82vKN0wiBa7Md/ny08w2VY8szofZlVIs/p
+	zCw0hWLZand25y95FZ7iB1q9J6qc6uQ9DXmyyPz9Q5ImSDmTcRSgRP14pdk/gi51VD25RYa+nDd
+	/CUt/ZqT5UTubtvA8VjAcWMHS4/VQNUJ8BSuVFfEx9mII3dQLmLDR42XF7ORqhuI=
+X-Gm-Gg: Acq92OEvr/f+gihfdfJa72IYwZDJo3j+ijq+NqBJF0CCs1hAop7j5tCrGy2r7Jt3nbV
+	YlGFIAxfZNekPahDQf7blPAiJnNgL3AYrpXmTLw/U18DdMuRJ/oSApLD1EiH2NdfP4MOcE0yC7/
+	MQ80OvLbjKCwkjRFAG3gF6M6k0HzPBjzLxgtLGPHIRNWVu6NIRZZd8gAgzu9xIR4fL8Joqcy5Jg
+	JPa+mBbXolPGV73WXX2WeYi0EjR+VUhjNXtEc2r5bOsGOl6VhlZVyMcr0qvRoLxTzOELZOk4p/U
+	ARmBr5nlbnaZK7MzO5r28N5xw6BSBHim76H3VqcnaSx6nwSdYXvCdbfxugD7l4nAIrHFJxiW+wK
+	Uq1KLgE60TpI9fuDIPUghuR6flRizmqjiAa7+vQahjzgibTTg712xRmCEQOOijZs0urk=
+X-Received: by 2002:a05:600c:34d3:b0:490:b26c:64ad with SMTP id 5b1f17b1804b1-490bc4cf867mr58229715e9.5.1780579921525;
+        Thu, 04 Jun 2026 06:32:01 -0700 (PDT)
+X-Received: by 2002:a05:600c:34d3:b0:490:b26c:64ad with SMTP id 5b1f17b1804b1-490bc4cf867mr58229275e9.5.1780579921137;
+        Thu, 04 Jun 2026 06:32:01 -0700 (PDT)
+Received: from [192.168.88.32] ([212.105.155.59])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-490bda4fd52sm61620455e9.0.2026.06.04.06.31.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jun 2026 06:32:00 -0700 (PDT)
+Message-ID: <d9a23afc-6615-4fe8-a325-f3bde54ec6c2@redhat.com>
+Date: Thu, 4 Jun 2026 15:31:59 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D042UWA004.ant.amazon.com (10.13.139.16) To
- EX19D001UWA001.ant.amazon.com (10.13.138.214)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] net/mlx5: convert miss_list allocation to
+ kvmalloc_array()
+To: William Theesfeld <william@theesfeld.net>,
+ Saeed Mahameed <saeedm@nvidia.com>
+Cc: Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+ Mark Bloch <mbloch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20260601193758.626537-1-william@theesfeld.net>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20260601193758.626537-1-william@theesfeld.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-7.66 / 15.00];
-	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-21775-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,qp_events.events:url];
-	TAGGED_FROM(0.00)[bounces-21774-lists,linux-rdma=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:jgg@nvidia.com,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:sleybo@amazon.com,m:matua@amazon.com,m:gal.pressman@linux.dev,m:ynachum@amazon.com,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[mrgolin@amazon.com,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER(0.00)[pabeni@redhat.com,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	FORGED_RECIPIENTS(0.00)[m:william@theesfeld.net,m:saeedm@nvidia.com,m:leon@kernel.org,m:tariqt@nvidia.com,m:mbloch@nvidia.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FROM_NEQ_ENVFROM(0.00)[mrgolin@amazon.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	ALIAS_RESOLVED(0.00)[];
-	DKIM_TRACE(0.00)[amazon.com:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	FROM_NEQ_ENVFROM(0.00)[pabeni@redhat.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,theesfeld.net:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: EA8F8640828
+X-Rspamd-Queue-Id: DF6236405E0
 
-Implement completion counters for the EFA device. Each completion
-counter is backed by two EFA event counters, one for success
-completions and one for error completions.
+On 6/1/26 9:37 PM, William Theesfeld wrote:
+> dr_icm_buddy_init_ste_cache() allocates the per-buddy miss_list using
+> the open-coded kvmalloc(n * sizeof(*p), ...) form.  The neighbouring
+> allocations in the same function already use the kvcalloc()/
+> kvzalloc_objs() forms; switch this last one to kvmalloc_array() for
+> consistency and for the size_mul overflow check that kvmalloc_array()
+> performs.
+> 
+> The semantics are unchanged: kvmalloc_array() returns a non-zeroed
+> buffer, just like the previous kvmalloc() call.  Existing callers of
+> buddy->miss_list initialise each list_head before use.
+> 
+> Signed-off-by: William Theesfeld <william@theesfeld.net>
+> ---
+>  .../net/ethernet/mellanox/mlx5/core/steering/sws/dr_icm_pool.c  | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_icm_pool.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_icm_pool.c
+> index 7a0a15822..fa4d24b3d 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_icm_pool.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_icm_pool.c
+> @@ -239,7 +239,7 @@ static int dr_icm_buddy_init_ste_cache(struct mlx5dr_icm_buddy_mem *buddy)
+>  	if (!buddy->hw_ste_arr)
+>  		goto free_ste_arr;
+>  
+> -	buddy->miss_list = kvmalloc(num_of_entries * sizeof(struct list_head), GFP_KERNEL);
+> +	buddy->miss_list = kvmalloc_array(num_of_entries, sizeof(struct list_head), GFP_KERNEL);
+>  	if (!buddy->miss_list)
+>  		goto free_hw_ste_arr;
 
-The driver creates umem for counters from private descriptor ioctl
-attributes using core utility.
+@Leon, @Tariq: the patch looks obviously correct to me, still an
+explicit ack would be nice, I think.
 
-Read operations are not implemented as the counter values are accessed
-directly from userspace through the mapped memory.
+Thanks,
 
-Reviewed-by: Yonatan Nachum <ynachum@amazon.com>
-Signed-off-by: Michael Margolin <mrgolin@amazon.com>
----
- drivers/infiniband/hw/efa/efa.h         |  17 +-
- drivers/infiniband/hw/efa/efa_com_cmd.c | 110 +++++++++++++
- drivers/infiniband/hw/efa/efa_com_cmd.h |  36 +++++
- drivers/infiniband/hw/efa/efa_main.c    |   7 +-
- drivers/infiniband/hw/efa/efa_verbs.c   | 199 ++++++++++++++++++++++++
- include/uapi/rdma/efa-abi.h             |   6 +
- 6 files changed, 373 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
-index 00b19f2ba3da..342ef4c36437 100644
---- a/drivers/infiniband/hw/efa/efa.h
-+++ b/drivers/infiniband/hw/efa/efa.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
- /*
-- * Copyright 2018-2025 Amazon.com, Inc. or its affiliates. All rights reserved.
-+ * Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
-  */
- 
- #ifndef _EFA_H_
-@@ -110,6 +110,14 @@ struct efa_cq {
- 	struct ib_umem *umem;
- };
- 
-+struct efa_comp_cntr {
-+	struct ib_comp_cntr ibcc;
-+	struct ib_umem *comp_umem;
-+	struct ib_umem *err_umem;
-+	u32 comp_handle;
-+	u32 err_handle;
-+};
-+
- struct efa_qp {
- 	struct ib_qp ibqp;
- 	dma_addr_t rq_dma_addr;
-@@ -163,6 +171,13 @@ int efa_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init_attr,
- int efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata);
- int efa_create_user_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 		       struct uverbs_attr_bundle *attrs);
-+int efa_create_comp_cntr(struct ib_comp_cntr *ibcc,
-+			 struct uverbs_attr_bundle *attrs);
-+int efa_destroy_comp_cntr(struct ib_comp_cntr *ibcc);
-+int efa_modify_comp_cntr(struct ib_comp_cntr *ibcc, enum ib_comp_cntr_entry entry,
-+			 enum ib_comp_cntr_modify_op op, u64 value);
-+int efa_qp_attach_comp_cntr(struct ib_qp *ibqp, struct ib_comp_cntr *ibcc,
-+			    struct ib_qp_attach_comp_cntr_attr *attr);
- struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
- 			 u64 virt_addr, int access_flags,
- 			 struct ib_dmah *dmah,
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.c b/drivers/infiniband/hw/efa/efa_com_cmd.c
-index 63c7f07806a8..8261f90df477 100644
---- a/drivers/infiniband/hw/efa/efa_com_cmd.c
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.c
-@@ -516,6 +516,8 @@ int efa_com_get_device_attr(struct efa_com_dev *edev,
- 		}
- 
- 		result->inline_buf_size_ex = resp.u.queue_attr_2.inline_buf_size_ex;
-+		result->max_event_counters = resp.u.queue_attr_2.max_event_counters;
-+		result->event_counter_max_val = resp.u.queue_attr_2.event_counter_max_val;
- 	} else {
- 		result->inline_buf_size_ex = result->inline_buf_size;
- 	}
-@@ -851,3 +853,111 @@ int efa_com_get_stats(struct efa_com_dev *edev,
- 
- 	return 0;
- }
-+
-+int efa_com_create_event_counter(struct efa_com_dev *edev,
-+				 struct efa_com_create_event_counter_params *params,
-+				 struct efa_com_create_event_counter_result *result)
-+{
-+	struct efa_admin_create_event_counter_cmd cmd = {};
-+	struct efa_admin_create_event_counter_resp resp;
-+	struct efa_com_admin_queue *aq = &edev->aq;
-+	int err;
-+
-+	cmd.aq_common_descriptor.opcode = EFA_ADMIN_CREATE_EVENT_COUNTER;
-+	cmd.uar = params->uarn;
-+	cmd.paddr = params->dma_addr;
-+
-+	err = efa_com_cmd_exec(aq, (struct efa_admin_aq_entry *)&cmd,
-+			       sizeof(cmd),
-+			       (struct efa_admin_acq_entry *)&resp,
-+			       sizeof(resp));
-+	if (err) {
-+		ibdev_err_ratelimited(edev->efa_dev,
-+				      "Failed to create event counter [%d]\n",
-+				      err);
-+		return err;
-+	}
-+
-+	result->cntr_handle = resp.cntr_handle;
-+	return 0;
-+}
-+
-+int efa_com_destroy_event_counter(struct efa_com_dev *edev,
-+				  struct efa_com_destroy_event_counter_params *params)
-+{
-+	struct efa_admin_destroy_event_counter_cmd cmd = {};
-+	struct efa_admin_destroy_event_counter_resp resp;
-+	struct efa_com_admin_queue *aq = &edev->aq;
-+	int err;
-+
-+	cmd.aq_common_descriptor.opcode = EFA_ADMIN_DESTROY_EVENT_COUNTER;
-+	cmd.cntr_handle = params->cntr_handle;
-+
-+	err = efa_com_cmd_exec(aq, (struct efa_admin_aq_entry *)&cmd,
-+			       sizeof(cmd),
-+			       (struct efa_admin_acq_entry *)&resp,
-+			       sizeof(resp));
-+	if (err) {
-+		ibdev_err_ratelimited(edev->efa_dev,
-+				      "Failed to destroy event counter [%d]\n",
-+				      err);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+int efa_com_attach_event_counter(struct efa_com_dev *edev,
-+				 struct efa_com_attach_event_counter_params *params)
-+{
-+	struct efa_admin_attach_event_counter_cmd cmd = {};
-+	struct efa_admin_attach_event_counter_resp resp;
-+	struct efa_com_admin_queue *aq = &edev->aq;
-+	int err;
-+
-+	cmd.aq_common_descriptor.opcode = EFA_ADMIN_ATTACH_EVENT_COUNTER;
-+	cmd.cntr_handle = params->cntr_handle;
-+	cmd.attach_type = EFA_ADMIN_EVENT_COUNTER_ATTACH_QP_EVENTS;
-+	cmd.u.qp_events.qp_handle = params->qp_handle;
-+	cmd.u.qp_events.events = params->events;
-+
-+	err = efa_com_cmd_exec(aq, (struct efa_admin_aq_entry *)&cmd,
-+			       sizeof(cmd),
-+			       (struct efa_admin_acq_entry *)&resp,
-+			       sizeof(resp));
-+	if (err) {
-+		ibdev_err_ratelimited(edev->efa_dev,
-+				      "Failed to attach event counter [%d]\n",
-+				      err);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+int efa_com_modify_event_counter(struct efa_com_dev *edev,
-+				 struct efa_com_modify_event_counter_params *params)
-+{
-+	struct efa_admin_modify_event_counter_cmd cmd = {};
-+	struct efa_admin_modify_event_counter_resp resp;
-+	struct efa_com_admin_queue *aq = &edev->aq;
-+	int err;
-+
-+	cmd.aq_common_descriptor.opcode = EFA_ADMIN_MODIFY_EVENT_COUNTER;
-+	cmd.cntr_handle = params->cntr_handle;
-+	cmd.operation = params->operation;
-+	cmd.value = params->value;
-+
-+	err = efa_com_cmd_exec(aq, (struct efa_admin_aq_entry *)&cmd,
-+			       sizeof(cmd),
-+			       (struct efa_admin_acq_entry *)&resp,
-+			       sizeof(resp));
-+	if (err) {
-+		ibdev_err_ratelimited(edev->efa_dev,
-+				      "Failed to modify event counter [%d]\n",
-+				      err);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.h b/drivers/infiniband/hw/efa/efa_com_cmd.h
-index ef15b3c38429..8d31813b3c9f 100644
---- a/drivers/infiniband/hw/efa/efa_com_cmd.h
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.h
-@@ -145,6 +145,8 @@ struct efa_com_get_device_attr_result {
- 	u16 min_sq_depth;
- 	u16 max_link_speed_gbps;
- 	u8 db_bar;
-+	u32 max_event_counters;
-+	u64 event_counter_max_val;
- };
- 
- struct efa_com_get_hw_hints_result {
-@@ -300,6 +302,31 @@ union efa_com_get_stats_result {
- 	struct efa_com_network_stats network_stats;
- };
- 
-+struct efa_com_create_event_counter_params {
-+	dma_addr_t dma_addr;
-+	u16 uarn;
-+};
-+
-+struct efa_com_create_event_counter_result {
-+	u32 cntr_handle;
-+};
-+
-+struct efa_com_destroy_event_counter_params {
-+	u32 cntr_handle;
-+};
-+
-+struct efa_com_attach_event_counter_params {
-+	u32 cntr_handle;
-+	u32 qp_handle;
-+	u32 events;
-+};
-+
-+struct efa_com_modify_event_counter_params {
-+	u32 cntr_handle;
-+	u8 operation;
-+	u64 value;
-+};
-+
- int efa_com_create_qp(struct efa_com_dev *edev,
- 		      struct efa_com_create_qp_params *params,
- 		      struct efa_com_create_qp_result *res);
-@@ -350,5 +377,14 @@ int efa_com_dealloc_uar(struct efa_com_dev *edev,
- int efa_com_get_stats(struct efa_com_dev *edev,
- 		      struct efa_com_get_stats_params *params,
- 		      union efa_com_get_stats_result *result);
-+int efa_com_create_event_counter(struct efa_com_dev *edev,
-+				 struct efa_com_create_event_counter_params *params,
-+				 struct efa_com_create_event_counter_result *result);
-+int efa_com_destroy_event_counter(struct efa_com_dev *edev,
-+				  struct efa_com_destroy_event_counter_params *params);
-+int efa_com_attach_event_counter(struct efa_com_dev *edev,
-+				 struct efa_com_attach_event_counter_params *params);
-+int efa_com_modify_event_counter(struct efa_com_dev *edev,
-+				 struct efa_com_modify_event_counter_params *params);
- 
- #endif /* _EFA_COM_CMD_H_ */
-diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
-index 03c237c8c81e..7aa6b401787f 100644
---- a/drivers/infiniband/hw/efa/efa_main.c
-+++ b/drivers/infiniband/hw/efa/efa_main.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
- /*
-- * Copyright 2018-2025 Amazon.com, Inc. or its affiliates. All rights reserved.
-+ * Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
-  */
- 
- #include <linux/module.h>
-@@ -372,20 +372,24 @@ static const struct ib_device_ops efa_dev_ops = {
- 	.alloc_pd = efa_alloc_pd,
- 	.alloc_ucontext = efa_alloc_ucontext,
- 	.create_user_cq = efa_create_user_cq,
-+	.create_comp_cntr = efa_create_comp_cntr,
- 	.create_qp = efa_create_qp,
- 	.create_user_ah = efa_create_ah,
- 	.dealloc_pd = efa_dealloc_pd,
- 	.dealloc_ucontext = efa_dealloc_ucontext,
- 	.dereg_mr = efa_dereg_mr,
- 	.destroy_ah = efa_destroy_ah,
-+	.destroy_comp_cntr = efa_destroy_comp_cntr,
- 	.destroy_cq = efa_destroy_cq,
- 	.destroy_qp = efa_destroy_qp,
- 	.get_hw_stats = efa_get_hw_stats,
- 	.get_link_layer = efa_port_link_layer,
- 	.get_port_immutable = efa_get_port_immutable,
-+	.modify_comp_cntr = efa_modify_comp_cntr,
- 	.mmap = efa_mmap,
- 	.mmap_free = efa_mmap_free,
- 	.modify_qp = efa_modify_qp,
-+	.qp_attach_comp_cntr = efa_qp_attach_comp_cntr,
- 	.query_device = efa_query_device,
- 	.query_gid = efa_query_gid,
- 	.query_pkey = efa_query_pkey,
-@@ -396,6 +400,7 @@ static const struct ib_device_ops efa_dev_ops = {
- 
- 	INIT_RDMA_OBJ_SIZE(ib_ah, efa_ah, ibah),
- 	INIT_RDMA_OBJ_SIZE(ib_cq, efa_cq, ibcq),
-+	INIT_RDMA_OBJ_SIZE(ib_comp_cntr, efa_comp_cntr, ibcc),
- 	INIT_RDMA_OBJ_SIZE(ib_pd, efa_pd, ibpd),
- 	INIT_RDMA_OBJ_SIZE(ib_qp, efa_qp, ibqp),
- 	INIT_RDMA_OBJ_SIZE(ib_ucontext, efa_ucontext, ibucontext),
-diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index 434d60235945..f121551534e0 100644
---- a/drivers/infiniband/hw/efa/efa_verbs.c
-+++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -169,6 +169,11 @@ static inline struct efa_ah *to_eah(struct ib_ah *ibah)
- 	return container_of(ibah, struct efa_ah, ibah);
- }
- 
-+static inline struct efa_comp_cntr *to_ecc(struct ib_comp_cntr *ibcc)
-+{
-+	return container_of(ibcc, struct efa_comp_cntr, ibcc);
-+}
-+
- static inline struct efa_user_mmap_entry *
- to_emmap(struct rdma_user_mmap_entry *rdma_entry)
- {
-@@ -242,6 +247,7 @@ int efa_query_device(struct ib_device *ibdev,
- 	props->max_recv_sge = dev_attr->max_rq_sge;
- 	props->max_sge_rd = dev_attr->max_wr_rdma_sge;
- 	props->max_pkeys = 1;
-+	props->max_comp_cntr = dev_attr->max_event_counters / 2;
- 
- 	if (udata && udata->outlen) {
- 		resp.max_sq_sge = dev_attr->max_sq_sge;
-@@ -267,6 +273,9 @@ int efa_query_device(struct ib_device *ibdev,
- 		if (EFA_DEV_CAP(dev, UNSOLICITED_WRITE_RECV))
- 			resp.device_caps |= EFA_QUERY_DEVICE_CAPS_UNSOLICITED_WRITE_RECV;
- 
-+		if (EFA_DEV_CAP(dev, EVENT_COUNTERS))
-+			resp.device_caps |= EFA_QUERY_DEVICE_CAPS_COMP_CNTR;
-+
- 		if (dev->neqs)
- 			resp.device_caps |= EFA_QUERY_DEVICE_CAPS_CQ_NOTIFICATIONS;
- 
-@@ -2238,6 +2247,181 @@ enum rdma_link_layer efa_port_link_layer(struct ib_device *ibdev,
- 	return IB_LINK_LAYER_UNSPECIFIED;
- }
- 
-+static int efa_create_event_counter(struct efa_dev *dev, u16 uarn, dma_addr_t addr, u32 *handle)
-+{
-+	struct efa_com_create_event_counter_params params = {};
-+	struct efa_com_create_event_counter_result result;
-+	int err;
-+
-+	params.uarn = uarn;
-+	params.dma_addr = addr;
-+
-+	err = efa_com_create_event_counter(&dev->edev, &params, &result);
-+	if (err)
-+		return err;
-+
-+	*handle = result.cntr_handle;
-+	return 0;
-+}
-+
-+static int efa_destroy_event_counter(struct efa_dev *dev, u32 handle)
-+{
-+	struct efa_com_destroy_event_counter_params params = {
-+		.cntr_handle = handle,
-+	};
-+
-+	return efa_com_destroy_event_counter(&dev->edev, &params);
-+}
-+
-+int efa_create_comp_cntr(struct ib_comp_cntr *ibcc, struct uverbs_attr_bundle *attrs)
-+{
-+	struct efa_dev *dev = to_edev(ibcc->device);
-+	struct efa_comp_cntr *cc = to_ecc(ibcc);
-+	struct efa_ucontext *ucontext;
-+	struct ib_umem *comp_umem;
-+	struct ib_umem *err_umem;
-+	dma_addr_t comp_addr;
-+	dma_addr_t err_addr;
-+	int err;
-+
-+	ucontext = rdma_udata_to_drv_context(&attrs->driver_udata, struct efa_ucontext,
-+					     ibucontext);
-+
-+	comp_umem = ib_umem_get_attr(ibcc->device, attrs, EFA_IB_ATTR_CREATE_COMP_CNTR_COMP_BUFFER,
-+				     sizeof(u64), IB_ACCESS_LOCAL_WRITE);
-+	if (IS_ERR(comp_umem))
-+		return PTR_ERR(comp_umem);
-+
-+	err_umem = ib_umem_get_attr(ibcc->device, attrs, EFA_IB_ATTR_CREATE_COMP_CNTR_ERR_BUFFER,
-+				    sizeof(u64), IB_ACCESS_LOCAL_WRITE);
-+	if (IS_ERR(err_umem)) {
-+		err = PTR_ERR(err_umem);
-+		goto err_comp_umem;
-+	}
-+
-+	comp_addr = ib_umem_start_dma_addr(comp_umem);
-+	err_addr = ib_umem_start_dma_addr(err_umem);
-+
-+	if (!IS_ALIGNED(comp_addr, sizeof(u64)) || !IS_ALIGNED(err_addr, sizeof(u64))) {
-+		ibdev_dbg(&dev->ibdev, "Completion Counter memory is unaligned\n");
-+		err = -EINVAL;
-+		goto err_err_umem;
-+	}
-+
-+	err = efa_create_event_counter(dev, ucontext->uarn, comp_addr, &cc->comp_handle);
-+	if (err) {
-+		ibdev_dbg(&dev->ibdev, "Failed to create comp event counter [%d]\n", err);
-+		goto err_err_umem;
-+	}
-+
-+	err = efa_create_event_counter(dev, ucontext->uarn, err_addr, &cc->err_handle);
-+	if (err) {
-+		ibdev_dbg(&dev->ibdev, "Failed to create err event counter [%d]\n", err);
-+		goto err_destroy_comp_event_cntr;
-+	}
-+
-+	cc->comp_umem = comp_umem;
-+	cc->err_umem = err_umem;
-+	ibcc->comp_count_max_value = dev->dev_attr.event_counter_max_val;
-+	ibcc->err_count_max_value = dev->dev_attr.event_counter_max_val;
-+
-+	return 0;
-+
-+err_destroy_comp_event_cntr:
-+	efa_destroy_event_counter(dev, cc->comp_handle);
-+err_err_umem:
-+	ib_umem_release(err_umem);
-+err_comp_umem:
-+	ib_umem_release(comp_umem);
-+	return err;
-+}
-+
-+int efa_destroy_comp_cntr(struct ib_comp_cntr *ibcc)
-+{
-+	struct efa_dev *dev = to_edev(ibcc->device);
-+	struct efa_comp_cntr *cc = to_ecc(ibcc);
-+
-+	efa_destroy_event_counter(dev, cc->comp_handle);
-+	efa_destroy_event_counter(dev, cc->err_handle);
-+
-+	ib_umem_release(cc->comp_umem);
-+	ib_umem_release(cc->err_umem);
-+	return 0;
-+}
-+
-+int efa_modify_comp_cntr(struct ib_comp_cntr *ibcc, enum ib_comp_cntr_entry entry,
-+			 enum ib_comp_cntr_modify_op op, u64 value)
-+{
-+	struct efa_com_modify_event_counter_params params = {};
-+	struct efa_comp_cntr *cc = to_ecc(ibcc);
-+
-+	params.cntr_handle = entry == IB_COMP_CNTR_ENTRY_ERR ? cc->err_handle : cc->comp_handle;
-+	params.operation = op == IB_COMP_CNTR_MODIFY_OP_SET ?
-+			   EFA_ADMIN_EVENT_COUNTER_MODIFY_SET : EFA_ADMIN_EVENT_COUNTER_MODIFY_ADD;
-+	params.value = value;
-+
-+	return efa_com_modify_event_counter(&to_edev(ibcc->device)->edev, &params);
-+}
-+
-+static u32 efa_comp_cntr_op_to_comp_events(u32 op_mask)
-+{
-+	u32 events = 0;
-+
-+	if (op_mask & IB_QP_ATTACH_COMP_CNTR_OP_SEND)
-+		EFA_SET(&events, EFA_ADMIN_EVENT_COUNTER_ATTACH_QP_EVENTS_SEND_COMP, 1);
-+	if (op_mask & IB_QP_ATTACH_COMP_CNTR_OP_RECV)
-+		EFA_SET(&events, EFA_ADMIN_EVENT_COUNTER_ATTACH_QP_EVENTS_RECV_COMP, 1);
-+	if (op_mask & IB_QP_ATTACH_COMP_CNTR_OP_RDMA_READ)
-+		EFA_SET(&events, EFA_ADMIN_EVENT_COUNTER_ATTACH_QP_EVENTS_READ_COMP, 1);
-+	if (op_mask & IB_QP_ATTACH_COMP_CNTR_OP_REMOTE_RDMA_READ)
-+		EFA_SET(&events, EFA_ADMIN_EVENT_COUNTER_ATTACH_QP_EVENTS_REMOTE_READ_COMP, 1);
-+	if (op_mask & IB_QP_ATTACH_COMP_CNTR_OP_RDMA_WRITE)
-+		EFA_SET(&events, EFA_ADMIN_EVENT_COUNTER_ATTACH_QP_EVENTS_WRITE_COMP, 1);
-+	if (op_mask & IB_QP_ATTACH_COMP_CNTR_OP_REMOTE_RDMA_WRITE)
-+		EFA_SET(&events, EFA_ADMIN_EVENT_COUNTER_ATTACH_QP_EVENTS_REMOTE_WRITE_COMP, 1);
-+
-+	return events;
-+}
-+
-+static u32 efa_comp_cntr_op_to_err_events(u32 op_mask)
-+{
-+	u32 events = 0;
-+
-+	if (op_mask & IB_QP_ATTACH_COMP_CNTR_OP_SEND)
-+		EFA_SET(&events, EFA_ADMIN_EVENT_COUNTER_ATTACH_QP_EVENTS_SEND_COMP_ERR, 1);
-+	if (op_mask & IB_QP_ATTACH_COMP_CNTR_OP_RECV)
-+		EFA_SET(&events, EFA_ADMIN_EVENT_COUNTER_ATTACH_QP_EVENTS_RECV_COMP_ERR, 1);
-+	if (op_mask & IB_QP_ATTACH_COMP_CNTR_OP_RDMA_READ)
-+		EFA_SET(&events, EFA_ADMIN_EVENT_COUNTER_ATTACH_QP_EVENTS_READ_COMP_ERR, 1);
-+	if (op_mask & IB_QP_ATTACH_COMP_CNTR_OP_RDMA_WRITE)
-+		EFA_SET(&events, EFA_ADMIN_EVENT_COUNTER_ATTACH_QP_EVENTS_WRITE_COMP_ERR, 1);
-+
-+	return events;
-+}
-+
-+int efa_qp_attach_comp_cntr(struct ib_qp *ibqp, struct ib_comp_cntr *ibcc,
-+			    struct ib_qp_attach_comp_cntr_attr *attr)
-+{
-+	struct efa_com_attach_event_counter_params params;
-+	struct efa_dev *dev = to_edev(ibqp->device);
-+	struct efa_comp_cntr *cc = to_ecc(ibcc);
-+	struct efa_qp *qp = to_eqp(ibqp);
-+	int err;
-+
-+	params.cntr_handle = cc->comp_handle;
-+	params.qp_handle = qp->qp_handle;
-+	params.events = efa_comp_cntr_op_to_comp_events(attr->op_mask);
-+
-+	err = efa_com_attach_event_counter(&dev->edev, &params);
-+	if (err)
-+		return err;
-+
-+	params.cntr_handle = cc->err_handle;
-+	params.events = efa_comp_cntr_op_to_err_events(attr->op_mask);
-+
-+	return efa_com_attach_event_counter(&dev->edev, &params);
-+}
-+
- DECLARE_UVERBS_NAMED_METHOD(EFA_IB_METHOD_MR_QUERY,
- 			    UVERBS_ATTR_IDR(EFA_IB_ATTR_QUERY_MR_HANDLE,
- 					    UVERBS_OBJECT_MR,
-@@ -2260,8 +2444,23 @@ ADD_UVERBS_METHODS(efa_mr,
- 		   UVERBS_OBJECT_MR,
- 		   &UVERBS_METHOD(EFA_IB_METHOD_MR_QUERY));
- 
-+ADD_UVERBS_ATTRIBUTES_SIMPLE(
-+	efa_comp_cntr_create,
-+	UVERBS_OBJECT_COMP_CNTR,
-+	UVERBS_METHOD_COMP_CNTR_CREATE,
-+	UVERBS_ATTR_PTR_IN(
-+		EFA_IB_ATTR_CREATE_COMP_CNTR_COMP_BUFFER,
-+		UVERBS_ATTR_STRUCT(struct ib_uverbs_buffer_desc, length),
-+		UA_MANDATORY),
-+	UVERBS_ATTR_PTR_IN(
-+		EFA_IB_ATTR_CREATE_COMP_CNTR_ERR_BUFFER,
-+		UVERBS_ATTR_STRUCT(struct ib_uverbs_buffer_desc, length),
-+		UA_MANDATORY));
-+
- const struct uapi_definition efa_uapi_defs[] = {
- 	UAPI_DEF_CHAIN_OBJ_TREE(UVERBS_OBJECT_MR,
- 				&efa_mr),
-+	UAPI_DEF_CHAIN_OBJ_TREE(UVERBS_OBJECT_COMP_CNTR,
-+				&efa_comp_cntr_create),
- 	{},
- };
-diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
-index d5c18f8de182..c79b54aade23 100644
---- a/include/uapi/rdma/efa-abi.h
-+++ b/include/uapi/rdma/efa-abi.h
-@@ -133,6 +133,7 @@ enum {
- 	EFA_QUERY_DEVICE_CAPS_RDMA_WRITE = 1 << 5,
- 	EFA_QUERY_DEVICE_CAPS_UNSOLICITED_WRITE_RECV = 1 << 6,
- 	EFA_QUERY_DEVICE_CAPS_CQ_WITH_EXT_MEM = 1 << 7,
-+	EFA_QUERY_DEVICE_CAPS_COMP_CNTR = 1 << 8,
- };
- 
- struct efa_ibv_ex_query_device_resp {
-@@ -163,4 +164,9 @@ enum efa_mr_methods {
- 	EFA_IB_METHOD_MR_QUERY = (1U << UVERBS_ID_NS_SHIFT),
- };
- 
-+enum efa_comp_cntr_create_attrs {
-+	EFA_IB_ATTR_CREATE_COMP_CNTR_COMP_BUFFER = (1U << UVERBS_ID_NS_SHIFT),
-+	EFA_IB_ATTR_CREATE_COMP_CNTR_ERR_BUFFER,
-+};
-+
- #endif /* EFA_ABI_USER_H */
--- 
-2.47.3
+Paolo
 
 
