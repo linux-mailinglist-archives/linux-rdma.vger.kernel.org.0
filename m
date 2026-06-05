@@ -1,406 +1,244 @@
-Return-Path: <linux-rdma+bounces-21833-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21834-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id YIBSO5aoImqLbgEAu9opvQ
-	(envelope-from <linux-rdma+bounces-21833-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 05 Jun 2026 12:44:38 +0200
+	id XbGuFtO4ImricgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-21834-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 05 Jun 2026 13:53:55 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DC7064775B
-	for <lists+linux-rdma@lfdr.de>; Fri, 05 Jun 2026 12:44:38 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7698D647DF6
+	for <lists+linux-rdma@lfdr.de>; Fri, 05 Jun 2026 13:53:54 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=debian.org header.s=smtpauto.stravinsky header.b=gFB8rLUi;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21833-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21833-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=debian.org;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=Nvidia.com header.s=selector2 header.b=J2e213du;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21834-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21834-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=nvidia.com;
+	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 90B13306E50B
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jun 2026 10:33:06 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 546BB300463F
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jun 2026 11:53:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2531F4C6F12;
-	Fri,  5 Jun 2026 10:32:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 058B64D90CC;
+	Fri,  5 Jun 2026 11:53:45 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from stravinsky.debian.org (stravinsky.debian.org [82.195.75.108])
+Received: from CY7PR03CU001.outbound.protection.outlook.com (mail-westcentralusazon11010021.outbound.protection.outlook.com [40.93.198.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86BD14ADD91;
-	Fri,  5 Jun 2026 10:32:00 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780655526; cv=none; b=DcefUCIWDwNFR30w3msZobhTddwHiyHikc8R++UmVQ3JOHuPp5KGaZNlHoRF1IGXTK8tHy63BhlUEssa5Y24VKWVDoO0J2Jcz2ZxCNRMphiIRv7210Sh9Z/4fUCh+1ukRyM7nqVYwGwLDnquO9v1S878LsbP8wNBcS+prs4zj3o=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780655526; c=relaxed/simple;
-	bh=4JzxiyHuzVHV5u6xPLo9a96EavCnG+zUg49sD/rGMvI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=t8VYUA9W5GhrGnNdi+f7nNd1n8aBoSOHrDH21D+SRQ1+yfrE8lz2QXJIiVoAFh1tRwdSINA/xZmI/y3R+M+ALUzFqFgTTcxcsv1Pzo6g3GlTHl86EN5qyoPpIJaF7aho1l2oXISo569Bq6Q+gsKpTR+M4wLjjw3BEIp9pO9WY5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=debian.org; dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b=gFB8rLUi; arc=none smtp.client-ip=82.195.75.108
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
-	s=smtpauto.stravinsky; h=X-Debian-User:Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Reply-To:Content-ID:Content-Description;
-	bh=hz7RK7vwPIuok63s9GZ4PpfT4BdFxPOdoyp+D6Hshek=; b=gFB8rLUiKwhKNLuk1v5vyhI+fY
-	yFrancLNEruQ+LUh94AtzRl/WZUFYHEJVkzHesOHExSFdTghhE5phL7GhYbQ8xV2fxGaGpo0drjHK
-	oVbKjzeqhd83CIrT907Yx3I6SCw1JYrwYJHPdV/o43wGOLCXn68cpH1/2G4VSAsEoV0DX4VZATc9Z
-	rsJslc8+TFsxqhq99cc8AgeffOf4boHlRrbiPrXhwLvnhYPd+x2IAq+LM3bkoI6NfTPGZpHCkvKC1
-	6RJAdLsloo18OMTlVlCw+/mftGwIlDBleabgl22nWcLBXywRzwzPTs1F2B1e1j3qYOLTUiwKTfNmQ
-	3GmfnX8A==;
-Received: from authenticated-user
-	by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.96)
-	(envelope-from <leitao@debian.org>)
-	id 1wVRqI-005EFA-1u;
-	Fri, 05 Jun 2026 10:31:58 +0000
-From: Breno Leitao <leitao@debian.org>
-Date: Fri, 05 Jun 2026 03:31:40 -0700
-Subject: [PATCH net-next v2 3/3] rds: convert to getsockopt_iter
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91FA74D2EDA
+	for <linux-rdma@vger.kernel.org>; Fri,  5 Jun 2026 11:53:43 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780660424; cv=fail; b=VXrL3HS+pLgLkIeJQDLJKSPGJ/aAsKiSOj5rhTKStQefVoAHCTFjfgMEQYCi0ImikKezsFuL0mVbALS3MlD4+rXv7p/BzQXsD9czbsSXZjCwxdmaUca1EASkAVQldZpu+gBTDeEakcoEI7ci9pM3KlWt5C1teXQZWlrrTn7rKxY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780660424; c=relaxed/simple;
+	bh=OX/neXOEiFXL0ML8pVClNJc5Msk3U3qzf45viT6gNQc=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=qkNrLa4jAGLhR5U0FsQyF9+5W0J3e+1GfD9z65FF/QcN7tuAHvgmCo2/mzEB6tjKwGFJKdepNayQxPbI+1Glx1R4rUi3DKu7841UGR7rIDwGazhhluTRmmWx2gU46MI/GdLY3LQaUSNmTxDPigSio4jT7DK0HjLQpwrStFyhn8E=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=J2e213du; arc=fail smtp.client-ip=40.93.198.21
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=lgV0soKGt4ltRFvrsQ5ernyQotmC4untQ7LV0psziuQKXGodZvlZRMQJtOH3MZNb8GBMufmY1h6Ib+anrXa7wHDwnGl1oQnJu2eNNcLvYX/D6wQHcWTTbuF+PpjpkOaJ3QF97Qt4zPYky87qIzxHkQS7SkSlKVE1F7gINWo3wC4j8yxM8hqv4x8FU0AvobS+eJNhs2HiatshRb4rftVVVuJcfFQSVaz8+FBMTbWSpv6QAHD127UCAnwjqUuOB+MXlpBYLuajAmN1ZU5oNJfh8nlFHCVtGQusfs9ATfve45TgUJvLXYTkITE7o063ZnpzIt4/TFGUEPSEKRk2i2m9bw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=c/irmv3bn3XKTFpeNKSHvlaoTPs4bcCvu82x2MSVwSY=;
+ b=dR2R5GanH6zVXJVMqD0+NkAWkGHeE3XI9pXzTCeRCQJaThq+vgX1D/50nbqsuJgEJKgOf5SrhDNdrymSNHGcf8vN70DecdP/J0lzssg3kARmVZ9wrg+ljH59yfhgCnndMH/A+pQ2zozq/55QuBr9CZ88p4gwGiigsv5HUNTVo+Mvms5Ah0EWPsagpJ/QUoTowkVkVFcQm6gIqjHt83Kbqh46kPsrbM8wiI1OJSmYlM1e8CduOJPWRz+y7lQhvQIS5K/3hhb1s4D1EF8B1XlhYHZP7cgGEhERjG0UlMqae/aik+4CUKTcSFjfUpcRby2SBSwJnqt1sQNUbbeF2wBWgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c/irmv3bn3XKTFpeNKSHvlaoTPs4bcCvu82x2MSVwSY=;
+ b=J2e213duaDeafUcS9b5sypmy1+KVAHlPYY+7OcHk+4dsH3kiPRadu2tDWfWhSEok+2oEreNDQotgkB5sS4YRzJbQ8Sl4PUfqMsyI53+NI9rqg7WonuReIXJjNH4slZ1+ddgph91Za1G31aQrbMmT3WBw+E29ktI/StgQoX6K82OpNv80o6jNkv4xGhqkI+oLcpBEyxI4TgjlMvCw/gu+nWCHo0O8Gjo7RYHNpB1ssKLOwP2a7fiPnibp/Os+Hi8GKFWyRUh1aonQShI778FAMmI4qXkzoGh7eA+mYRthSuwz+anr2luh6PgOJeWpsR0ABF4By3G2xCl4fH3oPErHVg==
+Received: from LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19)
+ by SA3PR12MB9106.namprd12.prod.outlook.com (2603:10b6:806:37e::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.9; Fri, 5 Jun 2026
+ 11:53:40 +0000
+Received: from LV8PR12MB9620.namprd12.prod.outlook.com
+ ([fe80::299d:f5e0:3550:1528]) by LV8PR12MB9620.namprd12.prod.outlook.com
+ ([fe80::299d:f5e0:3550:1528%4]) with mapi id 15.21.0092.007; Fri, 5 Jun 2026
+ 11:53:40 +0000
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Leon Romanovsky <leon@kernel.org>,
+	linux-rdma@vger.kernel.org,
+	Yishai Hadas <yishaih@nvidia.com>
+Cc: Matan Barak <matanb@mellanox.com>,
+	Or Gerlitz <ogerlitz@mellanox.com>,
+	patches@lists.linux.dev,
+	Roland Dreier <roland@purestorage.com>
+Subject: [PATCH] IB/mlx4: Fill in the access_flags if IB_MR_REREG_ACCESS is not specified
+Date: Fri,  5 Jun 2026 08:53:35 -0300
+Message-ID: <0-v1-29ca7a402625+ddd6-mlx4_rereg_flags_jgg@nvidia.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MN2PR01CA0041.prod.exchangelabs.com (2603:10b6:208:23f::10)
+ To LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260605-getsock_more-v2-3-80f38cdb8706@debian.org>
-References: <20260605-getsock_more-v2-0-80f38cdb8706@debian.org>
-In-Reply-To: <20260605-getsock_more-v2-0-80f38cdb8706@debian.org>
-To: Allison Henderson <achender@kernel.org>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Simon Horman <horms@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
- linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, 
- linux-kselftest@vger.kernel.org, Breno Leitao <leitao@debian.org>, 
- kernel-team@meta.com
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9081; i=leitao@debian.org;
- h=from:subject:message-id; bh=4JzxiyHuzVHV5u6xPLo9a96EavCnG+zUg49sD/rGMvI=;
- b=owEBbQKS/ZANAwAIATWjk5/8eHdtAcsmYgBqIqWNPsa6CpdJh4dvuEhZUZ8+jLGq5cBu0MEeG
- sKPw0LgBUyJAjMEAAEIAB0WIQSshTmm6PRnAspKQ5s1o5Of/Hh3bQUCaiKljQAKCRA1o5Of/Hh3
- bQ91EACkyOJGyYbxqcqRFMP4CLI1rDkhLKBmc2Jqcz/2nKLJ/XMa2BiDP9wjpTwdjiqjY4rvCsj
- AFfa/qZE78VlUnP3VWid1QenRkzHFgr2u+AP80UK7PUsh5URErdShVmOccu4vc0JJArWyP+/YH0
- hjWaCtx/GAO+EUGS5SpPV3suPWvykiVEVl2ifrlgUPuWbPHd6rKXLmATALzbX6afs3YXGyIjb4/
- +JsbXs21/nBzYMZJu4KOkqGobDFiqoKgyF3WcXvq+s2EvEaPvmPdMRtg4elMhx4Ep8IXsbRPa1G
- LunlQCrW0BjtEg671mRyZ+6A8P8VoKyBfjocVyOiBaXikP1SXi+ieM45vmc5tC7RBorx6R+W6hF
- H/u8omYzrUbl/5m/TWB4m7ZXTSSLRmTZ7q5IsZ2d4ugONsrW+K/JRlyhpqvIKBp+B2d3dcDOw2W
- Hb8e7bY/knRqs1DYnet0RHTnyBM99/A5wD4tXUEuYSn6BBUp20EcIf1Iatt8DIZjP2r2wEsImhP
- xNWiPFYLwOBFtXyTD/sm8uGcV2ZWdOc/UnvTcftl2k4fDDoJr6QOzVuPidLj3tciGAqzIs3EYXG
- LuF+xleoOVCMk8LYg2O/pvonZ3kaNDOOnWRVBOdYVxJxcMSaOZeNyQD94paHJMClPZzKW2A+XsU
- RUqybvcSkxe2utQ==
-X-Developer-Key: i=leitao@debian.org; a=openpgp;
- fpr=AC8539A6E8F46702CA4A439B35A3939FFC78776D
-X-Debian-User: leitao
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV8PR12MB9620:EE_|SA3PR12MB9106:EE_
+X-MS-Office365-Filtering-Correlation-Id: 43e6cfdf-8b17-4e6e-4447-08dec2f913ee
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|1800799024|376014|56012099006|11063799006|18002099003|5023799004;
+X-Microsoft-Antispam-Message-Info:
+	yOTVna2F967O88uiBOHPmE5ErPUvxisvdMCb8I/oN1UBqP+TCE43zaE8W06Ary7dwXME49d/OlUyQsMMxPyKi9Gq7NouZbGHeoG+Qj4VU1/haTDDn0/Dl3Yuq4yfroA2o1NoyF464Z1CMI6p/TmHVPaMLbV1B411gU/2bn3p8e/dRAeg9dQL2mRkUCp5YBeziB7a7bboxW+8zxVV7tLH19nX8ulNoiZ6gc862z2GuYN483wYltZYQcQaIxX19O4emzoTYjcmTukb/DFJ4y8Cea/uTwDCAkXU3iCMolKyEzm/INl0twsCSwhh4duL86jQBFt1Q723SD+ZV5wFKdVb5gwU1YXGcQjG8ij1goD1Du2husNymUBkr2I2yKovFQen1/MXJmMgm4CBwXuEQcv/GuCYXUmDHTRUWdc3YwjBgjkOMm3Fy9xUTCCLpa+kK9/FHC6Ew/qUVaVM5tsTDrKXdM/d2l9bzl6TDnbkpAQq6t71ikqUOs+FdqRJd8Siw5sa15SdDu7MKM1uIb5gQpXGbRf0xDBBwQp/DZXXsXROBCukPPiT/bI1A+mX4epGzyCDMy95/2vM6Uq1czTkbtnIJ4m2xFTDMGpocDN7F34YFIiSeO+kCGDBZM4iKLqrGw+sXQQ3aeRbl7jfdyvLWU5H2SgZ0eUZU51PV9bIYjEOjy2Nv+cBZU4TzGqDx1Z7pd1M
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9620.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(56012099006)(11063799006)(18002099003)(5023799004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?FPbO7+Y+/FODTJKVRqP6fhS1UyqBGJLm48z0Ywm20bSkdjzuzS0SBzKoVezU?=
+ =?us-ascii?Q?n3O2DOQTa9bqEhIsMjW07tY5JjVWY3q7eXwfRWZOJ5hVWaO82v3DWgW9kAdH?=
+ =?us-ascii?Q?GF9VWojXtAkqhkGADMyX3OE41c+ZwUI4G/dQ0c3W+hB/T6cS+EzXlyYTvppS?=
+ =?us-ascii?Q?SGPbEbPTdkxy8rJ0pY71o6tTvIuEmq7ha3TWj/Wgxx+jmU6ra+yfvbzxF9ds?=
+ =?us-ascii?Q?TZEMYCW0KR6IVl+zsIIUlMePGXT0IPzJKefyNuW7w/wP/ReGurA6Ehce2KyQ?=
+ =?us-ascii?Q?R84ha94kTgn934tn/DF5Tsr5WOS3iS3ccNCjRPG7LZ8w8az4Qdu5iI1fV5Rs?=
+ =?us-ascii?Q?6Ycpu+yQ084XpElUQbif4/1k5H0KQMZjnaSBZi/NpU9WnNaTYjd5xTpyDPaD?=
+ =?us-ascii?Q?HLn4W3fZB9QRwSAJBPWKHBE4osb/CXojr3yX8Hme08PbZb7psixNJA6lqX3A?=
+ =?us-ascii?Q?GEAtWnHvHHzVadEQFVgbh4i3k1ANKut4kI31eudqXTvrpYUs5hK+raUT5O5J?=
+ =?us-ascii?Q?RAbluGUOfNS4x/csyCUF1zBlM0UqYLe0bes4kfvdpjQ3qU8PIdh9w1wnJ+Zv?=
+ =?us-ascii?Q?ggz/2vc9f2gGd5uAqJ/8To0SKVaHp0n4YeXhq43HhE2KZonNZaq7QlxC4j4B?=
+ =?us-ascii?Q?lNfSSr6Zo+lTxmn4iUYrO4aOCGai8Geo06FCXO+4XlTd3d+8eyQsv5ykI5Hr?=
+ =?us-ascii?Q?uN35NNwxI21wxODNXiVYHSThzy+kGcxPl+HgE8Wy0zg582oTYycq4NXJVaST?=
+ =?us-ascii?Q?YP/mRZRSpPBrv5Z7c9blXHbtx+uO+ce2jBV7QuRudh2N0LbyunNdBffzw0Bv?=
+ =?us-ascii?Q?Ubh2Uwzm/9gvv7O/l7wDISVNtEEyd2HS/ugl3Br+sCmdb23S0J3my6Slyk2q?=
+ =?us-ascii?Q?VNdAbGhjDRCimL9h6yu6fcR5USvSMAEsrv4jbo8sJpc3dI/qo7EjPPVYxIUp?=
+ =?us-ascii?Q?5MR0FrDlLViPtjAwMUkfqdKehJv2wuRzF/i4Nh3jOCauJoOUiHaUuCXtpTfv?=
+ =?us-ascii?Q?yghKCZiBFxWm/doxH6/COu2zg2AJ+SrZFHik5OCavF/qOoXsarAgWT27iX+i?=
+ =?us-ascii?Q?V5QsCd5s5h4WWf6A+QKRE6qHMaiYhVYs6ZjVkC0ol/SXSACEs0ckEoleivr+?=
+ =?us-ascii?Q?WI0WqL993WQsHoLGNLSd3otBpcBcUFym2ADiWoQURm+42ZpnqGTYgV5acfrl?=
+ =?us-ascii?Q?U0RVKXqeewQv0w0XE0RCsB4Z6toFJAACBt6g3JcAJlmwVQ/gtfSW+W8s5m9a?=
+ =?us-ascii?Q?YEOGrm9oCCmxXxjdt84nacWAwZoPO7/XJf1Kvo7+Oo7ekw/Y5RhjB9inSIbo?=
+ =?us-ascii?Q?NTRzQLEtwwZp8Y6zBRyXfy51nN9K7EJRoeJpMZtaFEK3ZSDNYcroNfh3bkFL?=
+ =?us-ascii?Q?tUsJ+kkm0BrTaCEYsp0rhS2L/iUk6uNZr+gWbzQsKtLS2Brj7sM2mE1bwZgG?=
+ =?us-ascii?Q?0O4sX9t6jDvT5Y7GdJ8V8Q+tQZpoikG2pi0EGxmupM/nzlGp68LFztU9HWE6?=
+ =?us-ascii?Q?iVLjWpWFaLkh3AzAQ+oTR5Aif9OQHCcGomPTX24MBVPSCvKRk6mFkKqcxrwD?=
+ =?us-ascii?Q?RTRrOPgu9MXuhNev/ht16Uvd96srsXJMQIrzTNCNIdehAJZQlrpHiunwUg7Q?=
+ =?us-ascii?Q?vvvL4RuAmxOLW53r7pcQiESlhCMaJQQsZKeetsqee1AsQwGyc+DolSktnrFL?=
+ =?us-ascii?Q?w5mY5gtOYAWJopDZs+tWjbTPV7fjV9QDDBYid9lAdI+TXJ2I?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 43e6cfdf-8b17-4e6e-4447-08dec2f913ee
+X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9620.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jun 2026 11:53:37.1526
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IDb6Z+3bR+raBa0SExWCaDWPZcPLRJ7VAzy2+Gf1EQnSISCDOU3JGmONmknDhEdU
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB9106
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[debian.org,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[debian.org:s=smtpauto.stravinsky];
+X-Spamd-Result: default: False [1.34 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:achender@kernel.org,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:shuah@kernel.org,m:linux-kernel@vger.kernel.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:rds-devel@oss.oracle.com,m:linux-kselftest@vger.kernel.org,m:leitao@debian.org,m:kernel-team@meta.com,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[leitao@debian.org,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	TAGGED_FROM(0.00)[bounces-21833-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21834-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:yishaih@nvidia.com,m:matanb@mellanox.com,m:ogerlitz@mellanox.com,m:patches@lists.linux.dev,m:roland@purestorage.com,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[jgg@nvidia.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leitao@debian.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[debian.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jgg@nvidia.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,vger.kernel.org:from_smtp,Nvidia.com:dkim,nvidia.com:mid,nvidia.com:from_mime,nvidia.com:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 6DC7064775B
+X-Rspamd-Queue-Id: 7698D647DF6
 
-Convert RDS socket's getsockopt implementation to use the new
-getsockopt_iter callback with sockopt_t.
+Sashiko noticed mlx4 was using whatever random access flags were provided
+when IB_MR_REREG_ACCESS is not used. Since IB_MR_REREG_TRANS needs
+access_flags it used the random ones which means it doesn't work sensibly
+if userspace provides only IB_MR_REREG_TRANS.
 
-Key changes:
-- Replace (char __user *optval, int __user *optlen) with sockopt_t *opt
-- Use opt->optlen for buffer length (input) and returned size (output)
-- Use copy_to_iter() instead of put_user()/copy_to_user()
+Keep track of the current access_flag of the MR and use it if the user
+does not specify one.
 
-The RDS_INFO_* snapshot path in rds_info_getsockopt() used to pin the
-userspace buffer with pin_user_pages_fast() on the raw optval address;
-the info producers then memcpy into those pages under a spinlock via
-kmap_atomic() and so must not fault. Obtain the same page array and
-starting offset from opt->iter_out with iov_iter_extract_pages(), which
-pins for write because iter_out is ITER_DEST.
+Also fixup a little confusion around mmr.access, it is the HW access flags
+so the convert_access() was missing. But nothing reads this by the time
+rereg_mr can happen.
 
-The page array is preallocated here (sized with iov_iter_npages()) and
-passed in, so iov_iter_extract_pages() fills it in place rather than
-allocating one for us; RDS therefore keeps ownership of the array on
-every return path and frees it itself. The rds_info_iterator /
-rds_info_copy machinery and all producer callbacks are unchanged.
-
-Kernel buffers (ITER_KVEC) are not page-backed in a way the info
-producers can use, so the RDS_INFO path returns -EOPNOTSUPP for them;
-this matches the previous behaviour, where a kernel-buffer getsockopt
-hit the WARN_ONCE() path in do_sock_getsockopt() and returned
--EOPNOTSUPP. The simple RDS_RECVERR and SO_RDS_TRANSPORT options keep
-working for kernel buffers via copy_to_iter().
-
-Signed-off-by: Breno Leitao <leitao@debian.org>
+Fixes: 9376932d0c26 ("IB/mlx4_ib: Add support for user MR re-registration")
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 ---
- net/rds/af_rds.c | 36 +++++++++++++++------------
- net/rds/info.c   | 76 ++++++++++++++++++++++++++++++++------------------------
- net/rds/info.h   |  3 +--
- 3 files changed, 65 insertions(+), 50 deletions(-)
+ drivers/infiniband/hw/mlx4/mlx4_ib.h | 1 +
+ drivers/infiniband/hw/mlx4/mr.c      | 9 +++++++--
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/net/rds/af_rds.c b/net/rds/af_rds.c
-index 6f4f9cf352bd..d5defe9172e3 100644
---- a/net/rds/af_rds.c
-+++ b/net/rds/af_rds.c
-@@ -37,6 +37,7 @@
- #include <linux/in.h>
- #include <linux/ipv6.h>
- #include <linux/poll.h>
-+#include <linux/uio.h>
- #include <net/sock.h>
+Sashiko also noticed the error unwinds are broken too, but properly fixing
+that that requires switching to use the new mr replacement rereg flow which is
+not worth doing for this ancient driver.
+
+diff --git a/drivers/infiniband/hw/mlx4/mlx4_ib.h b/drivers/infiniband/hw/mlx4/mlx4_ib.h
+index 5a799d6df93ebc..898c8363422abb 100644
+--- a/drivers/infiniband/hw/mlx4/mlx4_ib.h
++++ b/drivers/infiniband/hw/mlx4/mlx4_ib.h
+@@ -135,6 +135,7 @@ struct mlx4_ib_mr {
+ 	dma_addr_t		page_map;
+ 	u32			npages;
+ 	u32			max_pages;
++	int			access_flags;
+ 	struct mlx4_mr		mmr;
+ 	struct ib_umem	       *umem;
+ 	size_t			page_map_size;
+diff --git a/drivers/infiniband/hw/mlx4/mr.c b/drivers/infiniband/hw/mlx4/mr.c
+index 306704f54325cf..de076b176b0ec8 100644
+--- a/drivers/infiniband/hw/mlx4/mr.c
++++ b/drivers/infiniband/hw/mlx4/mr.c
+@@ -181,6 +181,7 @@ struct ib_mr *mlx4_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 	if (err)
+ 		goto err_mr;
  
- #include "rds.h"
-@@ -485,35 +486,36 @@ static int rds_setsockopt(struct socket *sock, int level, int optname,
- }
++	mr->access_flags = access_flags;
+ 	mr->ibmr.rkey = mr->ibmr.lkey = mr->mmr.key;
+ 	mr->ibmr.page_size = 1U << shift;
  
- static int rds_getsockopt(struct socket *sock, int level, int optname,
--			  char __user *optval, int __user *optlen)
-+			  sockopt_t *opt)
- {
- 	struct rds_sock *rs = rds_sk_to_rs(sock->sk);
- 	int ret = -ENOPROTOOPT, len;
- 	int trans;
-+	int val;
+@@ -235,6 +236,8 @@ struct ib_mr *mlx4_ib_rereg_user_mr(struct ib_mr *mr, int flags, u64 start,
  
- 	if (level != SOL_RDS)
- 		goto out;
- 
--	if (get_user(len, optlen)) {
--		ret = -EFAULT;
--		goto out;
--	}
-+	len = opt->optlen;
- 
- 	switch (optname) {
- 	case RDS_INFO_FIRST ... RDS_INFO_LAST:
--		ret = rds_info_getsockopt(sock, optname, optval,
--					  optlen);
-+		ret = rds_info_getsockopt(sock, optname, opt);
- 		break;
- 
- 	case RDS_RECVERR:
--		if (len < sizeof(int))
-+		if (len < sizeof(int)) {
- 			ret = -EINVAL;
--		else
--		if (put_user(rs->rs_recverr, (int __user *) optval) ||
--		    put_user(sizeof(int), optlen))
-+			break;
-+		}
-+		val = rs->rs_recverr;
-+		if (copy_to_iter(&val, sizeof(int), &opt->iter_out) !=
-+		    sizeof(int)) {
- 			ret = -EFAULT;
--		else
-+		} else {
-+			opt->optlen = sizeof(int);
- 			ret = 0;
-+		}
- 		break;
- 	case SO_RDS_TRANSPORT:
- 		if (len < sizeof(int)) {
-@@ -522,11 +524,13 @@ static int rds_getsockopt(struct socket *sock, int level, int optname,
- 		}
- 		trans = (rs->rs_transport ? rs->rs_transport->t_type :
- 			 RDS_TRANS_NONE); /* unbound */
--		if (put_user(trans, (int __user *)optval) ||
--		    put_user(sizeof(int), optlen))
-+		if (copy_to_iter(&trans, sizeof(int), &opt->iter_out) !=
-+		    sizeof(int)) {
- 			ret = -EFAULT;
--		else
-+		} else {
-+			opt->optlen = sizeof(int);
- 			ret = 0;
-+		}
- 		break;
- 	default:
- 		break;
-@@ -653,7 +657,7 @@ static const struct proto_ops rds_proto_ops = {
- 	.listen =	sock_no_listen,
- 	.shutdown =	sock_no_shutdown,
- 	.setsockopt =	rds_setsockopt,
--	.getsockopt =	rds_getsockopt,
-+	.getsockopt_iter =	rds_getsockopt,
- 	.sendmsg =	rds_sendmsg,
- 	.recvmsg =	rds_recvmsg,
- 	.mmap =		sock_no_mmap,
-diff --git a/net/rds/info.c b/net/rds/info.c
-index 17061f6ff74e..21b32eb16559 100644
---- a/net/rds/info.c
-+++ b/net/rds/info.c
-@@ -35,6 +35,7 @@
- #include <linux/slab.h>
- #include <linux/proc_fs.h>
- #include <linux/export.h>
-+#include <linux/uio.h>
- 
- #include "rds.h"
- 
-@@ -144,60 +145,68 @@ void rds_info_copy(struct rds_info_iterator *iter, void *data,
- EXPORT_SYMBOL_GPL(rds_info_copy);
- 
- /*
-- * @optval points to the userspace buffer that the information snapshot
-- * will be copied into.
-- *
-- * @optlen on input is the size of the buffer in userspace.  @optlen
-- * on output is the size of the requested snapshot in bytes.
-+ * @opt->iter_out describes the buffer that the information snapshot will be
-+ * copied into, and @opt->optlen is the size of that buffer on input.  On
-+ * output @opt->optlen is set to the size of the requested snapshot in bytes.
-  *
-  * This function returns -errno if there is a failure, particularly -ENOSPC
-- * if the given userspace buffer was not large enough to fit the snapshot.
-- * On success it returns the positive number of bytes of each array element
-- * in the snapshot.
-+ * if the given buffer was not large enough to fit the snapshot.  On success
-+ * it returns the positive number of bytes of each array element in the
-+ * snapshot.
-  */
--int rds_info_getsockopt(struct socket *sock, int optname, char __user *optval,
--			int __user *optlen)
-+int rds_info_getsockopt(struct socket *sock, int optname, sockopt_t *opt)
- {
- 	struct rds_info_iterator iter;
- 	struct rds_info_lengths lens;
- 	unsigned long nr_pages = 0;
--	unsigned long start;
- 	rds_info_func func;
- 	struct page **pages = NULL;
-+	size_t offset0 = 0;
-+	int npages = 0;
- 	int ret;
- 	int len;
- 	int total;
- 
--	if (get_user(len, optlen)) {
--		ret = -EFAULT;
--		goto out;
--	}
-+	len = opt->optlen;
- 
- 	/* check for all kinds of wrapping and the like */
--	start = (unsigned long)optval;
--	if (len < 0 || len > INT_MAX - PAGE_SIZE + 1 || start + len < start) {
-+	if (len < 0 || len > INT_MAX - PAGE_SIZE + 1) {
- 		ret = -EINVAL;
- 		goto out;
+ 		if (err)
+ 			goto release_mpt_entry;
++	} else {
++		mr_access_flags = mmr->access_flags;
  	}
  
-+	/* The info producers write into the pages with kmap_atomic() while
-+	 * holding a spinlock, so they need a genuine page-backed user buffer.
-+	 */
-+	if (!user_backed_iter(&opt->iter_out)) {
-+		ret = -EOPNOTSUPP;
-+		goto out;
+ 	if (flags & IB_MR_REREG_TRANS) {
+@@ -276,8 +279,10 @@ struct ib_mr *mlx4_ib_rereg_user_mr(struct ib_mr *mr, int flags, u64 start,
+ 	 * return a failure. But dereg_mr will free the resources.
+ 	 */
+ 	err = mlx4_mr_hw_write_mpt(dev->dev, &mmr->mmr, pmpt_entry);
+-	if (!err && flags & IB_MR_REREG_ACCESS)
+-		mmr->mmr.access = mr_access_flags;
++	if (!err && flags & IB_MR_REREG_ACCESS) {
++		mmr->access_flags = mr_access_flags;
++		mmr->mmr.access = convert_access(mr_access_flags);
 +	}
-+
- 	/* a 0 len call is just trying to probe its length */
- 	if (len == 0)
- 		goto call_func;
  
--	nr_pages = (PAGE_ALIGN(start + len) - (start & PAGE_MASK))
--			>> PAGE_SHIFT;
--
--	pages = kmalloc_objs(struct page *, nr_pages);
-+	/*
-+	 * Preallocate the page array and pass it in so that
-+	 * iov_iter_extract_pages() fills it in place rather than allocating
-+	 * one for us.  Handing it a non-NULL array keeps ownership of the
-+	 * array with us on every return path, instead of depending on the
-+	 * iterator code to allocate and hand it back.
-+	 */
-+	npages = iov_iter_npages(&opt->iter_out, INT_MAX);
-+	pages = kvmalloc_array(npages, sizeof(*pages), GFP_KERNEL);
- 	if (!pages) {
- 		ret = -ENOMEM;
- 		goto out;
- 	}
--	ret = pin_user_pages_fast(start, nr_pages, FOLL_WRITE, pages);
--	if (ret != nr_pages) {
--		if (ret > 0)
--			nr_pages = ret;
--		else
--			nr_pages = 0;
-+
-+	ret = iov_iter_extract_pages(&opt->iter_out, &pages, len, npages,
-+				     0, &offset0);
-+	if (ret < 0)
-+		goto out;
-+	nr_pages = DIV_ROUND_UP(offset0 + ret, PAGE_SIZE);
-+	if (ret != len) {
- 		ret = -EAGAIN; /* XXX ? */
- 		goto out;
- 	}
-@@ -213,7 +222,7 @@ int rds_info_getsockopt(struct socket *sock, int optname, char __user *optval,
- 
- 	iter.pages = pages;
- 	iter.addr = NULL;
--	iter.offset = start & (PAGE_SIZE - 1);
-+	iter.offset = offset0;
- 
- 	func(sock, len, &iter, &lens);
- 	BUG_ON(lens.each == 0);
-@@ -230,13 +239,16 @@ int rds_info_getsockopt(struct socket *sock, int optname, char __user *optval,
- 		ret = lens.each;
- 	}
- 
--	if (put_user(len, optlen))
--		ret = -EFAULT;
-+	opt->optlen = len;
- 
- out:
--	if (pages)
-+	/*
-+	 * iov_iter_extract_pages() pins only user-backed (ubuf) iters;
-+	 * iov_iter_extract_will_pin() reports whether an unpin is owed here.
-+	 */
-+	if (pages && iov_iter_extract_will_pin(&opt->iter_out))
- 		unpin_user_pages_dirty_lock(pages, nr_pages, true);
--	kfree(pages);
-+	kvfree(pages);
- 
- 	return ret;
- }
-diff --git a/net/rds/info.h b/net/rds/info.h
-index a069b51c4679..1aab62ab6d00 100644
---- a/net/rds/info.h
-+++ b/net/rds/info.h
-@@ -21,8 +21,7 @@ typedef void (*rds_info_func)(struct socket *sock, unsigned int len,
- 
- void rds_info_register_func(int optname, rds_info_func func);
- void rds_info_deregister_func(int optname, rds_info_func func);
--int rds_info_getsockopt(struct socket *sock, int optname, char __user *optval,
--			int __user *optlen);
-+int rds_info_getsockopt(struct socket *sock, int optname, sockopt_t *opt);
- void rds_info_copy(struct rds_info_iterator *iter, void *data,
- 		   unsigned long bytes);
- void rds_info_iter_unmap(struct rds_info_iterator *iter);
+ release_mpt_entry:
+ 	mlx4_mr_hw_put_mpt(dev->dev, pmpt_entry);
 
+base-commit: 8f064f2e2bd23f84dbfba26b83e08d5de7311d44
 -- 
-2.53.0-Meta
+2.43.0
 
 
