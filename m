@@ -1,59 +1,58 @@
-Return-Path: <linux-rdma+bounces-21835-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21836-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id UPVVIEq/ImpwdAEAu9opvQ
-	(envelope-from <linux-rdma+bounces-21835-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 05 Jun 2026 14:21:30 +0200
+	id IySMMLe9ImoFdAEAu9opvQ
+	(envelope-from <linux-rdma+bounces-21836-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 05 Jun 2026 14:14:47 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0AB4648105
-	for <lists+linux-rdma@lfdr.de>; Fri, 05 Jun 2026 14:21:29 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D85D647FFA
+	for <lists+linux-rdma@lfdr.de>; Fri, 05 Jun 2026 14:14:47 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=debian.org header.s=smtpauto.stravinsky header.b=NiHLFiC0;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21835-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21835-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=debian.org header.s=smtpauto.stravinsky header.b=rZnVx2jC;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21836-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21836-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=none) header.from=debian.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4B933302A51D
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jun 2026 12:13:47 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8303B3049E3B
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jun 2026 12:13:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E3654DB552;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C12D4DB55A;
 	Fri,  5 Jun 2026 12:13:45 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from stravinsky.debian.org (stravinsky.debian.org [82.195.75.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EFF54D8D99;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F09D4D9918;
 	Fri,  5 Jun 2026 12:13:43 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780661624; cv=none; b=PVBBBKDQovktw9M0v1sNY8BolW7T0VGtjVoJn+9WCWx+tUss6pkwR3n0TqUXNoJR33s4RSgLXQHMoXEamMuXyiuPaj74LDvQfjVvbgABRuyO8HyWqlEWxZ/MdGlXyRB6bG+RbQffMdeNAcBdgVXuisFKzlPD4fffxromNkaLx0I=
+	t=1780661625; cv=none; b=rvdZwHzz5as5T6EdvF10C8rb1BygKiZNEgF71W80xrrCtdckTF0n46lSCU4OdJngQojUDG466bRXRknfL+Sar7eIVCqikR/3E2q5lxMxuNn9VrTeR+bnbym/b0kOGx2MHSmVeuo/sG2/adH/0YlXvsNauJqUuVVTBzwHEUzb5ek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780661624; c=relaxed/simple;
-	bh=wlGIJYU/dDzvU9MAE0TjTNh5imcqVaypnxxCgiS9lvU=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=JqN15x78oMR+2kvFq47aVTACD0cTtvLYjj6QQLEnLpuc2/Khi9KmyHajR07Byovr9df0zd8hIcuh35YnpBSFBDaV4Buk87PL1U15d6Y0UFQNPynMuJG730fbBKoyYGOdPFw5R2HRfN8XjGdPiCv5nsM7iH4qkKScZqCTIQbN1qM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=debian.org; dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b=NiHLFiC0; arc=none smtp.client-ip=82.195.75.108
+	s=arc-20240116; t=1780661625; c=relaxed/simple;
+	bh=cb5Fl7qI+QrhlAQCSG7RGxk69W8WeNmqAvtfLFDwWng=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=jR2Yi+u83bPCyg6mGL57258y23E7jW90X8NkvrqPaDmFugIPYs6EgszpgBFJSZPu3fT7Irl7vC1vBNd97uwwW2yWCqek4qOWui9A89NMhGpUBJHH4S5V50dX6/bKbVhuZTkfVjyE+H46A50gUX1dRlo+OIn/1l8vh6bQJAGO6sQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=debian.org; dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b=rZnVx2jC; arc=none smtp.client-ip=82.195.75.108
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
-	s=smtpauto.stravinsky; h=X-Debian-User:Cc:To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-Id:Date:Subject:From:Reply-To:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=MByAqnkLEXLPVdCrzdTSFRkXWavhWm2hvRfXpDldUXA=; b=NiHLFiC0YnU2X2Q9D8HU8xS+k2
-	8DoJu4eyvuFQhwJPTNmYwGM9CjJcfexW8xEVjmwlHI5eA/SzVAo1LhZatqGlihPa+WQLHdB6PGyWw
-	CLF0nCa/48/1G3FYP5W7DOnKw7tLU4NYAqQPGULld0Cmcdl8WIGUNXrSAs8mh5P/QOl8LY2mhtJs0
-	ta9St5z8IOaa1l5+j5DqjFmARhytWcLOsXE86YCezyTEIYLtLcBxgxLmUF9MXjoQOIqADBKa2CQA1
-	qCjvlsVDgK8470irHDOHvQHLJ1WDDmamHLWUKuWHvJUNR6GsZhjW4iTGk4kZdqQR58h7aeyyeqjPD
-	izM33evg==;
+	s=smtpauto.stravinsky; h=X-Debian-User:Cc:To:In-Reply-To:References:
+	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Reply-To:Content-ID:Content-Description;
+	bh=bV6PMNPiGvqiL3b8JXSN02wKJytn/9yKMzeTnAqzokY=; b=rZnVx2jCpig91mq5gbaUGzWkZk
+	xKl1RK2SXpQU1T+t48KunylPAopZdDL4e2+knZlrEQpQ9jYAF1+fXckJkqPyIZGMYLo+NOPMpQmZY
+	s0smzm+ZFY2hT7qxfKhGQp4TNWscQnCG8zsexwsWQMY7Nu8HgqPX/Jn+1PyI0bn2xa9Tthe27ZAh0
+	GWZd7LbYD//NtpInp6HkrnOZtYdaDMgF+yl7lBTZ5mCJdFWdmUfYTK6L6/Myjn1J/7wNDBBPJUGtq
+	EJV/KHxIvFdDD9mKOXrfo6Og9xTPtVmcrpwoyB0yE3rMtIhgT6q/IgeEHFzSv1nQHj6avo4ej670p
+	YLM4C6Dg==;
 Received: from authenticated-user
 	by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.96)
 	(envelope-from <leitao@debian.org>)
-	id 1wVTQc-005HW2-1Y;
-	Fri, 05 Jun 2026 12:13:34 +0000
+	id 1wVTQh-005HW8-1X;
+	Fri, 05 Jun 2026 12:13:39 +0000
 From: Breno Leitao <leitao@debian.org>
-Subject: [PATCH net-next 0/2] net/smc: convert getsockopt to
- getsockopt_iter
-Date: Fri, 05 Jun 2026 05:13:24 -0700
-Message-Id: <20260605-getsockopt_smc-v1-0-65da62fa44c4@debian.org>
+Date: Fri, 05 Jun 2026 05:13:25 -0700
+Subject: [PATCH net-next 1/2] smc: convert to getsockopt_iter
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,10 +61,9 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAGS9ImoC/x3M4QqCMBQG0Fe5fL8dzCGz9ioRYfPLRrTJ7ghBf
- PfA8wBnh7ImKoLsqPwlTSUjSN8J4nvKC02aEQTOOm+9HczCpiV+ytoe+o2GbprH/jpcPJ/oBGv
- lK21neENmM5lbw/04/vmWExRqAAAA
-X-Change-ID: 20260604-getsockopt_smc-e2ad719486eb
+Message-Id: <20260605-getsockopt_smc-v1-1-65da62fa44c4@debian.org>
+References: <20260605-getsockopt_smc-v1-0-65da62fa44c4@debian.org>
+In-Reply-To: <20260605-getsockopt_smc-v1-0-65da62fa44c4@debian.org>
 To: "D. Wythe" <alibuda@linux.alibaba.com>, 
  Dust Li <dust.li@linux.alibaba.com>, 
  Sidraya Jayagond <sidraya@linux.ibm.com>, 
@@ -80,20 +78,20 @@ Cc: linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
  linux-kselftest@vger.kernel.org, Breno Leitao <leitao@debian.org>, 
  kernel-team@meta.com
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2665; i=leitao@debian.org;
- h=from:subject:message-id; bh=wlGIJYU/dDzvU9MAE0TjTNh5imcqVaypnxxCgiS9lvU=;
- b=owEBbQKS/ZANAwAIATWjk5/8eHdtAcsmYgBqIr1pIS/x43wPjjvzmWbNsm0G32tzbhQbfSiEm
- PL7boVHQOOJAjMEAAEIAB0WIQSshTmm6PRnAspKQ5s1o5Of/Hh3bQUCaiK9aQAKCRA1o5Of/Hh3
- bf4KD/90AFrq2jSuXAh/UBfgxKhd7Y2dGik959DyxgVa2mVHbHLRFXqw/eoVDuxa1EV2ftr/ClW
- fRuMTe9bEETot5BDjsznnuuSxkbBCklvz4m5RLxeO/etQyBw+RZxm7WXU8GMFiPzXXre6WCUzS0
- sRWLah6Xqp9W4/2SZ/Lm26JQg+/Kc8XZiwZ7Qc6tDWSATy9l1Tnurpb2/5eTr2yVmq0DMMKr9Fv
- 5nQk8gp2hvJ/p66qv6jP1YQkqlf1OX3l1rdpbXTVnxGPi0JFcWmTvxr0Ezz4FvTTfwh9EjNPMBi
- Z7aJ2BzSS1+XssFo9JkZEl8kxiDnhicsjJqWzs9XIaqccVcJFKzX6NKhzB97lW9Siuv77hsa/l3
- CKwbDSEDYJVVSKCak5Bj+xxPAy93WI3my5r7nO0wFT2gGH2x051zcslspcBsoXN3bgqu16R4C7N
- RF/WSGHab/MCjHkhRnw5Tw/yaUL1OG0bC9jIvaiTUTs10fQll1o6tzQ391kd7bGY7Sck41CU3qw
- 57grUjoNhi40Fxvn+YrL8mvj3FZQPL/2XuMezLlY8BZH8VDwg6SyG14Cze2Ni2HaYK9Ll+yPtUy
- D8DSSAr3Rskh5GK+G1KvAwXejNmlQxm+zcF62YLfOcCmswhx34I8yxnDlJhRZoCHmmSVdECa4Bx
- gARgSCi81/xSsFg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5630; i=leitao@debian.org;
+ h=from:subject:message-id; bh=cb5Fl7qI+QrhlAQCSG7RGxk69W8WeNmqAvtfLFDwWng=;
+ b=owEBbQKS/ZANAwAIATWjk5/8eHdtAcsmYgBqIr1pm98zJvDjVKMkIUdQ3+teQcLhsKIXeJYWP
+ 8NGNOrTh9uJAjMEAAEIAB0WIQSshTmm6PRnAspKQ5s1o5Of/Hh3bQUCaiK9aQAKCRA1o5Of/Hh3
+ bZtSD/92C4xNep/Ux3iA2mmf3eEIneAzD3EZ4EzGEU4SzV8OfRzjdotDLLRVbe5HMn0msclaCzH
+ GxqM22kJ2jFwYd1LCCdHqp6MFleph4meCYu5RlFTKG1i8l5eW7nVLANvZD1d0L13hCF2IyboLbA
+ H4yvBvqnXwMd/2LByqQZMyKDtCfqrKhU6pbPO4/vAcf09ExxFrJCT4TRh0l88pKnxr78S3uvD3c
+ Av3VusTco8ldf6/ubRfbfBk+wIJojinUJRPDKcwtCWe752q0r9hACreitDBt15aZFODhhSCyeg6
+ MxRa0/HC71a57z0FL5aLDy4sWQp3yGErmBFzvYktHAlsZ3hY3iFD75M8HWTpBiM5fhiB3VwLRQW
+ J/QMXhCR6D728PuFogolbQncjv4Lg/ADx6tqFh9pyt5F5kDY7+KB4vBVwIcvyxsI5fIQGZsn0/h
+ Q+QhFBxRFBl4QrDd/CvfI39t8TPv45cVgA5UmfxN/WgEaCM8AEZ6crExt5Bn12LbnRts6Yt3yzP
+ VI6W5H0eWjXGXkF+K03dv+5W67y7SGzqAbegCfBa2JL2DfPGuHyoCPDYCSm+FYNN6WIO+4NLXi8
+ FBSeKYO1ItWaQOQ4UdSVOkUaCHgicj8Ue1lXZpfAvKdAeCdxSL8SsmHC76fw2dkKP7JjfCWbRGx
+ eOohPoNGpa69jiQ==
 X-Developer-Key: i=leitao@debian.org; a=openpgp;
  fpr=AC8539A6E8F46702CA4A439B35A3939FFC78776D
 X-Debian-User: leitao
@@ -101,92 +99,196 @@ X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[debian.org,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[debian.org:s=smtpauto.stravinsky];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-21836-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:alibuda@linux.alibaba.com,m:dust.li@linux.alibaba.com,m:sidraya@linux.ibm.com,m:wenjia@linux.ibm.com,m:mjambigi@linux.ibm.com,m:tonylu@linux.alibaba.com,m:guwen@linux.alibaba.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:shuah@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-s390@vger.kernel.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:leitao@debian.org,m:kernel-team@meta.com,s:lists@lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER(0.00)[leitao@debian.org,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	TAGGED_FROM(0.00)[bounces-21835-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:alibuda@linux.alibaba.com,m:dust.li@linux.alibaba.com,m:sidraya@linux.ibm.com,m:wenjia@linux.ibm.com,m:mjambigi@linux.ibm.com,m:tonylu@linux.alibaba.com,m:guwen@linux.alibaba.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:shuah@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-s390@vger.kernel.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:leitao@debian.org,m:kernel-team@meta.com,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[debian.org:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[20];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leitao@debian.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[debian.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: D0AB4648105
+X-Rspamd-Queue-Id: 3D85D647FFA
 
-SMC is the last protocol to be converted to getsockopt_iter(). As soon
-as this series lands, and all the other outstanding conversion patches
-land, getsockopt_iter() will be renamed back to getsockopt() and the
-first part of the conversion will be complete.
+Convert SMC socket's getsockopt implementation to use the new
+getsockopt_iter callback with sockopt_t.
 
-This series converts SMC's getsockopt() to the new getsockopt_iter()
-callback, which hands protocols a sockopt_t that abstracts the optval
-buffer as an iov_iter and the option length as a plain int instead of
-raw (char __user *optval, int __user *optlen) pointers. This is part of
-the broader effort to move getsockopt() off __user pointers so that
-kernel-backed callers (e.g. io_uring) can issue socket options.
+Key changes:
+- Replace (char __user *optval, int __user *optlen) with sockopt_t *opt
+- Use opt->optlen for buffer length (input) and returned size (output)
+- Use copy_to_iter() instead of put_user()/copy_to_user()
+- Add linux/uio.h for copy_to_iter()
 
 SMC is a proxy socket: only the SOL_SMC level is handled locally, while
-every other level is forwarded to the underlying CLC (TCP) socket. That
-sub-socket's getsockopt() still operates on __user buffers, so the
-pass-through cannot simply forward the sockopt_t. Instead it reconstructs
-optval from a user-backed iter_out, forwards the preserved user optlen
-pointer (kept in sockopt_t by the base patch), and mirrors the length
-reported by the clcsock back into opt->optlen.
-
-Because of that, the SOL_SMC level is fully converted and works with any
-iov_iter type, but the CLC pass-through is intentionally limited to
-user-backed iters (ubuf) and returns -EOPNOTSUPP otherwise. This is a
-deliberate, temporary restriction: SMC will continue to operate on ubuf
-only until the underlying protocols (TCP/IP) grow their own
-getsockopt_iter() callbacks. Once that generic callback path is enabled,
-the pass-through can forward the sockopt_t directly and drop the ubuf
-restriction, supporting all iov_iter types.
-
-The series contains:
-
-  1) smc: convert getsockopt to getsockopt_iter / sockopt_t.
-
-  2) selftests: net: I've vibe coded a kselftest exercising both the
-     SOL_SMC path and the CLC pass-through, including the
-     oversized-buffer writeback.
+all other levels are forwarded to the underlying CLC (TCP) socket. That
+socket's getsockopt() still operates on __user buffers, so the
+pass-through is limited to user-backed iters: optval is reconstructed
+from iter_out, the original optlen pointer (preserved in sockopt_t) is
+forwarded, and the length reported by the clcsock is mirrored back into
+opt->optlen so the core writes the correct value to userspace.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
-Breno Leitao (2):
-      smc: convert to getsockopt_iter
-      selftests: net: add SMC getsockopt_iter conversion test
+ net/smc/af_smc.c   | 41 +++++++++++++++++++++++++++++------------
+ net/smc/smc.h      |  2 +-
+ net/smc/smc_inet.c |  4 ++--
+ 3 files changed, 32 insertions(+), 15 deletions(-)
 
- net/smc/af_smc.c                             |  41 +++++--
- net/smc/smc.h                                |   2 +-
- net/smc/smc_inet.c                           |   4 +-
- tools/testing/selftests/net/Makefile         |   1 +
- tools/testing/selftests/net/getsockopt_smc.c | 175 +++++++++++++++++++++++++++
- 5 files changed, 208 insertions(+), 15 deletions(-)
----
-base-commit: 0a8b288e2248cb62a62f748bc095c2136acf22b2
-change-id: 20260604-getsockopt_smc-e2ad719486eb
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index b5db69073e20..064d752388d2 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -27,6 +27,7 @@
+ #include <linux/rcupdate_wait.h>
+ #include <linux/ctype.h>
+ #include <linux/splice.h>
++#include <linux/uio.h>
+ 
+ #include <net/sock.h>
+ #include <net/inet_common.h>
+@@ -3017,17 +3018,14 @@ int smc_shutdown(struct socket *sock, int how)
+ }
+ 
+ static int __smc_getsockopt(struct socket *sock, int level, int optname,
+-			    char __user *optval, int __user *optlen)
++			    sockopt_t *opt)
+ {
+ 	struct smc_sock *smc;
+ 	int val, len;
+ 
+ 	smc = smc_sk(sock->sk);
+ 
+-	if (get_user(len, optlen))
+-		return -EFAULT;
+-
+-	len = min_t(int, len, sizeof(int));
++	len = min_t(int, opt->optlen, sizeof(int));
+ 
+ 	if (len < 0)
+ 		return -EINVAL;
+@@ -3040,9 +3038,8 @@ static int __smc_getsockopt(struct socket *sock, int level, int optname,
+ 		return -EOPNOTSUPP;
+ 	}
+ 
+-	if (put_user(len, optlen))
+-		return -EFAULT;
+-	if (copy_to_user(optval, &val, len))
++	opt->optlen = len;
++	if (copy_to_iter(&val, len, &opt->iter_out) != len)
+ 		return -EFAULT;
+ 
+ 	return 0;
+@@ -3168,13 +3165,26 @@ int smc_setsockopt(struct socket *sock, int level, int optname,
+ }
+ 
+ int smc_getsockopt(struct socket *sock, int level, int optname,
+-		   char __user *optval, int __user *optlen)
++		   sockopt_t *opt)
+ {
+ 	struct smc_sock *smc;
+ 	int rc;
+ 
+ 	if (level == SOL_SMC)
+-		return __smc_getsockopt(sock, level, optname, optval, optlen);
++		return __smc_getsockopt(sock, level, optname, opt);
++
++	/* Other levels apply to the CLC socket, whose getsockopt() still
++	 * operates on __user buffers. Reconstruct the userspace pointers and
++	 * forward the call; kernel-backed callers (e.g. io_uring) are not
++	 * supported for this pass-through.
++	 *
++	 * TODO: this pass-through is limited to user-backed iters because the
++	 * underlying protocols (TCP/IP) have not been converted to
++	 * getsockopt_iter() yet. Once they are, forward the sockopt_t directly
++	 * and drop this restriction so all iov_iter types are supported.
++	 */
++	if (!iter_is_ubuf(&opt->iter_out) || !opt->optlen_user)
++		return -EOPNOTSUPP;
+ 
+ 	smc = smc_sk(sock->sk);
+ 	mutex_lock(&smc->clcsock_release_lock);
+@@ -3188,8 +3198,15 @@ int smc_getsockopt(struct socket *sock, int level, int optname,
+ 		return -EOPNOTSUPP;
+ 	}
+ 	rc = smc->clcsock->ops->getsockopt(smc->clcsock, level, optname,
+-					   optval, optlen);
++					   opt->iter_out.ubuf, opt->optlen_user);
+ 	mutex_unlock(&smc->clcsock_release_lock);
++
++	/* The clcsock wrote the resulting length to the user optlen pointer;
++	 * mirror it into opt->optlen so the core writes the same value back.
++	 */
++	if (get_user(opt->optlen, opt->optlen_user))
++		return -EFAULT;
++
+ 	return rc;
+ }
+ 
+@@ -3341,7 +3358,7 @@ static const struct proto_ops smc_sock_ops = {
+ 	.listen		= smc_listen,
+ 	.shutdown	= smc_shutdown,
+ 	.setsockopt	= smc_setsockopt,
+-	.getsockopt	= smc_getsockopt,
++	.getsockopt_iter = smc_getsockopt,
+ 	.sendmsg	= smc_sendmsg,
+ 	.recvmsg	= smc_recvmsg,
+ 	.mmap		= sock_no_mmap,
+diff --git a/net/smc/smc.h b/net/smc/smc.h
+index 52145df83f6e..e62549067b67 100644
+--- a/net/smc/smc.h
++++ b/net/smc/smc.h
+@@ -59,7 +59,7 @@ int smc_shutdown(struct socket *sock, int how);
+ int smc_setsockopt(struct socket *sock, int level, int optname,
+ 		   sockptr_t optval, unsigned int optlen);
+ int smc_getsockopt(struct socket *sock, int level, int optname,
+-		   char __user *optval, int __user *optlen);
++		   sockopt_t *opt);
+ int smc_sendmsg(struct socket *sock, struct msghdr *msg, size_t len);
+ int smc_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+ 		int flags);
+diff --git a/net/smc/smc_inet.c b/net/smc/smc_inet.c
+index a94084b4a498..419240fedbc3 100644
+--- a/net/smc/smc_inet.c
++++ b/net/smc/smc_inet.c
+@@ -44,7 +44,7 @@ static const struct proto_ops smc_inet_stream_ops = {
+ 	.listen		= smc_listen,
+ 	.shutdown	= smc_shutdown,
+ 	.setsockopt	= smc_setsockopt,
+-	.getsockopt	= smc_getsockopt,
++	.getsockopt_iter = smc_getsockopt,
+ 	.sendmsg	= smc_sendmsg,
+ 	.recvmsg	= smc_recvmsg,
+ 	.mmap		= sock_no_mmap,
+@@ -91,7 +91,7 @@ static const struct proto_ops smc_inet6_stream_ops = {
+ 	.listen		= smc_listen,
+ 	.shutdown	= smc_shutdown,
+ 	.setsockopt	= smc_setsockopt,
+-	.getsockopt	= smc_getsockopt,
++	.getsockopt_iter = smc_getsockopt,
+ 	.sendmsg	= smc_sendmsg,
+ 	.recvmsg	= smc_recvmsg,
+ 	.mmap		= sock_no_mmap,
 
-Best regards,
 -- 
-Breno Leitao <leitao@debian.org>
+2.53.0-Meta
 
 
