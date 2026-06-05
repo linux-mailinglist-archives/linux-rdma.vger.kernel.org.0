@@ -1,350 +1,241 @@
-Return-Path: <linux-rdma+bounces-21837-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21838-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id NwfrMnO/Imp0dAEAu9opvQ
-	(envelope-from <linux-rdma+bounces-21837-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 05 Jun 2026 14:22:11 +0200
+	id 2vetC7vDImqOdQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-21838-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 05 Jun 2026 14:40:27 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3783A648114
-	for <lists+linux-rdma@lfdr.de>; Fri, 05 Jun 2026 14:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EE656483E7
+	for <lists+linux-rdma@lfdr.de>; Fri, 05 Jun 2026 14:40:26 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=debian.org header.s=smtpauto.stravinsky header.b=Cg+RrNWC;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21837-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21837-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=debian.org;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=Nvidia.com header.s=selector2 header.b=arCMWo1Z;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21838-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21838-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=nvidia.com;
+	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 371D33044824
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jun 2026 12:14:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 64A9C3026C19
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jun 2026 12:26:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF8D94DB55D;
-	Fri,  5 Jun 2026 12:13:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED7D23314B9;
+	Fri,  5 Jun 2026 12:26:09 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from stravinsky.debian.org (stravinsky.debian.org [82.195.75.108])
+Received: from CO1PR03CU002.outbound.protection.outlook.com (mail-westus2azon11010031.outbound.protection.outlook.com [52.101.46.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECB0E4DBD6E;
-	Fri,  5 Jun 2026 12:13:47 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780661629; cv=none; b=jkswB90olzg0xcBB1wE9c+7MB6UTt4Uy0wqrKsqhL1eBD2iw8Jbn42tl44WdoUQK5BEIdwNIra0Do49iJWkqHUNe7xDxY2trh8EuIUX5ulh58G9CmVIl79pt77GnLJYyUmwXuf1h2ao6fPAsz9BVhUuxn59LuV4BmigY/cuTio4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780661629; c=relaxed/simple;
-	bh=3dPr7qEVvxmzqp5Fa68RHp4F3vW5/2Q/V40NwuplFpg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=PMP4WQESAkf3EOBTewO84kuvSHyU2u3izrV/+5hi4Zahkl4eWS+0wmMJLn5C2amWllzW/2oQoh2dnGeeCB8KiXK3wojHnlFGq4CUJ6CIwlSrO4vl7G9H3dU6kCTzupbqVsoE7kz//Cf8Gfi3EkKj7d/VrXq/hQUOIobayT9TpUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=debian.org; dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b=Cg+RrNWC; arc=none smtp.client-ip=82.195.75.108
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
-	s=smtpauto.stravinsky; h=X-Debian-User:Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Reply-To:Content-ID:Content-Description;
-	bh=kFUydBL2VOJZxCjSY8+wesOl5nfUP1qHfnXLPzIPWck=; b=Cg+RrNWC1/3+bkJkbTflL8ztDI
-	go10PZKiqgyCXY+ZgJ85TJniJwKYe7lOncmV6ur/xkQDLhGRarJ4KqUBiNoY2j9Q+eLEH/+dvBI8B
-	7aLDkGXm1u5ziV+SnwE4KLgjnfFCtXVPcLlDO2Hz4HYAPQL3NgAe53G6Q4dVi3A+d4WpUnDkmQrfX
-	YiPtvqv0fgwecZHZKvyZffAm9Tvf2cSxo23GP23r3GHmFm7hNtkSYGvxNri3UJpv/t372ioqRcp3C
-	lPy1jvwErc9oKrq5cxTZv0rgAH+n1L4NSIPyNzDG6cHKQT/WowD0Mzo1PtvNEc19cyj4HKSqwlFK9
-	zYwMa0hg==;
-Received: from authenticated-user
-	by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.96)
-	(envelope-from <leitao@debian.org>)
-	id 1wVTQm-005HWG-1Y;
-	Fri, 05 Jun 2026 12:13:44 +0000
-From: Breno Leitao <leitao@debian.org>
-Date: Fri, 05 Jun 2026 05:13:26 -0700
-Subject: [PATCH net-next 2/2] selftests: net: add SMC getsockopt_iter
- conversion test
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796CA18C332;
+	Fri,  5 Jun 2026 12:26:08 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780662369; cv=fail; b=WsIs1hh0aDRaBA28DMzZuXvicHZ64OcYTSX9i7FUa7sqbrXFRTRVxJGakcZEBANOFxZrx95h75TdK8FvhwZ+LP8N+xyzdSEtwvFUucSGI658CFfpJSSxdW94RZ5AjmYPFojReiWKjoMr+6/gaAnPI5x7eVNc6Cllz9SRb818lBk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780662369; c=relaxed/simple;
+	bh=Gp7KEKgeSASYU8YZhTqxHiQBu/QNReWMtTFyVLgNav4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=FxJzO1By0wDD/SP2KvSHr2aVofObETSxWc7MygU6hPY1U0txNpflrD510Dze6XRkPTPk8wI+Lkh5cguUYIaCcoJcVe3yZ56CAIa09pBJaMV2PPclxF9mh001UsVuL0Gaq6zzktCurVUyi/NRtDd/LnqI/NYsrfU9+z6put/oiII=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=arCMWo1Z; arc=fail smtp.client-ip=52.101.46.31
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=WAZQo4m7iWRxeE94ct8JCP/EDybvqTT8aZVcycLOHJ1u5/XMYCH2gTyL/tBbdD62nGjCTQatNiE1Iffd7G6GrW5lERI2reveRk8exgWZBlekOcb7O70axuFNxHF5iqfldtBwtpAx7sGFTWiiMPjwbxbXT11LEcEGcPsGsAas5Hbq/2SLNwkGdpSYP0DxWE4VRdig+U8q+S9I3/xvhhMa2Y9H6bsTPiRsNw1OMELgcflJvkt0lFPye6C45BIzxZTtzDLxB7f+P+fBQAk7AV43uvxMPCk3ZD5LBTs2BXv8HUVz+cy+Uq+XQm3uCTkrm/9XmS4X5jr8Xf/CGPhFJoVQMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xEFUjfonEE2/lfdeHQE3RBb74UedUYwClCem7I76Qew=;
+ b=UbcFxKXJgEMqF5IOPA2zDXmX7KUo6gWnlWJC5sNFadicPXftOFzehYA3HiIp1eumXiy3J/h2B5zP7jUYhG9f9ojBNZ+/WCIGESHI9/xg/tGXHmUGlT7Jj/Z0AKgibQrec612RpO7WgO4lhYF224l2q0aVLHzs0o69aRLdNvu4316hq2jQNUeB1BogLlPrGuEto9cWYWuvcUP1BrLH4Z+IhTGybIC59suMywUnjU88oSQhH9A/Cy3iDWz5F8EB05OFJbtbCVQP/igzYsJeSkvi9Seue21bf8VBWjO85wcdvJc9zZSS3NS+Q7pkUInPWPTGRpHiKP1x8vV4DEMOety5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=linux.dev smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xEFUjfonEE2/lfdeHQE3RBb74UedUYwClCem7I76Qew=;
+ b=arCMWo1Zndgq9UPS3egtqBDaZIddp6rBeHToF+/75L7bJHVmUduSlJugj+2VzE3wuZYe1YBHVygH1JDsMVgxOpGwBidvc2CkxO18QtAQKhL4KckNwi17q9d7QhnB0oQo2hYdfSrLrXykVqwvFhB5HbW4SpowIeJmLevO8oGwPncGrax+HnsDMhK6Fx83c0vG7MHuKjh/taeUYYiKuCS7PO4jyJR29Tsk1Z6OdIQ9lCuPpMlj9weO9Z9y/2DUfAoOLCbvGkPwlKwVgeb1JYqdAFAcHLMPN0FF2Y5N7rzj6WLTec7PAYraZd3SYteWfyjcBBotFSxzbVHXRN98Cy70sQ==
+Received: from BY3PR05CA0002.namprd05.prod.outlook.com (2603:10b6:a03:254::7)
+ by DS7PR12MB6214.namprd12.prod.outlook.com (2603:10b6:8:96::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.7; Fri, 5 Jun 2026
+ 12:25:57 +0000
+Received: from SJ1PEPF00002314.namprd03.prod.outlook.com
+ (2603:10b6:a03:254:cafe::58) by BY3PR05CA0002.outlook.office365.com
+ (2603:10b6:a03:254::7) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.92.9 via Frontend Transport; Fri, 5
+ Jun 2026 12:25:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ SJ1PEPF00002314.mail.protection.outlook.com (10.167.242.168) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.92.5 via Frontend Transport; Fri, 5 Jun 2026 12:25:57 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 5 Jun
+ 2026 05:25:42 -0700
+Received: from [10.221.193.185] (10.126.231.37) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 5 Jun
+ 2026 05:25:36 -0700
+Message-ID: <086e79e1-12df-418f-8be4-a53e1081fab7@nvidia.com>
+Date: Fri, 5 Jun 2026 15:25:27 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260605-getsockopt_smc-v1-2-65da62fa44c4@debian.org>
-References: <20260605-getsockopt_smc-v1-0-65da62fa44c4@debian.org>
-In-Reply-To: <20260605-getsockopt_smc-v1-0-65da62fa44c4@debian.org>
-To: "D. Wythe" <alibuda@linux.alibaba.com>, 
- Dust Li <dust.li@linux.alibaba.com>, 
- Sidraya Jayagond <sidraya@linux.ibm.com>, 
- Wenjia Zhang <wenjia@linux.ibm.com>, 
- Mahanta Jambigi <mjambigi@linux.ibm.com>, 
- Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Simon Horman <horms@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc: linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org, 
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Breno Leitao <leitao@debian.org>, 
- kernel-team@meta.com
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6628; i=leitao@debian.org;
- h=from:subject:message-id; bh=3dPr7qEVvxmzqp5Fa68RHp4F3vW5/2Q/V40NwuplFpg=;
- b=owEBbQKS/ZANAwAIATWjk5/8eHdtAcsmYgBqIr1qlb+aNt6A0tAWKYvap0Vpdt/edGJZQ6XHG
- i0dJttj2k6JAjMEAAEIAB0WIQSshTmm6PRnAspKQ5s1o5Of/Hh3bQUCaiK9agAKCRA1o5Of/Hh3
- bSqnD/9aZpOTD0RZsKZbziT9z+aDoKf+Xw1RatCpANzHyubQazRzHF+T13BySpQNQvrQDLl94Z8
- jXErk1WB1mcxWZ+wXKTvXT9CS74NP6O+PsAKYyObIC5z2HGMPtwzEWVCKxCarolZuXERmf2zu4K
- ABLPLo2bZbR4YVeXjX8e3RBbq9IG/vFb5U+4+mh/24qHAAv/W8i3tp2M8mn89ngmW+hhmwQJPHr
- aXevJKErr5GDvnFl3ho9EK5dq4xBpFWE7vsic5hv9482jfsb8/9Epsne75OesKyzMdXmt40Am7h
- JW+0EQfsiqz1nu0K78Oe+P21SHQa7ITtmq0vK1Hz5wwsef3ijPkTns555IVz6w4jMfFBAB0KSRy
- 0+xj0O24HFwWfuBBHJ/IJfY58BlKFCN6K9eguSvCc7ma7BHwrNUjQUFFHSvU7CZLS7kqMUeASPI
- GVI+nuRT1FbAnrSVaggd+JdgBafZWywzzMmxq8f9LggEOz0/1jur4o8Wkn9XWuPKfgMc9mNK9df
- inlYDAukb8PfDlN0GuL4T4pP3KnYLH/rhpNLsPMwh4r6nkIV3FiftoQkFao8xjvx/NEbIdcZIAa
- XVsMJ3n+DHAo3psms8LII+EcNq1IjLPLe0V2R09CpHVuWeZMcdxu684wd7O7LMlO14D3RQl5D2M
- j3/liRQy2BBJIpw==
-X-Developer-Key: i=leitao@debian.org; a=openpgp;
- fpr=AC8539A6E8F46702CA4A439B35A3939FFC78776D
-X-Debian-User: leitao
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v3] net/mlx5: Use effective affinity mask for IRQ
+ selection
+To: Fushuai Wang <fushuai.wang@linux.dev>, <saeedm@nvidia.com>,
+	<leon@kernel.org>, <tariqt@nvidia.com>, <mbloch@nvidia.com>,
+	<andrew+netdev@lunn.ch>, <davem@davemloft.net>, <edumazet@google.com>,
+	<kuba@kernel.org>, <pabeni@redhat.com>, <parav@nvidia.com>,
+	<moshe@nvidia.com>
+CC: <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <wangfushuai@baidu.com>
+References: <20260605102112.91772-1-fushuai.wang@linux.dev>
+Content-Language: en-US
+From: Shay Drori <shayd@nvidia.com>
+In-Reply-To: <20260605102112.91772-1-fushuai.wang@linux.dev>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ1PEPF00002314:EE_|DS7PR12MB6214:EE_
+X-MS-Office365-Filtering-Correlation-Id: b78e1998-2b67-422f-d469-08dec2fd986c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|82310400026|376014|7416014|36860700016|22082099003|13003099007|18002099003|921020|11063799006|56012099006;
+X-Microsoft-Antispam-Message-Info:
+	bEpUdhzgSVV0HT+v5P7l/ut7k5FnEip4Zy2M60Ma3jMoSUrUH0Gd0/iut5H/nCj001Yj2aAxKr6vV825gs5S6MNcNKyou7s2W1oLXUOKJqkQxWJoT+kq4N1iKp8MCUhpzGdxQzFPY7XAj5BF0EyQmJco3EJJpz/QHrJeIOc4GUpu72G8Y5tWD0FWyKnUW2pfGJZUGT6JETMmJ9ob38HagwcaHt/j4GRqk8IO4HJqRQFwwETkBxzMX1OG0AlvemeD7bnbNrs4mtuZ+8xc4Km0mF0LlrtYNkaCPQsSVC4WUHMInFmmLAJuOPPNMf0KLA0GsBWd9Q4Sx9rP2GMGGFXmIvpOcsY1msl7qbhwrOdRO9pOD9l6PXj7wG3Kl9bPFYcVFRv+kfpAF1MZw8rlv3EHRQ8ku3HL38Vf7OZy7OwK+G4JOm5QTOTkWTdikxgznNugfTuXCTz9+STidB71Qyv3tVoEgxlALeF7iOfBv1vvu+XhhtzZiLOVm+vr/Z7aLbAxq1ZeSYNPJFRUqwDFbjR8UCT04yY9MTw6ezKXV8eq3buOn1lMNwgvDHUKD3wn8DkFvqf5VoljpNqMKHb70rKJsVLMwqMuKP2T4QZgPUhjJTn9/syuC7mOkbONY5nz+TN8ZaNQRwheOD60TqPPYl4agUf1YNIvFbX5kj05va8mZTSVfNFPLrewpclQl2BJ1DkRquV/9i5zMVQNJBWnwFCuQOB/xlvu3ucdqkTjUTJKv4GgXnXNxFBcaHxarZzmGRn10/3RUPZbzoEatTEoa/e+X4IY9eNxGEhLOjSasX6XrDM=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(376014)(7416014)(36860700016)(22082099003)(13003099007)(18002099003)(921020)(11063799006)(56012099006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	ByFBiZLLu3j5Seqf0zdogkdWHY0doR2jOBvzpfWXEGOvZWKDfJYwvsXOd4/q0ieVMvhWYEKHte9mBnZH1tAO19tEGbtoiFXRk/1Fp6OIx/Sipt8rDPAfbZgMU8iXZsCoYJBmsOFevPgvq/7LQ4UFp5R20OAzSnBIADA5HOm0UiesNyDHfqY4ED1dO3QnIyUOmPqmcTk3W7MyFJxoT97R4ZoHrnNemI0vZ2hOy8oG91Mx61zpPPKaWwNESJuJARfFUXnVOrSknbhlYTAKJKLngQMPmjXp8Obl6t6z5UtwVdx8KMKwy+9RbYp3IcuUbX+2iTv3Fydpqg8NVpPMuwZJQfhVpaYIrYLArT3rL3xw3vnbRZYY2+lytD6fJg7ZmB+XJHczhtnLmBTwTo1YMGARvO5Moio2MjpELtE7/2hKD87elaY/KasAsiUhnZ57VrM/
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jun 2026 12:25:57.2516
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b78e1998-2b67-422f-d469-08dec2fd986c
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ1PEPF00002314.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6214
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[debian.org,none];
+X-Spamd-Result: default: False [1.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[debian.org:s=smtpauto.stravinsky];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:alibuda@linux.alibaba.com,m:dust.li@linux.alibaba.com,m:sidraya@linux.ibm.com,m:wenjia@linux.ibm.com,m:mjambigi@linux.ibm.com,m:tonylu@linux.alibaba.com,m:guwen@linux.alibaba.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:shuah@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-s390@vger.kernel.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:leitao@debian.org,m:kernel-team@meta.com,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[leitao@debian.org,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	TAGGED_FROM(0.00)[bounces-21837-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	TAGGED_FROM(0.00)[bounces-21838-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:fushuai.wang@linux.dev,m:saeedm@nvidia.com,m:leon@kernel.org,m:tariqt@nvidia.com,m:mbloch@nvidia.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:parav@nvidia.com,m:moshe@nvidia.com,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:wangfushuai@baidu.com,m:andrew@lunn.ch,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_SENDER(0.00)[shayd@nvidia.com,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,nvidia.com:mid,nvidia.com:from_mime,nvidia.com:email,Nvidia.com:dkim];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leitao@debian.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[debian.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[shayd@nvidia.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
+	ALIAS_RESOLVED(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	RCVD_COUNT_SEVEN(0.00)[8]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 3783A648114
+X-Rspamd-Queue-Id: 7EE656483E7
 
-Add a kselftest that exercises the SMC getsockopt() paths converted to
-the getsockopt_iter() / sockopt_t callback:
 
-- SOL_SMC options (SMC_LIMIT_HS), handled directly by smc_getsockopt(),
-  which returns the int value through copy_to_iter() and reports the
-  written length in opt->optlen.
 
-- The CLC pass-through (e.g. SOL_TCP), where smc_getsockopt() forwards to
-  the underlying TCP socket: optval is reconstructed from iter_out, the
-  optlen pointer is forwarded, and the clamped length is mirrored back
-  through opt->optlen. The oversized-buffer case (input optlen differs
-  from output) specifically guards against a missing writeback sync.
+On 05/06/2026 13:21, Fushuai Wang wrote:
+> External email: Use caution opening links or attachments
+> 
+> 
+> From: Fushuai Wang <wangfushuai@baidu.com>
+> 
+> When a sf is created after a CPU has been taken offline, the IRQ pool may
+> contain IRQs with affinity masks that include the offline CPU. Since only
+> online CPUs should be considered for IRQ placement, cpumask_subset() check
+> would fail because the iter_mask contains offline CPUs that are not present
+> in req_mask, causing sf creation to fail.
+> 
+> This is an example:
+>    1. When mlx5 driver loads, it initializes the IRQ pools.
+>       For sf_ctrl_pool with ≤64 sf:
+>       - xa_num_irqs = {N, N} (There is only one slot)
+>    2. When the first SF is created:
+>       - The ctrl IRQ is allocated with mask=cpu_online_mask={0-191}
+>    2. We take CPU 20 offline
+>    3. Existing ctl irq still have mask={0-191}
+>    4. Create a new SF:
+>       - req_mask={0-19,21-191}
+>       - iter_mask={0-191}
+>       - {0-191} is NOT a subset of {0-19,21-191}
+>       - least_loaded_irq=NULL
+>    5. Try to allocate a new irq via irq_pool_request_irq()
+>    6. xa_alloc() fails because the pool is full(There is only one slot)
+>    7. sf creation fails with error
+> 
+> Use irq_get_effective_affinity_mask() instead, which returns the IRQ's
+> actual effective affinity that already excludes offline CPUs.
+> 
+> Fixes: 061f5b23588a ("net/mlx5: SF, Use all available cpu for setting cpu affinity")
+> Suggested-by: Shay Drory <shayd@nvidia.com>
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- tools/testing/selftests/net/Makefile         |   1 +
- tools/testing/selftests/net/getsockopt_smc.c | 175 +++++++++++++++++++++++++++
- 2 files changed, 176 insertions(+)
+Reviewed-by: Shay Drory <shayd@nvidia.com>
 
-diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-index 5ca6c557fc3f..5b50f718dbde 100644
---- a/tools/testing/selftests/net/Makefile
-+++ b/tools/testing/selftests/net/Makefile
-@@ -177,6 +177,7 @@ TEST_GEN_PROGS := \
- 	bind_wildcard \
- 	epoll_busy_poll \
- 	getsockopt_iter \
-+	getsockopt_smc \
- 	icmp_rfc4884 \
- 	ipv6_fragmentation \
- 	proc_net_pktgen \
-diff --git a/tools/testing/selftests/net/getsockopt_smc.c b/tools/testing/selftests/net/getsockopt_smc.c
-new file mode 100644
-index 000000000000..239deefb3187
---- /dev/null
-+++ b/tools/testing/selftests/net/getsockopt_smc.c
-@@ -0,0 +1,175 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Exercise the SMC getsockopt() paths that were converted to the
-+ * getsockopt_iter() / sockopt_t callback.
-+ *
-+ * Two distinct paths are covered:
-+ *
-+ *   - SOL_SMC options (SMC_LIMIT_HS) are handled directly by
-+ *     smc_getsockopt(), which returns the int value through copy_to_iter()
-+ *     and reports the written length in opt->optlen.
-+ *
-+ *   - Other levels (e.g. SOL_TCP) are forwarded to the underlying CLC (TCP)
-+ *     socket, whose getsockopt() still operates on __user buffers. The
-+ *     converted smc_getsockopt() reconstructs the userspace optval from
-+ *     iter_out, forwards the original optlen pointer, and mirrors the length
-+ *     the clcsock reported back into opt->optlen so the core writes the right
-+ *     value to userspace.
-+ *
-+ * The kernel-buffer (kvec) path of the CLC pass-through returns -EOPNOTSUPP
-+ * and is not reachable from a userspace getsockopt(), so it is not tested
-+ * here.
-+ *
-+ * Author: Breno Leitao <leitao@debian.org>
-+ */
-+#include <errno.h>
-+#include <stdint.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <netinet/in.h>
-+#include <netinet/tcp.h>
-+#include <sys/socket.h>
-+
-+#include "kselftest_harness.h"
-+
-+#ifndef AF_SMC
-+#define AF_SMC 43
-+#endif
-+#ifndef SMCPROTO_SMC
-+#define SMCPROTO_SMC 0
-+#endif
-+#ifndef SOL_SMC
-+#define SOL_SMC 286
-+#endif
-+#ifndef SMC_LIMIT_HS
-+#define SMC_LIMIT_HS 1
-+#endif
-+
-+FIXTURE(smc) {
-+	int fd;
-+};
-+
-+FIXTURE_SETUP(smc)
-+{
-+	self->fd = socket(AF_SMC, SOCK_STREAM, SMCPROTO_SMC);
-+	if (self->fd < 0)
-+		SKIP(return, "AF_SMC unavailable (errno %d) - load the smc module",
-+		     errno);
-+}
-+
-+FIXTURE_TEARDOWN(smc)
-+{
-+	if (self->fd >= 0)
-+		close(self->fd);
-+}
-+
-+/* ---------- SOL_SMC: handled directly by smc_getsockopt() ---------- */
-+
-+/* SMC_LIMIT_HS is reported back as a 4-byte int via copy_to_iter(). */
-+TEST_F(smc, limit_hs_default)
-+{
-+	socklen_t optlen = sizeof(int);
-+	int val = 0xdeadbeef;
-+
-+	ASSERT_EQ(0, getsockopt(self->fd, SOL_SMC, SMC_LIMIT_HS, &val, &optlen));
-+	EXPECT_EQ(sizeof(int), optlen);
-+	EXPECT_TRUE(val == 0 || val == 1);
-+}
-+
-+/* A value set via setsockopt() must be readable back unchanged. */
-+TEST_F(smc, limit_hs_set_get)
-+{
-+	socklen_t optlen = sizeof(int);
-+	int val = 1;
-+
-+	ASSERT_EQ(0, setsockopt(self->fd, SOL_SMC, SMC_LIMIT_HS, &val, optlen));
-+
-+	val = -1;
-+	ASSERT_EQ(0, getsockopt(self->fd, SOL_SMC, SMC_LIMIT_HS, &val, &optlen));
-+	EXPECT_EQ(sizeof(int), optlen);
-+	EXPECT_EQ(1, val);
-+}
-+
-+/* setsockopt() stores !!val, so a non-1 truthy value reads back as 1. */
-+TEST_F(smc, limit_hs_set_get_clear)
-+{
-+	socklen_t optlen = sizeof(int);
-+	int val = 0;
-+
-+	ASSERT_EQ(0, setsockopt(self->fd, SOL_SMC, SMC_LIMIT_HS, &val, optlen));
-+
-+	val = -1;
-+	ASSERT_EQ(0, getsockopt(self->fd, SOL_SMC, SMC_LIMIT_HS, &val, &optlen));
-+	EXPECT_EQ(sizeof(int), optlen);
-+	EXPECT_EQ(0, val);
-+}
-+
-+/* An oversized buffer is clamped: optlen is reported back as sizeof(int). */
-+TEST_F(smc, limit_hs_oversize_clamped)
-+{
-+	socklen_t optlen;
-+	char buf[16] = {};
-+
-+	optlen = sizeof(buf);
-+	ASSERT_EQ(0, getsockopt(self->fd, SOL_SMC, SMC_LIMIT_HS, buf, &optlen));
-+	EXPECT_EQ(sizeof(int), optlen);
-+}
-+
-+/* An unknown SOL_SMC option is rejected with -EOPNOTSUPP. */
-+TEST_F(smc, bad_optname)
-+{
-+	socklen_t optlen = sizeof(int);
-+	int val;
-+
-+	ASSERT_EQ(-1, getsockopt(self->fd, SOL_SMC, 0x7fff, &val, &optlen));
-+	EXPECT_EQ(EOPNOTSUPP, errno);
-+}
-+
-+/* ---------- CLC pass-through: forwarded to the underlying TCP socket ------ */
-+
-+/* A TCP option set on the SMC socket is applied to the CLC socket and must be
-+ * readable back through the pass-through, exercising optval reconstruction.
-+ */
-+TEST_F(smc, clc_tcp_nodelay_set_get)
-+{
-+	socklen_t optlen = sizeof(int);
-+	int val = 1;
-+
-+	ASSERT_EQ(0, setsockopt(self->fd, IPPROTO_TCP, TCP_NODELAY,
-+				&val, optlen));
-+
-+	val = -1;
-+	ASSERT_EQ(0, getsockopt(self->fd, IPPROTO_TCP, TCP_NODELAY,
-+				&val, &optlen));
-+	EXPECT_EQ(sizeof(int), optlen);
-+	EXPECT_EQ(1, val);
-+}
-+
-+/* With an oversized buffer the clcsock clamps the reported length to
-+ * sizeof(int). That length is produced by the clcsock writing the user optlen
-+ * pointer, and must be mirrored back through opt->optlen; since the input
-+ * optlen (16) differs from the output (4), this fails if the writeback sync
-+ * in smc_getsockopt() is missing.
-+ */
-+TEST_F(smc, clc_tcp_nodelay_oversize_clamped)
-+{
-+	socklen_t optlen;
-+	char buf[16] = {};
-+
-+	optlen = sizeof(buf);
-+	ASSERT_EQ(0, getsockopt(self->fd, IPPROTO_TCP, TCP_NODELAY,
-+				buf, &optlen));
-+	EXPECT_EQ(sizeof(int), optlen);
-+}
-+
-+/* An error from the clcsock (unknown TCP option) is propagated unchanged. */
-+TEST_F(smc, clc_bad_optname)
-+{
-+	socklen_t optlen = sizeof(int);
-+	int val;
-+
-+	ASSERT_EQ(-1, getsockopt(self->fd, IPPROTO_TCP, 0x7fff, &val, &optlen));
-+	EXPECT_EQ(ENOPROTOOPT, errno);
-+}
-+
-+TEST_HARNESS_MAIN
-
--- 
-2.53.0-Meta
+> Signed-off-by: Fushuai Wang <wangfushuai@baidu.com>
+> ---
+> v2->v3: Separate the patchset to two patches, reverse xmas tree coding style fix.
+> v1->v2: Use mlx5_irq_get_affinity_mask() api
+> 
+> previous discussion:
+> https://lore.kernel.org/all/20260603072657.10868-1-fushuai.wang@linux.dev/T/#u
+> https://lore.kernel.org/all/20260604125705.21241-1-fushuai.wang@linux.dev/T/#u
+> 
+>   drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
+> index 994fe83da4be..a0bb8ee44e35 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
+> @@ -105,9 +105,12 @@ irq_pool_find_least_loaded(struct mlx5_irq_pool *pool, const struct cpumask *req
+> 
+>          lockdep_assert_held(&pool->lock);
+>          xa_for_each_range(&pool->irqs, index, iter, start, end) {
+> -               struct cpumask *iter_mask = mlx5_irq_get_affinity_mask(iter);
+>                  int iter_refcount = mlx5_irq_read_locked(iter);
+> +               const struct cpumask *iter_mask;
+> 
+> +               iter_mask = irq_get_effective_affinity_mask(mlx5_irq_get_irq(iter));
+> +               if (!iter_mask)
+> +                       continue;
+>                  if (!cpumask_subset(iter_mask, req_mask))
+>                          /* skip IRQs with a mask which is not subset of req_mask */
+>                          continue;
+> --
+> 2.36.1
+> 
 
 
