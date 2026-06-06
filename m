@@ -1,91 +1,91 @@
-Return-Path: <linux-rdma+bounces-21888-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21889-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id c9wNOSqdI2rQvwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-21888-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 06 Jun 2026 06:08:10 +0200
+	id cgkfGtyqI2oDwwEAu9opvQ
+	(envelope-from <linux-rdma+bounces-21889-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 06 Jun 2026 07:06:36 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 484F264C567
-	for <lists+linux-rdma@lfdr.de>; Sat, 06 Jun 2026 06:08:10 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D228064C7F5
+	for <lists+linux-rdma@lfdr.de>; Sat, 06 Jun 2026 07:06:35 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=AgPmD8NH;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21888-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21888-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=amd.com header.s=selector1 header.b=KmF9Xjju;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21889-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21889-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=amd.com;
+	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1142B303258B
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Jun 2026 04:06:52 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 3D69130451E8
+	for <lists+linux-rdma@lfdr.de>; Sat,  6 Jun 2026 05:00:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9422F3C0A;
-	Sat,  6 Jun 2026 04:06:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B79853009E1;
+	Sat,  6 Jun 2026 05:00:22 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from CO1PR03CU002.outbound.protection.outlook.com (mail-westus2azon11010070.outbound.protection.outlook.com [52.101.46.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BFBE2F39B9
-	for <linux-rdma@vger.kernel.org>; Sat,  6 Jun 2026 04:06:49 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780718811; cv=none; b=pyUmLOh8HYOQYc8bPgBUOrAndQn2to2u4w9Rxj0e2pzhJoEUiW0LJnfx/dEw/ATTHyXwMOUFHWU8br1Tu1pD9R6oAMWv66o7IFeQ4xfVsnxC9pv9gq+8N77dszywRm+OZU6stbGm4Ty2g/s9MN4nraQdp85TMM+UHJ4P/cujbqg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780718811; c=relaxed/simple;
-	bh=Wwc/btTfzA7l/jcXEHUEYbKRnHwUM7rrn89qeAjFt2M=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=opggQsMmX7OTreE4P1SeosdCgoLG6T6uHAA3lz6vYpMZRL9jBZQRQlL4f4dPRMjIBUDD/ak4izxI0nIetX0VOBlRYRV1rPCbrweb+7x71gJmJ7C+IXPcNSyBwZOe/40IxIBIkEggL+Lcq7AHqdr/0JzDU8Rrv1CoNrvydsWKRXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AgPmD8NH; arc=none smtp.client-ip=209.85.210.173
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-8419ab3a297so1124620b3a.2
-        for <linux-rdma@vger.kernel.org>; Fri, 05 Jun 2026 21:06:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1780718809; x=1781323609; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bkFR8PD5hTsVehXEUiC3ZjzrwKQUAHChOG9ZKsTB6rM=;
-        b=AgPmD8NHm5YeTXBdlus3ahsacJgfKDFAxXDjKqtPNrh02/GYaRisx3WBrICyc9dK3M
-         OYrw6zs9M7cn1zHWqSPNFm8XtO/Vp3Lx64/E8wtkLxecGBBnCP//zG0D0oc653IcWPLf
-         TSj9urGm+l4oC23kcACccytQkEWy3RG9cgTY2mWmFOnFCB7ydefQLKDxqJ1j5Q2a6J6T
-         ukDzQqX2LpDCeYdjZKUNqsA38SovIsf/OQT+hb2PbLVKyLX92li8YJs16HrtQV3ejDwx
-         DAfzmr3i4wsdiUHaWf8INXi/IMVNI5Bc3h4OuKNApl/9yCrW9P4wPT6szL3aTHRYS3DY
-         mmAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780718809; x=1781323609;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bkFR8PD5hTsVehXEUiC3ZjzrwKQUAHChOG9ZKsTB6rM=;
-        b=K5nXu6/6A0zF+lXZhOzDcR3VcGAeIxv1quWmOqyx3eKBCc6anhWqEKZOMUWtxYCIBn
-         RlsRbZqXlm/lBqZlYbgGPk5u2IdjwbyA+XzwU57BrqIXQN7F2wxev1sEnrl6HHhXloO8
-         DcCSkppQTD3EXrSI85v5GObm434Vb4nL9rPG1kD0Ra7kHvjX8glWHX4H06S7q7EUKdb0
-         x93nP/xuqllnNxEs/CUWeutK57Jm5pJlX5xrNu7ZlNUNvnfC/GUFvaOzGjo73WvOCGDU
-         PocFiKugKYsAAcK1k7Q0uAoIPrOv7ltiDVoI3LYFwIp5bA5Fv+6WKJAwAAyOnYdDQJh/
-         CuqQ==
-X-Forwarded-Encrypted: i=1; AFNElJ8RtrSWW51uS8/6kbSyqdzwvkL96o5z3v/g9j7XTGrsooYAADrz4w6JZ+qyaP8SWGCp5mI3qA84di21@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyyc+4UYu5QqNiJ0Zs/T/3pVDrFvLhU9v/bm63DasZbg2T903Yt
-	mePfjHC2c/BO9ZknRcxEmAxI8mUz0gp2YxRheLLBwrECYmbZV/QFTzZ9N8vvuE0Vxb++1g==
-X-Gm-Gg: Acq92OGt7vt1CSYllIveMigxTeUbvjBCpMYH8/2AearZTJy+2j7C3M6Zv9XNWZzoCeN
-	SC7lFUHp823nqvfQZGf3Hz8GIRs3OmfVD9x6voU9qTTEO0Wkf38LeqOCdV7x/r3XNWI4h0nxDte
-	qWn11KcO5f9k9Txi6dbKnoZvvTHlAI/8t7So3v832SCCfOOtJhsgn8P7RuE9bhEPPa3dbWRQMvt
-	53MzAdNA6iJLjXm5r6riHAJCtUGGYAGNw9f9fX0Xqg9DsYhFtMokuLuXd7FuyygpDHJZ11oNt7/
-	kUg8si2pJtbyn5vNb2IKga79/L+yA4kyoJYG3TF2VKkEqpcXusU8zpTUyc9lGPpl2Y7n8Glm4t6
-	pjM1vT91NWc6uG6lnTpD5mOjWDMH42oA+2wekzm4K7mjQq/RHmnxMVImZtJY0R9ITL/Guf/WyFg
-	yuIJUkzz6WqBGBN8FTKAGaz3oJdImh6nC3yM8o1zIyXu1TYf4bswLMbg==
-X-Received: by 2002:a05:6a00:194a:b0:842:4f20:53ff with SMTP id d2e1a72fcca58-842b0fd16bdmr7035088b3a.42.1780718809337;
-        Fri, 05 Jun 2026 21:06:49 -0700 (PDT)
-Received: from haichao.tail057a43.ts.net ([2001:da8:e000:1206:967f:7ce4:ec98:f08b])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-84282372a16sm13112774b3a.18.2026.06.05.21.06.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jun 2026 21:06:49 -0700 (PDT)
-From: Ruoyu Wang <ruoyuw560@gmail.com>
-To: Selvin Xavier <selvin.xavier@broadcom.com>
-Cc: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Ruoyu Wang <ruoyuw560@gmail.com>
-Subject: [PATCH] RDMA/bnxt_re: check debugfs parameter allocation
-Date: Sat,  6 Jun 2026 12:06:44 +0800
-Message-ID: <20260606040644.13-1-ruoyuw560@gmail.com>
-X-Mailer: git-send-email 2.51.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39D421A9F88;
+	Sat,  6 Jun 2026 05:00:21 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780722022; cv=fail; b=BfN9bQX6363MQFxAqOo3hr5CLPsf62CmKJX9czBBkzUHTvBat1TWndLZQWoIjsC8gfWhnSCSJVWSjl7P+R6sZm35cGMI2Z7NL70xtgwEiC3YI20mS+hL4cPAbmfufcLCTnBwpJ2fdpwBmhAhm964bVhD8WwcvDuaLzwPL/dW8F8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780722022; c=relaxed/simple;
+	bh=8vPFzoWCw6PwCCjJruSWRvlhSM8PagBjV+MiCRbWtcA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=O3n3ixlG95e7L7xtZ31hz+CuvFnhsinghusmKOhC715zXUyHFBtLs2l0aZpxrSVrxFW5qjf5jbTJifPdWtLON183HgWdOUQkcQqKLlyxHecj4b+NHLeaVgSYcSjpfbLDJBLxCycz+sIcUdjnvTxZnCazIN5lT2TMABOqutl1ZMU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=KmF9Xjju; arc=fail smtp.client-ip=52.101.46.70
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=jJYvgQ/75/7Ef2d5hzNbA9+GNX4NMrl6VSqekKg+lQkXV8oCmZr4bJ2yOj2MbQYsGV/kO1ccNHgfr9w53GH8a5VsICioqgCY08ZQCT7eSvxA/gG9vZedidD3EDNjftZ+SPq0Y23Wbsn7l6hTQFaECbgarpOMsMVP3eMKsgDiR7RYa1G7+iBT27rN2B20c1QjM2ODsAKtFCJJPthiBXEacy6uLrqRxj4TSbcRyft+h2baV/obwY/QI0b9QD7W6emq2vMWBqzHsYWw5PIllqMF8OMqBOcBZVEjJBCTT7SlX0nHutcBOkCDlPjyoaATF+gWElLWBU+8Pd+o+WU/WSYosQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oglBy3gN8yOxremoic9UKD7TI/L+LsetJamBsbN3TWc=;
+ b=PhQpAul0N1viTgAbbygDN5MKlG48qTm1rgk0NICPmPM8YRcEZNVjYDdPZxwfFPdHENL8AYtEhi7HrzhINViKpZa7EwHjteLDQE6XP1tYSp7irkBoDh/Ks/Ih42rFfa20bRI8slNe4Z0nyUy0DmB6pZafg2r6VysheHzeWUcckbCtDZW6JgOaoPmqHZRlXntVmexAFgcRr5VX1kzOZ/Hguq9pY5Cg4fD6JXiWJaWM0YKK88xmsgXL82IXROnnfvfPInRdmCrJqlTFWrAHTvrs0SnTjxRWqKawS1RweUS7xkTJGblydPQDJuwzGJ8j9C7GO9KA2cCSWIzsspQ633hiwg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oglBy3gN8yOxremoic9UKD7TI/L+LsetJamBsbN3TWc=;
+ b=KmF9Xjju+pWHZQtByi646TTW1eRpimq1Z68cS2xqxw6tAUjr+rBWJlCB2p7LIL7Lby3j7rSiKPzI3LSO8qjDwg2Q7dllG6XrSDVDKveF7G01KxieV3MB7k+jfJdfsfZBX8ZLfZWD94Mls+g9EUjFSUbcZ9Nz+h5xm6KmwwrYC68=
+Received: from BLAPR03CA0055.namprd03.prod.outlook.com (2603:10b6:208:32d::30)
+ by MN2PR12MB4288.namprd12.prod.outlook.com (2603:10b6:208:1d2::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.48.20; Sat, 6 Jun 2026
+ 05:00:16 +0000
+Received: from MN1PEPF0000F0E5.namprd04.prod.outlook.com
+ (2603:10b6:208:32d:cafe::af) by BLAPR03CA0055.outlook.office365.com
+ (2603:10b6:208:32d::30) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.92.9 via Frontend Transport; Sat, 6
+ Jun 2026 05:00:16 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
+Received: from satlexmb07.amd.com (165.204.84.17) by
+ MN1PEPF0000F0E5.mail.protection.outlook.com (10.167.242.43) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.92.5 via Frontend Transport; Sat, 6 Jun 2026 05:00:16 +0000
+Received: from satlexmb07.amd.com (10.181.42.216) by satlexmb07.amd.com
+ (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.41; Sat, 6 Jun
+ 2026 00:00:15 -0500
+Received: from xhdipdslab46.xilinx.com (10.180.168.240) by satlexmb07.amd.com
+ (10.181.42.216) with Microsoft SMTP Server id 15.2.2562.41 via Frontend
+ Transport; Sat, 6 Jun 2026 00:00:12 -0500
+From: Abhijit Gangurde <abhijit.gangurde@amd.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>, <brett.creeley@amd.com>,
+	<andrew+netdev@lunn.ch>, <davem@davemloft.net>, <edumazet@google.com>,
+	<kuba@kernel.org>, <pabeni@redhat.com>
+CC: <allen.hubbe@amd.com>, <nikhil.agarwal@amd.com>,
+	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Abhijit Gangurde <abhijit.gangurde@amd.com>
+Subject: [for-next v3 0/5] ionic: RDMA completion timestamping support
+Date: Sat, 6 Jun 2026 10:29:58 +0530
+Message-ID: <20260606050003.3648306-1-abhijit.gangurde@amd.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -93,79 +93,120 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0E5:EE_|MN2PR12MB4288:EE_
+X-MS-Office365-Filtering-Correlation-Id: 16a81a77-71d5-406f-7f6b-08dec3887fcf
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|7416014|82310400026|376014|36860700016|11063799006|6133799003|18002099003|56012099006;
+X-Microsoft-Antispam-Message-Info:
+	elNuUSf4gr2WZ+cSHf8icdNQdWsdqkjcel4pXRXDfutKtD3W52QooVR8s7pkLE13Z7ktxzlOCFcvuAtscg8Oaw5b1/l0dGypUTBm3hUzk00K7FAYkfQkVesYwO3ezjTQBZpFGTyXPbSSm4NPY362VxoxGNnaGFkpxbTmw8tvISW65+/iMvTV90HsYmATsu5boxaTBQjU1vDFEubmceNdbJ3/ocyLBtAsW6tJr9qx8wi8uyAXk3NVgCXYvgHdvqT+/1ZLLt7ZYQHhqrtuzhL/hnqXVC6auoG1OF5w2vzbn1l+3EMCKGyMl/NsKvvFv1ISya54Itl9GO+q5t5qEUQnQXUb2vx2KDgpbh/Mp5HCFkJrl2FKFas5HX5Q7I6ufF5sMCxpA6C+rdO2DsbamwlgXsG+FWAmlzr1iBuTxPeJdXRAv9j5EypcEY79IYms9Q9kW+Mr4mkObZWVHY3qLGRKVJxesYQGPVdntlVr2I5JV53nXnoSk1cxl18LLx6F+S+Iqnx7J3UZWIGfSDPFL6jWs4RuODmtHIqZRBdBuQG2OmAkOH6ORs9XjiWWOKQs6mFy0dqcsnToNj2tBAzikoyBKM5SxBw0FSSVoQU1U0RCNZLBp6jpYs+jaUyDLzW4cHC+uSCb7hyIPYurRKpfbm5LJA2paVFQXLEbuh/2dfG8hHKSzgN3B/KOFGkcqIxnptYjcpV69W1XMfTcZLz1POWBFjdZdUPn040RfD1bFxFVFks=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(82310400026)(376014)(36860700016)(11063799006)(6133799003)(18002099003)(56012099006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	eL7VVs4p+Z2whBRQxs0HicbwJonuw2EHpbi8mv+re3KGcnN5RCOtTrmWJP4LnQ4BWWwYK4cpzfF8TtF5mk9JBfoaHHkGguwiKLO7UZbgUVKN/2NijUcwGnO3CxO2T5ahvAlhsummu7JHFOLmAYhWmnoNlYSRWsXWS7IG5O4F8tRQCFIDUqrdBKptHCKFvnL6Hxp/3onRt+v8/izajXt3zU3NGj5W//g+W7VuLn0maMSPnpEWQl1znyV8Yf4UN/EwJCQFL1In6k0EPVExm2lWFTvEQ1MQzp3qejJj/zVkygFXSZDgFaiDR9AFEHJ8DKIMf+dhcnq2gpLyU+sUJbjN9EMvudQTEPlsY7MT2iYpao3MN0/ydxBT53hnu38LFgSC9UNVdDJL++0Y4QHszgS8Rs5PoJvYeX9EpYZLnzJqHirxc2dt6GnomW4M6mI1XDGf
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jun 2026 05:00:16.0107
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16a81a77-71d5-406f-7f6b-08dec3887fcf
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MN1PEPF0000F0E5.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4288
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [2.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
 	MID_CONTAINS_FROM(1.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[amd.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21888-lists,linux-rdma=lfdr.de];
-	FREEMAIL_CC(0.00)[broadcom.com,ziepe.ca,kernel.org,vger.kernel.org,gmail.com];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER(0.00)[ruoyuw560@gmail.com,linux-rdma@vger.kernel.org];
-	FORWARDED(0.00)[lists@lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:selvin.xavier@broadcom.com,m:kalesh-anakkur.purayil@broadcom.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:ruoyuw560@gmail.com,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[abhijit.gangurde@amd.com,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	TAGGED_FROM(0.00)[bounces-21889-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_RECIPIENTS(0.00)[m:jgg@ziepe.ca,m:leon@kernel.org,m:brett.creeley@amd.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:allen.hubbe@amd.com,m:nikhil.agarwal@amd.com,m:linux-rdma@vger.kernel.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:abhijit.gangurde@amd.com,m:andrew@lunn.ch,s:lists@lfdr.de];
+	DKIM_TRACE(0.00)[amd.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ruoyuw560@gmail.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ALIAS_RESOLVED(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[abhijit.gangurde@amd.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp,amd.com:mid,amd.com:from_mime,amd.com:dkim];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	FROM_HAS_DN(0.00)[]
+	ALIAS_RESOLVED(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	RCVD_COUNT_SEVEN(0.00)[8]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 484F264C567
+X-Rspamd-Queue-Id: D228064C7F5
 
-bnxt_re_debugfs_add_pdev() allocates per-file private data for the CC
-configuration debugfs entries. The loop that initializes those entries
-uses rdev->cc_config_params immediately, so allocation failure would lead
-to NULL pointer dereferences while setting up debugfs.
+Hi,
 
-Debugfs is best-effort. If the CC configuration private data cannot be
-allocated, skip those entries and continue with the independent CQ
-coalescing debugfs setup.
+This series adds RDMA completion timestamp support for ionic.
 
-Signed-off-by: Ruoyu Wang <ruoyuw560@gmail.com>
----
- drivers/infiniband/hw/bnxt_re/debugfs.c | 3 +++
- 1 file changed, 3 insertions(+)
+It enables PHC registration for RDMA timestamp capability, exposes a PHC
+state page for safe user-space reads, maps that PHC state through RDMA
+ucontext mmap, and extends the RDMA CQE format to carry completion
+timestamps.
 
-diff --git a/drivers/infiniband/hw/bnxt_re/debugfs.c b/drivers/infiniband/hw/bnxt_re/debugfs.c
-index 5fed2cf66be30..b1d6a8b32cc48 100644
---- a/drivers/infiniband/hw/bnxt_re/debugfs.c
-+++ b/drivers/infiniband/hw/bnxt_re/debugfs.c
-@@ -498,6 +498,8 @@ void bnxt_re_debugfs_add_pdev(struct bnxt_re_dev *rdev)
- 	bnxt_re_debugfs_add_info(rdev);
- 
- 	rdev->cc_config_params = kzalloc_obj(*cc_params);
-+	if (!rdev->cc_config_params)
-+		goto init_cq_coal;
- 
- 	for (i = 0; i < BNXT_RE_CC_PARAM_GEN0; i++) {
- 		struct bnxt_re_cc_param *tmp_params = &rdev->cc_config_params->gen0_parms[i];
-@@ -510,6 +512,7 @@ void bnxt_re_debugfs_add_pdev(struct bnxt_re_dev *rdev)
- 							 &bnxt_re_cc_config_ops);
- 	}
- 
-+init_cq_coal:
- 	bnxt_re_init_cq_coal_debugfs(rdev);
- }
- 
+With this, user space can read completion timestamps and convert them to
+wall time with low overhead.
+
+Provider's PR: https://github.com/linux-rdma/rdma-core/pull/1724
+
+v3:
+  - Renamed ib_uverbs_phc_state to ib_uverbs_clock_info
+  - Moved mlx5 to use the common clock info structure
+  - Addressed review feedback from Sashiko
+v2:
+  - changed ionic_phc_state to ib_uverbs_phc_state and moved it under
+    ib_user_verbs.h
+  - https://lore.kernel.org/linux-rdma/20260512092623.1157199-1-abhijit.gangurde@amd.com/
+v1:
+  - https://lore.kernel.org/all/20260401102501.3395305-1-abhijit.gangurde@amd.com/
+
+Abhijit Gangurde (5):
+  net: ionic: register PHC for rdma timestamping
+  net: ionic: Add PHC state page for user space access
+  RDMA/ionic: map PHC state into user space
+  RDMA/ionic: add completion timestamp to CQE format
+  RDMA/mlx5: move mlx5 clock info to common struct ib_uverbs_clock_info
+
+ .../infiniband/hw/ionic/ionic_controlpath.c   | 34 ++++++++++
+ drivers/infiniband/hw/ionic/ionic_datapath.c  | 43 ++++++-------
+ drivers/infiniband/hw/ionic/ionic_fw.h        | 12 +++-
+ drivers/infiniband/hw/ionic/ionic_ibdev.h     |  2 +
+ drivers/infiniband/hw/ionic/ionic_lif_cfg.c   |  2 +
+ drivers/infiniband/hw/ionic/ionic_lif_cfg.h   |  1 +
+ .../ethernet/mellanox/mlx5/core/lib/clock.c   |  8 +--
+ .../ethernet/pensando/ionic/ionic_ethtool.c   | 12 ++--
+ .../net/ethernet/pensando/ionic/ionic_if.h    |  1 +
+ .../net/ethernet/pensando/ionic/ionic_lif.c   |  5 +-
+ .../net/ethernet/pensando/ionic/ionic_lif.h   |  3 +-
+ .../net/ethernet/pensando/ionic/ionic_phc.c   | 63 ++++++++++++++++---
+ include/linux/mlx5/driver.h                   |  2 +-
+ include/uapi/rdma/ib_user_verbs.h             | 33 ++++++++++
+ include/uapi/rdma/ionic-abi.h                 |  1 +
+ include/uapi/rdma/mlx5-abi.h                  |  3 +
+ 16 files changed, 183 insertions(+), 42 deletions(-)
+
 -- 
-2.34.1
+2.43.0
 
 
