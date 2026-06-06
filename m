@@ -1,247 +1,267 @@
-Return-Path: <linux-rdma+bounces-21902-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21903-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id orMWMGsiJGon3gEAu9opvQ
-	(envelope-from <linux-rdma+bounces-21902-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 06 Jun 2026 15:36:43 +0200
+	id +pfYC4daJGpw5gEAu9opvQ
+	(envelope-from <linux-rdma+bounces-21903-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 06 Jun 2026 19:36:07 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28C7A64DA90
-	for <lists+linux-rdma@lfdr.de>; Sat, 06 Jun 2026 15:36:43 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A8E864DF80
+	for <lists+linux-rdma@lfdr.de>; Sat, 06 Jun 2026 19:36:05 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.microsoft.com header.s=default header.b=C2IFoxsj;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21902-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21902-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.microsoft.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=hammerspace.com header.s=google header.b=TMOTRTXF;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21903-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21903-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=hammerspace.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3D4153056FEC
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Jun 2026 13:33:25 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id D98CB300293F
+	for <lists+linux-rdma@lfdr.de>; Sat,  6 Jun 2026 17:36:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73AF33B3896;
-	Sat,  6 Jun 2026 13:33:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7B85378D78;
+	Sat,  6 Jun 2026 17:35:57 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 055553AFD19;
-	Sat,  6 Jun 2026 13:33:21 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780752803; cv=none; b=L4xi+v2sN0uExZ2SGlQWr0va8fy49+8V6j4Z0jmDSmNV1bJZX08oNc6HUwn8COzWAe2oamenzKQb/naHJ2+2jg5xqjZn40FGtcBKocwRDAEw5dBPIsnb2Lp7qHhYzhprUUKDE9qlV0MttZkpJX5Gjig722TJiwelzofJjX1DdXQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780752803; c=relaxed/simple;
-	bh=DYHMfQyR2sTnIYoQ4BwT3L1UOEBgVV1FnGPDeBIplG8=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=cTjGZmbM06Hsc6RWo99s7aq3/ynRKny4fn9dEtdjPWvAU/Ske1YJ+Ezc/JX/SDBhXeXe+zF9ih0X85TXXgBuu+3AkxQzAaUQvD78BVLxJqixnvN0vF+6hWv8aTVrUV2aHHUjjIELq7f6jrTnD6F4PuiQrs4jtBchTJeJwaWzM2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=C2IFoxsj; arc=none smtp.client-ip=13.77.154.182
-Received: by linux.microsoft.com (Postfix, from userid 1173)
-	id 0F3F520B716A; Sat,  6 Jun 2026 06:33:06 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0F3F520B716A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1780752786;
-	bh=RJDiIch2cS/p2BsBvB6NuI4AyVbSC79DD0GQWUtLgBo=;
-	h=From:To:Subject:Date:From;
-	b=C2IFoxsjLhXvm5maLlS+rXeqNA37LjgJ/raoIhs1RBrZEtLm61NNVSAku/Xfan30/
-	 GVeax45NzOLWC+7xcFluh80kt/a83y5nDaR/qor9ggucsmSAY5vTBHLnxyIfmjNwSB
-	 R3zs5mGMPRL/JTo+S4G24BMKDEKnZTY3/fnBgh+c=
-From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-To: kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	longli@microsoft.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	kotaranov@microsoft.com,
-	horms@kernel.org,
-	ernis@linux.microsoft.com,
-	dipayanroy@linux.microsoft.com,
-	kees@kernel.org,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH net-next v2] net: mana: Cache MANA_QUERY_LINK_CONFIG result to avoid repeated HWC queries
-Date: Sat,  6 Jun 2026 06:32:55 -0700
-Message-ID: <20260606133301.2180073-1-ernis@linux.microsoft.com>
-X-Mailer: git-send-email 2.43.7
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D99FB2E7388
+	for <linux-rdma@vger.kernel.org>; Sat,  6 Jun 2026 17:35:55 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780767357; cv=pass; b=A8hlkR1D0oX4QQFJ2MGy4B+ZWJkw5m/3VbHOIsAFeWwAuEfLlTQCvpz7L1+RXeHaegOc/tVFMHsbcZrIJSpAI0/WxXAoX6xwk/lipaTdCNrNawNkZ+v2kjVyZHyuHYjKNV/4hl2QKkOEY9lfDrjL7wsT8iMZDBKiqasMDCvMoVc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780767357; c=relaxed/simple;
+	bh=kaIOlM2dR399VfkohKkulIGjRFRv1YLOvYZvYkxuEv4=;
+	h=From:References:In-Reply-To:MIME-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XSCJL55hHmY+fZ7IRPZ8LiM42t57Bw6bEljMb3xKgBFqM1MPoK02/hFatXEBn2jPvnF2JqIk69vbLJ+nnDeZlDeBKaG/bZJ2sEWajjxf/ba73joGE35x0zNcgkLM+5Y7+pBepJZ2OyI3/fbS57kLj2R3GlsNkz/j6SDLpugZ830=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hammerspace.com; spf=fail smtp.mailfrom=hammerspace.com; dkim=pass (2048-bit key) header.d=hammerspace.com header.i=@hammerspace.com header.b=TMOTRTXF; arc=pass smtp.client-ip=209.85.128.51
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-490ace40f4bso34315375e9.3
+        for <linux-rdma@vger.kernel.org>; Sat, 06 Jun 2026 10:35:55 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1780767354; cv=none;
+        d=google.com; s=arc-20240605;
+        b=VBak3Mb/+RTRpVa6w04o5vOHJO98roeFVmGtz9K5jsMO+YIclB62sv5vXOtuWm0aJQ
+         UinRbq0SVtIJ165YRUyP3OT+MKGoLUKibh/M5fQmFALkOudkTGR/hSWPK7A2zdEKUqyg
+         khn/FkfAAsWdTtayxcyI2FoErxvlyCVBeFDgswDy7/ArwB/COxiy0RnikpFguPfPbb2i
+         Cgc78fYpYXTqaSZoZN+aa2obSxqbBJdfIz0AtbbWj7ofRDa0GDLDBCJIc4bbUtAyzTgf
+         QW9mUjG86TcLLPFGOhovtusQ3H9arDaOvpOVodODr3pR+zmC9PSXEqtCDKVFCXn+nmIg
+         7F3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:thread-index:mime-version:in-reply-to
+         :references:from:dkim-signature;
+        bh=Hppu2DGhG4EZwt2QnaFLsyyEt3kmcDDCj2adKDQrCl4=;
+        fh=XsEfyrBfc3YWARwOcqkt6dOnJkmaMGrxVypspOcym5M=;
+        b=Q400BO4kakvhzpnE9BynwiduoLy1c2+I5XJrOAuViojNZ7hYK91mbDccvj9EP6teD0
+         gFPP2+9jUt0nC3siCztM764FuoALFzb7SWA7L7Z5N/vbx8Rb2m0WPKKWmn6j7Bd0ek89
+         cUu9EesVqei8fFYNKAGCg0TbaqQVGlrzcQATZEK0EsY0GNDlch1VuJfj2IAXtvGNSxfE
+         /X8N3lwG4NHJY0ZJdtVnNyoGguFnQvZNNQilHp6bpk0Nkxi2uMmJ1FtTD2c3/l5oGsa6
+         Wch/5nw5p3qoGx6gGLsm8jg6uztw19N9uxY9btaScgjDYXbW/913HiGqCrqA1OqaVwyD
+         9I6w==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=hammerspace.com; s=google; t=1780767354; x=1781372154; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:thread-index:mime-version:in-reply-to
+         :references:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hppu2DGhG4EZwt2QnaFLsyyEt3kmcDDCj2adKDQrCl4=;
+        b=TMOTRTXFD/GN1jg5cEc55ASv/xygFpFonwc7TEeuAnBgHV3VtNeRTnVtzD2UTN6vli
+         oZA7U5IxuhVmIN/QpASUBZRwsyGu8bVGwti0B7cMRoCNn2TKbblNkE+lOuTefwLcM1Uf
+         TfaGALGyQwLS7STQbmB1Zys8ajSV29qeVAJwXn6qcFt//lylEnXcdWrQq/b81fFy6tam
+         1TBX0qCLvmiYMzFFl4fNM5luaBFYckyYFUr7ZP1D0SVc4Uwfx32kUei4W/ZCOrCb3NZ0
+         Ri/p4bz6ICkwWwmxTRDTCzun5/7l6XKAJ2BXvk+Jj9hEfxt6MYfEHY5DKS8NQ4Vw8avP
+         8TTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780767354; x=1781372154;
+        h=cc:to:subject:message-id:date:thread-index:mime-version:in-reply-to
+         :references:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Hppu2DGhG4EZwt2QnaFLsyyEt3kmcDDCj2adKDQrCl4=;
+        b=EVLNs89rHqyhONJCPmr6yovxIZ9V6rPWgG4bIlp7+H9oquatbu8yCSI/LW1q834a8d
+         PH/Gnn/T4PBfQtYfZVdUzwJtMIvo4YVSrGugGZvjGmMZRYqe0KkgRaBo938Ctc5592Kh
+         kl1titGaPBSi5OIXYJHmzBC0LUPKjsNoqoq1OKjShreH7dki/8EpBHkywAti1k8ZRJSU
+         LPgshrHz76XF53myYbd3ViWjYc1l6TgzqudYSS3EFrHlfpT1UFxWEjQK3/qVP1UhbH/x
+         zgvfiru6bremUjdGHC1zq3cjye2MzHvICbZdH0rkfMhOZeOfNFmkru/0WMLtwUJV8x72
+         ImRg==
+X-Forwarded-Encrypted: i=1; AFNElJ+GMj+1m5duWa16o0ngk1tVBa8fKpXuJCkWKQO9cmLEhQCXZ8nfk42s8afb816l59yt7Q7BgSguJvg7@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw2gME8xz0E3NSDQTb8yyJj+VA/kGPCVMrFgRwl9iMuJT9JFEID
+	gPWV7rYPriNIKrMonnL2QFaAEqEq27G1Bu6cSyFdP5bz6vzNis0tSJ348segAYp2NPMX6kCYjxk
+	6OraBbLMGanmGSLq5VIwdZ1eREBVpg7YZN5FtNwqg9A==
+X-Gm-Gg: Acq92OH7x622WV5M8SxvZsmhLzZ2rSamY1nr/eoapjLcKurdajZWb3yqx/Ai6G9V9XH
+	PzuyK/UeAHnjo2UqwkFrWCBNsZeq33hSKQh4cNg+tnzcJjJYDJPqqrwZ81iWQD/pMbfh+vWHXzP
+	zN1XeS9vCu5RL/VEkEKrV9ml1s90UJsY2GgGLepUfZqP4h7/Y7PC/P3AyDw0YeyZCbdsoHP055J
+	CKgUZh5Fh4CA00Noy5qQ+jW0Gc1fvb5ZkMNRJYG3wPnINpRjTm6NHF98yRXRZHmAMF2yt3qYUKA
+	ZHTf7LVYfoSiP6ug
+X-Received: by 2002:a05:600c:4fc6:b0:490:b432:6f1e with SMTP id
+ 5b1f17b1804b1-490c2614bf9mr144449255e9.33.1780767353362; Sat, 06 Jun 2026
+ 10:35:53 -0700 (PDT)
+From: Jonathan Flynn <jonathan.flynn@hammerspace.com>
+References: <20260606035722.83175-1-cel@kernel.org>
+In-Reply-To: <20260606035722.83175-1-cel@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQMa29E4u4Im5YIb7ViXmqyooY1UybO1/K8Q
+Date: Sat, 6 Jun 2026 11:35:51 -0600
+X-Gm-Features: AVVi8Cez9uncDsFw8DZPkODWXV4aG8-aKGtQeYnLtb6-RB7MYGS0NV-SQUjhB-Q
+Message-ID: <65a2cdb132b0c28e69a29955e3bd37e7@mail.gmail.com>
+Subject: RE: [PATCH] svcrdma: Cap Read sink allocations at PAGE_ALLOC_COSTLY_ORDER
+To: Chuck Lever <cel@kernel.org>, Mike Snitzer <snitzer@kernel.org>
+Cc: linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	Chuck Lever <chuck.lever@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[hammerspace.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4];
+	R_DKIM_ALLOW(-0.20)[hammerspace.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21902-lists,linux-rdma=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:kys@microsoft.com,m:haiyangz@microsoft.com,m:wei.liu@kernel.org,m:decui@microsoft.com,m:longli@microsoft.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:kotaranov@microsoft.com,m:horms@kernel.org,m:ernis@linux.microsoft.com,m:dipayanroy@linux.microsoft.com,m:kees@kernel.org,m:linux-hyperv@vger.kernel.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER(0.00)[jonathan.flynn@hammerspace.com,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:cel@kernel.org,m:snitzer@kernel.org,m:linux-nfs@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:chuck.lever@oracle.com,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[ernis@linux.microsoft.com,linux-rdma@vger.kernel.org];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-21903-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	PRECEDENCE_BULK(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ernis@linux.microsoft.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	TO_DN_NONE(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jonathan.flynn@hammerspace.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[hammerspace.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linux.microsoft.com:mid,linux.microsoft.com:from_mime,linux.microsoft.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	TAGGED_RCPT(0.00)[linux-rdma];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,mail.gmail.com:mid,oracle.com:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 28C7A64DA90
+X-Rspamd-Queue-Id: 8A8E864DF80
 
-mana_query_link_cfg() sends an HWC command to firmware on every call,
-but the link speed and QoS values it returns only change when the
-driver explicitly calls mana_set_bw_clamp(). This function is called
-not only by userspace via ethtool get_link_ksettings, but also
-periodically by hv_netvsc through netvsc_get_link_ksettings and by
-the sysfs speed_show attribute via dev_attr_show, resulting in
-unnecessary HWC traffic every few minutes.
+I tested the PAGE_ALLOC_COSTLY_ORDER change on the same setup.
+Unfortunately, it did not improve the regression. Throughput was slightly
+worse than the previous GFP_NOWAIT test, measuring 25.4 GiB/s.
 
-Add a link_cfg_error field to mana_port_context to cache the query
-result. The field uses three states: 1 (not yet queried, initial
-value set during mana_probe_port), 0 (success, speed/max_speed are
-valid), or a negative errno for permanent errors like -EOPNOTSUPP
-when the hardware does not support the command. Transient errors and
-qos_unconfigured responses are not cached so that subsequent calls
-will retry.
+Current results are:
+Original regressed build: ~30.3 GiB/s
+GFP_NOWAIT build: ~31.0 GiB/s
+PAGE_ALLOC_COSTLY_ORDER: 25.4 GiB/s
+Commit reverted: ~73.9 GiB/s
 
-MANA is ops-locked because it implements net_shaper_ops, so the core
-already takes netdev_lock() around all ethtool_ops and net_shaper_ops
-entry points. Reuse that lock to serialize mana_query_link_cfg() and
-mana_set_bw_clamp(). This prevents a concurrent mana_set_bw_clamp()
-from racing with an in-flight query and publishing stale pre-clamp
-speed/max_speed.
+I added the results to the shared bundle. (including flamegraph)
 
-Invalidate the cache inside mana_set_bw_clamp() on success, so all
-current and future callers that change the link configuration
-automatically trigger a fresh query on the next mana_query_link_cfg()
-call. Also reset link_cfg_error during resume in mana_probe() under
-netdev_lock(), so that any query already in flight cannot later
-store 0 and silently overwrite the post-resume invalidation.
+The GFP_NOWAIT and the Original Commit flamegraphs are nearly identical.
+The dominant stack being:
+svc_recv()
+-> svc_rdma_build_read_segment_contig()
+-> alloc_pages_noprof()
+-> get_page_from_freelist()
+-> rmqueue_buddy()
 
-Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
----
-Changes in v2:
-* Use netdev_lock() instead of introducing new per-port mutex.
-* Update commit message.
----
- drivers/net/ethernet/microsoft/mana/mana_en.c | 23 +++++++++++++++----
- include/net/mana/mana.h                       |  4 ++++
- 2 files changed, 23 insertions(+), 4 deletions(-)
+The PAGE_ALLOC_COSTLY_ORDER flamegraph is different. Time spent under
+alloc_pages_noprof() is reduced, but the reduction does not translate into
+improved throughput.
 
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index db14357d3732..af2517a27aad 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -1456,6 +1456,12 @@ int mana_query_link_cfg(struct mana_port_context *apc)
- 	struct mana_query_link_config_req req = {};
- 	int err;
- 
-+	netdev_assert_locked(ndev);
-+
-+	err = apc->link_cfg_error;
-+	if (err <= 0)
-+		return err;
-+
- 	mana_gd_init_req_hdr(&req.hdr, MANA_QUERY_LINK_CONFIG,
- 			     sizeof(req), sizeof(resp));
- 
-@@ -1468,6 +1474,7 @@ int mana_query_link_cfg(struct mana_port_context *apc)
- 	if (err) {
- 		if (err == -EOPNOTSUPP) {
- 			netdev_info_once(ndev, "MANA_QUERY_LINK_CONFIG not supported\n");
-+			apc->link_cfg_error = err;
- 			return err;
- 		}
- 		netdev_err(ndev, "Failed to query link config: %d\n", err);
-@@ -1485,12 +1492,12 @@ int mana_query_link_cfg(struct mana_port_context *apc)
- 		return err;
- 	}
- 
--	if (resp.qos_unconfigured) {
--		err = -EINVAL;
--		return err;
--	}
-+	if (resp.qos_unconfigured)
-+		return -EINVAL;
-+
- 	apc->speed = resp.link_speed_mbps;
- 	apc->max_speed = resp.qos_speed_mbps;
-+	apc->link_cfg_error = 0;
- 	return 0;
- }
- 
-@@ -1502,6 +1509,8 @@ int mana_set_bw_clamp(struct mana_port_context *apc, u32 speed,
- 	struct net_device *ndev = apc->ndev;
- 	int err;
- 
-+	netdev_assert_locked(ndev);
-+
- 	mana_gd_init_req_hdr(&req.hdr, MANA_SET_BW_CLAMP,
- 			     sizeof(req), sizeof(resp));
- 	req.vport = apc->port_handle;
-@@ -1535,6 +1544,8 @@ int mana_set_bw_clamp(struct mana_port_context *apc, u32 speed,
- 	if (resp.qos_unconfigured)
- 		netdev_info(ndev, "QoS is unconfigured\n");
- 
-+	/* Invalidate the cache; next query will re-fetch from firmware. */
-+	apc->link_cfg_error = 1;
- 	return 0;
- }
- 
-@@ -3448,6 +3459,7 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
- 	apc->port_handle = INVALID_MANA_HANDLE;
- 	apc->pf_filter_handle = INVALID_MANA_HANDLE;
- 	apc->port_idx = port_idx;
-+	apc->link_cfg_error = 1;
- 	apc->cqe_coalescing_enable = 0;
- 
- 	mutex_init(&apc->vport_mutex);
-@@ -3768,6 +3780,9 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
- 			rtnl_lock();
- 			apc = netdev_priv(ac->ports[i]);
- 			enable_work(&apc->queue_reset_work);
-+			netdev_lock(ac->ports[i]);
-+			apc->link_cfg_error = 1;
-+			netdev_unlock(ac->ports[i]);
- 			err = mana_attach(ac->ports[i]);
- 			rtnl_unlock();
- 			/* Log the port for which the attach failed, stop
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index d9c27310fd04..2a45ff7211ef 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -555,6 +555,10 @@ struct mana_port_context {
- 	u32 speed;
- 	/* Maximum speed supported by the SKU (mbps) */
- 	u32 max_speed;
-+	/* 1 = not queried, 0 = cached success, negative = permanent error.
-+	 * Protected by the netdev instance lock.
-+	 */
-+	int link_cfg_error;
- 
- 	bool port_is_up;
- 	bool port_st_save; /* Saved port state */
--- 
-2.34.1
+The following percentages were observed:
+                                                   Original     GFP_NOWAIT
+COSTLY_ORDER
+svc_recv()                                 76.09%      75.99%
+78.44%
+alloc_pages_noprof()             58.07%      57.99%               40.29%
+folios_put_refs()                        7.15%        7.19%
+16.06%
+svc_rdma_read_complete()    7.18%        7.21%               16.08%
 
+In other words, the PAGE_ALLOC_COSTLY_ORDER change reduces time spent in
+the allocation path, but a larger fraction of CPU time then appears under
+svc_rdma_read_complete() and folios_put_refs(), while overall throughput
+decreases further.
+
+-Jon
+
+> -----Original Message-----
+> From: Chuck Lever <cel@kernel.org>
+> Sent: Friday, June 5, 2026 9:57 PM
+> To: Mike Snitzer <snitzer@kernel.org>
+> Cc: linux-nfs@vger.kernel.org; linux-rdma@vger.kernel.org; Chuck Lever
+> <chuck.lever@oracle.com>; Jonathan Flynn
+> <jonathan.flynn@hammerspace.com>
+> Subject: [PATCH] svcrdma: Cap Read sink allocations at
+> PAGE_ALLOC_COSTLY_ORDER
+>
+> From: Chuck Lever <chuck.lever@oracle.com>
+>
+> Jonathan Flynn reports that commit 18755b8c2f24 ("svcrdma: Use
+contiguous
+> pages for RDMA Read sink buffers") regresses NFS/RDMA WRITE throughput
+> from 73.9 GiB/s to 30.3 GiB/s on a 128-core single-NUMA-node server
+driving
+> dual 400Gb/s links with 640 nfsd threads. In the regressed
+configuration,
+> server CPU utilization rises from 8.5% to 76%, and 73% of all server CPU
+cycles
+> are spent in native_queued_spin_lock_slowpath.
+>
+> The contended lock is zone->lock. The page allocator serves allocations
+only
+> up to PAGE_ALLOC_COSTLY_ORDER (3) from its per-CPU page lists;
+> SVC_RDMA_CONTIG_MAX_ORDER is 4, so every contiguous sink buffer
+> allocation falls through to rmqueue_buddy() and acquires the zone lock.
+The
+> workload above issues roughly half a million order-4 allocations per
+second,
+> all serialized on the single zone lock of the one NUMA node. Replacing
+the
+> GFP mask with GFP_NOWAIT did not change the profile because direct
+> reclaim never
+> ran: the cycles are spent acquiring the lock, not reclaiming memory.
+>
+> Cap the allocation order at PAGE_ALLOC_COSTLY_ORDER so contiguous sink
+> buffer allocations remain eligible for the per-CPU page lists, where
+zone lock
+> acquisition is amortized across pcp batch refills. An order-3 chunk
+still
+> replaces eight per-page bvecs with one.
+>
+> Reported-by: Jonathan Flynn <jonathan.flynn@hammerspace.com>
+> Fixes: 18755b8c2f24 ("svcrdma: Use contiguous pages for RDMA Read sink
+> buffers")
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> ---
+>  net/sunrpc/xprtrdma/svc_rdma_rw.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/net/sunrpc/xprtrdma/svc_rdma_rw.c
+> b/net/sunrpc/xprtrdma/svc_rdma_rw.c
+> index efde26cac961..4546e594f2d7 100644
+> --- a/net/sunrpc/xprtrdma/svc_rdma_rw.c
+> +++ b/net/sunrpc/xprtrdma/svc_rdma_rw.c
+> @@ -746,11 +746,12 @@ int svc_rdma_prepare_reply_chunk(struct
+> svcxprt_rdma *rdma,  }
+>
+>  /*
+> - * Cap contiguous RDMA Read sink allocations at order-4. Higher orders
+risk
+> - * allocation failure under GFP_NOWAIT, which would negate the benefit
+of
+> - * the contiguous fast path.
+> + * Cap contiguous RDMA Read sink allocations at
+> PAGE_ALLOC_COSTLY_ORDER.
+> + * The page allocator serves allocations at or below that order from
+> + * its per-CPU page lists; above it, every allocation acquires the
+> + * zone lock, which serializes all nfsd threads.
+>   */
+> -#define SVC_RDMA_CONTIG_MAX_ORDER	4
+> +#define SVC_RDMA_CONTIG_MAX_ORDER	PAGE_ALLOC_COSTLY_ORDER
+>
+>  /**
+>   * svc_rdma_alloc_read_pages - Allocate physically contiguous pages
+> --
+> 2.54.0
 
