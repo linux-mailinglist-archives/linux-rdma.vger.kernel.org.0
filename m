@@ -1,58 +1,58 @@
-Return-Path: <linux-rdma+bounces-21908-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21909-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 5LbtHhiDJGp87gEAu9opvQ
-	(envelope-from <linux-rdma+bounces-21908-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 06 Jun 2026 22:29:12 +0200
+	id 6srHABSDJGp67gEAu9opvQ
+	(envelope-from <linux-rdma+bounces-21909-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 06 Jun 2026 22:29:08 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1393564E40E
-	for <lists+linux-rdma@lfdr.de>; Sat, 06 Jun 2026 22:29:12 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB53864E406
+	for <lists+linux-rdma@lfdr.de>; Sat, 06 Jun 2026 22:29:07 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=runbox.com header.s=selector1 header.b="VAkh6s l";
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21908-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21908-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=runbox.com header.s=selector1 header.b="cevgEd b";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21909-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21909-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=fail reason="SPF not aligned (relaxed), DKIM not aligned (relaxed)" header.from=gmail.com (policy=none);
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 20E9E3036EA4
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Jun 2026 20:27:33 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 6D5973018D5B
+	for <lists+linux-rdma@lfdr.de>; Sat,  6 Jun 2026 20:27:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC39B3CA487;
-	Sat,  6 Jun 2026 20:27:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 896A63CF209;
+	Sat,  6 Jun 2026 20:27:26 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85A8E3C4555;
-	Sat,  6 Jun 2026 20:27:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F3453CAE76;
+	Sat,  6 Jun 2026 20:27:23 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780777642; cv=none; b=En7qhZcUfdV2w31UhsxArFVoyp6edIYWVRuReaP188jvGYiTOUjGvn9Crp2XvMpVVuZISjit6HP8M1BaFT36lUdwAMziIg6blIxgHKm3tKQ99GxrQ5vJeFXWsKr/IfjuAuEKSfOMwBLS6HxkjmbM63hpQaJLCDhlPfeT4XsJDeI=
+	t=1780777646; cv=none; b=dVExTfpZIKyYYqDDmUND05sp4y3IgdSzeWiABNRQ1dwEKYaM5fAy3en/nOX4hjI/s7IJ0JqLlvdXpJniKOBG2/2g/g/yIjaka1Mn8ufVCQbZAxQP2BFdzeI4iPtWSXOR65ng9RzR0jXOOLilzWEmsw31Wb+bY6HrZQAnB4hdMZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780777642; c=relaxed/simple;
-	bh=60GhU5nfn1dcSPfNgqoEWpdbfiTpBZVEeUq8sGJ1YAs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sHdF7ZQqjiV2MzpnyiD116XQOrvnV1lmt/Kuv4yqD6U4jCnP6S1Yl7N/5dprEwyXU/pnCFUGyQItxC294TC0zPEmq/pIZ8N+Fd+oVv3KnURr5p9ZKPv0Zg+PCNs/EklHTr+lNWVXfyv0pxJCLiWdecyODFyBTQhQDLYneA1imRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=runbox.com; dkim=pass (2048-bit key) header.d=runbox.com header.i=@runbox.com header.b=VAkh6slO; arc=none smtp.client-ip=185.226.149.37
+	s=arc-20240116; t=1780777646; c=relaxed/simple;
+	bh=HWs0FkqPXtMy/MWhuNYJlIC7daCtqMaA7oHhC+ZF5ak=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=M+JcYsu8ymjdVeQkOk5mHsfz0fVOIJt+yLPoox1KvNR+Dj10Pcrxff8n8Wjrwx6WEg+VUYyQUNTHl811sPeEmE0bnZmyS1FR9ymKeYQKorcSxnEblZqttcn7plBLQ8La6bmh4lb+wXdzxsGtLEBF9oqC1HQn41g0BbZLxwKt9MI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=runbox.com; dkim=pass (2048-bit key) header.d=runbox.com header.i=@runbox.com header.b=cevgEdbC; arc=none smtp.client-ip=185.226.149.37
 Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
 	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
 	(Exim 4.93)
 	(envelope-from <david.laight.linux_spam@runbox.com>)
-	id 1wVxbw-007NSJ-JR; Sat, 06 Jun 2026 22:27:16 +0200
+	id 1wVxc1-007NTw-JP; Sat, 06 Jun 2026 22:27:21 +0200
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=runbox.com;
 	 s=selector1; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
-	Subject:Cc:To:From; bh=OgbWETt8y3Kh2+PkVcQz64kPsl9ny/WPbqSwE3sltpc=; b=VAkh6s
-	lON5LUyJIBHoFVsQdPBvKuXClWKeGlF+2pKE7rOPHzqFt1XgSSeNsnF1GuCo/4wo8okfH8NUspb+g
-	isdaarBiaFWwzV1DCSVavyzlhztlLtm5i7SqTdrtWjI79vqLKdVhiHfm812nZVq6swh+GO9QKHMZp
-	SJCD6whaJUf5uqW9tH0qgQxhO2kWSMtiz6T39usMXh6qlPk2BPIZpFwFWonDmuggOLhOfShaIknar
-	Ltkky/YIuOK7+WQLRNtJzSPnwWv2qzVLsnMf+EXcAugSSZrCUd/+C08VBt2xS0RXNV/6joV0xT9c8
-	A94+3lCl+9eFAMlu0F1XAJiELQSw==;
+	Subject:Cc:To:From; bh=px8InogY6DsQ6dUdF2v3Rtc1TvmbDF6g6As3N88gmIE=; b=cevgEd
+	bCm/DltSvHeF9x0nEqF/WnNUng8A1IKMs4Sjr2iYOuYYgZnJ9g2z3py1gJSKGzNVBgPhNt30TgRYL
+	TqMPivf2ZA3dXg+t/mlxKDhU1XXuqj5wjryGbbx6x9W1WrHTVsHP9WgC9OkKLi2aywoomP9UZ7dZW
+	WipMvFgt3M8UqNHkABj5UknHwJHiyvJ/8k6KvUoahFfXnisaOunQpY8/ZlgwYA/2yLq18CjxIG3HG
+	vvxEJBpea7SiJlSbmKeQYacH/nY2azlw7FvCmpVwbGxwP2pOUz/v5suJnSUgLfuypuofytIMrQsPr
+	NQhMsJ6MPlkzJZNfIxb83KcHuUcQ==;
 Received: from [10.9.9.72] (helo=submission01.runbox)
 	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
 	(envelope-from <david.laight.linux_spam@runbox.com>)
-	id 1wVxbw-0000uO-6b; Sat, 06 Jun 2026 22:27:16 +0200
+	id 1wVxbv-0000uI-Uy; Sat, 06 Jun 2026 22:27:16 +0200
 Received: by submission01.runbox with esmtpsa  [Authenticated ID (1493616)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.95)
-	id 1wVxbc-006V18-UP;
+	id 1wVxbd-006V18-BN;
 	Sat, 06 Jun 2026 22:26:57 +0200
 From: david.laight.linux@gmail.com
 To: Kees Cook <kees@kernel.org>,
@@ -62,10 +62,12 @@ To: Kees Cook <kees@kernel.org>,
 	linux-rdma@vger.kernel.org
 Cc: Jason Gunthorpe <jgg@ziepe.ca>,
 	Leon Romanovsky <leon@kernel.org>,
+	Nelson Escobar <neescoba@cisco.com>,
+	Satish Kharat <satishkh@cisco.com>,
 	David Laight <david.laight.linux@gmail.com>
-Subject: [PATCH next] drivers/infiniband/core/iwcm: User strscpy() to copy device name
-Date: Sat,  6 Jun 2026 21:26:04 +0100
-Message-Id: <20260606202633.5018-10-david.laight.linux@gmail.com>
+Subject: [PATCH next] drivers/infiniband/hw/usnic/usnic_fwd: User strscpy() to copy device name
+Date: Sat,  6 Jun 2026 21:26:05 +0100
+Message-Id: <20260606202633.5018-11-david.laight.linux@gmail.com>
 X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -79,18 +81,18 @@ X-Spamd-Result: default: False [-1.06 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[runbox.com:s=selector1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	DMARC_POLICY_SOFTFAIL(0.10)[gmail.com : SPF not aligned (relaxed), DKIM not aligned (relaxed),none];
 	HAS_LIST_UNSUB(-0.01)[];
 	TO_DN_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21908-lists,linux-rdma=lfdr.de];
-	FREEMAIL_CC(0.00)[ziepe.ca,kernel.org,gmail.com];
+	TAGGED_FROM(0.00)[bounces-21909-lists,linux-rdma=lfdr.de];
+	FREEMAIL_CC(0.00)[ziepe.ca,kernel.org,cisco.com,gmail.com];
 	FORGED_SENDER(0.00)[davidlaightlinux@gmail.com,linux-rdma@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:kees@kernel.org,m:linux-hardening@vger.kernel.org,m:arnd@kernel.org,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:jgg@ziepe.ca,m:leon@kernel.org,m:david.laight.linux@gmail.com,m:davidlaightlinux@gmail.com,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:kees@kernel.org,m:linux-hardening@vger.kernel.org,m:arnd@kernel.org,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:jgg@ziepe.ca,m:leon@kernel.org,m:neescoba@cisco.com,m:satishkh@cisco.com,m:david.laight.linux@gmail.com,m:davidlaightlinux@gmail.com,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[runbox.com:+];
@@ -104,13 +106,13 @@ X-Spamd-Result: default: False [-1.06 / 15.00];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[10];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp,runbox.com:dkim]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[runbox.com:dkim,vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1393564E40E
+X-Rspamd-Queue-Id: AB53864E406
 
 From: David Laight <david.laight.linux@gmail.com>
 
@@ -138,24 +140,22 @@ All the patches are being sent individually to avoid very long cc lists.
 Apologies for the terse commit messages and likely unexpected tags.
 (There are about 100 patches in total.)
 
- drivers/infiniband/core/iwcm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/usnic/usnic_fwd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
-index 9761d9365ffd..0b7246ec559e 100644
---- a/drivers/infiniband/core/iwcm.c
-+++ b/drivers/infiniband/core/iwcm.c
-@@ -518,8 +518,8 @@ static int iw_cm_map(struct iw_cm_id *cm_id, bool active)
- 	cm_id->m_local_addr = cm_id->local_addr;
- 	cm_id->m_remote_addr = cm_id->remote_addr;
+diff --git a/drivers/infiniband/hw/usnic/usnic_fwd.c b/drivers/infiniband/hw/usnic/usnic_fwd.c
+index 39cdd72eabf6..59c363db0355 100644
+--- a/drivers/infiniband/hw/usnic/usnic_fwd.c
++++ b/drivers/infiniband/hw/usnic/usnic_fwd.c
+@@ -93,7 +93,7 @@ struct usnic_fwd_dev *usnic_fwd_dev_alloc(struct pci_dev *pdev)
+ 	ufdev->netdev = pci_get_drvdata(pdev);
+ 	spin_lock_init(&ufdev->lock);
+ 	BUILD_BUG_ON(sizeof(ufdev->name) != sizeof(ufdev->netdev->name));
+-	strcpy(ufdev->name, ufdev->netdev->name);
++	strscpy(ufdev->name, ufdev->netdev->name);
  
--	strcpy(pm_reg_msg.dev_name, devname);
--	strcpy(pm_reg_msg.if_name, ifname);
-+	strscpy(pm_reg_msg.dev_name, devname);
-+	strscpy(pm_reg_msg.if_name, ifname);
- 
- 	if (iwpm_register_pid(&pm_reg_msg, RDMA_NL_IWCM) ||
- 	    !iwpm_valid_pid())
+ 	return ufdev;
+ }
 -- 
 2.39.5
 
