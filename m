@@ -1,185 +1,208 @@
-Return-Path: <linux-rdma+bounces-21911-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21912-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 28deKwXjJGpCBAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-21911-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 07 Jun 2026 05:18:29 +0200
+	id lGjzAsABJWrJCgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-21912-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 07 Jun 2026 07:29:36 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A77964EBC4
-	for <lists+linux-rdma@lfdr.de>; Sun, 07 Jun 2026 05:18:29 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D34664EDA4
+	for <lists+linux-rdma@lfdr.de>; Sun, 07 Jun 2026 07:29:35 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=dTcwXdOf;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21911-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21911-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	dkim=none;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21912-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21912-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=appspotmail.com (policy=none);
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 18B8A300D695
-	for <lists+linux-rdma@lfdr.de>; Sun,  7 Jun 2026 03:18:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BDCDA3018BDD
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Jun 2026 05:29:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA5D9367B84;
-	Sun,  7 Jun 2026 03:18:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62E0C2BE642;
+	Sun,  7 Jun 2026 05:29:29 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f79.google.com (mail-oo1-f79.google.com [209.85.161.79])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F54D2AF00;
-	Sun,  7 Jun 2026 03:18:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A806F1A08AF
+	for <linux-rdma@vger.kernel.org>; Sun,  7 Jun 2026 05:29:27 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780802294; cv=none; b=SnfVRJh4GWJjS/HHkVRa7Eok7M+tPnoJSUyJpuMYD3TActnnnsBV5tY9QqJ8/WD6vPFq/ZC+szpzqku+rnEDldE1q6eq0v7A9dPOZBGvTrq69GojOtmaH3eoOBxr1Po+vQDAVNUgzEr4PRIzU8qmsZsdq13KksZ7yhSlA2nlULw=
+	t=1780810169; cv=none; b=mtcrb84JnbTdvS5OB0dKF/7GfM9ZQFQgM1E+/2ufVWNULoP4AHMhegG3ChcbGNwSWaYBFpOR5OylA4Ip39kGANiGrQkxrFi3MQ7m3kIbVrEkZAwgrr/1MO31mvj5hE0QhsZ/RAAthLTbcqeoctVdaoKDUMuEi86tvgUmOxftWdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780802294; c=relaxed/simple;
-	bh=dfwSTvbnHGvgpLt+wnY+kAtzl81S678G2gZZxGXuO7k=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=qSTdeL7pf5vQvOJLHubKTxfdQW36v+yNpBkF3KGzX0LrqeoUlrw76U2jb0a2p4wSIoItszxZlcvvuxO/Vtu4CdoZM9wI0/ZY6P+xNkRrerfadnnlbGCeAr9zXQTg78AXKOzts1yOgF1BwGd7di2ThQuB77XYLwuha1mKEfoJKe0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dTcwXdOf; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0406C1F00898;
-	Sun,  7 Jun 2026 03:18:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780802293;
-	bh=e+a3rt7IXpJQxeDsqJ3KaC9poX4kF/j5ljYl2cP8JA4=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject;
-	b=dTcwXdOfQK/50WEYdu7SjQq8tlIDigumKc7YeIs0j5G1keJgMKbTPfSnJ9kUvy13F
-	 hD5vL37DuoA/xnwSTtgsMSMQ7heyFvHn1G7JlgNNydO+abB3rSNj4jXFqwgumLaRaW
-	 FzjdpTRy4tRKY7tuCrLhfAaJVFW/uuMr5Ur2Vs0sH99F/QHzdP3VtpQN4wAJzGwjRK
-	 /pk4QWP6K598J9L7kAziGhEUbuU5fGp2PwX0IIerRWCDqCD1gN4+MgIWsse7xZShyL
-	 6asKXsjpL62NvRoCcWNgFS/DZfyQlhUN1fB0anT1wRmipJ7MREnD7F1QuG5yeBoXtn
-	 YHUN46K8sw/4g==
-Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 0B1B0F40083;
-	Sat,  6 Jun 2026 23:18:12 -0400 (EDT)
-Received: from phl-imap-15 ([10.202.2.104])
-  by phl-compute-10.internal (MEProxy); Sat, 06 Jun 2026 23:18:12 -0400
-X-ME-Sender: <xms:8-Ikat5UJpX9AYNxqDkSmY611eIrg95bDeHclVuqp7UAwVQayH4ClQ>
-    <xme:8-IkaltqyI31lri_nCeeTYqo5v6QDwrMn_feJKKgMxZO3YalFblAEhJNRH53Kcgap
-    T25Vbl8LVp_673me4DxzLIQxIO9dbrVHjeyhA16jxfxTz86wCMjelOB>
-X-ME-Proxy-Cause: dmFkZTGKPM1P5gY7wUdk9yZXrGE9fVFIMiG2HI6QMkwz6YchHHjaahLa9IkWjDTGHJk0D/
-    pZX03WBGUJfS49s9w8yQX6J6uIhRjJ1lmP3DheNMvJ8LOF/P+ah8xuulnYtdO/qdZ6/q9L
-    Byr3rLElgspOeJFuAWm7+o1A02xoqI8rKSWQ1BnyINH2Eod+abkwLZ9zBpQQN6VkNUv62r
-    p9TzG1wIqRW361bI4t3dAz+0/GNZCFf5G9AadUVwrTjHKTTluaBvl0SvY9N+PId3JRdEpW
-    wviZqYem67fX+0uzABEBk/bnXk8IiREFGxyR2GD3abdX7lB9NMDGoxjrDYpE588Uh8FMFr
-    Ef5Dc7+K7I5tI3uazeBPpCi+MoKSuT14PkFRUpPmHPpKkZWe8n3vx1QrKAykbEvyAwCk40
-    //Ekhj7wmWBiPmOa7uLQs4fYDgbyKNsdweApIquXS0Dt0tmynr1SM4MwZNKVZsx/a7MPeI
-    UqIgZqCJLcMhXJ/vIEJ9w04DzKOVf7b3PLuqvLZgUw4C46rTvQFpLlvzKxiIjtZ6OWoZVA
-    tn20ZOpLF0Lqk/lYtb5ZvsBXWotCZB43Z5dqoqJadFJ8E5FHrst4WGr1ZzjsAXJ9LPzet9
-    rx5BeNF361lO5m8DqlkEK6dmf89AgU/hBC67wUu3d9XcyWgPF+svhNK6JBUw
-X-ME-Proxy: <xmx:8-IkajGd8fAY_Wq6uiX-PTy0GElLsubugHBn0IDJ2G-jyclAmRL7Vw>
-    <xmx:8-IkapRNQhXkTxSr1Ul_jGuLNnhTX4Ki-TIeIhPNPohgv9gwuvci2Q>
-    <xmx:8-IkagtIl9Ejf4kwm1ROrP9WVyXwlkMF4kuShzGEU2hw1dsV5bfF6g>
-    <xmx:8-IkahLQuBP3_tjYxI8bbt0aSl7erjY2727HzkMiOf2cULf0hnO9Hg>
-    <xmx:9OIkalke_CUefLlq0pYEHYbnzqqBHqB6F0Z80U7y7ogfqzrocJAm2ERU>
-Feedback-ID: ifa6e4810:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id DBBB8780070; Sat,  6 Jun 2026 23:18:11 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1780810169; c=relaxed/simple;
+	bh=mPlxepmJb7ZqNYj/s0qRBHRLElZTfo8jR2UZuGH/Eug=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ZT92ahdZ5mixij9sUc8wdtz0HFYl8NI8uUoaHpOkwwGfmmptl23TaK/JTHDCwvr35PyVoSiES2Jx4IWSR8ZcuYloS1lRqgwaTIz5Pzp2JdpH594CxPo3gEQmmIdM63Om03DdoCsXkES87mo5taVYIiQ2fOQH/Y345ZtoQp3HEDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.79
+Received: by mail-oo1-f79.google.com with SMTP id 006d021491bc7-69e87ffce0fso520693eaf.1
+        for <linux-rdma@vger.kernel.org>; Sat, 06 Jun 2026 22:29:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780810166; x=1781414966;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hlOZ5yR2tplNmNUIcqFAUXi+mMoLNEmUG/K66pwGvhU=;
+        b=Y4DuH7EcGsQJYruTnwl9wU/kI1SCJ4CDcoB0TlTMOGehzBaJow9YdN9oqm3+sf9yax
+         UwOnaHNZy3ooGvEEfvbTF8b4fmr5pUrRzOq0MIyf2kVJ0udIe0/2eLm+IjUf0e1qBstN
+         Z57lzRlmjrgWRTOODGfcGAlKHhAWclQevpls0CyJ6WtWie7VCCm+QYN8G5OIPxBzzgxZ
+         MM/oDkodGsrpqYwEVaVX+B4DZdLJlR6JAM+lrVoGCrnF3bOXD/fPfNs2Fp7ghUnQo4eJ
+         fMmOfocTofO6OnsEauefZSKgxMzqMwzb+fN3c77896MuLGV7mZIgUhgWoI2VsseDbpeE
+         6BVQ==
+X-Forwarded-Encrypted: i=1; AFNElJ8dYi0VH+shKqPZXYx4RxBqMTR1e0AsOXrHQDe04NUsrwxtOaIj3hmKCpkhKMnYAzFrU7uqVSkZTmsk@vger.kernel.org
+X-Gm-Message-State: AOJu0YzTOd95VpN8s/4uzwHMIHOJiZ8WVGFTkGdq+Wgc9ergUmwFqTBJ
+	rMHo7vNp/m3yaxMIpPEWGoZmekpxqIbHbcYGrlFOG/EpUzEFoAEjYjuNnaDu70zo8xpkLXX1TpM
+	dbswkYLBBzzgBNtyge8UBWrR1g7R3IrT0YOhqzfibf6jRL6ujQlsSuvScfS8=
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: A0Y1o-4h3gmR
-Date: Sat, 06 Jun 2026 23:17:51 -0400
-From: "Chuck Lever" <cel@kernel.org>
-To: "Jonathan Flynn" <jonathan.flynn@hammerspace.com>,
- "Mike Snitzer" <snitzer@kernel.org>
-Cc: linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org,
- "Chuck Lever" <chuck.lever@oracle.com>
-Message-Id: <096a2b91-7a19-48da-a06a-dc60e7150956@app.fastmail.com>
-In-Reply-To: <65a2cdb132b0c28e69a29955e3bd37e7@mail.gmail.com>
-References: <20260606035722.83175-1-cel@kernel.org>
- <65a2cdb132b0c28e69a29955e3bd37e7@mail.gmail.com>
-Subject: Re: [PATCH] svcrdma: Cap Read sink allocations at PAGE_ALLOC_COSTLY_ORDER
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6820:180a:b0:696:8e8b:2097 with SMTP id
+ 006d021491bc7-69e68b5e9camr5977540eaf.21.1780810166701; Sat, 06 Jun 2026
+ 22:29:26 -0700 (PDT)
+Date: Sat, 06 Jun 2026 22:29:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6a2501b6.39669fcc.33b062.000a.GAE@google.com>
+Subject: [syzbot] [rdma?] WARNING in rdma_restrack_clean (2)
+From: syzbot <syzbot+47c9ad191991e1bb459b@syzkaller.appspotmail.com>
+To: jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.15 / 15.00];
+X-Spamd-Result: default: False [-0.36 / 15.00];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=f52fb4a6d220c448];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21912-lists,linux-rdma=lfdr.de,47c9ad191991e1bb459b];
 	RCVD_TLS_LAST(0.00)[];
+	SUBJECT_HAS_QUESTION(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:syzkaller-bugs@googlegroups.com,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:jonathan.flynn@hammerspace.com,m:snitzer@kernel.org,m:linux-nfs@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:chuck.lever@oracle.com,s:lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[cel@kernel.org,linux-rdma@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-21911-lists,linux-rdma=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,app.fastmail.com:mid,vger.kernel.org:from_smtp];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[syzbot@syzkaller.appspotmail.com,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cel@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_NONE(0.00)[];
+	R_DKIM_NA(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
+	REDIRECTOR_URL(0.00)[goo.gl];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,googlegroups.com:email,storage.googleapis.com:url,goo.gl:url,appspotmail.com:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2A77964EBC4
+X-Rspamd-Queue-Id: 4D34664EDA4
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    4b4362973b6f Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=1463617a580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f52fb4a6d220c448
+dashboard link: https://syzkaller.appspot.com/bug?extid=47c9ad191991e1bb459b
+compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
+userspace arch: arm64
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/cdc9dd8cab69/disk-4b436297.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/6bb74747f86d/vmlinux-4b436297.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a20d7153214f/Image-4b436297.gz.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+47c9ad191991e1bb459b@syzkaller.appspotmail.com
+
+siw: device registration error -23
+smc: removing ib device syz2
+------------[ cut here ]------------
+WARNING: drivers/infiniband/core/restrack.c:52 at rdma_restrack_clean+0xa4/0xd4 drivers/infiniband/core/restrack.c:52, CPU#0: syz.6.395/6673
+Modules linked in:
+CPU: 0 UID: 0 PID: 6673 Comm: syz.6.395 Tainted: G             L      syzkaller #0 PREEMPT 
+Tainted: [L]=SOFTLOCKUP
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/18/2026
+pstate: 63400005 (nZCv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
+pc : rdma_restrack_clean+0xa4/0xd4 drivers/infiniband/core/restrack.c:52
+lr : rdma_restrack_clean+0xa4/0xd4 drivers/infiniband/core/restrack.c:52
+sp : ffff800097046ed0
+x29: ffff800097046ed0 x28: ffff800097047500 x27: ffff800087543780
+x26: 0000000000000005 x25: ffff0000f6f8a000 x24: 0000000000000048
+x23: 1fffe0001a7d49da x22: dfff800000000000 x21: ffff0000f6f8a048
+x20: ffff0000f6f8a000 x19: ffff0000d3ea4ed0 x18: 00000000ffffffff
+x17: ffff80008a186c80 x16: ffff80008a56f938 x15: ffff800084b03e18
+x14: 000000008679e8e0 x13: 0000000000000001 x12: 0000000000000000
+x11: 0000000000000000 x10: 0000000000080000 x9 : 0000000000080000
+x8 : ffff80009b59b000 x7 : 0000000000000000 x6 : 0000000000000000
+x5 : 0000000000000001 x4 : 0000000000000008 x3 : ffff80008433288c
+x2 : 0000000000000000 x1 : ffff0000c8ee8000 x0 : 0000000000000001
+Call trace:
+ rdma_restrack_clean+0xa4/0xd4 drivers/infiniband/core/restrack.c:52 (P)
+ ib_dealloc_device+0x14c/0x1e0 drivers/infiniband/core/device.c:686
+ __ib_unregister_device+0x2b4/0x334 drivers/infiniband/core/device.c:1546
+ ib_unregister_device_and_put+0x5c/0x80 drivers/infiniband/core/device.c:1593
+ nldev_dellink+0x2e4/0x328 drivers/infiniband/core/nldev.c:1854
+ rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:-1 [inline]
+ rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+ rdma_nl_rcv+0x568/0x828 drivers/infiniband/core/netlink.c:259
+ netlink_unicast_kernel net/netlink/af_netlink.c:1318 [inline]
+ netlink_unicast+0x610/0x800 net/netlink/af_netlink.c:1344
+ netlink_sendmsg+0x63c/0x920 net/netlink/af_netlink.c:1894
+ sock_sendmsg_nosec net/socket.c:787 [inline]
+ __sock_sendmsg+0xc8/0x138 net/socket.c:802
+ ____sys_sendmsg+0x418/0x70c net/socket.c:2698
+ ___sys_sendmsg+0x198/0x224 net/socket.c:2752
+ __sys_sendmsg+0x160/0x214 net/socket.c:2784
+ __do_sys_sendmsg net/socket.c:2789 [inline]
+ __se_sys_sendmsg net/socket.c:2787 [inline]
+ __arm64_sys_sendmsg+0x80/0x94 net/socket.c:2787
+ __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
+ invoke_syscall+0x98/0x244 arch/arm64/kernel/syscall.c:49
+ el0_svc_common+0xe8/0x23c arch/arm64/kernel/syscall.c:121
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:140
+ el0_svc+0x64/0x260 arch/arm64/kernel/entry-common.c:740
+ el0t_64_sync_handler+0x48/0x148 arch/arm64/kernel/entry-common.c:759
+ el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:594
+irq event stamp: 227244
+hardirqs last  enabled at (227243): [<ffff8000867c300c>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:178 [inline]
+hardirqs last  enabled at (227243): [<ffff8000867c300c>] _raw_spin_unlock_irqrestore+0x38/0x98 kernel/locking/spinlock.c:198
+hardirqs last disabled at (227244): [<ffff80008679e6f8>] el1_brk64+0x20/0x54 arch/arm64/kernel/entry-common.c:429
+softirqs last  enabled at (227122): [<ffff800084b2768c>] __alloc_skb+0x1c0/0x5f8 net/core/skbuff.c:696
+softirqs last disabled at (227118): [<ffff800084b27674>] local_bh_disable include/linux/bottom_half.h:20 [inline]
+softirqs last disabled at (227118): [<ffff800084b27674>] __alloc_skb+0x1a8/0x5f8 net/core/skbuff.c:695
+---[ end trace 0000000000000000 ]---
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-On Sat, Jun 6, 2026, at 1:35 PM, Jonathan Flynn wrote:
-> I tested the PAGE_ALLOC_COSTLY_ORDER change on the same setup.
-> Unfortunately, it did not improve the regression. Throughput was slightly
-> worse than the previous GFP_NOWAIT test, measuring 25.4 GiB/s.
->
-> Current results are:
-> Original regressed build: ~30.3 GiB/s
-> GFP_NOWAIT build: ~31.0 GiB/s
-> PAGE_ALLOC_COSTLY_ORDER: 25.4 GiB/s
-> Commit reverted: ~73.9 GiB/s
->
-> I added the results to the shared bundle. (including flamegraph)
->
-> The GFP_NOWAIT and the Original Commit flamegraphs are nearly identical.
-> The dominant stack being:
-> svc_recv()
-> -> svc_rdma_build_read_segment_contig()
-> -> alloc_pages_noprof()
-> -> get_page_from_freelist()
-> -> rmqueue_buddy()
->
-> The PAGE_ALLOC_COSTLY_ORDER flamegraph is different. Time spent under
-> alloc_pages_noprof() is reduced, but the reduction does not translate into
-> improved throughput.
->
-> The following percentages were observed:
->                                                    Original     GFP_NOWAIT
-> COSTLY_ORDER
-> svc_recv()                                 76.09%      75.99%
-> 78.44%
-> alloc_pages_noprof()             58.07%      57.99%               40.29%
-> folios_put_refs()                        7.15%        7.19%
-> 16.06%
-> svc_rdma_read_complete()    7.18%        7.21%               16.08%
->
-> In other words, the PAGE_ALLOC_COSTLY_ORDER change reduces time spent in
-> the allocation path, but a larger fraction of CPU time then appears under
-> svc_rdma_read_complete() and folios_put_refs(), while overall throughput
-> decreases further.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-The two failed fixes demonstrate that the current folio allocator is
-not up to the task -- the problem appears to be on the release side,
-where the individual pages have to be merged back into an order-4
-compound page. I don't yet see a straightforward way to make it work.
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Since we're right up against v7.1-rc7, I've added a patch to nfsd-next
-to revert 18755b8c2f24 -- it will get pulled back into 7.1.y as soon as
-the v7.2 merge window closes in three weeks.
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
--- 
-Chuck Lever
+If you want to undo deduplication, reply with:
+#syz undup
 
