@@ -1,208 +1,252 @@
-Return-Path: <linux-rdma+bounces-21912-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21913-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id lGjzAsABJWrJCgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-21912-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 07 Jun 2026 07:29:36 +0200
+	id KGjMBlouJWoIEQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-21913-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 07 Jun 2026 10:39:54 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D34664EDA4
-	for <lists+linux-rdma@lfdr.de>; Sun, 07 Jun 2026 07:29:35 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DE2D64F24E
+	for <lists+linux-rdma@lfdr.de>; Sun, 07 Jun 2026 10:39:53 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21912-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21912-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=appspotmail.com (policy=none);
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=Nvidia.com header.s=selector2 header.b=seJU19+S;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21913-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21913-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=nvidia.com;
+	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BDCDA3018BDD
-	for <lists+linux-rdma@lfdr.de>; Sun,  7 Jun 2026 05:29:30 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 1A68F300691A
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Jun 2026 08:39:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62E0C2BE642;
-	Sun,  7 Jun 2026 05:29:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E00FB36CDF3;
+	Sun,  7 Jun 2026 08:39:48 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oo1-f79.google.com (mail-oo1-f79.google.com [209.85.161.79])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012013.outbound.protection.outlook.com [40.107.209.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A806F1A08AF
-	for <linux-rdma@vger.kernel.org>; Sun,  7 Jun 2026 05:29:27 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780810169; cv=none; b=mtcrb84JnbTdvS5OB0dKF/7GfM9ZQFQgM1E+/2ufVWNULoP4AHMhegG3ChcbGNwSWaYBFpOR5OylA4Ip39kGANiGrQkxrFi3MQ7m3kIbVrEkZAwgrr/1MO31mvj5hE0QhsZ/RAAthLTbcqeoctVdaoKDUMuEi86tvgUmOxftWdM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780810169; c=relaxed/simple;
-	bh=mPlxepmJb7ZqNYj/s0qRBHRLElZTfo8jR2UZuGH/Eug=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ZT92ahdZ5mixij9sUc8wdtz0HFYl8NI8uUoaHpOkwwGfmmptl23TaK/JTHDCwvr35PyVoSiES2Jx4IWSR8ZcuYloS1lRqgwaTIz5Pzp2JdpH594CxPo3gEQmmIdM63Om03DdoCsXkES87mo5taVYIiQ2fOQH/Y345ZtoQp3HEDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.79
-Received: by mail-oo1-f79.google.com with SMTP id 006d021491bc7-69e87ffce0fso520693eaf.1
-        for <linux-rdma@vger.kernel.org>; Sat, 06 Jun 2026 22:29:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780810166; x=1781414966;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hlOZ5yR2tplNmNUIcqFAUXi+mMoLNEmUG/K66pwGvhU=;
-        b=Y4DuH7EcGsQJYruTnwl9wU/kI1SCJ4CDcoB0TlTMOGehzBaJow9YdN9oqm3+sf9yax
-         UwOnaHNZy3ooGvEEfvbTF8b4fmr5pUrRzOq0MIyf2kVJ0udIe0/2eLm+IjUf0e1qBstN
-         Z57lzRlmjrgWRTOODGfcGAlKHhAWclQevpls0CyJ6WtWie7VCCm+QYN8G5OIPxBzzgxZ
-         MM/oDkodGsrpqYwEVaVX+B4DZdLJlR6JAM+lrVoGCrnF3bOXD/fPfNs2Fp7ghUnQo4eJ
-         fMmOfocTofO6OnsEauefZSKgxMzqMwzb+fN3c77896MuLGV7mZIgUhgWoI2VsseDbpeE
-         6BVQ==
-X-Forwarded-Encrypted: i=1; AFNElJ8dYi0VH+shKqPZXYx4RxBqMTR1e0AsOXrHQDe04NUsrwxtOaIj3hmKCpkhKMnYAzFrU7uqVSkZTmsk@vger.kernel.org
-X-Gm-Message-State: AOJu0YzTOd95VpN8s/4uzwHMIHOJiZ8WVGFTkGdq+Wgc9ergUmwFqTBJ
-	rMHo7vNp/m3yaxMIpPEWGoZmekpxqIbHbcYGrlFOG/EpUzEFoAEjYjuNnaDu70zo8xpkLXX1TpM
-	dbswkYLBBzzgBNtyge8UBWrR1g7R3IrT0YOhqzfibf6jRL6ujQlsSuvScfS8=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 736082853E9;
+	Sun,  7 Jun 2026 08:39:47 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780821588; cv=fail; b=BD0HaHLhfoN5nUO5SWnpPv3DNvjt9a5Nr+ZpKZzQZs2VPPCp28o/MBeYX6OwE2WJUZwYqRBVqoAYSlDnEwBLMLqZNKm+RfK1+pgOtxfoq9Gzk0X2Ii8v585o9+9I5A3VdJywGLskFzwNC1oTb43Iwk3ED3w8LSCkNfhwNVl2RDA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780821588; c=relaxed/simple;
+	bh=ozYt0RIVfDA/MMRpXEoENoDDmY9dH0XTRT8Lc4fN8cQ=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=X9LZub7MkXASz16i19XG43S+eUkXLe4mYW7IivnLAyjXDoc4da7xKBChs0jTaQw5dQX5epImTg/cE1rlBMsgSI2ti0/+EEUhvU8ampA+8oeOtcdJ0nCiHZFkU+2PSs9qotdP5a9F2xHggoAVnXV3Bp++X4v3tTEAoOYtOfSTjvI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=seJU19+S; arc=fail smtp.client-ip=40.107.209.13
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=amRx1f2CmfskbJXyRhmhtRSZxHmTPuWwGK6Di0XRlos8kCGhCdoo5brgqD7A9mMslQOd1/NIUiQhMyYnX+zUTG/wFcpDjCmpjGszLkMmvDwNpnRfgfv85KXQx8NE5nJgiC9Xv2b/nvvhzLpKOzP9D0401iSawPSyv2WazEOaAbaaLZhKwylek+Fg1D7P+Tg4pGii6X7zmPakpHmY+0LSRe8MLtx2+OWjt9DY/HoRE4cdtx4O1fkpQMEdDJ2BAJwhFIOMNL8v2hHnzUxn8Glm7kfsvrD4qCOuMMYrEyj/GQTAT6kqgq3rDsm2eU4dVAdkMYB+nZJ++DiXcAn/SZiVSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=T5d1j0hJoTl/JGVjFmx2NKpQPhAHSgYupTv0FJVjN1Q=;
+ b=SNPOfgDUgso3RRL9qabTgJq7/1lLj42cr9BdLUamITKpZkiC1BBW7sud7xJfnABP1WNhciwVn+RaOWpWOcEpUMYxWVkVGFVaiqyZpuKevtyibfvEPBnqlepchMUeC+mjI98BuZX2k91yN1YBnt+7fYWfTPBNQ+na+0ixWR6xWpIBB96Rsi4+8XEfF1fG1ceORYwhGOa/3wBs9sikf9qSB8NYGB8LTY9MLJPa1m+IEUHexntFbjNkRvU44tIxLb+YVZnq2gk1amNsz3wbThl8k886WteqWH2ZHBREAJlHBCvSdEZq4/+yStXoobzSJPpSvI6lyxrLKvsOEtQaCHuX5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T5d1j0hJoTl/JGVjFmx2NKpQPhAHSgYupTv0FJVjN1Q=;
+ b=seJU19+SNYoLJ0Dg2QqnMidYMrDNiT7frgGqmj/KVQxm6QWp8Wh9h2ATZbU5k/iviwQLNmv6KGRogJm/Gtg4Sesvl/7Xd49sS4rci7wYmDuVT851jeGu6NDCPSToEn5sYrizLNCoeaVrsGvhI5un+aBNNBM90FJFogcQECMN8/uVs/UeBDp2eTmGqkB1NZk7mQ/jQlVKC3vx3QjsRlAnSJysXknHUZuW7r/ptOHq3EkvilcLxn+pyjBSm9udtfsLVIoG6BdGkmRQALoLn7KROjxZrdAoFw+hN0+2/iiEwjVGVq7ipM6ARZrrmXBB4ZYam8v8lVjl0f/LRelqvCFH4w==
+Received: from DS0PR12MB6583.namprd12.prod.outlook.com (2603:10b6:8:d1::12) by
+ CH1PR12MB9645.namprd12.prod.outlook.com (2603:10b6:610:2af::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.92.9; Sun, 7 Jun 2026 08:39:43 +0000
+Received: from DS0PR12MB6583.namprd12.prod.outlook.com
+ ([fe80::16e2:19ba:8915:90be]) by DS0PR12MB6583.namprd12.prod.outlook.com
+ ([fe80::16e2:19ba:8915:90be%5]) with mapi id 15.21.0092.007; Sun, 7 Jun 2026
+ 08:39:43 +0000
+Message-ID: <2f5fae68-fc76-4604-92de-7e88d5cb8e21@nvidia.com>
+Date: Sun, 7 Jun 2026 11:39:37 +0300
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v3] net/mlx5: Use effective affinity mask for IRQ
+ selection
+To: Fushuai Wang <fushuai.wang@linux.dev>, saeedm@nvidia.com,
+ leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, shayd@nvidia.com, parav@nvidia.com,
+ moshe@nvidia.com
+Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, wangfushuai@baidu.com
+References: <20260605102112.91772-1-fushuai.wang@linux.dev>
+Content-Language: en-US
+From: Tariq Toukan <tariqt@nvidia.com>
+In-Reply-To: <20260605102112.91772-1-fushuai.wang@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR5P281CA0037.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:f3::17) To DS0PR12MB6583.namprd12.prod.outlook.com
+ (2603:10b6:8:d1::12)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:180a:b0:696:8e8b:2097 with SMTP id
- 006d021491bc7-69e68b5e9camr5977540eaf.21.1780810166701; Sat, 06 Jun 2026
- 22:29:26 -0700 (PDT)
-Date: Sat, 06 Jun 2026 22:29:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6a2501b6.39669fcc.33b062.000a.GAE@google.com>
-Subject: [syzbot] [rdma?] WARNING in rdma_restrack_clean (2)
-From: syzbot <syzbot+47c9ad191991e1bb459b@syzkaller.appspotmail.com>
-To: jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6583:EE_|CH1PR12MB9645:EE_
+X-MS-Office365-Filtering-Correlation-Id: 93028828-4214-4c95-f453-08dec4705225
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|376014|7416014|366016|13003099007|22082099003|18002099003|921020|56012099006|11063799006;
+X-Microsoft-Antispam-Message-Info:
+	/M43SP069lk2pXuOhzrB5wRPlNbIBEUtjXyLkhiXKVH5SSljTUkEa+3CtTc+Hd5Oc2fmRdxCdUDaf6x/3v3fPBhYHF2wM/Mx2ZrHOQhuVpqWiKX33P5LHwqIjFEZMH0O2MzcdDSfFrrQRuL6J/1CCbGqX66nzI/rwzr2nHxfIsydNfP1/h+VxACddrniXqieqGM2c80QZbI8A198qNdD1t3HPTXTncOw/Mm+5URze/ZaWNEffvHTSy27WnF0kghYyWpVHz+67XiLdZm72Hsd/97GgBI8qJKvC0q5mKQxgDAKa6uS6uNbdkyow10PyHl5TL7qQW/yoy1HRR8L3z8ZcPHDmMKbIjYLsjpqBssCfVkqbL1tq9MJxF0Aqog4SeBmm5LENZrSXd0j7AYZav+B6YROZEcyE8krvIbeOVM1zJytuD6I/3nfZ1/tBj3rq8y9XmoxqhNHLrt9Z1uNP5im9BoF00HfDwvJaj6CfwPcaqud/lYPCTHj+GGpN1gEgizuTzvKg97D2iplmxKjmVTI/GPeLHJ/lIt3wJips7xJqpS6QvOfH59dmK45m2yR+VbvgP+x5FJZb9FV+xjvLXOsq1U5kJmYZq+T+7T4lTAdbdlytNpc0MazzYNUCgrrltDcBRhDPn4w/P2c/5L8xJs2Yi4LRaoOKJJDhf/CvM9Tt+n8H4+346pRiA+7EYR6LP4O5sqai4K6iyLeJrv+2ZEvoTiANC/Dy9f5l1dqbFiPHGstEQosot6BMw5jTG2kdTAH
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6583.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016)(13003099007)(22082099003)(18002099003)(921020)(56012099006)(11063799006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?a2JFbHhVbFdPMDlYYkRZUkdIZTNwUHoyNWRTUTFNbmNxb0puUW5YUG5WS3Js?=
+ =?utf-8?B?RWR5K2IwdEhWYTUzcCtSSVIyVjJGQnRPOGNyVUZWRVpGV09RR3ZxenhuWFN4?=
+ =?utf-8?B?L3JrWTVmSzZiMVFBaHVaZis4WmU2Q1I1NGVZTTR4ZzliV1gwOXV1U0tvY2hE?=
+ =?utf-8?B?ZXcyMkdCTDRGcUFCSjByLzUya0x4L1o4M3oreTV6NXlTaXdueWlPaWFRVHB5?=
+ =?utf-8?B?UTFRWkpoWFUvQjQ2RFZBOUw5Y2k5NDFicVBwQ29oRlZrSy9vU1Z5clBIb1pR?=
+ =?utf-8?B?bk1QckdTSGZsNmZ4VUlNQ3VkbjFLNmFjWXVSWDI4OXNxYS85SzlUeTk2NlpE?=
+ =?utf-8?B?ZmpQcnRTVDJQYVlSMHMvWmlxZ2lrUkt6czQwVGFCVlhQTHJONGt4Q2QvOVFj?=
+ =?utf-8?B?cWlWM2dSTlJQKzhDcXhoUWpjTGhQZ2NoYWlvZ1FIM2cvNy9uTzhtOUNRYWsw?=
+ =?utf-8?B?REhZOEFRRDZmWDlKdGozS3FHTjlETGZkRW5FQkNoY1g1eGs4ZEhkVGZBVUF3?=
+ =?utf-8?B?MjZMRjdxMGlHZzRNcmVNeVdvTkxETGRNd0NJUzlNVHVzSmJVV3R4djVKV1A2?=
+ =?utf-8?B?NUk0ekVhRXdJWUhJc2cxRHp3Ukg4KzlCMVZyWTdMbkoxZmZiNllUV0oySXhY?=
+ =?utf-8?B?ZGpvMk4zcHF2VXF0dE53OUhzRjIxZmJlS1FDQmVaT3kwV3NEQ2lEdTh6SVBE?=
+ =?utf-8?B?dTh2TjMxQkNyTDdVZWpnWWthdThBZGNGVlRYaVE0RG81N1Q3bzZPZm8zMmsw?=
+ =?utf-8?B?N2toWEhVd0xneC9LaGRPZElYRUpoTzZYUW5XVmVBbjkwMmhOOGN0NFdJdHM4?=
+ =?utf-8?B?VWEvekN1eCs1NnU4WSs0RXN1a2sxakVDUkFQWTdoNnhZdnNDakhqN3p2b1h4?=
+ =?utf-8?B?alhZQjQrbWFETENwb3ZITlVlQ2J5VDFnK0xHb2lTTEpyMGtVM2h3ekVYZUxO?=
+ =?utf-8?B?Tjl1NUNJTkxFb2gzaGI1aFhGL0JGRGRBanlKSHF2K0dWanV4b0hxNXc2WlhU?=
+ =?utf-8?B?NXl1THdhcTZLYXN0bVR2cWJaNFdwRXZJU09JTVBxb0xmVW9XQ29ZczBnUUVl?=
+ =?utf-8?B?WUgvbUZieldSM2ZkTVpBc0pmY2hOMmtRVXM1d2toVkxLTzlyM0xKekFUWUh2?=
+ =?utf-8?B?ODdscTlWT3RNMERVdzk5dlJZR2szOFFISW9yaEZzOVV1ek9EVWxaQmFtVm5l?=
+ =?utf-8?B?emwvc241SUt2Q0ZoU1FXdGZyWlNIVzNwOVdFNENPMkNhb01CZkpnS1pWejRq?=
+ =?utf-8?B?alNuaDVwek5FZXdHS0lOU2w2bzZZY091bk5aQTdqTU8ycnIweXZkQVk2Q1la?=
+ =?utf-8?B?L2k4elBjbEJqYkZTM1J5MTBYOGJMblpCNW0xMWQ1czl4TFlHRXRxZ0pObGNv?=
+ =?utf-8?B?NzBYcHNSMUZqNDJkdnlNdTVRS3FLTTB3WXU3QlIzcTF2OW5Fb0M2MndiMFFE?=
+ =?utf-8?B?U3NNQWxUMm5wMFY3UFJibWVSRnZJejhNUnMrbTRocXl1czF2R3lsRGpwMy96?=
+ =?utf-8?B?QTN3V2Y4SXB3bTBTK3MwVWlYU2JMeUVyRGdEQ05BNTZhdm9MSlIvZk9XOHZm?=
+ =?utf-8?B?NXgxWDhwL1Z0S0MrLzlOb2JvcWhnQ0VCMDBWcjVidVF6ajd5b1RCeHE4aWhn?=
+ =?utf-8?B?MTF5bVRtcmdFMXlxbEQ2ajIxV2h2NlJJRUxxbkR5RksvY3BQM3J0bUZva3hQ?=
+ =?utf-8?B?a2hnM216ZmtEdmZxUzNNS3Vod0NzV1RDenJqZWMwNE1LYURPcjJoUDBjY3R3?=
+ =?utf-8?B?QWNEZmY5QUErNkFWUlZ5dTdxUmFGcmk0ZnRNK0I1a0pldmtXSzFwaFdNK0F0?=
+ =?utf-8?B?VnRKQlpPZG5aOFoyRGZpZXM1d1FuUWJmOG9aMkkvdThGaDVoa21Sc1kxSkps?=
+ =?utf-8?B?V1g4Y0NwckR3ZkJZRmxZdHBNNXA3QmtFNGlkbXpyNC9zcW9uenF5L2p0bWhu?=
+ =?utf-8?B?MFg5VHkvbzhJWVZ6MEZwbERqdlVPdkpXSkxXK2w4NHFiOUl2M3hYN0gzeVVo?=
+ =?utf-8?B?aXFtS0RmdkdubDlkY3htOThzQkJWRDhTVERIVElnUWdrVFFsTEdEcTJMSzZN?=
+ =?utf-8?B?cVlhQkhTazBCa0l6elQ2c2duUWZqY3hidHYralZUTEZTMFF2djgwamNCaWZW?=
+ =?utf-8?B?Z0QwUHpncExZZ2g2UURYeGp5cWNTYzJBcW56M0Z4NGRMbHVmK2liZS9vcnlq?=
+ =?utf-8?B?Q29jWktqdmpEYURadVdoVnZuYTYxWTBKd04wY2ovSmhveDlqcWdiTmVZYVdP?=
+ =?utf-8?B?SlpFS1dNNFBkSnMyLzZwN2pLQmJUVmFxZVNlNzkvSFY4ZGJidmx3MHhsUERp?=
+ =?utf-8?B?WlA3R29jb0hWSG9JcGIxZlpOV0tUcmpmeTdCclJodUhzRHNiaUdkdz09?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 93028828-4214-4c95-f453-08dec4705225
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6583.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2026 08:39:42.9233
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MnhCgar/m0J/hgf+zNNTKgjuObSiheKTPd/zWxyTqrkpa5Ua4MBl+QSiY8SbeJeay5VEyj3rddUFBbfynU964A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH1PR12MB9645
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.36 / 15.00];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=f52fb4a6d220c448];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
+X-Spamd-Result: default: False [1.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21912-lists,linux-rdma=lfdr.de,47c9ad191991e1bb459b];
-	RCVD_TLS_LAST(0.00)[];
-	SUBJECT_HAS_QUESTION(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:syzkaller-bugs@googlegroups.com,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	TAGGED_FROM(0.00)[bounces-21913-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:fushuai.wang@linux.dev,m:saeedm@nvidia.com,m:leon@kernel.org,m:tariqt@nvidia.com,m:mbloch@nvidia.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:shayd@nvidia.com,m:parav@nvidia.com,m:moshe@nvidia.com,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:wangfushuai@baidu.com,m:andrew@lunn.ch,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[syzbot@syzkaller.appspotmail.com,linux-rdma@vger.kernel.org];
+	FORGED_SENDER(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCPT_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_NONE(0.00)[];
-	R_DKIM_NA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	REDIRECTOR_URL(0.00)[goo.gl];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,googlegroups.com:email,storage.googleapis.com:url,goo.gl:url,appspotmail.com:email]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[Nvidia.com:dkim,vger.kernel.org:from_smtp,nvidia.com:mid,nvidia.com:from_mime,nvidia.com:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 4D34664EDA4
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    4b4362973b6f Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=1463617a580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f52fb4a6d220c448
-dashboard link: https://syzkaller.appspot.com/bug?extid=47c9ad191991e1bb459b
-compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
-userspace arch: arm64
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/cdc9dd8cab69/disk-4b436297.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/6bb74747f86d/vmlinux-4b436297.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a20d7153214f/Image-4b436297.gz.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+47c9ad191991e1bb459b@syzkaller.appspotmail.com
-
-siw: device registration error -23
-smc: removing ib device syz2
-------------[ cut here ]------------
-WARNING: drivers/infiniband/core/restrack.c:52 at rdma_restrack_clean+0xa4/0xd4 drivers/infiniband/core/restrack.c:52, CPU#0: syz.6.395/6673
-Modules linked in:
-CPU: 0 UID: 0 PID: 6673 Comm: syz.6.395 Tainted: G             L      syzkaller #0 PREEMPT 
-Tainted: [L]=SOFTLOCKUP
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/18/2026
-pstate: 63400005 (nZCv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
-pc : rdma_restrack_clean+0xa4/0xd4 drivers/infiniband/core/restrack.c:52
-lr : rdma_restrack_clean+0xa4/0xd4 drivers/infiniband/core/restrack.c:52
-sp : ffff800097046ed0
-x29: ffff800097046ed0 x28: ffff800097047500 x27: ffff800087543780
-x26: 0000000000000005 x25: ffff0000f6f8a000 x24: 0000000000000048
-x23: 1fffe0001a7d49da x22: dfff800000000000 x21: ffff0000f6f8a048
-x20: ffff0000f6f8a000 x19: ffff0000d3ea4ed0 x18: 00000000ffffffff
-x17: ffff80008a186c80 x16: ffff80008a56f938 x15: ffff800084b03e18
-x14: 000000008679e8e0 x13: 0000000000000001 x12: 0000000000000000
-x11: 0000000000000000 x10: 0000000000080000 x9 : 0000000000080000
-x8 : ffff80009b59b000 x7 : 0000000000000000 x6 : 0000000000000000
-x5 : 0000000000000001 x4 : 0000000000000008 x3 : ffff80008433288c
-x2 : 0000000000000000 x1 : ffff0000c8ee8000 x0 : 0000000000000001
-Call trace:
- rdma_restrack_clean+0xa4/0xd4 drivers/infiniband/core/restrack.c:52 (P)
- ib_dealloc_device+0x14c/0x1e0 drivers/infiniband/core/device.c:686
- __ib_unregister_device+0x2b4/0x334 drivers/infiniband/core/device.c:1546
- ib_unregister_device_and_put+0x5c/0x80 drivers/infiniband/core/device.c:1593
- nldev_dellink+0x2e4/0x328 drivers/infiniband/core/nldev.c:1854
- rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:-1 [inline]
- rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
- rdma_nl_rcv+0x568/0x828 drivers/infiniband/core/netlink.c:259
- netlink_unicast_kernel net/netlink/af_netlink.c:1318 [inline]
- netlink_unicast+0x610/0x800 net/netlink/af_netlink.c:1344
- netlink_sendmsg+0x63c/0x920 net/netlink/af_netlink.c:1894
- sock_sendmsg_nosec net/socket.c:787 [inline]
- __sock_sendmsg+0xc8/0x138 net/socket.c:802
- ____sys_sendmsg+0x418/0x70c net/socket.c:2698
- ___sys_sendmsg+0x198/0x224 net/socket.c:2752
- __sys_sendmsg+0x160/0x214 net/socket.c:2784
- __do_sys_sendmsg net/socket.c:2789 [inline]
- __se_sys_sendmsg net/socket.c:2787 [inline]
- __arm64_sys_sendmsg+0x80/0x94 net/socket.c:2787
- __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
- invoke_syscall+0x98/0x244 arch/arm64/kernel/syscall.c:49
- el0_svc_common+0xe8/0x23c arch/arm64/kernel/syscall.c:121
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:140
- el0_svc+0x64/0x260 arch/arm64/kernel/entry-common.c:740
- el0t_64_sync_handler+0x48/0x148 arch/arm64/kernel/entry-common.c:759
- el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:594
-irq event stamp: 227244
-hardirqs last  enabled at (227243): [<ffff8000867c300c>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:178 [inline]
-hardirqs last  enabled at (227243): [<ffff8000867c300c>] _raw_spin_unlock_irqrestore+0x38/0x98 kernel/locking/spinlock.c:198
-hardirqs last disabled at (227244): [<ffff80008679e6f8>] el1_brk64+0x20/0x54 arch/arm64/kernel/entry-common.c:429
-softirqs last  enabled at (227122): [<ffff800084b2768c>] __alloc_skb+0x1c0/0x5f8 net/core/skbuff.c:696
-softirqs last disabled at (227118): [<ffff800084b27674>] local_bh_disable include/linux/bottom_half.h:20 [inline]
-softirqs last disabled at (227118): [<ffff800084b27674>] __alloc_skb+0x1a8/0x5f8 net/core/skbuff.c:695
----[ end trace 0000000000000000 ]---
+X-Rspamd-Queue-Id: 0DE2D64F24E
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+On 05/06/2026 13:21, Fushuai Wang wrote:
+> From: Fushuai Wang <wangfushuai@baidu.com>
+> 
+> When a sf is created after a CPU has been taken offline, the IRQ pool may
+> contain IRQs with affinity masks that include the offline CPU. Since only
+> online CPUs should be considered for IRQ placement, cpumask_subset() check
+> would fail because the iter_mask contains offline CPUs that are not present
+> in req_mask, causing sf creation to fail.
+> 
+> This is an example:
+>    1. When mlx5 driver loads, it initializes the IRQ pools.
+>       For sf_ctrl_pool with ≤64 sf:
+>       - xa_num_irqs = {N, N} (There is only one slot)
+>    2. When the first SF is created:
+>       - The ctrl IRQ is allocated with mask=cpu_online_mask={0-191}
+>    2. We take CPU 20 offline
+>    3. Existing ctl irq still have mask={0-191}
+>    4. Create a new SF:
+>       - req_mask={0-19,21-191}
+>       - iter_mask={0-191}
+>       - {0-191} is NOT a subset of {0-19,21-191}
+>       - least_loaded_irq=NULL
+>    5. Try to allocate a new irq via irq_pool_request_irq()
+>    6. xa_alloc() fails because the pool is full(There is only one slot)
+>    7. sf creation fails with error
+> 
+> Use irq_get_effective_affinity_mask() instead, which returns the IRQ's
+> actual effective affinity that already excludes offline CPUs.
+> 
+> Fixes: 061f5b23588a ("net/mlx5: SF, Use all available cpu for setting cpu affinity")
+> Suggested-by: Shay Drory <shayd@nvidia.com>
+> Signed-off-by: Fushuai Wang <wangfushuai@baidu.com>
+> ---
+> v2->v3: Separate the patchset to two patches, reverse xmas tree coding style fix.
+> v1->v2: Use mlx5_irq_get_affinity_mask() api
+> 
+> previous discussion:
+> https://lore.kernel.org/all/20260603072657.10868-1-fushuai.wang@linux.dev/T/#u
+> https://lore.kernel.org/all/20260604125705.21241-1-fushuai.wang@linux.dev/T/#u
+> 
+>   drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
+> index 994fe83da4be..a0bb8ee44e35 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
+> @@ -105,9 +105,12 @@ irq_pool_find_least_loaded(struct mlx5_irq_pool *pool, const struct cpumask *req
+>   
+>   	lockdep_assert_held(&pool->lock);
+>   	xa_for_each_range(&pool->irqs, index, iter, start, end) {
+> -		struct cpumask *iter_mask = mlx5_irq_get_affinity_mask(iter);
+>   		int iter_refcount = mlx5_irq_read_locked(iter);
+> +		const struct cpumask *iter_mask;
+>   
+> +		iter_mask = irq_get_effective_affinity_mask(mlx5_irq_get_irq(iter));
+> +		if (!iter_mask)
+> +			continue;
+>   		if (!cpumask_subset(iter_mask, req_mask))
+>   			/* skip IRQs with a mask which is not subset of req_mask */
+>   			continue;
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Thanks for your patch.
 
