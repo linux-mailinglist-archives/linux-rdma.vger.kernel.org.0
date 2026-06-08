@@ -1,190 +1,186 @@
-Return-Path: <linux-rdma+bounces-21989-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21990-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id KfheCWlQJ2rkugIAu9opvQ
-	(envelope-from <linux-rdma+bounces-21989-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 01:29:45 +0200
+	id cPg4KHZTJ2pkuwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-21990-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 01:42:46 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FA2565B2AC
-	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 01:29:44 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30CAE65B356
+	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 01:42:46 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=Nvidia.com header.s=selector2 header.b=bAUlI4d3;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21989-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21989-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=reject) header.from=nvidia.com;
-	arc=reject ("cv is fail on i=2")
+	dkim=pass header.d=oracle.com header.s=corp-2025-04-25 header.b=jQDqKKxV;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21990-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21990-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=oracle.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 578B43037DE1
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jun 2026 23:27:13 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 435C8304C4C3
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jun 2026 23:42:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B688233C198;
-	Mon,  8 Jun 2026 23:27:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83821340A46;
+	Mon,  8 Jun 2026 23:42:44 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012034.outbound.protection.outlook.com [52.101.43.34])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B0D832B13F;
-	Mon,  8 Jun 2026 23:27:11 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780961232; cv=fail; b=TJ3cgoe2me7eyCWNI17fG2PeLD3DCFINcr4ax9PYbkKY/+4kivuTFlP2Vt1V5MjQMCWP5Cdbts4zyd5ALNLvmXPrd0z7hugiR0OzLxn9Pc1e9ohTjGT2bqpYtGHVPAblnjzU4dXVFv5tr7AL0lnQE9eVkvfREh5uNHtaqkqi+Q8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780961232; c=relaxed/simple;
-	bh=Dz7LXC6ifYRumrfx/c/DF9EDP/eh97ck1RW2qek1o+w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=WHyTy/d+jSxuNmJ5InWA2jo4D7ibAYGPh29lkoJ48TCKhfS2pYMutYURVl46BDg609D9taWbyiUX4ms6mkcEgzdrBNiYgH50yaHiOktAhJU+HHo8Esqsx+PN8uzGVEvCrMlA/A3BuOHTHvWOEb4gkja7uYomSXYAkGD0dLFY/Zs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=bAUlI4d3; arc=fail smtp.client-ip=52.101.43.34
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=fdxc84PpMKKKY/VfHMegJbxLfrzvoK6VZZacHdqyHtsOkFas/iNQyGBQToSMF4Ea8ZlWL+B+sr5Kbo0ZtMyVpRCi+RgRcu/uteuWGm9ydhBz0MQhl9khXYVdmuWtMT692mLHsONpRwEktqsaORiyIfJ85U2HWvO+QWWCXMChnZ0FTAW7zMMucL6f2c6hX05J62eIOdl4aba9fV0X1h0Jou5cYxC9zHPYcv2PkYPX1j3PCleH/A4kfMpe+WHq3VfAreRw/pS3kH33dOMmtHy2tVUrDqa8T7bMkDXcpM49wTKDGUz8RpfhHm92NoyBE8NB/v/pC1m5MWGyQPUE/lOGKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Dz7LXC6ifYRumrfx/c/DF9EDP/eh97ck1RW2qek1o+w=;
- b=UrYZRWzMEF9qorDNYIQgZEkMlbExuJSRHlQVRQVveGjJODYWx0lTYwRpmO0c/st1TD5UgGiRMCrLPg1QLzTqoR6mRPR+0bG7l+jTYgurrQBQaT7qVjyyIar6peYZWPtxRMRPB0AvFaYFf3Jd9E8axH0MYFebjvFsLpdpE3fBclTgHqFzQ6OwdGtOhIS1dhWPsZ9ufjhy1nvM+kaX7m3Z0qy2erMsuc0Miq0Gdd1rNyzY/9kUJUq9w5kycbNZ+O5OOQ21OtnVlGINm20u2HFG3UrZ0997fGuUSLPg52mS9nY+XuNsYIr75N1Gf1Ry6rPy+mpbZ+JdiExrDj8o019lEg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Dz7LXC6ifYRumrfx/c/DF9EDP/eh97ck1RW2qek1o+w=;
- b=bAUlI4d3jAao0PR4x/Q6CJfAUBINUn4KUk6mn2xQNwJJZ8okTUhSD2AC99SDMQsdRyct56nz++8b+0qTA821YhyAh5tSJkgjLOr1TKKzRgs5q2l7+bN7rScb9u1/jEKKWngBsmt5onzhkJ4jcUG7sHSBJUG4T6WvK6cGg6MwkxjKw10XJZJRbnp/9DPJKvMGHWZ4S/H1FgUjJsAto0QNrO2IzV2xPmJpy9qRrDZSkvALA0S72VatyElNd8Ddi/guInnQZE7mMQxnGNH4pg92Tzx8WbUj6Qfh7p9E2Z2BgbCSOhCVLw2jkiklW/yyqBev7nzY9n3V21v2/Pf5NTFXIw==
-Received: from LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19)
- by DM4PR12MB8476.namprd12.prod.outlook.com (2603:10b6:8:17e::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.12; Mon, 8 Jun 2026
- 23:25:46 +0000
-Received: from LV8PR12MB9620.namprd12.prod.outlook.com
- ([fe80::299d:f5e0:3550:1528]) by LV8PR12MB9620.namprd12.prod.outlook.com
- ([fe80::299d:f5e0:3550:1528%4]) with mapi id 15.21.0092.011; Mon, 8 Jun 2026
- 23:25:46 +0000
-Date: Mon, 8 Jun 2026 20:25:45 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: "yanjun.zhu" <yanjun.zhu@linux.dev>
-Cc: Junxian Huang <huangjunxian6@hisilicon.com>,
-	Krzysztof Czurylo <krzysztof.czurylo@intel.com>,
-	linux-rdma@vger.kernel.org,
-	Chengchang Tang <tangchengchang@huawei.com>,
-	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Zhu Yanjun <zyjzyj2000@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@redhat.com>,
-	Leon Romanovsky <leon@kernel.org>, patches@lists.linux.dev,
-	Philip Tsukerman <philiptsukerman@gmail.com>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] RDMA: During rereg_mr ensure that REREG_ACCESS is
- compatible
-Message-ID: <20260608232545.GQ1962447@nvidia.com>
-References: <0-v1-06fb1a2d6cf5+107-rereg_access_jgg@nvidia.com>
- <22629c63-ca98-4af7-9e3b-480b89be6ce1@linux.dev>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <22629c63-ca98-4af7-9e3b-480b89be6ce1@linux.dev>
-X-ClientProxiedBy: YT4PR01CA0422.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:10b::9) To LV8PR12MB9620.namprd12.prod.outlook.com
- (2603:10b6:408:2a1::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C950C45039;
+	Mon,  8 Jun 2026 23:42:42 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780962164; cv=none; b=rK8d5F5polfBa70xJWWpCMsoIQQylImQYvNLUTH7Ih5Qb3Ps3N8JM1gqNBMOdcqG0MjAfIb6jr3XVcdcChharJYgnq2vaZQHgZDw9/4h8EfDMvtkXKrY5vP0I7rWWFHT6vsnJY/YvlGyN3dOGCAp423gY+SSrI+4qqVmhXvtNts=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780962164; c=relaxed/simple;
+	bh=zgiCaXxXGVRzgNP89cYzhPkqnsgSBl8IG1Ajr12h3M0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XHuFni/tnQCd5omjQeAnsSYSXZguKnsxC9EC5ASvlzHicsO0Zgwg3mkeLHaxdifkSmVgl5kp6mR+4xNPrY3nWCOH4yr66tIKD6mBhgqNBxIXUMsd0h2oAg3WBA3/DiBSiYNnEut07dN/VTYsAYnla1aEW1MJvdDldjNElSy1OvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=jQDqKKxV; arc=none smtp.client-ip=205.220.177.32
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 658HSdVc1690540;
+	Mon, 8 Jun 2026 23:42:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=corp-2025-04-25; bh=ZAa2C7ZECaKPgBj3Rx8eALxC14FMM
+	ifdbPHRqlYnfpY=; b=jQDqKKxVvoNMm64LFI99ycrOmKy2use+gBnhrsMOyaS9q
+	foxqDb+Puxc4CIPdEarhoXARsTwyc6Uwe5hxcOZYSDZ2qwKl5BZA6yaqQPB4yTP/
+	Y1rSqJRXGNRUIKIExLSf6TNSZhwu0txSZh20iGIiPLwiYdNacCN+3vyb6zepVI4X
+	5ALSPQuj3nhut0c5Ss1CpXcWx+52WO2TKtzQzzouBOzvv9BXyPwVHgy94IUENzJ6
+	4mLlNcFTRXNpvDCIB5vKkjo3coxaCyaIFwSXC9dXyQp5rHp5kdTAD7Yz/f06fnyv
+	iRvmrTNSrF0Bppxpxobgt0yBNOljnWkzmlgxc4mtA==
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4emab4kefg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 08 Jun 2026 23:42:25 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.7/8.18.1.7) with ESMTP id 658NSXbZ001362;
+	Mon, 8 Jun 2026 23:42:24 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4ema0pdxdx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 08 Jun 2026 23:42:24 +0000 (GMT)
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.1.12) with ESMTP id 658NgOrx035097;
+	Mon, 8 Jun 2026 23:42:24 GMT
+Received: from mbpatil-ws.osdevelopmeniad.oraclevcn.com (mbpatil-ol10-ws.webad1iad.osdevelopmeniad.oraclevcn.com [100.100.228.95])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 4ema0pdxdg-1;
+	Mon, 08 Jun 2026 23:42:24 +0000 (GMT)
+From: Manjunath Patil <manjunath.b.patil@oracle.com>
+To: netdev@vger.kernel.org
+Cc: saeedm@nvidia.com, tariqt@nvidia.com, mbloch@nvidia.com, leon@kernel.org,
+        andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, manjunath.b.patil@oracle.com
+Subject: [PATCH net-next] net/mlx5e: Report link down on administrative close
+Date: Mon,  8 Jun 2026 16:42:23 -0700
+Message-ID: <20260608234223.3731557-1-manjunath.b.patil@oracle.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV8PR12MB9620:EE_|DM4PR12MB8476:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7cffb4a3-2f25-4218-0de7-08dec5b54497
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|7416014|376014|22082099003|18002099003|4143699003|11063799006|56012099006;
-X-Microsoft-Antispam-Message-Info:
-	t3PoCfiSs+QdDpcYtPK1Db4jMAiGZJ/ySKUuQQsuoHB59l54RAXd7zDehjY+s3nILDh28bgGCj/QiAclDFBl6QLXuMqKkdhOYTyGtKZ9K0V8gixUdFzjg9cHD5M8jpH5FuTUhskQKeloQ/TfJv/roHWHjVOIC9gCPupBN+8STLqeYraRGjMhojZAQDVc5a5ACBOr+/2Rg04WMr8+Tdrk3NqrAQY9zbZ/Owsen3etDQUAflahcAK6xuHGqkSoj9G1N7zJ+AZgPMPtopfx71h4jVyzFn7co3ZFcit6Gy8D30+5f3DsVynNeyiAQO9zsuR97zFwyXBeZ/DLlXw8Q+hCwneJ6WrRt0n7VsqzT59Sn5lRkzGo15HZ51n3JEBPMm0xHQo/+HTvR2SP+BHdDwJsgDsC9VWBfiy2itryEnOxd2WW2miRBaaxeGVYLhrT14Vs39ErDjj2xr1Vk2t/xXQc3cMRuUCBLHRRgI/zQ5jmWdvQT1yhAyzpnws/Gs1+dUunO8vp3gd8Y3O0JsL2l3jFl5MMyneBceMSRXFN8Gm/zCDr7ieQHPjK3lKxIRXszkTaytNha7nl9AHikU3ioPKypWoUyXxXMHYSW6gf07Bcb8AqOkP6KQH+50eA8ctM32Il6fnPGP9mw0RZR4w7YNUIT8+qQPVlwnqfCRm73Ik8zQrvhX3Pgoru/gGxWb7kJuac
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9620.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(22082099003)(18002099003)(4143699003)(11063799006)(56012099006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?uktdh4RR7VZrRy8mHqNU6rABzLLWm9nPw+UBdQuDNDAgGkkwS/Ny9/N5L4GL?=
- =?us-ascii?Q?xB2gkgfGlWynN3P8ryYX7RJhyy2OFWZFYAvlr70gFwZyNguFo/5q8qq5mzCV?=
- =?us-ascii?Q?0a3AmLqQqtVlHkkAQFzT33h5mPITTSAGzbdnHJqsImhJha6JTGGOUgXn93x+?=
- =?us-ascii?Q?11uMKerdrMZApNYYUSH1du0jIq7gbJ0YmFf/OP7jXYrImUhPzluwdtls6qWg?=
- =?us-ascii?Q?nikIuY+KuqgtkG59iJOgKpPFxjm/bejb5fXIL2L1ONbc2J46bps2v1h1g+Cn?=
- =?us-ascii?Q?YLCJUOGreLZUsgv/mo8PCy6slKEDJI99eJLU39wtIwhGHPZKwYnMhR6mZYdo?=
- =?us-ascii?Q?COgPNn7fvPvvEmCJ+udI2KIl6b5uJftdbBgd+FPxWxKi+WnemD0M2OpJnU0B?=
- =?us-ascii?Q?zsktr4rBDXixk2onZDGa4vkj5A9L8iTYSjqNPUJ2Nf3VhFmLWCjoYwZgUWnO?=
- =?us-ascii?Q?7GOQzdI7It6HrDujjTFLN/fJEqzP2SKGebiouvNc1c2txv1lSiS/mL13DTFs?=
- =?us-ascii?Q?fZ0mUrIvHdFoBfhG8Z8wlUzRsDYyplYxBF/y4nBsOm+LhtYRF8ZbndcQb2Se?=
- =?us-ascii?Q?wGr/CZdRY+mtTyaTkQlwYD2kCy9FHEcfGX6aww2HzLxSz/FU6fBB2aQxifX6?=
- =?us-ascii?Q?TApQkeJsW44TMgGNv8b5KPzvoN5J8wB6v7i9WdlNlxJwwmYB7tb1BHZwxbge?=
- =?us-ascii?Q?JieXelUJ1wMU8npyKPjIbD0ie4MtV7T5WG4YHrPc5gbUnJDOvoV7bAp8iqJa?=
- =?us-ascii?Q?5lfDs8nJEmjmDgTNCqdMo1pdyHzTd3aHoFDp1pj3oZieq2tTf+HcwBt9VuWn?=
- =?us-ascii?Q?ZcfNJaG8qYuZnShjSyayFVG/u/MWAdkktF1D7vIwpuyG15NRIDyT9C3VQ89Z?=
- =?us-ascii?Q?+lDTB9YNnOEKrdseYTg4q4NB/Ahv7pNQOxXfww/MXg0GopI7CIxExyrwAOGn?=
- =?us-ascii?Q?QeQIx4E2yd27g9dv0u2a/WfXfoFVY3re+iuygpmjXO4uCZASPFNZZVVfnpSN?=
- =?us-ascii?Q?yzz+fxD+aRmF8owCZZ+YdBr3kfzT80iiIRJ3myBYVh8Qi126GGDaUL7Pk/yo?=
- =?us-ascii?Q?xK1kZ0oLoJQ0wUZqO+PVfZq++Y+CaL+dPNPaCleEhSlif2hgYlwLyRRid1w5?=
- =?us-ascii?Q?CoKj5kSuuDC5W4IfPKegEgZ+T+Y+0/5RQ/ZYCoLyDC/dgdfk8erQVUFgjuTP?=
- =?us-ascii?Q?2PlNu6CB5RTxZTxK8VJHax8Q23c6XmTROpYiQx/KcEcm185sOa0alkaOQYPu?=
- =?us-ascii?Q?CVOxLJilDEyhBqEfAoOHcwllqYKT8f8IOlb5Ak8g2uh6iKCl4BPshrUdSf6x?=
- =?us-ascii?Q?1tuH06vwRa3W0VYOkAKthIy8KD5Nzg3PsdVEJyLQuzcVyntSKnUTQaDF3477?=
- =?us-ascii?Q?ckNm2CkyV0YVhZVIIwQeHOhP44+E1DIucdeAMK/4nYvqBKDvi0K08XJYNggn?=
- =?us-ascii?Q?XWukPIWUx8/NOAiHJoWlXjrFnbhN3wXVsc/BjzaqpJlsiVLsCcQ9DwGHDjY9?=
- =?us-ascii?Q?YwuTBx/HhB8vAOQCVzgX+4JkWYBpXqA9TtNHj7/jdJpUIPqiAlWejJz+aZzI?=
- =?us-ascii?Q?MRkKL5nwjJpeAsrIBFsse+KKyyLVDm8fC1B0SFADd/RKThN5FQlQU9UvVbuB?=
- =?us-ascii?Q?h7z+0fpdjnT9RJG+v2zhS5/VYoOAuoeNtxBJo4WZ0IDYIj2Mamn/MPQCStAO?=
- =?us-ascii?Q?C7pqXjAQTWZzb8geqtQN1WAuZhRhQghLkU5IysxstyMj8jHm?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7cffb4a3-2f25-4218-0de7-08dec5b54497
-X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9620.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2026 23:25:46.5176
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ghoKJaHLkKMoJzRQPQFwZ4ffC77T7zutyH7Lp+Ffv4sAvlF0h/tDsCSkiAyzZkHd
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB8476
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
+ definitions=2026-06-08_06,2026-06-05_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0
+ lowpriorityscore=0 spamscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999
+ adultscore=0 suspectscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2605130000 definitions=main-2606080216
+X-Authority-Analysis: v=2.4 cv=cL/QdFeN c=1 sm=1 tr=0 ts=6a275361 b=1 cx=c_pps
+ a=e1sVV491RgrpLwSTMOnk8w==:117 a=e1sVV491RgrpLwSTMOnk8w==:17
+ a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=jiCTI4zE5U7BLdzWsZGv:22
+ a=o5oIOnhZENCTenyL_yNV:22 a=yPCof4ZbAAAA:8 a=lZAZS3N-niQ3KQdCBw4A:9
+ a=5yU3S35YU4bGjq-dph-N:22 a=Bho9c0fBagfJEIQBS7DQ:22 cc=ntf awl=host:13723
+X-Proofpoint-GUID: kv4sTv3mVoJiexyZRQrL7pzipiJT9XP-
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA4MDIxOCBTYWx0ZWRfXzdhKGvQjEc14
+ +I5ltglk/BtuK0Doz5JgXriE89bw5tIoxdLTmk7TOCWKe9k7OnAKf+8XZaiF1Cy/24NCuTLk4Yb
+ nZZE+J4A7eMmD/oHSGThAyMVzgMDOT8A9UmkJrzZl9N8wYRLiqRHomFsR8SXBhmQUIyDfErQQF7
+ qcEdNjcexw+4bFXhcBTDyk3PJadFwPBNbRLP5rtLgwbErIPHtpNfrrfMWs3gOJTQR3NQ8EZBJwO
+ nqWv/qrlGmB0rJ1vk3GPUi3tbqQO907ioATWR0exWUpavxPLr4xukmErqJd21ls30ASNcSvjApl
+ mNbZS2GN2G97ClJC1y5f5aVy2Mmf03n8HofaIvr0vtsey8NbBGFt/aF0oe/+YuQaKBlnQtgz9iM
+ kLMvsjLUOTmUVgqIekLxKRHpILDjRIqwERtjTRgVzkyx37tM9PA9hidlv4iUIgeHTdvzqXoTEKu
+ kZRmpGmfrqawzoCMLaGvioo7A5usQL0O7krUflvo=
+X-Proofpoint-ORIG-GUID: kv4sTv3mVoJiexyZRQrL7pzipiJT9XP-
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[oracle.com,reject];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[oracle.com:s=corp-2025-04-25];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21989-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[14];
+	FORWARDED(0.00)[lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:yanjun.zhu@linux.dev,m:huangjunxian6@hisilicon.com,m:krzysztof.czurylo@intel.com,m:linux-rdma@vger.kernel.org,m:tangchengchang@huawei.com,m:tatyana.e.nikolova@intel.com,m:yishaih@nvidia.com,m:zyjzyj2000@gmail.com,m:akpm@linux-foundation.org,m:david@redhat.com,m:leon@kernel.org,m:patches@lists.linux.dev,m:philiptsukerman@gmail.com,m:stable@vger.kernel.org,s:lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[jgg@nvidia.com,linux-rdma@vger.kernel.org];
-	FREEMAIL_CC(0.00)[hisilicon.com,intel.com,vger.kernel.org,huawei.com,nvidia.com,gmail.com,linux-foundation.org,redhat.com,kernel.org,lists.linux.dev];
+	TAGGED_FROM(0.00)[bounces-21990-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER(0.00)[manjunath.b.patil@oracle.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:netdev@vger.kernel.org,m:saeedm@nvidia.com,m:tariqt@nvidia.com,m:mbloch@nvidia.com,m:leon@kernel.org,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:manjunath.b.patil@oracle.com,m:andrew@lunn.ch,s:lists@lfdr.de];
+	DKIM_TRACE(0.00)[oracle.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[manjunath.b.patil@oracle.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@nvidia.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
+	TO_DN_NONE(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,oracle.com:dkim,oracle.com:email,oracle.com:mid,oracle.com:from_mime];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,nvidia.com:mid,nvidia.com:from_mime,Nvidia.com:dkim]
+	RCVD_COUNT_SEVEN(0.00)[9]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 7FA2565B2AC
+X-Rspamd-Queue-Id: 30CAE65B356
 
-On Mon, Jun 08, 2026 at 03:38:32PM -0700, yanjun.zhu wrote:
+mlx5e_update_carrier() reports both link-up and link-down carrier
+changes, but an administrative down does not reach it in practice. The
+close path first changes the port admin state and then clears
+MLX5E_STATE_OPENED and drops carrier silently in mlx5e_close_locked().
+Any queued carrier worker will skip update_carrier() once the device is
+no longer opened.
 
-> But I found the following problem. I am not sure if we fix this problem in
-> this commit or file a new commit.
+This leaves "ip link set dev <dev> down" without a matching netdev
+"Link down" message, while reopening the device still reports "Link up".
 
-The core code does all of that
+Report the link-down transition in mlx5e_close() before the common close
+helper clears the opened state and drops carrier. Guard the message with
+the current opened and carrier state to avoid duplicates when the netdev
+is already closed or carrier is already down.
 
-Jason
+Assisted-by: Codex:gpt-5
+Signed-off-by: Manjunath Patil <manjunath.b.patil@oracle.com>
+---
+Validation:
+- Built an OL8 mainline test kernel from this change.
+- Booted 7.1.0-rc6.bug123456.el8.v1.x86_64 on an mlx5-backed VM.
+- Confirmed `ip link set dev re0 down/up` and `re1 down/up` now emit
+  netdev `Link down` and `Link up` messages, alongside the existing RDMA
+  port state notifications.
+
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index 8f2b3abe0092..a04a89f0eddf 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -3628,6 +3628,9 @@ int mlx5e_close(struct net_device *netdev)
+ 
+ 	mutex_lock(&priv->state_lock);
+ 	mlx5e_modify_admin_state(priv->mdev, MLX5_PORT_DOWN);
++	if (test_bit(MLX5E_STATE_OPENED, &priv->state) &&
++	    netif_carrier_ok(netdev))
++		netdev_info(netdev, "Link down\n");
+ 	err = mlx5e_close_locked(netdev);
+ 	mutex_unlock(&priv->state_lock);
+ 
+
+base-commit: e43ffb69e0438cddd72aaa30898b4dc446f664f8
+-- 
+2.47.3
 
