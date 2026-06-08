@@ -1,78 +1,52 @@
-Return-Path: <linux-rdma+bounces-21944-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21945-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 0vQxBZOCJmr5XgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-21944-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 08 Jun 2026 10:51:31 +0200
+	id IeqGFo6EJmq4XwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-21945-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 08 Jun 2026 10:59:58 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66BD7654386
-	for <lists+linux-rdma@lfdr.de>; Mon, 08 Jun 2026 10:51:30 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65B176544FA
+	for <lists+linux-rdma@lfdr.de>; Mon, 08 Jun 2026 10:59:57 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=amazon.com header.s=amazoncorp2 header.b=mLtnT8Ri;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21944-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21944-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=amazon.com;
+	dkim=none;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21945-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21945-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0A48E3114743
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jun 2026 08:42:44 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 0FFC9300E16F
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jun 2026 08:56:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5D53394EBD;
-	Mon,  8 Jun 2026 08:39:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 455053B3883;
+	Mon,  8 Jun 2026 08:56:41 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from pdx-out-015.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-015.esa.us-west-2.outbound.mail-perimeter.amazon.com [50.112.246.219])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81EC03B2FF3
-	for <linux-rdma@vger.kernel.org>; Mon,  8 Jun 2026 08:39:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E68BA3B2FD9;
+	Mon,  8 Jun 2026 08:56:36 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780907988; cv=none; b=YbERMc3ZkjpCR7w+QBzR0X+hPYtGlyeBRaTPBETSzeqRyBQvvSA4djERDPBkY723JiGS87p9E/5yy7dRS0UmXxSIgQ8A621UTQAkEALPmmKz/GHOH14y+BpuM0o4ARc9c4RM2779ElZ2DrtCOR7s3vOsO69xheuDM0dORRhq3o0=
+	t=1780909001; cv=none; b=IhlSe/UTJoE7PWtIFsNPKYcE/LnmByvJrtGD9uZjV20kFgSFjObL66+YgvpJxF63RFXTLQDhBXstVH0IkMUtaCYN+rRBM4HnLL9oKmiNUIdGypyw+/hnkwHv/IrexcDJPycVayP+z+6VjMJgBW5PXhwSCqB0i/Qsua6KA9Np9bs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780907988; c=relaxed/simple;
-	bh=BYqWTyumGhikMgkAqsBe8bf9BSzUYZ7YT2815x5AKJg=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=aQJRr95OTmIaU93pwrO1Arh0Hs0cVbeK65It4jwJ12uWhMyWBye3lTShR5H0l0oxird5zVxc/rh5M1E5IAg4caeUe2QbfzlDDZOw8rOUg0Ymk3LbuYp1JpgRSItFBGRXEQy47r+3RrKHKQBSAE4r7W1J+GmlialmgmskPTkvOeg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=mLtnT8Ri; arc=none smtp.client-ip=50.112.246.219
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1780907982; x=1812443982;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ktvOzhf24dRI636xNEwXUMcQrJA8HLln+4yE2KXE3Mw=;
-  b=mLtnT8RiN08p+Oz/9wVZcyxsJvS/Gq1rnHWX1S0Ao1T4KH/1KTsznGgu
-   BTZHpPKOyduap37IqCemb6gaaWmSn7Nt/OEvLb3HUX3opxzRwb/Ljjz0P
-   DXSpRW5kSr/AnmLvZQXT/6PgakLx0YoDbVT5uXPtmiKItZmPPwsysqfuX
-   9Rvgn0NuRoLfxFED+Rekf7FscKrmqhMrKCVTv0xmurFT82tqb2gntPetZ
-   dunuvviGdJ1NGvE7yJD6NgbMUdzutmKrO/05feyDrY/b7eWCbrjLv8SA9
-   /K+9qB/Slwa01BsKIKAlhBjkQcveeq4osakDB0WVaLogAs2cSi+Mz5jfX
-   w==;
-X-CSE-ConnectionGUID: Ye+U+V+dSmqiPMsuG9azeg==
-X-CSE-MsgGUID: wpEYQhWUSZK002Y82mlwyg==
-X-IronPort-AV: E=Sophos;i="6.24,194,1774310400"; 
-   d="scan'208";a="21118378"
-Received: from ip-10-5-9-48.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.9.48])
-  by internal-pdx-out-015.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2026 08:39:37 +0000
-Received: from EX19MTAUWC001.ant.amazon.com [205.251.233.105:14454]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.31.226:2525] with esmtp (Farcaster)
- id 3cdd3052-0d0f-41c4-b97c-20d28d6b5286; Mon, 8 Jun 2026 08:39:37 +0000 (UTC)
-X-Farcaster-Flow-ID: 3cdd3052-0d0f-41c4-b97c-20d28d6b5286
-Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
- Mon, 8 Jun 2026 08:39:37 +0000
-Received: from dev-dsk-tomsela-1c-ce9cc34e.eu-west-1.amazon.com (10.15.30.17)
- by EX19D001UWA001.ant.amazon.com (10.13.138.214) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
- Mon, 8 Jun 2026 08:39:35 +0000
-From: Tom Sela <tomsela@amazon.com>
-To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-	<mrgolin@amazon.com>, <tomsela@amazon.com>
-CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>,
-	"Yonatan Nachum" <ynachum@amazon.com>
-Subject: [PATCH for-next] RDMA/efa: Implement the query port speed verb
-Date: Mon, 8 Jun 2026 08:39:27 +0000
-Message-ID: <20260608083927.4116-1-tomsela@amazon.com>
-X-Mailer: git-send-email 2.47.3
+	s=arc-20240116; t=1780909001; c=relaxed/simple;
+	bh=V8YyLbC29J+xHZiuI3J0B1RohcgYzmcTezj17IaNcw4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Mu2acgBT6VYxOVoNvUty92GoEM4vCVc9WxCXwPg9LhoT/TNdloU2urZBew84YEJXllsSreagkqKFzQ6Y+htQsKnpkJtlTs5SgRgZYr3GC8Z6SQJPWNmKrBSGVxA7MJFuxEvhDhve2DG+k5CqlQUtX2eeWnDuODdXH3S/CQX1luM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.21
+Received: from dfae2b116770.home.arpa (unknown [36.110.52.2])
+	by APP-01 (Coremail) with SMTP id qwCowACHLtfAgyZqgdbhAA--.5522S2;
+	Mon, 08 Jun 2026 16:56:33 +0800 (CST)
+From: Wentao Liang <vulab@iscas.ac.cn>
+To: jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Wentao Liang <vulab@iscas.ac.cn>,
+	stable@vger.kernel.org
+Subject: [PATCH] RDMA/core: fix refcount leak in __ib_alloc_pd()
+Date: Mon,  8 Jun 2026 08:56:25 +0000
+Message-Id: <20260608085625.138331-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -80,143 +54,97 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D045UWA001.ant.amazon.com (10.13.139.83) To
- EX19D001UWA001.ant.amazon.com (10.13.138.214)
+X-CM-TRANSID:qwCowACHLtfAgyZqgdbhAA--.5522S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cr15ZF47tFy3Xry3ZrWkWFg_yoW8Xr4Upr
+	Z8J342yrWDCF4fCw4Uta4UAFWFkayrArW5W39akwnIvFn8ursayr95Ja4agr4kAr9rGr4I
+	vrs0yr43KF4xCaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkK14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr1j6F4UJwAm72CE4IkC6x0Yz7v_Jr
+	0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkF7I0En4kS14v2
+	6r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
+	AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCI
+	c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
+	AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_
+	Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbYFAJ
+	UUUUU==
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBgwMA2omaa0jsQABse
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-7.66 / 15.00];
-	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
+X-Spamd-Result: default: False [0.04 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp];
-	TAGGED_FROM(0.00)[bounces-21944-lists,linux-rdma=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:jgg@nvidia.com,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:mrgolin@amazon.com,m:tomsela@amazon.com,m:sleybo@amazon.com,m:matua@amazon.com,m:gal.pressman@linux.dev,m:ynachum@amazon.com,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[tomsela@amazon.com,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	DMARC_NA(0.00)[iscas.ac.cn];
+	FORGED_RECIPIENTS(0.00)[m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:vulab@iscas.ac.cn,m:stable@vger.kernel.org,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FROM_NEQ_ENVFROM(0.00)[tomsela@amazon.com,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-21945-lists,linux-rdma=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[vulab@iscas.ac.cn,linux-rdma@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[vulab@iscas.ac.cn,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
+	R_DKIM_NA(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	DKIM_TRACE(0.00)[amazon.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,iscas.ac.cn:mid,iscas.ac.cn:from_mime,iscas.ac.cn:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 66BD7654386
+X-Rspamd-Queue-Id: 65B176544FA
 
-Implement the query port speed callback to report the port effective
-bandwidth directly in 100 Mb/s granularity.
+The error handling in __ib_alloc_pd() has a refcount leak.  When
+get_dma_mr() fails it calls ib_dealloc_pd() which invokes
+ib_dealloc_pd_user().  If the driver's dealloc_pd operation returns
+an error, ib_dealloc_pd_user() returns early and skips both
+rdma_restrack_del() and kfree(pd).  This leaves the resource tracking
+kref held and the pd memory unfreed.  Because ib_dealloc_pd() has a
+void return, __ib_alloc_pd() cannot detect the failure, so the leak
+persists.
 
-Reviewed-by: Michael Margolin <mrgolin@amazon.com>
-Reviewed-by: Yonatan Nachum <ynachum@amazon.com>
-Signed-off-by: Tom Sela <tomsela@amazon.com>
+Fix it by always calling rdma_restrack_del() and kfree(pd) in
+ib_dealloc_pd_user(), even when the driver callback fails.  This
+ensures the software state is cleaned up regardless of the hardware
+operation result.
+
+Cc: stable@vger.kernel.org
+Fixes: 91a7c58fce06 ("RDMA: Restore ability to fail on PD deallocate")
+Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
 ---
- drivers/infiniband/hw/efa/efa.h         |  1 +
- drivers/infiniband/hw/efa/efa_com_cmd.c |  4 ++++
- drivers/infiniband/hw/efa/efa_main.c    |  1 +
- drivers/infiniband/hw/efa/efa_verbs.c   | 13 ++++++++++---
- 4 files changed, 16 insertions(+), 3 deletions(-)
+ drivers/infiniband/core/verbs.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
-index 00b19f2ba3da..f4586bb170c1 100644
---- a/drivers/infiniband/hw/efa/efa.h
-+++ b/drivers/infiniband/hw/efa/efa.h
-@@ -148,6 +148,7 @@ int efa_query_device(struct ib_device *ibdev,
- 		     struct ib_udata *udata);
- int efa_query_port(struct ib_device *ibdev, u32 port,
- 		   struct ib_port_attr *props);
-+int efa_query_port_speed(struct ib_device *ibdev, u32 port_num, u64 *speed);
- int efa_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
- 		 int qp_attr_mask,
- 		 struct ib_qp_init_attr *qp_init_attr);
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.c b/drivers/infiniband/hw/efa/efa_com_cmd.c
-index 63c7f07806a8..5db4f5805b59 100644
---- a/drivers/infiniband/hw/efa/efa_com_cmd.c
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.c
-@@ -6,6 +6,8 @@
- #include "efa_com.h"
- #include "efa_com_cmd.h"
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index bac87de9cc67..6437ede11908 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -398,8 +398,11 @@ int ib_dealloc_pd_user(struct ib_pd *pd, struct ib_udata *udata)
+ 	}
  
-+#define EFA_DEFAULT_LINK_SPEED_GBPS 100
-+
- int efa_com_create_qp(struct efa_com_dev *edev,
- 		      struct efa_com_create_qp_params *params,
- 		      struct efa_com_create_qp_result *res)
-@@ -468,6 +470,8 @@ int efa_com_get_device_attr(struct efa_com_dev *edev,
- 	result->device_caps = resp.u.device_attr.device_caps;
- 	result->guid = resp.u.device_attr.guid;
- 	result->max_link_speed_gbps = resp.u.device_attr.max_link_speed_gbps;
-+	if (!result->max_link_speed_gbps)
-+		result->max_link_speed_gbps = EFA_DEFAULT_LINK_SPEED_GBPS;
+ 	ret = pd->device->ops.dealloc_pd(pd, udata);
+-	if (ret)
++	if (ret) {
++		rdma_restrack_del(&pd->res);
++		kfree(pd);
+ 		return ret;
++	}
  
- 	if (result->admin_api_version < 1) {
- 		ibdev_err_ratelimited(
-diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
-index 03c237c8c81e..97da8e828e34 100644
---- a/drivers/infiniband/hw/efa/efa_main.c
-+++ b/drivers/infiniband/hw/efa/efa_main.c
-@@ -390,6 +390,7 @@ static const struct ib_device_ops efa_dev_ops = {
- 	.query_gid = efa_query_gid,
- 	.query_pkey = efa_query_pkey,
- 	.query_port = efa_query_port,
-+	.query_port_speed = efa_query_port_speed,
- 	.query_qp = efa_query_qp,
- 	.reg_user_mr = efa_reg_mr,
- 	.reg_user_mr_dmabuf = efa_reg_user_mr_dmabuf,
-diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index 5cd34746e6a6..5bb00cb85775 100644
---- a/drivers/infiniband/hw/efa/efa_verbs.c
-+++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -90,8 +90,6 @@ static const struct rdma_stat_desc efa_port_stats_descs[] = {
- 	EFA_DEFINE_PORT_STATS(EFA_STATS_STR)
- };
- 
--#define EFA_DEFAULT_LINK_SPEED_GBPS   100
--
- #define EFA_CHUNK_PAYLOAD_SHIFT       12
- #define EFA_CHUNK_PAYLOAD_SIZE        BIT(EFA_CHUNK_PAYLOAD_SHIFT)
- #define EFA_CHUNK_PAYLOAD_PTR_SIZE    8
-@@ -332,7 +330,7 @@ int efa_query_port(struct ib_device *ibdev, u32 port,
- 	props->phys_state = IB_PORT_PHYS_STATE_LINK_UP;
- 	props->gid_tbl_len = 1;
- 	props->pkey_tbl_len = 1;
--	link_gbps = dev->dev_attr.max_link_speed_gbps ?: EFA_DEFAULT_LINK_SPEED_GBPS;
-+	link_gbps = dev->dev_attr.max_link_speed_gbps;
- 	efa_link_gbps_to_speed_and_width(link_gbps, &link_speed, &link_width);
- 	props->active_speed = link_speed;
- 	props->active_width = link_width;
-@@ -344,6 +342,15 @@ int efa_query_port(struct ib_device *ibdev, u32 port,
- 	return 0;
- }
- 
-+int efa_query_port_speed(struct ib_device *ibdev, u32 port_num, u64 *speed)
-+{
-+	struct efa_dev *dev = to_edev(ibdev);
-+
-+	*speed = dev->dev_attr.max_link_speed_gbps * 10;
-+
-+	return 0;
-+}
-+
- int efa_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
- 		 int qp_attr_mask,
- 		 struct ib_qp_init_attr *qp_init_attr)
+ 	rdma_restrack_del(&pd->res);
+ 	kfree(pd);
 -- 
-2.47.3
+2.34.1
 
 
