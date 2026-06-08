@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-21961-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21962-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id RBVOGeLLJmrVkgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-21961-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 08 Jun 2026 16:04:18 +0200
+	id 3UaEDXbKJmpjkgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-21962-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 08 Jun 2026 15:58:14 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9CA1656E79
-	for <lists+linux-rdma@lfdr.de>; Mon, 08 Jun 2026 16:04:17 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFD3E656DA0
+	for <lists+linux-rdma@lfdr.de>; Mon, 08 Jun 2026 15:58:13 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=Nvidia.com header.s=selector2 header.b=SsGHCMnT;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21961-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21961-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=Nvidia.com header.s=selector2 header.b=SOS4kPm5;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21962-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21962-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=reject) header.from=nvidia.com;
 	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1F3CC307C7FE
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jun 2026 13:57:28 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 81462301E801
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jun 2026 13:57:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83E913C3420;
-	Mon,  8 Jun 2026 13:57:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01CD33C4540;
+	Mon,  8 Jun 2026 13:57:30 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012004.outbound.protection.outlook.com [40.107.209.4])
+Received: from CH5PR02CU005.outbound.protection.outlook.com (mail-northcentralusazon11012032.outbound.protection.outlook.com [40.107.200.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE57714A4F0;
-	Mon,  8 Jun 2026 13:57:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E5963C342D;
+	Mon,  8 Jun 2026 13:57:27 +0000 (UTC)
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780927046; cv=fail; b=gT/MAO57vqaF5RvL1CDwwXtFz/uWdk1+4j6R/1a15jltTKDH9Bq4ixGNnc956ti/oU5PbtpkxBj58h61oTdhHEmiQV9C7xksURXLPN+LZWmCR9u2qcsuEJDRquGYtOMhokCOKD3zgquPIYRzyFMuoutmKzKYTlDzpunsxBfu4e0=
+	t=1780927049; cv=fail; b=l0NnliNJ3swDfn27DMJdMwt9NkwTky4ARPRY5HmN6WV+gBeL3nyNgUsCxqvMhMqZszF/W2W0X/APj64MxwrtrZl1bkaozenL++fdVGrV6rRBwFqhBht3iBXG2gV5DeeDqJO+4QFoBaUt53gjwvmUIHTmeINzMK7wVVOg4iH5098=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780927046; c=relaxed/simple;
-	bh=rQ22eNsSCZrbd/KzcTXg7qekydIYOrMDtp5ZoAHeGoE=;
+	s=arc-20240116; t=1780927049; c=relaxed/simple;
+	bh=SENDyx4CaLb0ECmwsLJyJtQm7GsxxCOvv/JEisT3J5g=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=berWlNoKE0FrnDaQnAE4SH+3PJIPO5czSvsTIsG/uRSDW8DPqz4kjlAAhTkqdy9fd2s13+bomoc+kxQhkIKOYhgA5Qzyik8UpFV8no+u2sZO9IgPEG4KHnRD/qBGhpUa9uPR9BYKLeUSyjvfTTB21+Gyw7MQ8zzkL1k4htmYCDk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=SsGHCMnT; arc=fail smtp.client-ip=40.107.209.4
+	 MIME-Version:Content-Type; b=PfAz1sIZG/AQYf+LQnvoHtyj3IfvG1kyAiktcjQlh5BJzN+SD4mYZBkwoB+hdb3KAYJJ/NXhLDbUuOqcUCERZNmEQDzJWPFByWkJPcAKxMDyZYXbvQvpNDPrPj2pi/a1PQ8m3XvDSPUceDMq99tCTtkL/Ooc41fMjApcsXtENp8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=SOS4kPm5; arc=fail smtp.client-ip=40.107.200.32
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ZAJcMA/n96iy0Oyh7QEWoj+iAbuwd1Bybw1YoZXmR13pifxe/aJx9WkFuUiybdBS/X1iVuR5yaqHyG3a+eqLMjZqNg0GM4L1MnYucZI/+ahSVBsqhg7oG7RwlEDxpI/H/4iGjMtT9FgaalZX8VSlq7gpSAiwuaq0JCkByBmMnlu0o1FC5wDwsHG8MU1Gss2d3C98aSxrCg+Hc9kB7oeogxvpruvXaYNk3mxtd5kd9mW/dDVVlgl9AqHmGZJKxHgotD1mqnjv8A9UHL5RTcNDQ465+t+W5uILvRBrx09whO07xGEzjLbWW2jo0E5D/mtZKunv3N/IsaqCge3GfhLU5Q==
+ b=rlMXM8ujfyJpVypMZYclXLNYNemFw1uzuw7fCfRZyWfrgMawoQvrYif2933xvpFuaqoxCL+vr/qKCerDULIBw6LuEQE/AwrrXuSKHoVJyXzms4MucR2YAlk5ZR+Dbjjqv3DWSeowbhEla2A1FB4VA/p8f9MnDViHuBk5eDBrt9qpclYuH2ulJ8Doc25eAJ1rKalqqVH0e98SObzfFYMzjW24TrxtAO+p580GU5ArQLgfFbhG95lqqKwllbI0VR+PP4EzVAcTqCCHN1+RnsSKHF02bObowDM22u4F8BJgXCWcoKLTEe+bLtzZYrkpCMG1tNYM+WfrM0bP2LhwKsVgyA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cQZcBLJCZHvW3Ntw1r3ypf69EVU9L+YsENmz6th/NdQ=;
- b=i28GmLG0PuQcINqYlZ6oSTgSwcZMj/7dfqgAmcUXvtDJNyM78Jkv3FDzETzouX6WGwPsUCBVhQuoAQLZA57l4pzx7oUWt9R5X6PJgE4bREOXfHN9Aqsbh9CVzAAY+Z5lDH491R8DoHQhIXFfBmoDhYXU2ONo5wg9PXz62uCiwRmTVrfWFVwaFHOdM9w+xWIIJXLeF/IxPyDE7KEL6v0cRXtwKS3ZmBmILdC6Tqf3SEwcdn/u6JoZejnZZG07bUlQuKHpUJyUEMa1t/tO35mLoFSt6xiJzUJ0FqQ6kpa4UygGZWqREz+3NilW1vDzxWFMR5Q6uLQPxIK61RiGxf9YsA==
+ bh=9RQv35ctv5lgnd7mvwOAHcERDQEVo5yHL1Pv7h4SR+U=;
+ b=iD15jAi7V3DiVAtDyzVuazC/ORfE4DQreXRDG/v2ShgLnXSh7h8BlEcUaNaP8wJlph+w/ro7s0WxKHbsLfOf4TwgDjrtv6AQbGP6M1kmrFp6HYDNLqnWIIjEUpFUse1u7UilYYlzmNa2GaG5XAK7p+w1jlslV3SvybzqmJ+3oYl2PUSeZxeDBQ3hS6l+0fozAOXGTQITsl5XU2c5MqCYIuX6nxshVHr+0WWtsJarWR7y/IJHzsR6tFPig5XK+gIDuhARrb2WzaqjW9d+/RoaIol73fSgAU5sDsHMfxdKpp6Hgh8NwENpx96NZKLGN25YirkkN90qL2mHO0encZ9NMg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.118.233) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -48,18 +48,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cQZcBLJCZHvW3Ntw1r3ypf69EVU9L+YsENmz6th/NdQ=;
- b=SsGHCMnTmnFEIvfT8f6Wq5aiFWAMnZkNGffF3bVEF/TxJ3NrFfnJdFlL7WdxVFxhiyN+WXhwW5jc4geO1vlVYqPzDcRBDoG5XIuvW+J0RODY+ga4duMrsHw9hIal6y1C+9LSxmrN5FCsqpOn/9d5XX5NoaHRyZo+ibZpmq72hqmVyAA7j/t1a9G+bhUFWIoM7TUCbGcege00LSHuMzo67ZemlWdUXg+McGF00Rw8Q+lDwUl7DPJnjcSNScc0PD9OKG1gUu0wbaJr2bBVgYGyyn8TwaoOX1nZZjKTQGoiL3P1vZYabnW28WyQINqN4pI83YCwjGoh89D80Cl7kMSRTQ==
-Received: from BN9PR03CA0668.namprd03.prod.outlook.com (2603:10b6:408:10e::13)
- by CH3PR12MB7572.namprd12.prod.outlook.com (2603:10b6:610:144::17) with
+ bh=9RQv35ctv5lgnd7mvwOAHcERDQEVo5yHL1Pv7h4SR+U=;
+ b=SOS4kPm5HOxsixrveu5b19NMA98HxzhOA36ZjqXLWLla4CXtKUmUqpUAhoVztutY8VYzN69BoJ70BrHrqfBfSIJE+858yqEZmxlE02VlLUOpOCmBo3+NF1uYI3Wol3axq16IjsJ+pngG4jh0xhudh6G0dE2gmXmIJshoyCa9PGohcYBhqr/+CfRmKs+Eq+2j1fu+bbvS2vfCKxB+ggF5afFnllvxybZMNDVowYojWYFKVcms8jh3ci+6elnCP7Cghn/jrKNFbusWu1yokX386Tc0zF46qzZFbMUN4PV+qxDg2IVL3/8yFVyIgMb9IQep7HoPS39pODwnNH6keBaH/Q==
+Received: from MN0PR03CA0023.namprd03.prod.outlook.com (2603:10b6:208:52f::22)
+ by IA1PR12MB8240.namprd12.prod.outlook.com (2603:10b6:208:3f2::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.13; Mon, 8 Jun 2026
- 13:57:11 +0000
-Received: from BN1PEPF0000468A.namprd05.prod.outlook.com
- (2603:10b6:408:10e:cafe::4a) by BN9PR03CA0668.outlook.office365.com
- (2603:10b6:408:10e::13) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.12; Mon, 8 Jun 2026
+ 13:57:17 +0000
+Received: from BN1PEPF0000468D.namprd05.prod.outlook.com
+ (2603:10b6:208:52f:cafe::22) by MN0PR03CA0023.outlook.office365.com
+ (2603:10b6:208:52f::22) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.21.92.13 via Frontend Transport; Mon, 8
- Jun 2026 13:57:11 +0000
+ Jun 2026 13:57:17 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -67,20 +67,20 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.118.233 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.118.233) by
- BN1PEPF0000468A.mail.protection.outlook.com (10.167.243.135) with Microsoft
+ BN1PEPF0000468D.mail.protection.outlook.com (10.167.243.138) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.113.7 via Frontend Transport; Mon, 8 Jun 2026 13:57:11 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ 15.21.113.7 via Frontend Transport; Mon, 8 Jun 2026 13:57:17 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
  (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 8 Jun
- 2026 06:56:54 -0700
+ 2026 06:57:00 -0700
 Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.20; Mon, 8 Jun 2026 06:56:53 -0700
+ 15.2.2562.20; Mon, 8 Jun 2026 06:56:59 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
  (10.126.190.181) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
- Transport; Mon, 8 Jun 2026 06:56:48 -0700
+ Transport; Mon, 8 Jun 2026 06:56:54 -0700
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -94,9 +94,9 @@ CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
 	<phaddad@nvidia.com>, <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Dragos Tatulea
 	<dtatulea@nvidia.com>
-Subject: [PATCH net-next V2 04/15] net/mlx5: SD, make primary/secondary role determination more robust
-Date: Mon, 8 Jun 2026 16:55:36 +0300
-Message-ID: <20260608135547.482825-5-tariqt@nvidia.com>
+Subject: [PATCH net-next V2 05/15] net/mlx5: SD, add L2 table silent mode query support
+Date: Mon, 8 Jun 2026 16:55:37 +0300
+Message-ID: <20260608135547.482825-6-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20260608135547.482825-1-tariqt@nvidia.com>
 References: <20260608135547.482825-1-tariqt@nvidia.com>
@@ -111,30 +111,30 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF0000468A:EE_|CH3PR12MB7572:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4ef6bcc4-4d0d-4cee-24de-08dec565d683
+X-MS-TrafficTypeDiagnostic: BN1PEPF0000468D:EE_|IA1PR12MB8240:EE_
+X-MS-Office365-Filtering-Correlation-Id: 79ae40c9-32db-46a3-4820-08dec565da16
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|82310400026|36860700016|7416014|376014|18002099003|22082099003|5023799004|11063799006|56012099006;
+	BCL:0;ARA:13230040|82310400026|36860700016|1800799024|7416014|376014|6133799003|18002099003|22082099003|11063799006|56012099006;
 X-Microsoft-Antispam-Message-Info:
-	VluSrtgF/04gdz/rvP9c7LKV0dnlRAbpXFZAMBMn6P/EgjUMVwDGPXJQHh31U7xLdbbiOv+Q1qTIbbNJC/juCPyC/L+EotktgWxVmvVAg/65E44xLb2N4ynt+s4KjxOfhqa5lvLwq/wQd5oSr+ufEnXjAhVCDj43SgyeE0aEQFVDlnXDI+fh+4S8tXHPslgHdx04G0bkWUG1zYCvyCl8vDKyiXGofSbOtYOBbUAKbBZSia51nB0HX8WSkPKDkN+vFmPyVoOik3JbTbWh9BUTp8SNzX7z9zSnhDUhhKOxis/U0kgT+eKk7D9BxkZRx7pe+UsN1XrYhpSW8KbcMjxcT7K/JWb8G6SMSEyNMFjlpsoyAzr+kL8TJN/XklssnNoX9cZtyNf0Rq87M5IuKqSPeB8zh3xSabjaB8Iv+pitH0wItd75SHexJaiHeT+JtemVFgo8PvoTKwkrhspgF84HeS1K0kM7ea2tcmfhqkLSRYestnXcr29891anOKm8VbgNoZQu65t2x+cNzYygxAP/wkw3JaobPUi+Gy8RKafEO6aALlsb2RNs1g2Z8D7h/Eb/w+utFdXqf8CtCI3dgsP1X+16PldejcmTX7AqcsMrdJfbCFCuunrJnj+Luhr5eeXVgqQ9GsRcpBHtTCyE6mKz2jl9jG36njlHJRbdMZtF1lTZGtUitNu0OR6bJAgTSY1jWU6KVlZqxxnpIzEgN9gzLjqKI/uFX9SrWjjM63jPNLI=
+	NB5Jj/+/DZNNh4AE+sfWQjNQLZRfipV9Cj9F5t7tYTpfc1DI/Bb2mF8K2VGa8Mtpp/bICHYWTBXchyKIgWUMWSXroBpEDjByV0DP/YQQ4iJlQV/Z7+U7miFw0dBe1EK5Qs2ffa+XgCTo3+d0iFgQh3dsL62zOJPu6NzUwlo1ztoL7zczor225pKB9BbNdiiIAKDv+g3LodFheVgq4zChMYrj9VkAH+B/gLmUPcC8658UhxqHCmj41GbA+nyZugXDo6okGrKKdrw7XfVZi5PjBd6oy47Gp18ERTUgNgi5fCYMJGXOzhu9iKzBJgOk2/8ZCy/VZvqjcCLDnnbnWHRCHhL6mkhunJdzpmZITbGsr3hSHEMXf7uq1Yuf7NsVvDiMj5oCpvEDpweYDWYQfOuZGwDygE7/Dua9CyFf4X4XR92iu6OfyyK3KyVeAybOQzQprAVL3E/89367aO7pTsid3zqN0LmPCvFfexZT8D0CVXNgJJOmfkqcIyDynbhk7GSdlb1NHy3PqlXgXsXlpM2hUUvZf+JKJnT3rMuLKYW67Y8qyMLELTbCmZ7J+O2GP0Z/5SyEhIufCC0VsjveXnYFcgpPFI10tVLBFvN+ZEB7OpbsOI0WwCIMuXVirkycVj9c+68XP6Kdb45mzKVhB0UUEf+fN7gzrFjOcnoV28fkUsn2p0r1h4WLKdHCECpyuioYh0TaNVQ0CzkoLbGcdh30WQMjCobKrHLFRX3Gat0n/Ag=
 X-Forefront-Antispam-Report:
-	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(36860700016)(7416014)(376014)(18002099003)(22082099003)(5023799004)(11063799006)(56012099006);DIR:OUT;SFP:1101;
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(36860700016)(1800799024)(7416014)(376014)(6133799003)(18002099003)(22082099003)(11063799006)(56012099006);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	aQYUSB9ilfRNGsg+ai2cOVlXilAg4k4IkgXR7sMRgrtWmMJ5SJpepdPvKF9i1aAq/7nDJlrOxM+XLawiUp1ETIUCSCqmH3vskl4/yc9OujitXtq2MLcteA3Jbal/YG7xPsEtTtkvAC3RLX3RIqtJedUeo7w7HMm6ltstN7eqxZ2P9zI13DgSEw6BpTJdW03TopGg+US6ILtuP8/QxzImH7VZNVTh10cYFcl3i5O3seb19PqkVZs6+WvJ81qhUl4+2N3bmhc07M/NsHi4suloYM1OTWXpSv+t0F69PVLeyPCYl32BnfiODeJeWFP+oxxYBo3v7cgneSaP6FYOIDmmtMa3sRREVh26ZehDOVVQ9vvc9GiahTonsPCu1YdhijyfmK3AuY9BgDFnFqzsKLzbPpVoS5SA4g7qDPHg6wl8gFvGRMQnyWJbQN5U/xYIIKbo
+	FlJb1OmB1oRbkIhSWyczIKykU+Ai0q5ztW2mfYQgi4I4ZmyIG1FARv9IyydGloAC8dbUWkaFh0wHu/CUTL5AglaWHnExTNVTLyiU0eAOTIupi5fhbiQI2GTwN55Kw6MVKs7OYrKUbsnTxM7gm+i3F5l4Vu0aPFG3lx9o4fa2M+5rKI8MCiMtijt/lb4sPm3TGxTMZNZjvtCsufhB9Wz2Mv1F5kua0JZaPY49OP60Y+kCewedzMzSMnFR/GHh4PFkw1cK2nj2MK+8xa8jjreOZp7e0Nf0QpY6/Ydq8Gre59Y3GHZ0k4i5NYhExC2jkDxiGfIKMIxfyqq5y1d1qnRIBMxlGgpTpkmsU+bXKHR4BDKeDjQ49mZMfUYPA6d5l9ZiAkvzIvO2/xO3OLAC9i+3U9H619TdvrMPU4fEaKdsAnkh0d8T2fgRPx4lT8kGvW6m
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2026 13:57:11.2439
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2026 13:57:17.2561
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ef6bcc4-4d0d-4cee-24de-08dec565d683
+X-MS-Exchange-CrossTenant-Network-Message-Id: 79ae40c9-32db-46a3-4820-08dec565da16
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BN1PEPF0000468A.namprd05.prod.outlook.com
+	BN1PEPF0000468D.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7572
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8240
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [2.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -143,14 +143,14 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
 	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
 	RCPT_COUNT_TWELVE(0.00)[23];
-	TAGGED_FROM(0.00)[bounces-21961-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21962-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -162,225 +162,271 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,nvidia.com:email,nvidia.com:mid,nvidia.com:from_mime,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,Nvidia.com:dkim];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[Nvidia.com:dkim,nvidia.com:email,nvidia.com:mid,nvidia.com:from_mime,vger.kernel.org:from_smtp,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	RCVD_COUNT_SEVEN(0.00)[9]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: B9CA1656E79
+X-Rspamd-Queue-Id: EFD3E656DA0
 
 From: Shay Drory <shayd@nvidia.com>
 
-Refactor SD group registration to use devcom event-driven role
-determination to ensure SD is marked as ready only after roles are fully
-assigned and the group state is consistent, making outside accessors,
-which will be added in downstream patches, safe to use without races.
+Add mlx5_fs_cmd_query_l2table_silent() to query the current silent mode
+state from firmware. This allows detecting if firmware has already put
+secondary devices into silent mode.
 
-The devcom events:
-- SD_PRIMARY_SET event: each device compares bus numbers with peers
-  to determine which should be primary
-- SD_SECONDARIES_SET event: secondaries register themselves with the
-  elected primary device
+During SD group registration, query the silent mode of each device. If
+a device is already in silent mode (set by firmware), record this in
+the fw_silents_secondaries flag and use it to help determine the
+primary/secondary roles.
+
+When fw_silents_secondaries is set, skip the driver-initiated silent
+mode set/unset operations since firmware manages this state. This
+handles configurations where firmware persistently silences secondary
+devices.
 
 Signed-off-by: Shay Drory <shayd@nvidia.com>
-Reviewed-by: Mark Bloch <mbloch@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- .../net/ethernet/mellanox/mlx5/core/lib/sd.c  | 137 +++++++++++++-----
- 1 file changed, 102 insertions(+), 35 deletions(-)
+ .../net/ethernet/mellanox/mlx5/core/fs_cmd.c  |  21 ++++
+ .../net/ethernet/mellanox/mlx5/core/fs_cmd.h  |   2 +
+ .../net/ethernet/mellanox/mlx5/core/lib/sd.c  | 105 +++++++++++++++---
+ 3 files changed, 114 insertions(+), 14 deletions(-)
 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c
+index 1cd4cd898ec2..8af73393770c 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c
+@@ -1217,3 +1217,24 @@ int mlx5_fs_cmd_set_tx_flow_table_root(struct mlx5_core_dev *dev, u32 ft_id, boo
+ 
+ 	return mlx5_cmd_exec(dev, in, sizeof(in), out, sizeof(out));
+ }
++
++int mlx5_fs_cmd_query_l2table_silent(struct mlx5_core_dev *dev, u8 *silent_mode)
++{
++	u32 out[MLX5_ST_SZ_DW(query_l2_table_entry_out)] = {};
++	u32 in[MLX5_ST_SZ_DW(query_l2_table_entry_in)] = {};
++	int err;
++
++	if (!MLX5_CAP_GEN(dev, silent_mode_query))
++		return -EOPNOTSUPP;
++
++	MLX5_SET(query_l2_table_entry_in, in, opcode,
++		 MLX5_CMD_OP_QUERY_L2_TABLE_ENTRY);
++	MLX5_SET(query_l2_table_entry_in, in, silent_mode_query, 1);
++
++	err = mlx5_cmd_exec_inout(dev, query_l2_table_entry, in, out);
++	if (err)
++		return err;
++
++	*silent_mode = MLX5_GET(query_l2_table_entry_out, out, silent_mode);
++	return 0;
++}
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.h b/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.h
+index 7eb7b3ffe3d8..60280ff7da50 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.h
+@@ -124,6 +124,8 @@ const struct mlx5_flow_cmds *mlx5_fs_cmd_get_fw_cmds(void);
+ 
+ int mlx5_fs_cmd_set_l2table_entry_silent(struct mlx5_core_dev *dev, u8 silent_mode);
+ int mlx5_fs_cmd_set_tx_flow_table_root(struct mlx5_core_dev *dev, u32 ft_id, bool disconnect);
++int mlx5_fs_cmd_query_l2table_silent(struct mlx5_core_dev *dev,
++				     u8 *silent_mode);
+ 
+ static inline bool mlx5_fs_cmd_is_fw_term_table(struct mlx5_flow_table *ft)
+ {
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c
-index 25286ecd724e..41979bf6a615 100644
+index 41979bf6a615..afad05a1e3fe 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c
-@@ -26,6 +26,8 @@ struct mlx5_sd {
+@@ -22,6 +22,7 @@ struct mlx5_sd {
+ 	struct dentry *dfs;
+ 	u8 state;
+ 	bool primary;
++	bool fw_silents_secondaries;
+ 	union {
  		struct { /* primary */
  			struct mlx5_core_dev *secondaries[MLX5_SD_MAX_GROUP_SZ - 1];
- 			struct mlx5_flow_table *tx_ft;
-+			/* Next index for secondary registration */
-+			u8 next_secondary_idx;
- 		};
- 		struct { /* secondary */
- 			struct mlx5_core_dev *primary_dev;
-@@ -374,62 +376,125 @@ static void sd_lag_cleanup(struct mlx5_core_dev *dev)
- 	mutex_unlock(&ldev->lock);
- }
+@@ -167,7 +168,8 @@ static bool mlx5_sd_caps_supported(struct mlx5_core_dev *dev, u8 host_buses)
+ 	/* Disconnect secondaries from the network */
+ 	if (!MLX5_CAP_GEN(dev, eswitch_manager))
+ 		return false;
+-	if (!MLX5_CAP_GEN(dev, silent_mode_set))
++	if (!MLX5_CAP_GEN(dev, silent_mode_set) &&
++	    !MLX5_CAP_GEN(dev, silent_mode_query))
+ 		return false;
  
-+enum {
-+	SD_PRIMARY_SET,
-+	SD_SECONDARIES_SET,
-+};
-+
-+static void sd_handle_primary_set(struct mlx5_core_dev *dev,
-+				  struct mlx5_core_dev *peer)
+ 	/* RX steering from primary to secondaries */
+@@ -379,23 +381,77 @@ static void sd_lag_cleanup(struct mlx5_core_dev *dev)
+ enum {
+ 	SD_PRIMARY_SET,
+ 	SD_SECONDARIES_SET,
++	SD_FW_SILENT_CHECK,
+ };
+ 
+-static void sd_handle_primary_set(struct mlx5_core_dev *dev,
+-				  struct mlx5_core_dev *peer)
++static int sd_handle_fw_silent_check(struct mlx5_core_dev *dev,
++				     struct mlx5_core_dev *peer)
 +{
 +	struct mlx5_sd *peer_sd = mlx5_get_sd(peer);
 +	struct mlx5_sd *sd = mlx5_get_sd(dev);
-+	struct mlx5_core_dev *candidate;
-+	struct mlx5_sd *candidate_sd;
++	u8 dev_silent = 0, peer_silent = 0;
++	int err;
 +
-+	/* Peer is the device that being sent to all the other devices in the
-+	 * group. Hence, use peer to get the candidate device.
-+	 */
-+	candidate = peer_sd->primary ? peer : peer_sd->primary_dev;
-+
-+	if (dev->pdev->bus->number >= candidate->pdev->bus->number)
-+		return;
-+
-+	candidate_sd = mlx5_get_sd(candidate);
-+
-+	sd->primary = true;
-+	candidate_sd->primary = false;
-+	candidate_sd->primary_dev = dev;
-+	peer_sd->primary = false;
-+	peer_sd->primary_dev = dev;
-+}
-+
-+static void sd_handle_secondaries_set(struct mlx5_core_dev *dev,
-+				      struct mlx5_core_dev *peer)
-+{
-+	struct mlx5_sd *peer_sd = mlx5_get_sd(peer);
-+	struct mlx5_sd *sd = mlx5_get_sd(dev);
-+	u8 idx;
-+
-+	/* Primary has nothing to register with itself. */
-+	if (sd->primary)
-+		return;
-+
-+	/* dev is a secondary device, peer is the primary device.
-+	 * Secondary registers itself with the primary.
-+	 */
-+	idx = peer_sd->next_secondary_idx++;
-+	peer_sd->secondaries[idx] = dev;
-+	sd->primary_dev = peer;
-+}
-+
-+static int mlx5_sd_devcom_event(int event, void *my_data, void *event_data)
-+{
-+	struct mlx5_core_dev *peer = event_data;
-+	struct mlx5_core_dev *dev = my_data;
-+
-+	switch (event) {
-+	case SD_PRIMARY_SET:
-+		sd_handle_primary_set(dev, peer);
-+		break;
-+	case SD_SECONDARIES_SET:
-+		sd_handle_secondaries_set(dev, peer);
-+		break;
++	if (peer_sd->fw_silents_secondaries) {
++		sd->fw_silents_secondaries = true;
++		return 0;
 +	}
 +
++	err = mlx5_fs_cmd_query_l2table_silent(dev, &dev_silent);
++	if (err) {
++		sd_warn(dev, "Failed to query silent mode for dev: %d\n", err);
++		return err;
++	}
++
++	err = mlx5_fs_cmd_query_l2table_silent(peer, &peer_silent);
++	if (err) {
++		sd_warn(dev, "Failed to query silent mode for peer: %d\n", err);
++		return err;
++	}
++
++	if (dev_silent || peer_silent) {
++		sd->fw_silents_secondaries = true;
++		peer_sd->fw_silents_secondaries = true;
++		sd_info(dev, "FW indicates at least one device is silent\n");
++	}
 +	return 0;
 +}
 +
- static int sd_register(struct mlx5_core_dev *dev)
++static int sd_handle_primary_set(struct mlx5_core_dev *dev,
++				 struct mlx5_core_dev *peer)
  {
--	struct mlx5_devcom_comp_dev *devcom, *pos;
- 	struct mlx5_devcom_match_attr attr = {};
--	struct mlx5_core_dev *peer, *primary;
--	struct mlx5_sd *sd, *primary_sd;
--	int err, i;
-+	struct mlx5_devcom_comp_dev *devcom;
-+	struct mlx5_core_dev *primary;
-+	struct mlx5_sd *sd;
-+	int err;
+ 	struct mlx5_sd *peer_sd = mlx5_get_sd(peer);
+ 	struct mlx5_sd *sd = mlx5_get_sd(dev);
+ 	struct mlx5_core_dev *candidate;
+ 	struct mlx5_sd *candidate_sd;
++	bool dev_should_be_primary;
  
- 	sd = mlx5_get_sd(dev);
- 	attr.key.val = sd->group_id;
- 	attr.flags = MLX5_DEVCOM_MATCH_FLAGS_NS;
- 	attr.net = mlx5_core_net(dev);
--	devcom = mlx5_devcom_register_component(dev->priv.devc, MLX5_DEVCOM_SD_GROUP,
--						&attr, NULL, dev);
-+	devcom = mlx5_devcom_register_component(dev->priv.devc,
-+						MLX5_DEVCOM_SD_GROUP,
-+						&attr, mlx5_sd_devcom_event,
-+						dev);
- 	if (!devcom)
- 		return -EINVAL;
+ 	/* Peer is the device that being sent to all the other devices in the
+ 	 * group. Hence, use peer to get the candidate device.
+ 	 */
+ 	candidate = peer_sd->primary ? peer : peer_sd->primary_dev;
  
- 	sd->devcom = devcom;
+-	if (dev->pdev->bus->number >= candidate->pdev->bus->number)
+-		return;
++	if (sd->fw_silents_secondaries) {
++		u8 candidate_silent = 0;
++		int err;
++
++		err = mlx5_fs_cmd_query_l2table_silent(candidate,
++						       &candidate_silent);
++		if (err) {
++			sd_warn(candidate, "Failed to query silent mode for dev: %d\n",
++				err);
++			return err;
++		}
++		/* Candidate is silent, dev should be primary */
++		dev_should_be_primary = candidate_silent;
++	} else {
++		/* No FW silent mode, use bus number */
++		dev_should_be_primary =
++			dev->pdev->bus->number < candidate->pdev->bus->number;
++	}
++
++	if (!dev_should_be_primary)
++		return 0;
  
--	if (mlx5_devcom_comp_get_size(devcom) != sd->host_buses)
--		return 0;
--
- 	mlx5_devcom_comp_lock(devcom);
--	mlx5_devcom_comp_set_ready(devcom, true);
--	mlx5_devcom_comp_unlock(devcom);
-+	if (mlx5_devcom_comp_get_size(devcom) != sd->host_buses ||
-+	    mlx5_devcom_comp_is_ready(devcom))
-+		goto out;
+ 	candidate_sd = mlx5_get_sd(candidate);
  
--	if (!mlx5_devcom_for_each_peer_begin(devcom)) {
--		err = -ENODEV;
-+	/* Send SD_PRIMARY_SET event with this device.
-+	 * All peers will receive this event and compare to this device.
-+	 * The one with lowest bus number will be marked as primary.
-+	 */
-+	sd->primary = true;
-+	err = mlx5_devcom_locked_send_event(devcom, SD_PRIMARY_SET,
-+					    SD_PRIMARY_SET, dev);
-+	if (err)
- 		goto err_devcom_unreg;
--	}
--
--	primary = dev;
--	mlx5_devcom_for_each_peer_entry(devcom, peer, pos)
--		if (peer->pdev->bus->number < primary->pdev->bus->number)
--			primary = peer;
+@@ -404,6 +460,7 @@ static void sd_handle_primary_set(struct mlx5_core_dev *dev,
+ 	candidate_sd->primary_dev = dev;
+ 	peer_sd->primary = false;
+ 	peer_sd->primary_dev = dev;
++	return 0;
+ }
  
--	primary_sd = mlx5_get_sd(primary);
--	primary_sd->primary = true;
--	i = 0;
--	/* loop the secondaries */
--	mlx5_devcom_for_each_peer_entry(primary_sd->devcom, peer, pos) {
--		struct mlx5_sd *peer_sd = mlx5_get_sd(peer);
--
--		primary_sd->secondaries[i++] = peer;
--		peer_sd->primary = false;
--		peer_sd->primary_dev = primary;
--	}
-+	/* Broadcast SD_SECONDARIES_SET. Each non-sender peer's handler runs;
-+	 * the primary's handler returns early so only secondaries register.
-+	 */
-+	primary = sd->primary ? dev : sd->primary_dev;
-+	if (!sd->primary)
-+		sd_handle_secondaries_set(dev, primary);
-+	mlx5_devcom_locked_send_event(devcom, SD_SECONDARIES_SET,
-+				      DEVCOM_CANT_FAIL, primary);
+ static void sd_handle_secondaries_set(struct mlx5_core_dev *dev,
+@@ -431,12 +488,13 @@ static int mlx5_sd_devcom_event(int event, void *my_data, void *event_data)
+ 	struct mlx5_core_dev *dev = my_data;
  
--	mlx5_devcom_for_each_peer_end(devcom);
-+	mlx5_devcom_comp_set_ready(devcom, true);
-+out:
-+	mlx5_devcom_comp_unlock(devcom);
+ 	switch (event) {
++	case SD_FW_SILENT_CHECK:
++		return sd_handle_fw_silent_check(dev, peer);
+ 	case SD_PRIMARY_SET:
+-		sd_handle_primary_set(dev, peer);
+-		break;
++		return sd_handle_primary_set(dev, peer);
+ 	case SD_SECONDARIES_SET:
+ 		sd_handle_secondaries_set(dev, peer);
+-		break;
++		return 0;
+ 	}
+ 
  	return 0;
+@@ -468,9 +526,21 @@ static int sd_register(struct mlx5_core_dev *dev)
+ 	    mlx5_devcom_comp_is_ready(devcom))
+ 		goto out;
  
- err_devcom_unreg:
--	mlx5_devcom_comp_lock(sd->devcom);
--	mlx5_devcom_comp_set_ready(sd->devcom, false);
--	mlx5_devcom_comp_unlock(sd->devcom);
--	mlx5_devcom_unregister_component(sd->devcom);
-+	mlx5_devcom_comp_unlock(devcom);
-+	mlx5_devcom_unregister_component(devcom);
++	/* If silent mode query is supported, ask each device whether it is
++	 * silent and propagate the result to the whole group. In each group
++	 * only one device is not silent
++	 */
++	if (MLX5_CAP_GEN(dev, silent_mode_query)) {
++		err = mlx5_devcom_locked_send_event(devcom, SD_FW_SILENT_CHECK,
++						    SD_FW_SILENT_CHECK, dev);
++		if (err)
++			goto err_devcom_unreg;
++	}
++
+ 	/* Send SD_PRIMARY_SET event with this device.
+ 	 * All peers will receive this event and compare to this device.
+-	 * The one with lowest bus number will be marked as primary.
++	 * If fw_silents_secondaries is set, choose non-silent device.
++	 * Otherwise use bus number.
+ 	 */
+ 	sd->primary = true;
+ 	err = mlx5_devcom_locked_send_event(devcom, SD_PRIMARY_SET,
+@@ -586,9 +656,11 @@ static int sd_cmd_set_secondary(struct mlx5_core_dev *secondary,
+ 	struct mlx5_sd *sd = mlx5_get_sd(secondary);
+ 	int err;
+ 
+-	err = mlx5_fs_cmd_set_l2table_entry_silent(secondary, 1);
+-	if (err)
+-		return err;
++	if (!primary_sd->fw_silents_secondaries) {
++		err = mlx5_fs_cmd_set_l2table_entry_silent(secondary, 1);
++		if (err)
++			return err;
++	}
+ 
+ 	err = sd_secondary_create_alias_ft(secondary, primary, primary_sd->tx_ft,
+ 					   &sd->alias_obj_id, alias_key);
+@@ -604,15 +676,20 @@ static int sd_cmd_set_secondary(struct mlx5_core_dev *secondary,
+ err_destroy_alias_ft:
+ 	sd_secondary_destroy_alias_ft(secondary);
+ err_unset_silent:
+-	mlx5_fs_cmd_set_l2table_entry_silent(secondary, 0);
++	if (!primary_sd->fw_silents_secondaries)
++		mlx5_fs_cmd_set_l2table_entry_silent(secondary, 0);
  	return err;
  }
  
-@@ -672,6 +737,7 @@ int mlx5_sd_init(struct mlx5_core_dev *dev)
- 		peer_sd->primary_dev = NULL;
- 	}
- 	primary_sd->primary = false;
-+	primary_sd->next_secondary_idx = 0;
- 	mlx5_devcom_comp_set_ready(sd->devcom, false);
- 	mlx5_devcom_comp_unlock(sd->devcom);
- 	sd_unregister(dev);
-@@ -719,6 +785,7 @@ void mlx5_sd_cleanup(struct mlx5_core_dev *dev)
- 		peer_sd->primary_dev = NULL;
- 	}
- 	primary_sd->primary = false;
-+	primary_sd->next_secondary_idx = 0;
- out_ready_false:
- 	mlx5_devcom_comp_set_ready(sd->devcom, false);
- out_unlock:
+ static void sd_cmd_unset_secondary(struct mlx5_core_dev *secondary)
+ {
++	struct mlx5_sd *primary_sd;
++
++	primary_sd = mlx5_get_sd(mlx5_sd_get_primary(secondary));
+ 	mlx5_fs_cmd_set_tx_flow_table_root(secondary, 0, true);
+ 	sd_secondary_destroy_alias_ft(secondary);
+-	mlx5_fs_cmd_set_l2table_entry_silent(secondary, 0);
++	if (!primary_sd->fw_silents_secondaries)
++		mlx5_fs_cmd_set_l2table_entry_silent(secondary, 0);
+ }
+ 
+ static void sd_print_group(struct mlx5_core_dev *primary)
 -- 
 2.44.0
 
