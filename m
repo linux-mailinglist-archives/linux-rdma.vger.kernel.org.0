@@ -1,306 +1,205 @@
-Return-Path: <linux-rdma+bounces-22023-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22024-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id OKecBZo3KGpiAQMAu9opvQ
-	(envelope-from <linux-rdma+bounces-22023-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 17:56:10 +0200
+	id ELEUDZQ6KGorAgMAu9opvQ
+	(envelope-from <linux-rdma+bounces-22024-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 18:08:52 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3A626620C6
-	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 17:56:09 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD593662292
+	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 18:08:51 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=intel.com header.s=Intel header.b=H0G+XJ5b;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22023-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22023-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=intel.com;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=dKubknSt;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22024-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22024-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8578B313E11D
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2026 15:24:58 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id A4525309B1E0
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2026 16:00:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45170388361;
-	Tue,  9 Jun 2026 15:24:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43C533451D9;
+	Tue,  9 Jun 2026 16:00:40 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1269635E1D7;
-	Tue,  9 Jun 2026 15:24:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2D7631618C;
+	Tue,  9 Jun 2026 16:00:38 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781018695; cv=none; b=A2NHcR5ClKzOAjBGne7x5Jmtvbee/YjYXvO8ZzSG377od+0kgksI/3hJjz6FGmiNg/NjmLw+eWUFIT68k6gEePbTghIcCLs6ZayKiqW8tUhP9PcaURiGyqR+1MwWzvT6jR8CIJTVYoh3O5T8DQrc+S3FTAS/yqNuVRufbuur2QA=
+	t=1781020840; cv=none; b=Y4Uec/NjZEx6M4UE3zKUNPOYPNohdYZUFO/oM1HKzYLoptLMJHLkeYCgtt7ac6qOI54FeR+Z9cifQt0UTKGvhFMTInx5gnW9D7sd3sftYAmTbMBab2psAR0Iyfe5cMMNiD+eIlk73RABugVBNlErDdJ2K4el5c8K2iHrLrtOrIc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781018695; c=relaxed/simple;
-	bh=HBoPFGOXGybi9zPjNvhBs4GVWkRnbZRL7P47phF5uJE=;
+	s=arc-20240116; t=1781020840; c=relaxed/simple;
+	bh=DueyKx9WuH4OVbms+/f6grEwTUeCkiuZb1ybxt0zrBU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hin+eoFCcgAQShKajG0m11q4PTGYpm/hB2rIShaWLOubXuigRe3kMtKA+YsyMnlJ1L/8maJ99hE2Xu6dIg9yUdjV5klIRfXYetq9Cm0cPs22CvVq6xKSyBRczZAq5Tsy1g3mJ5L2a9XgBAytGmRrw2W/x+myhC4RQAtMgs6XY8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=H0G+XJ5b; arc=none smtp.client-ip=192.198.163.13
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1781018693; x=1812554693;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HBoPFGOXGybi9zPjNvhBs4GVWkRnbZRL7P47phF5uJE=;
-  b=H0G+XJ5bIYimtJQcJLuS3eLXT1WH3dQ8er+6Apt7BaefoAV44r46WzWE
-   8N3WXL8F6zQ5yWOJrnS9blKfAE7c1xg8eKxeVp3moDZ45w4EJfcNx29yQ
-   mdn4Knlgii/qCTJVR8TGlWId9WTxhQMpIWsvLF7j5lyITJeAydfkHGBWu
-   dFqbwQo63yd8hDnQlf/BO5z0ywFwwmBI4LL9YOntjNofRwN0oEfKzU7AA
-   WOqBYq2Ghyh7ReCyVaAybPZVJXGifSJiy0nmXe5wimG798BKZdH1cbX3P
-   yPY3comgXso9fzJZ9y27aysjXvQVKOGZTNUYQlZvqauxLIe9MPEJ64PXT
-   A==;
-X-CSE-ConnectionGUID: UI4WHEsZQ6aSIwE11oMzHg==
-X-CSE-MsgGUID: Fzj+RrxzSwiu9YKVcopZrw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11812"; a="84352283"
-X-IronPort-AV: E=Sophos;i="6.24,196,1774335600"; 
-   d="scan'208";a="84352283"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2026 08:24:51 -0700
-X-CSE-ConnectionGUID: SIFLfa6ORfeM1YV6G9lz1g==
-X-CSE-MsgGUID: 6n6rabJGS8qCw/q/3/ezcw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,196,1774335600"; 
-   d="scan'208";a="247759332"
-Received: from pgcooper-mobl3.ger.corp.intel.com (HELO localhost) ([10.245.245.162])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2026 08:24:42 -0700
-Date: Tue, 9 Jun 2026 18:24:40 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-Cc: mkalderon@marvell.com, Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>, zyjzyj2000@gmail.com,
-	sagi@grimberg.me, mgurtovoy@nvidia.com, haris.iqbal@ionos.com,
-	jinpu.wang@ionos.com, bvanassche@acm.org, kbusch@kernel.org,
-	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-	kch@nvidia.com, smfrench@gmail.com, linkinjeon@kernel.org,
-	metze@samba.org, tom@talpey.com, trondmy@kernel.org,
-	anna@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
-	neil@brown.name, okorniev@redhat.com, Dai.Ngo@oracle.com,
-	achender@kernel.org, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
-	kees@kernel.org, ebadger@purestorage.com,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	target-devel@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-	linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
-	rds-devel@oss.oracle.com, Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH rdma-next v7] RDMA: Change capability fields in
- ib_device_attr from int to u32
-Message-ID: <aigwONAwxQx6rLef@ashevche-desk.local>
-References: <20260606070735.2163063-1-ernis@linux.microsoft.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=X/K5ZYsLAyj0Kns7tuBSUKQl3Xf5So10vSVX/gQolJs4mrNpOAGD5FcKd2oplQ3iLPxYa4b/+ywyPD9B7Uxgps0QqKnpdtJtGFkOMj4yNdZy2qx8VWxsH0nZE7SOoVdZvD2jLVEkklgeKaUJ5XlquL293nCehGC7tXh1d8+guLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dKubknSt; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16A761F00893;
+	Tue,  9 Jun 2026 16:00:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1781020838;
+	bh=GOkmt/JjHJGW5u4kUSvcbFQkbFk2ijvX6bSDmM6GXaY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=dKubknSt3f7U90uMvxvQ9f4Ehw5udC0anBv8UuMJ+I4ddtRBfbhBJXQB+88Py/Amt
+	 yCnLW2vU2gLr5O6spPcXlfnoOt/zNnqfbz15gl4VIGBNCtV2+ZDeak8HI11wEnzIHM
+	 mIAqe3/9fRtlDB7LChXiHMyIf3FAh4ZHL2xPovnivPdJqPG8WP3MnDJe+rLbJSHX5z
+	 Sj4m+YNK56T+y1y+fjYsgnHb9AfCp7v7y6s6snGBDAqCyEXSw3jHJs+1kotj0VvI9t
+	 kmKp/dfJ7L/oGkPwO1cEGs34gq36d4BwfDUNevPNica8em78Ckw4NQowTgIVP1gtSw
+	 phYo88ZOA+Eqw==
+Date: Tue, 9 Jun 2026 19:00:33 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Chenguang Zhao <zhaochenguang@kylinos.cn>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Shuah Khan <shuah@kernel.org>,
+	Zhu Yanjun <yanjun.zhu@linux.dev>, linux-rdma@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3] RDMA/CM: add RDMA CM observability regression scripts
+Message-ID: <20260609160033.GD327369@unreal>
+References: <20260506060305.891564-1-zhaochenguang@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260606070735.2163063-1-ernis@linux.microsoft.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
- krs, Bertel Jungin Aukio 5, 02600 Espoo
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260506060305.891564-1-zhaochenguang@kylinos.cn>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[intel.com:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-4.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22023-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[43];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:ernis@linux.microsoft.com,m:mkalderon@marvell.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:zyjzyj2000@gmail.com,m:sagi@grimberg.me,m:mgurtovoy@nvidia.com,m:haris.iqbal@ionos.com,m:jinpu.wang@ionos.com,m:bvanassche@acm.org,m:kbusch@kernel.org,m:axboe@kernel.dk,m:hch@lst.de,m:kch@nvidia.com,m:smfrench@gmail.com,m:linkinjeon@kernel.org,m:metze@samba.org,m:tom@talpey.com,m:trondmy@kernel.org,m:anna@kernel.org,m:chuck.lever@oracle.com,m:jlayton@kernel.org,m:neil@brown.name,m:okorniev@redhat.com,m:Dai.Ngo@oracle.com,m:achender@kernel.org,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:kees@kernel.org,m:ebadger@purestorage.com,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:target-devel@vger.kernel.org,m:linux-nvme@lists.infradead.org,m:linux-cifs@vger.kernel.org,m:samba-technical@lists.samba.org,m:linux-nfs@vger.kernel.org,m:netdev@vger.kernel.org,m:rds-devel@oss.oracle.com,m:jgg@nvidia.com,s:lists@lf
- dr.de];
-	FREEMAIL_CC(0.00)[marvell.com,ziepe.ca,kernel.org,gmail.com,grimberg.me,nvidia.com,ionos.com,acm.org,kernel.dk,lst.de,samba.org,talpey.com,oracle.com,brown.name,redhat.com,davemloft.net,google.com,purestorage.com,vger.kernel.org,lists.infradead.org,lists.samba.org,oss.oracle.com];
-	MIME_TRACE(0.00)[0:+];
-	HAS_ORG_HEADER(0.00)[];
-	FORGED_SENDER(0.00)[andriy.shevchenko@linux.intel.com,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[andriy.shevchenko@linux.intel.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:zhaochenguang@kylinos.cn,m:jgg@ziepe.ca,m:shuah@kernel.org,m:yanjun.zhu@linux.dev,m:linux-rdma@vger.kernel.org,m:linux-kselftest@vger.kernel.org,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
+	FORGED_SENDER(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22024-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ashevche-desk.local:mid,vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,intel.com:dkim,linux.intel.com:from_mime]
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sashiko.dev:url,kylinos.cn:email,vger.kernel.org:from_smtp,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,rdma_cm_baseline.sh:url,rxe_socket_with_netns.sh:url,rdma_common.sh:url,rdma_cm_fault_injection.sh:url,rdma_cm_trace_sequence.sh:url,rxe_test_netdev_unregister.sh:url]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: A3A626620C6
+X-Rspamd-Queue-Id: BD593662292
 
-On Sat, Jun 06, 2026 at 12:07:15AM -0700, Erni Sri Satya Vennela wrote:
-> The capability counter fields in struct ib_device_attr are declared
-> as signed int, but these values are inherently non-negative. Drivers
-> maintain their cached caps as u32 and assign them directly into these
-> int fields; if a cap exceeds INT_MAX the implicit narrowing yields a
-> negative value visible to the IB core.
+On Wed, May 06, 2026 at 02:03:05PM +0800, Chenguang Zhao wrote:
+> This adds a minimal RDMA CM selftest suite that captures observability
+> baselines and runs trace, counter-delta, and fault-injection-oriented
+> checks, plus a review-loop helper for repeated validation rounds.
 > 
-> Change the signed int capability fields to u32 to match the
-> underlying nature of the data. Also update consumers across the IB
-> core, ULPs, NVMe-oF target, RDS, and NFS/RDMA so the new u32 values
-> are not forced back through signed int or u8 via min()/min_t() or
-> narrowing local variables.
+> Signed-off-by: Chenguang Zhao <zhaochenguang@kylinos.cn>
+> ---
+> v3:
+>  TARGET += rdma is already present, remove it 
+>  as suggested by Yanjun.
+> 
+> v2:
+>  https://lore.kernel.org/all/20260428071216.1212775-1-zhaochenguang@kylinos.cn/
+> 
+> v1:
+>  https://lore.kernel.org/all/20260416062224.1546388-1-zhaochenguang@kylinos.cn/
+> ---
+>  tools/testing/selftests/rdma/Makefile         |  10 ++
+>  tools/testing/selftests/rdma/config           |   6 +
+>  .../selftests/rdma/rdma_cm_baseline.sh        |  58 ++++++++
+>  .../selftests/rdma/rdma_cm_counter_delta.sh   |  72 ++++++++++
+>  .../selftests/rdma/rdma_cm_fault_injection.sh |  95 +++++++++++++
+>  .../selftests/rdma/rdma_cm_review_loop.sh     |  35 +++++
+>  .../selftests/rdma/rdma_cm_trace_sequence.sh  |  83 ++++++++++++
+>  tools/testing/selftests/rdma/rdma_common.sh   | 126 ++++++++++++++++++
+>  8 files changed, 485 insertions(+)
+>  create mode 100755 tools/testing/selftests/rdma/rdma_cm_baseline.sh
+>  create mode 100755 tools/testing/selftests/rdma/rdma_cm_counter_delta.sh
+>  create mode 100755 tools/testing/selftests/rdma/rdma_cm_fault_injection.sh
+>  create mode 100755 tools/testing/selftests/rdma/rdma_cm_review_loop.sh
+>  create mode 100755 tools/testing/selftests/rdma/rdma_cm_trace_sequence.sh
+>  create mode 100755 tools/testing/selftests/rdma/rdma_common.sh
+> 
+> diff --git a/tools/testing/selftests/rdma/Makefile b/tools/testing/selftests/rdma/Makefile
+> index 7dd7cba7a73c..04c52db4b9d9 100644
+> --- a/tools/testing/selftests/rdma/Makefile
+> +++ b/tools/testing/selftests/rdma/Makefile
+> @@ -4,4 +4,14 @@ TEST_PROGS := rxe_rping_between_netns.sh \
+>  		rxe_socket_with_netns.sh \
+>  		rxe_test_NETDEV_UNREGISTER.sh
+>  
+> +TEST_PROGS += \
+> +	rdma_cm_baseline.sh \
+> +	rdma_cm_trace_sequence.sh \
+> +	rdma_cm_counter_delta.sh \
+> +	rdma_cm_fault_injection.sh
+> +
+> +TEST_FILES += \
+> +	rdma_common.sh \
+> +	rdma_cm_review_loop.sh
+> +
+>  include ../lib.mk
+> diff --git a/tools/testing/selftests/rdma/config b/tools/testing/selftests/rdma/config
+> index 4ffb814e253b..e22141838c19 100644
+> --- a/tools/testing/selftests/rdma/config
+> +++ b/tools/testing/selftests/rdma/config
+> @@ -1,3 +1,9 @@
+>  CONFIG_TUN
+>  CONFIG_VETH
+>  CONFIG_RDMA_RXE
+> +CONFIG_DEBUG_KERNEL
+> +CONFIG_FAULT_INJECTION
+> +CONFIG_SYSFS
+> +CONFIG_DEBUG_FS
+> +CONFIG_FAULT_INJECTION_DEBUG_FS
+> +CONFIG_FAILSLAB
+> diff --git a/tools/testing/selftests/rdma/rdma_cm_baseline.sh b/tools/testing/selftests/rdma/rdma_cm_baseline.sh
+> new file mode 100755
+> index 000000000000..b0d8b3e46470
+> --- /dev/null
+> +++ b/tools/testing/selftests/rdma/rdma_cm_baseline.sh
+> @@ -0,0 +1,58 @@
+> +#!/bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +set -euo pipefail
+> +
+> +SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+> +source "${SCRIPT_DIR}/rdma_common.sh"
+> +
+> +require_root
+> +require_cmd date
+> +require_cmd uname
+> +
+> +trace_dir="$(tracefs_dir || true)"
+> +counter_root="$(find_cm_counter_root || true)"
+> +out_dir="/tmp/rdma_cm_baseline.$(date +%s)"
+> +dmesg_lines=400
+> +dmesg_pattern="ib_cm|infiniband|rdma|roce|mlx|hns_roce|irdma|siw|rxe"
 
-...
+Sorry that it took so long to review this.
 
->  	attr->max_qp_init_rd_atom =
->  	    1 << (fls(qattr->max_qp_req_rd_atomic_resc) - 1);
+Please address Sashiko’s comments regarding 'fault injection most likely
+not enabled here' and 'statistics check in wrong port':
+https://sashiko.dev/#/patchset/20260506060305.891564-1-zhaochenguang@kylinos.cn
 
-FWIW, this one and below looks like reinvention of rounddown_pow_of_two().
+Also, 'dmesg_pattern' is not a scalable option. You should not rely on
+the dmesg print format.
 
->  	attr->max_qp_rd_atom =
-> -	    min(1 << (fls(qattr->max_qp_resp_rd_atomic_resc) - 1),
-> +	    min(1U << (fls(qattr->max_qp_resp_rd_atomic_resc) - 1),
->  		attr->max_qp_init_rd_atom);
-
-...
-
->  int ipoib_cm_dev_init(struct net_device *dev)
->  {
->  	struct ipoib_dev_priv *priv = ipoib_priv(dev);
-> -	int max_srq_sge, i;
-> +	int i;
-> +	u32 max_srq_sge;
->  	u8 addr;
-
-It seems the order is reversed xmas tree, why not preserving it?
-
-...
-
-> --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-
->  		max_send_wr =
-> -			min_t(int, wr_limit, SERVICE_CON_QUEUE_DEPTH * 2 + 2);
-> +			min(wr_limit, SERVICE_CON_QUEUE_DEPTH * 2 + 2);
-
-Now perfectly a single line
-
-		max_send_wr = min(wr_limit, SERVICE_CON_QUEUE_DEPTH * 2 + 2);
-
->  		max_recv_wr = max_send_wr;
-
-...
-
-> -		max_send_wr = min_t(int, wr_limit,
-> -			      /* QD * (REQ + RSP + FR REGS or INVS) + drain */
-> -			      clt_path->queue_depth * 4 + 1);
-> -		max_recv_wr = min_t(int, wr_limit,
-> -			      clt_path->queue_depth * 3 + 1);
-> +		max_send_wr = min_t(u32, wr_limit,
-> +				    /* QD * (REQ + RSP + FR REGS or INVS) + drain */
-> +				    clt_path->queue_depth * 4 + 1);
-> +		max_recv_wr = min_t(u32, wr_limit,
-> +				    clt_path->queue_depth * 3 + 1);
-
-Can we rather update the type of one of them and use min() instead?
-
-...
-
-> --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-
-Ditto.
-
-...
-
-> -static int srpt_srq_size = DEFAULT_SRPT_SRQ_SIZE;
-> -module_param(srpt_srq_size, int, 0444);
-> +static unsigned int srpt_srq_size = DEFAULT_SRPT_SRQ_SIZE;
-> +module_param(srpt_srq_size, uint, 0444);
-
-Theoretically this might break ABI (if somebody uses negative values for
-anything. I don't think it's the case, but just be informed.
-
->  MODULE_PARM_DESC(srpt_srq_size,
->  		 "Shared receive queue (SRQ) size.");
-
-...
-
-> --- a/drivers/nvme/target/rdma.c
-> +++ b/drivers/nvme/target/rdma.c
-
-> -	ndev->srq_size = min(ndev->device->attrs.max_srq_wr,
-> -			     nvmet_rdma_srq_size);
-> -	ndev->srq_count = min(ndev->device->num_comp_vectors,
-> -			      ndev->device->attrs.max_srq);
-> +	ndev->srq_size = min_t(u32, ndev->device->attrs.max_srq_wr,
-> +			       nvmet_rdma_srq_size);
-> +	ndev->srq_count = min_t(u32, ndev->device->num_comp_vectors,
-> +				ndev->device->attrs.max_srq);
-
-Same question, can we change type type of variables instead?
-
->  	mutex_lock(&device_list_mutex);
-
-...
-
->  	inline_page_count = num_pages(nport->inline_data_size);
->  	inline_sge_count = max(cm_id->device->attrs.max_sge_rd,
-> -				cm_id->device->attrs.max_recv_sge) - 1;
-> +				cm_id->device->attrs.max_recv_sge);
-> +	inline_sge_count = inline_sge_count ? inline_sge_count - 1 : 0;
-
-Simple conditional might be better
-
-	if (inline_sge_count)
-		inline_sge_count--;
-	OR
-		inline_sge_count -= 1;
-
-...
-
-> +++ b/include/rdma/ib_verbs.h
-
-> -	int			max_qp;
-> -	int			max_qp_wr;
-> +	u32			max_qp;
-> +	u32			max_qp_wr;
-
-Nice, but please check that none of these (and beyond) were not used in signed
-multiplication or (which is more disasterous) division. Otherwise it might be
-subtle issues that will be hard to debug.
-
-...
-
->  	conn_param->responder_resources =
-> -		min_t(u32, rds_ibdev->max_responder_resources, max_responder_resources);
-> +		min3(rds_ibdev->max_responder_resources,
-> +		     max_responder_resources, U8_MAX);
->  	conn_param->initiator_depth =
-> -		min_t(u32, rds_ibdev->max_initiator_depth, max_initiator_depth);
-> +		min3(rds_ibdev->max_initiator_depth,
-> +		     max_initiator_depth, U8_MAX);
-
-I believe we can go a few characters over and leave them to be single lines.
-
->  	conn_param->retry_count = min_t(unsigned int, rds_ib_retry_count, 7);
-
-What about this one?
-
->  	conn_param->rnr_retry_count = 7;
-
-...
-
->  int frwr_query_device(struct rpcrdma_ep *ep, const struct ib_device *device)
->  {
->  	const struct ib_device_attr *attrs = &device->attrs;
-> -	int max_qp_wr, depth, delta;
-> +	u32 max_qp_wr;
-> +	int depth, delta;
->  	unsigned int max_sge;
-
-Reversed xmas tree order.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks
 
