@@ -1,205 +1,158 @@
-Return-Path: <linux-rdma+bounces-22024-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22025-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id ELEUDZQ6KGorAgMAu9opvQ
-	(envelope-from <linux-rdma+bounces-22024-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 18:08:52 +0200
+	id rPAxN8lAKGpSBAMAu9opvQ
+	(envelope-from <linux-rdma+bounces-22025-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 18:35:21 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD593662292
-	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 18:08:51 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8396E6626F1
+	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 18:35:21 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=dKubknSt;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22024-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22024-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=Nx7jxR2I;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22025-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22025-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id A4525309B1E0
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2026 16:00:46 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2E09A30FE5DE
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2026 16:04:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43C533451D9;
-	Tue,  9 Jun 2026 16:00:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1CAE369D64;
+	Tue,  9 Jun 2026 16:04:24 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2D7631618C;
-	Tue,  9 Jun 2026 16:00:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2F873655D9;
+	Tue,  9 Jun 2026 16:04:23 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781020840; cv=none; b=Y4Uec/NjZEx6M4UE3zKUNPOYPNohdYZUFO/oM1HKzYLoptLMJHLkeYCgtt7ac6qOI54FeR+Z9cifQt0UTKGvhFMTInx5gnW9D7sd3sftYAmTbMBab2psAR0Iyfe5cMMNiD+eIlk73RABugVBNlErDdJ2K4el5c8K2iHrLrtOrIc=
+	t=1781021064; cv=none; b=tD8rSHOwoFaKq7COLDbWxnQskbw+0ghMnJD5nJ7jZT/OxQqDPz+XNn+qqVfzBS8iaKHstxM2Fjat8OpIGH71+sZxG1Gg/dFMrm3+Y6XuDQC4lB7Ym2WU/My9gEBENhyRwdHBI2ys270obESjIYlbP5u+CYVzJxNIOmmJ1s6w+3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781020840; c=relaxed/simple;
-	bh=DueyKx9WuH4OVbms+/f6grEwTUeCkiuZb1ybxt0zrBU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X/K5ZYsLAyj0Kns7tuBSUKQl3Xf5So10vSVX/gQolJs4mrNpOAGD5FcKd2oplQ3iLPxYa4b/+ywyPD9B7Uxgps0QqKnpdtJtGFkOMj4yNdZy2qx8VWxsH0nZE7SOoVdZvD2jLVEkklgeKaUJ5XlquL293nCehGC7tXh1d8+guLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dKubknSt; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16A761F00893;
-	Tue,  9 Jun 2026 16:00:37 +0000 (UTC)
+	s=arc-20240116; t=1781021064; c=relaxed/simple;
+	bh=Htzjj+iBxZJDahLFAtt5wUwFAw1m+LlXlt/Fld8Ch1s=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=BLXLYxR9coYdyiho8WjAowcF6pBL62vtG5554rSYJsC+XUJJK3NVGcZYNQDXRBnJSzkShpxrn0Oy3xYPZfYXzF+TQENMROwvvvxzSYcx8WFc8MmNseKlDxbf05fSalHwOz3eNVufsEi+anh2onyZVWWFTcC5NnMrCfo6tRPCCDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nx7jxR2I; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85C221F00893;
+	Tue,  9 Jun 2026 16:04:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781020838;
-	bh=GOkmt/JjHJGW5u4kUSvcbFQkbFk2ijvX6bSDmM6GXaY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=dKubknSt3f7U90uMvxvQ9f4Ehw5udC0anBv8UuMJ+I4ddtRBfbhBJXQB+88Py/Amt
-	 yCnLW2vU2gLr5O6spPcXlfnoOt/zNnqfbz15gl4VIGBNCtV2+ZDeak8HI11wEnzIHM
-	 mIAqe3/9fRtlDB7LChXiHMyIf3FAh4ZHL2xPovnivPdJqPG8WP3MnDJe+rLbJSHX5z
-	 Sj4m+YNK56T+y1y+fjYsgnHb9AfCp7v7y6s6snGBDAqCyEXSw3jHJs+1kotj0VvI9t
-	 kmKp/dfJ7L/oGkPwO1cEGs34gq36d4BwfDUNevPNica8em78Ckw4NQowTgIVP1gtSw
-	 phYo88ZOA+Eqw==
-Date: Tue, 9 Jun 2026 19:00:33 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Chenguang Zhao <zhaochenguang@kylinos.cn>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Shuah Khan <shuah@kernel.org>,
-	Zhu Yanjun <yanjun.zhu@linux.dev>, linux-rdma@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3] RDMA/CM: add RDMA CM observability regression scripts
-Message-ID: <20260609160033.GD327369@unreal>
-References: <20260506060305.891564-1-zhaochenguang@kylinos.cn>
+	s=k20260515; t=1781021063;
+	bh=t2wgkGNVfpS9fL7oWSyTipxzTFvk2mjVXvIgDz41TnE=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=Nx7jxR2IcaFDLN6VVikQBBdq4Q7JN6orMYlKhnIE3twN4qQmONXvaLb1rQKoGNtSy
+	 ej8B8kqjtFPXJcUhAm/iGM3T1mxaA2qqafPyhH4QHHv0mLnK32shnTTD78002b781/
+	 NccF8NiH1L4C+Hmjpd7P+lUBrLfZZV+yRuHOHoVTnBVYYf8FH/LhvnabGsSMUnezHJ
+	 IHlJ4n8GNSiVdAmDnzc2KJDpADb9ITOKpOyj0isUeLrl85TLhbkqpq1TGfRztddrl9
+	 rEamIZeC/LR6u9HAQzUoqgDO227C8TGk+62GTSC5Ob4VTzBKzBbhOw512FGcC2/4Mp
+	 6vndQb6g++Oig==
+Message-ID: <c68c873bf021ca2f64b582e337694c5a01871acd.camel@kernel.org>
+Subject: Re: [PATCH net] rds: mark snapshot pages dirty in
+ rds_info_getsockopt()
+From: Allison Henderson <achender@kernel.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Andy Grover
+ <andy.grover@oracle.com>,  netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, 
+ linux-kernel@vger.kernel.org, kernel-team@meta.com
+Date: Tue, 09 Jun 2026 09:04:21 -0700
+In-Reply-To: <aifP4O6jAMEKLJM-@gmail.com>
+References: <20260608-rds_fix-v1-1-006c88543408@debian.org>
+	 <7f310d00c39da9edf0019c130d346ce30107fd29.camel@kernel.org>
+	 <aifP4O6jAMEKLJM-@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3-0ubuntu1.1 
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260506060305.891564-1-zhaochenguang@kylinos.cn>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.66 / 15.00];
+X-Spamd-Result: default: False [-5.16 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:leitao@debian.org,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:andy.grover@oracle.com,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:rds-devel@oss.oracle.com,m:linux-kernel@vger.kernel.org,m:kernel-team@meta.com,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:zhaochenguang@kylinos.cn,m:jgg@ziepe.ca,m:shuah@kernel.org,m:yanjun.zhu@linux.dev,m:linux-rdma@vger.kernel.org,m:linux-kselftest@vger.kernel.org,s:lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	TAGGED_FROM(0.00)[bounces-22025-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-22024-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
+	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sashiko.dev:url,kylinos.cn:email,vger.kernel.org:from_smtp,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,rdma_cm_baseline.sh:url,rxe_socket_with_netns.sh:url,rdma_common.sh:url,rdma_cm_fault_injection.sh:url,rdma_cm_trace_sequence.sh:url,rxe_test_netdev_unregister.sh:url]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: BD593662292
+X-Rspamd-Queue-Id: 8396E6626F1
 
-On Wed, May 06, 2026 at 02:03:05PM +0800, Chenguang Zhao wrote:
-> This adds a minimal RDMA CM selftest suite that captures observability
-> baselines and runs trace, counter-delta, and fault-injection-oriented
-> checks, plus a review-loop helper for repeated validation rounds.
-> 
-> Signed-off-by: Chenguang Zhao <zhaochenguang@kylinos.cn>
-> ---
-> v3:
->  TARGET += rdma is already present, remove it 
->  as suggested by Yanjun.
-> 
-> v2:
->  https://lore.kernel.org/all/20260428071216.1212775-1-zhaochenguang@kylinos.cn/
-> 
-> v1:
->  https://lore.kernel.org/all/20260416062224.1546388-1-zhaochenguang@kylinos.cn/
-> ---
->  tools/testing/selftests/rdma/Makefile         |  10 ++
->  tools/testing/selftests/rdma/config           |   6 +
->  .../selftests/rdma/rdma_cm_baseline.sh        |  58 ++++++++
->  .../selftests/rdma/rdma_cm_counter_delta.sh   |  72 ++++++++++
->  .../selftests/rdma/rdma_cm_fault_injection.sh |  95 +++++++++++++
->  .../selftests/rdma/rdma_cm_review_loop.sh     |  35 +++++
->  .../selftests/rdma/rdma_cm_trace_sequence.sh  |  83 ++++++++++++
->  tools/testing/selftests/rdma/rdma_common.sh   | 126 ++++++++++++++++++
->  8 files changed, 485 insertions(+)
->  create mode 100755 tools/testing/selftests/rdma/rdma_cm_baseline.sh
->  create mode 100755 tools/testing/selftests/rdma/rdma_cm_counter_delta.sh
->  create mode 100755 tools/testing/selftests/rdma/rdma_cm_fault_injection.sh
->  create mode 100755 tools/testing/selftests/rdma/rdma_cm_review_loop.sh
->  create mode 100755 tools/testing/selftests/rdma/rdma_cm_trace_sequence.sh
->  create mode 100755 tools/testing/selftests/rdma/rdma_common.sh
-> 
-> diff --git a/tools/testing/selftests/rdma/Makefile b/tools/testing/selftests/rdma/Makefile
-> index 7dd7cba7a73c..04c52db4b9d9 100644
-> --- a/tools/testing/selftests/rdma/Makefile
-> +++ b/tools/testing/selftests/rdma/Makefile
-> @@ -4,4 +4,14 @@ TEST_PROGS := rxe_rping_between_netns.sh \
->  		rxe_socket_with_netns.sh \
->  		rxe_test_NETDEV_UNREGISTER.sh
->  
-> +TEST_PROGS += \
-> +	rdma_cm_baseline.sh \
-> +	rdma_cm_trace_sequence.sh \
-> +	rdma_cm_counter_delta.sh \
-> +	rdma_cm_fault_injection.sh
-> +
-> +TEST_FILES += \
-> +	rdma_common.sh \
-> +	rdma_cm_review_loop.sh
-> +
->  include ../lib.mk
-> diff --git a/tools/testing/selftests/rdma/config b/tools/testing/selftests/rdma/config
-> index 4ffb814e253b..e22141838c19 100644
-> --- a/tools/testing/selftests/rdma/config
-> +++ b/tools/testing/selftests/rdma/config
-> @@ -1,3 +1,9 @@
->  CONFIG_TUN
->  CONFIG_VETH
->  CONFIG_RDMA_RXE
-> +CONFIG_DEBUG_KERNEL
-> +CONFIG_FAULT_INJECTION
-> +CONFIG_SYSFS
-> +CONFIG_DEBUG_FS
-> +CONFIG_FAULT_INJECTION_DEBUG_FS
-> +CONFIG_FAILSLAB
-> diff --git a/tools/testing/selftests/rdma/rdma_cm_baseline.sh b/tools/testing/selftests/rdma/rdma_cm_baseline.sh
-> new file mode 100755
-> index 000000000000..b0d8b3e46470
-> --- /dev/null
-> +++ b/tools/testing/selftests/rdma/rdma_cm_baseline.sh
-> @@ -0,0 +1,58 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +set -euo pipefail
-> +
-> +SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-> +source "${SCRIPT_DIR}/rdma_common.sh"
-> +
-> +require_root
-> +require_cmd date
-> +require_cmd uname
-> +
-> +trace_dir="$(tracefs_dir || true)"
-> +counter_root="$(find_cm_counter_root || true)"
-> +out_dir="/tmp/rdma_cm_baseline.$(date +%s)"
-> +dmesg_lines=400
-> +dmesg_pattern="ib_cm|infiniband|rdma|roce|mlx|hns_roce|irdma|siw|rxe"
+On Tue, 2026-06-09 at 01:35 -0700, Breno Leitao wrote:
+> On Tue, Jun 09, 2026 at 01:02:00AM -0700, Allison Henderson wrote:
+> > On Mon, 2026-06-08 at 02:32 -0700, Breno Leitao wrote:
+> > > rds_info_getsockopt() pins the destination user pages with FOLL_WRITE=
+ and
+> > > the RDS_INFO_* producers memcpy the snapshot into them through
+> > > kmap_atomic(). Because that copy goes through the kernel direct map, =
+the
+> > > dirty bit on the user PTE is never set, so unpin_user_pages() release=
+s the
+> > > pages without marking them dirty. A file-backed destination page can =
+then
+> > > be reclaimed without writeback, silently discarding the copied data.
+> > >=20
+> > > Use unpin_user_pages_dirty_lock() with make_dirty=3Dtrue so the modif=
+ied
+> > > pages are marked dirty before they are unpinned.
+> > >=20
+> > > Fixes: a8c879a7ee98 ("RDS: Info and stats")
+> > > Signed-off-by: Breno Leitao <leitao@debian.org>
+> >=20
+> > Hi Breno,
+> >=20
+> > Thanks for adding the Fixes tag. One thing though: now that this is
+> > standalone, it collides with "[PATCH net-next v3 2/2] rds: convert to
+> > getsockopt_iter" since both rewrite the same unpin in the out: block of
+> > rds_info_getsockopt(). =20
+> >=20
+> > Easiest on everyone is to just keep it folded into the net-next series =
+as
+> > a three-patch set, rather than splitting the fix out to net.
+>=20
+> I got from the maintainers that they want to continue to split the fixes
+> into net and non fixes (features) into net-next.
+>=20
+> 	"So just prepare for net with Fixes tags and we'll route the
+> 	patches accordingly." -- Jakub
+>=20
+> https://lore.kernel.org/all/20260527155942.45c43c8d@kernel.org/
+>=20
+> Thanks for the review,
+> --breno
 
-Sorry that it took so long to review this.
+I see, ok it's fine to apply my rvb then.
 
-Please address Sashiko’s comments regarding 'fault injection most likely
-not enabled here' and 'statistics check in wrong port':
-https://sashiko.dev/#/patchset/20260506060305.891564-1-zhaochenguang@kylinos.cn
+Thanks for working on this,
+Allison
 
-Also, 'dmesg_pattern' is not a scalable option. You should not rely on
-the dmesg print format.
-
-Thanks
 
