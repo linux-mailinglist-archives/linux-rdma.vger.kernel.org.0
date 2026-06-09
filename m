@@ -1,285 +1,229 @@
-Return-Path: <linux-rdma+bounces-22018-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22019-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id LyJUDhMbKGob+AIAu9opvQ
-	(envelope-from <linux-rdma+bounces-22018-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 15:54:27 +0200
+	id fR/9NIIoKGoP/QIAu9opvQ
+	(envelope-from <linux-rdma+bounces-22019-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 16:51:46 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FED8660BFE
-	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 15:54:26 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB9DA6615A0
+	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 16:51:45 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=VFtR0dli;
-	dkim=pass header.d=redhat.com header.s=google header.b=jK9aVJGT;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22018-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22018-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=redhat.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=meta.com header.s=s2048-2025-q2 header.b=b+bzFh5l;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22019-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22019-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=meta.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 730EC30799F2
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2026 13:49:42 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id DA9653009830
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2026 14:38:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE95B426D19;
-	Tue,  9 Jun 2026 13:49:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56F9933F390;
+	Tue,  9 Jun 2026 14:38:23 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F44C4183C0
-	for <linux-rdma@vger.kernel.org>; Tue,  9 Jun 2026 13:49:39 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781012980; cv=none; b=oZm1aHG58DUMitHk+lz/Q6r6fRNXsdYNS1WTlubEsGorXuJNQA3RBRUynNK193wf/beU41Q8Yd5Wp8ZZhfBjHlXRo9oJ8Wl/hnFQStvji0xZWth7jCy/0h6JmUPjU6HmaQQqDhhGsampEPnez0NFLrnGuoTWLeUtfHh/AKa+1Tk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781012980; c=relaxed/simple;
-	bh=52hnpEEgmB0qWOhFXmQimr5kmQmV0hK1rKA90td2mpE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rnNWQjKpPerVnlkF1vhLk5CE+KBZav1X2l9W8JYtS9QuBO5qd7bsB0t2j9KW7piyz6jWLYLb1bCz4Pe1vM6t6fR3/0iMAhVKhM6HQ3b6vJSvr9kbWjwWpUL7nNSHX4QVDAuk8g815AArWtnNA9ge5c0wr9MJRv1hqPb0YDE5GFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VFtR0dli; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=jK9aVJGT; arc=none smtp.client-ip=170.10.133.124
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1781012978;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=s6ZyLSFW2ZGo0KhUw8PJ3xCFPCwEjsrRdGcTeemtK0Q=;
-	b=VFtR0dliCz+c59c55x5i/HYrDikj2rpYUvHXYQMmXCuVDmErCL8y2fh+oV6ucfeLWnaezm
-	Q7EU+s5cTwzClpKumnmKd55WLR9FdAPrf/KJHUZDe8qnij7xNK5Yujm8dPZM2KQS7EerSE
-	G8pjPDQ8IZgpJkJht7X8AmaoHvZufvw=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-100-CXmjRNJuOPWPywapeB1dLw-1; Tue, 09 Jun 2026 09:49:30 -0400
-X-MC-Unique: CXmjRNJuOPWPywapeB1dLw-1
-X-Mimecast-MFC-AGG-ID: CXmjRNJuOPWPywapeB1dLw_1781012969
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-490ae3bcf4cso27029845e9.3
-        for <linux-rdma@vger.kernel.org>; Tue, 09 Jun 2026 06:49:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1781012969; x=1781617769; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=s6ZyLSFW2ZGo0KhUw8PJ3xCFPCwEjsrRdGcTeemtK0Q=;
-        b=jK9aVJGTxv8be1+tKzicU7/AOu5CStC3IF11kDiUoOs5TCuXNHt70oGKCJ/NXnuWnq
-         Qrp0SI4A9Q1W/D0+Y/KagkERSITlruDORdL/XEBHrCeg9HyhO+QK2X3MLgPjbQj8neef
-         m5520zjbb7S8hL7CgC3V8K8UgsZF57KOPiD6ysud22c2m7BgoR7nhPfTh4RV43a7DLfL
-         o004DPFsvYEnrgUY6xylZUuulPdq8fffA9QEExifr/5GemmYWurs5vb3WXvtC21jdOJ7
-         9wxDHoLMLYfNCuIqrXPLClxM3AeJHcZQ2NoUMp2I8YtnweyQtcdCdyciOa2/sJ/6R+NR
-         X3uQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB747340405
+	for <linux-rdma@vger.kernel.org>; Tue,  9 Jun 2026 14:38:21 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781015903; cv=pass; b=WvX1JmUU5FeGuaA+nkwPZ/8ijnCdQgCLMnt+AlEl9ImZouyLg1lsuhnTy2DeIiuPDzxoTwea35asbH8Vom+62omXnYZc9AQE1HulnUZYARS2JlqchbSc9sRNE34dnSz11AB23UMm7zEg2zo7eBf0Svj0Rry3YoPcvHnDzIab5DU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781015903; c=relaxed/simple;
+	bh=y3AzoKCQuHgd+PJJX0Ml7tfsX3S9F63aRJW3c7mG6Ic=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lUOUa1PS5xD+w/l3u9E65iFbWaPrNenOsZms1ak6xxi5IIpyk05alCzgGrGsn2jNsLcQgFhp+Gk8vzJBqUq/WlEnR+cgXca0x6g/xgTf9L9r2oGkswaBnUnaM4kMG27cZ2BQaYBDfWcF8D0uFHHiDRnWMG63QQLWbukvtm20Pt8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=b+bzFh5l; arc=pass smtp.client-ip=67.231.145.42
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 659BoJ7L4094947
+	for <linux-rdma@vger.kernel.org>; Tue, 9 Jun 2026 07:38:21 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=s2048-2025-q2; bh=A9sFQHsXqHrMgAiwxXHw
+	qbtJi56QK9Hsrm8AczETl1g=; b=b+bzFh5lZdFG6ZMxUJUlD8Yt1iTFLbUkN44J
+	0sEYOv5io+R4jUYJbE8CO/8bzyHasyD/fqldbu1TQANBQ68ej/P1D7bCh0Be/t9t
+	77ignPYiVT73nQeplrY12DpT/Cb+rEjERmUU6TVCa6V7eUZ7JLMt94G73fGvajze
+	zyUZleQxuZvCbUUSXYPL/gojMV01wKZCDt1r9+IxqZGQ1f29Qp3i37UJwt+6Vg4s
+	mCO5U7LHFg4UrHlCu+BS9DH360ffxI9Csawy+GcEYer3nQpVrv42nRoVOUC7IsxZ
+	e7IvZ+NUUzgTwRET8EbK90UUlwI9PBNVSniNuv50nJRdR5rglQ==
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com [209.85.210.70])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4epja9s0ky-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <linux-rdma@vger.kernel.org>; Tue, 09 Jun 2026 07:38:21 -0700 (PDT)
+Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-7e71e43e89bso4367983a34.3
+        for <linux-rdma@vger.kernel.org>; Tue, 09 Jun 2026 07:38:20 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1781015900; cv=none;
+        d=google.com; s=arc-20240605;
+        b=Up4f6T+SW7dG+d1+PVK+6r9k372FlyG7JbLcDX9HL5CkD7T0Cf/Gk+d9nzmsgh3Xxr
+         JhT0VeCHhlwZfJ/2usgEP0YNsbrDnq4eqDO41eSSUDwf4l9sdW7jFu3JgQtxl4njCzgb
+         7k7si6j0wi5WNTbvWFiVv/YnnZHBu6Z0oydMbo+eMFdcoFD79S3mAvQTbeSIXlLlo5PY
+         Sc507TDhhXJFyyqB+HOJeXSZA8Cufc9cqslHSaW+D9HJeOzWTLU31jaIliYGlfRAI/GP
+         Is6CpAvhznHNWRVaNTc+Tb4uOmQu1/NGqj0cwarNfMgoWOMhG7M4QFrQ2CMS0X880zO5
+         INJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version;
+        bh=A9sFQHsXqHrMgAiwxXHwqbtJi56QK9Hsrm8AczETl1g=;
+        fh=PBEHQK/GqjnV6oXpaJhg2aEkvEijGiwTHX1Gm8WOBs8=;
+        b=k0FPsdTQGQvhgWLKsXlqkfYAXESpjldYPKAOx9DXqT32wsbTxs6weR2+7CZNAoj05q
+         RpomO4c1XzMIT+YF3JaUZh5YAFrYOryA7uE4tcNBAcriIlAgBdK4N4reXQ777H08uj1D
+         4dlm1D7GVGKZil8+6w3uZ/To3M+xAyw56aw6Rs61CBFRtZRCuUTDPvDBkXP1QgzUaGgT
+         qY2G7vPqPMFuuajG13y+GiSTQAVIYCmkuVqYc7KyRW9eFZ2cMzGvBPgkWe4dgVpSqTIY
+         OEANSPIMnxr5NaY3uZwoyx76graX5XDfDFe91Gd7MFKZdthT1NWxuQ6wsX7Gsw3NoDzm
+         vXCg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781012969; x=1781617769;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=s6ZyLSFW2ZGo0KhUw8PJ3xCFPCwEjsrRdGcTeemtK0Q=;
-        b=KSH5m7gk7C+SevQtPqBnZ6V11htSWoWl3J3V1/+2T0f5MSjefmmGy0ly5FgRvyf27t
-         zfymK5DpNz7+xa0YNKdUx6LQr6qKyGH1EIKGjWaxbQ5rvywbSTKDgiFHbUFkuReDosZU
-         oL//NMWvU0AM4j2oiQ8ak3mTPBA7npF1jlsO9rXnr959S3QjmlBf0CohcpgyOp1hv5OI
-         nAIhbAhUwPvN5PqbQ2L3K+xP28tIoUXWEUEJjEBQsG3it9O1wzm87pN+gFWJstZtUlP6
-         VkskzR/9DoV1WGUyHhyQM9UOe3Cmwi/jmjeyuXRHDpr/gLwtn3b3JpV6CoEEoy7YPhRE
-         ap2A==
-X-Forwarded-Encrypted: i=1; AFNElJ9nuZKBC27P+Ahpw0yYTGypfgJjnXXWilq5ph89fx7vsUJd9gfe3hrSsRgynrK1gAF7F9/RmOp8jGFI@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw2orIuoHXzTNgl72nhjSK7VfwbwufLj/VpUpuVEeLqAv0QWjgc
-	Qr2uMNc/uHeDcoWzWfChuGRY9G96CXroQ8jN+tGKP9moslne2V6ZWu+zpbjD1aEnK/JMSqVKOKs
-	YXuog093sIZ+Adh1f/d0xcYmh8e/0wrK0mN5hQbZu7zCdcvPgPGGunCe8fUMk6hM=
-X-Gm-Gg: Acq92OG3HT+kUUfHKZy5PAvSR8xSqJ7+E/pxsIzG0MRmTV18Kkp9NqL5oM/p/trtWFG
-	Gq6VFTa/+8L0V5Lnkhi0Weqzn6roaS8XsUF84xqqyIbJctofUfWRRe0anhQMwx7Bel48ZH5NcIa
-	CErVFlCtApCEvJgxqfo1uWvveQfpbj6eWd+/jpWjYK8x/ShvRuNmP/fplBWuvw0CbOt4ubsKyaH
-	1McL07qdIxFz35BpyJ88ZOdQtWPJCGwAWxhLviGyUumQvFszqzdiKxAJpI7F/l2f4Ganl9ltHTB
-	C7qVRqnLvLZdDqu7bSn86i59+Hv10Tg3mlW5wVl/P2xM1+j4Gzer7HYIUGDolpL1QG5XrDmwGlh
-	hdXkHHdgcTg7t3V48QPDQpzWKgFT98un68K1tsISoMR3JmMztQa1zSbw1KNjVS6Rkvw==
-X-Received: by 2002:a05:600c:198d:b0:490:9d1b:f086 with SMTP id 5b1f17b1804b1-490c25baa0bmr347625775e9.14.1781012969042;
-        Tue, 09 Jun 2026 06:49:29 -0700 (PDT)
-X-Received: by 2002:a05:600c:198d:b0:490:9d1b:f086 with SMTP id 5b1f17b1804b1-490c25baa0bmr347625035e9.14.1781012968602;
-        Tue, 09 Jun 2026 06:49:28 -0700 (PDT)
-Received: from [192.168.88.32] ([150.228.93.44])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-490bc23394asm480555685e9.0.2026.06.09.06.49.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jun 2026 06:49:28 -0700 (PDT)
-Message-ID: <dcd35c42-3aae-4ba2-bd84-4af08467b2fc@redhat.com>
-Date: Tue, 9 Jun 2026 15:49:25 +0200
+        d=1e100.net; s=20251104; t=1781015900; x=1781620700;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A9sFQHsXqHrMgAiwxXHwqbtJi56QK9Hsrm8AczETl1g=;
+        b=gG/j8MmwGBloQranjgM9T6llrCz1O6mQTFc09gebK+pkjB4sMyfFhdCS+X/DOga2Cd
+         lyqtDJvsDRoQaBK8lWohblI7kU73UHhsN1fHTaLtZwxkWdMMhlgAaqb8xX7N/RdYRjb/
+         QCyvNKXAfkcYeNHWm42/R/QZuujbDkR5hU0qkU2DV5OMI63cKkHqj4TVibIy9gS3Akv3
+         fb7CPgvIhathZ8pu+42F5HFeftT9QWYklAb1yH4Q7JSn7cCXxPIazf17oy0MBSygkcOE
+         rPnMGmNsR8bf8kTNeGk2LVtiHP10BAy8F6/jD9i1p05R+r7Ap9CRX3Lh8VaxVC6dQPeP
+         FIgg==
+X-Forwarded-Encrypted: i=1; AFNElJ/+GmwpEdGvwe5tHpBqCzh7095OvhcRzlfU9gRIOWkkNPTURYbL+fEP6JLIWiKGT9hN/1WDoXVxeegH@vger.kernel.org
+X-Gm-Message-State: AOJu0YwuLoSegQWRdrTBZrywD1Ljcxqohk3cpJ6RkbaDoZyGyB98zaVS
+	Js5h0AAJ05gCeRZBxUbf/cZMYhnw4sRql9ln3zdvBXzYlqeSS4Inz0VNCWfwac02hZd+eSXhsT8
+	wGiBdlU5X6OdlR5zwjRh2g5uAhncB0IkcQ3NO4Mgc2sqUnC1DExM1OpMJLi29aPipsvUaKwLAJp
+	7DPYkTzxu9DecFQ4Y0QqynCdR3KqVryPuARMnf8ZJIW9ob
+X-Gm-Gg: Acq92OF+xS03pRpLG7X8Fcts/yd23ygQtWUuNK+RnaVDGBeuuV04urdSgwjkGjPD1AL
+	UP4L8nQIKBLBaHRxRe3LBhQ0Gg+PRIE9LovEwevP9TA4UY4es/GVakrkiFdDWCVZj95RrAr04DF
+	2pDCH3PfnI4+EOQ240JixY7b3o2Vtcq6azh4aVXnIqwFuIAH+s4u80gG19Mk5ccYzyidyUMLOWx
+	mMtWy3RChmlqWFHEUa7ewhkfYrJ0/vLK5pE8f5uCrOLBe6XAG0=
+X-Received: by 2002:a05:6830:6a96:b0:7d7:fb03:f6ba with SMTP id 46e09a7af769-7e70ca51cc9mr13515113a34.21.1781015900234;
+        Tue, 09 Jun 2026 07:38:20 -0700 (PDT)
+X-Received: by 2002:a05:6830:6a96:b0:7d7:fb03:f6ba with SMTP id
+ 46e09a7af769-7e70ca51cc9mr13515095a34.21.1781015899753; Tue, 09 Jun 2026
+ 07:38:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2] net: mana: Add Interrupt Moderation support
-To: Haiyang Zhang <haiyangz@linux.microsoft.com>,
- linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Konstantin Taranov <kotaranov@microsoft.com>, Simon Horman
- <horms@kernel.org>, Shradha Gupta <shradhagupta@linux.microsoft.com>,
- Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
- Dipayaan Roy <dipayanroy@linux.microsoft.com>,
- Aditya Garg <gargaditya@linux.microsoft.com>, Kees Cook <kees@kernel.org>,
- Breno Leitao <leitao@debian.org>, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org
-Cc: paulros@microsoft.com
-References: <20260604234211.2056341-1-haiyangz@linux.microsoft.com>
-From: Paolo Abeni <pabeni@redhat.com>
-Content-Language: en-US
-In-Reply-To: <20260604234211.2056341-1-haiyangz@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20260608185646.4085127-1-zhipingz@meta.com> <20260608185646.4085127-4-zhipingz@meta.com>
+ <40243782-e4ff-435c-ae40-3ac1c7c4815e@amd.com>
+In-Reply-To: <40243782-e4ff-435c-ae40-3ac1c7c4815e@amd.com>
+From: Zhiping Zhang <zhipingz@meta.com>
+Date: Tue, 9 Jun 2026 07:38:07 -0700
+X-Gm-Features: AVVi8CfGCq2wYUK9zUjDs8_E_dqHl5wHKtBE7B2eSNCP9pHNCaJrScoAmctUT8I
+Message-ID: <CAH3zFs1eE2VrxOZA9FoowJ9AKeBkdZE5P6t1cH0bxXq0iY6AhA@mail.gmail.com>
+Subject: Re: [PATCH v6 3/5] dma-buf: add optional get_tph() callback
+To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc: Alex Williamson <alex@shazbot.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Bjorn Helgaas <helgaas@kernel.org>, kvm@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Keith Busch <kbusch@kernel.org>, Yochai Cohen <yochai@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-GUID: LCiYZghdeEqz44XhEyKFVJuVh0Gc0Dpi
+X-Authority-Analysis: v=2.4 cv=V9JNF+ni c=1 sm=1 tr=0 ts=6a28255d cx=c_pps
+ a=7uPEO8VhqeOX8vTJ3z8K6Q==:117 a=IkcTkHD0fZMA:10 a=FelO9ux0wxsA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=7x6HtfJdh03M6CCDgxCd:22 a=PAz_-FQ8hEVmOPYdF0yf:22
+ a=KaHoPmoT-FsTecDK8CMA:9 a=QEXdDO2ut3YA:10 a=EXS-LbY8YePsIyqnH6vw:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA5MDEzOSBTYWx0ZWRfX8/xaqZRCspPL
+ +MSlQKy/9QygV2p2fL+19WxK5f6zNBgD+0irTUlOSrloOXF+v2B52NusShdbcrIme72o1xPCLRK
+ beKKSZIcD7UfPvvxoG2v26xbjhmsjl57fiI4RUDRHB/2knG7tHRscA5pnbeqLp5b0U4Ko8ci7Jv
+ 02cLNMAem1+BRiEqBzUR//jn2+qxJgSVyK/+1VK3cj+60Vhw2AnsJFm/OGJdGuHZ//bcEhF2ROi
+ 7PGjKdWT59K/uUlQPEIEjg0eLivpcsREmPeTVTKsAReUzZlzjiZ7aTl8TGVrFvFG/oYRqsEL27z
+ kLrYhqP0aYJOfFInnC6JPgNc7J3BvfwxONN19xyVtUfT0d07IfE053pw8DtKpf0olQ9goJpT13P
+ M2CyxcLNfGp/d3zJqwe5RkBAKUkzViYgoRRiitQwvdkrqKjE9seYYr3e7wxvCPEkTIyN54kp+y2
+ 0FgM40SwZBP8034WJwA==
+X-Proofpoint-ORIG-GUID: LCiYZghdeEqz44XhEyKFVJuVh0Gc0Dpi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
+ definitions=2026-06-09_03,2026-06-09_02,2025-10-01_01
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[meta.com,reject];
+	R_DKIM_ALLOW(-0.20)[meta.com:s=s2048-2025-q2];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22018-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22019-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:christian.koenig@amd.com,m:alex@shazbot.org,m:jgg@ziepe.ca,m:leon@kernel.org,m:sumit.semwal@linaro.org,m:helgaas@kernel.org,m:kvm@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-pci@vger.kernel.org,m:netdev@vger.kernel.org,m:dri-devel@lists.freedesktop.org,m:kbusch@kernel.org,m:yochai@nvidia.com,m:yishaih@nvidia.com,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[pabeni@redhat.com,linux-rdma@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	FORGED_RECIPIENTS(0.00)[m:haiyangz@linux.microsoft.com,m:linux-hyperv@vger.kernel.org,m:netdev@vger.kernel.org,m:kys@microsoft.com,m:haiyangz@microsoft.com,m:wei.liu@kernel.org,m:decui@microsoft.com,m:longli@microsoft.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:kotaranov@microsoft.com,m:horms@kernel.org,m:shradhagupta@linux.microsoft.com,m:ernis@linux.microsoft.com,m:dipayanroy@linux.microsoft.com,m:gargaditya@linux.microsoft.com,m:kees@kernel.org,m:leitao@debian.org,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:paulros@microsoft.com,m:andrew@lunn.ch,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	FORGED_SENDER(0.00)[zhipingz@meta.com,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DKIM_TRACE(0.00)[meta.com:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pabeni@redhat.com,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[zhipingz@meta.com,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp,sashiko.dev:url]
+	ALIAS_RESOLVED(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,vger.kernel.org:from_smtp,mail.gmail.com:mid,meta.com:dkim,meta.com:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 9FED8660BFE
+X-Rspamd-Queue-Id: DB9DA6615A0
 
-On 6/5/26 1:41 AM, Haiyang Zhang wrote:
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> index db14357d3732..b1e0c444f414 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> @@ -1551,6 +1551,9 @@ int mana_create_wq_obj(struct mana_port_context *apc,
->  
->  	mana_gd_init_req_hdr(&req.hdr, MANA_CREATE_WQ_OBJ,
->  			     sizeof(req), sizeof(resp));
-> +
-> +	req.hdr.req.msg_version = GDMA_MESSAGE_V3;
-> +	req.hdr.resp.msg_version = GDMA_MESSAGE_V2;
+> >  include/linux/dma-buf.h | 31 +++++++++++++++++++++++++++++++
+> >  1 file changed, 31 insertions(+)
+> >
+> > diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+> > index d1203da56fc5..8437dbe4a83e 100644
+> > --- a/include/linux/dma-buf.h
+> > +++ b/include/linux/dma-buf.h
+> > @@ -113,6 +113,37 @@ struct dma_buf_ops {
+> >        */
+> >       void (*unpin)(struct dma_buf_attachment *attach);
+> >
+> > +     /**
+> > +      * @get_tph:
+> > +      * @dmabuf: DMA buffer for which to retrieve TPH metadata
+> > +      * @extended: false to request the 8-bit ST namespace, true to request
+> > +      *            the 16-bit Extended ST namespace
+> > +      * @steering_tag: Returns the raw TPH steering tag for the requested
+> > +      *                namespace
+> > +      * @ph: Returns the TPH processing hint (2-bit value)
+> > +      *
+> > +      * Return the TPH (TLP Processing Hints) metadata associated with this
+> > +      * DMA buffer for the requested steering-tag namespace. 8-bit ST and
+> > +      * 16-bit Extended ST are distinct namespaces in the PCIe TPH ST table
+> > +      * and may both be present with different values, so the exporter must
+> > +      * select the value that matches @extended and must not substitute one
+> > +      * for the other.
+> > +      *
+> > +      * The exporter owns the completing address space for @dmabuf and
+> > +      * therefore decides whether it can derive meaningful TPH metadata for
+> > +      * that completer. The dma-buf core treats the returned ST/PH tuple as
+> > +      * opaque transport metadata; importers that support TPH place it on
+> > +      * outbound TLPs, while exporters that cannot derive a useful tuple
+> > +      * simply return -EOPNOTSUPP.
+> > +      *
+> > +      * Return 0 on success, or -EOPNOTSUPP if no metadata is available for
+> > +      * the requested namespace.
+> > +      *
+> > +      * This callback is optional.
+> > +      */
+> > +     int (*get_tph)(struct dma_buf *dmabuf, bool extended,
+> > +                    u16 *steering_tag, u8 *ph);
+> > +
+>
+> That needs a wrapper for importers to call which also handles if the callback isn't present.
+>
+> Regards,
+> Christian.
+>
+agreed, will use a wrapper in next revision.
 
-Sashiko noted the above cold break initialization on older firmware:
-
-https://sashiko.dev/#/patchset/20260604234211.2056341-1-haiyangz%40linux.microsoft.com
-
-[...]
-> +static void mana_update_rx_dim(struct mana_cq *cq)
-> +{
-> +	struct mana_port_context *apc = netdev_priv(cq->rxq->ndev);
-> +	struct mana_rxq *rxq = cq->rxq;
-> +	struct dim_sample dim_sample = {};
-
-Minor nit: please fix the variable declaration order above. Other
-occurrences below.
-
-[...]
-> @@ -440,17 +474,94 @@ static int mana_set_coalesce(struct net_device *ndev,
->  		return -EINVAL;
->  	}
->  
-> -	saved_cqe_coalescing_enable = apc->cqe_coalescing_enable;
-> +	if (ec->rx_coalesce_usecs > MANA_INTR_MODR_USEC_MAX ||
-> +	    ec->tx_coalesce_usecs > MANA_INTR_MODR_USEC_MAX) {
-> +		NL_SET_ERR_MSG_FMT(extack,
-> +				   "coalesce usecs must be <= %lu",
-> +				   MANA_INTR_MODR_USEC_MAX);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (ec->rx_max_coalesced_frames > MANA_INTR_MODR_COMP_MAX ||
-> +	    ec->tx_max_coalesced_frames > MANA_INTR_MODR_COMP_MAX) {
-> +		NL_SET_ERR_MSG_FMT(extack,
-> +				   "coalesce frames must be <= %lu",
-> +				   MANA_INTR_MODR_COMP_MAX);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (ec->rx_coalesce_usecs != apc->intr_modr_rx_usec ||
-> +	    ec->rx_max_coalesced_frames != apc->intr_modr_rx_comp ||
-> +	    ec->tx_coalesce_usecs != apc->intr_modr_tx_usec ||
-> +	    ec->tx_max_coalesced_frames != apc->intr_modr_tx_comp)
-> +		modr_changed = true;
-> +
-> +	saved.intr_modr_rx_usec = apc->intr_modr_rx_usec;
-> +	saved.intr_modr_rx_comp = apc->intr_modr_rx_comp;
-> +	saved.intr_modr_tx_usec = apc->intr_modr_tx_usec;
-> +	saved.intr_modr_tx_comp = apc->intr_modr_tx_comp;
-> +
-> +	apc->intr_modr_rx_usec = ec->rx_coalesce_usecs;
-> +	apc->intr_modr_rx_comp = ec->rx_max_coalesced_frames;
-> +	apc->intr_modr_tx_usec = ec->tx_coalesce_usecs;
-> +	apc->intr_modr_tx_comp = ec->tx_max_coalesced_frames;
-> +
-> +	if (!!ec->use_adaptive_rx_coalesce != apc->rx_dim_enabled ||
-> +	    !!ec->use_adaptive_tx_coalesce != apc->tx_dim_enabled)
-> +		dim_changed = true;
-> +
-> +	saved.rx_dim_enabled = apc->rx_dim_enabled;
-> +	saved.tx_dim_enabled = apc->tx_dim_enabled;
-> +	apc->rx_dim_enabled = !!ec->use_adaptive_rx_coalesce;
-> +	apc->tx_dim_enabled = !!ec->use_adaptive_tx_coalesce;
-> +
-> +	saved.cqe_coalescing_enable = apc->cqe_coalescing_enable;
->  	apc->cqe_coalescing_enable =
->  		kernel_coal->rx_cqe_frames == MANA_RXCOMP_OOB_NUM_PPI;
->  
->  	if (!apc->port_is_up)
->  		return 0;
->  
-> -	err = mana_config_rss(apc, TRI_STATE_TRUE, false, false);
-> -	if (err)
-> -		apc->cqe_coalescing_enable = saved_cqe_coalescing_enable;
-> +	if (apc->cqe_coalescing_enable != saved.cqe_coalescing_enable &&
-> +	    !modr_changed && !dim_changed) {
-> +		/* If only CQE coalescing setting is changed, we can just update
-> +		 * RSS configuration.
-> +		 */
-> +		err = mana_config_rss(apc, TRI_STATE_TRUE, false, false);
-> +		if (err) {
-> +			netdev_err(ndev, "Change CQE coalescing failed: %d\n",
-> +				   err);
-> +			apc->cqe_coalescing_enable =
-> +				saved.cqe_coalescing_enable;
-> +			return err;
-> +		}
-> +		return 0;
-> +	}
-> +
-> +	if (modr_changed || dim_changed) {
-> +		err = mana_detach(ndev, false);
-> +		if (err) {
-> +			netdev_err(ndev, "mana_detach failed: %d\n", err);
-> +			goto restore_modr;
-> +		}
-> +
-> +		err = mana_attach(ndev);
-> +		if (err) {
-> +			netdev_err(ndev, "mana_attach failed: %d\n", err);
-> +			goto restore_modr;
-> +		}
-
-You should try hard to avoid this sequence: if mana_attach fails,
-mana_set_coalesce() will leave the NIC unexpectedly down.
-
-/P
-
+Thanks,
+Zhiping
 
