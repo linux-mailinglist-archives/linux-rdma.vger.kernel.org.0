@@ -1,399 +1,259 @@
-Return-Path: <linux-rdma+bounces-21998-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-21999-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 5LZ3Mo6XJ2oJzQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-21998-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 06:33:18 +0200
+	id 79jzJpmnJ2rs0AIAu9opvQ
+	(envelope-from <linux-rdma+bounces-21999-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 07:41:45 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BB4465C377
-	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 06:33:18 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FC1F65C7FA
+	for <lists+linux-rdma@lfdr.de>; Tue, 09 Jun 2026 07:41:45 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.microsoft.com header.s=default header.b=eS9pLD2O;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21998-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21998-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.microsoft.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=Nvidia.com header.s=selector2 header.b="YHzEr/wi";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-21999-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-21999-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=nvidia.com;
+	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 47C373051A7F
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2026 04:33:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A48E43014D98
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2026 05:40:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E356369D63;
-	Tue,  9 Jun 2026 04:33:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 171D43BFAED;
+	Tue,  9 Jun 2026 05:40:54 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D47E71A9F90;
-	Tue,  9 Jun 2026 04:33:12 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780979594; cv=none; b=JsCoO0D1hGq1bSVVZ4aVlSJ5P4S4+qt7axXEfhc6LxB52Q77C6Ca+6aOPplEOa+giFwV/mAcpxlrzSRvgsEjUNSAHXzrZgceECbbff7p6Yarhm18nKGjoUoWMruFoK/Smf8iekUudXq5Esj2X/gLH0EJhSOXUgAScK6+a5WYJTM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780979594; c=relaxed/simple;
-	bh=8n2rUa58ndHtThTWZ59/AdSok7/ztYMrngn8BMaCEY8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W/stz3/wpjGG1PoxIQkVTpIYHsFFn1VI65Wzn00AagUKgq/ZtTJ/o2rVuoLu7N6dDm9eAtZpH3/eCXO6XEn+3twzLE6pKYjPHEvniXjA+rP70lK4U9oy9vkF9k09HheWpL7XOF63WUYo+sQW8O+n7VETJePbwCSOW9zyyh2GYCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=eS9pLD2O; arc=none smtp.client-ip=13.77.154.182
-Received: by linux.microsoft.com (Postfix, from userid 1204)
-	id 7AC8120B7167; Mon,  8 Jun 2026 21:32:49 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7AC8120B7167
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1780979569;
-	bh=EbqJ/IkzsqoSz7UPJbS0opNH84rgjXe7KslEbNh6Usk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eS9pLD2OlBsevnqnj6DzY/nw3dRmV+Y/GyvmYNdJo6w7yHs+4bf2I5aFLEf5xt8gC
-	 ya8ua+iMUKffMq5zX0ZsoQnMSbhK2v8CS4hUSi0DGDcLy0yt+g6vMFNf4PTgDt3BNL
-	 4c6nZ+3kLAk2USHYeRPVHTySfTsqMEA+ovIxhjMw=
-Date: Mon, 8 Jun 2026 21:32:49 -0700
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: Jacob Keller <jacob.e.keller@intel.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	leon@kernel.org, longli@microsoft.com, kotaranov@microsoft.com,
-	horms@kernel.org, shradhagupta@linux.microsoft.com,
-	ssengar@linux.microsoft.com, ernis@linux.microsoft.com,
-	shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org, stephen@networkplumber.org,
-	dipayanroy@microsoft.com, leitao@debian.org, kees@kernel.org,
-	john.fastabend@gmail.com, hawk@kernel.org, bpf@vger.kernel.org,
-	daniel@iogearbox.net, ast@kernel.org, sdf@fomichev.me,
-	yury.norov@gmail.com, pavan.chebbi@broadcom.com
-Subject: Re: [PATCH net-next v10 2/2] net: mana: force full-page RX buffers
- via ethtool private flag
-Message-ID: <aieXcRe47AKklXKr@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20260602202801.1873742-1-dipayanroy@linux.microsoft.com>
- <20260602202801.1873742-3-dipayanroy@linux.microsoft.com>
- <c3b2ab74-754d-4d09-b7a2-d274343d0936@intel.com>
+Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012012.outbound.protection.outlook.com [52.101.43.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58FF33C4540;
+	Tue,  9 Jun 2026 05:40:52 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780983653; cv=fail; b=MaxwGO/d81oBewyK1Uv8ldlORteailO6LgH2Zbx+98diZNv3QGci2J9wDIa1TINDO8quj+gacmiMQi11Yp9H4vxSwoB1K8CQuZK6U023I1o4Lm3n+A4pUh1RKjyE3ADtWcWFdqXTzpXoTlywg1wuCEnYtT97E36IYi3W7f3al9o=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780983653; c=relaxed/simple;
+	bh=O314YEvG5JW+bc6Ip8Tlr0U8MW1y8VJ7Dpq6Z3U5/84=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=f2Zf6jdLCvVxYFnZW+Vnb0W0sXdsZy7+94WUwK4c2tdXTjVgTU708225DFe0zmPy4/XeCLkoWtEIT7rGvRuDkjAa1I4JP5yryy7dwsccgR5s5W6aHtefQpz7NxKvUbpfMkI1GSXsFAshhlIIs1YnWV1uOHulPxdxtMYP6nyGrmw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=YHzEr/wi; arc=fail smtp.client-ip=52.101.43.12
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=PLOz4xnnSdLEd/udtEFPtFksTcap5NgU4c1zQwTIToiJqNMbiKaWfvTUiLUl6M4E7CioMs57fjHt5ovGtDgBJ7DggTrfvLG9HKTMjgzb9lwc+igo0x3bv/92jofDrLyJv7Dt8v3+Aw6HHeo99n73jN3RNyZxFjzUSL5OH4/7d/5KKvGw0NfiuYhSEyitR+1SEafjSKQkT93DpEjy/AbrJ2O184RrHU++wV4iaG/LpQWnELB56K874tTgVvFzZpAj8sZv2HOG6d7aFiDOZUK2bEcbJ8uh9+NqCSGd8xVgDbPukYoTX5E/Nb1wpnXu4kWWB7YGkYvj27S0AM3n/PaaoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5gQfz0qjAQFoOdhCeIPSqsb7Wx1GPva0gwy1T5k3UJo=;
+ b=OawdYAOqRp3tnRDLOZTPokXyhN/lPvFeaSZRqQ/+41RpgWZ2SjjVlBVY2Wt1gBGxh7zXoOmS1OfSnM7RB81h9/CFJTLAh6RXPl6tOWT5fGBxqF6cA1o0xXt79skVZleWALtLzhLAPXIhz9HLvUDoedV4iP7Maw+vno2oTuNW0UYDq8CmCGXvM3iUaV0x9tGUifZ2jT7JFxb4iutYfOZymMona8TteoROU06nXT4DS1V3dYYWNr+Qc1fkwmEmUoWArHKZfBfG7KB0b8YEC30qynEORbV8azhrxZG42BUgg8+ssAOMmvuzvZX74nldhUNcYho+MOHLLY5+zOgXLJUh2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=networkplumber.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5gQfz0qjAQFoOdhCeIPSqsb7Wx1GPva0gwy1T5k3UJo=;
+ b=YHzEr/wiTLiRV4lQE5DUmj8yozlbGC5xAiKHs+G2x7WGVX/oNJnKDiWrUfsD3Hxk5oZuVgKEmm0aR0/cfQjJR1ggVwWNxuAFwz4mpQjhNJmAbVRtY0k8bB+h1AaPA6BX1WWvOZXKjrrDXgwu3xWbbUxMlU0eWhjdCa25/10vET/2TGhnfd/q3i4sr6+GevswzZHT7U7Q/I59X3G4a45mFMXVWGrGJCRVdUpJWFFZZpE7TXHXFfvDXKHq9B8tLeZxlfBURtuH9EhsZdSk8+D7ITpFM/xSBQYQyJkxgnMNvv1c3JamT6YRC0+Tq+wYX55i65qxrlU5/o1CHnldiJuqng==
+Received: from PH8P221CA0026.NAMP221.PROD.OUTLOOK.COM (2603:10b6:510:2d8::29)
+ by MN0PR12MB5859.namprd12.prod.outlook.com (2603:10b6:208:37a::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.13; Tue, 9 Jun 2026
+ 05:40:47 +0000
+Received: from SA2PEPF00001507.namprd04.prod.outlook.com
+ (2603:10b6:510:2d8:cafe::9d) by PH8P221CA0026.outlook.office365.com
+ (2603:10b6:510:2d8::29) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.113.10 via Frontend Transport; Tue, 9
+ Jun 2026 05:40:46 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ SA2PEPF00001507.mail.protection.outlook.com (10.167.242.39) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.113.7 via Frontend Transport; Tue, 9 Jun 2026 05:40:46 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 8 Jun
+ 2026 22:40:33 -0700
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.20; Mon, 8 Jun 2026 22:40:32 -0700
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
+ (10.126.190.181) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
+ Transport; Mon, 8 Jun 2026 22:40:23 -0700
+From: Tariq Toukan <tariqt@nvidia.com>
+To: Stephen Hemminger <stephen@networkplumber.org>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+	<davem@davemloft.net>
+CC: David Ahern <dsahern@kernel.org>, Donald Hunter <donald.hunter@gmail.com>,
+	Simon Horman <horms@kernel.org>, Jiri Pirko <jiri@resnulli.us>, "Jonathan
+ Corbet" <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, "Saeed
+ Mahameed" <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq
+ Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Shuah Khan
+	<shuah@kernel.org>, "Matthieu Baerts (NGI0)" <matttbe@kernel.org>, "Chuck
+ Lever" <chuck.lever@oracle.com>, Or Har-Toov <ohartoov@nvidia.com>, "Carolina
+ Jubran" <cjubran@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>, Shay Drori
+	<shayd@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, Daniel Zahka
+	<daniel.zahka@gmail.com>, Shahar Shitrit <shshitrit@nvidia.com>, Jacob Keller
+	<jacob.e.keller@intel.com>, Cosmin Ratiu <cratiu@nvidia.com>, Parav Pandit
+	<parav@nvidia.com>, Kees Cook <kees@kernel.org>, Adithya Jayachandran
+	<ajayachandra@nvidia.com>, Daniel Jurgens <danielj@nvidia.com>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-kselftest@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, "Ido
+ Schimmel" <idosch@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, Petr Machata
+	<petrm@nvidia.com>
+Subject: [PATCH iproute2-next 0/7] devlink: add per-port resource support
+Date: Tue, 9 Jun 2026 08:39:46 +0300
+Message-ID: <20260609053953.487152-1-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c3b2ab74-754d-4d09-b7a2-d274343d0936@intel.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF00001507:EE_|MN0PR12MB5859:EE_
+X-MS-Office365-Filtering-Correlation-Id: f13f0f69-1bd4-4487-c3a2-08dec5e9a79e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|7416014|376014|36860700016|82310400026|1800799024|11063799006|56012099006|6133799003|18002099003|3023799007|13003099007;
+X-Microsoft-Antispam-Message-Info:
+	nk5J50wIfsofyv7/0JFzH46omqHICMwWUTGJ0FZKuepO57rhFtMsQKU0jbTWEVckCDEPZEMKm3vvREYUMdy06LZzpKa+mZj/9yNM1SAr8n8h4GmK+oQpJUChbXa00RVWCULw4b2iJXhj+yZJteeeJGnCDP/2eC7tY8v7nFi8CM914JgJLAs1tAnubue0YA8SExUz2tYIZ4hHm8k2tIPkEtgaaQAX+EVAdzbMkFBD/+ppsgIuwUTM6SAFFeEoZCwhyWGi7kz+96UKGtTSVb6D9AiqDgPBd4gbSz7OBjnew9kqkuzI6HhSxDi/169UxSSah2NMQ5j+V/Z12uA+ao2KHSS8UOyzyAehrURY6ZwZlkjEEuwGe1gGBApyNTBPKuOC3cxLq7ZazPmYyjzxkUzji5xRsXmdNbPZ7RXgziE0EEX8SBnrudkcQbuhn8xkfvxBB4vEJo/RulKPhrt4EGEg6D7BnNED2WLn3QaQmEEMb1F6eyc2kCMuma8IqwLa6e5pKf7J5EMBszjcz2/lzM6yTZykGqo3Hwdi33/vp4P1zwaaYDMBoIEI8pH9nFC2DekkDfDomV8WTDNvukVRJerTRQTtNjJNKNz5iwMpR49TBOVwnAjEfnu39Qen83SbZKwKxB7PjGIrydlhM2uGmEFn7VVZ8OOqj2ziDrqUJ4wHZAuxMkxPuK9P8RdFPe7doml+3P5mqruTtAnXg59HEmcLPIq8DyDCHoWymsvqH0fe+5x3uvWK4iplyify/T1vRQ/n
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(7416014)(376014)(36860700016)(82310400026)(1800799024)(11063799006)(56012099006)(6133799003)(18002099003)(3023799007)(13003099007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	1spcJajCy8cyvOPRp2onwVdy8YCArYSsiI0pU1ABCoclJgpnZhRl7yeurYKTaFUlclZk9SgTdZo8nOXCoSUAhiX828GpbUWbBf1nQ+SgMMzoijznBv02aIRiWZuK4Tx5y1CTUyMNPva4flpvG0XIGJc3lYNBV/kdeX82n8e3SAWqlkXMlB+l9N12digUDjZAk4IW2m8JF8buLUKGNOEa/TnE5Yoo2yvGk1bteignpXus9jvflgLS3lg8NU9K0ctSgAzHaZCGG8u9Fqe1jmeiwIQi30J42z9MeLdx7VccapLR40YYJ3BxgskCUn8uuszKcuWj97UCVpnNjS00QkMS30xDsrpDY6CNOVwWsSlcpb/QtesZOeLx+8cu0dNCu81c+AlNt8kPsgywXPanhJpV3UOi79jxX6Mwh6e/tGvTJCq4sl5aPmFaxBNZ+gGP8Vmc
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2026 05:40:46.1936
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f13f0f69-1bd4-4487-c3a2-08dec5e9a79e
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SA2PEPF00001507.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5859
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [2.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:jacob.e.keller@intel.com,m:kys@microsoft.com,m:haiyangz@microsoft.com,m:wei.liu@kernel.org,m:decui@microsoft.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:leon@kernel.org,m:longli@microsoft.com,m:kotaranov@microsoft.com,m:horms@kernel.org,m:shradhagupta@linux.microsoft.com,m:ssengar@linux.microsoft.com,m:ernis@linux.microsoft.com,m:shirazsaleem@microsoft.com,m:linux-hyperv@vger.kernel.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:stephen@networkplumber.org,m:dipayanroy@microsoft.com,m:leitao@debian.org,m:kees@kernel.org,m:john.fastabend@gmail.com,m:hawk@kernel.org,m:bpf@vger.kernel.org,m:daniel@iogearbox.net,m:ast@kernel.org,m:sdf@fomichev.me,m:yury.norov@gmail.com,m:pavan.chebbi@broadcom.com,m:andrew@lunn.ch,m:johnfastabend@gmail.com,m:yurynorov@gmail.com,s:lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-21998-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[34];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[41];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
-	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,debian.org,gmail.com,iogearbox.net,fomichev.me,broadcom.com];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FORGED_RECIPIENTS(0.00)[m:stephen@networkplumber.org,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:dsahern@kernel.org,m:donald.hunter@gmail.com,m:horms@kernel.org,m:jiri@resnulli.us,m:corbet@lwn.net,m:skhan@linuxfoundation.org,m:saeedm@nvidia.com,m:leon@kernel.org,m:tariqt@nvidia.com,m:mbloch@nvidia.com,m:shuah@kernel.org,m:matttbe@kernel.org,m:chuck.lever@oracle.com,m:ohartoov@nvidia.com,m:cjubran@nvidia.com,m:moshe@nvidia.com,m:shayd@nvidia.com,m:dtatulea@nvidia.com,m:daniel.zahka@gmail.com,m:shshitrit@nvidia.com,m:jacob.e.keller@intel.com,m:cratiu@nvidia.com,m:parav@nvidia.com,m:kees@kernel.org,m:ajayachandra@nvidia.com,m:danielj@nvidia.com,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-doc@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:gal@nvidia.com,m:idosch@nvidia.com,m:jiri@nvidia.com,m:petrm@nvidia.com,m:andrew@lunn.ch,m:donaldhunter@gmail.com,m:danielzahka@gmail.
+ com,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21999-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
+	FREEMAIL_CC(0.00)[kernel.org,gmail.com,resnulli.us,lwn.net,linuxfoundation.org,nvidia.com,oracle.com,intel.com,vger.kernel.org];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,linux.microsoft.com:dkim,linux.microsoft.com:from_mime,intel.com:email]
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,nvidia.com:mid,nvidia.com:from_mime,Nvidia.com:dkim];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	RCVD_COUNT_SEVEN(0.00)[9]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 3BB4465C377
+X-Rspamd-Queue-Id: 1FC1F65C7FA
 
-On Thu, Jun 04, 2026 at 11:40:30AM -0700, Jacob Keller wrote:
-> On 6/2/2026 1:24 PM, Dipayaan Roy wrote:
-> > On some ARM64 platforms with 4K PAGE_SIZE, page_pool fragment
-> > allocation in the RX refill path can cause 15-20% throughput
-> > regression under high connection counts (>16 TCP streams).
-> > 
-> > Add an ethtool private flag "full-page-rx" that allows the user to
-> > force one RX buffer per page, bypassing the page_pool fragment path.
-> > This restores line-rate (180+ Gbps) performance on affected platforms.
-> > 
-> > Usage:
-> >   ethtool --set-priv-flags eth0 full-page-rx on
-> > 
-> > There is no behavioral change by default. The flag must be explicitly
-> > enabled by the user or udev rule.
-> > 
-> > The existing single-buffer-per-page logic for XDP and jumbo frames is
-> > consolidated into a new helper mana_use_single_rxbuf_per_page() which
-> > is now the single decision point for both the automatic and
-> > user-controlled paths.
-> > 
-> > Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-> > ---
-> 
-> I had one or two minor nits, but nothing that I think really deserves a
-> v11. The only real comment is a future "gotcha" that could happen if you
-> ever added a second private flag, which seems unlikely and maybe not
-> worth dealing with until it matters.
-> 
-> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
->
+Hi,
 
-Hi Jacob,
+Currently, devlink resource show only supports querying a specific
+device and displays device-level resources. However, some resources
+are per-port, such as the maximum number of SFs that can be created
+on a specific PF port.
 
-Thank you for the review.
-I will keep this patch as is, since no plans for any new private flags.
+This series extends devlink resource show with full support for
+port-level resources, including a dump mode, per-port querying syntax,
+and scope filtering. In preparation for these features, the first two
+patches refactor how dpipe tables are handled to unblock dump support
+and ensure errors in secondary queries are non-fatal.
 
-Regards
-Dipayaan Roy
+The series is organized as follows:
 
-> >  drivers/net/ethernet/microsoft/mana/mana_en.c |  22 +++-
-> >  .../ethernet/microsoft/mana/mana_ethtool.c    | 103 ++++++++++++++++++
-> >  include/net/mana/mana.h                       |   8 ++
-> >  3 files changed, 131 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > index db14357d3732..447cecfd3f67 100644
-> > --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > @@ -744,6 +744,25 @@ static void *mana_get_rxbuf_pre(struct mana_rxq *rxq, dma_addr_t *da)
-> >  	return va;
-> >  }
-> >  
-> > +static bool
-> > +mana_use_single_rxbuf_per_page(struct mana_port_context *apc, u32 mtu)
-> > +{
-> > +	/* On some platforms with 4K PAGE_SIZE, page_pool fragment allocation
-> > +	 * in the RX refill path (~2kB buffer) can cause significant throughput
-> > +	 * regression under high connection counts. Allow user to force one RX
-> > +	 * buffer per page via ethtool private flag to bypass the fragment
-> > +	 * path.
-> > +	 */
-> > +	if (apc->priv_flags & BIT(MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF))
-> > +		return true;
-> > +
-> > +	/* For xdp and jumbo frames make sure only one packet fits per page. */
-> > +	if (mtu + MANA_RXBUF_PAD > PAGE_SIZE / 2 || mana_xdp_get(apc))
-> > +		return true;
-> 
-> Technically you could combine all three into one if, but I agree that
-> clarity and space for the comment about why the private flag exists
-> makes sense.
-> 
-> > +
-> > +	return false;
-> > +}
-> > +
-> >  /* Get RX buffer's data size, alloc size, XDP headroom based on MTU */
-> >  static void mana_get_rxbuf_cfg(struct mana_port_context *apc,
-> >  			       int mtu, u32 *datasize, u32 *alloc_size,
-> > @@ -754,8 +773,7 @@ static void mana_get_rxbuf_cfg(struct mana_port_context *apc,
-> >  	/* Calculate datasize first (consistent across all cases) */
-> >  	*datasize = mtu + ETH_HLEN;
-> >  
-> > -	/* For xdp and jumbo frames make sure only one packet fits per page */
-> > -	if (mtu + MANA_RXBUF_PAD > PAGE_SIZE / 2 || mana_xdp_get(apc)) {
-> > +	if (mana_use_single_rxbuf_per_page(apc, mtu)) {
-> >  		if (mana_xdp_get(apc)) {
-> >  			*headroom = XDP_PACKET_HEADROOM;
-> >  			*alloc_size = PAGE_SIZE;
-> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> > index 7e79681634db..f22bbb325948 100644
-> > --- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> > @@ -133,6 +133,10 @@ static const struct mana_stats_desc mana_phy_stats[] = {
-> >  	{ "hc_tc7_tx_pause_phy", offsetof(struct mana_ethtool_phy_stats, tx_pause_tc7_phy) },
-> >  };
-> >  
-> > +static const char mana_priv_flags[MANA_PRIV_FLAG_MAX][ETH_GSTRING_LEN] = {
-> > +	[MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF] = "full-page-rx"
-> > +};
-> > +
-> >  static int mana_get_sset_count(struct net_device *ndev, int stringset)
-> >  {
-> >  	struct mana_port_context *apc = netdev_priv(ndev);
-> > @@ -144,6 +148,10 @@ static int mana_get_sset_count(struct net_device *ndev, int stringset)
-> >  		       ARRAY_SIZE(mana_phy_stats) +
-> >  		       ARRAY_SIZE(mana_hc_stats)  +
-> >  		       num_queues * (MANA_STATS_RX_COUNT + MANA_STATS_TX_COUNT);
-> > +
-> > +	case ETH_SS_PRIV_FLAGS:
-> > +		return MANA_PRIV_FLAG_MAX;
-> > +
-> >  	default:
-> >  		return -EINVAL;
-> >  	}
-> > @@ -192,6 +200,14 @@ static void mana_get_strings_stats(struct mana_port_context *apc, u8 **data)
-> >  	}
-> >  }
-> >  
-> > +static void mana_get_strings_priv_flags(u8 **data)
-> > +{
-> > +	int i;
-> > +
-> > +	for (i = 0; i < MANA_PRIV_FLAG_MAX; i++)
-> > +		ethtool_puts(data, mana_priv_flags[i]);
-> > +}
-> > +
-> >  static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
-> >  {
-> >  	struct mana_port_context *apc = netdev_priv(ndev);
-> > @@ -200,6 +216,9 @@ static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
-> >  	case ETH_SS_STATS:
-> >  		mana_get_strings_stats(apc, &data);
-> >  		break;
-> > +	case ETH_SS_PRIV_FLAGS:
-> > +		mana_get_strings_priv_flags(&data);
-> > +		break;
-> >  	default:
-> >  		break;
-> >  	}
-> > @@ -590,6 +609,88 @@ static int mana_get_link_ksettings(struct net_device *ndev,
-> >  	return 0;
-> >  }
-> >  
-> > +static u32 mana_get_priv_flags(struct net_device *ndev)
-> > +{
-> > +	struct mana_port_context *apc = netdev_priv(ndev);
-> > +
-> > +	return apc->priv_flags;
-> > +}
-> > +
-> > +static int mana_set_priv_flags(struct net_device *ndev, u32 priv_flags)
-> > +{
-> > +	struct mana_port_context *apc = netdev_priv(ndev);
-> > +	u32 changed = apc->priv_flags ^ priv_flags;
-> > +	u32 old_priv_flags = apc->priv_flags;
-> > +	bool schedule_port_reset = false;
-> > +	int err = 0;
-> > +
-> > +	if (!changed)
-> > +		return 0;
-> > +
-> > +	/* Reject unknown bits */
-> > +	if (priv_flags & ~GENMASK(MANA_PRIV_FLAG_MAX - 1, 0))
-> > +		return -EINVAL;
-> 
-> Good. Explicit rejection ensures that there's no risk of bad value. I
-> think this is only required for the legacy ioctl interface, and won't be
-> able to have a bit set that isn't in your accepted list. However the
-> legacy ioctl interface looks like it doesn't do that double checking, so
-> its good to have this.
-> 
-> > +
-> > +	if (changed & BIT(MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF)) {
-> > +		apc->priv_flags = priv_flags;
-> > +
-> 
-> In the (unlikely) event that you need another private flag in the
-> future, this bit seems like it shouldn't be inside the if block here. It
-> seems like you'd want to either do this at the end or up front. Of
-> course it doesn't matter as long as this is the only private flag you have.
-> 
-> > +		if (!apc->port_is_up) {
-> > +			/* Port is down, flag updated to apply on next up
-> > +			 * so just return.
-> > +			 */
-> > +			return 0;
-> > +		}
-> > +
-> > +		/* Pre-allocate buffers to prevent failure in mana_attach
-> > +		 * later
-> > +		 */
-> > +		err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
-> > +		if (err) {
-> > +			netdev_err(ndev,
-> > +				   "Insufficient memory for new allocations\n");
-> > +			apc->priv_flags = old_priv_flags;
-> > +			return err;
-> > +		}
-> > +
-> > +		err = mana_detach(ndev, false);
-> > +		if (err) {
-> > +			netdev_err(ndev, "mana_detach failed: %d\n", err);
-> > +			apc->priv_flags = old_priv_flags;
-> > +
-> > +			/* Port is in an inconsistent state. Restore
-> > +			 * 'port_is_up' so that queue reset work handler
-> > +			 * can properly detach and re-attach.
-> > +			 */
-> > +			apc->port_is_up = true;
-> > +			schedule_port_reset = true;
-> > +			goto out;
-> > +		}
-> > +
-> > +		err = mana_attach(ndev);
-> > +		if (err) {
-> > +			netdev_err(ndev, "mana_attach failed: %d\n", err);
-> > +			apc->priv_flags = old_priv_flags;
-> > +
-> > +			/* Restore 'port_is_up' so the reset work handler
-> > +			 * can properly detach/attach. Without this,
-> > +			 * the handler sees port_is_up=false and skips
-> > +			 * queue allocation, leaving the port dead.
-> > +			 */
-> > +			apc->port_is_up = true;
-> > +			schedule_port_reset = true;
-> > +		}
-> 
-> I might have made this bit a separate function, but that comes from
-> history of working with older drivers which accumulated a larger number
-> of private flags. Given that we frown on adding new ones except in more
-> rare cases these days, this is probably fine.
-> 
-> > +	}
-> > +
-> > +out:
-> > +	mana_pre_dealloc_rxbufs(apc);
-> > +
-> > +	if (schedule_port_reset)
-> > +		queue_work(apc->ac->per_port_queue_reset_wq,
-> > +			   &apc->queue_reset_work);
-> > +
-> > +	return err;
-> > +}
-> > +
-> >  const struct ethtool_ops mana_ethtool_ops = {
-> >  	.supported_coalesce_params = ETHTOOL_COALESCE_RX_CQE_FRAMES,
-> >  	.get_ethtool_stats	= mana_get_ethtool_stats,
-> > @@ -608,4 +709,6 @@ const struct ethtool_ops mana_ethtool_ops = {
-> >  	.set_ringparam          = mana_set_ringparam,
-> >  	.get_link_ksettings	= mana_get_link_ksettings,
-> >  	.get_link		= ethtool_op_get_link,
-> > +	.get_priv_flags		= mana_get_priv_flags,
-> > +	.set_priv_flags		= mana_set_priv_flags,
-> >  };
-> > diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-> > index d9c27310fd04..26fd5e041a47 100644
-> > --- a/include/net/mana/mana.h
-> > +++ b/include/net/mana/mana.h
-> > @@ -30,6 +30,12 @@ enum TRI_STATE {
-> >  	TRI_STATE_TRUE = 1
-> >  };
-> >  
-> > +/* MANA ethtool private flag bit positions */
-> > +enum mana_priv_flag_bits {
-> > +	MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF = 0,
-> > +	MANA_PRIV_FLAG_MAX,
-> 
-> For cases like this, I find it helpful to add a comment indicating this
-> must be the last entry. (and in that case, drop the trailing comma).
-> 
-> > +};
-> > +
-> >  /* Number of entries for hardware indirection table must be in power of 2 */
-> >  #define MANA_INDIRECT_TABLE_MAX_SIZE 512
-> >  #define MANA_INDIRECT_TABLE_DEF_SIZE 64
-> > @@ -531,6 +537,8 @@ struct mana_port_context {
-> >  	u32 rxbpre_headroom;
-> >  	u32 rxbpre_frag_count;
-> >  
-> > +	u32 priv_flags;
-> > +
-> >  	struct bpf_prog *bpf_prog;
-> >  
-> >  	/* Create num_queues EQs, SQs, SQ-CQs, RQs and RQ-CQs, respectively. */
-> 
+Patch 1 splits the dpipe tables display into a separate function.
+
+Patch 2 moves the dpipe tables query into the per-device resource show
+callback, ensuring it behaves correctly during a multi-device dump.
+
+Patch 3 fixes a pre-existing memory leak in resource_ctx_fini.
+
+Patch 4 adds dump support to resource show (no device required).
+
+Patch 5 shows port-level resources returned in a dump reply.
+
+Patch 6 adds DEV/PORT_INDEX syntax to resource show.
+
+Patch 7 adds scope filter to resource show.
+
+With this series, users can query resources at all levels:
+
+$ devlink resource show
+pci/0000:03:00.0:
+  name local_max_SFs size 508 unit entry
+  name external_max_SFs size 508 unit entry
+pci/0000:03:00.0/196608:
+  name max_SFs size 20 unit entry
+
+$ devlink resource show scope dev
+pci/0000:03:00.0:
+  name local_max_SFs size 508 unit entry
+  name external_max_SFs size 508 unit entry
+
+$ devlink resource show scope port
+pci/0000:03:00.0/196608:
+  name max_SFs size 20 unit entry
+
+$ devlink resource show pci/0000:03:00.0/196608
+pci/0000:03:00.0/196608:
+  name max_SFs size 20 unit entry
+
+This series is the userspace counterpart to the kernel series:
+https://lore.kernel.org/all/20260407194107.148063-1-tariqt@nvidia.com/
+
+Ido Schimmel (2):
+  devlink: Split dpipe tables output to a separate function
+  devlink: Move dpipe tables query to resources show callback
+
+Or Har-Toov (5):
+  devlink: fix memory leak in resource_ctx_fini
+  devlink: add dump support for resource show
+  devlink: show port resources in resource dump
+  devlink: add per-port resource show support
+  devlink: add scope filter to resource show
+
+ bash-completion/devlink     |   8 ++
+ devlink/devlink.c           | 202 +++++++++++++++++++++++++++---------
+ man/man8/devlink-resource.8 |  34 +++++-
+ 3 files changed, 192 insertions(+), 52 deletions(-)
+
+
+base-commit: 7340b539841dc739bc0b813e8e86825bc1eb5a4c
+-- 
+2.44.0
+
 
