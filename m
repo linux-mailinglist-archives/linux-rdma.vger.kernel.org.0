@@ -1,314 +1,211 @@
-Return-Path: <linux-rdma+bounces-22038-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22040-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 3hALIk6mKGqdHAMAu9opvQ
-	(envelope-from <linux-rdma+bounces-22038-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 01:48:30 +0200
+	id 7IcTDKupKGp4HgMAu9opvQ
+	(envelope-from <linux-rdma+bounces-22040-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 02:02:51 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 271A2664D8C
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 01:48:30 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C603664DF4
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 02:02:50 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=meta.com header.s=s2048-2025-q2 header.b=OZKBis2V;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22038-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22038-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=reject) header.from=meta.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
+	dkim=pass header.d=Nvidia.com header.s=selector2 header.b=UMKziGJd;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22040-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22040-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=nvidia.com;
+	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 72FFE300AB0E
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2026 23:48:22 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 91E1E3025C06
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 00:02:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F36DA3EFFCB;
-	Tue,  9 Jun 2026 23:48:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E43C5BA3D;
+	Wed, 10 Jun 2026 00:02:46 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012020.outbound.protection.outlook.com [40.107.209.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30CE2372ED0
-	for <linux-rdma@vger.kernel.org>; Tue,  9 Jun 2026 23:48:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 907258C1F
+	for <linux-rdma@vger.kernel.org>; Wed, 10 Jun 2026 00:02:45 +0000 (UTC)
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781048896; cv=pass; b=QGyRh8ID3cK3dZVElezUYQGMPhaLRCFO3P1X1xzYm1dvsizDVz9j22gn76P4ETbOzCBaVOJQH/0xqg+KkqLIGDpthHYWjkUwQfiKytKHR3K1uTx/rrs0cSU4M19E778TmT1N5dMV7OF3jHfKbOGu4pusADPcI10fxaHIDklEfpA=
+	t=1781049766; cv=fail; b=RALznI4l+yNvYkntLggi4+2TZKfR0Ag12B5YhE5TJqRwobXLFXikbeGihe3gqLqgDxhd/kkICfnsPUQpm6poWo9VGc0oDq5/yOtzwP1BNdEk6aP0r/rZeLK3vvdt+C9kpFZICA91+CK/DF8PDrWx6cjzuVa8dXYWdO/8XkjQc6w=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781048896; c=relaxed/simple;
-	bh=rzFi8rHbjUN/4EV94L92+v7yzItUHCmPw4oD5yP0uJs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XEn6cAs5v2DhW8sEItyf3npfBn3GE/4z354BbOKlBKFB6Hf+NqpwotIczpleiBmDCE0mzRdfSEAt8JfT0PmMUCkV4U2qQHCuq6ABSgZRYqBQtdpw0uziDbxWlcr4kQ04FkQxUjbvVU4CBPFzMH3dDpotkyKgFfdW/tiJEJn1zs8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=OZKBis2V; arc=pass smtp.client-ip=67.231.153.30
-Received: from pps.filterd (m0528004.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 659FncFN3251896
-	for <linux-rdma@vger.kernel.org>; Tue, 9 Jun 2026 16:48:14 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=s2048-2025-q2; bh=2oke7nd3qgzSpwUghUx6
-	5sQAoKy1HMHaETHva/Kk8Jw=; b=OZKBis2ViNPY7hO90BNGQapT/XbUSMHitxwk
-	n9XV/Gazcj+2wD9m1KqBMuPmB9/KzpVT1nBJ6WPualsEDo7qL0Vtzy+VzpzOy4WO
-	VJIhhmj08GYtZwFIjFfi83tEXNicBAxgVk0RaCm2kYxY8pYZ7r7p0XmODAFwWTKL
-	TQm2udjgflTsDrm3B3obBvMx4aAmTTMePMUsDel0/p/JTzF3k6rH2qDUyVCJv8XZ
-	rvlRdpBmF/Gt6Ek/OaG5ScR5kK8TQn1MNMSEQ16qjRMigOILwgvGGUt7t+zhrnYT
-	ox3vb1WsVoPy1SXQ5ySWLbIoP0woSdDUhL2pkCkc2mLTW+2m1A==
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com [209.85.210.70])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4epnt9k6ff-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-rdma@vger.kernel.org>; Tue, 09 Jun 2026 16:48:14 -0700 (PDT)
-Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-7e71adbb398so234418a34.3
-        for <linux-rdma@vger.kernel.org>; Tue, 09 Jun 2026 16:48:14 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1781048893; cv=none;
-        d=google.com; s=arc-20240605;
-        b=hiUvAG9zAmyePYor+eHv7N7dvGTfMjNOeUKlVyzk6YTSrb6SEoLVT4bnM2FEwZYNoM
-         nko8dx2Bc30zbZi6Zzu2sRNAy6b/c0M6qhZ6TORP3CwlCIcmwFOfwgn64xT5mk5Aehp5
-         PJ/FDJjL/HvpeYsVFb5gyq8wpF6f2fmAXMNCnaIrQ9UiKW8/EIH+cuUupwG+dqG48KKO
-         wj7G6fH4rUlGzComfiZYE9g1tXBAr18W5oQt9cuknbYIAekXchjDQymawsEO8OcBleRd
-         I6JrcWZug3u9de65NDUwFpiDZh19odLfL5hh+4FQgy2uzbHLZWe90fBeVAD4MtcCEgx5
-         DteA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version;
-        bh=2oke7nd3qgzSpwUghUx65sQAoKy1HMHaETHva/Kk8Jw=;
-        fh=l8Uj2uE+S0lqbAmOUWeulp1YTzDr4vIX2xySQ9tjI8I=;
-        b=Sf2xgG6hU+u3PEuXjtwkLgRhvDo4GfjDaLD8Cf6N3s9pBjFFgk8i5kTcL33X0d5mD0
-         lVONRPNBlTx7ARonQLMeRXECCzZbim4/Bsde2DHHRVlcJpjkPZe5vKZ1KEszxNCyhz71
-         Be3BdfIj3rlE0NqgE9zBB10LNCgNEI6hi0KPYjQ+wWQEXWx0J7zLHrsNqE0taMLiupOt
-         xsyD3c1ekUwWf7OL/nmkzcnt6N1j/GrglvNlDAQs6TH8jHNPtbST+N6UrLK2pygfxS8s
-         QMq/faSL0au0LdA0tgD5g+fvkopKo2yMFYlADTkqnNnEUSGkXT93k9yIIA5aUirRgP6W
-         HYbw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781048893; x=1781653693;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2oke7nd3qgzSpwUghUx65sQAoKy1HMHaETHva/Kk8Jw=;
-        b=JZe1vS05Ue4WagZSZngm8jCIBcA3NwNH+H9MerwqYcW+ScfYKrLxAg6EHKSoxGr1Qz
-         /pne3SzxZ+ggYtYv6d4XOfDP2YMULC+I+d63UrOPeykHChKtIgtwiNE4QlJNNVFhQcS4
-         R/mky9Y+rfAkHdl7MIhmX9pFrO824hma0HtJY9N+T/KfWJTGxUH56O155zogOFbFm/1Q
-         kxNysyRU8vwv9xmVrjmBOS1veZjiUxMIhdTqpao4rsrzSs/5krcZYT5z/SZMmhFlVRuO
-         ACHSLzfjC17qdmkDM15P5jG8Ik5ZlCIgwmHzQGr1y6sdQ3f2sZ+D6TL8Ck0GgEAUf4jz
-         lHOg==
-X-Forwarded-Encrypted: i=1; AFNElJ/BYQ4wUnOv2Ca15H44NBcmCjkkBsMXEpOTNrsYUoigYgPtc4AbdP0QiQRcAQzokPOsg0a0h96jIJz1@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzvm3YRNNn75L05e6LRSeXyM6FJsCa+B/AUIxRSqF3C1CPK5pv7
-	d4PzfCnIKBDoNiXEabSEGld06dekjvHYwfHtXSoecGgdsq8ie1fIkSRYt7dYB5/Cgrw4JHfL29E
-	sFewywZuIGsl1r/5c57FLwi8wYPyWwv1gn6WMM5VmtU7EztR+w5kuj5bg5drEg4c9w2dtpcIWwj
-	sNKkdslYZU+VDej+meA9ozcICokAbojdUNygoj
-X-Gm-Gg: Acq92OE75yukhBUxFsI+TpeRb5EobmEvEzNib5nCCvKj07DwFHo7BWkYQldKIoZFmaN
-	lnsGMMQ2fD8DXDimLexnEJaj8gEr8nMADobrBmvI+hXx4wrA6o2FMn9Hr+1j4EgoLf6PtNUuD1I
-	MU8JPGFiwE/Xl+/T3avdQo5B//UHCWTHDXa8NMLx99gRslnPxSC032QECDIavYeP5A7maJHhiVp
-	fpE8GDdNmHzsyMjvA9KB5Zw12PcKg==
-X-Received: by 2002:a05:6830:4990:b0:7e6:fdea:7aee with SMTP id 46e09a7af769-7e70ca37187mr16012142a34.24.1781048893463;
-        Tue, 09 Jun 2026 16:48:13 -0700 (PDT)
-X-Received: by 2002:a05:6830:4990:b0:7e6:fdea:7aee with SMTP id
- 46e09a7af769-7e70ca37187mr16012114a34.24.1781048892924; Tue, 09 Jun 2026
- 16:48:12 -0700 (PDT)
+	s=arc-20240116; t=1781049766; c=relaxed/simple;
+	bh=1/2x49PRxmuKWGRF/ocPgu83f2+OmoTrfzB3tac4HEI=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=taiiuognqwBsNfwhiccnWDguzQ69BCWHMX8TOXA3MiZ9Cs5h9Gu9FRNFB2akCrE7qvwO4VZVcP2ciOcJZUle3JVeE2m4mVF4CP3vni4JI1+L+CjsX94JeQ0MQjeOvz/bS7hfzCF/4yg4skfqZjtj+dKF0n5uk0dKeaUzQyIgFd8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=UMKziGJd; arc=fail smtp.client-ip=40.107.209.20
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=yARm8HB8IKrtwJzkpT1U3YHPVU1hSHdnAJ4QJo7D2DPaZI7vT3qawPZzuU72a12MoFXDJ4nwBha3c32uKCV8lj3/LcB4IvZCuuqSjQvCJkcinAg6PWx50a1qw7L/9f1+Q2xuHAbsR5JCHTBxmp+J29XKKYz2toyXX5uxiqYpPpDK3PVZu/SJ4fkZHx1Az3UmPg9AZP5TMuPGge5Hjr+oJM6Z62nRzlY01M7AUl7OzgNzAuX1FIY8vHwqEazH0xtGQMmvOZuHrEjN0tE3YjCu805KCU72YYEyNggEFNxT/1yc3l/M4T45ln4tasgGW/K0oPOx5lIIm7i84ujWHHU1dA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+qTwcn2SmvWhbsqPGq2IYRs1N6NtNJL/T/RECamMlHA=;
+ b=OhFPuxPwjHrLv2fwpR8ZezbvteJEvuLLGnqT/F92uDUz5Rltj1+pxy4c8K7MbYDiQeHZLRQS1z2WQ1CqQLVhSuMgSdteqrn6fBcmHYihySmqAoYuLodANJFgUO9+pjdJnZ5UtsTg33Mw7egINZVRdzndtWXQ3VhsqxyjB/kMXRUBg2Sx9hJ3hbCnLA86HXk4lRPDcOWBQCtAItT38YT0L7sCJjXJbxulgbLxZdb/hjavlPaCWbEEoxKq6H7+46TKygnDJFNf/8y1x4UJq6/7KXJFG4ptZOGco5QO9ciENUoJLNi+HP4vsN82c4wdyTrAPu3hjUlt92kfI6+lCBvTrQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+qTwcn2SmvWhbsqPGq2IYRs1N6NtNJL/T/RECamMlHA=;
+ b=UMKziGJd2dffPZVVQApywsOKm6o1v6nKmYNHVRJd788OitL1HX4voUgziowZog/r6VkH92gcYLCBglkZSKphQSFNyjACcHQO+UX2N/EUwCVEzlPiuM7SJDhyu5qahjZ5iD5+b4cB8iyvStmt3UTLz1qkkNjBV1BDtatwi2P4MLXBe4mj6d1JyEfQcuRgf96DY6IiYa0Dqm76htM5HUl/OAzYjL2xhaURJQmpRt5Ozqai4u+p5wpZdhR4GiaABPTNF81kZR/VJ+3m9Zho8RIjSzPUYUYckIC56Ag9iZVMu/vSg9fuoeM/+txzEEeaCM+7XVUVQky7m+i28KmawJQ+Zw==
+Received: from LV8PR12MB9715.namprd12.prod.outlook.com (2603:10b6:408:2a0::7)
+ by DS2PR12MB9663.namprd12.prod.outlook.com (2603:10b6:8:27a::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.12; Wed, 10 Jun
+ 2026 00:02:42 +0000
+Received: from LV8PR12MB9715.namprd12.prod.outlook.com
+ ([fe80::e74f:2cf8:cf2c:142]) by LV8PR12MB9715.namprd12.prod.outlook.com
+ ([fe80::e74f:2cf8:cf2c:142%6]) with mapi id 15.21.0092.011; Wed, 10 Jun 2026
+ 00:02:41 +0000
+From: Michael Gur <michaelgur@nvidia.com>
+To: jgg@ziepe.ca,
+	leon@kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: Edward Srouji <edwards@nvidia.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Patrisious Haddad <phaddad@nvidia.com>,
+	Michael Guralnik <michaelgur@nvidia.com>
+Subject: [PATCH rdma-next 0/9] FRMR pools fixes
+Date: Wed, 10 Jun 2026 03:01:36 +0300
+Message-ID: <20260610000145.820592-1-michaelgur@nvidia.com>
+X-Mailer: git-send-email 2.52.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: TL2P290CA0029.ISRP290.PROD.OUTLOOK.COM
+ (2603:1096:950:3::19) To LV8PR12MB9715.namprd12.prod.outlook.com
+ (2603:10b6:408:2a0::7)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260608185646.4085127-1-zhipingz@meta.com> <20260608185646.4085127-5-zhipingz@meta.com>
- <20260609154634.46ee8328@shazbot.org>
-In-Reply-To: <20260609154634.46ee8328@shazbot.org>
-From: Zhiping Zhang <zhipingz@meta.com>
-Date: Tue, 9 Jun 2026 16:48:00 -0700
-X-Gm-Features: AVVi8Ccv--t4yFPwVmIF6GS96siJpbic6hR37JvTtMZG4eYFQdBVvAgfn5CrAeU
-Message-ID: <CAH3zFs2UEpVV2MDkPvd5qW=OAFZ=MFMn1FTTpGa=sM-Kc8vcXw@mail.gmail.com>
-Subject: Re: [PATCH v6 4/5] vfio/pci: implement get_tph and DMA_BUF_TPH feature
-To: Alex Williamson <alex@shazbot.org>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Konig <christian.koenig@amd.com>,
-        Bjorn Helgaas <helgaas@kernel.org>, kvm@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Keith Busch <kbusch@kernel.org>, Yochai Cohen <yochai@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Proofpoint-ORIG-GUID: zUff6-gadL2oTby1wgxR9KhAWEvj_9pE
-X-Proofpoint-GUID: zUff6-gadL2oTby1wgxR9KhAWEvj_9pE
-X-Authority-Analysis: v=2.4 cv=SsCgLvO0 c=1 sm=1 tr=0 ts=6a28a63e cx=c_pps
- a=7uPEO8VhqeOX8vTJ3z8K6Q==:117 a=IkcTkHD0fZMA:10 a=FelO9ux0wxsA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=7x6HtfJdh03M6CCDgxCd:22 a=GbPsI2Ihf5RTnMjR_gZv:22
- a=Udk1dkG43rCpktSCSPQA:9 a=QEXdDO2ut3YA:10 a=EXS-LbY8YePsIyqnH6vw:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA5MDIyNCBTYWx0ZWRfXxbpSPAE6Sc3n
- uDEriU86zRZNMXyLSehPjwxYRx7ZBycplkFUxgZUNHvzFj40uzSc+UA7P4S3k3PyTcU/P81xtTV
- ZS7XW6uabVldw0SWg2ydddrUKVDim9tc8sGz3y/eFskCfXX1Fec17XeVQH8yNxsoQf0Ry3mCZH8
- g6SKysBAnVZsNBwWMF7qQVxrifC5NIyI+4IRwmTdim/UpGlLfNlqy8AkInB2N5H+uLJLiFXiZZ8
- IhifoocjgbDYs4HPvRRlz1ObYWZTirv0ge9suPIUPmiE2jVBDeofYdbZmH4L7Fl2auwVkawYf/g
- PRZdJQHjJLESCSn++wmgASantjYxxVk0Ni8w1qdjOLYKPp4K0+XkxYadSM1bit2es/HTaZkOlGl
- EoQB7hqz1kI55EPQVT9KdGzfl67NUv0w7qLXK3xHklUl841GcIssn+6pnvez3CwkcleT/ZBkVSw
- PyYUubPFW9F3aVWIDYw==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
- definitions=2026-06-09_04,2026-06-09_02,2025-10-01_01
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV8PR12MB9715:EE_|DS2PR12MB9663:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2998e504-0370-45e1-8502-08dec6839768
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|23010399003|376014|1800799024|366016|18002099003|11063799006|56012099006;
+X-Microsoft-Antispam-Message-Info:
+	ffjlMOUUsOQWqGYN8m02KdCqa/8+jV5OLAyahxdLIRljXFpflSYyE3Ju6uwcxvDiwlzRXAwvRAl9fDQbZmWSqVSm50Gj5wWvF5rfIsKHVL5/vmap5KbcJOoP9rVPOz8XiVnRP/d+qxVg10UKVEtN5N7XjspIDnyF0pS92bl3nyX8ioKDQfb0j+wBzMy6+B8/l5Ps6oQvkFOIR6ndzCUR0thdPoT31HHPacCus2/zlQVJOKDsrWk0XUqrJGntmZ6HrgiP8eHwvHTiyrtK5l7f1RBYlwoLklRFWoNwh+ybOBivfR6pwxELdsFBY1B77zZ4dZKH9HMhgkpqHdfmlEmoKOktyfI5M85fhbseXsn0YxMLS3YrNDj95W2jEDXpX3PQhFRwtp0CmmURIBkj5C4WBwjchc5TB8qiECHXwfyJOsFA3R+pdqwfvsj7TLzYcVj8YcZN/3kBDEZAdio9nvmLKxM+PE0LkPc7j3B61wvksMF3LdOYGTx+Kbtt0LINRfdlqEztDIzmiTufG5H+/2D+kwDSRnNJgiSee+2ndYXveAiCuXLz4hhTZn6Q8/we5TFKHZFBPLHFE6etk6Kmo34zL1f04ZEorWG5MBYSPUYuynWE5l1qvSbDsHcWNDmtBZvv80QgYhES+/4Mt6sHwU1SIdhwZKGts8JtW485OGp5yj3TLM1tjbaRMOjaGy0PMDlo
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9715.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(376014)(1800799024)(366016)(18002099003)(11063799006)(56012099006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?cIEahOIs5lSE6SzzPub5JoxEXX/nPYyyQJocWCMDNu41w+8GPicTKuPykpf+?=
+ =?us-ascii?Q?eLOoMic94nj98vmLo6O8Yd2TkFcYjB4sr7HVdhnzU9alnRsi/tSKOZz+0UO5?=
+ =?us-ascii?Q?w0VAIUYFAYa1t8U9PXJxxZz9Num84H3OsMBNXJP+ab8SpGZA+mNEAuhI33H8?=
+ =?us-ascii?Q?CA7etDUpTVWoL+rf1E6NRBP5p42N0atUOD6N04P0Ty+KuNL66sdN836JXgdQ?=
+ =?us-ascii?Q?W5w1+B0Lf4aafCxz1yd10V2SKEsG2D937UaGFUOO/AUQIs0PRutfeMjTdjq3?=
+ =?us-ascii?Q?s+Fcq9ZjlsRI15GWLhzz6sEVBVEyBFlZ9+XSJGwFTeUwFl60tznHbTRCX19H?=
+ =?us-ascii?Q?l1L3Es8CaY1cXeNPYcC5AfOshqcpIyskAoSfj7Fjhdj4TPu/r/u6TtW3oofz?=
+ =?us-ascii?Q?4FwGJJNHb0F6hc9zwCDehzB54iUanj+x0q9slqoiL0MVlAqIc1e3TRk3CRsZ?=
+ =?us-ascii?Q?1Axi/SQQ32oqs+eeZ01cE4muzPlBe2ZSmA6HOCOvOld2FSwPWF12wrY/TbV4?=
+ =?us-ascii?Q?AEk2029cEPJmMikuXMe4na7BhMKeatSGn9WJwU0/y9LsAxPvQMkhdm42pn+j?=
+ =?us-ascii?Q?0iNmpAOlAOQIaknv1XprSuOtSo6mMlIRYrFHJTf8fbcX4Cel2h7xZFylZntA?=
+ =?us-ascii?Q?z4cdNc5HMHn180a2bbmRK+Vz9NKnYo4Ijhsnzm0vCi8M1Jj6ZWZ6FF1Nl4pa?=
+ =?us-ascii?Q?khO873ESgELgIySCxfFlF4VQs91pjPK9W1J1D53ZOpzDkFvTXHaDTQ0YLOQP?=
+ =?us-ascii?Q?/GHj7bThzk3rxSNmdHdJN2iKpJ4+S2IuQyMbBTh8DU3g7Xugy0nyHhsuEjBM?=
+ =?us-ascii?Q?AiDFY26pGPNZCwIn0rAEEmnn+mV6UIhSh4TvK940NZ/ZG94RlmmQzKmsuz+9?=
+ =?us-ascii?Q?/rIQGci4C+Sv+6Sm0IywD3nNE18nQZ6p9w3NERieZTppEKOxrRLgJTnli6PO?=
+ =?us-ascii?Q?1uAacomoH0ut4IO2pjZbiAj/kSq912LjipfFrvGQZ3FTVfAYqGrY+ohn/pnR?=
+ =?us-ascii?Q?20haf2YPLQAVCob1KLLwI5CH+oGvWLtp6fxngKjacgaAW5hyy4KWEv+apxn+?=
+ =?us-ascii?Q?uhAjB/ZIByYv2UzQH0pey9Lk1bOLJE+zs413MIXZjQnQdOJsdMzS0z6Jnc+j?=
+ =?us-ascii?Q?1JSedNxEdzGwSo/KJP3TBer95iAcsRovti7zlvxkSLwCl63jvzZMy4qc4i8i?=
+ =?us-ascii?Q?S/7qAA9rhelKAkteWJ6xTfb72JW2wrRt2PEsNdXpy4h6ypDkG/0fPGM4hsyQ?=
+ =?us-ascii?Q?dATGXKZQukZls5q89u6c0zvjWGU0qtU+wq+bBFxrGq/OcZ8r89WJgDNnR6I1?=
+ =?us-ascii?Q?wqVRZGwtEjcg6tiIPrRAHeM7ERBzRrpGcTWONCWZHSeirG8l61DsiBtDceu0?=
+ =?us-ascii?Q?JNZbwMlJSNIEr+YVTYZYpqntY6bi8LZWNAfcJ5yyOWbeH/OY9U1hBMVa39E5?=
+ =?us-ascii?Q?TKp+t+d7XA+IraupiVhlnjYV92oFUfe+38DujZHqnSNKKsgMxNhQfUcbEFvi?=
+ =?us-ascii?Q?kw8UVTiWJYSkYUFqgKZfGtF39FCWZnwi29FRLFdDfSfbecSG/vjzEt+4U3DJ?=
+ =?us-ascii?Q?fWoxKl5EiEJOxN1Iot8I8sz0tsoO3e/QvuIlff6NoD+Y3doM7f5RtWR7qBt9?=
+ =?us-ascii?Q?4vNgELS11ed3YcPpFN9sE31pjQrIWIl9LyRat1reJO1z0GyyOociyE5MT06Z?=
+ =?us-ascii?Q?YYmfaiEhkF3tXT08XCdm9yPmMZw/wqeOp5J84wuj2GFpolcmCKc+fWpkNvSr?=
+ =?us-ascii?Q?M6L0EXW6/Q=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2998e504-0370-45e1-8502-08dec6839768
+X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9715.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2026 00:02:41.7090
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eLgQRg+wpy6iO5K4NH0PV6aI5zjVQLkNyBTZPYCRLt4kFbSB9uhtFudsZeMXvguJTT1hvzbTjuQML8mBg6Yg6A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS2PR12MB9663
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[meta.com:d:+,kernel.org:s:+];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[meta.com,reject];
-	R_DKIM_ALLOW(-0.20)[meta.com:s=s2048-2025-q2];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+X-Spamd-Result: default: False [-5.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[nvidia.com:D:+];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:alex@shazbot.org,m:jgg@ziepe.ca,m:leon@kernel.org,m:sumit.semwal@linaro.org,m:christian.koenig@amd.com,m:helgaas@kernel.org,m:kvm@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-pci@vger.kernel.org,m:netdev@vger.kernel.org,m:dri-devel@lists.freedesktop.org,m:kbusch@kernel.org,m:yochai@nvidia.com,m:yishaih@nvidia.com,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[zhipingz@meta.com,linux-rdma@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-22038-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	FORGED_SENDER(0.00)[michaelgur@nvidia.com,linux-rdma@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22040-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:edwards@nvidia.com,m:yishaih@nvidia.com,m:phaddad@nvidia.com,m:michaelgur@nvidia.com,s:lists@lfdr.de];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[zhipingz@meta.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[meta.com:+];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[michaelgur@nvidia.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,mail.gmail.com:mid,vger.kernel.org:from_smtp,meta.com:dkim,meta.com:from_mime]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,Nvidia.com:dkim,nvidia.com:email,nvidia.com:mid,nvidia.com:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 271A2664D8C
+X-Rspamd-Queue-Id: 8C603664DF4
 
-> > +int vfio_pci_core_feature_dma_buf_tph(struct vfio_pci_core_device *vdev,
-> > +                                   u32 flags,
-> > +                                   struct vfio_device_feature_dma_buf_tph __user *arg,
-> > +                                   size_t argsz)
-> > +{
-> > +     struct vfio_device_feature_dma_buf_tph set_tph;
-> > +     struct vfio_pci_dma_buf *priv;
-> > +     struct dma_buf *dmabuf;
-> > +     int ret;
-> > +
-> > +     if (!pcie_tph_supported(vdev->pdev))
-> > +             return -EOPNOTSUPP;
->
-> This tests for the TPH capability, but the TPH capability is only a
-> requirement for functions that generate TLPs with TPH, ie. a requester.
-> This feature is about providing TPH steering tags when the device is a
-> completer.  Bits 13:12 of the Device Capabilities 2 register indicate
-> if the device is supported as a TPH completer.
->
-> Additionally these bits indicate if the device supports standard and
-> extended TPH, which means we should not only fail if the device reports
-> 00b, but should reject extended steering tags unless the device reports
-> 11b.
->
+From: Michael Guralnik <michaelgur@nvidia.com>
 
-You are right: pcie_tph_supported is not correct here.
-Let me use a helper function to return something like this:
-PCI_TPH_COMP_{NONE, TPH_ONLY, EXT_TPH}.
+This series addresses several bugs in FRMR pool handling.
 
-> > +
-> > +     ret = vfio_check_feature(flags, argsz, VFIO_DEVICE_FEATURE_SET,
-> > +                              sizeof(set_tph));
-> > +     if (ret != 1)
-> > +             return ret;
-> > +
-> > +     if (copy_from_user(&set_tph, arg, sizeof(set_tph)))
-> > +             return -EFAULT;
-> > +
-> > +     if (set_tph.flags & ~(VFIO_DMA_BUF_TPH_ST | VFIO_DMA_BUF_TPH_ST_EXT))
-> > +             return -EINVAL;
-> > +
-> > +     /* PCIe TLP Processing Hint is a 2-bit field. */
-> > +     if (set_tph.ph & ~0x3)
-> > +             return -EINVAL;
->
-> Sashiko notes what appears to be a false positive here, the uAPI states
-> ph is to be in the range [0, 3] and nowhere else says that it's allowed
-> to be garbage for a clear operation.
->
+Patch 2 fixes incorrect masking of TPH-related bits in the FRMR pool key,
+which caused stale TPH values to be used when creating handles from an
+empty pool.
 
-Agreed - i will leave it as is.
+Patch 3 fixes set-pinned flow to use the pool key returned from the
+driver build_key callback instead of the raw key supplied by user.
 
-> > +
-> > +     dmabuf = dma_buf_get(set_tph.dmabuf_fd);
-> > +     if (IS_ERR(dmabuf))
-> > +             return PTR_ERR(dmabuf);
-> > +
-> > +     if (dmabuf->ops != &vfio_pci_dmabuf_ops) {
-> > +             ret = -EINVAL;
-> > +             goto out_put;
-> > +     }
-> > +
-> > +     priv = dmabuf->priv;
-> > +     if (priv->vdev != vdev) {
-> > +             ret = -EINVAL;
-> > +             goto out_put;
-> > +     }
->
-> Sashiko notes this may need READ_ONCE()/WRITE_ONCE() semantics, but
-> that may get fixed as part of the resv lock usage.
->
+Patch 8 extends the FRMR pools API with a new drop() operation.
+This allows drivers to update pool state on handle destruction when
+revocation fails, without incorrectly returning the handle to the pool.
 
-Ack.
+The remaining patches fix error path handling, covering cases where memory
+allocation fails during queue expansion, and where handle creation or
+destruction operations return errors.
 
-> > +
-> > +     scoped_guard(mutex, &priv->tph_lock) {
-> > +             priv->tph_st = set_tph.steering_tag;
-> > +             priv->tph_st_ext = set_tph.steering_tag_ext;
-> > +             priv->tph_ph = set_tph.ph;
-> > +             priv->tph_st_valid = !!(set_tph.flags & VFIO_DMA_BUF_TPH_ST);
-> > +             priv->tph_st_ext_valid =
-> > +                     !!(set_tph.flags & VFIO_DMA_BUF_TPH_ST_EXT);
-> > +     }
-> > +     ret = 0;
-> > +
-> > +out_put:
-> > +     dma_buf_put(dmabuf);
-> > +     return ret;
-> > +}
-> > +
-> >  void vfio_pci_dma_buf_move(struct vfio_pci_core_device *vdev, bool revoked)
-> >  {
-> >       struct vfio_pci_dma_buf *priv;
-> ...
-> > diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> > index 5de618a3a5ee..0ca26721849b 100644
-> > --- a/include/uapi/linux/vfio.h
-> > +++ b/include/uapi/linux/vfio.h
-> > @@ -1534,6 +1534,51 @@ struct vfio_device_feature_dma_buf {
-> >   */
-> >  #define VFIO_DEVICE_FEATURE_MIG_PRECOPY_INFOv2  12
-> >
-> > +/**
-> > + * Upon VFIO_DEVICE_FEATURE_SET associate TPH (TLP Processing Hints) metadata
-> > + * with a vfio-exported dma-buf. The dma-buf must have been created by
-> > + * VFIO_DEVICE_FEATURE_DMA_BUF on this device, and the device must expose the
-> > + * TPH Extended Capability (otherwise the ioctl returns -EOPNOTSUPP).
-> > + *
-> > + * dmabuf_fd is the file descriptor returned by VFIO_DEVICE_FEATURE_DMA_BUF.
-> > + *
-> > + * 8-bit ST (steering_tag) and 16-bit Extended ST (steering_tag_ext) are
-> > + * distinct namespaces in the PCIe TPH ST table and may both be present with
-> > + * different values. Userspace should populate the value(s) it has from the
-> > + * firmware ST table for this device and set the matching VFIO_DMA_BUF_TPH_ST /
-> > + * VFIO_DMA_BUF_TPH_ST_EXT bit in @flags. An importer requests a specific
-> > + * width and receives the matching value; if the requested width is not
-> > + * present, the importer is told TPH is unavailable for this dma-buf.
-> > + *
-> > + * This publishes the PCI SIG-defined ST/PH tuple for a VFIO-owned PCIe
-> > + * completer. The dma-buf core treats the tuple as opaque completer-owned
-> > + * metadata; an importer simply requests the namespace it supports and places
-> > + * the returned value on generated TLPs.
-> > + *
-> > + * @flags == 0 clears any previously published metadata.
->
-> This is overselling the invalidation.  It only flags the fields as
-> invalid for future get_tph() requests, it does nothing to clear
-> previously published metadata from importers.  Thanks,
->
-> Alex
->
+Michael Guralnik (9):
+  RDMA/mlx5: Fix mkey creation error flow rollback
+  RDMA/mlx5: Fix TPH extraction in FRMR pool key
+  RDMA/core: Fix skipped usage for driver built FRMR key
+  RDMA/core: Fix FRMR aging push to queue error flow
+  RDMA/core: Fix FRMR set pinned push error path
+  RDMA/core: Avoid NULL dereference on FRMR bad usage
+  RDMA/core: Fix FRMR handle leak on push failure
+  RDMA/core: Add ib_frmr_pool_drop for unrecoverable handles
+  RDMA/mlx5: Drop FRMR pool handle on UMR revoke failure
 
-Good catch, let me re-word.
+ drivers/infiniband/core/frmr_pools.c | 104 +++++++++++++++++++--------
+ drivers/infiniband/hw/mlx5/mr.c      |  31 +++++---
+ include/rdma/frmr_pools.h            |   3 +-
+ 3 files changed, 98 insertions(+), 40 deletions(-)
 
-Thanks,
-Zhiping
+-- 
+2.52.0
+
 
