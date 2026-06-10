@@ -1,201 +1,236 @@
-Return-Path: <linux-rdma+bounces-22092-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22093-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id OjezKEenKWrfbQMAu9opvQ
-	(envelope-from <linux-rdma+bounces-22092-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 20:04:55 +0200
+	id TOupBQjSKWpydwMAu9opvQ
+	(envelope-from <linux-rdma+bounces-22093-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 23:07:20 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C38066C27C
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 20:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B738366CF7E
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 23:07:19 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=Nvidia.com header.s=selector2 header.b=fJx9H4jp;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22092-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22092-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=reject) header.from=nvidia.com;
-	arc=reject ("cv is fail on i=2")
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=jWOwKwlS;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22093-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22093-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=gmail.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 6D8DF3019175
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 18:03:48 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E85AF3054EA6
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 21:06:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC65D3546F3;
-	Wed, 10 Jun 2026 18:03:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01B0A332EBD;
+	Wed, 10 Jun 2026 21:06:33 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from BL2PR02CU003.outbound.protection.outlook.com (mail-eastusazon11011064.outbound.protection.outlook.com [52.101.52.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78563345CBC;
-	Wed, 10 Jun 2026 18:03:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E03A3B5302
+	for <linux-rdma@vger.kernel.org>; Wed, 10 Jun 2026 21:06:30 +0000 (UTC)
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781114624; cv=fail; b=m0odCxTws+rX1tq8RlZBZErHDvo4JJmyU31CEZQeM2Y+ZTeKorVO1fXjbu22T6vYhwQivlvDDwA9hW5ugubDmByfbl3p8wbQMaADdpdtO7+GNEmKlCwS1Jvzqt5q63vHth86AkfFuJangWLCza3YaZ4mCllQ5wG4u5/JkAZ6ZSk=
+	t=1781125592; cv=pass; b=CBM6hAVRgW2CODK/hdVUqW74iAMDlsxM5fmjAg2vNypwm2HPyb3AMUuXQkOvzeMRXKEswVpLy8kuCdheRwT5oqLyIm7qKZb4bkG9vCP0TDdNMRsMbIDUWUa0m6lnRI9ekNOsTQ/EIcPtgaiBeausl9U8M0hCAiWg/nI90i+lcIU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781114624; c=relaxed/simple;
-	bh=GgBrHa3d/uggcnGpB2opt39bZR1hnkx617XfjdO1bV8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=ky9zvavTU/FNWy0Sgzj5Stq5SGgw1B4wSt9XyfryFAED5Tt5borrswZeq8msITUFjhsDjbADfo3BBvMA+UDzs1/xW10P+AeZHNyRN2MZhN6dFEyXiQnkBwKW4h7b4w+f4mmMYHYefb6DAz0rD0cDIPoqEqbjiP0+4JQ31I/f5nI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=fJx9H4jp; arc=fail smtp.client-ip=52.101.52.64
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=dbqvDcE/dw8vvBfhRY207OlKhu/qPOAGSqoKJarRx8UuoveWNAhptO/ABP9rgxGXf4wU6gQp8aOZULvZWAn/8KW5yr4/P6yCn9Tzym143Mcd40FnCe5/nXlQag4JgagNqVKJ5qxkUxlC/YaD8E5ZpuhQM8dmUngyWiXqRsGyf6+a4qzNcsMRG/NWki4uQlEWGKiS4zvyUc4RoV9Dqyle0hG5u8uLMyBYM0ak1C8r7CUi8mhZiFHiGVDBj9G4WdeRudn34mtoe7aJmV4wIIpFO2JOGYS0Y88L5EuVFn6GbkgrmzBCpUzzD9jO7YtOqvd1ToW04+oMH1SrlfGlBD23Og==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nJNbQCUEWAE6/HkEgSyMWQYqT9AgONEy3n6/4OC2Vl8=;
- b=ewDrec7kPdeoYe+bWERCB5YYM0KTe7VYTCg9IOLL3Z3PqHhSdowU7RoG5dneoFKreJjjeRQ9relBaESvEx79OfLEJThKS2y9TjFPu8zIHR3/YwJF3v7kaGAq6btQkjLUIJrPE1bKQC8gCm+2DlVT3ub2NmV5LKTsnlUhwVtepnsUgruTNUFBZ+r8LTkHnzFndUmKRKF2BvYDciQwb/GCjnLG2v/rSckMa6T8lsg4wtXzB3vRHoEXkLSpoZg9UZqu4XmvXlJdQ3v+s8Sj0ia7r67+Eei2zWC6QwvazGz4dD+KV360ivr6EXdyvEMiEGsx5WTvMog8FWhIpbzmF+MHAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nJNbQCUEWAE6/HkEgSyMWQYqT9AgONEy3n6/4OC2Vl8=;
- b=fJx9H4jpq5ea6Psz6eqragVOPJMflK2T/Wq9JmJolfJ7HMOY+mMFixoe//syJ2c8N6XGzqDvo9JtZe82a9A2PodCHeMA/EAdymWqKJ5uAYyP9sBdxGEP9Vf9lACwr2S902PBrZWlYodgUUjWw6lbn70KGWFw/7CknoIy8APnBHvOOlxE0jAaZCTojALCcT2gH+vPU3qKJpsCZRnSsvB4VrLCtxkKBya4AUECTFPprBMAOhBRcl+pqwsK4Z2jPA621zs9z2J8Y2pk/ejWWWMt7vym02i0nW2bWy1FFsNHBtLm2ChytrN9T50cjWUQEYW2U62iZeE80rq19rJ6VXlSNg==
-Received: from LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19)
- by CYYPR12MB8940.namprd12.prod.outlook.com (2603:10b6:930:bd::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.113.11; Wed, 10 Jun
- 2026 18:03:34 +0000
-Received: from LV8PR12MB9620.namprd12.prod.outlook.com
- ([fe80::299d:f5e0:3550:1528]) by LV8PR12MB9620.namprd12.prod.outlook.com
- ([fe80::299d:f5e0:3550:1528%4]) with mapi id 15.21.0113.011; Wed, 10 Jun 2026
- 18:03:34 +0000
-Date: Wed, 10 Jun 2026 15:03:32 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Edward Srouji <edwards@nvidia.com>
-Cc: Leon Romanovsky <leon@kernel.org>, Parav Pandit <parav@nvidia.com>,
-	Vlad Dumitrescu <vdumitrescu@nvidia.com>,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Maher Sanalla <msanalla@nvidia.com>, stable@vger.kernel.org
-Subject: Re: [PATCH rdma-next] RDMA/core: Fix broadcast address falsely
- detected as local
-Message-ID: <20260610180332.GA1017469@nvidia.com>
-References: <20260609-fix-rdma-resolve-addr-v1-1-449b8b4e6c09@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260609-fix-rdma-resolve-addr-v1-1-449b8b4e6c09@nvidia.com>
-X-ClientProxiedBy: BN9PR03CA0868.namprd03.prod.outlook.com
- (2603:10b6:408:13d::33) To LV8PR12MB9620.namprd12.prod.outlook.com
- (2603:10b6:408:2a1::19)
+	s=arc-20240116; t=1781125592; c=relaxed/simple;
+	bh=8SPk+9kPUL0DQYsfiU6U+3rhy9CmKqHE6O0qDp+jLZI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JE+infZQo0e7XqEX1cMLlgnkeQY3HiYjkkMARWm0RG6sJawm52XbUEbvksKqoSYGLE0TE8i1yewhSqqWdQqLaU1SIz7yPRtgT3W1/b+M4jMHSDwSLoRqY0ycL5fwtUIFZb9t8R/DM/XQqvSXXfVeUqFE2e+xDosPoISqZWASVII=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jWOwKwlS; arc=pass smtp.client-ip=209.85.128.173
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-7e8b45dfb3dso86859187b3.3
+        for <linux-rdma@vger.kernel.org>; Wed, 10 Jun 2026 14:06:30 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1781125589; cv=none;
+        d=google.com; s=arc-20240605;
+        b=Iluz1GriFfJc+TS7YVv0bYgO+/fo1mcg/YA7lnuBhZ9yIpR/0Tf0WEVOdGdhfku6DU
+         Z8AsP5Oe7qE6GzLjjDlQWqwwaJ6F8WWs58Li6cXKcHxenHV1m3Y2dzaOtw0fGwj0a6VF
+         A/CHjVXH1/DLO4CDwWJR+XbU+I9ye4dnKjIEk4uWoNIF7OpUcKtD2DTOjLU7IQSrxc56
+         jtKOC28Zn7cAfQUNt/Qc2j5NhhzzMe3kllGRvCaGJ7V2aDXRkb2VBpKvgWRYY/uoVeCz
+         h+TKjpoHBbws/KquNvrD7yeC9ODUz9pqTU7CqpBSYTFQtiQtQ8cFv549ksdGChW4SG3n
+         rQvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=96czj6yri6D29TEjjpnrX0Ms962E0G1MVyGNh2o55HQ=;
+        fh=6RzJE4b61bYc0T4fMr2ipXdatBqk8OweA/OmmAT+d6E=;
+        b=f5fIVZjnlJx+4v8k4WxruPkuHvnbKNhnG+jaf2+DRCb+ro+OSeQeY+EA7nIXB/VDG6
+         rhEemX2/0QFHwlA5S0hC6w09LgWzTj7icZNX2CDcu20ZhniHXAp16ZZ2cZg76GOhAIQ5
+         mDieKM8Gp6XutmEdrQe8gmmpPR7RmFDMArtlEYhcwfx8LyOTFvr++sA5HWI6csZreQUy
+         uBFIwVvbQV1gVxpJTrnCDsr6bSf2pHGAj11AP2HtTmHEKzhQzxve7yBd7sddvf44Ua8X
+         SLLIvEVmfFjiTS2sJkyqjiG+8kq1ZN2Oh3SS4gND9u3A3PfEuMq1GlrSkcaLs+iXg42c
+         k3Og==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1781125589; x=1781730389; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=96czj6yri6D29TEjjpnrX0Ms962E0G1MVyGNh2o55HQ=;
+        b=jWOwKwlStXwGgUAXfngBzfebepF/l+Iz4nUi1RY4ZFUDUceLV7UGbSPy/9QVHif4B8
+         ZPz1O75qxMy7MzdeNnHDuLBQRANDqdgtNr4gpz1YjTbGBhWiD5oYWhkIc+R75zzFDCkO
+         Meumk/PL2hxGiDTi1EoFtI5Rjo6hDtBgNs4khoSmLMvoD3D6m4fDnyZeU2/SVa8Rl3Nq
+         Np8qgXa+5CNjzN4wJqgw9w2Dk9ZrR505dzxMLNWm5lQRAcJlwSMMAmfpaaFKXCI38Fkc
+         kL00/uRMaIP0VLi90TJNN5Ph1pRYS3cFKXlldKH1fiRvxQ998TEqxSQ9HgBoZT5xJce+
+         N+TQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781125589; x=1781730389;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=96czj6yri6D29TEjjpnrX0Ms962E0G1MVyGNh2o55HQ=;
+        b=p9z30EQjfPoWJvFKeYwvAEvYUoNLRXjpyjuxdtiKXi9PFZP8HybRxdHVAGXEwRMc6l
+         HShYRjUM5Pg/9F8xDWC9VFBKy6bRtEGcFfc67vP9oq+BRTB/4fpSqULdQRYwWrex2fX/
+         5yIlHfCkftZPle8vzaR9bwrYEoyL6WwX5dviKcBhMcD08Xmk1rkwLm1Hs3OhPVWX8lZz
+         jYhKyjntwaC13UZXGcx9PoVgq8LR2NNGESmflIjuxY0IFuV2LKpZuwwohCR+bYTrSRmJ
+         uEVsBhW+UdvhVj4FWegazR+dwzM/oMwG04BvR8X+52J0GuoEUgApcwbQTFEHZ8M1ghnc
+         snSQ==
+X-Forwarded-Encrypted: i=1; AFNElJ+i5RfpGTudHpypalotHh91SgPo7ecHFX7HoLEqXxBIcRC3tWVD9zybdSBX2FaQfGKq8xCdLem0DZXp@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzq95u5g1ntAh1jTfePGcwhisysWUrpVTuwNTUAzQBvqzGWrnHi
+	GhjnOKxXKW2mjg93+ezES9CmfSshKmAbvTpSChXB3CFqBINoxxVZfPC1ABy9+9/L/C5D8bkE6zk
+	bbbWSSK2YXR6Fua6L39pe9gsILESH4lA=
+X-Gm-Gg: Acq92OGluyMwfttz12zvu41uYPJuEBu5tnfneAuz8xR+cupYBK5W7XXSG65SIuiULDb
+	PJZWmpbN99dif+CDc1ESOys8JxA0nfBRkRn5eiL7ThRTGcTC3mlI/BT2iBywfIn1pqPuOP4yQnZ
+	FPWMYyiMfNLQf6+RgNWrnEt1uM3Aj+4rV9O0NyOLw28nX89cwKrn+MGQPx7tCC2upP7FWCAbxgg
+	gU1RHXRHD6+MKCTSIOheYqKhrC+Al4h1LeiNfZd7jQzSwtCYciYG6b9zmIwVV885yeZFpMfhRSJ
+	puyIkxrzSDNhxl74MIzvj8Ov0g==
+X-Received: by 2002:a05:690c:45c5:b0:7e9:ab56:3c99 with SMTP id
+ 00721157ae682-7ed0adbb616mr276188567b3.6.1781125589039; Wed, 10 Jun 2026
+ 14:06:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV8PR12MB9620:EE_|CYYPR12MB8940:EE_
-X-MS-Office365-Filtering-Correlation-Id: b703b073-0a46-484a-f283-08dec71a966c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|376014|23010399003|5023799004|56012099006|11063799006|22082099003|6133799003|18002099003;
-X-Microsoft-Antispam-Message-Info:
-	bdnvEsNhK3rmmUTQuugcH7giuL9tBnI6q/O1WMSddrHlAn9LavdpK6rqfwubxVNR7AlchiLI4W4ncH90wJTnMo2JxC31g4EObHz9nZXNXf66I4F4LeB/cxJC6+sgQ96V21nB/d3eYsmIgiongba1qbjf284n+S1P1iD9NhMhMglQczfoymAlToWhkvS3rjMT6n0cK4wDQ6cXCkBHncJejKsvVcGzZ8DB+1MyUaT1uT8jrgjsatj7DDfP8zRouz0JBbLcEpH4TX2ivKgcPQzXMZOXZDLTFPQc2eIxGzuCoTa48ci7Eyw7QWZcbmDi+Mtj8pe2B125WQ60ZUP2PgtylE+jDNON+z5BlmdYNudWVIS2cAy+sbKY80ty1CWFZYhMDccKLVLIUw8oEjUHA4CbQ7wUFnREiCMSr7JHalL/irAq6P3AugCM4w9kFt0PiqP5vwoew8O2XXMSWLGTrouxUResr3IWlvPV4aq2SGJql2Gw+Dl0pkVsP5WW8O9eHJbwsgriz5sQRCyBEtJ+Fnv0sr4k8XMjDBzl6YtLe3EeexuxgUv1daxPYkjQ4MbCK6ftNOVGLYmV+AR9mnDFTGbrO/ITeogHCuee4TXjAf9GTTJMX6YFYpdwZAzH4gHOGbE/N2yd8L/viNQruOZhzfuehmRr9BuAMQyamBZy/yD65rbUT75Kc/w77RBIM8gW9Fd0
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9620.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(23010399003)(5023799004)(56012099006)(11063799006)(22082099003)(6133799003)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?JNvOf1M9yq7R9tOrXURc/KjibgJ0IY57Mp6wsEs8Cbs4+P026KKveYepyrUF?=
- =?us-ascii?Q?8Sbp9eo0P+OFlLwy5FuRGXy6YEZnrzA9Lud7FejFBKi9MPUMTTTyXB2l4VpO?=
- =?us-ascii?Q?uU0E/yY3EGvV1GenZFH2fO3si1FHolbgGe6XgzK5qxwM8K6W9SuFW3z5I4iD?=
- =?us-ascii?Q?ijIo/XP1tq6vPFHgNpyWxzm4hi2X6mh8G1Td6fL5HtAq5ConeYM3nLP9oXCY?=
- =?us-ascii?Q?neshiAR/+ysGKXGETVyihU/0S8/MgUCHWKXWQa2AgxJfM/0uB6gVp72yYbJz?=
- =?us-ascii?Q?Q5ILVrM5iLSCyRYAKm+xMJNJplRYM5lln5JB/dJhNGv0bZ4C4VIcq9buy7du?=
- =?us-ascii?Q?M5a4Z8lRCcFoJAJrtUEqn+XcAyeOLeD9hb5MRmuyOKKPTHwEUHf2zTSPUhAR?=
- =?us-ascii?Q?fgrEqr+xK8xv6xkkhRjXliQaGFS/i149MaZtOnAt/GKBOyZnjKssupRIiK6Y?=
- =?us-ascii?Q?/Zn2B2Et8UjDFpMbPBtHonzVoVipvrnBZfXcu/GbX5SarvNcLyqRNu9O8mq4?=
- =?us-ascii?Q?KyMb0z336z1+J2k15jP5eGOahHW1KL63eYajdVpx8bFH3L75ZqIciTIiM9az?=
- =?us-ascii?Q?77EH432dmhCUnEXf9wXxdV6te+EHGdskX0NitreYryv+7l3EcKLc5WNRzx7Y?=
- =?us-ascii?Q?iPia6IT5xbnLEKMWnFnHEvRck4ElKVk5RrIC4SK7xSKXsZjSsq/qjMCGeFPv?=
- =?us-ascii?Q?8Zm25DwQTdtUOba/hxIE2yrcFJS/4oriHD5cqBKmSGBrpEfvrJGHgQurF1Sr?=
- =?us-ascii?Q?IUJ6CNfK3Z41mx9iGTqd4Ry8YDSf+F01GfWRoUjSZfnOSXA3K7hX9l1nkwcC?=
- =?us-ascii?Q?v2hK+4jJOX7Fgis2tWAxIC47HaDlfFbgpHYOswZa1spmL6CtShCi2haoGeym?=
- =?us-ascii?Q?NS/GoRPb1cv9IupVZqZ2XLDLSDeJBLShcAOZGJUUVmBoSjfk9gLD8TsATuUh?=
- =?us-ascii?Q?km1P/xsTBAhdyWMjwsCN03Ah0D5hcESLET795iK4XGG1ZoPl7Zjl2cKYaveU?=
- =?us-ascii?Q?mxv+hdDb5LrtttZRbveVQATc2ibXbi5qAJI3awzE22plwI4sUy5fE9D1dgIU?=
- =?us-ascii?Q?nK8D1zx2Vzz/CPpQZ6BXY9w6exF1Vj1w0+9bPEIjRtKbnBH1Tno1peC3rHMX?=
- =?us-ascii?Q?2A+1SkKU3Ie3PYW9wg1DD/D5gVbNuhCrpRMfHHIDPbsJtYR5Pk7/haGxDTKs?=
- =?us-ascii?Q?gynOzg/ABbLPjG9/q1LUYu5vAXBJJpb4mu+sLV2O4Hc2soOpOEKsusvEV04X?=
- =?us-ascii?Q?zZ/pXusqIjYBdnp8sCvnWv87MkbJyXLdzaD1FISmPlDsXnZQ3KntFjm491Qc?=
- =?us-ascii?Q?dKSwz9/FuDCfGvEprdMvjaFA6N/MUkCjHUNUwO254v5h41L8XuoEK6E4WG4D?=
- =?us-ascii?Q?XMHT6jarvpM4ycXryN+1t5C3JxtJkSfvjxyZ0qeddR90GjD6xJjQeLzBolTh?=
- =?us-ascii?Q?R7Xl2WKXVcZR2zIjugythTOSUgoEE9n7SFK8DcCXlRvyPU3A7tcZcVhI+TgY?=
- =?us-ascii?Q?KsnZVNqPIkqPs4vxQJZG4mmQ5HgZxWuxQwvoWXi60L/cS9+ajpGh1gbWhpyt?=
- =?us-ascii?Q?MfrPDtCp1cbIQZ8hokUk8R7YNK3hPYsGYoRd9lZa/YjnC4e9pt1CUqWhSwzn?=
- =?us-ascii?Q?m+ecotxDskMo4s9SrhXroz9cNJQbRXQzl2vRrtj33RJu1LUtPezSJGwAYlq/?=
- =?us-ascii?Q?hShgIUzBEItVXvOt7OTLDbWALxlkXYH26BBa1ozIDujjZ5UX?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b703b073-0a46-484a-f283-08dec71a966c
-X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9620.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2026 18:03:34.2819
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ICWw66tEKOlgSkTDIcDYMdvFCIqhAW5WZ321n6g0M3yhbaRctIrlPChcQuaXnZD1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8940
+References: <20260521133315.work.845-kees@kernel.org> <20260521133326.2465264-4-kees@kernel.org>
+ <da358ae1-91b4-4a16-ac76-ffab99c230b9@suse.com>
+In-Reply-To: <da358ae1-91b4-4a16-ac76-ffab99c230b9@suse.com>
+From: jim.cromie@gmail.com
+Date: Wed, 10 Jun 2026 15:06:02 -0600
+X-Gm-Features: AVVi8CcLXClq9Fijm8VjZF47hQWmos5q_iXrehNZDw9kSOby-E_cMxEQI0SK-hU
+Message-ID: <CAJfuBxwRuT1K=rjPX+sdNyYurEJ=OjqbJaSa_S6JnY6yzTwTvQ@mail.gmail.com>
+Subject: Re: [PATCH 04/11] treewide: Convert struct kernel_param_ops
+ initializers to DEFINE_KERNEL_PARAM_OPS
+To: Petr Pavlu <petr.pavlu@suse.com>
+Cc: Kees Cook <kees@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, 
+	Pengpeng Hou <pengpeng@iscas.ac.cn>, Richard Weinberger <richard@nod.at>, 
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Corey Minyard <corey@minyard.net>, 
+	Gabriel Somlo <somlo@cmu.edu>, "Michael S. Tsirkin" <mst@redhat.com>, 
+	Jani Nikula <jani.nikula@linux.intel.com>, 
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
+	Tvrtko Ursulin <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>, 
+	Simona Vetter <simona@ffwll.ch>, Bart Van Assche <bvanassche@acm.org>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Leon Romanovsky <leon@kernel.org>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+	Hans de Goede <hansg@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Hannes Reinecke <hare@suse.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
+	"Martin K. Petersen" <martin.petersen@oracle.com>, Daniel Lezcano <daniel.lezcano@kernel.org>, 
+	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Alan Stern <stern@rowland.harvard.edu>, Jason Wang <jasowang@redhat.com>, 
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
+	Jason Baron <jbaron@akamai.com>, Tiwei Bie <tiwei.btw@antgroup.com>, 
+	Benjamin Berg <benjamin.berg@intel.com>, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	"David E. Box" <david.e.box@linux.intel.com>, "Maciej W. Rozycki" <macro@orcam.me.uk>, 
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Vinod Koul <vkoul@kernel.org>, Frank Li <Frank.Li@kernel.org>, 
+	Daniel Gomez <da.gomez@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, 
+	Aaron Tomlin <atomlin@atomlin.com>, Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	John Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, 
+	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Georgia Garcia <georgia.garcia@canonical.com>, kvm@vger.kernel.org, 
+	dmaengine@vger.kernel.org, linux-modules@vger.kernel.org, 
+	kasan-dev@googlegroups.com, linux-mm@kvack.org, apparmor@lists.ubuntu.com, 
+	linux-security-module@vger.kernel.org, linux-um@lists.infradead.org, 
+	linux-acpi@vger.kernel.org, openipmi-developer@lists.sourceforge.net, 
+	qemu-devel@nongnu.org, intel-gfx@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org, 
+	linux-media@vger.kernel.org, linux-pci@vger.kernel.org, 
+	linux-scsi@vger.kernel.org, linux-pm@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-serial@vger.kernel.org, 
+	linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net, 
+	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-7.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[nvidia.com:D:+];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-22093-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22092-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:edwards@nvidia.com,m:leon@kernel.org,m:parav@nvidia.com,m:vdumitrescu@nvidia.com,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:msanalla@nvidia.com,m:stable@vger.kernel.org,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[jgg@nvidia.com,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:petr.pavlu@suse.com,m:kees@kernel.org,m:mcgrof@kernel.org,m:pengpeng@iscas.ac.cn,m:richard@nod.at,m:anton.ivanov@cambridgegreys.com,m:johannes@sipsolutions.net,m:rafael@kernel.org,m:lenb@kernel.org,m:corey@minyard.net,m:somlo@cmu.edu,m:mst@redhat.com,m:jani.nikula@linux.intel.com,m:joonas.lahtinen@linux.intel.com,m:rodrigo.vivi@intel.com,m:tursulin@ursulin.net,m:airlied@gmail.com,m:simona@ffwll.ch,m:bvanassche@acm.org,m:jgg@ziepe.ca,m:leon@kernel.org,m:laurent.pinchart@ideasonboard.com,m:hansg@kernel.org,m:mchehab@kernel.org,m:bhelgaas@google.com,m:hare@suse.de,m:James.Bottomley@hansenpartnership.com,m:martin.petersen@oracle.com,m:daniel.lezcano@kernel.org,m:rui.zhang@intel.com,m:lukasz.luba@arm.com,m:gregkh@linuxfoundation.org,m:jirislaby@kernel.org,m:stern@rowland.harvard.edu,m:jasowang@redhat.com,m:xuanzhuo@linux.alibaba.com,m:eperezma@redhat.com,m:jbaron@akamai.com,m:tiwei.btw@antgroup.com,m:benjamin.berg@intel.com,m:ilpo.jarvinen@linux.intel.com,m:davi
+ d.e.box@linux.intel.com,m:macro@orcam.me.uk,m:srinivas.pandruvada@linux.intel.com,m:peterz@infradead.org,m:hca@linux.ibm.com,m:gor@linux.ibm.com,m:seanjc@google.com,m:pbonzini@redhat.com,m:tglx@kernel.org,m:mingo@redhat.com,m:bp@alien8.de,m:dave.hansen@linux.intel.com,m:x86@kernel.org,m:hpa@zytor.com,m:vkoul@kernel.org,m:Frank.Li@kernel.org,m:da.gomez@kernel.org,m:samitolvanen@google.com,m:atomlin@atomlin.com,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:akpm@linux-foundation.org,m:john.johansen@canonical.com,m:paul@paul-moore.com,m:jmorris@namei.org,m:serge@hallyn.com,m:andriy.shevchenko@linux.intel.com,m:georgia.garcia@canonical.com,m:kvm@vger.kernel.org,m:dmaengine@vger.kernel.org,m:linux-modules@vger.kernel.org,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:apparmor@lists.ubuntu.com,m:linux-security-module@vger.kernel.org,m:linux-um@lists.infradead.org,m:linux-acpi@vger.kernel.org,m:openipmi-developer@lists.sourceforge.net,m:qemu-devel@nongnu.org,m:intel-gfx
+ @lists.freedesktop.org,m:dri-devel@lists.freedesktop.org,m:linux-rdma@vger.kernel.org,m:linux-media@vger.kernel.org,m:linux-pci@vger.kernel.org,m:linux-scsi@vger.kernel.org,m:linux-pm@vger.kernel.org,m:linuxppc-dev@lists.ozlabs.org,m:linux-serial@vger.kernel.org,m:linux-usb@vger.kernel.org,m:usb-storage@lists.one-eyed-alien.net,m:virtualization@lists.linux.dev,m:linux-kernel@vger.kernel.org,m:linux-arch@vger.kernel.org,m:netdev@vger.kernel.org,m:linux-fsdevel@vger.kernel.org,m:linux-hardening@vger.kernel.org,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[jimcromie@gmail.com,linux-rdma@vger.kernel.org];
+	FREEMAIL_CC(0.00)[kernel.org,iscas.ac.cn,nod.at,cambridgegreys.com,sipsolutions.net,minyard.net,cmu.edu,redhat.com,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,acm.org,ziepe.ca,ideasonboard.com,google.com,suse.de,hansenpartnership.com,oracle.com,arm.com,linuxfoundation.org,rowland.harvard.edu,linux.alibaba.com,akamai.com,antgroup.com,orcam.me.uk,infradead.org,linux.ibm.com,alien8.de,zytor.com,atomlin.com,linux-foundation.org,canonical.com,paul-moore.com,namei.org,hallyn.com,vger.kernel.org,googlegroups.com,kvack.org,lists.ubuntu.com,lists.infradead.org,lists.sourceforge.net,nongnu.org,lists.freedesktop.org,lists.ozlabs.org,lists.one-eyed-alien.net,lists.linux.dev];
 	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@nvidia.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[jimcromie@gmail.com,linux-rdma@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[98];
 	ALIAS_RESOLVED(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,Nvidia.com:dkim,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,nvidia.com:email,nvidia.com:mid,nvidia.com:from_mime]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FROM_NO_DN(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp,mail.gmail.com:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2C38066C27C
+X-Rspamd-Queue-Id: B738366CF7E
 
-On Tue, Jun 09, 2026 at 02:16:38PM +0300, Edward Srouji wrote:
-> From: Maher Sanalla <msanalla@nvidia.com>
-> 
-> When rdma_resolve_addr() is invoked with a broadcast destination on an
-> IPoIB interface, is_dst_local() inspects the resolved route and
-> incorrectly concludes that the address is local. As a result, the
-> resolution fails with -ENODEV.
-> The issue stems from using '&' to compare rt_type with RTN_LOCAL. The
-> RTN_* values form a sequential enum, not a bitmask (RTN_LOCAL=2,
-> RTN_BROADCAST=3). Thus, "rt_type & RTN_LOCAL" yields a non-zero result
-> for a broadcast route as well.
-> 
-> Replace '&' with '==' when comparing rt_type against RTN_LOCAL.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: c31e4038c97f ("RDMA/core: Use route entry flag to decide on loopback traffic")
-> Signed-off-by: Maher Sanalla <msanalla@nvidia.com>
-> Reviewed-by: Vlad Dumitrescu <vdumitrescu@nvidia.com>
-> Signed-off-by: Edward Srouji <edwards@nvidia.com>
-> Reviewed-by: Parav Pandit <parav@nvidia.com>
-> ---
->  drivers/infiniband/core/addr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, May 25, 2026 at 7:35=E2=80=AFAM Petr Pavlu <petr.pavlu@suse.com> wr=
+ote:
+>
+> On 5/21/26 3:33 PM, Kees Cook wrote:
+> > Using Coccinelle, rewrite every struct kernel_param_ops initializer tha=
+t
+> > sets .get into a DEFINE_KERNEL_PARAM_OPS-family macro invocation,
+> > for example:
+> >
+> > @@
+> > declarer name DEFINE_KERNEL_PARAM_OPS;
+> > identifier OPS;
+> > expression SET, GET;
+> > @@
+> > - const struct kernel_param_ops OPS =3D {
+> > -       .set =3D SET,
+> > -       .get =3D GET,
+> > - };
+> > + DEFINE_KERNEL_PARAM_OPS(OPS, SET, GET);
+> >
+> > Using the macro for initialization means future changes can manipulate
+> > the struct layout and callback prototypes without having to change ever=
+y
+> > initializer.
+>
+> Nit: For consistency, I suggest also converting the few remaining
+> kernel_param_ops instances that specify only .set and no .get, such as
+> simdisk_param_ops_filename.
+>
+> --
+> Thanks,
+> Petr
 
-Applied to for-next
+for the dynamic-debug changes
 
-Thanks,
-Jason
+Reviewed-by: Jim Cromie <jim.cromie@gmail.com>
 
