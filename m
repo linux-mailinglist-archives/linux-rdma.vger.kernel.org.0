@@ -1,185 +1,133 @@
-Return-Path: <linux-rdma+bounces-22066-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22074-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id w/FOD+vsKGpgNwMAu9opvQ
-	(envelope-from <linux-rdma+bounces-22066-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 06:49:47 +0200
+	id Z12nHAJTKWrGUwMAu9opvQ
+	(envelope-from <linux-rdma+bounces-22074-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 14:05:22 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92790665D14
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 06:49:46 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B910B669101
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 14:05:21 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=broadcom.com header.s=google header.b=MMmGezsn;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22066-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22066-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=reject) header.from=broadcom.com;
+	dkim=pass header.d=launchpad.net header.s=20210803 header.b=iM2OoUoq;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22074-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22074-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=launchpad.net;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 905883106FF3
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 04:47:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B0C3C304501F
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 12:04:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 123A2361DA6;
-	Wed, 10 Jun 2026 04:47:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29F742E1EF4;
+	Wed, 10 Jun 2026 12:04:27 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f227.google.com (mail-qt1-f227.google.com [209.85.160.227])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4BDB35F5E1
-	for <linux-rdma@vger.kernel.org>; Wed, 10 Jun 2026 04:47:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB9A404BC5
+	for <linux-rdma@vger.kernel.org>; Wed, 10 Jun 2026 12:04:24 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781066826; cv=none; b=MIQywpSgca25RpeTjgGz3G238sOuMbQFTHebUpwdezt4GYvCevL+jMwfZO9gtXZKb8UPwtvzZ8Xe5Zj1Bg9b11XsQN7s8BbODlwC240uxxEwDw6EvNkNHAxP8a54knBZIYDsot88wzNBJP6FGPsGSozzIkSZ2gpi3Dfvdk0Jfck=
+	t=1781093067; cv=none; b=M39k9haxSXJuCkQZNRTpb7JoZ1sZ7QvRwdtCFN9XbOafoNs9Brr8scC9Md2ESEKIiL7uD5/Wlq9luG8U3lz3qoS2rUlyTwCTz4i1KRuK1QNo+zomjQeyVPpqzKZWEzn2EDXhP26fU3/qYUJHuDtzCqvUb+UAuw8sjMaVHOSTt48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781066826; c=relaxed/simple;
-	bh=jyfBp3NQTTlviwNHQ7TdTOjGZbr/tSnp1WEF9oquz5U=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=aNHSitsdJFq1uo8jq71sL2NvzN7rlsgphng9lRgdKqon1qI4GfCcKh34iCpia3VTBEIZkZiCrEKcVlRdLcfQbWL3pu6IANcbWFBoQ9PEtOshXKE3gLmwfdVyeVTGsiojYqU7DttZgiVB+pUAYNfQzLxGcjyM5J7uJkK9SnfyZmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=MMmGezsn; arc=none smtp.client-ip=209.85.160.227
-Received: by mail-qt1-f227.google.com with SMTP id d75a77b69052e-5175cb5946dso41746141cf.0
-        for <linux-rdma@vger.kernel.org>; Tue, 09 Jun 2026 21:47:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781066825; x=1781671625;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:dkim-signature:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n2+DtBXMgzC8VgcPW2nntxLsVaEajMT3XLytNm7obxI=;
-        b=STPasu9mBcFjykmJ2wpMuB3yaya7wH9KZXdk0PJrBTLK7NoeGdT1YQU0kRKGNhMm96
-         w/nugi+DOtFRhU8yPzHo8P5i3mbb3fgVmeDbjiJsktqXsh04HVA45Nb0hQLriKlMTGNo
-         uS8xc4iJValrShdtZLpcNvVi8duU9rbcROc32ZtROD/1Vvx4BRRKnQA2LUGMRZmIMDDB
-         wJx8+iY4DJsKhWYtx8zEFbmk1EKKVQmq//dRBTVQjRZdJ7FqFeCvFNBNpxNI9NqgDSwd
-         StYIMv/n1XO2sMHYyljFs2hNUZ/RQBeW9/DQgBoYhMeKfaGsPptEz6zZUHzJtbiM4FDf
-         rinA==
-X-Gm-Message-State: AOJu0YxtYl4rEyhP/sNnuq1xAZq8B1p+hxX6Gm9Zo6poRJ2BT+bXVcLi
-	g6TNshIjiQy4sBDzD3qTIMNbCNl8DxrX5oS9BxlpdE0FV2dE2RlNXZop5O7dgWUIssfVaEG4hXv
-	WoLg40uUQLL9hpHtqOt8tPGeYAXixMioQ+1m4e8ekR/fQuNqxgN7vf4MAGqit54U/jQaT9cY7cI
-	F8utbD4jOuiy8dg4MftfIdq1KEcQSzgiV7mhg2gqS6hgRur/+Sh16rpUA1yEmF/aDyOGq7zx4oc
-	eOMIE3PPDWWCHGZwg==
-X-Gm-Gg: Acq92OH1PR40tWLM59YmX1xjJlsCxaoU7NCWvevvDy86n43lX7PUH7kxwSlvJg1Qp1F
-	0f0f07/W/CUUJU+M7iAYkeceexijmic7HgyF8lEgS2oRq67vblgp7nhBCkyLRhfEPM7IGkWHU1F
-	3XqeA195mkqZL2MHtqjdws0rC6SEZV1Si+myf1SFaZkmOWOTtkHd/htLGRWzDyJZiJPFkkfovMk
-	RJMGvRd4C1p0li9W51KDd4GOmLnObDIvkZthItf9Fs29d1eW4vzzs+dKFy3fR0shEsNQeRuR/mV
-	eVixaeTMtAxPtvncCwh0j5CjjFQYCKUayl+HYFHIgRK4mS6KiZQUT0y8mcZ9D753h/4N3RXrYSN
-	YPXeWXWBS9SAa/6XvrZ+JJLPeWSYQFlcfv/SRTbrcshtqB3se3cNmGrGSBh46FZMprBphhkQgyJ
-	LxvrcwVN5fNDE9pjELfLslE8403ghBjcSZg3b2X1Wm+r8SvoDk0F4SDeW2hdc3nXamSOZKCQ8=
-X-Received: by 2002:a05:622a:6184:b0:50f:f0be:dc7b with SMTP id d75a77b69052e-51795be0fa2mr349521311cf.39.1781066824537;
-        Tue, 09 Jun 2026 21:47:04 -0700 (PDT)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-121.dlp.protect.broadcom.com. [144.49.247.121])
-        by smtp-relay.gmail.com with ESMTPS id d75a77b69052e-51775bbbe45sm10184321cf.2.2026.06.09.21.47.04
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Jun 2026 21:47:04 -0700 (PDT)
-X-Relaying-Domain: broadcom.com
-X-CFilter-Loop: Reflected
-Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-842211d6e48so7113019b3a.0
-        for <linux-rdma@vger.kernel.org>; Tue, 09 Jun 2026 21:47:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1781066823; x=1781671623; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n2+DtBXMgzC8VgcPW2nntxLsVaEajMT3XLytNm7obxI=;
-        b=MMmGezsnhHzSdUXWFQQkrxWkpdlqgpRrau0/FNc1DqXLF4OEP70RjElOsPL0XsuI6Q
-         fF8jLt8vUMPJTlqq5vrbkBvQqq8JcZcuIyGkZqmOiJKXFn7+zL83IFwQ3hE4rePlvWAK
-         a5eRFfXT9+aghTzKHF4VMw46J1I176IinQpyg=
-X-Received: by 2002:a05:6a00:10c4:b0:842:4bb9:5fe0 with SMTP id d2e1a72fcca58-842b0d82b50mr23832966b3a.10.1781066823433;
-        Tue, 09 Jun 2026 21:47:03 -0700 (PDT)
-X-Received: by 2002:a05:6a00:10c4:b0:842:4bb9:5fe0 with SMTP id d2e1a72fcca58-842b0d82b50mr23832930b3a.10.1781066822832;
-        Tue, 09 Jun 2026 21:47:02 -0700 (PDT)
-Received: from dhcp-10-123-65-43.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-84282375f2dsm24532821b3a.19.2026.06.09.21.47.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2026 21:47:02 -0700 (PDT)
-From: Selvin Xavier <selvin.xavier@broadcom.com>
-To: leon@kernel.org,
-	jgg@ziepe.ca
-Cc: linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com,
-	kalesh-anakkur.purayil@broadcom.com,
-	sriharsha.basavapatna@broadcom.com,
-	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH 11/11] RDMA/bnxt_re: Fail DBR related page allocation UAPIs if the feature is disabled
-Date: Wed, 10 Jun 2026 03:08:55 -0700
-Message-Id: <20260610100855.64212-12-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20260610100855.64212-1-selvin.xavier@broadcom.com>
-References: <20260610100855.64212-1-selvin.xavier@broadcom.com>
+	s=arc-20240116; t=1781093067; c=relaxed/simple;
+	bh=IGmNnb6pJ7N7jmDbw+BSuV64so0VfbVn0y0PbYR/4lo=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=SFKq2gCwnfigYRVKvQW3WCDylpumpKyafP7T9qHZ+OaEypY2N2T6EZYnOfDeStlRo5nxJBQFpldC8A4cCxJqSEXAb5pGThBUfCaPZY6z0MGIaINEJrbHtzIsuSmriVsIzlJvj1/MMY3yB9XPoZu3bpXomGSzS397EBvAIJL1G88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=iM2OoUoq; arc=none smtp.client-ip=185.125.188.250
+Received: from juju-98d295-prod-launchpad-51.localdomain (unknown [10.131.215.15])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id 7F1603FAB8
+	for <linux-rdma@vger.kernel.org>; Wed, 10 Jun 2026 12:04:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+	s=20210803; t=1781093057;
+	bh=IGmNnb6pJ7N7jmDbw+BSuV64so0VfbVn0y0PbYR/4lo=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+	 Reply-To;
+	b=iM2OoUoq54k5WSbStALpxK74vVrvmFEeLftyeq6qqxEsl3FToqga+1rUx2VVQdFQt
+	 YNKdEObnRucgyjSFVzazzZ0dR9GLmIeYMoXvrhaqE/HtTTTq3ocRhRNTGEChUGLh0s
+	 DU+UA3SJTxGBb65KRm96K09k3CXg/alc23rV9xrfxnbupql04n2bBPG7ZYWHSr9EF/
+	 W47TkpUZ1EhBFxX6g4m73PEVMNRybN2xmY+2RIflQGo/cPVc+Wk6Dt6acNS8zjdcs2
+	 UmAgoLM/JzTIJK27sctOd36bMgSpxzS44Csah0bcVuD+ZgRZ2cGExn/gKeDCC2JOJL
+	 ydFLk/g1ArG2g==
+Received: from [10.131.215.15] (localhost [127.0.0.1])
+	by juju-98d295-prod-launchpad-51.localdomain (Postfix) with ESMTP id 6D94CBD3E3
+	for <linux-rdma@vger.kernel.org>; Wed, 10 Jun 2026 12:04:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To: Linux RDMA <linux-rdma@vger.kernel.org>
+From: noreply@launchpad.net
+Subject: [recipe build #4050377] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <178109305732.1192193.139238051061498197.launchpad@juju-98d295-prod-launchpad-51>
+Date: Wed, 10 Jun 2026 12:04:17 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+Errors-To: noreply@launchpad.net
+Precedence: bulk
+X-Generated-By: Launchpad (canonical.com); Revision="81b3240738cf12f6bd4aac6593260fef8d7b0d96"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: d90838c7725f00f1be3fe7cfe84f50ccfa0e8f79
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.66 / 15.00];
-	WHITELIST_DMARC(-7.00)[broadcom.com:D:+];
-	DATE_IN_FUTURE(4.00)[5];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[broadcom.com,reject];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[broadcom.com:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[launchpad.net,none];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[launchpad.net:s=20210803];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22066-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22074-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:leon@kernel.org,m:jgg@ziepe.ca,m:linux-rdma@vger.kernel.org,m:andrew.gospodarek@broadcom.com,m:kalesh-anakkur.purayil@broadcom.com,m:sriharsha.basavapatna@broadcom.com,m:selvin.xavier@broadcom.com,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[selvin.xavier@broadcom.com,linux-rdma@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[selvin.xavier@broadcom.com,linux-rdma@vger.kernel.org];
-	FORWARDED(0.00)[lists@lfdr.de];
+	TO_DN_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,launchpad.net:dkim,launchpad.net:replyto,launchpad.net:url,launchpad.net:from_mime,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo];
+	FORGED_SENDER(0.00)[noreply@launchpad.net,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	DKIM_TRACE(0.00)[broadcom.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	ALIAS_RESOLVED(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[broadcom.com:dkim,broadcom.com:email,broadcom.com:mid,broadcom.com:from_mime,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:linux-rdma@vger.kernel.org,s:lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_ONE(0.00)[1];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[launchpad.net:+];
+	MISSING_XM_UA(0.00)[];
+	HAS_REPLYTO(0.00)[noreply@launchpad.net];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[noreply@launchpad.net,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	FROM_NO_DN(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	REPLYTO_EQ_FROM(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 92790665D14
+X-Rspamd-Queue-Id: B910B669101
 
-No need to support the DBR related page allocations if the pacing feature
-is disabled. Fail the request if pacing is disabled.
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 4 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/4050377/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-021
 
-Fixes: ea2224857882 ("RDMA/bnxt_re: Update alloc_page uapi for pacing")
-Reviewed-by: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/uapi.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/infiniband/hw/bnxt_re/uapi.c b/drivers/infiniband/hw/bnxt_re/uapi.c
-index 54d7e99e47d2..3621a9972170 100644
---- a/drivers/infiniband/hw/bnxt_re/uapi.c
-+++ b/drivers/infiniband/hw/bnxt_re/uapi.c
-@@ -119,12 +119,16 @@ static int UVERBS_HANDLER(BNXT_RE_METHOD_ALLOC_PAGE)(struct uverbs_attr_bundle *
- 
- 		break;
- 	case BNXT_RE_ALLOC_DBR_BAR_PAGE:
-+		if (!rdev->pacing.dbr_pacing)
-+			return -EOPNOTSUPP;
- 		length = PAGE_SIZE;
- 		addr = (u64)rdev->pacing.dbr_bar_addr;
- 		mmap_flag = BNXT_RE_MMAP_DBR_BAR;
- 		break;
- 
- 	case BNXT_RE_ALLOC_DBR_PAGE:
-+		if (!rdev->pacing.dbr_pacing)
-+			return -EOPNOTSUPP;
- 		length = PAGE_SIZE;
- 		addr = (u64)rdev->pacing.dbr_page;
- 		mmap_flag = BNXT_RE_MMAP_DBR_PAGE;
--- 
-2.39.3
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/4050377
+Your team Linux RDMA is the requester of the build.
 
 
