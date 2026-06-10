@@ -1,80 +1,81 @@
-Return-Path: <linux-rdma+bounces-22081-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22082-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 9LlFJGeIKWpoYwMAu9opvQ
-	(envelope-from <linux-rdma+bounces-22081-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 17:53:11 +0200
+	id NKNZB+OOKWoCZgMAu9opvQ
+	(envelope-from <linux-rdma+bounces-22082-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 18:20:51 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2512166B0E6
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 17:53:11 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F10E66B5A7
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 18:20:50 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=amd.com header.s=selector1 header.b=juDw5aIb;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22081-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22081-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=amd.com header.s=selector1 header.b=xOO+iygd;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22082-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22082-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=amd.com;
 	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id BFA7E315902A
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 15:46:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AC86935D830D
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jun 2026 15:46:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEC9D449ED6;
-	Wed, 10 Jun 2026 15:42:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FEFE481FA6;
+	Wed, 10 Jun 2026 15:42:42 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from BN8PR05CU002.outbound.protection.outlook.com (mail-eastus2azon11011011.outbound.protection.outlook.com [52.101.57.11])
+Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011042.outbound.protection.outlook.com [52.101.62.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DDC241931A;
-	Wed, 10 Jun 2026 15:42:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C645D48166E;
+	Wed, 10 Jun 2026 15:42:40 +0000 (UTC)
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781106158; cv=fail; b=jsIxtZIcwyzkqDkRBG6n1Ptan54Rz3MRgzgvYmCnYDtq5RC1KKN7dtZg8lm80z4E0XrT7Rar0/EBIsaBSjjc9JTT7xAP7/6V3MIPgI2UswBn635SlbV5Uv/XIvxFs71Wo1T0AZYxQBYAuDdXwpks6cCWYg8D755T9sLQTu9yQeE=
+	t=1781106162; cv=fail; b=q2AZ51/mBkXZ1ACQLiHrtjk01GM+lqq4ATZk86SP37ai1oQZhR4Y7ljxZcw1KMUUyWzb6vvDiTWldxjmsqN9gbR1LFbr32ADyXaRE4nsBYuh3Y+GtrXsjS4yKXESin/NPGAd5ON9Uy1fUuXW7M9kkBMiZ1Q5LoXUkszpEJddvpo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781106158; c=relaxed/simple;
-	bh=e9Rg811XdYCuEJKKeR3ythh17kL0Vc94MNvTF7Mh1RI=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=hOArjckjEgn59FBn0XbZxf/yFf3d1DqHjO4SE+p5rDujkdrfsdCPSKqOYKVAeBj9/epYY6K+URHpgwbggjwAAqTkVkhWjFij97PABvRgl7h630Dlto3mCzY2NKIxmw4QNF0gcKrouB86bWB0P2o1jIu2HH6Xl4ylTQgFRzTrMVY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=juDw5aIb; arc=fail smtp.client-ip=52.101.57.11
+	s=arc-20240116; t=1781106162; c=relaxed/simple;
+	bh=g2eAC0nTAsyf3f5vlBbl0etdU3jPb+G0qabANnsbes8=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CXfFvDpqa71wxQpsPzOp0bDt7Sp5AwVle/9XNwlI8OJJxwVY5PBXaIKtkVpt2ZBoGAZbnWXTXZDCJqZE3sVJKAv92ll15NsdpnVbrzSgdCyZlCF1HNG4BPpFHlqLg8WBlV74wTRkSgbYToabDtiti52OiRGMdz5v5ZKKEczts9U=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=xOO+iygd; arc=fail smtp.client-ip=52.101.62.42
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=e7aWR5qAWqOvXp2s70oMbaSQwNjVgFlCbfpmIRgmBCO71lKp6WObTchG4nSezmHIhMIYW3TOor6fN5ABemUQlibXf+Vz52lvr51Nnh10sW59ImwpQxnO/PC7OzuQ+a2ickgRbb+Lzkng/lTzy3DJ/ow4UYqbxejLyXi0HcXWAVum58yFfBdzrGcmwdlzX+fpcgM39ui04Lwy63tdGmFPAkfQ3FsQf6agcca7GjV6jSoeA1Y1G7Cv07vRFiwiSiVZcjCFeA5hYFgVEX5w5UfgM8YmX1Qg+IHxgmGgPkCrJMwxGUAY96NqWs0BIa0iaRmAr3eckl6lscS9zU4uXJvPPw==
+ b=DbOcX/UAiLQntyNQfwcGf6XK1bUi58nR8v6DTPMa/5vUOiG3SeykIKidebqkHDuV01yFZq1QqAHNwv+2ufDiFkjcgGBnhT0pr5dThHIxZ8z2o+OKpNiDRLD7l9GcFJFgT2+oW6RMzWKuYJgIMQv7fsZM1eZhVzpwPRPHLK78LnJxg25xL7suS/rJ4byl+O0q7tN0B0WtPKYgtPHLhxufqEo1F2EI93YJNFceGR4sxYwoJJz+fGA+0xk32aj90ljHC2nveE1FoU7bQOFZpgO09EGvoRCQRsVThRM9AEassOF5UqpizyJHfk6zhF0fLtWLYkN1HqSqvcip/U6anaDjDA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8cOylYC0CgNswh1EfHo6NjYFZFnniiTLsbtaYO3V7Ew=;
- b=vbjQc8LH8IRROIJEmSue0O6bxMnsgqgv3rPMdi36rN7HIbycuLRtX7T8DRoS2XVsjUdBSJhhVpwlGlZljlxmd1+kRKk7TMPG64298EImjHw57mY4Dp02EszocsHjEBA+2OVHe37VzcLTVogjDmO9LozLr/5Nnepp5Paq9XROhri9Z6s3jIOEXSG3PnCyiz2Cfx3kJZ5TqeTNmXx+mN0qNP1rKGdtk9zIN53O2MCvS514G4spGuKvZIZgJrgjbwu/OpCHWKp6cnoQa5n+BRr39vh+di7AR/LGNZOzjV5DhLA5PQB1SVcK6+aM0laoubMnY/sJipLjqlQwBZyZCB+YUg==
+ bh=e3lDx+rFY2zdyfhCSXmzK1+iP6NdBIiGSsSOuKSLJQs=;
+ b=UUvfL6KWWjDRtaMArDEnqGuVP0UU5/sCrcr4CYWeQet4UA+GDt7ctdeIJ/Kgd4sxBf2hmm7foFi1ndg3G5QhpnIn3EfdL6G+l3h3+ho6wQNVCnP9Hsw1w8/UbmWhnIPXVWR0h2xb6X9M+Bdc3e3TouM7dhdAgY5xdBVmwVk+WqEFAcQB46hr5gAyOjt9OSazMIB9OJEDxog4/XE2pcth6gDfFXT15wweOwgqkjNR5fosWTufg1BYKeh5Z693K+dnPYloPuddjtBuvyF7sANW+I2Ruz3tdEcju3vOBIrdw9LWSpnoTfewFMMkA0l3llyRiz0px4dyNeftBG/jxVh0zg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8cOylYC0CgNswh1EfHo6NjYFZFnniiTLsbtaYO3V7Ew=;
- b=juDw5aIbxZ7I6qJ+V3gsA2/FX7CoakSvCL7KE5Z7MAuDt7KvcaClHkw2yXvIM5/ld1K19tz0CXe1nQwAUULNHopVzfDVf04h4F+2ldM+3sjq5PrrX3jNJu4wLZf83rTL5DIPqwfMSbe6dfI+qvqNOzqW8AoPGX5hY6GGQidjPm8=
-Received: from BN0PR04CA0019.namprd04.prod.outlook.com (2603:10b6:408:ee::24)
- by CH2PR12MB4070.namprd12.prod.outlook.com (2603:10b6:610:ae::22) with
+ bh=e3lDx+rFY2zdyfhCSXmzK1+iP6NdBIiGSsSOuKSLJQs=;
+ b=xOO+iygd28Ly8xhNQr9eLFN9CmTrlaXYQDXgo0wOf0UhBT2GbTueiqkWW25imYaS5fcnSCbdkhBXa7h36ZQ5jLWkokoWbw1zA0o/7HMG40b8niJbldLqRMobd+ZLZFaD8e4CUkw7yvZcDIOEDp+xDCrogctqHEgmErxdnVI7rJY=
+Received: from CH2PR07CA0042.namprd07.prod.outlook.com (2603:10b6:610:5b::16)
+ by LV2PR12MB5821.namprd12.prod.outlook.com (2603:10b6:408:17a::8) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.48.14; Wed, 10 Jun
- 2026 15:42:29 +0000
-Received: from BL02EPF0001A0F9.namprd03.prod.outlook.com
- (2603:10b6:408:ee:cafe::7b) by BN0PR04CA0019.outlook.office365.com
- (2603:10b6:408:ee::24) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.113.11 via Frontend Transport; Wed,
- 10 Jun 2026 15:42:28 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.13; Wed, 10 Jun
+ 2026 15:42:35 +0000
+Received: from CH2PEPF000000A0.namprd02.prod.outlook.com
+ (2603:10b6:610:5b:cafe::64) by CH2PR07CA0042.outlook.office365.com
+ (2603:10b6:610:5b::16) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.113.10 via Frontend Transport; Wed,
+ 10 Jun 2026 15:42:35 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
-Received: from satlexmb07.amd.com (165.204.84.17) by
- BL02EPF0001A0F9.mail.protection.outlook.com (10.167.242.100) with Microsoft
+ client-ip=165.204.84.17; helo=satlexmb08.amd.com; pr=C
+Received: from satlexmb08.amd.com (165.204.84.17) by
+ CH2PEPF000000A0.mail.protection.outlook.com (10.167.244.26) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.113.7 via Frontend Transport; Wed, 10 Jun 2026 15:42:28 +0000
-Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb07.amd.com
- (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
+ 15.21.113.7 via Frontend Transport; Wed, 10 Jun 2026 15:42:34 +0000
+Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb08.amd.com
+ (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.41; Wed, 10 Jun
- 2026 10:42:28 -0500
+ 2026 10:42:32 -0500
 Received: from xhdipdslab46.xilinx.com (10.180.168.240) by satlexmb08.amd.com
  (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.41 via Frontend
- Transport; Wed, 10 Jun 2026 10:42:24 -0500
+ Transport; Wed, 10 Jun 2026 10:42:28 -0500
 From: Abhijit Gangurde <abhijit.gangurde@amd.com>
 To: <jgg@ziepe.ca>, <leon@kernel.org>, <brett.creeley@amd.com>,
 	<andrew+netdev@lunn.ch>, <davem@davemloft.net>, <edumazet@google.com>,
@@ -83,10 +84,12 @@ CC: <allen.hubbe@amd.com>, <nikhil.agarwal@amd.com>,
 	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, <dwmw2@infradead.org>, Abhijit Gangurde
 	<abhijit.gangurde@amd.com>
-Subject: [for-next v4 0/5] ionic: RDMA completion timestamping support
-Date: Wed, 10 Jun 2026 21:12:11 +0530
-Message-ID: <20260610154216.712374-1-abhijit.gangurde@amd.com>
+Subject: [for-next v4 1/5] net: ionic: register PHC for rdma timestamping
+Date: Wed, 10 Jun 2026 21:12:12 +0530
+Message-ID: <20260610154216.712374-2-abhijit.gangurde@amd.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260610154216.712374-1-abhijit.gangurde@amd.com>
+References: <20260610154216.712374-1-abhijit.gangurde@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -97,30 +100,30 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A0F9:EE_|CH2PR12MB4070:EE_
-X-MS-Office365-Filtering-Correlation-Id: c9d29171-441f-4211-7eec-08dec706e0d3
+X-MS-TrafficTypeDiagnostic: CH2PEPF000000A0:EE_|LV2PR12MB5821:EE_
+X-MS-Office365-Filtering-Correlation-Id: 29a329e6-aa7f-4854-01ce-08dec706e476
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|376014|36860700016|1800799024|82310400026|23010399003|11063799006|18002099003|6133799003|56012099006;
+	BCL:0;ARA:13230040|82310400026|1800799024|376014|7416014|23010399003|36860700016|18002099003|22082099003|56012099006|11063799006;
 X-Microsoft-Antispam-Message-Info:
-	YkhzeH7Xwbnb3heEijRKq6zaOf9kCcchUDjYtMOqw8sPc+R04YWQnqjYRu+iMhB2Egdr2dLfzuKW80y8CSstv47utYwsG1C3kkD3bzmLISQzjnqRtpcG6CFHBJdSJsDX89aE3qU6YzRYpc1e0vxhkMN0IldPpXYuU20yxN6yl2548QPgNmXjDmbJKJln88vZNpnWmk5z3mIYsP3jABpaWD2FWJtIFQaYVRl97VSMK7O5XgljxZynZnYuZ1V+ZrwZc+wEv0jH7ZCp1YZBPzlvaKi+yT5gjP9aZ2arWFLUhbuqUgYF6agYtbTTs5fu2orGPyWJIl62vN4D+hh9SG1hpI6hL/83kH+vErwR7G787lhWRy3d/dWA3cx/kLhgO4rPXBdKhCu8/AMWS+ewfIHX/5cQ/ILGJleK1+VhR9tptAVYacR3urcF4E7mYJ6tKyvJA19+QOPU04ALssKKnLBK6rKG/15el4WLujQOmXakserEdlKxetrkIVLN6bd3WQPvtMSblBH6jiRU5BRFBdpALB5lmB0HzOo/GQz1qX+2pZBdd0+D/qDR7DvHPVkU0AqiMMqvdlc48MGWw47rhLMkrlC9Kt8/QB83DWWMiLYWQHtJidB+GS08DTCky7Ij1MbtUsFEltTYJxtue5BUtgy8Vjs/wRICwDHe5saGG7cXu3WOc6+t71EcPe6bUArA7ss+/frxOFIo2xQuiHbONAMVTUc1Hi4lG95KNzpR7MwH6D8=
+	XMM+sxNBh5c5o1yg/jWtygac3hZplGwztm4WlKAdTRJy92x9L+HB4c67zlDahp5qHJozsw8knu7D5C9MAcOen6eWSNUZacxueNKxac/HzvFnq2VCoGd1aJnqP4gdRMjha03J09ZfLv/27VfQ54l2WpT45SIDNmSCnw3TUQFfkyK3F/E+R+JTEhuWDvrjCa7m+leu8SrxdqM0OTJvwthhbOpkhGzl2ofKRtjDOCjY/wlh3HWzfb0vXW2NdSstx9lzgCITJ1fP7gm8cN2d2xxkMchxgHn6OKs9FXD29tbdu+AORPi5Pv8kC+MjeZohWmfhLKJcpBZa83De+XZyx9OKbnQYxQuLY42ff4KdZ6Wp4T5bQvtZTgvEso25pOp6W5aKqCL4K81OtpeE1xJMDz3ZH6E1rnqtyck41lqpcqcs+k0M121K2q1whfuUNZj4/0jchdlSR/sGFvmtFs62KU8x6ZhtCGGaaG/o7CHmK1GFp7w2iT9OnaQwUnI+Yx9x+sI0VcssexGWbsqZA+tIMs33elLHpkulneY6G4vZZuRtu4RydVlXMa9ujousZuE/aTmqC/KURW6CkdGmwLwhpyr/yJrn4IbL2iNqKcYMUS7DCIPevEuG3McZa6QdcF2Qyq41MWwDT+hp478Txd2+bHXea4cqVqkgNmKlApKXsY9HfKjjJo0VlT2bMF25aBarK2PBAViKDb2JrcSonEW7GqIe/2mouo+fcC1EMW9/xvGAJFY=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(7416014)(376014)(36860700016)(1800799024)(82310400026)(23010399003)(11063799006)(18002099003)(6133799003)(56012099006);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(376014)(7416014)(23010399003)(36860700016)(18002099003)(22082099003)(56012099006)(11063799006);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	LUAoHx5ZSULge6pONTK0VbSUlyjFyGpSD/mlbEli4Ef9FqbVnPgu/ZSziNdMeeBze5mBe4L6nfsAWhzLS1OAQ0wYEJ5i5S7dVylshPEqbql2dAsttkPd2xGEOy2sXHs0uw5QCuH2gAeI8w5YVWe8c/NHvkeqxxK3TTjA+4K1bzA+OvZoM3WHKIl7PuUIAZA72lTx/P6CEKrl8KIilGi/h+JiamY1VRxF2LpqB4lrkDG9m9/zIVOBmp9XCAwitqYcRTVW8ay86+EiNcLu6wjPnz+9TWTVfV6Em3yiVmkMmxG9dItmXdJOFg9wRJ71KzVs6sCKyfEZOC90Wc8vr1Mb0SDY1yNSv4LHDcplJBLQv+h7Ollyg/Is1whzq/8zgKNFIUhyiZ1c3TkCYI8OLDgK1mE2HaTe2HrPYU+K4dKWS2SB+Uk3oYmXfYNkzMdWLTq9
+	hI724LqG1OFGHVSYFwEH4cTQ4H24tFqoV21Oqz9mTX9vdHeGN4znPQM0vp9Tg1y63GzfVv+aNF4vckboMAgN5wvwScbbwDH/cnefCabTzK089hg7XLhvma60YO3+ko7pYSWC6O0IqT9/GW5JnFp548+Y8TjeMyxphkFg5CFGsxXDCpaFyL/3wsg7cgCVaS2pBUE5Rl850+WpxX3O3PRwkFhZIyQbRDuYf9n7LAVYNj49PEryvJYluoMIsIFJiKw+HGQUIJLhMuFIMYnDoLY/Ox5sAsQqc2gn7T2dns/Nk1Z5WRWZUcs1O7NfaT1s4Mznv5YrfLhy9qsp2wOkT1smdLHg1OPjOnp+VBfx27JJemgosenmW9dDQ8YJ0CC3Vu6eaksKLj6+51pfM1Myd3ISS73MjWSnVW5zuTe996hFk7jlp68r41l4mJZGA6bA7B7/
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2026 15:42:28.8419
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2026 15:42:34.9317
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c9d29171-441f-4211-7eec-08dec706e0d3
+X-MS-Exchange-CrossTenant-Network-Message-Id: 29a329e6-aa7f-4854-01ce-08dec706e476
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb08.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BL02EPF0001A0F9.namprd03.prod.outlook.com
+	CH2PEPF000000A0.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4070
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5821
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [2.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -129,14 +132,14 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[amd.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER(0.00)[abhijit.gangurde@amd.com,linux-rdma@vger.kernel.org];
 	RCPT_COUNT_TWELVE(0.00)[15];
-	TAGGED_FROM(0.00)[bounces-22081-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22082-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -148,66 +151,161 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[abhijit.gangurde@amd.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,amd.com:dkim,amd.com:mid,amd.com:from_mime];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,amd.com:dkim,amd.com:email,amd.com:mid,amd.com:from_mime];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	RCVD_COUNT_SEVEN(0.00)[8]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2512166B0E6
+X-Rspamd-Queue-Id: 6F10E66B5A7
 
-Hi,
+Currently, the driver only registers the PTP Hardware Clock (PHC) if
+Ethernet hardware timestamping is supported. Update the registration
+logic to register the PHC if the device supports either Ethernet
+hardware timestamping or RDMA completion timestamping.
 
-This series adds RDMA completion timestamp support for ionic.
-
-It enables PHC registration for RDMA timestamp capability, exposes a PHC
-state page for safe user-space reads, maps that PHC state through RDMA
-ucontext mmap, and extends the RDMA CQE format to carry completion
-timestamps.
-
-With this, user space can read completion timestamps and convert them to
-wall time with low overhead.
-
-Provider's PR: https://github.com/linux-rdma/rdma-core/pull/1724
-
-v4:
-  - Added alias mapping of mlx5_ib_clock_info to ib_uverbs_clock_info
-v3:
-  - Renamed ib_uverbs_phc_state to ib_uverbs_clock_info
-  - Moved mlx5 to use the common clock info structure
-  - Addressed review feedback from Sashiko
-  - https://lore.kernel.org/linux-rdma/20260606050003.3648306-1-abhijit.gangurde@amd.com/
-v2:
-  - changed ionic_phc_state to ib_uverbs_phc_state and moved it under
-    ib_user_verbs.h
-  - https://lore.kernel.org/linux-rdma/20260512092623.1157199-1-abhijit.gangurde@amd.com/
-v1:
-  - https://lore.kernel.org/all/20260401102501.3395305-1-abhijit.gangurde@amd.com/
-
-Abhijit Gangurde (5):
-  net: ionic: register PHC for rdma timestamping
-  net: ionic: Add PHC state page for user space access
-  RDMA/ionic: map PHC state into user space
-  RDMA/ionic: add completion timestamp to CQE format
-  RDMA/mlx5: move mlx5 clock info to common struct ib_uverbs_clock_info
-
- .../infiniband/hw/ionic/ionic_controlpath.c   | 34 ++++++++++
- drivers/infiniband/hw/ionic/ionic_datapath.c  | 43 ++++++-------
- drivers/infiniband/hw/ionic/ionic_fw.h        | 12 +++-
- drivers/infiniband/hw/ionic/ionic_ibdev.h     |  2 +
- drivers/infiniband/hw/ionic/ionic_lif_cfg.c   |  2 +
- drivers/infiniband/hw/ionic/ionic_lif_cfg.h   |  1 +
- .../ethernet/pensando/ionic/ionic_ethtool.c   | 12 ++--
+Co-developed-by: Allen Hubbe <allen.hubbe@amd.com>
+Signed-off-by: Allen Hubbe <allen.hubbe@amd.com>
+Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
+---
+ .../ethernet/pensando/ionic/ionic_ethtool.c   | 12 +++++++----
  .../net/ethernet/pensando/ionic/ionic_if.h    |  1 +
- .../net/ethernet/pensando/ionic/ionic_lif.c   |  5 +-
- .../net/ethernet/pensando/ionic/ionic_lif.h   |  3 +-
- .../net/ethernet/pensando/ionic/ionic_phc.c   | 63 ++++++++++++++++---
- include/uapi/rdma/ib_user_verbs.h             | 33 ++++++++++
- include/uapi/rdma/ionic-abi.h                 |  1 +
- include/uapi/rdma/mlx5-abi.h                  | 15 ++---
- 14 files changed, 179 insertions(+), 48 deletions(-)
+ .../net/ethernet/pensando/ionic/ionic_lif.c   |  5 ++++-
+ .../net/ethernet/pensando/ionic/ionic_phc.c   | 20 ++++++++++++-------
+ 4 files changed, 26 insertions(+), 12 deletions(-)
 
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_ethtool.c b/drivers/net/ethernet/pensando/ionic/ionic_ethtool.c
+index 78a802eb159f..154ea1bef85d 100644
+--- a/drivers/net/ethernet/pensando/ionic/ionic_ethtool.c
++++ b/drivers/net/ethernet/pensando/ionic/ionic_ethtool.c
+@@ -1018,10 +1018,14 @@ static int ionic_get_ts_info(struct net_device *netdev,
+ 
+ 	info->phc_index = ptp_clock_index(lif->phc->ptp);
+ 
+-	info->so_timestamping = SOF_TIMESTAMPING_TX_SOFTWARE |
+-				SOF_TIMESTAMPING_TX_HARDWARE |
+-				SOF_TIMESTAMPING_RX_HARDWARE |
+-				SOF_TIMESTAMPING_RAW_HARDWARE;
++	info->so_timestamping = SOF_TIMESTAMPING_TX_SOFTWARE;
++
++	if (!(lif->hw_features & IONIC_ETH_HW_TIMESTAMP))
++		return 0;
++
++	info->so_timestamping |= SOF_TIMESTAMPING_TX_HARDWARE |
++				 SOF_TIMESTAMPING_RX_HARDWARE |
++				 SOF_TIMESTAMPING_RAW_HARDWARE;
+ 
+ 	/* tx modes */
+ 
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_if.h b/drivers/net/ethernet/pensando/ionic/ionic_if.h
+index 23d6e2b4791e..49d451c686b7 100644
+--- a/drivers/net/ethernet/pensando/ionic/ionic_if.h
++++ b/drivers/net/ethernet/pensando/ionic/ionic_if.h
+@@ -1179,6 +1179,7 @@ enum ionic_eth_hw_features {
+ 	IONIC_ETH_HW_TX_CSUM_GENEVE	= BIT(18),
+ 	IONIC_ETH_HW_TSO_GENEVE		= BIT(19),
+ 	IONIC_ETH_HW_TIMESTAMP		= BIT(20),
++	IONIC_ETH_HW_RDMA_TIMESTAMP	= BIT(21),
+ };
+ 
+ /**
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_lif.c b/drivers/net/ethernet/pensando/ionic/ionic_lif.c
+index 637e635bbf03..9d86f795f5f6 100644
+--- a/drivers/net/ethernet/pensando/ionic/ionic_lif.c
++++ b/drivers/net/ethernet/pensando/ionic/ionic_lif.c
+@@ -1498,7 +1498,8 @@ static int ionic_set_nic_features(struct ionic_lif *lif,
+ 	ctx.cmd.lif_setattr.features = ionic_netdev_features_to_nic(features);
+ 
+ 	if (lif->phc)
+-		ctx.cmd.lif_setattr.features |= cpu_to_le64(IONIC_ETH_HW_TIMESTAMP);
++		ctx.cmd.lif_setattr.features |= lif->ionic->ident.lif.eth.config.features &
++			cpu_to_le64(IONIC_ETH_HW_TIMESTAMP | IONIC_ETH_HW_RDMA_TIMESTAMP);
+ 
+ 	err = ionic_adminq_post_wait(lif, &ctx);
+ 	if (err)
+@@ -1549,6 +1550,8 @@ static int ionic_set_nic_features(struct ionic_lif *lif,
+ 		dev_dbg(dev, "feature ETH_HW_TSO_UDP_CSUM\n");
+ 	if (lif->hw_features & IONIC_ETH_HW_TIMESTAMP)
+ 		dev_dbg(dev, "feature ETH_HW_TIMESTAMP\n");
++	if (lif->hw_features & IONIC_ETH_HW_RDMA_TIMESTAMP)
++		dev_dbg(dev, "feature ETH_HW_RDMA_TIMESTAMP\n");
+ 
+ 	return 0;
+ }
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_phc.c b/drivers/net/ethernet/pensando/ionic/ionic_phc.c
+index 05b44fc482f8..116408099974 100644
+--- a/drivers/net/ethernet/pensando/ionic/ionic_phc.c
++++ b/drivers/net/ethernet/pensando/ionic/ionic_phc.c
+@@ -77,7 +77,8 @@ static int ionic_lif_hwstamp_set_ts_config(struct ionic_lif *lif,
+ 	bool rx_all;
+ 	__le64 mask;
+ 
+-	if (!lif->phc || !lif->phc->ptp)
++	if (!lif->phc || !lif->phc->ptp ||
++	    !(lif->hw_features & IONIC_ETH_HW_TIMESTAMP))
+ 		return -EOPNOTSUPP;
+ 
+ 	mutex_lock(&lif->phc->config_lock);
+@@ -210,7 +211,8 @@ int ionic_hwstamp_set(struct net_device *netdev,
+ 	struct ionic_lif *lif = netdev_priv(netdev);
+ 	int err;
+ 
+-	if (!lif->phc || !lif->phc->ptp)
++	if (!lif->phc || !lif->phc->ptp ||
++	    !(lif->hw_features & IONIC_ETH_HW_TIMESTAMP))
+ 		return -EOPNOTSUPP;
+ 
+ 	mutex_lock(&lif->queue_lock);
+@@ -228,7 +230,8 @@ void ionic_lif_hwstamp_replay(struct ionic_lif *lif)
+ {
+ 	int err;
+ 
+-	if (!lif->phc || !lif->phc->ptp)
++	if (!lif->phc || !lif->phc->ptp ||
++	    !(lif->hw_features & IONIC_ETH_HW_TIMESTAMP))
+ 		return;
+ 
+ 	mutex_lock(&lif->queue_lock);
+@@ -242,7 +245,8 @@ void ionic_lif_hwstamp_recreate_queues(struct ionic_lif *lif)
+ {
+ 	int err;
+ 
+-	if (!lif->phc || !lif->phc->ptp)
++	if (!lif->phc || !lif->phc->ptp ||
++	    !(lif->hw_features & IONIC_ETH_HW_TIMESTAMP))
+ 		return;
+ 
+ 	mutex_lock(&lif->phc->config_lock);
+@@ -267,7 +271,8 @@ int ionic_hwstamp_get(struct net_device *netdev,
+ {
+ 	struct ionic_lif *lif = netdev_priv(netdev);
+ 
+-	if (!lif->phc || !lif->phc->ptp)
++	if (!lif->phc || !lif->phc->ptp ||
++	    !(lif->hw_features & IONIC_ETH_HW_TIMESTAMP))
+ 		return -EOPNOTSUPP;
+ 
+ 	mutex_lock(&lif->phc->config_lock);
+@@ -506,7 +511,8 @@ static const struct ptp_clock_info ionic_ptp_info = {
+ 
+ void ionic_lif_register_phc(struct ionic_lif *lif)
+ {
+-	if (!lif->phc || !(lif->hw_features & IONIC_ETH_HW_TIMESTAMP))
++	if (!lif->phc ||
++	    !(lif->hw_features & (IONIC_ETH_HW_TIMESTAMP | IONIC_ETH_HW_RDMA_TIMESTAMP)))
+ 		return;
+ 
+ 	lif->phc->ptp = ptp_clock_register(&lif->phc->ptp_info, lif->ionic->dev);
+@@ -545,7 +551,7 @@ void ionic_lif_alloc_phc(struct ionic_lif *lif)
+ 		return;
+ 
+ 	features = le64_to_cpu(ionic->ident.lif.eth.config.features);
+-	if (!(features & IONIC_ETH_HW_TIMESTAMP))
++	if (!(features & (IONIC_ETH_HW_TIMESTAMP | IONIC_ETH_HW_RDMA_TIMESTAMP)))
+ 		return;
+ 
+ 	phc = devm_kzalloc(ionic->dev, sizeof(*phc), GFP_KERNEL);
 -- 
 2.43.0
 
