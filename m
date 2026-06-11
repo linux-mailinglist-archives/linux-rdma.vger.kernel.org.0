@@ -1,364 +1,167 @@
-Return-Path: <linux-rdma+bounces-22136-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22137-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Jp94NeYBK2qh1AMAu9opvQ
-	(envelope-from <linux-rdma+bounces-22136-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2026 20:43:50 +0200
+	id i0/gFVcEK2pN1QMAu9opvQ
+	(envelope-from <linux-rdma+bounces-22137-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2026 20:54:15 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 319FE6748BB
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2026 20:43:50 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1A33674987
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2026 20:54:14 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=microsoft.com header.s=selector2 header.b=KJvdhnMz;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22136-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22136-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=reject) header.from=microsoft.com;
-	arc=reject ("cv is fail on i=2")
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=LZhqOn5I;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22137-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22137-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EA1283190B4A
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2026 18:38:51 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B21EE3101F5C
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2026 18:54:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B04E4D2ECB;
-	Thu, 11 Jun 2026 18:38:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 123244DBD69;
+	Thu, 11 Jun 2026 18:54:03 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazon11023111.outbound.protection.outlook.com [40.107.201.111])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4BB5409E01;
-	Thu, 11 Jun 2026 18:38:48 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781203130; cv=fail; b=c6l6PYZJKWDeWYFIRUnLRgoCqAN1phC6Jx1ktrZ0VV/5nlqNqAHq24b8PgnnIUKAK5eIn3SN2AUcrcl9ckl0ElbqcuLrrls11u5PpSa+JtKEghcnE5y7G0bbXHY44b8FryymI6GvOXIWUYj47Uu6vEdpah89121O6PvYXzvrob4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781203130; c=relaxed/simple;
-	bh=neUF6C40ltTP2z8l8sjRXlENiVbaWR5WmyE9OaVCoBo=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=CdGIC+yxa4RJCBkF6GqN8Y4LEntjHdFhsJoBgm505pYOEYhhTKNMFfsw9XQhufkjPi2aKOTJnki2SHmB/WNFa/Bkt0D+o+4xx/ikVB76ZiT1gfjV9zam5bQ4dS2O2/1W8u2aeZaHAAUTN3uoODxcgKcY6ylPHQwfOg1xyDyWyS0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=KJvdhnMz; arc=fail smtp.client-ip=40.107.201.111
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ogOTXJI03pTq+Kpqr5eiqOqGLWiCirkTIHMzU5aGSxA0ruWT67irEUmy8wR5ZK94O4wBJTy5Hg48kRlduunaLMKlM6nFiluoJWUOoxWMiWD9zcDr6Zbee9KG44DTBd+hTtBCxfOH73dpoDh11yNNL+7L0FgHCo2t1/HcyQj1Smk22vXoD14FL6N2FwpajhuLTggytiBvnAw7+6QQlSEJa5ZI0qb3UGhtFUbQtJveI09Wcn4Y4+sIT8RETzuKxFdXWEQmjegPgJrpucLsvc4SNp07Lex2qnk1o3wJATL+PJGdqbG4GtMCvhFtVm6+3GX0wnaVY/GiuBmgntiLj3rlOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NWGVqU4j4kKwh5yMfFFdoP3PH/zYZiyb2C/W0H8bAYE=;
- b=yoeNrRPgecRIrY8BTH45SY8Szv9RoijcvXnZo7+IT+di47P9UTPitAUD/QOn4/3ScbB/YoAVRZgJk5Sxsj+kvZGsYCcJ0vVMyWZZiIf+AIYVMLVjBenbbsaU7D8APFSIkLRx8OSBYg31cjLD73k42PfZXSOfPiYS4516j8jXt5j9tCh67eObLAhhZQMlpXn3ChH0hUWFYTnYSJff6+XMsB8nRnzbUKUDD323yBJSoIRXhFJFG0uscNif7igVQrQ0NJ3HJatzrqplyHPzc1hWjQq8/g/M/a9KV3Xm20jl9BXmZwkeTOGbi4mlSF3T0eMrwlplj6cGRDBh/zyb0pjMtA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NWGVqU4j4kKwh5yMfFFdoP3PH/zYZiyb2C/W0H8bAYE=;
- b=KJvdhnMzHpYRFPC3URPYPdL85PkrfkCxGTb/uWwZwObT/jHOOzXNiOBZHd3tGtYnXdimSXvoaZkKFvvoxdPP2taUgj/9TJ/1Bk7E79MJshGXJHGtGTwxDh7QJBw9beCtgnfo9deqBzL+BjvNktHjGDaU8HOCOlse76RvIq8szJU=
-Received: from SA3PR21MB3867.namprd21.prod.outlook.com (2603:10b6:806:2fc::15)
- by SA1PR21MB6224.namprd21.prod.outlook.com (2603:10b6:806:4a8::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.113.11; Thu, 11 Jun
- 2026 18:38:45 +0000
-Received: from SA3PR21MB3867.namprd21.prod.outlook.com
- ([fe80::d8ab:5f37:de73:8e6]) by SA3PR21MB3867.namprd21.prod.outlook.com
- ([fe80::d8ab:5f37:de73:8e6%5]) with mapi id 15.21.0113.013; Thu, 11 Jun 2026
- 18:38:44 +0000
-From: Haiyang Zhang <haiyangz@microsoft.com>
-To: Paolo Abeni <pabeni@redhat.com>, Haiyang Zhang
-	<haiyangz@linux.microsoft.com>, "linux-hyperv@vger.kernel.org"
-	<linux-hyperv@vger.kernel.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, KY Srinivasan <kys@microsoft.com>, Wei Liu
-	<wei.liu@kernel.org>, Dexuan Cui <DECUI@microsoft.com>, Long Li
-	<longli@microsoft.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>, Konstantin Taranov <kotaranov@microsoft.com>,
-	Simon Horman <horms@kernel.org>, Shradha Gupta
-	<shradhagupta@linux.microsoft.com>, Erni Sri Satya Vennela
-	<ernis@linux.microsoft.com>, Dipayaan Roy <dipayanroy@linux.microsoft.com>,
-	Aditya Garg <gargaditya@linux.microsoft.com>, Kees Cook <kees@kernel.org>,
-	Breno Leitao <leitao@debian.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>
-CC: Paul Rosswurm <paulros@microsoft.com>
-Subject: RE: [EXTERNAL] Re: [PATCH net-next v2] net: mana: Add Interrupt
- Moderation support
-Thread-Topic: [EXTERNAL] Re: [PATCH net-next v2] net: mana: Add Interrupt
- Moderation support
-Thread-Index: AQHc9Hvnc8R+OuuuVUezkHZXdfhMurY2RJmAgANw+dA=
-Date: Thu, 11 Jun 2026 18:38:44 +0000
-Message-ID:
- <SA3PR21MB3867834B58ABCAA272CA72A5CA1B2@SA3PR21MB3867.namprd21.prod.outlook.com>
-References: <20260604234211.2056341-1-haiyangz@linux.microsoft.com>
- <dcd35c42-3aae-4ba2-bd84-4af08467b2fc@redhat.com>
-In-Reply-To: <dcd35c42-3aae-4ba2-bd84-4af08467b2fc@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=42efeff9-93c6-41b7-a132-5e4072e2b716;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2026-06-11T18:22:32Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
- 3, 0, 1;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA3PR21MB3867:EE_|SA1PR21MB6224:EE_
-x-ms-office365-filtering-correlation-id: 4059f281-46d4-4a49-db04-08dec7e8ab02
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|7416014|376014|23010399003|366016|1800799024|6133799003|38070700021|18002099003|22082099003|921020|4133799003|56012099006|11063799006|4143699003;
-x-microsoft-antispam-message-info:
- fofhhVbaedyoHUOXSQSe2TlOLXsYj1XZNuhBZJGVCQIXMK0Oir3fnqrFQSdafRtuUCc293sCtIMW2gfkI++2ggA/NJbHs/zJGdT8cnqg3ZedzwQtv+UqenLI33Sqc/j235GrWNSivYpGPZ07jgZGd4sYRlyfUiTZ2hpGhDf8QNdG8C/KGh9jxCT5Zy6OmFkIurvNdQNMxOifPI+LwMRm9JqCC8CQrSu8mM2Rmbt4zxhMOrQL40C4G1G5Eu00BjCfvYPPpog7x/uH7OQuNEptEw7WZQ26PT6DgXv2jdfnBXR53bcEjrO5bfv4zXxqPSkCcr6wMlJFW/KTKXYeoTQb60Wu84DQVuBtewiS0EpbI0STCc+QnsVpMHFXEMFmvzjqkjkOSjJrrffcE/dSWYJ2VQoYQlHOyDSy4pr8yRZv5YrCPVOsPr+rCaZfWgOuPrNBc8v4es3IfgVG8+6h0V92bXAG6lZm1jkRqMcU34ke/iF8Y/lBT2BP4nwXCnzbhyQ9RZM4f6RN0tiftvGxRdnypGqdnlyRXWEj9qWA6us2omzspMNEyai3CqE5X9fOycuRQMmOIwAH/dgTYhJN4/YdiEWWjj4hn+tWYlu4pQiZRorp1RyvB4IadbFuUOSuFODtVyVAT0SQoe9Jpt2fwu0Wg69cZU+2OrraOOJ7zvjACZfqXN1/a/m35FjbzphH79kNi4HdKDblESJcpXGMMASscNMAv73KcQTmLvneGVf5170tk4KRKweyGtJ0gS34KdmGTvaGY8hQzfkAogfLZd5hIg==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA3PR21MB3867.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(23010399003)(366016)(1800799024)(6133799003)(38070700021)(18002099003)(22082099003)(921020)(4133799003)(56012099006)(11063799006)(4143699003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?JiIyJElwFNbtwEL+Kfada0mW9LbwCf9sO9zKduCVAVc0QtSB9R6+dPYN0guo?=
- =?us-ascii?Q?mLdyIpRy11vZY7+QygnrRkg38iGlNcqbsayON/Zbb7OhFzUYk0eZZTeJR/lQ?=
- =?us-ascii?Q?4PodNCaF1DjQGQRdF5JOXnodEBwi8165Q7dtPyDKAcfEiAKjFKTKK2AMVJLa?=
- =?us-ascii?Q?vR4WU9XeqNX3wNMSa7Exd3xYKiVad1tsPp0/D/hA6jotQXJ6lxgSsU76YMI5?=
- =?us-ascii?Q?66SBfQFyS6DA+dxNspzCQhL5/7z4iz/jXkcRYEOxkzGPqwT4oqh8z0C6TkuF?=
- =?us-ascii?Q?eLLHb9eHIHhJcb7s0Ycvhlmn9nkBzFSXzTcVxPo4Dcb21u4XfNcRr7zJOH3H?=
- =?us-ascii?Q?s4hTZWiOY2Rg7OHsU7Bz8BH8ZjRej6YLymAI2e3GehBEDekyoC6JASlYd9mw?=
- =?us-ascii?Q?Ng+V9AqHtNFEPcnM146sPQJUpEQK/pYLRUXnk+Xtb6+jw6Mu1n7ZIRJvhvUy?=
- =?us-ascii?Q?tYS07SkvQrbCFzeSu3TjnzvTNGiRRvHF+AE8y9kV09gqNjG/MSgWul9enJhr?=
- =?us-ascii?Q?kIJyJdWaFQypsxoBuGnIctPNDrYkzft3UZ6eQJ2THHGCdM4pFULOzdbSuln6?=
- =?us-ascii?Q?BjSlqf3Xapjum8O/VTzf1JBcqCznaLZRfTrTF1omxNsC9zxD155vzcGK+OaW?=
- =?us-ascii?Q?SJyX0nNmkVu5EajLW0KpQaTTrk6HZ/aovlCPX7X+mspVkDoMs9fbDYfGLZZu?=
- =?us-ascii?Q?FiuDKPR1ZzIg+mjpt9yz3C3syPR9RrdEnXkW9GU5fcSJwOucmp+rKaSiX0mW?=
- =?us-ascii?Q?hCDTffvoR0BUSvco+gC+vHHV/YOTl1vXqZJjSrDfFamALX8ZZ5GqO9a385oi?=
- =?us-ascii?Q?6ICTUeatoWAqNN844rHr/GwWjTmeOqAAPtYiL8zzFzmloandkwayP/lkk33v?=
- =?us-ascii?Q?mVu4fCkNBuZLyndMjpA/AclXnBKxW6V8INNfH1t3zrll9ZFrqY32O5dtBIny?=
- =?us-ascii?Q?61sCRmv2jJbCbo0dHaKuQv3gQPubKq3W4qSjb8b1l9WvHT13TOb6V1IYsFUK?=
- =?us-ascii?Q?rZmhwYlms+yLWdDWXhOLPoeTuj9P6aiHGUAA6tCUSQawtUJR4n/Iq1U39Naz?=
- =?us-ascii?Q?d6F2h62jLqCQuYzvnGi2tvYMYBAlaXYpV1bg0BrWLaU35eJGpy+wOUysaAHK?=
- =?us-ascii?Q?d40vXAxTduqQOyZAEDgmE1QYQPHpdNrTHDNDl1+C9Lb2lQe8iihHRhMmNVln?=
- =?us-ascii?Q?mLsCGhQevuGhucB7tmIdM4o3ODTFzaoZmDjtN3rL4rsxA2sIbxIVGiOEGu66?=
- =?us-ascii?Q?ZLF+TjjRkc9WNWHRpNTsNopwYr2Fs/940xCLmg4ARJG+4TMFik5WY6OPcEta?=
- =?us-ascii?Q?ljE1xmLTBCIvmeUcMS8rq6m+Zmu+6Pw+n46NKgy0GrQAsOAGyoaAqh+cgz52?=
- =?us-ascii?Q?+ONX7Zth0F4SLvcYURfJAyqQhFRAMYSI7aauGpJXoTUMf1d/w9bwd/Wkvaga?=
- =?us-ascii?Q?mt74y2pkpMxu3U3dfyVlOC2Adt0jkn11ZBfdKXDuCu/AsoDt+Ggjho6Z67co?=
- =?us-ascii?Q?hQM+B2NHWJP2uaQVLjbUJqI/0izTjzvUCSdLuuHIc0oR20udqX/Mf9eXso4a?=
- =?us-ascii?Q?YPRvD7YST36CAGtQo5k46W4XaKbAGV3zeJQGioj2wJS6gAhSkBs39ogNnlFq?=
- =?us-ascii?Q?NWYN1VQH1UeNLru7mwzGe/HpRAG2VB5VGA+4yM5NfYv4753k6A9wKkD3mJ3m?=
- =?us-ascii?Q?eLioiE69rC91hxAbWGH3LsW1pu1iZdEpKs9x7OvatUnvgzoKx0+VLJdo1AaH?=
- =?us-ascii?Q?gkq3HyLgdw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 753B442B732;
+	Thu, 11 Jun 2026 18:53:59 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781204042; cv=none; b=Wu8VbGq9LUhTheeofMlY1dikGHf8wqphSsamBLMS9acd+CYk43mSerI8TU7IpNwX/pvbgyY1i1RbiTYEoHtj4T/fSpo3HnZccUrQ0X5DXCn6irtEvyHNZbSDAAeOyilSnLUntY9uCmtWTQSaM2ZpKfsyM8SOuJq9NVp3QTdtUso=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781204042; c=relaxed/simple;
+	bh=lyoYDo723ITo2kQarUaC98MkKgPUszT7d+2KOjiMLk4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qF9scqKBGEVKdCaj1DU+otjZoe/dRm25p4ozLadu8w7lyHkYY50p6CvE31Om6aJMH+8RPT29LwmbhWNWSaxFRTIqmyrF5yMGKnoXKFVp4+bP09HEb2+fANE54/0TGePkiWjpIKd9Qm8gCguwR+JGG0Ct5mTa+nMlM9oFJBzvt/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LZhqOn5I; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 646691F000E9;
+	Thu, 11 Jun 2026 18:53:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1781204038;
+	bh=hjj5mBR6SBQTds2P7Qn6eN4rJ9W11rwc7SbsUviVMX4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=LZhqOn5Ilvsw6JsbgErLBhERiOd6NBo2fFvjxs/lQnIfx4ncu625nN6xMP+xMZc+K
+	 RKHlgAKXV/ErOS7HxpVDLqKIIIyrqe8Mjx6Ogv3oPcRgjNwTiuN1mIYaEB3H3I5sa9
+	 IUr5fHpJsBfF9CHjZ0RlJriNRhcVQII1mPn6c/BiYgPnp0Rzo4L7gnkmcfxARQoj/2
+	 eUqzxPR1hVbSL6nvvkplFE8cGcdCdBBF7chO6wGly87yCnRHboQFtqAlXLyPty/MoC
+	 RquT3NYRc4i2MYXfmJJlAiTEE6m5g1eboiVeeYYfycSdjELZO2dIlktQqWAKUCpkPi
+	 KtrCxM1gU9+tA==
+Message-ID: <943b4932-17f4-4a52-af92-b9485a0e8c7a@kernel.org>
+Date: Thu, 11 Jun 2026 12:53:56 -0600
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA3PR21MB3867.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4059f281-46d4-4a49-db04-08dec7e8ab02
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jun 2026 18:38:44.8080
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zdr0qx0xZNlht66jO4Z+eGrrrSP2I6Sp8yAkQfZv79AqqrJL1cQ4poknwz9VQ4bV3tbCwx9wLDWMLi/HZX/aWA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR21MB6224
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH iproute2-next 7/7] devlink: add scope filter to resource
+ show
+Content-Language: en-US
+To: Tariq Toukan <tariqt@nvidia.com>,
+ Stephen Hemminger <stephen@networkplumber.org>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>
+Cc: Donald Hunter <donald.hunter@gmail.com>, Simon Horman <horms@kernel.org>,
+ Jiri Pirko <jiri@resnulli.us>, Jonathan Corbet <corbet@lwn.net>,
+ Shuah Khan <skhan@linuxfoundation.org>, Saeed Mahameed <saeedm@nvidia.com>,
+ Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
+ Shuah Khan <shuah@kernel.org>, "Matthieu Baerts (NGI0)"
+ <matttbe@kernel.org>, Chuck Lever <chuck.lever@oracle.com>,
+ Or Har-Toov <ohartoov@nvidia.com>, Carolina Jubran <cjubran@nvidia.com>,
+ Moshe Shemesh <moshe@nvidia.com>, Shay Drori <shayd@nvidia.com>,
+ Dragos Tatulea <dtatulea@nvidia.com>, Daniel Zahka <daniel.zahka@gmail.com>,
+ Shahar Shitrit <shshitrit@nvidia.com>,
+ Jacob Keller <jacob.e.keller@intel.com>, Cosmin Ratiu <cratiu@nvidia.com>,
+ Parav Pandit <parav@nvidia.com>, Kees Cook <kees@kernel.org>,
+ Adithya Jayachandran <ajayachandra@nvidia.com>,
+ Daniel Jurgens <danielj@nvidia.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Gal Pressman <gal@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+ Jiri Pirko <jiri@nvidia.com>, Petr Machata <petrm@nvidia.com>
+References: <20260609053953.487152-1-tariqt@nvidia.com>
+ <20260609053953.487152-8-tariqt@nvidia.com>
+From: David Ahern <dsahern@kernel.org>
+In-Reply-To: <20260609053953.487152-8-tariqt@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.66 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[microsoft.com:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[microsoft.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[microsoft.com:s=selector2];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22136-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	FORGED_SENDER(0.00)[haiyangz@microsoft.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS(0.00)[m:pabeni@redhat.com,m:haiyangz@linux.microsoft.com,m:linux-hyperv@vger.kernel.org,m:netdev@vger.kernel.org,m:kys@microsoft.com,m:wei.liu@kernel.org,m:DECUI@microsoft.com,m:longli@microsoft.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:kotaranov@microsoft.com,m:horms@kernel.org,m:shradhagupta@linux.microsoft.com,m:ernis@linux.microsoft.com,m:dipayanroy@linux.microsoft.com,m:gargaditya@linux.microsoft.com,m:kees@kernel.org,m:leitao@debian.org,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:paulros@microsoft.com,m:andrew@lunn.ch,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-22137-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:tariqt@nvidia.com,m:stephen@networkplumber.org,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:donald.hunter@gmail.com,m:horms@kernel.org,m:jiri@resnulli.us,m:corbet@lwn.net,m:skhan@linuxfoundation.org,m:saeedm@nvidia.com,m:leon@kernel.org,m:mbloch@nvidia.com,m:shuah@kernel.org,m:matttbe@kernel.org,m:chuck.lever@oracle.com,m:ohartoov@nvidia.com,m:cjubran@nvidia.com,m:moshe@nvidia.com,m:shayd@nvidia.com,m:dtatulea@nvidia.com,m:daniel.zahka@gmail.com,m:shshitrit@nvidia.com,m:jacob.e.keller@intel.com,m:cratiu@nvidia.com,m:parav@nvidia.com,m:kees@kernel.org,m:ajayachandra@nvidia.com,m:danielj@nvidia.com,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-doc@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:gal@nvidia.com,m:idosch@nvidia.com,m:jiri@nvidia.com,m:petrm@nvidia.com,m:andrew@lunn.ch,m:donaldhunter@gmail.com,m:danielzahka@gmail.com,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[dsahern@kernel.org,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[40];
 	FORWARDED(0.00)[lists@lfdr.de];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[haiyangz@microsoft.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[microsoft.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dsahern@kernel.org,linux-rdma@vger.kernel.org];
+	FREEMAIL_CC(0.00)[gmail.com,kernel.org,resnulli.us,lwn.net,linuxfoundation.org,nvidia.com,oracle.com,intel.com,vger.kernel.org];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 319FE6748BB
+X-Rspamd-Queue-Id: F1A33674987
 
+On 6/8/26 11:39 PM, Tariq Toukan wrote:
+> @@ -9010,13 +9029,29 @@ static int cmd_resource_show(struct dl *dl)
+>  	uint16_t flags = NLM_F_REQUEST | NLM_F_ACK;
+>  	struct nlmsghdr *nlh;
+>  	struct resource_ctx resource_ctx = {};
+> +	struct dl_opts *opts = &dl->opts;
+>  	int err;
+>  
+> -	err = dl_argv_parse_with_selector(dl, &flags, DEVLINK_CMD_RESOURCE_DUMP,
+> -					  DL_OPT_HANDLE | DL_OPT_HANDLEP,
+> -					  0, 0, 0);
+> -	if (err)
+> -		return err;
+> +	if (dl_argv_match(dl, "scope")) {
+> +		const char *scopestr;
+> +
+> +		dl_arg_inc(dl);
+> +		err = dl_argv_str(dl, &scopestr);
+> +		if (err)
+> +			return err;
+> +		err = resource_scope_get(scopestr, &opts->resource_scope_mask);
+> +		if (err)
+> +			return err;
+> +		opts->present |= DL_OPT_RESOURCE_SCOPE;
 
+Comment from Claude that seems legit:
 
-> -----Original Message-----
-> From: Paolo Abeni <pabeni@redhat.com>
-> Sent: Tuesday, June 9, 2026 9:49 AM
-> To: Haiyang Zhang <haiyangz@linux.microsoft.com>; linux-
-> hyperv@vger.kernel.org; netdev@vger.kernel.org; KY Srinivasan
-> <kys@microsoft.com>; Haiyang Zhang <haiyangz@microsoft.com>; Wei Liu
-> <wei.liu@kernel.org>; Dexuan Cui <DECUI@microsoft.com>; Long Li
-> <longli@microsoft.com>; Andrew Lunn <andrew+netdev@lunn.ch>; David S.
-> Miller <davem@davemloft.net>; Eric Dumazet <edumazet@google.com>; Jakub
-> Kicinski <kuba@kernel.org>; Konstantin Taranov <kotaranov@microsoft.com>;
-> Simon Horman <horms@kernel.org>; Shradha Gupta
-> <shradhagupta@linux.microsoft.com>; Erni Sri Satya Vennela
-> <ernis@linux.microsoft.com>; Dipayaan Roy
-> <dipayanroy@linux.microsoft.com>; Aditya Garg
-> <gargaditya@linux.microsoft.com>; Kees Cook <kees@kernel.org>; Breno
-> Leitao <leitao@debian.org>; linux-kernel@vger.kernel.org; linux-
-> rdma@vger.kernel.org
-> Cc: Paul Rosswurm <paulros@microsoft.com>
-> Subject: [EXTERNAL] Re: [PATCH net-next v2] net: mana: Add Interrupt
-> Moderation support
->=20
-> On 6/5/26 1:41 AM, Haiyang Zhang wrote:
-> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > index db14357d3732..b1e0c444f414 100644
-> > --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > @@ -1551,6 +1551,9 @@ int mana_create_wq_obj(struct mana_port_context
-> *apc,
-> >
-> >  	mana_gd_init_req_hdr(&req.hdr, MANA_CREATE_WQ_OBJ,
-> >  			     sizeof(req), sizeof(resp));
-> > +
-> > +	req.hdr.req.msg_version =3D GDMA_MESSAGE_V3;
-> > +	req.hdr.resp.msg_version =3D GDMA_MESSAGE_V2;
->=20
-> Sashiko noted the above cold break initialization on older firmware:
+Issue found: In cmd_resource_show, the scope path sets opts->present |=
+DL_OPT_RESOURCE_SCOPE without first clearing opts->present. In batch
+mode, dl->opts is shared across commands, and the non-scope path
+correctly resets opts->present via dl_argv_parse(). But the scope path
+bypasses dl_argv_parse(), so stale bits (e.g. DL_OPT_HANDLE from a
+previous dev show) remain. When dl_opts_put() runs, it writes the stale
+DEVLINK_ATTR_BUS_NAME/DEV_NAME attributes into the dump request,
+silently filtering to a single device instead of all devices. Fix: use =
+instead of |=
 
-Our firmware is forward compatible with newer message versions, so the=20
-old firmware still properly handles this message, just the new feature=20
-fields are ignored, and queue creation will be successful.
-And if the DIM capability bit is zero from FW, driver will keep the DIM
-feature to be off and unchangeable.
+Are you ok with the suggested resolution?
 
-
-> https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fsashi=
-ko.
-> dev%2F%23%2Fpatchset%2F20260604234211.2056341-1-
-> haiyangz%2540linux.microsoft.com&data=3D05%7C02%7Chaiyangz%40microsoft.co=
-m%7
-> C9cc8d2c7aa7f472ff8e308dec62def04%7C72f988bf86f141af91ab2d7cd011db47%7C1%=
-7
-> C0%7C639166097783522606%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsI=
-l
-> YiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C=
-%
-> 7C%7C&sdata=3DTB7q6EhtR6HJ02Q4f767sXUCmYZyGr3wH1Sz3vLPWfA%3D&reserved=3D0
->=20
-> [...]
-> > +static void mana_update_rx_dim(struct mana_cq *cq)
-> > +{
-> > +	struct mana_port_context *apc =3D netdev_priv(cq->rxq->ndev);
-> > +	struct mana_rxq *rxq =3D cq->rxq;
-> > +	struct dim_sample dim_sample =3D {};
->=20
-> Minor nit: please fix the variable declaration order above. Other
-> occurrences below.
-
-Done in the new version.
-
->=20
-> [...]
-> > @@ -440,17 +474,94 @@ static int mana_set_coalesce(struct net_device
-> *ndev,
-> >  		return -EINVAL;
-> >  	}
-> >
-> > -	saved_cqe_coalescing_enable =3D apc->cqe_coalescing_enable;
-> > +	if (ec->rx_coalesce_usecs > MANA_INTR_MODR_USEC_MAX ||
-> > +	    ec->tx_coalesce_usecs > MANA_INTR_MODR_USEC_MAX) {
-> > +		NL_SET_ERR_MSG_FMT(extack,
-> > +				   "coalesce usecs must be <=3D %lu",
-> > +				   MANA_INTR_MODR_USEC_MAX);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	if (ec->rx_max_coalesced_frames > MANA_INTR_MODR_COMP_MAX ||
-> > +	    ec->tx_max_coalesced_frames > MANA_INTR_MODR_COMP_MAX) {
-> > +		NL_SET_ERR_MSG_FMT(extack,
-> > +				   "coalesce frames must be <=3D %lu",
-> > +				   MANA_INTR_MODR_COMP_MAX);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	if (ec->rx_coalesce_usecs !=3D apc->intr_modr_rx_usec ||
-> > +	    ec->rx_max_coalesced_frames !=3D apc->intr_modr_rx_comp ||
-> > +	    ec->tx_coalesce_usecs !=3D apc->intr_modr_tx_usec ||
-> > +	    ec->tx_max_coalesced_frames !=3D apc->intr_modr_tx_comp)
-> > +		modr_changed =3D true;
-> > +
-> > +	saved.intr_modr_rx_usec =3D apc->intr_modr_rx_usec;
-> > +	saved.intr_modr_rx_comp =3D apc->intr_modr_rx_comp;
-> > +	saved.intr_modr_tx_usec =3D apc->intr_modr_tx_usec;
-> > +	saved.intr_modr_tx_comp =3D apc->intr_modr_tx_comp;
-> > +
-> > +	apc->intr_modr_rx_usec =3D ec->rx_coalesce_usecs;
-> > +	apc->intr_modr_rx_comp =3D ec->rx_max_coalesced_frames;
-> > +	apc->intr_modr_tx_usec =3D ec->tx_coalesce_usecs;
-> > +	apc->intr_modr_tx_comp =3D ec->tx_max_coalesced_frames;
-> > +
-> > +	if (!!ec->use_adaptive_rx_coalesce !=3D apc->rx_dim_enabled ||
-> > +	    !!ec->use_adaptive_tx_coalesce !=3D apc->tx_dim_enabled)
-> > +		dim_changed =3D true;
-> > +
-> > +	saved.rx_dim_enabled =3D apc->rx_dim_enabled;
-> > +	saved.tx_dim_enabled =3D apc->tx_dim_enabled;
-> > +	apc->rx_dim_enabled =3D !!ec->use_adaptive_rx_coalesce;
-> > +	apc->tx_dim_enabled =3D !!ec->use_adaptive_tx_coalesce;
-> > +
-> > +	saved.cqe_coalescing_enable =3D apc->cqe_coalescing_enable;
-> >  	apc->cqe_coalescing_enable =3D
-> >  		kernel_coal->rx_cqe_frames =3D=3D MANA_RXCOMP_OOB_NUM_PPI;
-> >
-> >  	if (!apc->port_is_up)
-> >  		return 0;
-> >
-> > -	err =3D mana_config_rss(apc, TRI_STATE_TRUE, false, false);
-> > -	if (err)
-> > -		apc->cqe_coalescing_enable =3D saved_cqe_coalescing_enable;
-> > +	if (apc->cqe_coalescing_enable !=3D saved.cqe_coalescing_enable &&
-> > +	    !modr_changed && !dim_changed) {
-> > +		/* If only CQE coalescing setting is changed, we can just
-> update
-> > +		 * RSS configuration.
-> > +		 */
-> > +		err =3D mana_config_rss(apc, TRI_STATE_TRUE, false, false);
-> > +		if (err) {
-> > +			netdev_err(ndev, "Change CQE coalescing failed: %d\n",
-> > +				   err);
-> > +			apc->cqe_coalescing_enable =3D
-> > +				saved.cqe_coalescing_enable;
-> > +			return err;
-> > +		}
-> > +		return 0;
-> > +	}
-> > +
-> > +	if (modr_changed || dim_changed) {
-> > +		err =3D mana_detach(ndev, false);
-> > +		if (err) {
-> > +			netdev_err(ndev, "mana_detach failed: %d\n", err);
-> > +			goto restore_modr;
-> > +		}
-> > +
-> > +		err =3D mana_attach(ndev);
-> > +		if (err) {
-> > +			netdev_err(ndev, "mana_attach failed: %d\n", err);
-> > +			goto restore_modr;
-> > +		}
->=20
-> You should try hard to avoid this sequence: if mana_attach fails,
-> mana_set_coalesce() will leave the NIC unexpectedly down.
-
-I have updated the patch to use doorbell for this setting change without
-re-attach, and will submit the new version soon.
-
-Thanks,
-- Haiyang
 
