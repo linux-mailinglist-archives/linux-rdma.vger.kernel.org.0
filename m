@@ -1,260 +1,231 @@
-Return-Path: <linux-rdma+bounces-22125-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22130-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id uyMTNvPcKmpUyQMAu9opvQ
-	(envelope-from <linux-rdma+bounces-22125-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2026 18:06:11 +0200
+	id HH44AtzrKmrdzQMAu9opvQ
+	(envelope-from <linux-rdma+bounces-22130-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2026 19:09:48 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3092C6734C4
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2026 18:06:11 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1647673DF8
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2026 19:09:46 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=intel.com header.s=Intel header.b=GGGbtadx;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22125-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22125-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=intel.com;
-	arc=reject ("cv is fail on i=2")
+	dkim=pass header.d=meta.com header.s=s2048-2025-q2 header.b=riQJveyM;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22130-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22130-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=meta.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 68F7A3437693
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2026 16:02:20 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 653293089032
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2026 16:46:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0024403126;
-	Thu, 11 Jun 2026 16:02:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FB5C40BCD2;
+	Thu, 11 Jun 2026 16:46:25 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 684B42C3757;
-	Thu, 11 Jun 2026 16:02:17 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781193738; cv=fail; b=qbHBg5yPzZLJdReekeChmiHoQXGEjrleXM9fCOITe1THHGmw8bW3HmOC0q5TFdbrYWrnd5SB03LawQty3LyBtB6pI5us0M0RTqOfhr3N/weps2/20Lf3sC9luYRT8DTPpo26lKnayBd4+TFoNiBTMmbAjqSvuc8jj9W4ahh4ULM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781193738; c=relaxed/simple;
-	bh=RhDhkJ5pyxif2ix+6VS3cg3UaxXhPGRVfLjNNaf304g=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=HSvPXnp7kRhdy9fVXKqHGWA9cFTfpy8Qzd9KBbAQqEHHQMBD7X97i8FD1IX462f1BfvSX2Frb/tvBYaL16p+JG7FxsMUvGFj4Xe0pxbXxrAHe3T7oUaQgu4uBSZZPl3ieH/N38lF16YvlmuVyN3o6Phejh5Plk+SaCGZq5D+1dc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GGGbtadx; arc=fail smtp.client-ip=198.175.65.16
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1781193738; x=1812729738;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=RhDhkJ5pyxif2ix+6VS3cg3UaxXhPGRVfLjNNaf304g=;
-  b=GGGbtadxh1cjGhDbo01CNHl3QLp2EF0KClHpwSUFL81rVoEOLLXJbX9a
-   eKMtmQSyGonpV0Yf/7d7rlEX0Pe65FZVSoR5HG9d0o3erR2DlxTkVtdrM
-   zRdZ2kvur+SoCRhjERRHe13a2aVzfhHcjoBKk2PMQiL2G5/mG4ZFaV5Ta
-   VVpil8VnbNKZqCUSqPeVQjZeJ8xoNQTOvnbkZGrFcmnLkWiVQhQYHNG4x
-   nN9Sll6Z/Y4kdWSgIZhHzriCjmvpa02TQ54H1SJAXAkyT4Un4ZwoGuS0r
-   Gm6ckLtaM7t+Xt6EHKTpvZRwV7e81lVUGVr17stINZ2zP2kgMtUaI+Yk3
-   w==;
-X-CSE-ConnectionGUID: l+zfmmN7TBq0MygY4icwCg==
-X-CSE-MsgGUID: mnsWgUsQQwuoq2ae8ckkhQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11813"; a="82202924"
-X-IronPort-AV: E=Sophos;i="6.24,199,1774335600"; 
-   d="scan'208";a="82202924"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2026 09:01:51 -0700
-X-CSE-ConnectionGUID: hEdWRegVSx2jbl6qnvYzag==
-X-CSE-MsgGUID: 7Orw+3mkTMiJ4wyAuYm2kA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,199,1774335600"; 
-   d="scan'208";a="246602502"
-Received: from fmsmsx903.amr.corp.intel.com ([10.18.126.92])
-  by orviesa007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2026 09:01:50 -0700
-Received: from FMSMSX902.amr.corp.intel.com (10.18.126.91) by
- fmsmsx903.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37; Thu, 11 Jun 2026 09:01:49 -0700
-Received: from fmsedg903.ED.cps.intel.com (10.1.192.145) by
- FMSMSX902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37 via Frontend Transport; Thu, 11 Jun 2026 09:01:49 -0700
-Received: from PH0PR06CU001.outbound.protection.outlook.com (40.107.208.59) by
- edgegateway.intel.com (192.55.55.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37; Thu, 11 Jun 2026 09:01:48 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=pfZHwFU9aEfU1Fcx7dcgq9cvveZS8pzbIqCMjQRyl/gZ8rR0GsxV5WpR8+905RKcA7qcABiKxZN97WzphT1A1JQzXBvuR3rZY/jJVU9jJrUao2YDL4h2R+iVsviM7S5aVRiB5HmdK0E6oY4lGMGyKXSqtxXxCgXHK935kTHbCV/mvVXRmVLmcVeI5JERI7ERVSezLtbpPClDSpjZ4PbHL0Bib3xVeyma9NapQCJi3dfALNGwzAc93vdBAcfarFCUVWzXSfeRo7qwMpZl/rLneonQlZ6AHlwBdxaAZOgo6vgt9QvFF0d+LMWb1RdwjoXDkoOrldgn3j6JL57SJuWYxg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4NyIJJ7kOlQeFgqwyM3Ve8b2aAbA2T7Dd6b+5F0XV4o=;
- b=Rh/4+yu30kiUY122m5av1RQE5Kr85RqgoQK3ZD4bfPl0d+Z1xbkVi5eWTCGdAbGm6M8p03vKH5+V4KQpfwsvDJjTAf89ARL7AXsgF4+XovaiXYXu4cnqD1XJLaBUv/jgDkW/fguq0wFgW7kBOY08MPC/RpT3eGFOBuJ4PL2zeRULwXjHkDNjtWZ+PFgmYh/ynFv4JtKIy4DKlCzmJ3/jfDvq1oMn7rrnuzoBLtf6xqdM87fLfuuG4usrR/kCQWclxAtfOTTCQ2vNdV8SMxSOI2CDW11V64Vj9pHq8luDcWB6mkr87pOM7nIJ4BOCZk0mZy3/zwHPL7pdDaHcEUyKfw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
- by PH8PR11MB6854.namprd11.prod.outlook.com (2603:10b6:510:22d::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.18; Thu, 11 Jun
- 2026 16:01:37 +0000
-Received: from DS0PR11MB8718.namprd11.prod.outlook.com
- ([fe80::6aa:411d:4bfa:619c]) by DS0PR11MB8718.namprd11.prod.outlook.com
- ([fe80::6aa:411d:4bfa:619c%4]) with mapi id 15.21.0092.017; Thu, 11 Jun 2026
- 16:01:37 +0000
-Message-ID: <c11af82e-0adb-4ebe-a9f1-7c4a543d0a5f@intel.com>
-Date: Thu, 11 Jun 2026 18:01:29 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] net/mlx5e: Fix oops from ERR_PTR in act-miss restore
- teardown
-To: Tariq Toukan <tariqt@nvidia.com>
-CC: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
- S. Miller" <davem@davemloft.net>, Saeed Mahameed <saeedm@nvidia.com>, "Mark
- Bloch" <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Vlad Buslov
-	<vladbu@nvidia.com>, Paul Blakey <paulb@nvidia.com>,
-	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Lama Kayal
-	<lkayal@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>
-References: <20260611134836.534015-1-tariqt@nvidia.com>
-Content-Language: en-US
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-In-Reply-To: <20260611134836.534015-1-tariqt@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: WA1P291CA0009.POLP291.PROD.OUTLOOK.COM
- (2603:10a6:1d0:19::20) To DS0PR11MB8718.namprd11.prod.outlook.com
- (2603:10b6:8:1b9::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE5842189D
+	for <linux-rdma@vger.kernel.org>; Thu, 11 Jun 2026 16:46:23 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781196385; cv=none; b=hhH4ctsaGfAPnJzlEUVWxlBi9pjGjERvr75C5FUdzIJrK4SljMlUL39tgA2FbtEA94XrTuKAIZWl+MBO/QsDZB8lolucjkB6aDdXmKW1i1BU++RT43WKteqfcrkDYDWH+qcVJ4N9nVGXKc+z1Ho5fwnbYHcalouEoktrehBX4Xk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781196385; c=relaxed/simple;
+	bh=W0bcCCQsy34mnxRQfbXu1iScIi3TgOH8BVTD6n5tqvc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=L1172gCkTRn5A3qTYnHnixagfiwJEF5nFaZ70An1xiQoJUMtrfDHFwrywuAn5Q8HU4D4LRBfvS+IfVNoa3G2PWobODzC/RngBxx9yTqmvLN4aQ43EVLZBXLB8w38ouZTVsEdCz7X1alOq6OEa2n7eSWNb0lMgYniNPYJiLKJFUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=riQJveyM; arc=none smtp.client-ip=67.231.153.30
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+	by m0001303.ppops.net (8.18.1.11/8.18.1.11) with ESMTP id 65B6HDsM2485677
+	for <linux-rdma@vger.kernel.org>; Thu, 11 Jun 2026 09:46:22 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=s2048-2025-q2; bh=vNdm3ZHO/a6vYyABeK
+	VuuCxgS035lQzO2EwO81+XdLA=; b=riQJveyMKWcP+qsczYKBmb10+7f0oOrWCz
+	v3YILDS5BfcRLZ1OPBxV6gKKXLxQkMJIqPFX0VR0p+39ogaQnlG38mnBAqCQXSjD
+	oAPloYcVFHlPmt/gxyE4aZ+CgaQTYn74UVQ7q8yqDShB/hrJXCBuZ4m/CkevB2iW
+	/oq1zwWDNg0tl94j42uQFU38MInZsJNP8ItqnNqt9nEI4dpjuK4x5NXRYoeLW0nA
+	wlhJhkJL4WJbFPydC68+3G+tM0IchYkOHeSuAgPOD05D/bwmav9U4kmKPd3VHGbI
+	tzDSM1ujRG013mpuK/i3+ASkJj+iTmmKuXps2bT/zshJo5XTe8Cw==
+Received: from mail.thefacebook.com ([163.114.134.16])
+	by m0001303.ppops.net (PPS) with ESMTPS id 4eqe7a6yvx-5
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <linux-rdma@vger.kernel.org>; Thu, 11 Jun 2026 09:46:22 -0700 (PDT)
+Received: from twshared22650.04.snb2.facebook.com (2620:10d:c085:108::150d) by
+ mail.thefacebook.com (2620:10d:c08b:78::2ac9) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.2562.41; Thu, 11 Jun 2026 16:46:12 +0000
+Received: by devbig259.ftw1.facebook.com (Postfix, from userid 664516)
+	id C18293DD35ECE; Thu, 11 Jun 2026 09:23:23 -0700 (PDT)
+From: Zhiping Zhang <zhipingz@meta.com>
+To: <netdev@vger.kernel.org>
+CC: <kvm@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        Zhiping Zhang
+	<zhipingz@meta.com>
+Subject: [PATCH v7 0/5] vfio/dma-buf: add TPH support for peer-to-peer access
+Date: Thu, 11 Jun 2026 09:11:15 -0700
+Message-ID: <20260611161546.4075580-1-zhipingz@meta.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB8718:EE_|PH8PR11MB6854:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8fc59dbc-1614-4cc7-45a0-08dec7d2b67b
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014|23010399003|18002099003|22082099003|56012099006|11063799006;
-X-Microsoft-Antispam-Message-Info: y7TWxQ3SJJW9BsbruYSDIx0cfkecNxnD5Pni6OFwX5sqthrw+p9qRfKYNFXa5RCefeySnxq/EhMCaLaMTnY8QuH83H2WMomC31czhqxhxw3gVnBEPNJoZwJOSgP9HPztsh/PVhQBjBDRymkotjmzDJB5ptvMSBR4c5WB5SHViaJDeMDPvVcxrU3T9qf6x+vj4uws5M0gQv1Kq7DqvWkxRqWfynf/1ZdrePGIfSQMj+NA5zj2YW5M9wc9L8Pnh90wVm0u+Mjr7b8O18EKK7CaoOE4gnQCTjenSFFwxfXAMtgteGV8rv2T/jkj+7Q1MJCcgIBekgq4yKuJc8BOidEMKrIenPtsAT3TTOk9iu27ag+wMJ7bF/YOEDwhSVHQ7iWEdySuWXBlgcLzShjeG5yzslA62MyxfLCI3tQifcA++69qlDxd3UyAnaBpV3oNq0EZvJv26ynnGsX++cEAeIB0dXVqHI6A4Haci5KG+jVj42gXAy68wKbLhQo0j5LSJHxkXNeC2VBpx+v5zmW+rNGLnvLOlMgRun9YTvZ8H0QbivdDJ+YfQzUbleOPzbdWNwKVc9pugKCquvv15ILp/bcD4b/145Jj2+0un8Kuk4EN9EfXb9wb7NeSE5yN3iU+exHhOBzjbcy1nfIHrVegIOxHi/WL4HY1KqFaAPGbMoXQ5HIfzeKNbpdGtUg8F2yt4TI7
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(23010399003)(18002099003)(22082099003)(56012099006)(11063799006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZGx6T0pDMFZZY0ZOclhhNDdZVWVPckF2dkZWR3U1ZnRVSWpFcGlsL29Udktv?=
- =?utf-8?B?YkErUWxjWFhmRUQrejJSYVkvSm5FQytCUmlzV1pUak9SblJwRnA0QkRhNlJM?=
- =?utf-8?B?bFFyMjNoNWU5eml6cUJLN0wzMjBkeWZNVDAxWUswQUpWUWhDU21wRmlFN0xa?=
- =?utf-8?B?VkFFQ2RxMWl1STZCd3lsUTQrNDBRWmFUZENZQjVMdFdwQ0ZZeFk2UXVLdmpV?=
- =?utf-8?B?RFE5Z0ZUOXMrbzN0VGZoakVic3VQNDJzWko5Q21VSmdMZkdrTEVEVnkrTkh6?=
- =?utf-8?B?ZHFBMWN5Q01uNmhGSnEvZ1BRTVB2N3NHM3FkRDl2N3NWRUVQbGp6bjZXczRq?=
- =?utf-8?B?MzdrSkxZMlVsWVZMYnV1R090VGlOUzFQdU1EMlIyY2lheGxOTU1OektaQmpL?=
- =?utf-8?B?QjZ0bFppODM2dzVVVGNFWDNtYlgwY2FsRWVpckpkSS9hZCs5bjQ4M2ZKazNy?=
- =?utf-8?B?a0kxdm54YVhrRXkvb2t3NDVvNFc2TW9qU0dPanR0V3lTMU1ET3NuTDFlc3ZR?=
- =?utf-8?B?S3lBcWppb08yNXQ1ODRSMFhseFF0a1JzSnNyaXljcUtqZnhsVVRqS0pBNWxm?=
- =?utf-8?B?bG84eEY1VktVRytSbS8yTG9ndjJZajlySi9YQ3RIa0dveU41VlVrYWh3T2x4?=
- =?utf-8?B?Y3ErYzN6R1M2Wmx3TEVYcG9EdVphcUx0cURjUklCYWFnMkd3bTlvQVBkVm1s?=
- =?utf-8?B?c0ZpU2hmdW5vWERXNkFRMUxZZDI5VWtEWFByUmNBcDhyditwbk9FQlFNQ2p5?=
- =?utf-8?B?aTZBYVd4MmVhUXdPU3BkTG9WcVRXeFdYVjZ2TlV4WlVPTXZIWHRQd0ZuQkxE?=
- =?utf-8?B?SjI3N2ZUVDl4SEt6Y1UyeUorZFR6aVQreWpDL0oxc01qNVk0K09Na1BZdDU3?=
- =?utf-8?B?WVBKQ3oyQWVqQ3BWd3dJZnd1T0FYejJ0TVR6cXlRaFcybUdlZVA3U1pReWlZ?=
- =?utf-8?B?d0NSZjRKY0RqZmdmTjBwZ1BMaCsxL1YxaWFxclpJYVZkaGcvWEU3WWxLM1JK?=
- =?utf-8?B?aVJHRVBtMXJFdFFhaGNEc1NDNi95dTd3b0UvbDJYcjArc1RTSzYwRzFvbGNL?=
- =?utf-8?B?R1FIN01PQWh5anBCalNnREc5SzY4WklxTWZSVk0yMlhGYmV4VGVRbUw1Wis4?=
- =?utf-8?B?OEhWR2FDd054OEJIbWllVUs0TzNVeFhjUFNZZWtNNU1ZMXBZWDA4a3pGUFlW?=
- =?utf-8?B?WU5zUDlTeXphUHFHbUJwbDZwRWtGMGp0dlVpSFl5UUNLZDZ1OWU3VHA2OHhW?=
- =?utf-8?B?d3ZPckt3NFBPb1RMUk03d1F2WXFMK1JZc0tlbUVqRWo3ODh1UGxpdTkvbHFs?=
- =?utf-8?B?T1lCQkJPbUt2QzJMVkRuR2dUN2JBSyt1dmpLU2NPMTNaTkloVDJvc2YydkRW?=
- =?utf-8?B?Z3hWWmJWNjAwODFZbXU2WElNTUFWMlJDNmg4QWg2aHRTTG1nRmJGQzh4dUZz?=
- =?utf-8?B?dTVYejk1ZEtpS0tZZ05jSWlGWVZtL3FHL2YrSGpBZ0UwL0JLUnBlOWttT082?=
- =?utf-8?B?MTVKMjRxd3pwWVlhOXZWdllZU0pXU1oxNE90b0VmUVlJazZhWGdNS2gzek9W?=
- =?utf-8?B?V3V1TnRHVjFsdlBGZ1lMZkYyRXVKNHZ2WHFKQm50eDlKRlh1bjM0NXBvT3FN?=
- =?utf-8?B?ZDJpQU13TVFVN0o2UldEWjFSUExpd2ZKdmRySEdoTmYwOG81YktjTzdkcEN5?=
- =?utf-8?B?a2kvcWlMdHM2aXByZm8zY0tub0Q5WkkxRnZmenlxNTExWjZJaHlFQjV0Vjlo?=
- =?utf-8?B?RDhxM25lYmZLcktXa3k2cXZkOEFWcEoyZ1NtdGIzdVljOTk3N1BkamxzbktN?=
- =?utf-8?B?VFFMRmY3OXpMbUJJeFNOaEIwVnVlbVV1RDFGZk5EeURxYzdmRmJhRWR6RTRS?=
- =?utf-8?B?dzFlVElVSzMrOEJqOElpS0hEVHBHRGU3a28zUkNhRUU3NHV2ZTlQaTJ1em16?=
- =?utf-8?B?dFVTbUJlYklmM0trVUhMZFd6cVA4UkM2VjMyZTJMSG5WdE82cGRsemVtWWFY?=
- =?utf-8?B?R2xuQnZjd1ZrM2hINitTZXh4YVhRWnNRQVE2Qy9RR0d0clpOQmMxY0NreWU2?=
- =?utf-8?B?QU5NSzVoUG96K3llTkFxcHYvaDlpdkhsUGVEeTRJdUQ4MnpCY3pyVVp4V0xv?=
- =?utf-8?B?djlMRG5NNGZGbGJaVmhJZ2hRWkZsc0NRSVlsMUorSldFdFQ5dzkyQjlDZSta?=
- =?utf-8?B?ZUovcFRGblVzVGlTNTg2N1lvRDdSZUlTeTdaK3RtWEY5cTlWOFZWMjRwODhi?=
- =?utf-8?B?b24wOWlOQUlSTnh4NEtqOEZlSTJVRmZPWEJFbFM2bElrUmswMEQ4VGt0a01p?=
- =?utf-8?B?Q3ZWeW45aDlPbUxFSmFuQWVDZTM1UjhZQ3BBdC9sei9ZOVpGUmwxREhOTnR0?=
- =?utf-8?Q?BiEZC6bvKoBUQ39c=3D?=
-X-Exchange-RoutingPolicyChecked: kWm3HvwR1ScPDymDRwc4wIM4Lj0wt3sySTkOTcwH36zd5kaUCCFaFQBqHUYOskfX7VzE7VSfZqd0GgOPWOhmkmk6xCrXFDGAU1f0ytrqWkStYi8Z/tN8ZZ0ehsiGwTjhX7dBaLDw+Sh2SamGGj6/2ylUxZAgvEuYok0umKF47thJF/hOuYAROoC+E93HEUzU0FCDPoaZgQZbFjuJf38f2kBQRu4jeEDXf/5O9JH0Idfik0LxXlRSuBwL+sVdnVfJOKRJp35jMeMN1+fKYAcjR7a1Gs2Y3F+dtjNnShgj+dUrCw05zvb6+3YBxXN0WUmNJpcazO23cQslIv1HYT88Ww==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8fc59dbc-1614-4cc7-45a0-08dec7d2b67b
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8718.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jun 2026 16:01:37.4343
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aPktgWGHJ+nkoYT+u+4ZN6hw1saK5tqbbUAzQouZPqDBkk4zXJ/IA1qmP9lb79zKs42+iSYHPPymsY2hyEKWMueixD8UwocMjq7D6PoQ9EE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6854
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjExMDE2OCBTYWx0ZWRfX4WEYTlNxInAm
+ zGModOv1aCmRcg58ZTvk85cnoIjZ/pmjOaGNZaqXnFjlPQ6FdV7renMctmilcsIIs7u0TfUKbCK
+ VIyNYjNB2RovfQRMjvM0VE72xuVOehxnEpeARAe8GUq1ZRhLDW4IzeRHQoGpS+g1sihAn9nQYl4
+ 9jBPAOs42hZJGD+LHnR4JSq0+AS6DuWfAmmC6+9Zuq7L3nQGbS7yeO7hVTNh+USOX56XJsHtJqe
+ 9Sk4x9SzIyzeVQDBoMCum+5J5sbJL8uDp/7rVe+t9Fuah2BUIkezFBrnR+EB8xfhUYn7BNASXCT
+ BvftjIsD7mJe9OqTYQqeizR4nmJtsZcombvCrUEZFo3+t2t/oAtpGABJV98/F+4yxYsaLqdY3CY
+ v7ArluLli1hgnkH2sg56M870v0b68R4qKwE9min0aiEmWydLXHE5qvVwtxVC1VZVvlyr9phOxfy
+ 7x2LtRA6MY1V2nYO0ow==
+X-Authority-Analysis: v=2.4 cv=AKrEjgtd c=1 sm=1 tr=0 ts=6a2ae65e cx=c_pps
+ a=CB4LiSf2rd0gKozIdrpkBw==:117 a=CB4LiSf2rd0gKozIdrpkBw==:17
+ a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=7x6HtfJdh03M6CCDgxCd:22
+ a=_78whYxrdx1mplLwxq1U:22 a=VwQbUJbxAAAA:8 a=VabnemYjAAAA:8
+ a=IrN9ioZU3SVRGu70jE0A:9 a=gKebqoRLp9LExxC7YDUY:22
+X-Proofpoint-GUID: In3k4emlUc20YQMqVykS2ZNvPNMqAaSG
+X-Proofpoint-ORIG-GUID: In3k4emlUc20YQMqVykS2ZNvPNMqAaSG
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNjExMDE2OCBTYWx0ZWRfX2LLDNYuGQn87
+ yoa9Q+e31ILxbzi1FFS7eOqXg8OOS/VO2bcRiuAODd7SWrP2Ikb0PhwzMWRB/x1EmrcTLkIFdSJ
+ f7QbHqgogzW0hDa82LMeuhyYWI3JNqg=
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
+ definitions=2026-06-11_03,2026-06-11_01,2025-10-01_01
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.66 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[intel.com:d:+,kernel.org:s:+];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[meta.com:d:+,kernel.org:s:+];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[meta.com,reject];
+	R_DKIM_ALLOW(-0.20)[meta.com:s=s2048-2025-q2];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22125-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[17];
+	TAGGED_FROM(0.00)[bounces-22130-lists,linux-rdma=lfdr.de];
+	TO_DN_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER(0.00)[aleksander.lobakin@intel.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:netdev@vger.kernel.org,m:kvm@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-pci@vger.kernel.org,m:dri-devel@lists.freedesktop.org,m:zhipingz@meta.com,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:tariqt@nvidia.com,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:saeedm@nvidia.com,m:mbloch@nvidia.com,m:leon@kernel.org,m:vladbu@nvidia.com,m:paulb@nvidia.com,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:gal@nvidia.com,m:lkayal@nvidia.com,m:cratiu@nvidia.com,m:andrew@lunn.ch,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[zhipingz@meta.com,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,intel.com:dkim,intel.com:email,intel.com:mid,intel.com:from_mime,nvidia.com:email];
-	DKIM_TRACE(0.00)[intel.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[aleksander.lobakin@intel.com,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[zhipingz@meta.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	DKIM_TRACE(0.00)[meta.com:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,meta.com:dkim,meta.com:mid,meta.com:from_mime,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	RCVD_COUNT_SEVEN(0.00)[10]
+	ALIAS_RESOLVED(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 3092C6734C4
+X-Rspamd-Queue-Id: F1647673DF8
 
-From: Tariq Toukan <tariqt@nvidia.com>
-Date: Thu, 11 Jun 2026 16:48:36 +0300
+This series adds TLP Processing Hints (TPH) support to the VFIO dma-buf
+export path, allowing importing drivers (e.g. mlx5) to use the
+exporter's steering tag when performing peer-to-peer DMA into a
+VFIO-owned device.
 
-> From: Lama Kayal <lkayal@nvidia.com>
-> 
-> Restore-rule creation stores ERR_PTR(errno) in act_id_restore_rule
-> on failure.  Teardown still called mlx5_del_flow_rules() with that
-> value, which dereferenced it like a real mlx5_flow_handle and could
-> crash.
-> 
-> Clear act_id_restore_rule to NULL in the error branch after
-> esw_add_restore_rule() fails so teardown only sees NULL or a valid
-> handle.
-> 
-> Call Trace:
->  ? page_fault+0x1e/0x30
->  ? mlx5_del_flow_rules+0x12/0x140 [mlx5_core]
->  mlx5e_tc_action_miss_mapping_put+0x49/0x50 [mlx5_core]
->  mlx5_tc_ct_delete_flow+0x4d/0x70 [mlx5_core]
->  mlx5_free_flow_attr_actions+0xd2/0x160 [mlx5_core]
->  mlx5e_tc_del_fdb_flow+0x15d/0x210 [mlx5_core]
->  mlx5e_flow_put+0x23/0x40 [mlx5_core]
->  __mlx5e_add_fdb_flow+0xf3/0x430 [mlx5_core]
->  mlx5e_tc_add_flow+0x2ab/0x9c0 [mlx5_core]
->  mlx5e_configure_flower+0x2f4/0x620 [mlx5_core]
->  tc_setup_cb_add+0xca/0x1e0
->  fl_hw_replace_filter+0x143/0x1e0 [cls_flower]
->  [...]
-> 
-> Fixes: dfa1e46d6093 ("net/mlx5e: TC, Fix using eswitch mapping in nic mode")
-> Signed-off-by: Lama Kayal <lkayal@nvidia.com>
-> Reviewed-by: Cosmin Ratiu <cratiu@nvidia.com>
-> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+There is no separate in-tree vendor kernel driver for the target device:
+vfio-pci is the in-tree driver and the targeted device is managed
+from userspace via VFIO passthrough. That is why the ST has to flow
+through a uAPI: userspace owns the device and its ST table, so it is the
+entity that can publish a meaningful value for a given dma-buf. The
+kernel-visible participants are still in-tree: vfio-pci exports the
+dma-buf and mlx5 imports it.
 
-Reviewed-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+On the effect: the endpoint's PCIe ingress block uses the 8-bit ST as
+an in-band instruction for the incoming P2P TLP -- selecting a target
+cache partition and, on writes, an in-flight operation on the data
+before it lands. The dma-buf callback keeps this opaque to the
+framework -- only the producer (userspace owner of the VFIO device)
+and the consumer (endpoint block) need to interpret the value. The
+dma-buf get_tph callback itself is optional for workloads that depend
+on the endpoint's in-flight operation that fallback does not produce
+the same result.
 
-Thanks,
-Olek
+The dma-buf hook is intentionally generic and discoverable rather than
+a private side channel. The exporter owns the completing address
+space for the dma-buf and decides whether it can provide a meaningful
+ST/PH tuple for that completer; the dma-buf core keeps the tuple opaque,
+and importers merely request the namespace they support and place the
+returned value on generated TLPs. Exporters that cannot derive a
+meaningful tuple simply return -EOPNOTSUPP.
+
+Patch 1 is a pre-existing fix split out from the series:
+mlx5_st_dealloc_index() removed the xarray entry but never freed the
+backing struct, so repeated alloc/dealloc cycles leaked memory.
+Patch 2 adds small PCI/TPH type helpers so drivers can query the enabled
+TPH requester mode and the device's TPH Completer Supported field
+without reaching into pci_dev internals (and so callers in
+CONFIG_PCIE_TPH=3Dn builds get a clean fallback).
+Patch 3 adds the optional dma_buf_ops::get_tph callback plus the
+dma_buf_get_tph() importer wrapper so importers can fetch TPH metadata
+from an exporter under dmabuf->resv.
+Patch 4 implements get_tph in vfio-pci and adds the new uAPI
+(VFIO_DEVICE_FEATURE_DMA_BUF_TPH) for userspace to attach the metadata.
+Patch 5 wires up the mlx5 RDMA driver as a consumer.
+
+Build-tested with both CONFIG_PCIE_TPH=3Dy and CONFIG_PCIE_TPH=3Dn.
+Functional validation on the target topology: PCIe analyzer captures
+on the P2P TLPs confirm the ST emitted by mlx5 matches the value
+published through VFIO_DEVICE_FEATURE_DMA_BUF_TPH, and the end-to-end
+P2P workload only produces results consistent with the endpoint's
+ST-selected in-flight operation. For example, with userspace
+publishing 8-bit ST=3D0xf0 and PH=3D2, an analyzer capture of a peer-to-
+peer MWr64 shows "STP MWr64 TC=3D0 OHC=3D2 ..." followed by "OHC-B
+ST=3DF0h PH=3D2 HV=3D1":
+(TLP Captures)
+08000260 -> STP MWr64 TC=3D0 OHC=3D2 TS=3D0 Attr=3D0 L=3D8
+F0000004 -> RID=3D4h:0h.0h EP- Tag=3DF0h
+E0200000 -> AddrH=3D000020E0h
+00080006 -> AddrL=3D06000800h
+90F00000 -> OHC-B ST=3DF0h PH=3D2 HV=3D1 AMA=3D0 AV-
+
+Previous link:
+v6: https://lore.kernel.org/dri-devel/20260608185646.4085127-1-zhipingz@m=
+eta.com/
+v5: https://lore.kernel.org/dri-devel/20260526144401.1485788-1-zhipingz@m=
+eta.com/
+v4: https://lore.kernel.org/linux-pci/20260519201401.1558410-1-zhipingz@m=
+eta.com/
+v3: https://lore.kernel.org/linux-pci/20260512184755.4137227-1-zhipingz@m=
+eta.com/
+v2: https://lore.kernel.org/linux-pci/20260430200704.352228-1-zhipingz@me=
+ta.com/
+
+Zhiping Zhang (5):
+  net/mlx5: free mlx5_st_idx_data on final dealloc
+  PCI/TPH: Add requester/completer type helpers
+  dma-buf: add optional get_tph() callback
+  vfio/pci: implement get_tph and DMA_BUF_TPH feature
+  RDMA/mlx5: get tph for p2p access when registering dma-buf mr
+
+ drivers/dma-buf/dma-buf.c                     |  25 ++++
+ drivers/infiniband/core/frmr_pools.c          |  20 +++-
+ drivers/infiniband/hw/mlx5/mr.c               | 111 +++++++++++++++++-
+ .../net/ethernet/mellanox/mlx5/core/lib/st.c  |  50 ++++++--
+ drivers/pci/tph.c                             |  43 +++++++
+ drivers/vfio/pci/vfio_pci_core.c              |   3 +
+ drivers/vfio/pci/vfio_pci_dmabuf.c            |  94 ++++++++++++++-
+ drivers/vfio/pci/vfio_pci_priv.h              |  12 ++
+ include/linux/dma-buf.h                       |  21 ++++
+ include/linux/mlx5/driver.h                   |  12 ++
+ include/linux/pci-tph.h                       |   8 ++
+ include/rdma/frmr_pools.h                     |   5 +-
+ include/uapi/linux/vfio.h                     |  37 ++++++
+ 13 files changed, 421 insertions(+), 20 deletions(-)
+
+--=20
+2.53.0-Meta
 
