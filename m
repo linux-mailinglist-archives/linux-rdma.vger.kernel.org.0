@@ -1,140 +1,161 @@
-Return-Path: <linux-rdma+bounces-22106-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22107-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Bp4BJo2aKmqltQMAu9opvQ
-	(envelope-from <linux-rdma+bounces-22106-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2026 13:22:53 +0200
+	id iyK7JBKjKmqEuAMAu9opvQ
+	(envelope-from <linux-rdma+bounces-22107-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2026 13:59:14 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED7E8671479
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2026 13:22:52 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3432F67194F
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2026 13:59:14 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=YlteVp30;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22106-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22106-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=MEjMqfo2;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22107-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22107-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EA06A339F4A6
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2026 11:17:58 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 68D023029616
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2026 11:59:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 514CB3E023A;
-	Thu, 11 Jun 2026 11:17:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D7A3D903B;
+	Thu, 11 Jun 2026 11:59:08 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2662E3BADA3;
-	Thu, 11 Jun 2026 11:17:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CCFC3CB2D4;
+	Thu, 11 Jun 2026 11:59:07 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781176672; cv=none; b=o5FPco1k7A/q8aEEmI8V/YL7n/P7Ahbyuk83hAXQWG50HWs8CN1V5QdAh6g7Dz/4fU3NRk74wD96G4fAWPmdlnLNL4G59BvsEubVz43Y2uq1ZHJgPiDWSkZO4WhysyEza/Vx6DEt66/ANLdNiQZvKsuwg0TkNW2q8fLLXx0N39s=
+	t=1781179148; cv=none; b=C5TUlUseaZSVjn6sfyOUoie4WIBv9h0KfYLko8oS3nUE96uVa962n58w35xDE+IPJrE4gae9Qw/NRJJnp7l80WK1hLz1oz1lD1KA+MwRCnnAMAAU2GNApz1zodUNztH1MqXxYW0DZFnfAinj5lZK8MAjDzkhLcYue0coI5dni/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781176672; c=relaxed/simple;
-	bh=LEK1uQ6gepWyXxIbWGCa9TpOLfVAzh+4u1xi7dpJ3Ec=;
+	s=arc-20240116; t=1781179148; c=relaxed/simple;
+	bh=8KaF6mblFTthT4vUi6B2dz8Qy2dVYAv+MLA4DxjD5UQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ALBOoQ+wRu0Nr+1Lhoa/keMMpvXQrtZDhyUSi0UuautZbgXgduw+KBr7lJ/HjHRJpCWw7cOg7emAFMvfUoSjX3ty7rUkCVRH1uaqwWx2CT6POGGgW7SfzQuK6O8EwvhM2vp5dEGxWo+zv3rZ+N6+FuhRlUwovW8rgVa3S73CzEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YlteVp30; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F15031F00898;
-	Thu, 11 Jun 2026 11:17:49 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=AunnQo2/YybbmbtLxq/uS3g5BbT633Za47huOQlaeYyLXfOCZGam6ptC2HsoZni8PKe2/ihkHOGqIHCj/KBxKcRtg5RFbsGGeH6ehUXSJ/ieLau7i8NVDMdAE8XGvVN/yTr+Vail0LWY646bibhBwDJrfRxTEto7fwNM90sh/jw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MEjMqfo2; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 198A91F00893;
+	Thu, 11 Jun 2026 11:59:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781176670;
-	bh=gY5+0gSQ05qfi/VBH8DsJ32bBdDvXncnKhTCvsRDcpM=;
+	s=k20260515; t=1781179146;
+	bh=9Z4ndnCxV+CiLTTLCplpjJEgcmLTMIk7XFj1r1QBl6I=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=YlteVp30zb+OYldlUwOIb2NTEdk6j/HzjFx/XMl7znJRXCdq35Us43/MvnI48nmdv
-	 nFu+J/qDYZ/UMdqjuRJANzmdfSDAaLoTIMWqHKjT6ngsnEbGI9jKSE7veLklSJe4ox
-	 ZSmtJAJVVOP8RfY9zqrulJRPakyJdLxmUGWBSJoW64pF+E732b53xEp1h3WSD6jST0
-	 y0J5O2XNJRC3dSVClXq0DTMkvqmWgsHBC350fkRvQk8kRMooKBbW3CvNzZl1IZp4bq
-	 RbTFc38gD8ZIVdOetfifudL8FEeUbruhdkBdrS0z7KQak3gj32Ua2W9HFhUHzyewUa
-	 qLDSiXgoGcJ8A==
-Date: Thu, 11 Jun 2026 14:17:45 +0300
+	b=MEjMqfo29SfAQpahMBxLdEUP40M8qYZSS8LoII0n+6hpcFkJQCokTqDfgzQKjjG6O
+	 tWjhkSF9KBrwG/hjbkl5yeAtC5IqK0hOFQfeS3DibgMV+5heGY7tzwMesHipuB4COk
+	 PLn4AQoKXotCKcpqHoOjyTjaG9/vJit4SiSJGb3zjWMBDmmWkRnn/O1eDAJkR8CMYH
+	 1WqaqFNMIYbfK0oVqaVD1GemoGAl4fbW/QRwcmz1ZDMVsXydl14zVP7ENGSsZZpGs6
+	 bN3S1pw+4QnhmXRq+p1W3wwJfuTaogA8zcXShzKHqgikkbjR0WoohISBVeG7EwK33U
+	 ihMO/c7IPrk2g==
+Date: Thu, 11 Jun 2026 14:59:02 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-Cc: longli@microsoft.com, kotaranov@microsoft.com,
-	Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-	linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH rdma-next v3] RDMA/mana_ib: Clamp adapter capabilities at
- the ib_device_attr boundary
-Message-ID: <20260611111745.GM327369@unreal>
-References: <20260525190101.1264185-1-ernis@linux.microsoft.com>
+To: Haris Iqbal <haris.iqbal@ionos.com>
+Cc: linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, axboe@kernel.dk, bvanassche@acm.org,
+	hch@lst.de, jgg@ziepe.ca, jinpu.wang@ionos.com
+Subject: Re: [LSF/MM/BPF RFC PATCH 00/13]
+Message-ID: <20260611115902.GO327369@unreal>
+References: <20260505074644.195453-1-haris.iqbal@ionos.com>
+ <20260512103424.GR15586@unreal>
+ <CAJpMwyg-6Qxskq2ktuhvf46yD5848J9BYLMPPfBLjg2Uzs=xnw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260525190101.1264185-1-ernis@linux.microsoft.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJpMwyg-6Qxskq2ktuhvf46yD5848J9BYLMPPfBLjg2Uzs=xnw@mail.gmail.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.66 / 15.00];
+X-Spamd-Result: default: False [-2.56 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+	SUBJ_ALL_CAPS(2.10)[28];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS(0.00)[m:ernis@linux.microsoft.com,m:longli@microsoft.com,m:kotaranov@microsoft.com,m:jgg@ziepe.ca,m:linux-rdma@vger.kernel.org,m:linux-hyperv@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22107-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:haris.iqbal@ionos.com,m:linux-block@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:axboe@kernel.dk,m:bvanassche@acm.org,m:hch@lst.de,m:jgg@ziepe.ca,m:jinpu.wang@ionos.com,s:lists@lfdr.de];
 	FORGED_SENDER(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-22106-lists,linux-rdma=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	TO_DN_SOME(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[unreal:mid,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: ED7E8671479
+X-Rspamd-Queue-Id: 3432F67194F
 
-On Mon, May 25, 2026 at 12:01:01PM -0700, Erni Sri Satya Vennela wrote:
-> mana_ib stores its adapter capabilities internally as u32 in
-> struct mana_ib_adapter_caps. The IB core, however, exposes the
-> corresponding device attributes through struct ib_device_attr, where
-> fields such as max_qp, max_qp_wr, max_send_sge, max_recv_sge,
-> max_sge_rd, max_cq, max_cqe, max_mr, max_pd, max_qp_rd_atom,
-> max_res_rd_atom and max_qp_init_rd_atom are signed int.
+On Wed, May 27, 2026 at 02:44:08PM +0200, Haris Iqbal wrote:
+> On Tue, May 12, 2026 at 12:34 PM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > On Tue, May 05, 2026 at 09:46:12AM +0200, Md Haris Iqbal wrote:
+> > > Following a conversation with Bart yesterday, I am sending the RMR+BRMR
+> > > code through patch for easier review.
+> > >
+> > > The patches apply over the for-next branch of the block tree over commit
+> > > 07dfa981ca3
+> > >
+> > > For context,
+> > > RMR (Reliable Multicast over RTRS) is a kernel module that provides
+> > > active-active block-level replication over RDMA. It guarantees delivery
+> > > of IO to a group of storage nodes and handles resynchronization of data
+> > > directly between storage nodes without involving the compute client.
+> > >
+> > > BRMR (Block device over RMR) sits on top of RMR and exposes a standard
+> > > Linux block device (/dev/brmrX) backed by an RMR pool. Together, RMR and
+> > > BRMR provide a single-hop replication and resynchronization solution for
+> > > RDMA-connected storage clusters.
+> > >
+> > > My session is on Wednesday, at 12 in the storage room (Istanbul).
+> >
+> > To summarize the discussion:
+> >
+> > 1. Move as much logic as possible into the block layer; RDMA should serve
+> >    strictly as a transport.
+> > 2. Identify another in‑kernel user of this functionality, and add support for
+> >    it if required. At least accommodate potential users elsewhere in the
+> >    kernel.
 > 
-> mana_ib_query_device() is the only place that copies the cached u32
-> caps into these int fields. If a cap exceeds INT_MAX, the implicit
-> u32-to-int narrowing yields a negative value. Clamp each cap to
-> INT_MAX at this boundary so the values handed to the IB core are always
-> non-negative.
+> Thanks for the summary Leon.
 > 
-> While here, fix a related overflow in the computation of
-> max_res_rd_atom. It is derived as max_qp_rd_atom * max_qp, both of
-> which are int after the assignment above; the multiplication can
-> overflow an int even with the new clamps in place. Widen to s64
-> before multiplying and clamp the result to INT_MAX.
+> The main logic which handles multicast/replication legs, missed I/O
+> tracking, re-synchronization, etc are the core parts of RMR.
+> If we move those to a separate module, there won't be much left in
+> RMR. RMR already uses RTRS from the RDMA subsystem as transport.
 > 
-> Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-> ---
-> Changes in v3:
-> * Drop clamping from mana_ib_gd_query_adapter_caps(). The internal u32
->   caps cache does not need to be clamped.
-> * Move all clamping exclusively to mana_ib_query_device(), which is the
->   only place the cached u32 values are narrowed into the signed int
->   fields of struct ib_device_attr.
-> * Reframe commit message: this is a u32-to-int type boundary fix, not a
->   CVM/untrusted-hardware hardening patch.
+> Having said that, I am not against moving RMR out of the RDMA layer.
+> It can serve as a reliable replication service/library for any other
+> user in the kernel to use.
+> Which subsystem (block or something else) would be a better fit then,
+> can be discussed.
+> 
+> PS: Would this be a good candidate for a session/discussion in the upcoming LPC?
 
-You should align all types to u32 and avoid hiding the issue behind  
-min_t().
+Probably yes.
 
 Thanks
+
+> 
+> >
+> > Thanks
 
