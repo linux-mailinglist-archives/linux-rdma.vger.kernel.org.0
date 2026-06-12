@@ -1,261 +1,227 @@
-Return-Path: <linux-rdma+bounces-22156-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22157-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id uinGJCLhK2qpGwQAu9opvQ
-	(envelope-from <linux-rdma+bounces-22156-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jun 2026 12:36:18 +0200
+	id eMA4MkfhK2q1GwQAu9opvQ
+	(envelope-from <linux-rdma+bounces-22157-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jun 2026 12:36:55 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E28A3678B8A
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jun 2026 12:36:17 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 867F4678B98
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jun 2026 12:36:55 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b="CC1V4yX/";
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22156-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22156-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=ionos.com header.s=google header.b=LzJiviwc;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22157-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22157-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=ionos.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 66D5131B523D
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jun 2026 10:36:13 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D7E2130E69C9
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jun 2026 10:36:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE5D392823;
-	Fri, 12 Jun 2026 10:36:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B378395D9F;
+	Fri, 12 Jun 2026 10:36:49 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68DD5367296;
-	Fri, 12 Jun 2026 10:36:10 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781260571; cv=none; b=VDHXC3iLt/3cLR/eMQVcSjv3bBHPAWQkhF/io4F9sqzRkS0d/YyWjvv3xUK+ngq6rH3zJAuUJA54vHJIoMakGEPJtP8r6Cq8+1za3uqgOtbNZd9tm6B2UOZzEI2cfyzPlGxL06xplggwnL3cP54r4bXWgnyxr8yXzux2g1nRc/I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781260571; c=relaxed/simple;
-	bh=91FxiJV0N6BmdAmvTdC5cs67r+8PYu041zNku9q03f4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=k5+RXBPLHsIJAnn9v2lPn3hMtoOoXSYXqV8wTapp8dzyCf4usqKuCz3XObg51ka1dczSCXpVUYkaHP+hOX4m2NZ8ARYoc+9IRnpeEPpBwoTFsKPbzpF5hta5jkT3TbaSQqpgZeWVlsO0apypysDJG2jQCZQVFxQc1CyjjmUKTYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CC1V4yX/; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04F6E1F000E9;
-	Fri, 12 Jun 2026 10:36:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781260569;
-	bh=O+SMa7id15Wth7GsodU20nw/Xw2vDDaUwg6RH/UuNDY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=CC1V4yX/m7C0c2G9l1EVCxLTDxtaeL/CQu6ZrHz3tdfM/fEnAw4AMO+Zihb/o+AO0
-	 ogQ0l4mvt0YCNo6GJLidH0brquaBFublaY6/Ye7i37aLuswQRGh74skt3pej27hh1Q
-	 tP+0YwF8vABMNODWjTOkzSb6VLhi/9XtJfpL0I6sOllhgcEdU+Ds7yY3qYZiB1Pxf3
-	 7P5wWz18glxwwRkc5QOxpLvhgPdmF33DWGaAsjBCafLJv5QaBJrnhHcVNIe9PPYnTp
-	 EWQqp1+c8gweY0jBgMgnQiRGLzBTkklhHlVHIdr6NUQHeUzDpu/TiqSrYdYzFiTvh4
-	 r9CnfvBFTaiOw==
-Date: Fri, 12 Jun 2026 11:35:59 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: Manuel Ebner <manuelebner@mailbox.org>
-Cc: David Lechner <dlechner@baylibre.com>, Nuno Sa <nuno.sa@analog.com>,
- Andy Shevchenko <andy@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>, Leon
- Romanovsky <leonro@nvidia.com>, linux-rdma@vger.kernel.org, Jean Delvare
- <jdelvare@suse.com>, Tzung-Bi Shih <tzungbi@kernel.org>, Brian Norris
- <briannorris@chromium.org>, Julius Werner <jwerner@chromium.org>,
- chrome-platform@lists.linux.dev, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, "Rafael J . Wysocki" <rafael@kernel.org>,
- Danilo Krummrich <dakr@kernel.org>, driver-core@lists.linux.dev,
- linux-kernel@vger.kernel.org (open list), linux-iio@vger.kernel.org, Randy
- Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v2] Documentation: ABI: fix brackets and bracelets
-Message-ID: <20260612113559.1675cb66@jic23-huawei>
-In-Reply-To: <20260612074916.169195-3-manuelebner@mailbox.org>
-References: <20260612074916.169195-3-manuelebner@mailbox.org>
-X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38FB1371D0A
+	for <linux-rdma@vger.kernel.org>; Fri, 12 Jun 2026 10:36:47 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781260609; cv=pass; b=TlauOS6qBr+G73C7/LAzGUX3vb9mbhIkCyFK7cXmLCdPn48/ByyBz74ZU1FnTuxYrqTclkg1/CM/Mh7mzxOX1K7uHZPAuoVri/hdZEMoR3KMIZmLXdd84PSiIcLUQRKCmPjArrkuIgIca8H8SRuCACWK8KAtHkgDJijddj4wStc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781260609; c=relaxed/simple;
+	bh=tpqD6dEgKwpDgTt1o9eFgCfJTmaToJVb/2vuyaplCfs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Vd5jqBLrLAtOL9GqTunWNrP3h8Qr38+6RzGZdZyesVFnaXzBaD3INsLeFWM7YLu9JOOw0OX3GdlVR8UiknBcf/TGInpUBiDEux4JE3VzMZTj65XcnH/iHzE9PPYgxgi+89fgaDvV1+W6gKoN41ZGOE5dALk2UWNve5AN6J7LYBU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=LzJiviwc; arc=pass smtp.client-ip=209.85.208.169
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-396753f343aso7822821fa.2
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Jun 2026 03:36:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1781260605; cv=none;
+        d=google.com; s=arc-20240605;
+        b=eHjE3kUG+RkdySm96Pu0SXehCRJ6BmPP1lWVA7Qldbz19HBpHhaeE4ldA4Xn0zGkSE
+         c9KY/x9MPQCnvyLA2JIz6YmusSpjI1wKidtEjOCLfiDqd1hjRu+yhblg7Wz1TSAxp6nh
+         u4OSj1pUderqQlYGIOrXbNqGrmk8HdQiLewkSm78DaOqX1NRMBC79K9qXUJLA9Yq+mnd
+         NZfGD/WjsJX+I03KROkd80td0s7mpwQRmLjCK67LUL0JGR+5WEJEu1x9rKY4HB4hBG7w
+         ZqWiSWSIip3YD5+sJzTCN7fIxwHoNrQE59Eg36SBHbOjwqUrK6KzDzPe7egMvjaYN3Pk
+         mcUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=t8/MJrALaz6S8qNbsg31/wcn5U1Sj+Gpvh/chh0VHc4=;
+        fh=P6MGnbdgnhlGDoGSon7wVOJ4p+cGwtIoOrH5YQdEGLA=;
+        b=BBiKLDfbVAWhHluRicix69Yz2Ctyi3mV1+GfA1NX25JJr5t4/cJkWRGU6KVH9F4jE8
+         lV0y318U+XFIRWHK0P4MP01+8/ypI2CUaLFFKTrio9dp2M/KnxvQNykP60n3CMvApdZp
+         QTLTfvjQNrd+UBJL4zMW0a5Bjob/EiA/lWfSq3QZIWooSk/h//Zucd4WHcb4eqfQAZDF
+         wN2rKsJXwGuxu2Ooeb62apJzYR7fnNStDQ4e1q9j29kXgJyAaGbA99VCJDpvH5HhUYGL
+         mJYy29N/tXrwdgny8YbcW0uMykvvBWiHvpR34tE6E0upPDpKA3XGz2eBwRna8GA+H/VS
+         BOYA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1781260605; x=1781865405; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t8/MJrALaz6S8qNbsg31/wcn5U1Sj+Gpvh/chh0VHc4=;
+        b=LzJiviwceISAohEOtNC4PCyESDuk7Id7bvpl7o8L4RP6BlHos0fn8TpndiONXXjZgX
+         udRjnpgvScN8U9TUs9hs9vkCVIqUWx8yhOFY448gfw6B075gsvtk0Y7xaCEaEAI7Opek
+         N+TEcWDspniRhHsOa4Ny6+Bop6TjSvRgPXsq9eEUz6QJIN+cziAuatzWBxoYMk5P0mAi
+         0Gh4qFq8eeMQ6l/eZB3pC0iwOjaj9CdAwEuGo67SEVjTbqtpl6uq9GLHPTbLBv5V4F/P
+         sibmLaeaYkD2imXcZLIsGoNdHNUYREBLGc3YXFVYmygnekGFqDJ8fhr95WtEWK+xh0gE
+         KojA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781260605; x=1781865405;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=t8/MJrALaz6S8qNbsg31/wcn5U1Sj+Gpvh/chh0VHc4=;
+        b=sNEUcPPsKJ94kBxT/qCLBirY/QNEjpWUY+xO1rlTX51hXG7BXn1n1pPyKpD3boO+oy
+         pjUQWy8ZsEEY7bGilOKr63uK43VV06v2U34IIbkoWOP9SodUHvZnQ0k9aC56z1AlAVGr
+         hV8jwLd/gw1WuWt4fCPkSNDLcJ4wkpfyMS6Uf8hxd3FPePv6XL+iBxJQ/pZzA3UBGU9S
+         NnNvTuotxqKG/5iro+SbV4BEUW8QpGpHWhRxcZjwhHHT/boiJjpYbVeLlDrtapRQO2Kv
+         ichYr3VxOHYRBOToDYSCu9tQ324s0iLwn8t/afca/LcIxNMNcaR+qzz2kQPmbEifiHnu
+         mxZA==
+X-Forwarded-Encrypted: i=1; AFNElJ+L19/3kjZunCjcd5EtYsHhD/pSMKO8te7zNib0xPh0GowJoAJga78GSCYFlsREQBVjz1FqGl6P721i@vger.kernel.org
+X-Gm-Message-State: AOJu0YztEV/1x+n+9UzPUq2WKWd6508plF8rkSaYdqh3U1yfyPifQpaf
+	O2I8nRJyaJzCW6u80QRFUSswgz3UcihaiYdWU7Fy2e0Sh4wznCmyZeOCyKAme8w365iut1BVTD2
+	UJ+65tknmb77qopEqW3Cy1sdbR5l9O54jo2cMY4CzwLTXhTwrl2vktXg=
+X-Gm-Gg: Acq92OEW+r4+K2B0iwu6feNqxIMGXfTB1P9DKxQnQ5RwV6h1yzX+RM1P6OO0rsG+yeF
+	yZpRLROwkdNFbGvGUGbQMdqkhFryc7+h05TvwPISEr+gc49ZU2Vf3s13By02SUIY9CpryNzSxms
+	0JpJNlg2URvg/Tph6Xu1xUm5W1C7g23ksdPod7sx9EzZY/W8tnFEYyZZDHjyc3CXM6hnyAuUsan
+	v1GUV9jC30q4LAT6HNQWlqOwSo0KCe79p5MxiKCycUK/6LyKV7eD/qqu9pGCOPWzHAmZkL0ulhY
+	nZXTRYhng4Eae9lBzf22LdqN4zqx7pVJPnw/bGnqy2z2cwu8b+SR7jNfpB7zeVUj2FmQ
+X-Received: by 2002:a05:651c:2114:b0:396:a77d:210d with SMTP id
+ 38308e7fff4ca-3992afcb1b9mr7731741fa.7.1781260605428; Fri, 12 Jun 2026
+ 03:36:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20260505074644.195453-1-haris.iqbal@ionos.com>
+ <20260512103424.GR15586@unreal> <CAJpMwyg-6Qxskq2ktuhvf46yD5848J9BYLMPPfBLjg2Uzs=xnw@mail.gmail.com>
+ <20260611115902.GO327369@unreal>
+In-Reply-To: <20260611115902.GO327369@unreal>
+From: Haris Iqbal <haris.iqbal@ionos.com>
+Date: Fri, 12 Jun 2026 12:36:32 +0200
+X-Gm-Features: AVVi8CcddBB36C8Ot9lu1AJmuGsTsI5ux-b2nD3IzT3SB1V77NCFVDdDUt0L2xE
+Message-ID: <CAJpMwyj2A1ZOAUUd+7KR-RxeMrqgvZd2MqZ2iqjJKXhRXHXY9w@mail.gmail.com>
+Subject: Re: [LSF/MM/BPF RFC PATCH 00/13]
+To: Leon Romanovsky <leon@kernel.org>
+Cc: linux-block@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, axboe@kernel.dk, bvanassche@acm.org, hch@lst.de, 
+	jgg@ziepe.ca, jinpu.wang@ionos.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.66 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+X-Spamd-Result: default: False [-7.06 / 15.00];
+	WHITELIST_DMARC(-7.00)[ionos.com:D:+];
+	SUBJ_ALL_CAPS(2.10)[28];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[ionos.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[ionos.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:manuelebner@mailbox.org,m:dlechner@baylibre.com,m:nuno.sa@analog.com,m:andy@kernel.org,m:jgg@nvidia.com,m:leonro@nvidia.com,m:linux-rdma@vger.kernel.org,m:jdelvare@suse.com,m:tzungbi@kernel.org,m:briannorris@chromium.org,m:jwerner@chromium.org,m:chrome-platform@lists.linux.dev,m:gregkh@linuxfoundation.org,m:rafael@kernel.org,m:dakr@kernel.org,m:driver-core@lists.linux.dev,m:linux-kernel@vger.kernel.org,m:linux-iio@vger.kernel.org,m:rdunlap@infradead.org,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22157-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[jic23@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_SENDER(0.00)[haris.iqbal@ionos.com,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:leon@kernel.org,m:linux-block@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:axboe@kernel.dk,m:bvanassche@acm.org,m:hch@lst.de,m:jgg@ziepe.ca,m:jinpu.wang@ionos.com,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jic23@kernel.org,linux-rdma@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-22156-lists,linux-rdma=lfdr.de];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[haris.iqbal@ionos.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[ionos.com:+];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,mailbox.org:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ionos.com:dkim,ionos.com:from_mime,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp,mail.gmail.com:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: E28A3678B8A
+X-Rspamd-Queue-Id: 867F4678B98
 
-On Fri, 12 Jun 2026 09:49:18 +0200
-Manuel Ebner <manuelebner@mailbox.org> wrote:
+On Thu, Jun 11, 2026 at 1:59=E2=80=AFPM Leon Romanovsky <leon@kernel.org> w=
+rote:
+>
+> On Wed, May 27, 2026 at 02:44:08PM +0200, Haris Iqbal wrote:
+> > On Tue, May 12, 2026 at 12:34=E2=80=AFPM Leon Romanovsky <leon@kernel.o=
+rg> wrote:
+> > >
+> > > On Tue, May 05, 2026 at 09:46:12AM +0200, Md Haris Iqbal wrote:
+> > > > Following a conversation with Bart yesterday, I am sending the RMR+=
+BRMR
+> > > > code through patch for easier review.
+> > > >
+> > > > The patches apply over the for-next branch of the block tree over c=
+ommit
+> > > > 07dfa981ca3
+> > > >
+> > > > For context,
+> > > > RMR (Reliable Multicast over RTRS) is a kernel module that provides
+> > > > active-active block-level replication over RDMA. It guarantees deli=
+very
+> > > > of IO to a group of storage nodes and handles resynchronization of =
+data
+> > > > directly between storage nodes without involving the compute client=
+.
+> > > >
+> > > > BRMR (Block device over RMR) sits on top of RMR and exposes a stand=
+ard
+> > > > Linux block device (/dev/brmrX) backed by an RMR pool. Together, RM=
+R and
+> > > > BRMR provide a single-hop replication and resynchronization solutio=
+n for
+> > > > RDMA-connected storage clusters.
+> > > >
+> > > > My session is on Wednesday, at 12 in the storage room (Istanbul).
+> > >
+> > > To summarize the discussion:
+> > >
+> > > 1. Move as much logic as possible into the block layer; RDMA should s=
+erve
+> > >    strictly as a transport.
+> > > 2. Identify another in=E2=80=91kernel user of this functionality, and=
+ add support for
+> > >    it if required. At least accommodate potential users elsewhere in =
+the
+> > >    kernel.
+> >
+> > Thanks for the summary Leon.
+> >
+> > The main logic which handles multicast/replication legs, missed I/O
+> > tracking, re-synchronization, etc are the core parts of RMR.
+> > If we move those to a separate module, there won't be much left in
+> > RMR. RMR already uses RTRS from the RDMA subsystem as transport.
+> >
+> > Having said that, I am not against moving RMR out of the RDMA layer.
+> > It can serve as a reliable replication service/library for any other
+> > user in the kernel to use.
+> > Which subsystem (block or something else) would be a better fit then,
+> > can be discussed.
+> >
+> > PS: Would this be a good candidate for a session/discussion in the upco=
+ming LPC?
+>
+> Probably yes.
+>
+> Thanks
 
-> Fix missing and needless brackets and bracelets.
-> Fix minor grammar issues.
-> 
-> Signed-off-by: Manuel Ebner <manuelebner@mailbox.org>
-I guess I was unclear in my v1 review. This needs to be split up by subsystem
-to which a patch applies.  Each change will probably take a different route to
-upstream as other changes in these files that may clash will generally be routed
-via the appropriate subsystem.
+Thanks Leon. I'll submit the abstract through the portal.
+Do you think the topic is better suited towards Refereed track or Kernel Su=
+mmit?
 
-The two IIO files can be one patch, but others should all be one
-patch per file touched.
-
-Thanks,
-
-Jonathan
-
-> ---
-> [v1] -> [v2]
-> change from removing single bracket to adding missing bracket
-> add recipients
->  Thanks Jonathan for researching the e-mail addresses.
-> use proper english punctuation in changelog
-> "is 64 bit counter" -> "is a 64-bit counter"
-> 
-> ---
->  Documentation/ABI/stable/sysfs-class-infiniband      |  8 ++++----
->  Documentation/ABI/testing/sysfs-bus-iio              | 10 +++++-----
->  Documentation/ABI/testing/sysfs-bus-iio-adc-ad7192   |  2 +-
->  Documentation/ABI/testing/sysfs-firmware-dmi-entries |  2 +-
->  Documentation/ABI/testing/sysfs-firmware-gsmi        |  2 +-
->  Documentation/ABI/testing/sysfs-uevent               |  2 +-
->  6 files changed, 13 insertions(+), 13 deletions(-)
-> 
-> diff --git a/Documentation/ABI/stable/sysfs-class-infiniband b/Documentation/ABI/stable/sysfs-class-infiniband
-> index 694f23a03a28..7ba116103429 100644
-> --- a/Documentation/ABI/stable/sysfs-class-infiniband
-> +++ b/Documentation/ABI/stable/sysfs-class-infiniband
-> @@ -148,17 +148,17 @@ Description:
->  		**Data info**:
->  
->  		port_xmit_data: (RO) Total number of data octets, divided by 4
-> -		(lanes), transmitted on all VLs. This is 64 bit counter
-> +		(lanes), transmitted on all VLs. This is a 64-bit counter
->  
->  		port_rcv_data: (RO) Total number of data octets, divided by 4
-> -		(lanes), received on all VLs. This is 64 bit counter.
-> +		(lanes), received on all VLs. This is a 64-bit counter.
->  
->  		port_xmit_packets: (RO) Total number of packets transmitted on
->  		all VLs from this port. This may include packets with errors.
-> -		This is 64 bit counter.
-> +		This is a 64-bit counter.
->  
->  		port_rcv_packets: (RO) Total number of packets (this may include
-> -		packets containing Errors. This is 64 bit counter.
-> +		packets containing Errors). This is a 64-bit counter.
->  
->  		link_downed: (RO) Total number of times the Port Training state
->  		machine has failed the link error recovery process and downed
-> diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
-> index d8d6d85235b0..4ea5598e7cd2 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-iio
-> +++ b/Documentation/ABI/testing/sysfs-bus-iio
-> @@ -917,7 +917,7 @@ Description:
->  
->  		Note the driver will assume the last p events requested are
->  		to be enabled where p is how many it supports (which may vary
-> -		depending on the exact set requested. So if you want to be
-> +		depending on the exact set requested). So if you want to be
->  		sure you have set what you think you have, check the contents of
->  		these attributes after everything is configured. Drivers may
->  		have to buffer any parameters so that they are consistent when
-> @@ -973,7 +973,7 @@ Description:
->  
->  		Note the driver will assume the last p events requested are
->  		to be enabled where p is however many it supports (which may
-> -		vary depending on the exact set requested. So if you want to be
-> +		vary depending on the exact set requested). So if you want to be
->  		sure you have set what you think you have, check the contents of
->  		these attributes after everything is configured. Drivers may
->  		have to buffer any parameters so that they are consistent when
-> @@ -1528,9 +1528,9 @@ Description:
->  		the unused bits, so to get a clean value the bits value must be
->  		used to mask the buffer output value appropriately. The storagebits
->  		value also specifies the data alignment. So s48/64>>2 will be a
-> -		signed 48 bit integer stored in a 64 bit location aligned to a 64
-> -		bit boundary. To obtain the clean value, shift right 2 and apply a
-> -		mask to zero the top 16 bits of the result.
-> +		signed 48-bit integer stored in a 64-bit location aligned to a
-> +		64-bit boundary. To obtain the clean value, shift right 2 and apply
-> +		a mask to zero the top 16 bits of the result.
->  		For other storage combinations this attribute will be extended
->  		appropriately.
->  
-> diff --git a/Documentation/ABI/testing/sysfs-bus-iio-adc-ad7192 b/Documentation/ABI/testing/sysfs-bus-iio-adc-ad7192
-> index 28be1cabf112..d44eb5f8728b 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-iio-adc-ad7192
-> +++ b/Documentation/ABI/testing/sysfs-bus-iio-adc-ad7192
-> @@ -16,7 +16,7 @@ Description:
->  		In bridge applications, such as strain gauges and load cells,
->  		the bridge itself consumes the majority of the current in the
->  		system. To minimize the current consumption of the system,
-> -		the bridge can be disconnected (when it is not being used
-> +		the bridge can be disconnected (when it is not being used)
->  		using the bridge_switch_en attribute.
->  
->  What:		/sys/bus/iio/devices/iio:deviceX/in_voltage2-voltage2_shorted_raw
-> diff --git a/Documentation/ABI/testing/sysfs-firmware-dmi-entries b/Documentation/ABI/testing/sysfs-firmware-dmi-entries
-> index b6c23807b804..ed7d9d06a9ff 100644
-> --- a/Documentation/ABI/testing/sysfs-firmware-dmi-entries
-> +++ b/Documentation/ABI/testing/sysfs-firmware-dmi-entries
-> @@ -93,7 +93,7 @@ Description:
->  		  /sys/firmware/dmi/entries/15-0/system_event_log
->  
->  		and has the following attributes (documented in the
-> -		SMBIOS / DMI specification under "System Event Log (Type 15)":
-> +		SMBIOS / DMI specification under "System Event Log (Type 15)"):
->  
->  		- area_length
->  		- header_start_offset
-> diff --git a/Documentation/ABI/testing/sysfs-firmware-gsmi b/Documentation/ABI/testing/sysfs-firmware-gsmi
-> index 7a558354c1ee..3b3c3ae6f458 100644
-> --- a/Documentation/ABI/testing/sysfs-firmware-gsmi
-> +++ b/Documentation/ABI/testing/sysfs-firmware-gsmi
-> @@ -19,7 +19,7 @@ Description:
->  		/sys/firmware/gsmi/vars:
->  
->  			This directory has the same layout (and
-> -			underlying implementation as /sys/firmware/efi/vars.
-> +			underlying implementation) as /sys/firmware/efi/vars.
->  			See `Documentation/ABI/*/sysfs-firmware-efi-vars`
->  			for more information on how to interact with
->  			this structure.
-> diff --git a/Documentation/ABI/testing/sysfs-uevent b/Documentation/ABI/testing/sysfs-uevent
-> index 0b6227706b35..c15e18c47a0e 100644
-> --- a/Documentation/ABI/testing/sysfs-uevent
-> +++ b/Documentation/ABI/testing/sysfs-uevent
-> @@ -8,7 +8,7 @@ Description:
->  
->                  Recognized extended format is::
->  
-> -			ACTION [UUID [KEY=VALUE ...]
-> +			ACTION [UUID [KEY=VALUE ...]]
->  
->                  The ACTION is compulsory - it is the name of the uevent
->                  action (``add``, ``change``, ``remove``). There is no change
-
+>
+> >
+> > >
+> > > Thanks
 
