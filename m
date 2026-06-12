@@ -1,339 +1,263 @@
-Return-Path: <linux-rdma+bounces-22180-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22181-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id xmsvE6IfLGpMLwQAu9opvQ
-	(envelope-from <linux-rdma+bounces-22180-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jun 2026 17:02:58 +0200
+	id qICcC946LGo4OAQAu9opvQ
+	(envelope-from <linux-rdma+bounces-22181-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jun 2026 18:59:10 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFD6967A64F
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jun 2026 17:02:57 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78C7967B241
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jun 2026 18:59:09 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=intel.com header.s=Intel header.b=fpJIxDWa;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22180-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22180-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=intel.com;
+	dkim=pass header.d=shazbot.org header.s=fm3 header.b=lFXpnGwc;
+	dkim=pass header.d=messagingengine.com header.s=fm1 header.b="X APZINl";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22181-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22181-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=shazbot.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 502EA300749C
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jun 2026 15:02:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 80D5131FE92F
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jun 2026 16:53:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38484382F33;
-	Fri, 12 Jun 2026 15:02:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C649C403EB1;
+	Fri, 12 Jun 2026 16:52:55 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDEA533F399
-	for <linux-rdma@vger.kernel.org>; Fri, 12 Jun 2026 15:02:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B944D401495;
+	Fri, 12 Jun 2026 16:52:52 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781276574; cv=none; b=A9aCWFM/npGrRhwoxFLYawQxGlqExmM9Tgv7FipNhqyqAdoChJT+d3yRBaPYjt404G+QNVFzkBkZigb4Rm+5LExV3HhGN9H4Zeiyfjv1ie6de5MvoQJpQUFL47Lpu8DP25rjX7OTf/R8Pqf9uK/BmM8XQKs0hzOqD07ljk4wPyI=
+	t=1781283175; cv=none; b=ri1HKE05ZtEBIjvWewzpctBzfoFLXluBl6vxbYokvNtwZHawa7wUv2+Y+uzAAwDi8navPrHXy/PmDSg6iMcfMNoPIXJppDfx/UjG3Ct1Qvp7GB6CI7BwBMD3muU8bRZAeYMaHH4DPtkKcvHfEHLrvERP4oUTfhaKnxlO4j44clI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781276574; c=relaxed/simple;
-	bh=+7CiWhb+iWnf4gB9sX8zfkKQ3lY04XZ1j2/RKHIrWJE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=GhiSH0rcn5xvaQIuChT0vJLpXIG4ZHIYAUrS7tS5iXPymGBzntCo5Kw4YtSS9maNiw5EAnnQt/vGmFiuBtbnRxMTAo9ltdHRMhd7xfyEzz76pYaTqDdh4BF8c7HhKlxzczuJHsROKCTO3iWULMF+e9dlUzgLBLL6FiuqH7SVZV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fpJIxDWa; arc=none smtp.client-ip=198.175.65.10
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1781276572; x=1812812572;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=+7CiWhb+iWnf4gB9sX8zfkKQ3lY04XZ1j2/RKHIrWJE=;
-  b=fpJIxDWa1FAQ/2G+4EsXl3pgptdCPxd+p/wZi3W0VCbX75KJ4LC+lGFo
-   9X4ajnaQgUWG5YNM6lhLw0DhjLL1YNelBIsO1ksY47/zzUslM5sxRYx+t
-   SNqZ1rXfMQK/NXUoX2C5HrLULtfrC7ySEnnY+kDyfkidWY1+buX7TNEMm
-   UAqz4vlwkWOqyI+SBxU6/JRXMZGyX4m7NPUb+Bw5JZNMfmSN7ySo4xBvU
-   3NCumyIY8groIEWTGycQN3Vwzxg0zeY7kUXJOE0zIlIoQdkCS8JFugYMd
-   JOZD8ffXHDvulLHOwDdt2OEJRL5Eja/36eC6K1slTw19BvmbLvmnF3LbU
-   Q==;
-X-CSE-ConnectionGUID: 4NK4J7TfTJ+cxItvZT/Q6w==
-X-CSE-MsgGUID: DCcaLA+4QTGiuN2O8PM/9g==
-X-IronPort-AV: E=McAfee;i="6800,10657,11813"; a="99525081"
-X-IronPort-AV: E=Sophos;i="6.24,200,1774335600"; 
-   d="scan'208";a="99525081"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2026 08:02:52 -0700
-X-CSE-ConnectionGUID: pBE2IdxXRUWNhrbOK6vZ/w==
-X-CSE-MsgGUID: JUQV4Z9cRZebeBNAzKHvHA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,200,1774335600"; 
-   d="scan'208";a="248728280"
-Received: from lkp-server01.sh.intel.com (HELO f0d55cb201f0) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 12 Jun 2026 08:02:49 -0700
-Received: from kbuild by f0d55cb201f0 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1wY3PD-00000000Oub-1hsh;
-	Fri, 12 Jun 2026 15:02:47 +0000
-Date: Fri, 12 Jun 2026 23:01:55 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 449ae7927152e46acbe5f19f97eafdae6d3a96b1
-Message-ID: <202606122344.boNiSCds-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	s=arc-20240116; t=1781283175; c=relaxed/simple;
+	bh=24wQChAQOJp4jUd0/0DfoMQ1yU723OejhdZTkJTDDq8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=o9lFVIEjgLwvhuQAYuZthLs2dEtx1PekSR146CHA97X7dcdaO/fXBmCQEO08FgOtA0lXGiq+UJc8rbQ/QWblCGSRUwr9aoGPVl7C+FTherVql1rsLY258bJsqq3ORqk3Sb0Zlx2pEq0fvFQ06Ag1DBlEXKw+xZyqaY/FCrV2qLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shazbot.org; spf=pass smtp.mailfrom=shazbot.org; dkim=pass (2048-bit key) header.d=shazbot.org header.i=@shazbot.org header.b=lFXpnGwc; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=XAPZINl4; arc=none smtp.client-ip=103.168.172.145
+Received: from phl-compute-07.internal (phl-compute-07.internal [10.202.2.47])
+	by mailfout.phl.internal (Postfix) with ESMTP id E25FBEC019E;
+	Fri, 12 Jun 2026 12:52:51 -0400 (EDT)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-07.internal (MEProxy); Fri, 12 Jun 2026 12:52:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shazbot.org; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1781283171;
+	 x=1781369571; bh=IMjdTnzoJaPEHm5nCFiglgf4MQ8JbUyD46xJ1bIgrWU=; b=
+	lFXpnGwcIYKgvYDL/3TehmOZ1Kgfm1m9vLzM4mh/5yn9qC778edLi/zuF7hTlyjf
+	7qEddjjKjzQuqm4uSKFbE6qGiqy87DoZM+mEUczzThnuFEmt90jrmxS3aBeAnGCT
+	XR6O4Ttz0NeqrMcB3aPpr/UlrBguVCNi+DHhbmDneCLjeS0+jFP86IFiYg90472U
+	SImrX52qe13TDNV4Epnsmtwhk7mv1AfA7Umy7q8gdJrFtohQ0BOhAN8uS9LfCQ2d
+	IMhJF8PgmNrTDeybihtO5vB9OaVtSmVL60l9g2vudNSJP5ZqHfsJ6JdGjswJ1v1L
+	mE5nOq5ghRbU3QikXVqOdA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1781283171; x=
+	1781369571; bh=IMjdTnzoJaPEHm5nCFiglgf4MQ8JbUyD46xJ1bIgrWU=; b=X
+	APZINl4QZ2sv1IAtwV0X5I8RtX9LZO0DG52Yrq77EpvCfmoAZanl1Bcy13qDZ78K
+	/QmmDrVv7f9cAbtBNMjIGiVPYZgk4qz40C+evlq/XC/2ZOLcgEN7n4ZtlI7xIdgz
+	ZdoYzn5cZSQPcxSk1l58haSDHhQO2cGpqc9uI3LlsgN4QuDs3C11qacpFjlfhyIO
+	1s74t5LKX2qQkmhWEm1buNr9kVfNyKn0cJLFU0+402Vls/QFsZPQx1ERZD6Yp7sB
+	bER8rgxmB3n5pR89AHF6pJ05DONBN+AbqpEYi8dEWcWHG7qNQ3aePRSgAj90jyPM
+	+CcYbYwDpu73ohUoyvW1g==
+X-ME-Sender: <xms:YzksaijV2vVVUTeeAYkagwU2paX2dIwLb_OUzgO-wNF4pW33MyD0lw>
+    <xme:Yzksan9nG4juEl0zI9_NI5U2clxUya8qLszrV6BIOBPwGC6yIXFClGT8G-Bh4nuEc
+    RNpoF3nWEeDnvz29gNLRBhJZnl8vSCnNOlHZJYaprprovFIvUt6ZcQ>
+X-ME-Received: <xmr:YzksauVaO59SZ3a4kcLchXtf9Bh4Hi0PbFSaICy-IiC_xVKHRZIm6WBpr54>
+X-ME-Proxy-Cause: dmFkZTFArRAgYvj57o1HapZcwzWeF52p9meQLcL+oU7S3KkL5oUp5Lte8sAxnl9d9x1/ZI
+    RLFZ0Ew+UiUwi/bM4ff5ppqTuM4MbAYuNZ75VRe8KfLHkgZhmp8++kMM/+DL0wkBbwFkul
+    qPjutE0A+8Ns3D6Ada0IOAt+c8rgQLsrFffQHinYO2qulO1USE+gglknL0VN+6P9H726m5
+    xBHH7ldOezsD2nyYupyaUaQzGEd8EyJEiGUbuztdXsBXFLTQH5YARqX5ywuXUgloMOyRNA
+    au3HGF1JmRmCEZQgn2zLFDygU/9/t+ISKtlsVhjl+pgWu+H0VAwpKmNqtmlE0VuNvgzFpv
+    79z9rjoK/mTGkTTkHeSOa2riRWrtXHZp9rH+GivfOr7tBEWEU7mBYi5EUpEB5MD+muV0xY
+    2XWDeOTkxIfpa+VeTxPv+hLFY0shiD3Zp4AbBphRn0nFhZ2xFzvKF1uHC4u6E/6h/4/dSS
+    Y7BcM9/DwiCm6uf6FdJF5IdZLr3MWWDNtIUO27SpNPI0bgVid1LGh7BW2BlD/e4d0zZoGb
+    cmS27lyXQB19Q9qua0syP3urPPGJnavmgyGab4irYA114Yx70Yi4VLqqGxxXmUAUfrQ4Vl
+    nrpUizVG/kbLfNqXaw7fRDMW4JTQ3BhiKpuYO3fX2mmJtUA+mKUs1t7VxTVg
+X-ME-Proxy: <xmx:YzksarAnrZKlgWMr7tYnezzEzpPKIZDoosrd7p34OGBYFuHuyubiMw>
+    <xmx:YzksajECqQSpPRwwqlRdjFdQU-8hAni02m_bnQn7L76gkVJVJsvorg>
+    <xmx:Yzksas7b5c6J5oiWIJNPM1yDVPdq2FH4dzrnaR7CE0ODnqekJGRsOQ>
+    <xmx:Yzksapnj51SIs-6eVY3tPprGjn80B5MTc3l41_NSEqdyR9WLTTbGuw>
+    <xmx:YzksaplYLxICKNcYipUieI2lwGVGIjbIAV3k_FYYCwDCp_JGEDX1j6F->
+Feedback-ID: i03f14258:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 12 Jun 2026 12:52:50 -0400 (EDT)
+Date: Fri, 12 Jun 2026 10:52:48 -0600
+From: Alex Williamson <alex@shazbot.org>
+To: Zhiping Zhang <zhipingz@meta.com>
+Cc: <netdev@vger.kernel.org>, <kvm@vger.kernel.org>,
+ <linux-rdma@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+ <dri-devel@lists.freedesktop.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ alex@shazbot.org
+Subject: Re: [PATCH v7 2/5] PCI/TPH: Add requester/completer type helpers
+Message-ID: <20260612105248.7d8431f2@shazbot.org>
+In-Reply-To: <20260611161546.4075580-3-zhipingz@meta.com>
+References: <20260611161546.4075580-1-zhipingz@meta.com>
+	<20260611161546.4075580-3-zhipingz@meta.com>
+X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[intel.com:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	DMARC_POLICY_ALLOW(-0.50)[shazbot.org,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[shazbot.org:s=fm3,messagingengine.com:s=fm1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22180-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[shazbot.org:+,messagingengine.com:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS(0.00)[m:jgg@nvidia.com,m:dledford@redhat.com,m:linux-rdma@vger.kernel.org,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22181-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[alex@shazbot.org,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:zhipingz@meta.com,m:netdev@vger.kernel.org,m:kvm@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-pci@vger.kernel.org,m:dri-devel@lists.freedesktop.org,m:bhelgaas@google.com,m:alex@shazbot.org,s:lists@lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[intel.com:+];
 	RCVD_COUNT_FIVE(0.00)[6];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[alex@shazbot.org,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:dkim,intel.com:mid,intel.com:from_mime,vger.kernel.org:from_smtp,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[shazbot.org:dkim,shazbot.org:mid,shazbot.org:from_mime,meta.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: DFD6967A64F
+X-Rspamd-Queue-Id: 78C7967B241
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git =
-wip/jgg-for-next
-branch HEAD: 449ae7927152e46acbe5f19f97eafdae6d3a96b1  RDMA/mlx5: Release t=
-he HW=E2=80=91provided UAR index rather than the SW one
+On Thu, 11 Jun 2026 09:11:17 -0700
+Zhiping Zhang <zhipingz@meta.com> wrote:
 
-elapsed time: 792m
+> Add pcie_tph_enabled_req_type() so drivers can query the enabled TPH
+> requester mode without reaching into pci_dev internals.
+> 
+> Add pcie_tph_completer_type() so drivers that publish TPH metadata for
+> a device acting as a completer can gate on the "TPH Completer
+> Supported" field of Device Capabilities 2 (bits 13:12,
+> PCI_EXP_DEVCAP2_TPH_COMP_MASK) rather than reusing requester-side
+> state. Fold the reserved 0b10 encoding into NONE so callers only see
+> the defined values.
+> 
+> This keeps pci_dev::tph_req_type and the completer-capability decode
+> inside the PCI/TPH code and provides !CONFIG_PCIE_TPH stubs for
+> callers.
+> 
+> Signed-off-by: Zhiping Zhang <zhipingz@meta.com>
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
-configs tested: 203
-configs skipped: 2
+This is carrying forward an ack for v6, where half the interface here
+was dropped and changed shape.  Thanks,
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Alex
 
-tested configs:
-alpha                             allnoconfig    gcc-16.1.0
-alpha                            allyesconfig    gcc-16.1.0
-alpha                               defconfig    gcc-16.1.0
-arc                              allmodconfig    clang-23
-arc                               allnoconfig    gcc-16.1.0
-arc                              allyesconfig    clang-23
-arc                                 defconfig    gcc-16.1.0
-arc                        nsim_700_defconfig    gcc-16.1.0
-arc                   randconfig-001-20260612    gcc-13.4.0
-arc                   randconfig-002-20260612    gcc-13.4.0
-arm                               allnoconfig    gcc-16.1.0
-arm                              allyesconfig    clang-23
-arm                         axm55xx_defconfig    clang-23
-arm                                 defconfig    gcc-16.1.0
-arm                   randconfig-001-20260612    gcc-13.4.0
-arm                   randconfig-002-20260612    gcc-13.4.0
-arm                   randconfig-003-20260612    gcc-13.4.0
-arm                   randconfig-004-20260612    gcc-13.4.0
-arm                       spear13xx_defconfig    gcc-16.1.0
-arm64                            allmodconfig    clang-23
-arm64                             allnoconfig    gcc-16.1.0
-arm64                               defconfig    gcc-16.1.0
-arm64                          randconfig-001    gcc-13.4.0
-arm64                 randconfig-001-20260612    gcc-13.4.0
-arm64                          randconfig-002    gcc-13.4.0
-arm64                 randconfig-002-20260612    gcc-13.4.0
-arm64                          randconfig-003    gcc-13.4.0
-arm64                 randconfig-003-20260612    gcc-13.4.0
-arm64                          randconfig-004    gcc-13.4.0
-arm64                 randconfig-004-20260612    gcc-13.4.0
-csky                             allmodconfig    gcc-16.1.0
-csky                              allnoconfig    gcc-16.1.0
-csky                                defconfig    gcc-16.1.0
-csky                           randconfig-001    gcc-13.4.0
-csky                  randconfig-001-20260612    gcc-13.4.0
-csky                           randconfig-002    gcc-13.4.0
-csky                  randconfig-002-20260612    gcc-13.4.0
-hexagon                          allmodconfig    gcc-16.1.0
-hexagon                           allnoconfig    gcc-16.1.0
-hexagon                             defconfig    gcc-16.1.0
-hexagon                        randconfig-001    gcc-11.5.0
-hexagon               randconfig-001-20260612    gcc-11.5.0
-hexagon                        randconfig-002    gcc-11.5.0
-hexagon               randconfig-002-20260612    gcc-11.5.0
-i386                             allmodconfig    clang-22
-i386                              allnoconfig    gcc-16.1.0
-i386                             allyesconfig    clang-22
-i386        buildonly-randconfig-001-20260612    gcc-14
-i386        buildonly-randconfig-002-20260612    gcc-14
-i386        buildonly-randconfig-003-20260612    gcc-14
-i386        buildonly-randconfig-004-20260612    gcc-14
-i386        buildonly-randconfig-005-20260612    gcc-14
-i386        buildonly-randconfig-006-20260612    gcc-14
-i386                                defconfig    gcc-16.1.0
-i386                  randconfig-001-20260612    clang-22
-i386                  randconfig-002-20260612    clang-22
-i386                  randconfig-003-20260612    clang-22
-i386                  randconfig-004-20260612    clang-22
-i386                  randconfig-005-20260612    clang-22
-i386                  randconfig-006-20260612    clang-22
-i386                  randconfig-007-20260612    clang-22
-i386                  randconfig-011-20260612    clang-22
-i386                  randconfig-012-20260612    clang-22
-i386                  randconfig-013-20260612    clang-22
-i386                  randconfig-014-20260612    clang-22
-i386                  randconfig-015-20260612    clang-22
-i386                  randconfig-016-20260612    clang-22
-i386                  randconfig-017-20260612    clang-22
-loongarch                        allmodconfig    clang-23
-loongarch                         allnoconfig    gcc-16.1.0
-loongarch                           defconfig    clang-23
-loongarch                      randconfig-001    gcc-11.5.0
-loongarch             randconfig-001-20260612    gcc-11.5.0
-loongarch                      randconfig-002    gcc-11.5.0
-loongarch             randconfig-002-20260612    gcc-11.5.0
-m68k                             allmodconfig    gcc-16.1.0
-m68k                              allnoconfig    gcc-16.1.0
-m68k                             allyesconfig    clang-23
-m68k                                defconfig    clang-23
-microblaze                        allnoconfig    gcc-16.1.0
-microblaze                       allyesconfig    gcc-16.1.0
-microblaze                          defconfig    clang-23
-mips                             allmodconfig    gcc-16.1.0
-mips                              allnoconfig    gcc-16.1.0
-mips                             allyesconfig    gcc-16.1.0
-nios2                            allmodconfig    clang-20
-nios2                             allnoconfig    clang-23
-nios2                               defconfig    clang-23
-nios2                          randconfig-001    gcc-11.5.0
-nios2                 randconfig-001-20260612    gcc-11.5.0
-nios2                          randconfig-002    gcc-11.5.0
-nios2                 randconfig-002-20260612    gcc-11.5.0
-openrisc                         allmodconfig    clang-20
-openrisc                          allnoconfig    clang-23
-openrisc                            defconfig    gcc-16.1.0
-parisc                           allmodconfig    gcc-16.1.0
-parisc                            allnoconfig    clang-23
-parisc                           allyesconfig    clang-23
-parisc                              defconfig    gcc-16.1.0
-parisc64                            defconfig    clang-23
-powerpc                          allmodconfig    gcc-16.1.0
-powerpc                           allnoconfig    clang-23
-powerpc                      ppc64e_defconfig    gcc-16.1.0
-riscv                            allmodconfig    clang-23
-riscv                             allnoconfig    clang-23
-riscv                            allyesconfig    clang-23
-riscv                               defconfig    gcc-16.1.0
-riscv                          randconfig-001    gcc-11.5.0
-riscv                 randconfig-001-20260612    gcc-11.5.0
-riscv                          randconfig-002    gcc-11.5.0
-riscv                 randconfig-002-20260612    gcc-11.5.0
-s390                             allmodconfig    clang-23
-s390                              allnoconfig    clang-23
-s390                             allyesconfig    gcc-16.1.0
-s390                                defconfig    gcc-16.1.0
-s390                           randconfig-001    gcc-11.5.0
-s390                  randconfig-001-20260612    gcc-11.5.0
-s390                           randconfig-002    gcc-11.5.0
-s390                  randconfig-002-20260612    gcc-11.5.0
-sh                               allmodconfig    gcc-16.1.0
-sh                                allnoconfig    clang-23
-sh                               allyesconfig    clang-23
-sh                                  defconfig    gcc-14
-sh                             randconfig-001    gcc-11.5.0
-sh                    randconfig-001-20260612    gcc-11.5.0
-sh                             randconfig-002    gcc-11.5.0
-sh                    randconfig-002-20260612    gcc-11.5.0
-sparc                             allnoconfig    clang-23
-sparc                               defconfig    gcc-16.1.0
-sparc                          randconfig-001    gcc-8.5.0
-sparc                 randconfig-001-20260612    gcc-8.5.0
-sparc                          randconfig-002    gcc-8.5.0
-sparc                 randconfig-002-20260612    gcc-8.5.0
-sparc64                          allmodconfig    clang-20
-sparc64                             defconfig    gcc-14
-sparc64                        randconfig-001    gcc-8.5.0
-sparc64               randconfig-001-20260612    gcc-8.5.0
-sparc64                        randconfig-002    gcc-8.5.0
-sparc64               randconfig-002-20260612    gcc-8.5.0
-um                               allmodconfig    clang-23
-um                                allnoconfig    clang-23
-um                               allyesconfig    gcc-16.1.0
-um                                  defconfig    gcc-14
-um                             i386_defconfig    gcc-14
-um                             randconfig-001    gcc-8.5.0
-um                    randconfig-001-20260612    gcc-8.5.0
-um                             randconfig-002    gcc-8.5.0
-um                    randconfig-002-20260612    gcc-8.5.0
-um                           x86_64_defconfig    gcc-14
-x86_64                           allmodconfig    clang-22
-x86_64                            allnoconfig    clang-23
-x86_64                           allyesconfig    clang-22
-x86_64               buildonly-randconfig-001    gcc-14
-x86_64      buildonly-randconfig-001-20260612    gcc-14
-x86_64               buildonly-randconfig-002    gcc-14
-x86_64      buildonly-randconfig-002-20260612    gcc-14
-x86_64               buildonly-randconfig-003    gcc-14
-x86_64      buildonly-randconfig-003-20260612    gcc-14
-x86_64               buildonly-randconfig-004    gcc-14
-x86_64      buildonly-randconfig-004-20260612    gcc-14
-x86_64               buildonly-randconfig-005    gcc-14
-x86_64      buildonly-randconfig-005-20260612    gcc-14
-x86_64               buildonly-randconfig-006    gcc-14
-x86_64      buildonly-randconfig-006-20260612    gcc-14
-x86_64                              defconfig    gcc-14
-x86_64                                  kexec    clang-22
-x86_64                randconfig-001-20260612    clang-22
-x86_64                randconfig-002-20260612    clang-22
-x86_64                randconfig-003-20260612    clang-22
-x86_64                randconfig-004-20260612    clang-22
-x86_64                randconfig-005-20260612    clang-22
-x86_64                randconfig-006-20260612    clang-22
-x86_64                         randconfig-011    clang-22
-x86_64                randconfig-011-20260612    clang-22
-x86_64                         randconfig-012    clang-22
-x86_64                randconfig-012-20260612    clang-22
-x86_64                         randconfig-013    clang-22
-x86_64                randconfig-013-20260612    clang-22
-x86_64                         randconfig-014    clang-22
-x86_64                randconfig-014-20260612    clang-22
-x86_64                         randconfig-015    clang-22
-x86_64                randconfig-015-20260612    clang-22
-x86_64                         randconfig-016    clang-22
-x86_64                randconfig-016-20260612    clang-22
-x86_64                randconfig-071-20260612    gcc-14
-x86_64                randconfig-072-20260612    gcc-14
-x86_64                randconfig-073-20260612    gcc-14
-x86_64                randconfig-074-20260612    gcc-14
-x86_64                randconfig-075-20260612    gcc-14
-x86_64                randconfig-076-20260612    gcc-14
-x86_64                               rhel-9.4    clang-22
-x86_64                           rhel-9.4-bpf    gcc-14
-x86_64                          rhel-9.4-func    clang-22
-x86_64                    rhel-9.4-kselftests    clang-22
-x86_64                         rhel-9.4-kunit    gcc-14
-x86_64                           rhel-9.4-ltp    gcc-14
-x86_64                          rhel-9.4-rust    clang-22
-xtensa                            allnoconfig    clang-23
-xtensa                           allyesconfig    clang-20
-xtensa                         randconfig-001    gcc-8.5.0
-xtensa                randconfig-001-20260612    gcc-8.5.0
-xtensa                         randconfig-002    gcc-8.5.0
-xtensa                randconfig-002-20260612    gcc-8.5.0
+> ---
+>  drivers/pci/tph.c       | 43 +++++++++++++++++++++++++++++++++++++++++
+>  include/linux/pci-tph.h |  8 ++++++++
+>  2 files changed, 51 insertions(+)
+> 
+> diff --git a/drivers/pci/tph.c b/drivers/pci/tph.c
+> index 91145e8d9d95..4fe076bba953 100644
+> --- a/drivers/pci/tph.c
+> +++ b/drivers/pci/tph.c
+> @@ -174,6 +174,49 @@ u32 pcie_tph_get_st_table_loc(struct pci_dev *pdev)
+>  }
+>  EXPORT_SYMBOL(pcie_tph_get_st_table_loc);
+>  
+> +/**
+> + * pcie_tph_enabled_req_type - Return the device's enabled TPH requester type
+> + * @pdev: PCI device to query
+> + *
+> + * Return: PCI_TPH_REQ_DISABLE, PCI_TPH_REQ_TPH_ONLY or PCI_TPH_REQ_EXT_TPH.
+> + */
+> +u8 pcie_tph_enabled_req_type(struct pci_dev *pdev)
+> +{
+> +	return pdev->tph_req_type;
+> +}
+> +EXPORT_SYMBOL(pcie_tph_enabled_req_type);
+> +
+> +/**
+> + * pcie_tph_completer_type - Return the device's TPH Completer support
+> + * @pdev: PCI device to query
+> + *
+> + * Reads the "TPH Completer Supported" field (bits 13:12) of Device
+> + * Capabilities 2. The reserved 0b10 encoding is folded into
+> + * "not supported" so callers only need to compare against the three
+> + * defined values.
+> + *
+> + * Return: one of %PCI_EXP_DEVCAP2_TPH_COMP_NONE,
+> + *         %PCI_EXP_DEVCAP2_TPH_COMP_TPH_ONLY or
+> + *         %PCI_EXP_DEVCAP2_TPH_COMP_EXT_TPH.
+> + */
+> +u8 pcie_tph_completer_type(struct pci_dev *pdev)
+> +{
+> +	u32 reg;
+> +
+> +	if (pcie_capability_read_dword(pdev, PCI_EXP_DEVCAP2, &reg))
+> +		return PCI_EXP_DEVCAP2_TPH_COMP_NONE;
+> +
+> +	switch (FIELD_GET(PCI_EXP_DEVCAP2_TPH_COMP_MASK, reg)) {
+> +	case PCI_EXP_DEVCAP2_TPH_COMP_TPH_ONLY:
+> +		return PCI_EXP_DEVCAP2_TPH_COMP_TPH_ONLY;
+> +	case PCI_EXP_DEVCAP2_TPH_COMP_EXT_TPH:
+> +		return PCI_EXP_DEVCAP2_TPH_COMP_EXT_TPH;
+> +	default:
+> +		return PCI_EXP_DEVCAP2_TPH_COMP_NONE;
+> +	}
+> +}
+> +EXPORT_SYMBOL(pcie_tph_completer_type);
+> +
+>  /*
+>   * Return the size of ST table. If ST table is not in TPH Requester Extended
+>   * Capability space, return 0. Otherwise return the ST Table Size + 1.
+> diff --git a/include/linux/pci-tph.h b/include/linux/pci-tph.h
+> index be68cd17f2f8..7743af6fe432 100644
+> --- a/include/linux/pci-tph.h
+> +++ b/include/linux/pci-tph.h
+> @@ -9,6 +9,8 @@
+>  #ifndef LINUX_PCI_TPH_H
+>  #define LINUX_PCI_TPH_H
+>  
+> +#include <linux/pci_regs.h>
+> +
+>  /*
+>   * According to the ECN for PCI Firmware Spec, Steering Tag can be different
+>   * depending on the memory type: Volatile Memory or Persistent Memory. When a
+> @@ -30,6 +32,8 @@ void pcie_disable_tph(struct pci_dev *pdev);
+>  int pcie_enable_tph(struct pci_dev *pdev, int mode);
+>  u16 pcie_tph_get_st_table_size(struct pci_dev *pdev);
+>  u32 pcie_tph_get_st_table_loc(struct pci_dev *pdev);
+> +u8 pcie_tph_enabled_req_type(struct pci_dev *pdev);
+> +u8 pcie_tph_completer_type(struct pci_dev *pdev);
+>  #else
+>  static inline int pcie_tph_set_st_entry(struct pci_dev *pdev,
+>  					unsigned int index, u16 tag)
+> @@ -41,6 +45,10 @@ static inline int pcie_tph_get_cpu_st(struct pci_dev *dev,
+>  static inline void pcie_disable_tph(struct pci_dev *pdev) { }
+>  static inline int pcie_enable_tph(struct pci_dev *pdev, int mode)
+>  { return -EINVAL; }
+> +static inline u8 pcie_tph_enabled_req_type(struct pci_dev *pdev)
+> +{ return PCI_TPH_REQ_DISABLE; }
+> +static inline u8 pcie_tph_completer_type(struct pci_dev *pdev)
+> +{ return PCI_EXP_DEVCAP2_TPH_COMP_NONE; }
+>  #endif
+>  
+>  #endif /* LINUX_PCI_TPH_H */
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
