@@ -1,90 +1,94 @@
-Return-Path: <linux-rdma+bounces-22214-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22215-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id VPVLJAKnLmpe1gQAu9opvQ
-	(envelope-from <linux-rdma+bounces-22214-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 14 Jun 2026 15:05:06 +0200
+	id Qc3UOpWnLmp11gQAu9opvQ
+	(envelope-from <linux-rdma+bounces-22215-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 14 Jun 2026 15:07:33 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3433468110F
-	for <lists+linux-rdma@lfdr.de>; Sun, 14 Jun 2026 15:05:06 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CA4E681137
+	for <lists+linux-rdma@lfdr.de>; Sun, 14 Jun 2026 15:07:33 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=APtjPMMJ;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22214-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22214-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=SRq9tpH1;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22215-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22215-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=none) header.from=gmail.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D4852300F5C8
-	for <lists+linux-rdma@lfdr.de>; Sun, 14 Jun 2026 13:04:56 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 3051E3005EA9
+	for <lists+linux-rdma@lfdr.de>; Sun, 14 Jun 2026 13:07:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80CA8355F22;
-	Sun, 14 Jun 2026 13:04:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5127A39FCBF;
+	Sun, 14 Jun 2026 13:07:31 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 809D239A7F7
-	for <linux-rdma@vger.kernel.org>; Sun, 14 Jun 2026 13:04:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED46413B7AE
+	for <linux-rdma@vger.kernel.org>; Sun, 14 Jun 2026 13:07:29 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781442296; cv=none; b=vF7jo/fGSIREV0Q3eA5FYSC1Xzme5L9Hr9Rv8nktT0re1MzVGstBLUbMm0kVPwHRkPh4SUn2wi0SW0augWF1v+R9UWxmyOsL/4FJ91xSaiG0OiHyJsWYXQ54DIfXm7FLpkEwxvFEKrqXG0LJhiQDUF1aHken14mOWdScfMIH6ow=
+	t=1781442451; cv=none; b=KGXbRS4EBdyuGJFiz5x8rVgvG/X9dCpN71ONt87hn1XvzM+su7qXHysmpoAzrbkBgFMgXxhF6H67uY3O6B17ptZ0rN9LMcEM/OtrPYV0I+LeUiJespenQ7KW4hwpJrLmkv9HjZJR/ORY5hNx1W0HjYMztiNR9igGw8rlgcyiDLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781442296; c=relaxed/simple;
-	bh=ADCNFUh94Rv4KNKJvYbbe8p47vvd4whs5tudmJRWnb8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DqHOC9Ibth9w7LGfgL3YYmS7zAL94zanQt07icbau/0ehARkM9cN3tcZYQBbA2H4f29P+HvrsUJdp3yD4h7oN9lh9t6w+d0C5CmbUBsosBk0ntdErsqg/kSi5WHZwgyeQpETu92MBToYTEU7zK6sqoZwF32BSwbpz/7ovZJzFdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=APtjPMMJ; arc=none smtp.client-ip=209.85.160.173
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-517863a2edfso19962561cf.1
-        for <linux-rdma@vger.kernel.org>; Sun, 14 Jun 2026 06:04:54 -0700 (PDT)
+	s=arc-20240116; t=1781442451; c=relaxed/simple;
+	bh=SuilZbGlVZJOlat7J9MD/fOJwXfgtdW+5rL59Mett0g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Vkn3vMRp1NKNZD/Um1TbZkduO+g0q4UMdqbzU+5tBF7XMHQ/y2Vyg7CxFzfIqFnn/aWqtzup7d52O3EPFinX/6P9aYU+xAxCzm4acAGCIAkqJlUhqQNVB2DqyPk2qQOjq99NecO4nKJq0p9Q5J11C1+mGRYaY8O/Xb5oKs7Rmpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SRq9tpH1; arc=none smtp.client-ip=209.85.219.42
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-8ccdef9f3d4so29068716d6.2
+        for <linux-rdma@vger.kernel.org>; Sun, 14 Jun 2026 06:07:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781442293; x=1782047093; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1781442449; x=1782047249; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6GPmxYA8Yy2PWTqYiGecskY9yfd7+d/20uBDlyc5AuA=;
-        b=APtjPMMJr7psP9tQyrGlwR1AqtdHU4ElC4d1EJ0WpJ6QfGFQNwskHSVyW3oqXiGQq9
-         e+JhC3zwee1uPvy3qSA15Qu5KJCoIlciXKwr2Q+W7LfkRmb7Ecg4HmivVMvWVtrE+5wW
-         0Vz3rLi05eFaQnv9SrrBul9WjSRvWRwtxKA1T7vmwb3trIMDiLt0hGW46vFcLSUk68wV
-         TngkOQpWz3s4A3tmh5Kb8IYqZH1y/scDOSOr1KIbv0Y0ayaqWEirG31dH4j9SxI9B8Ps
-         kiwsCORessnXzjdIYd3oPF4hc6Wbpp+EJu9L+J6CY0aHobzx0kTs7+0NOXbrWbPQliBr
-         frnA==
+        bh=ZbG/GGGyFndF/9JwUnN3ANh2Jf2/Fs6WVVXGFaUozYY=;
+        b=SRq9tpH1hzQGGj3HZ7QNN4clizj8IxdKxwTMKleKLIK1MJT3hd2hYNMdXrYhXoJu5f
+         5JDsA/ohexG+RD4SYQbO98TPc3jhhHrlt/qdTFZmnxyHZZeuSe2Oxf9OFhHeN0VV+4ml
+         zTuu3FF967968bNrhlXUHLfu4FyG4rPOq1L0/jPiYtnsIxfkNwX12/RNLbKap6qUSZUY
+         5s3/bglicpeiY0MHeYHBwWFdLpcTCMfqDHsrBrrAfVlilHP64KH5uwEGgZiNaTs63ELT
+         vs0EgESJauBuA13lsq/n/PU/pblXF4/drP4LQ6JGutx6zO4a7FzKaOoTt852+Jq3DXlj
+         G1vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781442293; x=1782047093;
+        d=1e100.net; s=20251104; t=1781442449; x=1782047249;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6GPmxYA8Yy2PWTqYiGecskY9yfd7+d/20uBDlyc5AuA=;
-        b=I8ugbKqKw9LobBK8ClO3vwJQI+ESWtiK7ZNr5JNGSkzZQ/wzYbsVcWBF8cOqRRw6ya
-         sZaFxQItiRJc12kvQif2kVaHJGIxgVkYxhTFHUnLZ79A8eKUmhVtp5w+TeNVdqkU59RG
-         6gdTyoHfh4i1tp7lba3uHNwG9WZBcwlMZ6jWGdI7X9aHARtUud6xO5+EXsMfSII6wgEf
-         Ng+NBsoOQKbozHquXrfG1uezLhtXxVfMf3K4WEwtDOLavodSgmqZ2wPr4uh/OE7dNonv
-         r9+NWGHYqrzerygwxVftAwgp7CiSm96uIokcb8BSHgd3OreEtXnSb4PyflHLFd8ZunPF
-         +aqg==
-X-Forwarded-Encrypted: i=1; AFNElJ9LDx+vK7M+A42I0CJ4rFCVXT1wbAcbSc0b4qwaPa1E0fDXGLIU5f1Rb6FUVGj8914V7c3CXctcaDZ+@vger.kernel.org
-X-Gm-Message-State: AOJu0YxIn/0ZNbmFyc0xP2ixdrnVpk0r9BBojXjjH8a/VHzWchXa3S3+
-	y3zAEVonNkwNu9jTkkRpMbDf9FidAEWVJbsY170D2CzsLPFxzUigTkB1
-X-Gm-Gg: Acq92OFpCCOVb+HeFTCHwKWf4F+uJHfICsmKGq9/N1j5UuXo7j0/qhwLCj7/mLNp5F1
-	ovDxgv4pOBKE1MDAX6DT1MU3gtJl/em5mmwbuCOUgjzp5ASxKVe7eWBaVmzxupqLpjX0s8NRRLo
-	+dtwjpLmMMFoU3BhYG9WbKCDmarwQ9mPDJJxYhKoF/2TgRQIorUNx4R7hkLSWCgTEzEnnA+roEQ
-	j+okg0Pzp9hKZzP8b9veJPjqb94u64AnRCDU7Pt/h5f+N6jsqlILPsYFtuAYd0t2Fg5EbTKUr13
-	JaSpW0Wx0QpR9vNLjBW32/mVVDpdUT0aTr5HF/p94owpJeGosm+A+25DzMnI/EAP4WQa+3dASIj
-	roEccbtjTIDPq+0Ku4mtlZKjSiOs8Je3oZ4A/pGP6VGTN9zIVgL2qSz0Rg2u6QHzy7isK5Sgv/c
-	J+2SVd6kWLfLTIJ45VRxRUGRAaXXF17MrlJuMz2zZDWPtVjtYwCAN6vv+O8fit7D+2NQcgtUSGc
-	E5DHLYKV5/Lfxp2GN6mLzxBl7VEe+G7UJxKSsz0PK8=
-X-Received: by 2002:a05:622a:a0f:b0:517:9593:edaa with SMTP id d75a77b69052e-517fe4d7868mr162415471cf.31.1781442293315;
-        Sun, 14 Jun 2026 06:04:53 -0700 (PDT)
+        bh=ZbG/GGGyFndF/9JwUnN3ANh2Jf2/Fs6WVVXGFaUozYY=;
+        b=Pt0xDiNjLJJ55IbbLoarw6sVFmL0mSQyVbkJH6NEzDYuV6ixKjziXAG76m6ZNjh+zI
+         3pg3w9uyQgasL7alsoKVeNo5Ay+20LgfiCMzMSeCfJkmxuhWXtRBTzAE0tc3Jwq+W6pG
+         nVrRRouk6viMtFNT+wliq8o9ColiZb7c31ZovhYCiTqBGJ36SuvcF/ByIE4Os65YBQRT
+         7eE1k4DTjQKh0yocXNgZ15QC3fRI6w8xnQ03+iKnXSzLcj0yTZ08Nkg9kkHxNq+43Luq
+         Ju3R+sRH79WuTVltgi18m1Vie6Jvxt9uSsaC0BZxnb7iBSAf0yENmBklTcpviZVf10fT
+         Vzmw==
+X-Forwarded-Encrypted: i=1; AFNElJ96oAHGKcP2KNQVkwuvuEEzpRq/W/aTzM3/Q4FQM2OhGOCp6PxtzcxhQlM0ytn3bJgecvOmVpM5y7Iq@vger.kernel.org
+X-Gm-Message-State: AOJu0YxKqBbcMxtNrqXMoHvL8ChaAIAzLx4ZS9D2y0HD8awLy28DbA3L
+	ntE/aoKPVepS4YZrG7XHejmBPjg89JtozX1m401M1z9I/4oDtfux5X/5
+X-Gm-Gg: Acq92OH5eYhJWFZdpcppp3L+ekho01S7vyI3yshOXaVsqVrErveL8c+k7mvXIHpMSg6
+	UVxYdEOcuX7NV4ZZGYIoExX6AWz92GMvNq021yoiWVybH8dSh5nKyefE5e5y8x7rwwrpKlc46AN
+	BTJPY1JbALbgjScK1xuIj3vhUZunvW3gjEws9eB5I2Oj1NokjTaf3sBrH3cWwRk4Q0gJ7q/dU0j
+	eRzilGRF3DINo0tvv3tPWjDnEbzBNwebCebPuPi/Etij+hBvsnMHujETXVgUZWLLjyXpU8bTTMn
+	seHvjiOt97xAIaAZnLPvVWm/yz3IoKam08g9a0/fT5KGTd5tyBme3r9C547mqHJCvPu77ZWyxeU
+	ehparOiURCfwBD3nkFvufC3mVkGdeaYey4bsCxWfwaCR291AfobLp6MiVcLpdO/AVpQmCNWYG+1
+	SfbqvpwPa2uMk/kU5WbA0RlhafXQEC9F4UcFX2BrRXWWuMf2ZJFEbyG8IFOm6745KW4QOC6GKNm
+	t3Wo2HHusTcCsp9er7CzTpkJgp/RXcLJEi0uRXO9Co=
+X-Received: by 2002:a05:6214:2e43:b0:8cc:f0e0:f90b with SMTP id 6a1803df08f44-8d45087b9a9mr125364426d6.40.1781442448883;
+        Sun, 14 Jun 2026 06:07:28 -0700 (PDT)
 Received: from server0.tail6e7dd.ts.net (c-68-48-65-54.hsd1.mi.comcast.net. [68.48.65.54])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-517fb854290sm73644611cf.31.2026.06.14.06.04.52
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8d30570c305sm77413366d6.48.2026.06.14.06.07.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jun 2026 06:04:52 -0700 (PDT)
+        Sun, 14 Jun 2026 06:07:28 -0700 (PDT)
 From: Michael Bommarito <michael.bommarito@gmail.com>
-To: Zhu Yanjun <zyjzyj2000@gmail.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>
-Cc: Bob Pearson <rpearsonhpe@gmail.com>,
+To: Allison Henderson <achender@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Eric Dumazet <edumazet@google.com>
+Cc: Simon Horman <horms@kernel.org>,
+	netdev@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
+	rds-devel@oss.oracle.com,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] RDMA/rxe: destroy the mcg when rxe_mcast_add() fails in rxe_get_mcg()
-Date: Sun, 14 Jun 2026 09:04:43 -0400
-Message-ID: <20260614130443.2517578-1-michael.bommarito@gmail.com>
+Subject: [PATCH net] net: rds: check cmsg_len before reading rds_rdma_args in size pass
+Date: Sun, 14 Jun 2026 09:07:25 -0400
+Message-ID: <20260614130725.2520842-1-michael.bommarito@gmail.com>
 X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -97,108 +101,88 @@ X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-22215-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:zyjzyj2000@gmail.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:rpearsonhpe@gmail.com,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-22214-lists,linux-rdma=lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,kernel.org];
-	FORGED_SENDER(0.00)[michaelbommarito@gmail.com,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:achender@kernel.org,m:davem@davemloft.net,m:kuba@kernel.org,m:pabeni@redhat.com,m:edumazet@google.com,m:horms@kernel.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:rds-devel@oss.oracle.com,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER(0.00)[michaelbommarito@gmail.com,linux-rdma@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[michaelbommarito@gmail.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ALIAS_RESOLVED(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 3433468110F
+X-Rspamd-Queue-Id: 5CA4E681137
 
-rxe_get_mcg() inserts the new mcg into rxe->mcg_tree and takes the tree
-reference before calling rxe_mcast_add() outside mcg_lock. On failure
-the error path frees the mcg with a bare kfree() without erasing the
-tree node or dropping the tree reference, so the freed mcg stays linked
-in mcg_tree and the next __rxe_lookup_mcg() on the same mgid uses it
-after free. rxe_mcast_add() fails reachably from an unprivileged caller:
--ENODEV when the backing netdev is removed, or a propagated dev_mc_add()
-error.
+For RDS_CMSG_RDMA_ARGS, rds_rm_size() calls rds_rdma_extra_size() after
+only CMSG_OK(), without checking that cmsg_len covers struct
+rds_rdma_args. rds_rdma_extra_size() reads args->local_vec_addr and
+args->nr_local, so a short control message reads past the copied control
+buffer. The value bounds an allocation count, so this is an
+out-of-bounds read in the kernel, not a leak to user space, and an
+unprivileged AF_RDS socket can trigger it with one short cmsg.
 
-Tear the mcg down with __rxe_destroy_mcg() on the failure path, as
-rxe_attach_mcast() already does.
+The two later RDS_RDMA passes (rds_cmsg_rdma_args() and the rdma-bytes
+loop in rds_sendmsg()) already reject cmsg_len < CMSG_LEN(sizeof(struct
+rds_rdma_args)); only this size pass does not. Reject it the same way.
 
-Reproduced under KASAN on QEMU by forcing the rxe_mcast_add() failure;
-the use-after-free in __rxe_lookup_mcg() is gone after this change.
+Reproduced under KASAN on QEMU via a KUnit driving the real
+rds_rm_size(); the out-of-bounds read is gone after this change.
 
-Fixes: a926a903b7dc ("RDMA/rxe: Do not call  dev_mc_add/del() under a spinlock")
-Cc: stable@vger.kernel.org # v5.18+
+Fixes: ff87e97a9d70 ("RDS: make m_rdma_op a member of rds_message")
+Cc: stable@vger.kernel.org
 Assisted-by: Claude:claude-opus-4-8
 Signed-off-by: Michael Bommarito <michael.bommarito@gmail.com>
 ---
-Reproduction (v7.1-rc4, x86_64 QEMU/KVM, KASAN, Soft-RoCE):
+A short RDS_CMSG_RDMA_ARGS placed at a page boundary makes
+rds_rdma_extra_size() read the args fields past the allocation:
 
-Forcing rxe_mcast_add() to return -ENODEV, an unprivileged ATTACH_MCAST
-on a UD QP leaves the freed mcg linked in mcg_tree. On the stock kernel
-the next lookup reports
+  BUG: KASAN: slab-out-of-bounds in rds_rdma_extra_size
 
-  BUG: KASAN: slab-use-after-free in __rxe_lookup_mcg
+an 8-byte read. On stock it faults; patched it returns -EINVAL with no
+report. Controls (well-formed args; a short cmsg with args still in
+bounds) drive the same pass cleanly on both trees.
 
-and the subsequent rb_erase() panics. Patched, the forced failure
-returns cleanly. Control: with injection disabled, re-attach and detach
-of the same MGID and a two-QP join/leave are KASAN-clean on both trees.
+No in-tree selftest exercises rds_rm_size(); I can send the KUnit suite
+as a separate net-next patch if wanted, kept out so the fix is not held.
 
-tools/testing/selftests/rdma has no rxe_mcast coverage; harness off-list
-on request.
+ net/rds/send.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
- drivers/infiniband/sw/rxe/rxe_mcast.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+diff --git a/net/rds/send.c b/net/rds/send.c
+index d8b14ff9d366b..6ca3192b1d8af 100644
+--- a/net/rds/send.c
++++ b/net/rds/send.c
+@@ -967,6 +967,8 @@ static int rds_rm_size(struct msghdr *msg, int num_sgs,
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mcast.c b/drivers/infiniband/sw/rxe/rxe_mcast.c
-index 5cad720..7f148d4 100644
---- a/drivers/infiniband/sw/rxe/rxe_mcast.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mcast.c
-@@ -196,6 +196,8 @@ static void __rxe_init_mcg(struct rxe_dev *rxe, union ib_gid *mgid,
- 	__rxe_insert_mcg(mcg);
- }
- 
-+static void __rxe_destroy_mcg(struct rxe_mcg *mcg);
-+
- /**
-  * rxe_get_mcg - lookup or allocate a mcg
-  * @rxe: rxe device object
-@@ -247,7 +249,13 @@ static struct rxe_mcg *rxe_get_mcg(struct rxe_dev *rxe, union ib_gid *mgid)
- 	if (!err)
- 		return mcg;
- 
--	kfree(mcg);
-+	/* mcg was made visible in mcg_tree; unwind the insert before freeing. */
-+	spin_lock_bh(&rxe->mcg_lock);
-+	__rxe_destroy_mcg(mcg);
-+	spin_unlock_bh(&rxe->mcg_lock);
-+	kref_put(&mcg->ref_cnt, rxe_cleanup_mcg);
-+	return ERR_PTR(err);
-+
- err_dec:
- 	atomic_dec(&rxe->mcg_num);
- 	return ERR_PTR(err);
+ 		switch (cmsg->cmsg_type) {
+ 		case RDS_CMSG_RDMA_ARGS:
++			if (cmsg->cmsg_len < CMSG_LEN(sizeof(struct rds_rdma_args)))
++				return -EINVAL;
+ 			if (vct->indx >= vct->len) {
+ 				vct->len += vct->incr;
+ 				tmp_iov =
+
 base-commit: 5200f5f493f79f14bbdc349e402a40dfb32f23c8
 -- 
 2.53.0
-
 
