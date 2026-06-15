@@ -1,67 +1,73 @@
-Return-Path: <linux-rdma+bounces-22264-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22265-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id AJwPDLVXMGqMRwUAu9opvQ
-	(envelope-from <linux-rdma+bounces-22264-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2026 21:51:17 +0200
+	id Ne/1INNjMGrySQUAu9opvQ
+	(envelope-from <linux-rdma+bounces-22265-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2026 22:42:59 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FD92689951
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2026 21:51:16 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCA3268A031
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2026 22:42:58 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b="a/WOEzyY";
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22264-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22264-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=d1HKdjLw;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22265-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22265-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 619713084B90
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2026 19:49:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 60DE0308295D
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2026 20:42:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D075C3B6BE3;
-	Mon, 15 Jun 2026 19:49:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73D183B71A2;
+	Mon, 15 Jun 2026 20:42:51 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0ABB31717C;
-	Mon, 15 Jun 2026 19:49:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 647BC286D5E;
+	Mon, 15 Jun 2026 20:42:50 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781552972; cv=none; b=Rz7I40L203aSv42onJCqW2bSs5b4IQM2UwWGFPSMdx9dOBX6fNBfxsEH4tUPjmwMl2U7MLNEL/D7F0UZ9cQiyTaxE3XVvMqGVRmhu0/BAmUrD2IfFfnhzDky7hQBJtedFsZhQ/rJcgcoveVwLbb1WdoseZz8Xlc/tMnzrsPE2HA=
+	t=1781556171; cv=none; b=LbzJ/zHav9oGp4dAD8/Cz3lgPG5odrqHAd/2Y3Tua4sy9fXq5K/xwIg0EEWyppVre6QzVtafx+N60w82VgutiPzwN1JvX8tPRR4+b0cZXQb5PSK54QCcpGqSMDmY4Rr6OwJnya7TpGSdq5xoB/dMPPRi92Zhtk5bLv5yeyJnT7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781552972; c=relaxed/simple;
-	bh=GYDjYLQ9gRzm8R0WxEs3pazuhNSTAW7CY7oybNEvQ1Q=;
+	s=arc-20240116; t=1781556171; c=relaxed/simple;
+	bh=aPTdsFC7OL8pWaV8feS5opuevgkA+VecbasCdeVpSeg=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=e2XiDXswGJP+E4mJrwI8MtxWGp+jGXYR2xPThSPTd9QlVe/ebuI7b7JFyM+YUGGhJiOmBvGoAoIDeJVl2FCxmgSB1pNO5S0jEl/rkmDXQ7K477UeCpRNXpzocMmFtFKNTJtZD1EjIlWd3z7BUomSWgukZ9mO/I6CKTwNnSs1/5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a/WOEzyY; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8961C1F000E9;
-	Mon, 15 Jun 2026 19:49:30 +0000 (UTC)
+	 MIME-Version:Content-Type; b=bnoVxxtM/NOj5nygLqssP6kZ4Fu3/XsV1hA2mtSI0jOt6bKsy5ET6pqxzDpGZ7YuLTcAt96+TxerwPvl/xp5vuxDrGTJlkbQ2KmuYuDvKVjiZ3xXxGH0YwnSzCOHUoVWgHdyqRM/NtzbopHuZLo6c9ff6ahOvOBFvW8zKtjZ34w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d1HKdjLw; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 813AE1F00A3D;
+	Mon, 15 Jun 2026 20:42:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781552971;
-	bh=fxZ08tIsAmrwl6e/+2Kd3NJKBNmMgE47ibSU51+0cJ4=;
+	s=k20260515; t=1781556170;
+	bh=nMnhxfNIZVyV93CrAHISz+K1WU9OroQwaebImzftECY=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=a/WOEzyYrk8XJL+TtC6qwssKhtXAfnulfNjVf8UKyzDM0Wzch4/pXVqrfyXSLWqCA
-	 cBKv4uX+Oclb0YpgI1uPANGMMQ61dGBcKDuDDl8/JnZoXxzY/E/VSPAvyP+OUSTFJy
-	 ONk5W4Gb8rqhAYVeBZvms7cTSlUrpMZjdPpvH2udcN1FuNPhLOUWT0VXQ3TXhK6/6R
-	 as5R0MS76nIFma07QAqNmvCwWPSZrqjELvlU6lkvPdzHVfE+yL07lDMRUJjxTktRGz
-	 kiCWhP2Gdvy2zF4fLhhre0o6Qda+6XvU662BgbEhg5GRsEuDplhcDCQlU/bBTKNQl/
-	 zCtH4nLzoTKYw==
-Date: Mon, 15 Jun 2026 12:49:29 -0700
+	b=d1HKdjLwer4f02pwmKsxGAre7uZHyuXLCAFi/cGSJVg9/QJcLIjK1XgQi1MrjpW35
+	 ECfZ/zEhxc2e0rSqjAXLKUqsNdX2CizYp3sUP7X7QCQKH1xDjerrukAAyjJ2dPzAGy
+	 /6ZNzquNxJuNEZOVjDqDSuyOqZUjoaPvfKirr9VSIYC2ghiUz91NdW1kFYA2rDHqAE
+	 zFb13JkG6klttPUh9WjcPyrX9NTacXowa/uYomdRYCTX/4z5UZ5YSSXstiqSJIzmoS
+	 ahHeu5ukRiw0IvdPAj/gIEbEbCNYsLiXQTsCpNGVuB/T+5k5ogh9FOlqw9uOgiz6TA
+	 Z1ikLUSwVDVnA==
+Date: Mon, 15 Jun 2026 13:42:47 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Ren Wei <n05ec@lzu.edu.cn>
-Cc: linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
- netdev@vger.kernel.org, alibuda@linux.alibaba.com,
- dust.li@linux.alibaba.com, sidraya@linux.ibm.com, wenjia@linux.ibm.com,
- mjambigi@linux.ibm.com, tonylu@linux.alibaba.com, guwen@linux.alibaba.com,
- ubraun@linux.ibm.com, stefan.raspl@linux.ibm.com, davem@davemloft.net,
- yuantan098@gmail.com, zcliangcn@gmail.com, bird@lzu.edu.cn,
- lx24@stu.ynu.edu.cn, d4n.for.sec@gmail.com
-Subject: Re: [PATCH net 1/1] net: smc: fix splice entry lifetime imbalance
- in smc_rx_splice
-Message-ID: <20260615124929.6f98051f@kernel.org>
-In-Reply-To: <192d1b44ed358ca143f44ef167d14153bccc51e9.1781097957.git.d4n.for.sec@gmail.com>
-References: <cover.1781097957.git.d4n.for.sec@gmail.com>
-	<192d1b44ed358ca143f44ef167d14153bccc51e9.1781097957.git.d4n.for.sec@gmail.com>
+To: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com, leon@kernel.org,
+ longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+ shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+ ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
+ linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ stephen@networkplumber.org, jacob.e.keller@intel.com,
+ dipayanroy@microsoft.com, leitao@debian.org, kees@kernel.org,
+ john.fastabend@gmail.com, hawk@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, ast@kernel.org, sdf@fomichev.me,
+ yury.norov@gmail.com, pavan.chebbi@broadcom.com
+Subject: Re: [PATCH net-next v10 0/2] net: mana: add ethtool private flag
+ for full-page RX buffers
+Message-ID: <20260615134247.0bd7e16e@kernel.org>
+In-Reply-To: <ajBRwYftEol8IE49@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20260602202801.1873742-1-dipayanroy@linux.microsoft.com>
+	<ajBRwYftEol8IE49@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -77,21 +83,21 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22264-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22265-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	FORGED_RECIPIENTS(0.00)[m:n05ec@lzu.edu.cn,m:linux-rdma@vger.kernel.org,m:linux-s390@vger.kernel.org,m:netdev@vger.kernel.org,m:alibuda@linux.alibaba.com,m:dust.li@linux.alibaba.com,m:sidraya@linux.ibm.com,m:wenjia@linux.ibm.com,m:mjambigi@linux.ibm.com,m:tonylu@linux.alibaba.com,m:guwen@linux.alibaba.com,m:ubraun@linux.ibm.com,m:stefan.raspl@linux.ibm.com,m:davem@davemloft.net,m:yuantan098@gmail.com,m:zcliangcn@gmail.com,m:bird@lzu.edu.cn,m:lx24@stu.ynu.edu.cn,m:d4n.for.sec@gmail.com,m:d4nforsec@gmail.com,s:lists@lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[34];
+	FORGED_RECIPIENTS(0.00)[m:dipayanroy@linux.microsoft.com,m:kys@microsoft.com,m:haiyangz@microsoft.com,m:wei.liu@kernel.org,m:decui@microsoft.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:pabeni@redhat.com,m:leon@kernel.org,m:longli@microsoft.com,m:kotaranov@microsoft.com,m:horms@kernel.org,m:shradhagupta@linux.microsoft.com,m:ssengar@linux.microsoft.com,m:ernis@linux.microsoft.com,m:shirazsaleem@microsoft.com,m:linux-hyperv@vger.kernel.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:stephen@networkplumber.org,m:jacob.e.keller@intel.com,m:dipayanroy@microsoft.com,m:leitao@debian.org,m:kees@kernel.org,m:john.fastabend@gmail.com,m:hawk@kernel.org,m:bpf@vger.kernel.org,m:daniel@iogearbox.net,m:ast@kernel.org,m:sdf@fomichev.me,m:yury.norov@gmail.com,m:pavan.chebbi@broadcom.com,m:andrew@lunn.ch,m:johnfastabend@gmail.com,m:yurynorov@gmail.com,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[vger.kernel.org,linux.alibaba.com,linux.ibm.com,davemloft.net,gmail.com,lzu.edu.cn,stu.ynu.edu.cn];
+	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me,broadcom.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
@@ -100,35 +106,22 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 8FD92689951
+X-Rspamd-Queue-Id: CCA3268A031
 
-On Thu, 11 Jun 2026 01:54:11 +0800 Ren Wei wrote:
-> smc_rx_splice() hands candidate pages to splice_to_pipe() without taking
-> references for the lifetime of each splice entry first. That breaks the
-> splice ownership contract in the VM-backed RMB path.
+On Mon, 15 Jun 2026 12:25:53 -0700 Dipayaan Roy wrote:
+> Just a gentle ping on this series. The approach was agreed upon, and it
+> has picked up a few Reviewed-by tags as well.
 > 
-> splice_to_pipe() drops unqueued entries through spd_release(), while
-> queued entries are later dropped through the pipe buffer release
-> callback. The current code only tries to take page references after the
-> splice succeeds, and it derives the number of queued VM pages from a
-> mutated offset value. This can underflow page refcounts and trigger a
-> use-after-free. It also leaves the socket lifetime imbalanced in the
-> multi-page VM case, where one sock_hold() can be followed by multiple
-> sock_put() calls.
-> 
-> Fix this by taking the page and socket references for every candidate
-> splice entry before calling splice_to_pipe(), and by releasing the
-> matching private state, page reference, and socket reference from
-> smc_rx_spd_release() for entries that never get queued. This makes the
-> SMC splice path follow the normal splice lifetime rules and removes the
-> broken post-splice VM page counting entirely.
+> Please let me know if you need anything else from me, or if I should
+> resend it to collect the tags.
 
-SMC maintainers please review.
+Don't recall now what the exact sequence was but pretty sure this 
+no longer applied after some other mana series was merged.
 
