@@ -1,200 +1,171 @@
-Return-Path: <linux-rdma+bounces-22258-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22261-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Q4dHAXI6MGq2QAUAu9opvQ
-	(envelope-from <linux-rdma+bounces-22258-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2026 19:46:26 +0200
+	id szM9IIdJMGqgQwUAu9opvQ
+	(envelope-from <linux-rdma+bounces-22261-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2026 20:50:47 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id E15D2688F05
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2026 19:46:24 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDF9E6894F4
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2026 20:50:46 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=ankey-net.20251104.gappssmtp.com header.s=20251104 header.b=On5wCwtp;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22258-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22258-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=none;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=QHhWr0QO;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22261-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22261-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id EAB93303FB67
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2026 17:46:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 37F9230B32E8
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2026 18:50:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F9262DF153;
-	Mon, 15 Jun 2026 17:46:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64CB53ACEEB;
+	Mon, 15 Jun 2026 18:50:42 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63D3E241695
-	for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2026 17:46:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2366C3AB294;
+	Mon, 15 Jun 2026 18:50:41 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781545583; cv=none; b=RUoYXwBUYwGrRcndCHega70etwbi7i57BDNWlFsgSuN29e6tSTY/U+Y30J0dvLsWsIIy5AwpRBn0H6ew/fqq3HGPI5FbsJDiPZPT3WNo8rVJwGoxMoNXRKrVQEA29UZIaLQNiXaSkAKCLyxf31EyTAXPALzCrv47SzWtb7WZLtw=
+	t=1781549442; cv=none; b=OWdpzolzDY+75jrF15s6PVZyaXSgAXZaPXdflG+HxjT45rQJ9rszLiP7rUnyTJBUFiO3JzocqdPwUJJBe3RZqXaFidlO3klqYDZsyC047PjGpNZ9VtzwDLeQnhphbkF/JkJ3ZY1GB9bqFeOss5IUTXptsU1W984QNEpxysmGhuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781545583; c=relaxed/simple;
-	bh=ocWgTOMXwjI5TVoyjUAYU/X/PDgJy39gHQDLgMO3Sw4=;
-	h=From:Subject:Date:To:Cc:Message-ID; b=YlkGzQL1lU6io0K8psMq4Fk8Q4DhZ8m6A9UWgp4OR35+I6A5bT/2zIe3XHLVb0fMoDMb4voRqesZu+0GJnjDe7rKxnUFNKnRRAMaS4YnpWqLG8SSEWGBqI5sXpkJJGM8ZYf45qu+UfcmpNO1rnsVeHqyfRfEIhZs3oQFEFXjrCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ankey.net; spf=none smtp.mailfrom=ankey.net; dkim=pass (2048-bit key) header.d=ankey-net.20251104.gappssmtp.com header.i=@ankey-net.20251104.gappssmtp.com header.b=On5wCwtp; arc=none smtp.client-ip=209.85.210.178
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-842307473b5so2554165b3a.2
-        for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2026 10:46:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ankey-net.20251104.gappssmtp.com; s=20251104; t=1781545581; x=1782150381; darn=vger.kernel.org;
-        h=message-id:cc:to:date:subject:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qetJH6uAcYEaNA7WIluzKnDC7IXjgavBC++l+5U3BLA=;
-        b=On5wCwtp1pRC//8FxcyVQdPIIYJ8md7OxsbdrFC5TeeDB+qJ7En0EZ+l+966KKogis
-         PV6pOh2cf5bcGKzyuu6B3v6MR+Sld5jzWd3xZLfm4YEkBIIT0dvK1gm+NrgwXX1D+3C3
-         LhEwApg4gRtFX5dO3cdJw4SORuHloUcsTwI3bKFRIsaOEMvWbhQrrPQrK/jHn05fzEZL
-         TkzDLxpziMM/K6Cbq202f2v5FCiqU8tHX5hkMTQPmIlmDfvkcVn8oeMO8nmfmiCtm++F
-         q86y4EbPVZ9LWqDMAi/vT83BO7qLwrKhlDSzsig8m64AtvMeG6YCQaEb/DIKGDeRb/U7
-         IYrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781545581; x=1782150381;
-        h=message-id:cc:to:date:subject:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=qetJH6uAcYEaNA7WIluzKnDC7IXjgavBC++l+5U3BLA=;
-        b=m0QuRz+HX7Y9FEpu7dg5G0omM22spwWaRgAhaP60yIyNNn9toq3S/0EukYmGwuTRhY
-         2RziSk1+CTuUrgsLYmiOQbvpiIIWpj6g1PCfXrrjKMHIy2/r++ftuHrOG6yFXDXSlwMN
-         7HiVbvutljt24Xas71no5BX4npckvBvpdyibfy22mOvb8XKK0fvDo9Nr/guhVthSk27O
-         goo1j7micBaxrtMyVmx/Gi+noAnKeXYNxjqQhe6hstXfDYw2UH9blQZRxu1SbDIVkLgC
-         4v1w0Gf2d1z6lnfP45Teymmde+6CGjotTHzlVFCex8D1AYXHJqWj9luvNasN3hFUkjS4
-         cfqA==
-X-Forwarded-Encrypted: i=1; AFNElJ83PyOr8fbr1HLmIidh+/QHnNIw6utSWaoxj6m4XNxOHP8xj9bMLTPYxGoMHAGoj8PBUvvcJrnKFa2w@vger.kernel.org
-X-Gm-Message-State: AOJu0YzcwTIrGSGgsNdoA5A7E8DnlGlpltvI7rtHbg3x6WWEhQidHnFw
-	U/LXhxl8eJIXr75A7BJP2C0mVv7Unfrm2Vc5/A0SVQGfSbqQvwzAAbjjvPTnRmcBbQ==
-X-Gm-Gg: Acq92OFSE7zip1baJ3ROiug3Iq6pLVhAmXc7trZ++SWQ1rKAnZsrpHVteR6Vs7SUHnY
-	HfTKctgT+6VKYbPRPpr3c8PIjo2BN/eQINCm8XVN3S5P8EbBiIDvlr/dp4Mc/DGMb9Xy0oIBR3o
-	jFKWncSc2O/Jwh5pkZ6DSJzfd/XJz2OW+LN+e7XdtBVEhhhgYxtj9a00adff8D5UBHG00HFGcsb
-	B/U9FTCzajG2TOglKfJavBjLkQpy4hjrzoF57yDmn2w0kvn0j8CKLvmBQIxcawSN88o1QMDCRbj
-	BPDSEdynhCJv1CVbPxUIrjEgse2SnvjMGFxxWo3AJVqHdS6Ia999yqJiUtJcQxoetIi//IiMuLX
-	BNUdmryV1tKNBq+6wjbsvmBrQzuljUVbo5dFwLU0o0HKp1rlH3+ya16VaZLqnRD9qKWXi71iuuk
-	kuISAlwMMWQVdQlU1f03Go3ntmEBePfrHC79Or2rzNMoxBlXY43kCqkNIROTC3jXDH7rMetL57b
-	3PVmaIgM3gEm6hC/s2i6gMs9vHO9ZAKZAERL7pQJFnetHA=
-X-Received: by 2002:a05:6a00:1311:b0:842:7867:430b with SMTP id d2e1a72fcca58-8434ce40e46mr16487940b3a.29.1781545580609;
-        Mon, 15 Jun 2026 10:46:20 -0700 (PDT)
-Received: from atimofey-ld1.linkedin.biz ([52.149.25.61])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8434accae18sm11214086b3a.17.2026.06.15.10.46.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2026 10:46:19 -0700 (PDT)
-From: Alex Timofeyev <sashka@ankey.net>
-Subject:
- [PATCH rdma-next v1 0/2] RDMA: fix cross-NIC same-host IPv6 RDMA-CM connect
-Date: Mon, 15 Jun 2026 17:46:19 +0000
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- linux-rdma@vger.kernel.org
-Cc: Parav Pandit <parav@nvidia.com>, Edward Srouji <edwards@nvidia.com>,
- Vlad Dumitrescu <vdumitrescu@nvidia.com>, stable@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <1781545579.1-sashka@ankey.net>
+	s=arc-20240116; t=1781549442; c=relaxed/simple;
+	bh=Ug8ZP4OBqA1oZ3Dvhxb0xU8a/MfhAew0XbEcGtLPvko=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=rE44WHvnueLJVfVFrIYt9YtMVlQAigF108oy/fSo27NHRisjHP3pq20N/VTvVeKyE8Gx/udPFobEqi3m1Hjn10WTSZBrjqzmxNtBY13RXiJkb6jnVViJHbUOrCNVMX6eHAcj3tSL0fJT4yT5P5Cebzsq/8f9SOeFZvWt8xCE14w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QHhWr0QO; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0514F1F000E9;
+	Mon, 15 Jun 2026 18:50:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1781549441;
+	bh=LNHX3r/9VU1VGfFBkQvGX1PcR0n8q+2QC9RgeUF7Abw=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc;
+	b=QHhWr0QOYrBoCfPEVcAb4PDmk7x1qzyOYV42z+8dCUKxjodT0A59rT55mmduYBKCF
+	 r79oD9jPiXt9A1fGX7EpmVLLN1GVz7cLk2YxV5gGZK0Seh1diEKAm64brZNm+mRC2/
+	 SBrGroDHerbRInjvqj8LGgpCSuwKaac+7fdbLf6X41YY5C4P8aAVhO1xqzGB4NS9tM
+	 0RAgTglbOMMtGUB0ymCBlY9FAfqVmgHYNo37yfK2+sK53rbgQ/jdobhAP+B7pRckm+
+	 GDE5Be6ulSH3UfruJfPgBShZV+rOqtUA+5aShlIA+OHUHI46ZoGJ6f4Ub7wDCj641X
+	 nWDphQpwwfx8Q==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 56A263839A06;
+	Mon, 15 Jun 2026 18:50:37 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next V3 00/15] net/mlx5: Add switchdev mode support
+ for
+ Socket Direct single netdev, part 2/2
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <178154943614.246883.11702954511746985272.git-patchwork-notify@kernel.org>
+Date: Mon, 15 Jun 2026 18:50:36 +0000
+References: <20260612113904.537595-1-tariqt@nvidia.com>
+In-Reply-To: <20260612113904.537595-1-tariqt@nvidia.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
+ leon@kernel.org, mbloch@nvidia.com, shayd@nvidia.com, ohartoov@nvidia.com,
+ edwards@nvidia.com, msanalla@nvidia.com, horms@kernel.org,
+ gbayer@linux.ibm.com, kees@kernel.org, moshe@nvidia.com, parav@nvidia.com,
+ phaddad@nvidia.com, netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, gal@nvidia.com
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[ankey-net.20251104.gappssmtp.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22258-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22261-lists,linux-rdma=lfdr.de,netdevbpf];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:parav@nvidia.com,m:edwards@nvidia.com,m:vdumitrescu@nvidia.com,m:stable@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[sashka@ankey.net,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_SENDER(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	FORGED_RECIPIENTS(0.00)[m:tariqt@nvidia.com,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:saeedm@nvidia.com,m:leon@kernel.org,m:mbloch@nvidia.com,m:shayd@nvidia.com,m:ohartoov@nvidia.com,m:edwards@nvidia.com,m:msanalla@nvidia.com,m:horms@kernel.org,m:gbayer@linux.ibm.com,m:kees@kernel.org,m:moshe@nvidia.com,m:parav@nvidia.com,m:phaddad@nvidia.com,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:gal@nvidia.com,m:andrew@lunn.ch,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	DMARC_NA(0.00)[ankey.net];
-	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[ankey-net.20251104.gappssmtp.com:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MISSING_XM_UA(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[sashka@ankey.net,linux-rdma@vger.kernel.org];
-	ALIAS_RESOLVED(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,ankey.net:mid,ankey.net:from_mime]
+	RCVD_COUNT_FIVE(0.00)[5];
+	ALIAS_RESOLVED(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FROM_NO_DN(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: E15D2688F05
+X-Rspamd-Queue-Id: CDF9E6894F4
 
-RDMA-CM cannot establish an IPv6 RoCEv2 connection between two NICs that
-live on the same host. This shows up on hosts that pin one process per
-NUMA-local NIC and let those processes talk to each other over each NIC's
-global IPv6 GID (e.g. a storage daemon with one engine per NUMA node on
-dual ConnectX-7). rdma_resolve_addr() and ib_send_cm_req() both return
-success, but the destination NIC silently drops the frame and the peer
-never sees the REQ; the connection times out.
+Hello:
 
-The bug has two halves, one on each side of the connection:
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-1) Send side (patch 1, drivers/infiniband/core/addr.c)
+On Fri, 12 Jun 2026 14:38:49 +0300 you wrote:
+> Hi,
+> 
+> This is part 2. Find part 1 here:
+> https://lore.kernel.org/all/20260531113954.395443-1-tariqt@nvidia.com/
+> 
+> This series enables Socket Direct single netdev to operate in switchdev
+> mode with shared FDB. SD single netdev combines multiple PCI functions
+> behind a single netdev interface. To support switchdev offloads, these
+> functions must participate in virtual LAG (shared FDB).
+> 
+> [...]
 
-   When the destination address is local, addr_resolve_neigh() copies the
-   *source* device's MAC into the path record's destination MAC. That is
-   right for true loopback (same netdev), but for a destination that lives
-   on a different netdev of the same host the destination NIC will not
-   accept a frame addressed to the source NIC's MAC and drops it in HW.
-   The fix resolves the netdev that owns the destination address and uses
-   its MAC.
+Here is the summary with links:
+  - [net-next,V3,01/15] net/mlx5: E-Switch, skip uplink IB rep load for SD secondary devices
+    https://git.kernel.org/netdev/net-next/c/597baeb467d8
+  - [net-next,V3,02/15] net/mlx5: devcom, expose locked variant of send_event
+    https://git.kernel.org/netdev/net-next/c/95e26588c84b
+  - [net-next,V3,03/15] net/mlx5: devcom, add DEVCOM_CANT_FAIL for non-rollback events
+    https://git.kernel.org/netdev/net-next/c/d5e77e4d3023
+  - [net-next,V3,04/15] net/mlx5: SD, make primary/secondary role determination more robust
+    https://git.kernel.org/netdev/net-next/c/4b918a198389
+  - [net-next,V3,05/15] net/mlx5: SD, add L2 table silent mode query support
+    https://git.kernel.org/netdev/net-next/c/13158554a302
+  - [net-next,V3,06/15] net/mlx5: SD, expend vport metadata for SD secondary devices
+    https://git.kernel.org/netdev/net-next/c/a1bfe9f1da83
+  - [net-next,V3,07/15] net/mlx5: SD, support switchdev mode transition with shared FDB
+    https://git.kernel.org/netdev/net-next/c/2a3fb8b2f450
+  - [net-next,V3,08/15] net/mlx5: E-Switch, notify SD on eswitch disable
+    https://git.kernel.org/netdev/net-next/c/232de72bdea2
+  - [net-next,V3,09/15] net/mlx5: LAG, store demux resources per master lag_func
+    https://git.kernel.org/netdev/net-next/c/eaaf1ff178a0
+  - [net-next,V3,10/15] net/mlx5: LAG, disable both regular and SD LAG on lag_disable_change
+    https://git.kernel.org/netdev/net-next/c/ebd629e70045
+  - [net-next,V3,11/15] net/mlx5: LAG, introduce software vport LAG implementation
+    https://git.kernel.org/netdev/net-next/c/98d56915eef5
+  - [net-next,V3,12/15] net/mlx5: LAG, add MPESW over SD LAG support
+    https://git.kernel.org/netdev/net-next/c/de464720489c
+  - [net-next,V3,13/15] net/mlx5: E-Switch, Tie rep load/unload to SD LAG state
+    https://git.kernel.org/netdev/net-next/c/68c2dd59a6c7
+  - [net-next,V3,14/15] net/mlx5: SD, defer vport metadata init until SD is ready
+    https://git.kernel.org/netdev/net-next/c/e3a02f3ecb13
+  - [net-next,V3,15/15] net/mlx5: SD, enable SD over ECPF and allow switchdev transition
+    https://git.kernel.org/netdev/net-next/c/7bcfb19465fc
 
-2) Receive side (patch 2, drivers/infiniband/core/cma.c)
-
-   Once the REQ does reach the peer, validate_ipv6_net_dev() rejects it:
-   rt6_lookup() of a same-host destination collapses onto the loopback
-   netdev, so the strict rt6i_idev->dev == net_dev check fails with
-   -EHOSTUNREACH even though the REQ arrived on the right net_dev. The fix
-   accepts an RTF_LOCAL route when net_dev itself owns the listener
-   address. This half is only observable once patch 1 lets the REQ arrive.
-
-Both halves are needed for a working connection; patch 1 alone makes the
-REQ reach the peer but it is then rejected by the unfixed receive side.
-
-Verification
-------------
-Measured on two RoCEv2 ConnectX-7 ports on the same host, each with a
-global IPv6 GID (port A "src", port B "dst"), driving a cross-NIC
-RDMA-CM connect (rping, src GID on port A -> dst GID on port B) while
-tracing the destination MAC resolved in addr_resolve():
-
-  without the series:  resolved dst MAC = port A's MAC (the *source* NIC)
-                        -> frame dropped, connect times out
-  with the series:     resolved dst MAC = port B's MAC (the *dest* NIC)
-                        -> connect completes
-
-The kernel under test carried c31e4038c97f and its dst_rtable() prereq
-(i.e. the same addr_resolve_neigh()/is_dst_local() shape as for-next);
-the change applies unmodified to rdma.git for-next.
-
-Note on stable: the Fixes: tags bound the backport to where each construct
-exists in its current form. Trees predating c31e4038c97f have the
-equivalent send-side gap in the older IFF_LOOPBACK form of
-addr_resolve_neigh() and would need a separately shaped backport.
-
-The patches are independent files but should be applied as a pair so the
-connection works end to end.
-
-Alex Timofeyev (2):
-  RDMA/core: use destination netdev MAC for cross-NIC same-host local
-    dst
-  RDMA/cma: accept cross-NIC same-host local dst in
-    validate_ipv6_net_dev
-
- drivers/infiniband/core/addr.c | 22 +++++++++++++++++++---
- drivers/infiniband/core/cma.c  | 15 ++++++++++++++-
- 2 files changed, 33 insertions(+), 4 deletions(-)
-
-
-base-commit: 20ff9350862468af21b46cae2c22d17d6ec637f9
+You are awesome, thank you!
 -- 
-2.40.4
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
