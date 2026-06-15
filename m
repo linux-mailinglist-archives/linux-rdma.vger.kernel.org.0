@@ -1,93 +1,93 @@
-Return-Path: <linux-rdma+bounces-22246-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22247-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id j8i3OdM1MGoTQAUAu9opvQ
-	(envelope-from <linux-rdma+bounces-22246-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2026 19:26:43 +0200
+	id Z75xCdk1MGoUQAUAu9opvQ
+	(envelope-from <linux-rdma+bounces-22247-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2026 19:26:49 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 572A8688D7C
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2026 19:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C5B51688D7F
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2026 19:26:48 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=broadcom.com header.s=google header.b=XflPIKxq;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22246-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22246-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=broadcom.com header.s=google header.b="DumQd/Fy";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22247-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22247-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=reject) header.from=broadcom.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5C5F730241AC
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2026 17:25:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id A3B10302D4D3
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2026 17:25:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A84BB416CE3;
-	Mon, 15 Jun 2026 17:25:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49EE3416D05;
+	Mon, 15 Jun 2026 17:25:45 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f228.google.com (mail-qt1-f228.google.com [209.85.160.228])
+Received: from mail-pl1-f225.google.com (mail-pl1-f225.google.com [209.85.214.225])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E97741325C
-	for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2026 17:25:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B94CE416D03
+	for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2026 17:25:43 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781544341; cv=none; b=JviEaFM0FdFU02ktNSST47edayrm94s4QewdIQk3P+Qb76qPdUAasfzwY/COAtRkrk49DBKnEbf9BgA2bkV4Z3DdCVpLRDleJWI7ePJxBwf0MmpdrdygvW/0PlMSjebbqnYt6W0IwzLfzK6GdZL5qX6TXJl8s1yjbHdGZ3xtSRo=
+	t=1781544345; cv=none; b=iLXEhNH+aFKhQDFvcHanlabcXmsoM3ftxviqYaf5srn3d2r1k+8vJdLseRlvwhDzl+/xFADf/DGaEjvdw3mIG4F4/PgevhN83v3RBj4FNLpFM+teZbS6wTAMFjdoDiXBIGAjuxzFeIsGrjjTNmQj0pA7TQo6Slyq9DKloWdZ7Vw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781544341; c=relaxed/simple;
-	bh=XOxCUDuhObVQev38tnOAlJC5FoD0UABYAzLDqLLxLQw=;
+	s=arc-20240116; t=1781544345; c=relaxed/simple;
+	bh=ka57qBs0JroYcPdXKGYFwtmIrO8k5IFM2igBEGDvGBA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=taCnmW/vVEX03T3E7/p2de95LX9tyw0KDQIKFp/Du/JD57ieH2f+df+OvCZbC+VrZN0oslVe3qNG8CW7CNP6Al5yX6qSJfhOgpbjethWej3213SbsvB2apR1GNKx+1F7dIzsO/1eCuhQUyH8aUxbCksFok5iFE3AKN9Q2ravplo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=XflPIKxq; arc=none smtp.client-ip=209.85.160.228
-Received: by mail-qt1-f228.google.com with SMTP id d75a77b69052e-51764768c36so50573951cf.0
-        for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2026 10:25:40 -0700 (PDT)
+	 MIME-Version; b=hhVYUiol43ZTvkKemm2vWZR9repq2lRrgAhcAy4GEv5uyR5HYsJvCTyL/pZhXgtBYWNFxiQEy5pq4XaRxhVbkuZ8qONRv4dXiL6xRNLgtH4StVJEejbQYfpPyFM/IaUyco3CBln47p7LUk9WSUDuLscEyMtfeWr6GvI28vLvYWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=DumQd/Fy; arc=none smtp.client-ip=209.85.214.225
+Received: by mail-pl1-f225.google.com with SMTP id d9443c01a7336-2c0a5354da1so28867555ad.0
+        for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2026 10:25:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781544339; x=1782149139;
+        d=1e100.net; s=20251104; t=1781544343; x=1782149143;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:dkim-signature:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v3KryRWfNVCMGA2hDA4beI2+Z+nqA4sjMlWTo5p9oEk=;
-        b=oBLEgM2RCUY1japFz6TUjvF/xiRUfbdPnIgNBu7VnEQTI5BUuMfgBs1VGvO9tikyjd
-         ZjDwK8O4rteCsafoYEAjqlK1+Xvdc5RPVV/RU60Yh3aAluXNVH4beQlZ31/DuLgB45aw
-         5Mey5fzk3/Bn4oVONG8LXzFxjiUk9DoWxxxgTgClyOrsUzb87zOMe3eBHU6BEYikTJJU
-         XdBaHtrx/5BuQCMVN9fyAk5cA+zzYVFPLB8/btlcQ2UCcaNH+G48iURxmzXacE/zD0lx
-         KVSYTKoTzXtai/r0s93SYx55PlTkWeg6woBXxUGTjr9CA4o1KrzRV+ZYh/xN1pgYeLM4
-         w8rA==
-X-Gm-Message-State: AOJu0YzDQPHjXJi5d3QduxBnjrthRsOCfEAZr9xE1ircYfYPmOkngjtr
-	HMJL8S7BQBs8jKfiVP1nw+RJ/Sbf2S1dYbqI8dTawWZgqJzqRIPqRoqUCvEuyS8JOWub3d8A/C8
-	tfnwAa5bF5Y/EyR2/zIBNwCLxSN9b+ANdao/GRLVzCrrujUGMafmlqEqW7GxFBvp8pKsREIR6y0
-	vVkt2yKDG09h6gAW1exFST3qXQJl0ICrsEBZkX1dTg5QMI5awF62DL0UM1AeEk+j8JFl0e1GhMS
-	aNIq7XlTB1R5T34sw==
-X-Gm-Gg: Acq92OFl6qMYB6OC1U+gBje9YVwYQZylJhvvi9ODxf+iyo8g8mWAPqRoRN0vZNc5VF6
-	N/SFfx1hJXm/xlFQU2PYoqBP1ICz5Id4TO+IL7vQFu7dNXxF2Tf3eYYE5Wvo9mXciy2FJrL4nmR
-	Xu6a6Iu73tW+m2ysJ77Ubjqvw1YEihE+6ObDJK2KCK22d0mKFF/wxn0RDDHmqoSkK+QLTD5d5VN
-	qalmL6Rh73XgDfSb04YX4QDTt9eCrnj03LUoQT5qZ+8itXTMmrwQyBHr2enXBlO2RKzyoKUohRp
-	anSNDVI/iD9eBI44ah7QCLKIBr7+ACIZdLIdhI0/snpwQVuSx9XVgXzBlt6yd9y8/LPpn/eWpbR
-	SV7yIdaQ25MxQMqzBYl+FmUG5vkmIComsrX5PqxdBEpqwVfLHO+JIQEZR7q2J4fzo/1ewgZi9Fo
-	OTsbicmyhCv5Bl9wptNxptX5eZVXatw/PJes/hf7V6pJZSAO9QwNCUcqX9SouD
-X-Received: by 2002:a05:622a:2d2:b0:517:a7ff:935f with SMTP id d75a77b69052e-519534dbeeamr184713671cf.9.1781544338960;
-        Mon, 15 Jun 2026 10:25:38 -0700 (PDT)
+        bh=lbeOvFYcdo3wCkMrYnQLx0c8yI4Gygx+970Boe1QnQE=;
+        b=qsispfTywz5nGX//OS5yiHjksWkE4HglEkV18ylYYt4YXBMsHgdExkwlKpHverdoEN
+         3flScpABBS0EZnm2d6XDCkcesGv6iLZSSW+ofeoCPSBBEUUThaY94w+EpewXUKXckFpE
+         1MVt2Gju0vX0i0L1tcu57qsYvLlXw6mo27s79HifBNwoD2uyUzZZx0txg+0AOVCw+oCw
+         ORL2zqPUrw1JdQ9SRt6hXF6ZNt+xBHGGVt7B4U5/f5fLvVHQufUdc5kCVettFWn6CQzR
+         rAP4MkmSzarJ7lvCj3qH3v0QwE1LB6kLt+QGM2w7fjC9MxgLyMopIptmcHH/Jd3tb2o3
+         JseQ==
+X-Gm-Message-State: AOJu0Yxgo6mBGy84sneSfy5FaV024Rr8oQ0HNDQvYqMABWe75BVAyWM+
+	LbiTcGXnvscZAxmqHfDZcwBqCxs4hoqBIiOo61/+7NTbjNvVrQGZSgHI1RpdTBoCoK+Jw/uk6HL
+	ZT/YWrkuGm2Sr9EBn/NLuqcnfXcTBagGLJOjQzNTMD2e5oJGsVuZzI+eRUVfJlCSVLcP9QfQYY3
+	2GRkwaBq9rUj3cbiwdcik7f7991Gw8yab95ob21KRxZ0UAkjc9b8w4ISGvanyj7r+qj54hVuwiK
+	63fIGAp5U054yxC2w==
+X-Gm-Gg: Acq92OEKvNRZ+WL17z6x8h+6U5zHm8Fp7cxoQ0Jn9U8sossIjLtlegs2thRjrjMvWi6
+	D7X/BUgQNndkZ0sxhc10APEoL4rciGca+AmVit1iFUYBx+OnCZJe5Qo5AgZUeRBNPRnOcj84spp
+	rMN7nmQXYV+EVKDRXvhp+s6yEmhy1yeOsJuCeYfqVgxcPebjdBUAbRCWjDIVTyJ/Ig7FjA1CVDS
+	Vhk5zGNJWUI6+4AwK76Pwbfgn90SAaCzOG/8gfChWepG8ZiRIbL9+faEstMlyD/iIdviWU7SKp1
+	+63gPh8r09Sf/SYwmjWWvuCah0SLuBPrlubucz1efHowE2ofB3/8FR13mZ9NwSihxHle5PxM5zK
+	TzAH3q1YU2WcxX1XlZIaoljIid4MYJDQjl69zseBGH64fj3ZoG3qjmjpLLMIq75ONSoFaQ39CCi
+	T5qteU9qEOViLkjtjUXraGiCAvIHWDUOrbzuQvkVB5jowGKrr5brQ6MZQAg6AS
+X-Received: by 2002:a17:902:e84a:b0:2bf:2ea3:af30 with SMTP id d9443c01a7336-2c699a8bcdamr3296865ad.4.1781544342735;
+        Mon, 15 Jun 2026 10:25:42 -0700 (PDT)
 Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-121.dlp.protect.broadcom.com. [144.49.247.121])
-        by smtp-relay.gmail.com with ESMTPS id d75a77b69052e-517fb61ad01sm5367971cf.2.2026.06.15.10.25.38
+        by smtp-relay.gmail.com with ESMTPS id d9443c01a7336-2c4329a3c78sm8660675ad.26.2026.06.15.10.25.42
         for <linux-rdma@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Jun 2026 10:25:38 -0700 (PDT)
+        Mon, 15 Jun 2026 10:25:42 -0700 (PDT)
 X-Relaying-Domain: broadcom.com
 X-CFilter-Loop: Reflected
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-36d99181eaaso4561499a91.3
-        for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2026 10:25:38 -0700 (PDT)
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-2c0b1bb53a8so23094445ad.0
+        for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2026 10:25:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1781544338; x=1782149138; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1781544341; x=1782149141; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=v3KryRWfNVCMGA2hDA4beI2+Z+nqA4sjMlWTo5p9oEk=;
-        b=XflPIKxqlWD7XgCbjntS3eYHWQxciywfTZT3A/B4U6hV2nt83OPutOL0ISqqj9h8Pt
-         sSqEm+6TpzyA7FbHXW5xxouJOINy6SVG1aUUhLg/vy7GI6yRYrIJiHCuBfBQNb18zmaC
-         +yXQzf+SHOJgxlJcHaPpYtu3Sm0iWddIofURQ=
-X-Received: by 2002:a17:902:f64e:b0:2bf:281f:19ec with SMTP id d9443c01a7336-2c664242da9mr128804745ad.24.1781544337796;
-        Mon, 15 Jun 2026 10:25:37 -0700 (PDT)
-X-Received: by 2002:a17:902:f64e:b0:2bf:281f:19ec with SMTP id d9443c01a7336-2c664242da9mr128804425ad.24.1781544337319;
-        Mon, 15 Jun 2026 10:25:37 -0700 (PDT)
+        bh=lbeOvFYcdo3wCkMrYnQLx0c8yI4Gygx+970Boe1QnQE=;
+        b=DumQd/FyY36VB4k3oauF4ULHTCpuM0prTGSEs+fVF8YOGq6rfXMYEut/qUAtaYcoIf
+         9hqme144wUR8leCCSyJj6zsXUeP/gPAN5cUEiS+Qid52c6LPhbAkZD9vy1NH4eDxvgyf
+         FxL1v0NU22K2KPPBWpshYaGu9lnL9COOqhzks=
+X-Received: by 2002:a17:903:8cd:b0:2c6:829b:b0c2 with SMTP id d9443c01a7336-2c699ac621dmr3547515ad.11.1781544341071;
+        Mon, 15 Jun 2026 10:25:41 -0700 (PDT)
+X-Received: by 2002:a17:903:8cd:b0:2c6:829b:b0c2 with SMTP id d9443c01a7336-2c699ac621dmr3547195ad.11.1781544340478;
+        Mon, 15 Jun 2026 10:25:40 -0700 (PDT)
 Received: from dhcp-10-123-156-114.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2c4328a43c9sm108289285ad.41.2026.06.15.10.25.34
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2c4328a43c9sm108289285ad.41.2026.06.15.10.25.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2026 10:25:36 -0700 (PDT)
+        Mon, 15 Jun 2026 10:25:40 -0700 (PDT)
 From: Selvin Xavier <selvin.xavier@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
@@ -96,9 +96,9 @@ Cc: linux-rdma@vger.kernel.org,
 	kalesh-anakkur.purayil@broadcom.com,
 	sriharsha.basavapatna@broadcom.com,
 	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH rdma-rc v2 04/15] RDMA/bnxt_re: Avoid any race while handling the hash list of CQ
-Date: Mon, 15 Jun 2026 15:47:40 -0700
-Message-Id: <20260615224751.232802-5-selvin.xavier@broadcom.com>
+Subject: [PATCH rdma-rc v2 05/15] RDMA/bnxt_re: Avoid any race while handling the hash list of SRQ
+Date: Mon, 15 Jun 2026 15:47:41 -0700
+Message-Id: <20260615224751.232802-6-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20260615224751.232802-1-selvin.xavier@broadcom.com>
 References: <20260615224751.232802-1-selvin.xavier@broadcom.com>
@@ -124,7 +124,7 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22246-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22247-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS(0.00)[m:leon@kernel.org,m:jgg@ziepe.ca,m:linux-rdma@vger.kernel.org,m:andrew.gospodarek@broadcom.com,m:kalesh-anakkur.purayil@broadcom.com,m:sriharsha.basavapatna@broadcom.com,m:selvin.xavier@broadcom.com,s:lists@lfdr.de];
 	FORGED_SENDER(0.00)[selvin.xavier@broadcom.com,linux-rdma@vger.kernel.org];
@@ -138,7 +138,7 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	ALIAS_RESOLVED(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[broadcom.com:dkim,broadcom.com:email,broadcom.com:mid,broadcom.com:from_mime,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[broadcom.com:dkim,broadcom.com:email,broadcom.com:mid,broadcom.com:from_mime,vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
@@ -146,153 +146,153 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 572A8688D7C
+X-Rspamd-Queue-Id: C5B51688D7F
 
 Add/Delete to/from hash list needs to be synchronized with the traversing
-of the hash list. Add a mutex for this synchronization. Also add a
-reference for the CQ to avoid any usage of the CQ structures after the
-CQ is freed.
+of the hash list. Add a mutex for this synchronization to avoid any usage
+of the SRQ structures after the SRQ is freed.
 
-Fixes: e275919d9669 ("RDMA/bnxt_re: Share a page to expose per CQ info with userspace")
+Fixes: 181028a0d84c ("RDMA/bnxt_re: Share a page to expose per SRQ info with userspace")
 Reviewed-by: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
  drivers/infiniband/hw/bnxt_re/bnxt_re.h  |  1 +
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 28 ++++++++++++++++++++++--
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 29 ++++++++++++++++++++++--
  drivers/infiniband/hw/bnxt_re/ib_verbs.h |  3 +++
  drivers/infiniband/hw/bnxt_re/main.c     |  1 +
  drivers/infiniband/hw/bnxt_re/uapi.c     |  4 ++++
- 5 files changed, 35 insertions(+), 2 deletions(-)
+ 5 files changed, 36 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-index 3a7ce4729fcf..c346dec14dec 100644
+index c346dec14dec..5fec474fcc2e 100644
 --- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
 +++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-@@ -217,6 +217,7 @@ struct bnxt_re_dev {
- 	struct delayed_work dbq_pacing_work;
+@@ -218,6 +218,7 @@ struct bnxt_re_dev {
  	DECLARE_HASHTABLE(cq_hash, MAX_CQ_HASH_BITS);
  	DECLARE_HASHTABLE(srq_hash, MAX_SRQ_HASH_BITS);
-+	struct mutex			cq_hash_lock;  /* guards cq_hash  */
+ 	struct mutex			cq_hash_lock;  /* guards cq_hash  */
++	struct mutex			srq_hash_lock; /* guards srq_hash */
  	struct dentry			*dbg_root;
  	struct dentry			*qp_debugfs;
  	unsigned long			event_bitmap;
 diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 05b5b5936433..e74f19c5038a 100644
+index e74f19c5038a..43a2aedc4819 100644
 --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
 +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -3435,6 +3435,18 @@ static void bnxt_re_put_nq(struct bnxt_re_dev *rdev, struct bnxt_qplib_nq *nq)
+@@ -2137,6 +2137,19 @@ static enum ib_mtu __to_ib_mtu(u32 mtu)
  }
  
- /* Completion Queues */
-+static void bnxt_re_cq_release(struct kref *ref)
+ /* Shared Receive Queues */
++/* Shared Receive Queue lifetime helpers */
++static void bnxt_re_srq_release(struct kref *ref)
 +{
-+	struct bnxt_re_cq *cq = container_of(ref, struct bnxt_re_cq, cq_ref);
++	struct bnxt_re_srq *srq = container_of(ref, struct bnxt_re_srq, srq_ref);
 +
-+	complete(&cq->cq_destroy_comp);
++	complete(&srq->srq_destroy_comp);
 +}
 +
-+void bnxt_re_put_cq(struct bnxt_re_cq *cq)
++void bnxt_re_put_srq(struct bnxt_re_srq *srq)
 +{
-+	kref_put(&cq->cq_ref, bnxt_re_cq_release);
++	kref_put(&srq->srq_ref, bnxt_re_srq_release);
 +}
 +
- int bnxt_re_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
+ int bnxt_re_destroy_srq(struct ib_srq *ib_srq, struct ib_udata *udata)
  {
- 	struct bnxt_qplib_chip_ctx *cctx;
-@@ -3452,10 +3464,18 @@ int bnxt_re_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
+ 	struct bnxt_re_srq *srq = container_of(ib_srq, struct bnxt_re_srq,
+@@ -2149,10 +2162,18 @@ int bnxt_re_destroy_srq(struct ib_srq *ib_srq, struct ib_udata *udata)
  	if (ret)
  		return ret;
  
--	if (cctx->modes.toggle_bits & BNXT_QPLIB_CQ_TOGGLE_BIT)
-+	if (cctx->modes.toggle_bits & BNXT_QPLIB_CQ_TOGGLE_BIT && cq->uctx) {
-+		mutex_lock(&rdev->cq_hash_lock);
- 		hash_del(&cq->hash_entry);
-+		mutex_unlock(&rdev->cq_hash_lock);
+-	if (rdev->chip_ctx->modes.toggle_bits & BNXT_QPLIB_SRQ_TOGGLE_BIT)
++	if (rdev->chip_ctx->modes.toggle_bits & BNXT_QPLIB_SRQ_TOGGLE_BIT && srq->uctx) {
++		mutex_lock(&rdev->srq_hash_lock);
+ 		hash_del(&srq->hash_entry);
++		mutex_unlock(&rdev->srq_hash_lock);
 +		/* Drop the creator's reference and wait for any concurrent
-+		 * bnxt_re_search_for_cq() caller to finish with the pointer.
++		 * bnxt_re_search_for_srq() caller to finish with the pointer.
 +		 */
-+		kref_put(&cq->cq_ref, bnxt_re_cq_release);
-+		wait_for_completion(&cq->cq_destroy_comp);
++		kref_put(&srq->srq_ref, bnxt_re_srq_release);
++		wait_for_completion(&srq->srq_destroy_comp);
 +	}
- 	bnxt_qplib_destroy_cq(&rdev->qplib_res, &cq->qplib_cq);
--	if (cctx->modes.toggle_bits & BNXT_QPLIB_CQ_TOGGLE_BIT)
-+	if (cctx->modes.toggle_bits & BNXT_QPLIB_CQ_TOGGLE_BIT && cq->uctx)
- 		free_page((unsigned long)cq->uctx_cq_page);
+ 	bnxt_qplib_destroy_srq(&rdev->qplib_res, qplib_srq);
+-	if (rdev->chip_ctx->modes.toggle_bits & BNXT_QPLIB_SRQ_TOGGLE_BIT)
++	if (rdev->chip_ctx->modes.toggle_bits & BNXT_QPLIB_SRQ_TOGGLE_BIT && srq->uctx)
+ 		free_page((unsigned long)srq->uctx_srq_page);
+ 	ib_umem_release(srq->umem);
+ 	atomic_dec(&rdev->stats.res.srq_count);
+@@ -2260,7 +2281,11 @@ int bnxt_re_create_srq(struct ib_srq *ib_srq,
  
- 	bnxt_re_put_nq(rdev, nq);
-@@ -3531,7 +3551,11 @@ int bnxt_re_create_user_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *att
- 	spin_lock_init(&cq->cq_lock);
- 
- 	if (cctx->modes.toggle_bits & BNXT_QPLIB_CQ_TOGGLE_BIT) {
-+		kref_init(&cq->cq_ref);
-+		init_completion(&cq->cq_destroy_comp);
-+		mutex_lock(&rdev->cq_hash_lock);
- 		hash_add(rdev->cq_hash, &cq->hash_entry, cq->qplib_cq.id);
-+		mutex_unlock(&rdev->cq_hash_lock);
- 		/* Allocate a page */
- 		cq->uctx_cq_page = (void *)get_zeroed_page(GFP_KERNEL);
- 		if (!cq->uctx_cq_page) {
+ 		resp.srqid = srq->qplib_srq.id;
+ 		if (rdev->chip_ctx->modes.toggle_bits & BNXT_QPLIB_SRQ_TOGGLE_BIT) {
++			kref_init(&srq->srq_ref);
++			init_completion(&srq->srq_destroy_comp);
++			mutex_lock(&rdev->srq_hash_lock);
+ 			hash_add(rdev->srq_hash, &srq->hash_entry, srq->qplib_srq.id);
++			mutex_unlock(&rdev->srq_hash_lock);
+ 			srq->uctx_srq_page = (void *)get_zeroed_page(GFP_KERNEL);
+ 			if (!srq->uctx_srq_page) {
+ 				rc = -ENOMEM;
 diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-index 4d6d1259a795..aaec5dbc322e 100644
+index aaec5dbc322e..1456fdc3935b 100644
 --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
 +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-@@ -114,6 +114,8 @@ struct bnxt_re_cq {
- 	int			resize_cqe;
- 	void			*uctx_cq_page;
- 	struct hlist_node	hash_entry;
-+	struct kref		cq_ref;
-+	struct completion	cq_destroy_comp;
+@@ -79,6 +79,8 @@ struct bnxt_re_srq {
+ 	spinlock_t		lock;		/* protect srq */
+ 	void			*uctx_srq_page;
+ 	struct hlist_node       hash_entry;
++	struct kref		srq_ref;
++	struct completion	srq_destroy_comp;
  };
  
- struct bnxt_re_mr {
-@@ -265,6 +267,7 @@ int bnxt_re_create_user_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *att
- int bnxt_re_resize_cq(struct ib_cq *ibcq, unsigned int cqe,
- 		      struct ib_udata *udata);
- int bnxt_re_destroy_cq(struct ib_cq *cq, struct ib_udata *udata);
-+void bnxt_re_put_cq(struct bnxt_re_cq *cq);
- int bnxt_re_poll_cq(struct ib_cq *cq, int num_entries, struct ib_wc *wc);
- int bnxt_re_req_notify_cq(struct ib_cq *cq, enum ib_cq_notify_flags flags);
- struct ib_mr *bnxt_re_get_dma_mr(struct ib_pd *pd, int mr_access_flags);
+ struct bnxt_re_qp {
+@@ -247,6 +249,7 @@ int bnxt_re_modify_srq(struct ib_srq *srq, struct ib_srq_attr *srq_attr,
+ 		       struct ib_udata *udata);
+ int bnxt_re_query_srq(struct ib_srq *srq, struct ib_srq_attr *srq_attr);
+ int bnxt_re_destroy_srq(struct ib_srq *srq, struct ib_udata *udata);
++void bnxt_re_put_srq(struct bnxt_re_srq *srq);
+ int bnxt_re_post_srq_recv(struct ib_srq *srq, const struct ib_recv_wr *recv_wr,
+ 			  const struct ib_recv_wr **bad_recv_wr);
+ int bnxt_re_create_qp(struct ib_qp *qp, struct ib_qp_init_attr *qp_init_attr,
 diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index a892f1172917..902eda6011ad 100644
+index 902eda6011ad..8e89218bd666 100644
 --- a/drivers/infiniband/hw/bnxt_re/main.c
 +++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -2340,6 +2340,7 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 op_type)
- 			bnxt_re_vf_res_config(rdev);
- 	}
- 	hash_init(rdev->cq_hash);
-+	mutex_init(&rdev->cq_hash_lock);
+@@ -2343,6 +2343,7 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 op_type)
+ 	mutex_init(&rdev->cq_hash_lock);
  	if (rdev->chip_ctx->modes.toggle_bits & BNXT_QPLIB_SRQ_TOGGLE_BIT)
  		hash_init(rdev->srq_hash);
++	mutex_init(&rdev->srq_hash_lock);
+ 
+ 	bnxt_re_debugfs_add_pdev(rdev);
  
 diff --git a/drivers/infiniband/hw/bnxt_re/uapi.c b/drivers/infiniband/hw/bnxt_re/uapi.c
-index b9922360f11b..a0cd2dce6168 100644
+index a0cd2dce6168..1d7031a23b02 100644
 --- a/drivers/infiniband/hw/bnxt_re/uapi.c
 +++ b/drivers/infiniband/hw/bnxt_re/uapi.c
-@@ -26,12 +26,15 @@ static struct bnxt_re_cq *bnxt_re_search_for_cq(struct bnxt_re_dev *rdev, u32 cq
+@@ -42,12 +42,15 @@ static struct bnxt_re_srq *bnxt_re_search_for_srq(struct bnxt_re_dev *rdev, u32
  {
- 	struct bnxt_re_cq *cq = NULL, *tmp_cq;
+ 	struct bnxt_re_srq *srq = NULL, *tmp_srq;
  
-+	mutex_lock(&rdev->cq_hash_lock);
- 	hash_for_each_possible(rdev->cq_hash, tmp_cq, hash_entry, cq_id) {
- 		if (tmp_cq->qplib_cq.id == cq_id) {
-+			kref_get(&tmp_cq->cq_ref);
- 			cq = tmp_cq;
++	mutex_lock(&rdev->srq_hash_lock);
+ 	hash_for_each_possible(rdev->srq_hash, tmp_srq, hash_entry, srq_id) {
+ 		if (tmp_srq->qplib_srq.id == srq_id) {
++			kref_get(&tmp_srq->srq_ref);
+ 			srq = tmp_srq;
  			break;
  		}
  	}
-+	mutex_unlock(&rdev->cq_hash_lock);
- 	return cq;
++	mutex_unlock(&rdev->srq_hash_lock);
+ 	return srq;
  }
  
-@@ -252,6 +255,7 @@ static int UVERBS_HANDLER(BNXT_RE_METHOD_GET_TOGGLE_MEM)(struct uverbs_attr_bund
+@@ -263,6 +266,7 @@ static int UVERBS_HANDLER(BNXT_RE_METHOD_GET_TOGGLE_MEM)(struct uverbs_attr_bund
  			return -EINVAL;
  
- 		addr = (u64)cq->uctx_cq_page;
-+		bnxt_re_put_cq(cq);
+ 		addr = (u64)srq->uctx_srq_page;
++		bnxt_re_put_srq(srq);
  		break;
- 	case BNXT_RE_SRQ_TOGGLE_MEM:
- 		srq = bnxt_re_search_for_srq(rdev, res_id);
+ 
+ 	default:
 -- 
 2.39.3
 
