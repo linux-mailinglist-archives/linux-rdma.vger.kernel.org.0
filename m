@@ -1,162 +1,130 @@
-Return-Path: <linux-rdma+bounces-22271-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22272-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Sd4EBnKkMGpRVwUAu9opvQ
-	(envelope-from <linux-rdma+bounces-22271-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2026 03:18:42 +0200
+	id PPePGfKsMGqTWAUAu9opvQ
+	(envelope-from <linux-rdma+bounces-22272-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2026 03:54:58 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EF5968B36E
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2026 03:18:41 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E51B968B5A9
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2026 03:54:57 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22271-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22271-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b="kDp2M/pS";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22272-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22272-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2EFDB301A52B
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2026 01:18:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8ABF730E1A42
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2026 01:54:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2246370AE8;
-	Tue, 16 Jun 2026 01:18:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB23B37D100;
+	Tue, 16 Jun 2026 01:54:51 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from zg8tmtyylji0my4xnjeumjiw.icoremail.net (zg8tmtyylji0my4xnjeumjiw.icoremail.net [162.243.161.220])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA43C246762;
-	Tue, 16 Jun 2026 01:18:31 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C00248886;
+	Tue, 16 Jun 2026 01:54:50 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781572716; cv=none; b=ivn3nE4KuPuptFpLQo7QDxfGZajHaw//UW9ieeaKX7/hGzoNlQbmf+h69b/+9+K5/F8lDVq+wSAJXhFfJHPliC41vLPV0RnXn5LIDmcE6bQ8/mRM/2wc7i7HUmVOLRspD/4szTkMkPQDzWa5GU62DMtH0CvAJGyhTvv6GqkgLdI=
+	t=1781574891; cv=none; b=H8HAOotJ215HqjQDUWgW5DgQnckjS1oEfapbDC/Wf3CgpDnpjE6DlgNxkKQ/FXuE+9QSbRVj+pM8AUAvZ+/tnCfL4mE3d7GVWuUWdf/NF1XtYsFnKbbdxVQbEJFi2siWEdSMSkg4RBMh1JPlCBUnbV3DY7aEhmk94oJaN9wt/m8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781572716; c=relaxed/simple;
-	bh=z3Bi8ixE7Fg35E79/serkDEQjKt+sNDRES5kU+jWHpM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Wvv6+p8Y6QKLfSH3HXNXWDAUX49TI4k7uacW5porJsJAfCXBkZHgfX1DWkgDDRPpSbS+qsI5MSCOB0QRd3ezzE7rO8JhIxtMl/Z4SopwFygPDI5+x6Z65LSsQeHv0e/zwHiGbgPDwpGqTd9XxbKpl7b3xCk75ZvOaXtm6BRT6wI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hust.edu.cn; spf=pass smtp.mailfrom=hust.edu.cn; arc=none smtp.client-ip=162.243.161.220
-Received: from hust.edu.cn (unknown [172.16.0.50])
-	by app1 (Coremail) with SMTP id HgEQrAD3_SlVpDBqeHimAA--.44228S2;
-	Tue, 16 Jun 2026 09:18:13 +0800 (CST)
-Received: from [10.12.169.118] (unknown [10.12.169.118])
-	by gateway (Coremail) with SMTP id _____wD30BFTpDBqCpcmAA--.24027S2;
-	Tue, 16 Jun 2026 09:18:12 +0800 (CST)
-Message-ID: <bcf4351e-771d-4c60-8d0e-9ccd893b8a94@hust.edu.cn>
-Date: Tue, 16 Jun 2026 09:18:11 +0800
+	s=arc-20240116; t=1781574891; c=relaxed/simple;
+	bh=1OTtdrVdMwcsqHxVYAtrpUX2n8+40J5vZPyZtkd8uOU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LFGoTaQ8WCCSR2efiMhLTP6n8geu6xk1b0o7zbl9/sb0ophxyvbB9FAujOpXBeit4Vbm3JE1ONijgteI4wCKQVMTcIktuV6rHxHwm0wCdOIm1dI9KqSc3F26Cf3UYQdw8R/3fieK1Td3NGANGAU2EX0Zm4AIvvRYS4NsbF3hQ1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kDp2M/pS; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDBA31F000E9;
+	Tue, 16 Jun 2026 01:54:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1781574890;
+	bh=xVB2C8Izg4g9sd9i5QQCFPWuDiomXx2/37KEb+1MF2Y=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=kDp2M/pSrkAbqIOUJCckm8SnZND80Tl9OlXlq5UKaB3MEUxj6hAS0RM47jhzKYzJ4
+	 CbHDdw4/I7ztuOw8dbS0tXGQpa5iB7IZ8a5wbcQ9L4SBguQTB+j+zt5WrnlinjWNYj
+	 p49Fo2OyQaOU/Iokc9fHBlX1j5voNwNwh44Nw3CTNVXEAIMCUaZ/Darvv5cGwFL13s
+	 DxxSJIvcxvIIbbOlD1lIyrzw8a1XnI2IQC4qybWsShHPIKD03eIOXFaMKTSVAmwF9H
+	 Jzxw2vcdn1uiAoGj2iDnCp08Phvhby3VLU59ssxcEY7CJrVFh+X8Ooy828oU3+ME5U
+	 Oou/iBzhiF07Q==
+Date: Mon, 15 Jun 2026 18:54:49 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Haiyang Zhang <haiyangz@linux.microsoft.com>
+Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, "K. Y. Srinivasan"
+ <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu
+ <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Long Li
+ <longli@microsoft.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
+ Abeni <pabeni@redhat.com>, Konstantin Taranov <kotaranov@microsoft.com>,
+ Simon Horman <horms@kernel.org>, Shradha Gupta
+ <shradhagupta@linux.microsoft.com>, Erni Sri Satya Vennela
+ <ernis@linux.microsoft.com>, Dipayaan Roy <dipayanroy@linux.microsoft.com>,
+ Aditya Garg <gargaditya@linux.microsoft.com>, Breno Leitao
+ <leitao@debian.org>, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, paulros@microsoft.com
+Subject: Re: [PATCH net-next v4] net: mana: Add Interrupt Moderation support
+Message-ID: <20260615185449.6a496c1f@kernel.org>
+In-Reply-To: <20260613205812.2659945-1-haiyangz@linux.microsoft.com>
+References: <20260613205812.2659945-1-haiyangz@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] docs: infiniband: correct name of option to enable the
- ib_uverbs module
-To: Ethan Nelson-Moore <enelsonmoore@gmail.com>,
- Shuah Khan <skhan@linuxfoundation.org>, Jonathan Corbet <corbet@lwn.net>,
- linux-rdma@vger.kernel.org, linux-doc@vger.kernel.org
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- Alex Shi <alexs@kernel.org>, Yanteng Si <si.yanteng@linux.dev>
-References: <20260616002027.67925-1-enelsonmoore@gmail.com>
-From: Dongliang Mu <dzm91@hust.edu.cn>
-In-Reply-To: <20260616002027.67925-1-enelsonmoore@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:HgEQrAD3_SlVpDBqeHimAA--.44228S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr43ZF1xKFyDCF17JFWkWFg_yoW8tFW8p3
-	WDG34IkFs2yay3C3y8Cr129F4xWa4xCa15W3WkWwn8XF1DAws3ZrnIyw1YgFykXrW8ZFWY
-	qr48KFnYgr4jyaDanT9S1TB71UUUUjUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUQFb7Iv0xC_Cr1lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
-	cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
-	v20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK
-	6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1ln4kS14v26r
-	1Y6r17M2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI
-	12xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj64x0Y40En7xvr7AKxV
-	W8Jr0_Cr1UMcIj6x8ErcxFaVAv8VW8uFyUJr1UMcIj6xkF7I0En7xvr7AKxVW8Jr0_Cr1U
-	McvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCY1x0262kKe7AKxVWUAVWUtwCF04
-	k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fZr1UJr1l4I8I3I0E4IkC6x0Yz7v_
-	Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
-	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-	14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j6a0QUUUUU=
-X-CM-SenderInfo: asqsiiirqrkko6kx23oohg3hdfq/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22271-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[hust.edu.cn];
-	FORGED_RECIPIENTS(0.00)[m:enelsonmoore@gmail.com,m:skhan@linuxfoundation.org,m:corbet@lwn.net,m:linux-rdma@vger.kernel.org,m:linux-doc@vger.kernel.org,m:jgg@ziepe.ca,m:leon@kernel.org,m:alexs@kernel.org,m:si.yanteng@linux.dev,s:lists@lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com,linuxfoundation.org,lwn.net,vger.kernel.org];
-	FORGED_SENDER(0.00)[dzm91@hust.edu.cn,linux-rdma@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22272-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	FORWARDED(0.00)[lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:haiyangz@linux.microsoft.com,m:linux-hyperv@vger.kernel.org,m:netdev@vger.kernel.org,m:kys@microsoft.com,m:haiyangz@microsoft.com,m:wei.liu@kernel.org,m:decui@microsoft.com,m:longli@microsoft.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:pabeni@redhat.com,m:kotaranov@microsoft.com,m:horms@kernel.org,m:shradhagupta@linux.microsoft.com,m:ernis@linux.microsoft.com,m:dipayanroy@linux.microsoft.com,m:gargaditya@linux.microsoft.com,m:leitao@debian.org,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:paulros@microsoft.com,m:andrew@lunn.ch,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dzm91@hust.edu.cn,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	ALIAS_RESOLVED(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	R_DKIM_NA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1EF5968B36E
+X-Rspamd-Queue-Id: E51B968B5A9
 
+On Sat, 13 Jun 2026 13:57:54 -0700 Haiyang Zhang wrote:
+> Add Static and Dynamic Interrupt Moderation (DIM) support for
+> Rx and Tx.
+> Update queue creation procedure with new data struct with the related
+> settings.
+> Add functions to collect stat for DIM, and workers to update DIM data
+> and settings.
+> Update ethtool handler to get/set the moderation settings from a user.
+> To avoid detach/re-attach ops, ring DIM doorbell to change settings
+> at run time.
+> By default, adaptive-rx/tx (DIM) are enabled if supported by HW.
 
-On 6/16/26 8:20 AM, Ethan Nelson-Moore wrote:
-> The Infiniband documentation states that CONFIG_INFINIBAND_USER_VERBS
-> should be used to enable the ib_uverbs module. However, this option was
-> renamed to CONFIG_INFINIBAND_USER_ACCESS in commit 17781cd6186c
-> ("[PATCH] IB: clean up user access config options"). Update the
-> documentation to reflect this.
-
-Reviewed-by: Dongliang Mu <dzm91@hust.edu.cn>
-
-For patch that mixes English and translation update, should it directly 
-be merged into Jon's kernel tree?
-
->
-> Signed-off-by: Ethan Nelson-Moore <enelsonmoore@gmail.com>
-> ---
->   Documentation/infiniband/user_verbs.rst                    | 2 +-
->   Documentation/translations/zh_CN/infiniband/user_verbs.rst | 2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/infiniband/user_verbs.rst b/Documentation/infiniband/user_verbs.rst
-> index 8ddc4b1cfef2..96bcd1bd37ad 100644
-> --- a/Documentation/infiniband/user_verbs.rst
-> +++ b/Documentation/infiniband/user_verbs.rst
-> @@ -2,7 +2,7 @@
->   Userspace verbs access
->   ======================
->   
-> -  The ib_uverbs module, built by enabling CONFIG_INFINIBAND_USER_VERBS,
-> +  The ib_uverbs module, built by enabling CONFIG_INFINIBAND_USER_ACCESS,
->     enables direct userspace access to IB hardware via "verbs," as
->     described in chapter 11 of the InfiniBand Architecture Specification.
->   
-> diff --git a/Documentation/translations/zh_CN/infiniband/user_verbs.rst b/Documentation/translations/zh_CN/infiniband/user_verbs.rst
-> index 970bc1a4e396..31534681654b 100644
-> --- a/Documentation/translations/zh_CN/infiniband/user_verbs.rst
-> +++ b/Documentation/translations/zh_CN/infiniband/user_verbs.rst
-> @@ -17,7 +17,7 @@
->   用户空间verbs访问
->   =================
->   
-> -  ib_uverbs模块，通过启用CONFIG_INFINIBAND_USER_VERBS构建，使用户空间
-> +  ib_uverbs模块，通过启用CONFIG_INFINIBAND_USER_ACCESS构建，使用户空间
->     通过“verbs”直接访问IB硬件，如InfiniBand架构规范第11章所述。
->   
->     要使用verbs，需要libibverbs库，可从https://github.com/linux-rdma/rdma-core。
-
+The merge window has started and we need to start working on our PRs.
+This will need to be reposted after 7.2-rc1 is tagged, sorry
+-- 
+pw-bot: defer
 
