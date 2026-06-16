@@ -1,182 +1,180 @@
-Return-Path: <linux-rdma+bounces-22267-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22268-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id fJNJJeaRMGpEUgUAu9opvQ
-	(envelope-from <linux-rdma+bounces-22267-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2026 01:59:34 +0200
+	id Hq2xCuSWMGoqUwUAu9opvQ
+	(envelope-from <linux-rdma+bounces-22268-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2026 02:20:52 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8474568ABFB
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2026 01:59:33 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id C231468AE4C
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2026 02:20:51 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=ziepe.ca header.s=google header.b=DXUzvQ4f;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22267-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22267-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=none;
+	dkim=pass header.d=gmail.com header.s=20251104 header.b="qlZbl/aF";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22268-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22268-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=gmail.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id B6E8630074E5
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2026 23:59:30 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DC946301B930
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2026 00:20:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A78436DA03;
-	Mon, 15 Jun 2026 23:59:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFAAD223DD4;
+	Tue, 16 Jun 2026 00:20:35 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+Received: from mail-dl1-f67.google.com (mail-dl1-f67.google.com [74.125.82.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C101936A373
-	for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2026 23:59:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8187E1D7995
+	for <linux-rdma@vger.kernel.org>; Tue, 16 Jun 2026 00:20:34 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781567969; cv=none; b=S0iuJl4kMq/Qsv9GLQ1Y7f/bsvTtWvhiD6rb28hxv5lZAFALBTE4dVX7Y4wj+74WhK2sZNA0jw7xCmICLO4y0oo31X/KU98uWStNpaA5jdEUalliwB0eH4yXyX8XRM64Wd5t/Pmn8AQE8AvkwiWX4n/2MVdMV0s0qZQ0xXc8uOE=
+	t=1781569235; cv=none; b=HSqgOJP+yKD4f1EMmJQU5pmQdY3tkBe/evbfOI421sud2SL1syLJj4rnRxWNfgKdytX1Ew+qaKpHmh01EhDYom41ksfFFdi4hdgBpE/gOitr/bJBfTFJN/gzeFLC4asOWGkM5W8f5b8TE36hjqvu6dqTJAjblOhoJ0hiI1UZlKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781567969; c=relaxed/simple;
-	bh=DEUecJcVGBVnyWLepKxqYJuXwNBpzXUDoxNFhIeQ7Ns=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nU0RVXm3/LJ0M66PHud9lE44L8A5/63qjopTBbpwTDy7ylKOercpBcPDG0PNgCqOZIUwJIf9hD7yJT1oT2o9csyA5cKzUr8XBjohPPzWFli0CtPaTf0vXv8UZwr4qfTnzITGch3szOaASQ3lt89MdQO4NZvC5XTrFbNAIqnzcOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=DXUzvQ4f; arc=none smtp.client-ip=209.85.222.175
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-9157b94a07aso429282985a.0
-        for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2026 16:59:27 -0700 (PDT)
+	s=arc-20240116; t=1781569235; c=relaxed/simple;
+	bh=9O8H+XbMNAvS0v8jx+Btb6gpaFePeTzU8+bTKnqo+90=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AGUx/8hiHwGaLlGe5NPNBq+X+i6ZchDjou+X3bVlMFSEkSuL7jOqqESyV4Nl8wKyoM4sc6IHSn6oEFekB5q4R3ATNtQqceQOywAjxyZS8PDs3+FUiMAYZ0DQm3evkwluuvMgXvaJ1bL0BkekjPEbGxwWzVTBzumpsLDsKyA+KUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=qlZbl/aF; arc=none smtp.client-ip=74.125.82.67
+Received: by mail-dl1-f67.google.com with SMTP id a92af1059eb24-137335bc3caso4709181c88.0
+        for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2026 17:20:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1781567967; x=1782172767; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KK7kSan6P67b0eQIRx5Plvs60Ktl/WyLLAhzMoMEMUY=;
-        b=DXUzvQ4ftI0AGGN/N3RzKtJMEMyUWOHpNTwumX5wE/Kg6UDfz82sJn0k13SbuX0Iel
-         9C9Q8/3wu04IWegDihC/MsSUa6XBJNrcIMVvsFkXobXYEo7vIPt5i9HqMzt6sNCYd6Bx
-         9rBWoNmK5ozzlbyXysuKuehcmXopDBsApy2Ym71EwO8UhNBqdDesLAJCxSl4mQOaDJbX
-         Pw9FdB8NA+J3a/ImDKPQGHqPF9QuXhnQtoEal75NSQOt2cji57apcg9bshhuZ22XnsnJ
-         jul5KHTVwafnSCmPkNvS4oabpxRI00y9a5ozD+kWX8osuaSeSkQmK7w/F1k7rV35OYO/
-         gvuA==
+        d=gmail.com; s=20251104; t=1781569234; x=1782174034; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qMcLxKso4b2k5fy5qxZ4EymeOosh6CwCvDbgFOT0gso=;
+        b=qlZbl/aF8AvrpScOyoFkDU0BNEPYrs/sUjc9Yw8v+b7WULPh5+LSy9F8MfDCXMDcc7
+         za1kAR8zwkTVSKa3euLgiT5SSn8I6mOyAqHI1YpUSGKuCHPNQ3jiigNrb0ozqvgPoFcE
+         KrnpQl2vYzzJPXW+/1cTjfIg2TE2Kyy2jL/cVNTPsBuS33M9sY48kOTIXTzside/EDC8
+         OQOu3d7A2WCQK98PcCtQVbrmhNPHct5AQs47XR/9wTYXwbUYQ6dabT8F5/u545gQCK/4
+         Y3Heo/SuZZqC0DVMr9lqDVqEX4kGkdFCd3eNki01gamwg5tNyozVcofrh124lja2CMYv
+         LyiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781567967; x=1782172767;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KK7kSan6P67b0eQIRx5Plvs60Ktl/WyLLAhzMoMEMUY=;
-        b=OgxfiRgtWomTdFjw9tOQ5qHkljaQP/VzDD3GRTWf2eaxveD9PCTJgA4H3EHQkHlVAD
-         iRK4fAr0wbYiXshrD+fQfe4o2/ofAgRSYn40hlKsYJQyHytwNzRGCfzJXcJWIyVURomm
-         MSy9P5ArtRHeThHjrby0zdhgKqHhxhp0y2iKwfDH7P1RqkpIzIqqz50lihuiLOF0CU/H
-         JCUKY8gz5OXzo5dOyZHeqxRIe4SP8l3Wa+W7QMdkXR1slsUGEy1ND38Ntkza60jTP7GQ
-         YXX9r2KtZcd4CtXJTZ+4QObNIo0uR43cJFqVsvi/xs9NbfV17QpOlStwy688oQRhUfS2
-         zP/A==
-X-Forwarded-Encrypted: i=1; AFNElJ/SVhu2U7di2p6s7S/BT07tGHqldSut78LMb0g87zrBJCYsamLB3nmqFlOOKPVbxg7VgYqIBPJdzSEf@vger.kernel.org
-X-Gm-Message-State: AOJu0YwlKfLpykG5PkAFwbepjgCCMy5IeI2V7ADm22i1GVYCr5DSduKg
-	Qc8AMnGMwEhQKvUCzmet4HIURoFxv72PX91Fekaze/Ul4TdR8SEQpTTjfMdpxOj0Zgg=
-X-Gm-Gg: Acq92OHn+noUfczGq50R352QpahQkCOp6+8zIzCL9YhZm8u/sJ0EVV9bLwxoo0T8VmS
-	q9CZGnVUiMI+aArNzNcd1WuY+d3AJEhGpNVaNjZZspHW/d4uJkcXR3ErzCEYUMW9+huq6lls1Em
-	TOGeD03nrQDBsQLzWC0pbCDSArShKOv+cD9QDSpzFhTkWgWJwBDmPbyqvf7sV5P961uQE3swUzx
-	GpIhcM1dY/LDkiaoIhXgMbEtjxnZ0sqAUqdJ5nSHAtC0f0G1uS2EVR0BlfjgQ8uW3ZsgNJwgnkx
-	4aYI9Qt+n9zCZAY/msy4Ij0QLgUuw9QN1nYALK+3K5sJrdqKmI6v7woPMSN0K049mTcJddoPQFf
-	Caw8CWaRycIiAJk+W6wXDLcuahQKs+JjhEiFFoZ/ILxyD/RP5yjEF032leJlkkExyAgVwytsElg
-	qrWjxdAFOg4DUwc7hTUqVxTZZqjN5Wv1bYlsIRF5dFzlsa50XvYTaMN4pjyxUkGmukR1X9uhjdu
-	t+zoA==
-X-Received: by 2002:a05:620a:17ac:b0:915:a427:f2a3 with SMTP id af79cd13be357-9161baf567bmr2451925385a.6.1781567966528;
-        Mon, 15 Jun 2026 16:59:26 -0700 (PDT)
-Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-91619f210b7sm1278184285a.18.2026.06.15.16.59.25
+        d=1e100.net; s=20251104; t=1781569234; x=1782174034;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qMcLxKso4b2k5fy5qxZ4EymeOosh6CwCvDbgFOT0gso=;
+        b=Qi94VPsUswiZ1jKLI8qqYoJh4H/oToHUBJVmQJnukJTRGDFToGotikddJ2l/tP7lmz
+         9ROKg0XZyAFk2Gexl/dQas5LBgMlXH7HBA4zvK9P3FCbS/hzfrw8jC54y4vocF5i2yQc
+         80WAWryCJtlKoBYSinpJ9v0dqAOcELpeGnBpJh1t5F5ni1XupK3DZ5qwivv0a+tDlu/n
+         i0FUXl+oDLNxzSLNM/Bhs/ao5W0UNRisn5gpU7enFk34KqQv4TvHR0JcqJknAgjG/FLH
+         HQCH1Avzx0/MxWXTe8WFz3hXUx/DuNJaSs56NsRyCrJVWhV5bnKK98heTvYtm4brp8lB
+         PzCg==
+X-Forwarded-Encrypted: i=1; AFNElJ/BCaM8HeWDQqk/7vHfQcirfmbjPOMQTOxPBNQQJhaPUc/24eLz12iDw9CrYwxHVmoitU5Tz5btD85x@vger.kernel.org
+X-Gm-Message-State: AOJu0YyDnDWgCkwxs4jUJUKUNuZH5c4gw2QYzqh6itABltzcT3qfg+iQ
+	xGD3UC1FkPAPZhR4Fa6hsrsQgZNlHHRQuVdt+Det19pwAjrYlAZN+HnZ
+X-Gm-Gg: Acq92OH/Rm00Fo9i+wV7csxtgxgDg+LJBvG/grZm6q23PmHRmPng4mW02yU9VwR66D1
+	Rf3TMrOvFalmFyElvv0Lmwh1hiroZKBcU4dRf0c7F1SyqrP5AyRoHSCrAUhKP7yALn7g+TAiXqE
+	vWwk5zI5oCS2J/24K22bB9y4WZtW6prhCnlgMjN5SFbRaVGfy/nVZP5zSBVvhE8kyekWcVo+PUy
+	u0NoOZ3xUtBYrnKHEktEW+5N8zFl0Onh7CRjOAncus/IR6q2aU7lPJRls1hy7ApwMFZXEJHEjRl
+	vtxemDSuQsIzlS1nAdn1Nc0AyS8HHQLyX+6/jv7wpJp2fNA1BHHBU18IbCeWrPrbdHIvgooMvNT
+	+cqp0YZPikI0u+Gi+XjogL/oYViFrnckcYp5YeP5wsMwoXwF3r/MwyskLmr3mS8x4VJBgx/j991
+	Pm1DfMUh3p/SoS6d1P9M6t2kaBszoN9u822o9y8/7hCDTd6a5Q6ZhgHT7VxfjvF+KhpaVcOo0v2
+	TMrFAE+Ifo+3b+ri+WLwEAK58YLJNG7gcWtb/xdMeHpqXsN9H2Z68VCSBHrWuah0Jw5X5BTK7jx
+	ppJCazCoAM8IfiM24Q==
+X-Received: by 2002:a05:7022:108:b0:138:508b:93ca with SMTP id a92af1059eb24-13985f23377mr563572c88.18.1781569233498;
+        Mon, 15 Jun 2026 17:20:33 -0700 (PDT)
+Received: from ethan-latitude5420.. (host-127-24.cafrjco.fresno.ca.us.clients.pavlovmedia.net. [68.180.127.24])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1386f20ad25sm10026045c88.0.2026.06.15.17.20.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2026 16:59:25 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1wZHDA-0000000F0L7-2sIA;
-	Mon, 15 Jun 2026 20:59:24 -0300
-Date: Mon, 15 Jun 2026 20:59:24 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Alex Timofeyev <sashka@ankey.net>
-Cc: Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-	Parav Pandit <parav@nvidia.com>, Edward Srouji <edwards@nvidia.com>,
-	Vlad Dumitrescu <vdumitrescu@nvidia.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH rdma-next v1 0/2] RDMA: fix cross-NIC same-host IPv6
- RDMA-CM connect
-Message-ID: <20260615235924.GT1066031@ziepe.ca>
-References: <1781545579.1-sashka@ankey.net>
+        Mon, 15 Jun 2026 17:20:33 -0700 (PDT)
+From: Ethan Nelson-Moore <enelsonmoore@gmail.com>
+To: Shuah Khan <skhan@linuxfoundation.org>,
+	Dongliang Mu <dzm91@hust.edu.cn>,
+	linux-rdma@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Cc: Ethan Nelson-Moore <enelsonmoore@gmail.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Alex Shi <alexs@kernel.org>,
+	Yanteng Si <si.yanteng@linux.dev>
+Subject: [PATCH] docs: infiniband: correct name of option to enable the ib_uverbs module
+Date: Mon, 15 Jun 2026 17:20:23 -0700
+Message-ID: <20260616002027.67925-1-enelsonmoore@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1781545579.1-sashka@ankey.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-1.16 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	TAGGED_FROM(0.00)[bounces-22267-lists,linux-rdma=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:sashka@ankey.net,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:parav@nvidia.com,m:edwards@nvidia.com,m:vdumitrescu@nvidia.com,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[ziepe.ca];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	FREEMAIL_CC(0.00)[gmail.com,ziepe.ca,kernel.org,lwn.net,linux.dev];
+	TAGGED_FROM(0.00)[bounces-22268-lists,linux-rdma=lfdr.de];
 	TO_DN_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:skhan@linuxfoundation.org,m:dzm91@hust.edu.cn,m:linux-rdma@vger.kernel.org,m:linux-doc@vger.kernel.org,m:enelsonmoore@gmail.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:corbet@lwn.net,m:alexs@kernel.org,m:si.yanteng@linux.dev,s:lists@lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[enelsonmoore@gmail.com,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[enelsonmoore@gmail.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_SEVEN(0.00)[10];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 8474568ABFB
+X-Rspamd-Queue-Id: C231468AE4C
 
-On Mon, Jun 15, 2026 at 05:46:19PM +0000, Alex Timofeyev wrote:
-> RDMA-CM cannot establish an IPv6 RoCEv2 connection between two NICs that
-> live on the same host. This shows up on hosts that pin one process per
-> NUMA-local NIC and let those processes talk to each other over each NIC's
-> global IPv6 GID (e.g. a storage daemon with one engine per NUMA node on
-> dual ConnectX-7). rdma_resolve_addr() and ib_send_cm_req() both return
-> success, but the destination NIC silently drops the frame and the peer
-> never sees the REQ; the connection times out.
-> 
-> The bug has two halves, one on each side of the connection:
-> 
-> 1) Send side (patch 1, drivers/infiniband/core/addr.c)
-> 
->    When the destination address is local, addr_resolve_neigh() copies the
->    *source* device's MAC into the path record's destination MAC. That is
->    right for true loopback (same netdev), but for a destination that lives
->    on a different netdev of the same host the destination NIC will not
->    accept a frame addressed to the source NIC's MAC and drops it in HW.
->    The fix resolves the netdev that owns the destination address and uses
->    its MAC.
+The Infiniband documentation states that CONFIG_INFINIBAND_USER_VERBS
+should be used to enable the ib_uverbs module. However, this option was
+renamed to CONFIG_INFINIBAND_USER_ACCESS in commit 17781cd6186c
+("[PATCH] IB: clean up user access config options"). Update the
+documentation to reflect this.
 
-I'm not sure about this, you need to have policy routing or VRF setup
-so these local routes don't show up.. Do you have that?
+Signed-off-by: Ethan Nelson-Moore <enelsonmoore@gmail.com>
+---
+ Documentation/infiniband/user_verbs.rst                    | 2 +-
+ Documentation/translations/zh_CN/infiniband/user_verbs.rst | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-A local route result should result only in a local loopback AH, it should
-never result in a packet on the wire, and we shouldn't be trying to
-mangle loopback routes at all.
+diff --git a/Documentation/infiniband/user_verbs.rst b/Documentation/infiniband/user_verbs.rst
+index 8ddc4b1cfef2..96bcd1bd37ad 100644
+--- a/Documentation/infiniband/user_verbs.rst
++++ b/Documentation/infiniband/user_verbs.rst
+@@ -2,7 +2,7 @@
+ Userspace verbs access
+ ======================
+ 
+-  The ib_uverbs module, built by enabling CONFIG_INFINIBAND_USER_VERBS,
++  The ib_uverbs module, built by enabling CONFIG_INFINIBAND_USER_ACCESS,
+   enables direct userspace access to IB hardware via "verbs," as
+   described in chapter 11 of the InfiniBand Architecture Specification.
+ 
+diff --git a/Documentation/translations/zh_CN/infiniband/user_verbs.rst b/Documentation/translations/zh_CN/infiniband/user_verbs.rst
+index 970bc1a4e396..31534681654b 100644
+--- a/Documentation/translations/zh_CN/infiniband/user_verbs.rst
++++ b/Documentation/translations/zh_CN/infiniband/user_verbs.rst
+@@ -17,7 +17,7 @@
+ 用户空间verbs访问
+ =================
+ 
+-  ib_uverbs模块，通过启用CONFIG_INFINIBAND_USER_VERBS构建，使用户空间
++  ib_uverbs模块，通过启用CONFIG_INFINIBAND_USER_ACCESS构建，使用户空间
+   通过“verbs”直接访问IB硬件，如InfiniBand架构规范第11章所述。
+ 
+   要使用verbs，需要libibverbs库，可从https://github.com/linux-rdma/rdma-core。
+-- 
+2.43.0
 
-> 2) Receive side (patch 2, drivers/infiniband/core/cma.c)
-> 
->    Once the REQ does reach the peer, validate_ipv6_net_dev() rejects it:
->    rt6_lookup() of a same-host destination collapses onto the loopback
->    netdev, so the strict rt6i_idev->dev == net_dev check fails with
->    -EHOSTUNREACH even though the REQ arrived on the right net_dev. The fix
->    accepts an RTF_LOCAL route when net_dev itself owns the listener
->    address. This half is only observable once patch 1 lets the REQ
->    arrive.
-
-Same answer here, if you have proper routing you won't get a loopback
-route to match and you won't fail on this check. Removing the check
-does not seem correct.
-
-Jason
 
