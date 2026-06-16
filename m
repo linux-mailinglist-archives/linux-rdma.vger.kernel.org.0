@@ -1,154 +1,263 @@
-Return-Path: <linux-rdma+bounces-22276-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22277-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id L/gaNXRTMWpngwUAu9opvQ
-	(envelope-from <linux-rdma+bounces-22276-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2026 15:45:24 +0200
+	id lOSVMeZfMWr9iAUAu9opvQ
+	(envelope-from <linux-rdma+bounces-22277-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2026 16:38:30 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 472246900FE
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2026 15:45:24 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25166690931
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2026 16:38:30 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linuxfoundation.org header.s=korg header.b=Ld0iLY9I;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22276-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22276-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linuxfoundation.org;
+	dkim=pass header.d=ibm.com header.s=pp1 header.b=aRI6qfEo;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22277-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22277-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=ibm.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3CC81324C7F9
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2026 13:40:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0052131FEC77
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2026 14:27:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DCA2330678;
-	Tue, 16 Jun 2026 13:40:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56548379EFC;
+	Tue, 16 Jun 2026 14:27:27 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B07D30C345;
-	Tue, 16 Jun 2026 13:40:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 962163A1E69;
+	Tue, 16 Jun 2026 14:27:24 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781617214; cv=none; b=TsE+UryD10JZUjRjX3gwjTk7Uw8u49YO9LPPgej7vp8HbWNvoU+UsWqAi6xYl/QqlLUxIJWPFeDslJsrQD/VZtQ8DcynZs410wMjML/vd3w22u9WWHg4G4XDsdWTLK8m2eyyTx6MU9BuOZacbLvcyvGODUNS36wTsEqg7IqXwwY=
+	t=1781620047; cv=none; b=BpOK4rvl1xVDwTC/8EIuN7XTjqjvyLkbnq9tMJcRVQms3WsSztbpfNmJMbQKMBJh+XZf+LZ5AMTQScQtBnwLoP6pKmWw0z0nVWJyhfjsXFaTdoTXabmlkZdncQ2bU8MDTgg0BgXWiXPkN9jeV7GiA+igk1y2tfEJyCkQcdLsitU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781617214; c=relaxed/simple;
-	bh=wA8wW4j3hNvH6XU6Pxe8tuS8j0Q5lz1tEPHcKGyaS3U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aLL4jerc165UUeLVJkPN4l7Zja2d6+O+Ynv/qy7LqpkE1mbm04BfQtoKKPwcEO6K5qYvhj0RcrArNJK1rEBF1KP/dPzqndNkKs/HzMcjyUdPrNegHOXP2X1Xdoh0h7HhyYcVJW7CzTx62eHnXM4JnOjBBvWQyTC7pGCs81WqiCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Ld0iLY9I; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DAFB1F00A3A;
-	Tue, 16 Jun 2026 13:40:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxfoundation.org;
-	s=korg; t=1781617212;
-	bh=9wpiz9obU8g5CgCdynYedfjfq3YjfyVdL+5vnduwH0U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=Ld0iLY9IgD+oJuC/zIviQjB1K5QnZkoSd9Wo7trZTQmtffn20/bsnGnkmdtVNKcG6
-	 0oW3ScGlbmzpe606mnT9ueBBWpwtxrxrmWV58buxRxzqhaYZHmdlxrCqIljaF/6Fys
-	 nzr7Dp7GlXohyR4yqlVMT/3YjItecEUL0NAwWDww=
-Date: Tue, 16 Jun 2026 19:09:06 +0530
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Vladislav Nikolaev <vlad102nikolaev@gmail.com>
-Cc: stable@vger.kernel.org, Zhu Yanjun <zyjzyj2000@gmail.com>,
-	Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Haggai Eran <haggaie@mellanox.com>,
-	Kamal Heib <kamalh@mellanox.com>, Amir Vadai <amirv@mellanox.com>,
-	Moni Shoua <monis@mellanox.com>,
-	Yonatan Cohen <yonatanc@mellanox.com>,
-	Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Zhu Yanjun <yanjunz@nvidia.com>,
-	lvc-project@linuxtesting.org
-Subject: Re: [PATCH 6.1 1/3] Revert "RDMA/rxe: Fix the error "trying to
- register non-static key in rxe_cleanup_task""
-Message-ID: <2026061651-affected-ream-c0b3@gregkh>
-References: <20260605170349.1524-1-vlad102nikolaev@gmail.com>
- <20260605170349.1524-2-vlad102nikolaev@gmail.com>
+	s=arc-20240116; t=1781620047; c=relaxed/simple;
+	bh=1TEa1AEWrpo5vlROCNgvTad5PWUPE/qQn8wASMr7nCI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rYFlxNNljk3OgAb7QSfXwHQsEnK8NOzoBm9Mffvs1wKCnzBXvzLYzZnlbgkNnrnYVtc90cYZhrVnI7ULvtkRHeqyqLq/Zm6NktxUAlXfDhBAQZUBGK0tkizThOcEqnx2N9AJzu2UU4kqUfw70KZUOObfbQRa4RfRSDdtXX/g8TY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=aRI6qfEo; arc=none smtp.client-ip=148.163.156.1
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 65GEICjj1763843;
+	Tue, 16 Jun 2026 14:27:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=IjuEIJ
+	SriwuP01r/+rNqGP9V1B2LCAw9Xpaog56O+38=; b=aRI6qfEoXL+uBKVIlvR1P+
+	DUjnck+WtmfRzEYpFdxNSPPozP25iDNI9i13sKCum7JQbawWmYMynlD0LY3VgFHn
+	/gIWOHDgzEzjXATGUcaePVXKCOxaXSyqmOAF6T7S4qSoZ2irSv49lHGlWi+VygOe
+	VcB9jBZdFUxz1uYJ78unQtBJz/z5abIgfMSv9/kopVLFUsSGonR+pyxn8CRKBbxr
+	CS7J8Lw2uFqokAegqewYMOo1XFHJS1Twfik4nvGw1L1eSPdUsgTppXtu/ruCT6rE
+	MQ5McqFS34VBh3qh3dbheMvlr/6um28nY7GXzxf0lV61jGD59LURWoVRCnmKIGdw
+	==
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4es23np4ef-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jun 2026 14:27:12 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 65GEJd7C032673;
+	Tue, 16 Jun 2026 14:27:11 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4eshhq3x7n-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jun 2026 14:27:11 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 65GER6OE23593388
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Jun 2026 14:27:06 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 04EFA20043;
+	Tue, 16 Jun 2026 14:27:06 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0205F20040;
+	Tue, 16 Jun 2026 14:27:02 +0000 (GMT)
+Received: from [9.39.16.33] (unknown [9.39.16.33])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 16 Jun 2026 14:27:01 +0000 (GMT)
+Message-ID: <430a9dd9-ecfb-4465-9eeb-f854fbbc2e61@linux.ibm.com>
+Date: Tue, 16 Jun 2026 19:57:00 +0530
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260605170349.1524-2-vlad102nikolaev@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net 1/1] net: smc: fix splice entry lifetime imbalance in
+ smc_rx_splice
+To: Ren Wei <n05ec@lzu.edu.cn>, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org
+Cc: alibuda@linux.alibaba.com, dust.li@linux.alibaba.com, wenjia@linux.ibm.com,
+        mjambigi@linux.ibm.com, tonylu@linux.alibaba.com,
+        guwen@linux.alibaba.com, ubraun@linux.ibm.com,
+        stefan.raspl@linux.ibm.com, davem@davemloft.net, yuantan098@gmail.com,
+        zcliangcn@gmail.com, bird@lzu.edu.cn, lx24@stu.ynu.edu.cn,
+        d4n.for.sec@gmail.com
+References: <cover.1781097957.git.d4n.for.sec@gmail.com>
+ <192d1b44ed358ca143f44ef167d14153bccc51e9.1781097957.git.d4n.for.sec@gmail.com>
+Content-Language: en-US
+From: Sidraya Jayagond <sidraya@linux.ibm.com>
+In-Reply-To: <192d1b44ed358ca143f44ef167d14153bccc51e9.1781097957.git.d4n.for.sec@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Authority-Analysis: v=2.4 cv=XtnK/1F9 c=1 sm=1 tr=0 ts=6a315d41 cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=IkcTkHD0fZMA:10 a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=iQ6ETzBq9ecOQQE5vZCe:22 a=pGLkceISAAAA:8
+ a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=lELoO6ydEwu01aG-FtUA:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjE2MDE0NSBTYWx0ZWRfX3aLGkuxzoGY9
+ nQ8con6vPfodRZHjAhAtq7B5aqdrNqZ/zW0qc9cTwUNyO7feqwS+u93GPdt1URw8RBaxXpOj7Fr
+ X5L5sNG0uOvsEdMNpEHhj4AM9/jzwfR9FqMoCMa9ERnTStuqGDTDH2qa7X9zK/rSmMeKuqeG+Yd
+ 5SjnfYqRcbTsjn45nFVFAKULD9xAYG2xLe1yS27cjqDHy69YatG5RNatTXs0/hrgChj4oITUF6w
+ 3v8FqzTVHQ8nRpMef9lvHqBBN2Y9y4s7PqsC42x0eUwWBLZqAZkV8YHKsnTKmgqHtKMZ+LglcxH
+ tYXEtfqj1XiWDUbv0+K8bhv7FK/k6gAVU3Y9lttrfrAVjrDaCvd2fWmUa8lb5o6u58vVSQM5jCb
+ OLw6EhPzkZfPh35xxOAWH0+U+fxRN+1Nt0SahssZRagPtrnSjWWHgpdQrMsIIaxURF1Qq46iasi
+ zfnpjx4SqoLS2ZfwKjA==
+X-Proofpoint-GUID: c0J0dIn_JX-poNTUfy1y4PPQMiLBYcKK
+X-Proofpoint-ORIG-GUID: 34lRAMndiN_j3wEzws5yH02GX2zEQfeh
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNjE2MDE0NSBTYWx0ZWRfX3rX96ezEwEg0
+ ilxy5r6FKDjUmNWIbHrN5zKu99LrCKOY6GjYuY4WsN1epbalw0P14BA6EP8OBjj7uUIFPdQ2Bsk
+ hwc90HB8XsyAYAYu3aOpu4NKPTAtOgo=
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
+ definitions=2026-06-16_04,2026-06-15_04,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ bulkscore=0 adultscore=0 phishscore=0 lowpriorityscore=0 priorityscore=1501
+ suspectscore=0 clxscore=1011 malwarescore=0 spamscore=0 impostorscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606040000 definitions=main-2606160145
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [2.34 / 15.00];
-	MID_END_EQ_FROM_USER_PART(4.00)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linuxfoundation.org,none];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[linuxfoundation.org:s=korg];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[ibm.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[ibm.com:s=pp1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:vlad102nikolaev@gmail.com,m:stable@vger.kernel.org,m:zyjzyj2000@gmail.com,m:dledford@redhat.com,m:jgg@ziepe.ca,m:haggaie@mellanox.com,m:kamalh@mellanox.com,m:amirv@mellanox.com,m:monis@mellanox.com,m:yonatanc@mellanox.com,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:yanjunz@nvidia.com,m:lvc-project@linuxtesting.org,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[gregkh@linuxfoundation.org,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	FREEMAIL_TO(0.00)[gmail.com];
-	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-22276-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-22277-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:n05ec@lzu.edu.cn,m:linux-rdma@vger.kernel.org,m:linux-s390@vger.kernel.org,m:netdev@vger.kernel.org,m:alibuda@linux.alibaba.com,m:dust.li@linux.alibaba.com,m:wenjia@linux.ibm.com,m:mjambigi@linux.ibm.com,m:tonylu@linux.alibaba.com,m:guwen@linux.alibaba.com,m:ubraun@linux.ibm.com,m:stefan.raspl@linux.ibm.com,m:davem@davemloft.net,m:yuantan098@gmail.com,m:zcliangcn@gmail.com,m:bird@lzu.edu.cn,m:lx24@stu.ynu.edu.cn,m:d4n.for.sec@gmail.com,m:d4nforsec@gmail.com,s:lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[sidraya@linux.ibm.com,linux-rdma@vger.kernel.org];
+	FREEMAIL_CC(0.00)[linux.alibaba.com,linux.ibm.com,davemloft.net,gmail.com,lzu.edu.cn,stu.ynu.edu.cn];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,ynu.edu.cn:email,linux.ibm.com:mid,linux.ibm.com:from_mime,vger.kernel.org:from_smtp];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[linuxfoundation.org:+];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[gregkh@linuxfoundation.org,linux-rdma@vger.kernel.org];
-	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,redhat.com,ziepe.ca,mellanox.com,kernel.org,nvidia.com,linuxtesting.org];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[sidraya@linux.ibm.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[ibm.com:+];
+	ALIAS_RESOLVED(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linuxfoundation.org:dkim,linuxfoundation.org:from_mime,gregkh:mid,vger.kernel.org:from_smtp]
+	RCVD_COUNT_SEVEN(0.00)[11]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 472246900FE
+X-Rspamd-Queue-Id: 25166690931
 
-On Fri, Jun 05, 2026 at 08:03:27PM +0300, Vladislav Nikolaev wrote:
-> This reverts commit 3236221bb8e4de8e3d0c8385f634064fb26b8e38.
+
+
+On 10/06/26 11:24 pm, Ren Wei wrote:
+> From: Daming Li <d4n.for.sec@gmail.com>
 > 
-> The reverted commit is an incomplete backport of upstream
-> commit b2b1ddc45745. It added guards for req.task and comp.task
-> cleanup, but missed resp.task cleanup and left it before the RC timer
-> cleanup, unlike the upstream fix. Revert it first so the correct
-> backport can be applied cleanly in the following patch.
+> smc_rx_splice() hands candidate pages to splice_to_pipe() without taking
+> references for the lifetime of each splice entry first. That breaks the
+> splice ownership contract in the VM-backed RMB path.
 > 
-> Signed-off-by: Vladislav Nikolaev <vlad102nikolaev@gmail.com>
+> splice_to_pipe() drops unqueued entries through spd_release(), while
+> queued entries are later dropped through the pipe buffer release
+> callback. The current code only tries to take page references after the
+> splice succeeds, and it derives the number of queued VM pages from a
+> mutated offset value. This can underflow page refcounts and trigger a
+> use-after-free. It also leaves the socket lifetime imbalanced in the
+> multi-page VM case, where one sock_hold() can be followed by multiple
+> sock_put() calls.
+> 
+> Fix this by taking the page and socket references for every candidate
+> splice entry before calling splice_to_pipe(), and by releasing the
+> matching private state, page reference, and socket reference from
+> smc_rx_spd_release() for entries that never get queued. This makes the
+> SMC splice path follow the normal splice lifetime rules and removes the
+> broken post-splice VM page counting entirely.
+> 
+> Fixes: 9014db202cb7 ("smc: add support for splice()")
+> Cc: stable@vger.kernel.org
+> Reported-by: Yuan Tan <yuantan098@gmail.com>
+> Reported-by: Zhengchuan Liang <zcliangcn@gmail.com>
+> Reported-by: Xin Liu <bird@lzu.edu.cn>
+> Assisted-by: Codex:GPT-5.4
+> Co-developed-by: Liu Xiao <lx24@stu.ynu.edu.cn>
+> Signed-off-by: Liu Xiao <lx24@stu.ynu.edu.cn>
+> Signed-off-by: Daming Li <d4n.for.sec@gmail.com>
+> Signed-off-by: Ren Wei <n05ec@lzu.edu.cn>
 > ---
->  drivers/infiniband/sw/rxe/rxe_qp.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
+>  net/smc/smc_rx.c | 21 +++++++++++----------
+>  1 file changed, 11 insertions(+), 10 deletions(-)
 > 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-> index 709c63e9773c..05e4a270084f 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-> @@ -788,11 +788,8 @@ static void rxe_qp_do_cleanup(struct work_struct *work)
->  		del_timer_sync(&qp->rnr_nak_timer);
+> diff --git a/net/smc/smc_rx.c b/net/smc/smc_rx.c
+> index c1d9b923938d..88aee0d93597 100644
+> --- a/net/smc/smc_rx.c
+> +++ b/net/smc/smc_rx.c
+> @@ -150,18 +150,23 @@ static const struct pipe_buf_operations smc_pipe_ops = {
+>  static void smc_rx_spd_release(struct splice_pipe_desc *spd,
+>  			       unsigned int i)
+>  {
+> +	struct smc_spd_priv *priv = (struct smc_spd_priv *)spd->partial[i].private;
+> +	struct sock *sk = &priv->smc->sk;
+> +
+> +	kfree(priv);
+>  	put_page(spd->pages[i]);
+> +	sock_put(sk);
+>  }
+>  
+>  static int smc_rx_splice(struct pipe_inode_info *pipe, char *src, size_t len,
+>  			 struct smc_sock *smc)
+>  {
+>  	struct smc_link_group *lgr = smc->conn.lgr;
+> -	int offset = offset_in_page(src);
+>  	struct partial_page *partial;
+>  	struct splice_pipe_desc spd;
+>  	struct smc_spd_priv **priv;
+>  	struct page **pages;
+> +	int offset = offset_in_page(src);
+>  	int bytes, nr_pages;
+>  	int i;
+>  
+> @@ -209,6 +214,10 @@ static int smc_rx_splice(struct pipe_inode_info *pipe, char *src, size_t len,
+>  			offset = 0;
+>  		}
 >  	}
+> +	for (i = 0; i < nr_pages; i++) {
+> +		get_page(pages[i]);
+> +		sock_hold(&smc->sk);
+> +	}
+>  	spd.nr_pages_max = nr_pages;
+>  	spd.nr_pages = nr_pages;
+>  	spd.pages = pages;
+> @@ -217,16 +226,8 @@ static int smc_rx_splice(struct pipe_inode_info *pipe, char *src, size_t len,
+>  	spd.spd_release = smc_rx_spd_release;
 >  
-> -	if (qp->req.task.func)
-> -		rxe_cleanup_task(&qp->req.task);
-> -
-> -	if (qp->comp.task.func)
-> -		rxe_cleanup_task(&qp->comp.task);
-> +	rxe_cleanup_task(&qp->req.task);
-> +	rxe_cleanup_task(&qp->comp.task);
->  
->  	/* flush out any receive wr's or pending requests */
->  	if (qp->req.task.func)
-> -- 
-> 2.43.0
-> 
-
-This series does not apply to the latest tree :(
-
-Are you sure it is still needed?
-
-thanks,
-
-greg k-h
+>  	bytes = splice_to_pipe(pipe, &spd);
+> -	if (bytes > 0) {
+> -		sock_hold(&smc->sk);
+> -		if (!lgr->is_smcd && smc->conn.rmb_desc->is_vm) {
+> -			for (i = 0; i < PAGE_ALIGN(bytes + offset) / PAGE_SIZE; i++)
+> -				get_page(pages[i]);
+> -		} else {
+> -			get_page(smc->conn.rmb_desc->pages);
+> -		}
+> +	if (bytes > 0)
+>  		atomic_add(bytes, &smc->conn.splice_pending);
+> -	}
+>  	kfree(priv);
+>  	kfree(partial);
+>  	kfree(pages);
+Code changes looks good to me.
+Reviewed-by: Sidraya Jayagond <sidraya@linux.ibm.com>
 
