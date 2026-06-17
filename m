@@ -1,179 +1,126 @@
-Return-Path: <linux-rdma+bounces-22335-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22336-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id YlueJfopM2pE+AUAu9opvQ
-	(envelope-from <linux-rdma+bounces-22335-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2026 01:12:58 +0200
+	id kwcXCM0sM2qo+AUAu9opvQ
+	(envelope-from <linux-rdma+bounces-22336-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2026 01:25:01 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1639F69CC60
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2026 01:12:58 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C42F69CCB2
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2026 01:25:00 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=amazon.com header.s=amazoncorp2 header.b=mdY0b4Jq;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22335-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22335-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=amazon.com;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b="YENY/Sh3";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22336-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22336-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 53E803014AAD
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2026 23:12:57 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 51DA830D32F9
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2026 23:24:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11E9C3B1006;
-	Wed, 17 Jun 2026 23:12:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26763B8945;
+	Wed, 17 Jun 2026 23:24:57 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from pdx-out-002.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-002.esa.us-west-2.outbound.mail-perimeter.amazon.com [44.246.1.125])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D1B388396
-	for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2026 23:12:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC740313539;
+	Wed, 17 Jun 2026 23:24:56 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781737975; cv=none; b=I+H3HK6Jsc4faK0vSR/xwnSVZFmo8t76XN2FnlzejZziCZDVLZ8CDWXrU5cRndcZdbGZI2SVQDJLodDnNv2eIu9VXFcmUpeLb1vhsHJZHuz5z/GMSrz4JLDlFq9hSgpUMPTRmUb8qUorJXMY7QbgZkkkl0V3IEnUGt23OORLdDs=
+	t=1781738697; cv=none; b=j9vtC96NDMIen1Qq66K/rFpOoLUAm3iglXz2gkzcSBhp75RsVEybcMEjKZom/gkli2As/KPYa3FR3qhP7BxhTfHG/gxzDd4pAsaweJw4faEXDRxgtBCYyBf7nTZR80aRINphllnWH5C+H4uqAjk8gOzjFfXVcWI2gEdgqIOAu3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781737975; c=relaxed/simple;
-	bh=L+B2SLOMh1NxVe97e0ukVO7/L9L3xhDymEbvawpokjk=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wx2q/wSrBWDYVYACrpVRifUA2ywpxrSrKakTD0A+ntw6oXsfGgPPLZzDJFm1N1SLR1FMArAzgxq4sxKiQrekq6WkV7TIuesSvKSAv4lbFmcefZpp+WWJWaug6WgfDkPKIsqA13eO9WbwKM8fbkHmM3AuQnOlLhykN8bNS6ZLyDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=mdY0b4Jq; arc=none smtp.client-ip=44.246.1.125
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1781737974; x=1813273974;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=T95Xz90R9sFG0RNJDdhvSbdu9MyELJ7ZqobeMzYntN0=;
-  b=mdY0b4Jqe+WI29uCwHLCS/rA9WKveVfII1TzEW2zkEigAryyZmVfscDl
-   M1tSiA/5K760HmL8PDWWnZqBYwU5H3hSgJe5mh9sYybRdphUiQPGxZvrV
-   vvCufuSwcK8cJ7zEik3Tm5aP/wkwU5TfOEYlJHu0XSOOVZOF/sqx5e+8a
-   +SSBgbKDX/oujghMm1VO3VwlhOVXsONPMzzq91HtTNgKhZ/Rt5J+8+f0g
-   DdkfKPkz8StqnrexZTT0/Px/3CYK+gwUYj1KECRoe16KVGgFbNnRUoc+q
-   3VNafyHLXRD25u2zxNHmvJVskyhvh84+sX7Y5PrH7t0zCLtJGhFQw6I59
-   g==;
-X-CSE-ConnectionGUID: KfCDOg1YS3OO0BOIFs8BMA==
-X-CSE-MsgGUID: GOPW6NVyTyOiECOGBm+Q2g==
-X-IronPort-AV: E=Sophos;i="6.24,210,1774310400"; 
-   d="scan'208";a="21989666"
-Received: from ip-10-5-12-219.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.12.219])
-  by internal-pdx-out-002.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2026 23:12:54 +0000
-Received: from EX19MTAUWC002.ant.amazon.com [205.251.233.51:3687]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.31.226:2525] with esmtp (Farcaster)
- id 7fb2e266-cc45-4e0f-8527-9a16e81d8993; Wed, 17 Jun 2026 23:12:54 +0000 (UTC)
-X-Farcaster-Flow-ID: 7fb2e266-cc45-4e0f-8527-9a16e81d8993
-Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
- Wed, 17 Jun 2026 23:12:54 +0000
-Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
- (10.253.103.172) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37; Wed, 17 Jun 2026
- 23:12:52 +0000
-Date: Wed, 17 Jun 2026 23:12:43 +0000
-From: Michael Margolin <mrgolin@amazon.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-CC: tom sela <tomsela@amazon.com>, <leon@kernel.org>,
-	<linux-rdma@vger.kernel.org>, <sleybo@amazon.com>, <matua@amazon.com>,
-	<gal.pressman@linux.dev>, Yonatan Nachum <ynachum@amazon.com>
-Subject: Re: [PATCH for-rc] RDMA/efa: Propagate destroy AH error
-Message-ID: <20260617231243.GA28311@dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com>
-References: <20260526073334.24905-1-tomsela@amazon.com>
- <20260602002223.GA644685@nvidia.com>
- <20260608145738.GA43925@dev-dsk-tomsela-1c-ce9cc34e.eu-west-1.amazon.com>
- <20260608152622.GM1962447@nvidia.com>
+	s=arc-20240116; t=1781738697; c=relaxed/simple;
+	bh=+eI17Fy+wVIe18UVPp034CydNAaGOahSn2tIGzBPJCU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=VTgvhzpbe/7SwHf+yrtZXkSkB4ASDJ5Y6Jr8Vn0H3gMsKbwjSRW1W591GduKwz0xr9xewBt62sUfj/cDmZ+ZbkZgSAFY1FiaPwvjIoUjbBVu7oJtkLfSprNd9meJ/vHBeb1Qvr6PwjAF5gEy5hn49MXvdDQa+QP15vkKUBHxkuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YENY/Sh3; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B561C1F000E9;
+	Wed, 17 Jun 2026 23:24:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1781738696;
+	bh=r5uSA66J9ABM/9yH9MNLyLHNRWzKIhhr4br7s8vfmak=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=YENY/Sh3Yed6hgB9DUIcwtRPpc0H+4BrXWXFxaL/P54FnFkM8icFFcQLmWtAvl4tJ
+	 ldF2DhiYUCTuptBfefapfZopXADowAkgq71dMni6QSLpvEDkHSeN9qI3q3CzECu/GH
+	 YOPI76roAKAOh6uBQgfYVmQXNlNPOWT95WlCX0d0oW8Rc6gKUSXV4HeA8owkpBu7k0
+	 rkXneckPctgOlTl/SIv6YM9GtnDvOh6ndBw4kBDTB45zcW7UNzfvsTqbbEuiuD308x
+	 eT3ebr5lWS+l1GGgtzxSXUwbMDQzi+hNVlz21ENIP/5Few58KctkEFHe+r36HmDZEP
+	 W/RtdagPbHo0w==
+Date: Wed, 17 Jun 2026 16:24:54 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Bryam Vargas via B4 Relay <devnull+hexlabsecurity.proton.me@kernel.org>
+Cc: hexlabsecurity@proton.me, Wenjia Zhang <wenjia@linux.ibm.com>, Dust Li
+ <dust.li@linux.alibaba.com>, "D. Wythe" <alibuda@linux.alibaba.com>,
+ Sidraya Jayagond <sidraya@linux.ibm.com>, Eric Dumazet
+ <edumazet@google.com>, "David S. Miller" <davem@davemloft.net>, Mahanta
+ Jambigi <mjambigi@linux.ibm.com>, Wen Gu <guwen@linux.alibaba.com>, Simon
+ Horman <horms@kernel.org>, netdev@vger.kernel.org, Ursula Braun
+ <ubraun@linux.ibm.com>, Stefan Raspl <raspl@linux.ibm.com>,
+ linux-s390@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, Tony Lu
+ <tonylu@linux.alibaba.com>
+Subject: Re: [PATCH v3 0/3] net/smc: bound wire-controlled CDC cursors
+ against the local buffers
+Message-ID: <20260617162454.33e95c2f@kernel.org>
+In-Reply-To: <20260614-b4-disp-edd64be9-v3-0-551fa514257e@proton.me>
+References: <20260614-b4-disp-edd64be9-v3-0-551fa514257e@proton.me>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20260608152622.GM1962447@nvidia.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-ClientProxiedBy: EX19D032UWB003.ant.amazon.com (10.13.139.165) To
- EX19D001UWA001.ant.amazon.com (10.13.138.214)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-12.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
-	WHITELIST_SPF_DKIM(-3.00)[amazon.com:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64];
-	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22335-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo];
-	FORGED_SENDER(0.00)[mrgolin@amazon.com,linux-rdma@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:jgg@nvidia.com,m:tomsela@amazon.com,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:sleybo@amazon.com,m:matua@amazon.com,m:gal.pressman@linux.dev,m:ynachum@amazon.com,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[amazon.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mrgolin@amazon.com,linux-rdma@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22336-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	FORWARDED(0.00)[lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:devnull+hexlabsecurity.proton.me@kernel.org,m:hexlabsecurity@proton.me,m:wenjia@linux.ibm.com,m:dust.li@linux.alibaba.com,m:alibuda@linux.alibaba.com,m:sidraya@linux.ibm.com,m:edumazet@google.com,m:davem@davemloft.net,m:mjambigi@linux.ibm.com,m:guwen@linux.alibaba.com,m:horms@kernel.org,m:netdev@vger.kernel.org,m:ubraun@linux.ibm.com,m:raspl@linux.ibm.com,m:linux-s390@vger.kernel.org,m:pabeni@redhat.com,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:tonylu@linux.alibaba.com,m:devnull@kernel.org,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
 	TO_DN_SOME(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	FORGED_SENDER_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,hexlabsecurity.proton.me];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1639F69CC60
+X-Rspamd-Queue-Id: 7C42F69CCB2
 
-On Mon, Jun 08, 2026 at 12:26:22PM -0300, Jason Gunthorpe wrote:
-> On Mon, Jun 08, 2026 at 02:57:38PM +0000, tom sela wrote:
-> > On Mon, Jun 01, 2026 at 09:22:23PM -0300, Jason Gunthorpe wrote:
-> > > On Tue, May 26, 2026 at 07:33:34AM +0000, Tom Sela wrote:
-> > > > AH destruction currently always returns success, ignoring any error
-> > > > from the device. Propagate the actual device error so the caller can
-> > > > handle failures appropriately.
-> > > 
-> > > Callers don't handle failures. Drivers are not permitted to fail
-> > > destroy, if they do it probably will trigger a WARN_ON.
-> > > 
-> > > You can make some of an argument to allow failing destroy for user
-> > > objects only, but not like this in general for kernel objects.
-> > > 
-> > > If your FW fails destroying a kernel object then the device is busted,
-> > > you should reset it and succeed to destroy the kernel object anyhow.
-> > > 
-> > > Jason
-> > 
-> > 
-> > This code is for user objects only. When destroy is called for a
-> > user object, the core code handles the failure gracefully and can
-> > retry cleanup at a later stage.
-> > 
-> > Currently we don't have a code path where destroy_ah actually fails
-> > in device, but we'd like the error propagation in place for
-> > completeness so that if a future FW change can return a transient
-> > error, we handle it correctly rather than silently ignoring it.
-> > 
-> > Would you prefer we explicitly guard this with a check for
-> > ibah->uobject (i.e., only propagate the error when it's a user
-> > object).
-> 
-> Do you ever plan to support kverbs on efa?
+On Sun, 14 Jun 2026 03:23:29 -0500 Bryam Vargas via B4 Relay wrote:
+> A peer's CDC producer/consumer cursors are copied from the wire and used,
+> without an upper bound against the local buffers, as (a) a raw index into the
+> RMB on the urgent path, (b) the receive length in smc_rx_recvmsg(), and (c) the
+> send length in smc_tx_sendmsg() on the SMC-D DMB-merge path.  A malicious or
+> buggy peer can forge a cursor so each of these runs past the relevant buffer:
+> an out-of-bounds read of adjacent kernel memory (disclosed to the peer) on the
+> receive/urgent side, and an out-of-bounds write of attacker-influenced length
+> and content on the send side.
 
-I believe we eventually will.
-
-> 
-> It is still not Ok to propogae all failures even on uobjects, you will
-> still trigger a WARN_ON eventually.. It has to succeed under the retry
-> logic.
-
-So propagating EBUSY/EAGAIN for userspace objects does make sense?
-
-Michael
-
-> 
-> Jason
-
-
+Once again, SMC maintainers -- please review.
+-- 
+mping: SHARED MEMORY COMMUNICATIONS (SMC) SOCKETS
 
