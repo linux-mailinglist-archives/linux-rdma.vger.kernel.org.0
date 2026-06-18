@@ -1,126 +1,136 @@
-Return-Path: <linux-rdma+bounces-22336-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22337-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id kwcXCM0sM2qo+AUAu9opvQ
-	(envelope-from <linux-rdma+bounces-22336-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2026 01:25:01 +0200
+	id Pa7fJ2w6M2od+gUAu9opvQ
+	(envelope-from <linux-rdma+bounces-22337-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2026 02:23:08 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C42F69CCB2
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2026 01:25:00 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34D1369CDF1
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2026 02:23:08 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b="YENY/Sh3";
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22336-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22336-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=LFbIMWXw;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22337-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22337-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 51DA830D32F9
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2026 23:24:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 801CB3091570
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2026 00:21:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26763B8945;
-	Wed, 17 Jun 2026 23:24:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2973D22ACEB;
+	Thu, 18 Jun 2026 00:21:01 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC740313539;
-	Wed, 17 Jun 2026 23:24:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E9702405E1;
+	Thu, 18 Jun 2026 00:20:57 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781738697; cv=none; b=j9vtC96NDMIen1Qq66K/rFpOoLUAm3iglXz2gkzcSBhp75RsVEybcMEjKZom/gkli2As/KPYa3FR3qhP7BxhTfHG/gxzDd4pAsaweJw4faEXDRxgtBCYyBf7nTZR80aRINphllnWH5C+H4uqAjk8gOzjFfXVcWI2gEdgqIOAu3U=
+	t=1781742060; cv=none; b=mZMzD/wH8xLBT2KDookno3M/GQeXnxBWwJAZCbGqHodqd0D4AhS2UIcnjnd0KxP+RPoXsqiA2/zfWfDCzld9FFh2o6vADHD35fLZcFmt/YZkF8R0gYwCOxgBaqHXKjYrUIzwWwwtYV4e77kNAzeHbFYBPU6OxLYLusbUNOGpwn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781738697; c=relaxed/simple;
-	bh=+eI17Fy+wVIe18UVPp034CydNAaGOahSn2tIGzBPJCU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VTgvhzpbe/7SwHf+yrtZXkSkB4ASDJ5Y6Jr8Vn0H3gMsKbwjSRW1W591GduKwz0xr9xewBt62sUfj/cDmZ+ZbkZgSAFY1FiaPwvjIoUjbBVu7oJtkLfSprNd9meJ/vHBeb1Qvr6PwjAF5gEy5hn49MXvdDQa+QP15vkKUBHxkuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YENY/Sh3; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B561C1F000E9;
-	Wed, 17 Jun 2026 23:24:55 +0000 (UTC)
+	s=arc-20240116; t=1781742060; c=relaxed/simple;
+	bh=3arIVhF/67GS9jQgSZLvlfK9B/U7rRqaN5+cBGVj64M=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=QiakMh7BtFlBFtC/kqM95lppZGfeU2+Q70tW6cEWKR8xQ2kJjv+usNr01Rnmhu1NtHrW+J7rpPmXTsQ/PsVUZM9O+n7g3a+Wsjmy6oKLYFVTfHLb1KXkWyPs4g5y6nLyJPufsKAKEg198dsAuHEZsy579U9/H2iPXtus8Mzlzug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LFbIMWXw; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04D7C1F000E9;
+	Thu, 18 Jun 2026 00:20:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781738696;
-	bh=r5uSA66J9ABM/9yH9MNLyLHNRWzKIhhr4br7s8vfmak=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=YENY/Sh3Yed6hgB9DUIcwtRPpc0H+4BrXWXFxaL/P54FnFkM8icFFcQLmWtAvl4tJ
-	 ldF2DhiYUCTuptBfefapfZopXADowAkgq71dMni6QSLpvEDkHSeN9qI3q3CzECu/GH
-	 YOPI76roAKAOh6uBQgfYVmQXNlNPOWT95WlCX0d0oW8Rc6gKUSXV4HeA8owkpBu7k0
-	 rkXneckPctgOlTl/SIv6YM9GtnDvOh6ndBw4kBDTB45zcW7UNzfvsTqbbEuiuD308x
-	 eT3ebr5lWS+l1GGgtzxSXUwbMDQzi+hNVlz21ENIP/5Few58KctkEFHe+r36HmDZEP
-	 W/RtdagPbHo0w==
-Date: Wed, 17 Jun 2026 16:24:54 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Bryam Vargas via B4 Relay <devnull+hexlabsecurity.proton.me@kernel.org>
-Cc: hexlabsecurity@proton.me, Wenjia Zhang <wenjia@linux.ibm.com>, Dust Li
- <dust.li@linux.alibaba.com>, "D. Wythe" <alibuda@linux.alibaba.com>,
- Sidraya Jayagond <sidraya@linux.ibm.com>, Eric Dumazet
- <edumazet@google.com>, "David S. Miller" <davem@davemloft.net>, Mahanta
- Jambigi <mjambigi@linux.ibm.com>, Wen Gu <guwen@linux.alibaba.com>, Simon
- Horman <horms@kernel.org>, netdev@vger.kernel.org, Ursula Braun
- <ubraun@linux.ibm.com>, Stefan Raspl <raspl@linux.ibm.com>,
- linux-s390@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, Tony Lu
- <tonylu@linux.alibaba.com>
-Subject: Re: [PATCH v3 0/3] net/smc: bound wire-controlled CDC cursors
- against the local buffers
-Message-ID: <20260617162454.33e95c2f@kernel.org>
-In-Reply-To: <20260614-b4-disp-edd64be9-v3-0-551fa514257e@proton.me>
-References: <20260614-b4-disp-edd64be9-v3-0-551fa514257e@proton.me>
+	s=k20260515; t=1781742057;
+	bh=UNPPRd8B/p+uiHWPr1nXLJji67eYPfdSiU/9mrxCDtU=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc;
+	b=LFbIMWXwaQcl5d+wzqdVj3SDIc6JIILH5RpXNWH4/kWSPDNHaFbIJQ4SnPwOIFMH1
+	 kLPBVDc73afoZ6uGveGkjjtVeFVYB4PYNvUcb/9LUut67BJF0oRaAKeK89Mktf66DA
+	 0zyf4g01j/h5vu0kQ4e8bLeef8PsX92Rp+mHnAb9jTrBF3c1g6TsFSRqPlpvFi9fDE
+	 GEAdh6Acv/sMNkIid8bIigYM2eDZS1nPzmAoee2zY2jiLxcg56of7GzgkBratRiPcD
+	 ydy2hGMwxCwwE0DX831YK3YnYNYjIl9vR1phcURtzkdjnc5PMXi2s58tf2nJyf0VNb
+	 HERgt/R7+UcGg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 1985A393102B;
+	Thu, 18 Jun 2026 00:20:52 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH][net-next] net/mlx5: Remove broken and unused
+ mlx5_query_mtppse()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <178174205063.1875263.1756685428081420140.git-patchwork-notify@kernel.org>
+Date: Thu, 18 Jun 2026 00:20:50 +0000
+References: <20260615140406.1828-1-lirongqing@baidu.com>
+In-Reply-To: <20260615140406.1828-1-lirongqing@baidu.com>
+To: lirongqing <lirongqing@baidu.com>
+Cc: saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org, gal@nvidia.com,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-3.66 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22337-lists,linux-rdma=lfdr.de,netdevbpf];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22336-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[19];
+	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_SENDER(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:lirongqing@baidu.com,m:saeedm@nvidia.com,m:leon@kernel.org,m:tariqt@nvidia.com,m:mbloch@nvidia.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:netdev@vger.kernel.org,m:gal@nvidia.com,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS(0.00)[m:devnull+hexlabsecurity.proton.me@kernel.org,m:hexlabsecurity@proton.me,m:wenjia@linux.ibm.com,m:dust.li@linux.alibaba.com,m:alibuda@linux.alibaba.com,m:sidraya@linux.ibm.com,m:edumazet@google.com,m:davem@davemloft.net,m:mjambigi@linux.ibm.com,m:guwen@linux.alibaba.com,m:horms@kernel.org,m:netdev@vger.kernel.org,m:ubraun@linux.ibm.com,m:raspl@linux.ibm.com,m:linux-s390@vger.kernel.org,m:pabeni@redhat.com,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:tonylu@linux.alibaba.com,m:devnull@kernel.org,s:lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,hexlabsecurity.proton.me];
+	FROM_NO_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	ALIAS_RESOLVED(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	RCPT_COUNT_TWELVE(0.00)[14];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	TO_DN_SOME(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 7C42F69CCB2
+X-Rspamd-Queue-Id: 34D1369CDF1
 
-On Sun, 14 Jun 2026 03:23:29 -0500 Bryam Vargas via B4 Relay wrote:
-> A peer's CDC producer/consumer cursors are copied from the wire and used,
-> without an upper bound against the local buffers, as (a) a raw index into the
-> RMB on the urgent path, (b) the receive length in smc_rx_recvmsg(), and (c) the
-> send length in smc_tx_sendmsg() on the SMC-D DMB-merge path.  A malicious or
-> buggy peer can forge a cursor so each of these runs past the relevant buffer:
-> an out-of-bounds read of adjacent kernel memory (disclosed to the peer) on the
-> receive/urgent side, and an out-of-bounds write of attacker-influenced length
-> and content on the send side.
+Hello:
 
-Once again, SMC maintainers -- please review.
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Mon, 15 Jun 2026 22:04:06 +0800 you wrote:
+> From: Li RongQing <lirongqing@baidu.com>
+> 
+> mlx5_query_mtppse() reads the Event Trigger Pin (MTPPSE) register but
+> reads the returned arm and mode values from the input buffer 'in'
+> instead of the output buffer 'out', so it always returns the values
+> that were written rather than the actual hardware state, making the
+> query useless.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next] net/mlx5: Remove broken and unused mlx5_query_mtppse()
+    https://git.kernel.org/netdev/net/c/b50fa1e07cf8
+
+You are awesome, thank you!
 -- 
-mping: SHARED MEMORY COMMUNICATIONS (SMC) SOCKETS
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
