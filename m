@@ -1,432 +1,219 @@
-Return-Path: <linux-rdma+bounces-22344-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22345-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id hVWJFV95M2ooCgYAu9opvQ
-	(envelope-from <linux-rdma+bounces-22344-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2026 06:51:43 +0200
+	id 7wmzJMGLM2oXDQYAu9opvQ
+	(envelope-from <linux-rdma+bounces-22345-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2026 08:10:09 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 602B169D8F4
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2026 06:51:42 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33E8669DCB9
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2026 08:10:09 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.alibaba.com header.s=default header.b=lBuZZVAd;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22344-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22344-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.alibaba.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=meta.com header.s=s2048-2025-q2 header.b="v/PNqA1x";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22345-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22345-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=meta.com;
+	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 7327A300530D
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2026 04:51:39 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id AA1873016023
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2026 06:10:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC40828469F;
-	Thu, 18 Jun 2026 04:51:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98EEF33260F;
+	Thu, 18 Jun 2026 06:10:06 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8C9E21C173
-	for <linux-rdma@vger.kernel.org>; Thu, 18 Jun 2026 04:51:33 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781758296; cv=none; b=cjJF+yT4iFA4k6wrvxJTfRPH+d3ey+EOGA20rJApspWFYyRv/3jDlkC1CGeXI0XesZprKL3nU59HZzMwI/Or1r+pkyD6JICjootQcx8GbFuKzcSiuyu3/quzuensgjKdlSo5s0LYOg66tE/ClJt13RTRWhIxaz6JN3o4uhL254Q=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781758296; c=relaxed/simple;
-	bh=2api4+J8S+Lih8NX90FvmcnjgJ6P6YFBcp0AvquQPsU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MiA7zC+SaHl0bvyJVQWS0rQwKjhEwnGuDQtwGGKJ2dvqAq4euO2ksOjaZfyZY8s3NU079fWAOHRK9yYmOxnkv1mzcSQ0931DucFrdEVRJrGUaTDbUvoExbeKO5Ayp+jE7mtbCyPSOuVOdquqV4oWNMjHyh4OYcCxm1/1yVllbWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=lBuZZVAd; arc=none smtp.client-ip=115.124.30.119
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1781758284; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=V46c464CJzfN/r6VmEeSp/nT0LVXSw3nj/ZFKdSDnNk=;
-	b=lBuZZVAdXzOAs+bkANJutOa5Fkev1mcv5QBEdJ7DcT1fWJL3g15HsHCgTSDDRb20ITXnNOkJLbJPhhPaILOwh/WVbj0AKZ5JtVGzGmUsl1PKCjYM0qQZE3Q5BWdi7omJi5vmKeNb3vvBYnZAoxeJRbErAAOWvNA0/bUZCDs0O4Q=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam011083073210;MF=boshiyu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0X55c.JJ_1781758283;
-Received: from localhost(mailfrom:boshiyu@linux.alibaba.com fp:SMTPD_---0X55c.JJ_1781758283 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Thu, 18 Jun 2026 12:51:23 +0800
-From: Boshi Yu <boshiyu@linux.alibaba.com>
-To: jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	chengyou@linux.alibaba.com,
-	kaishen@linux.alibaba.com
-Subject: [PATCH for-next v3 3/3] RDMA/erdma: Implement erdma_reg_user_mr_dmabuf
-Date: Thu, 18 Jun 2026 12:51:05 +0800
-Message-ID: <20260618045120.51210-4-boshiyu@linux.alibaba.com>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20260618045120.51210-1-boshiyu@linux.alibaba.com>
-References: <20260618045120.51210-1-boshiyu@linux.alibaba.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7987331214
+	for <linux-rdma@vger.kernel.org>; Thu, 18 Jun 2026 06:10:04 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781763006; cv=fail; b=qxPHGoYSDBvyamC+M5hSj6Sol6E61krww+WKHkCxissp2b34vi2Cval5ialCvJaerSW16GnN7U0y2iXDTrutScDzp6LxiwKXx2VC4ypYNiZjzyYBPguuhTlI38davtVaLl6RoAgVDc6aedqasrzBKZ742vEzDoFtk05lokOUfkQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781763006; c=relaxed/simple;
+	bh=6/T0Dclshlhmnc1UxrEhCEHM4cymDyecbTC6Ux8+uFA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dPIyHUXHNfNdorHc/GRLPRIXB6d97OCRzJUvQdKqyIdDOMx1sNxN+SN1J3JuV71FFcI6wui/o2JatU3hoMd9b+iyDt+NDOyaGfEY/jZAwCPboRNIsqmjUu8AEwdu5xq5Nze1OuAHj046UV3z3UtEN8LH8U4CojD7zaOF3DvS6jE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=v/PNqA1x; arc=fail smtp.client-ip=67.231.145.42
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 65I5R0Iw1967048
+	for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2026 23:10:04 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
+	 bh=6/T0Dclshlhmnc1UxrEhCEHM4cymDyecbTC6Ux8+uFA=; b=v/PNqA1xBXvG
+	hxasA0LzJ8yq94mP/vLG9ehEDNugAO22PhggvV4w6bqGrDNdz+I5GVtpeVimerEm
+	uQBbADRTqFkt4j39n2wuBQO0TJMx0k/Ngsr/XypO3PKVRwiKmvh4Fej+Aga7MC9b
+	SW5npdoy0mfJQ2gKUZm2NjxDs+U6T2IMmgYmFXjYTvdZIOpbnaLPBLLnoXNEvfc7
+	iabwsALTLrmBCaTpNjhGZBs9JP2hcI6hMQgOEm5TRf/VAIkH5wj2q3y76PUcwfDQ
+	7Jhe6K6dHnRe/0Myi50bJqPCe/2OBqPV5juk7YchPYXVwYkfOdTu4kMRyv7cWYYL
+	TS+Mvy0faQ==
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4euegy9x8m-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2026 23:10:04 -0700 (PDT)
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-7e6fa8bba1dso1111759a34.2
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2026 23:10:03 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1781763003; cv=none;
+        d=google.com; s=arc-20240605;
+        b=k0NklA2YUX7hyuRA5sWDcXBQP5CjXLyWTTJbFahBA1d4inUCOiKyH+t0E114srZl8O
+         DsIfmjM2RHoV0qSogFVOtfrWt+oSDffx5ztNDBpu29pgzmx2zcRjgb+yie43mArF8IqW
+         NGfRkdSd3LX1CJvOkgdlPzDD+KiIX6S77IzLRhPFINzdwn/vtifXLTX4j69fLQF0SIVo
+         1d5VR3tPC6SVuLLL4HAorHy7Q/zrTj+t0FEkcnZNR5lasfqlvj0P33IlXc4j3KahLouB
+         Cy1X+wvgAY43fsVtJt9CdowiV6glYBVnogQIIY7efZD9OBH1G3m38GwelzYT5uj19gx+
+         tacw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version;
+        bh=zpTmQ37GmXWdpWUeDrqTjiaqwbJfjoWYHVp4s39Z4p0=;
+        fh=xsdDLIZG7PIvp19LHrOM1cBJK7135DGMSkqYSgWuQOE=;
+        b=X/PGlAXxJaeKUwiufgy7vJUq7GIVwSPVpVmdOsWRy62a4rWanAIqx0loO6gzUoRpe4
+         UoiymzCiPzzRaUHGAqKW1l6E80ltcTaeETCAc7n6R252fKSIFLVJ1C9Qw8KvwMjvJho6
+         RN/i82HVoleZ6mWny6QvTjwjitB2nXsW+chutO3pTOY3+IIiBry5Wg5m4cetB27ycGlK
+         H+mGqHq8rANKuFcHaam7XIETGfN1WuO40HLQoh3A020F6pkZReSpAhTXQD5zaOPxjc6c
+         Cyo3BCMGuwLu4TyUBw8OnGoA40RhtohmANpVx9n90oqAZheuidQ6nQqH2Yp+1aeetMLa
+         bfgQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781763003; x=1782367803;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=zpTmQ37GmXWdpWUeDrqTjiaqwbJfjoWYHVp4s39Z4p0=;
+        b=EnIvrW573LZrJw+nMjGPxEGixbiI3BzZQGDw5QVUEnKG7h2Vu9hF76Qwa5YiQI4v1t
+         AZc4cSFdbpulIas0s16W0CZxaP/yh8btG+gOPMm1KfyTQqKbARVn8CIW5H5fh+O104vt
+         fdNqfbWmY8k6IxcMy35Vcrfz7d5bJzx9NvImTNOXjtXN46xHG/pa0NuHjK8SBIAgB282
+         tn3kMlOR65TC/jN7jpWFbMf/JDRGuvn+ihRB5j6IXT2rrrvw0Z8k/qjo3rxGVktJ+vIu
+         GoYyQq9huns9DYKk8YEjbWDOr2f90GLb5qSfGfmjJg3tGmN/gaIInO647y1H0DX71ssI
+         PIeA==
+X-Forwarded-Encrypted: i=1; AFNElJ/JUUqhfLP3nMQWaRCPSeecdCLXJHtq2z5EU9Hs8s4MTcvKlvik8PhV+TnFs8lkHvAVKmzhWJWL531X@vger.kernel.org
+X-Gm-Message-State: AOJu0YxFc8KsEAVd0HdlmbIM1YPjfvn3pwbGXqqCnmqc7lzu8Ns88e5N
+	T3aPcgaCMGnewCF+Gk15fVQrda5Wz6YhHbq8LXj3Hp7LFbhoBDtgP1i+dBKOxslWq/uDlvIpzGF
+	6Xd9hBTQ8AOo7nwfsZSr6/UjQ/EvzfsjuVykVQWNQAs85kY7nSO5d8OeGZJv1abclvUUdmaQBPa
+	crg/8eWcoYyqcOGg7/CC6O4Y0mfysMsXCqIXJO
+X-Gm-Gg: Acq92OF2HKLP91Nhbv/T7ps/xuf8T49D7zafoFMnbjvFauM08ZbUoBWda2oxb9o7w9B
+	ceV89pQOEB2mbu38hRKKwNu83wB0RTLBZ86ycVaMp3vmPEOp8GO4O4P+pVLTd4g5JfRZS541EBa
+	3pAGRUP/RAUDo5KMwIiO5t3UxMJcT31R9JtMt9ZOjdLPLA5MLLmVCVbNmjzgu8PxZT1fRpnxNa+
+	KYsko39CNcNOT2kbOQ6fvRSmd61YQ==
+X-Received: by 2002:a05:6830:67f5:b0:7e7:57d8:a8c2 with SMTP id 46e09a7af769-7e90b3b9930mr6882341a34.12.1781763003199;
+        Wed, 17 Jun 2026 23:10:03 -0700 (PDT)
+X-Received: by 2002:a05:6830:67f5:b0:7e7:57d8:a8c2 with SMTP id
+ 46e09a7af769-7e90b3b9930mr6882279a34.12.1781763001909; Wed, 17 Jun 2026
+ 23:10:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20260615065912.2177918-1-zhipingz@meta.com> <20260615065912.2177918-5-zhipingz@meta.com>
+ <20260617092550.GT327369@unreal>
+In-Reply-To: <20260617092550.GT327369@unreal>
+From: Zhiping Zhang <zhipingz@meta.com>
+Date: Wed, 17 Jun 2026 23:09:49 -0700
+X-Gm-Features: AVVi8Cd9LqQxIAml-YNLrnCpxwyq6SYcSY7qEQ2JpeKmDJHK_hh3DSp6GvPOQmk
+Message-ID: <CAH3zFs3xfc5k0fhgedCpNAfgfoAvfk0V2pF-xqA1_Q2sGkLnig@mail.gmail.com>
+Subject: Re: [PATCH v8 4/4] RDMA/mlx5: get tph for p2p access when registering
+ dma-buf mr
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Michael Guralnik <michaelgur@nvidia.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Konig <christian.koenig@amd.com>,
+        Alex Williamson <alex@shazbot.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, kvm@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Authority-Analysis: v=2.4 cv=ObWoyBTY c=1 sm=1 tr=0 ts=6a338bbc cx=c_pps
+ a=z9lCQkyTxNhZyzAvolXo/A==:117 a=IkcTkHD0fZMA:10 a=FelO9ux0wxsA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=7x6HtfJdh03M6CCDgxCd:22 a=tpM8CJlwf7uhpglF1g9U:22
+ a=VwQbUJbxAAAA:8 a=wthcJ2XvByERRjf4MtwA:9 a=QEXdDO2ut3YA:10
+ a=EyFUmsFV_t8cxB2kMr4A:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjE4MDA1NCBTYWx0ZWRfX2UKzKjPwVUfg
+ +mTzTjdedivfsPn9BxdQTYlZ9JDOk/rzHKUiZB+qIJonAYN/FOLt8JZ/Gtg0hMTmh5IqqFBB+He
+ oGuYIu5zjgCFw2r87hy6GLU26xfdN0Wy/dghXDtQWxlAKmB8dy3bDmPN8GNfB0XyEvjaVd8pfkx
+ VPmBRtXlo9/Se0vcv30zKvqOksJ1TJkxJulMoidIjwTxgL7+z4FUl7dh5/Me8CSeQAi2aWBVzzl
+ yYaN3MRU0uwzTOjTy7OGFrQ5I/fiK0WyK5yq8Srt6HEP8wYpBQKhsb8ibsDY27aM2ycxmLVOcCU
+ SawA3X1jB/Avuk4fWnjBx1skXuvWAJ3yJsfCYLVcjEu7samTdFVLC/Q83Xvq8pzVt59cli1t6O/
+ 4sXFf/LtXT5qLJl0GF/xhJo6PFya+PQaLGv7rZPVdcbKZ2HODW74WE2jtVvkZyJ5QYbpx2AtPKd
+ VLMXf7XGhURvB7Hx88w==
+X-Proofpoint-ORIG-GUID: Rj_kA5K7kt8_pHPhwswaZsb2PiIoezFc
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNjE4MDA1NCBTYWx0ZWRfX4ML/hZGbo1YK
+ D7BfSKlU0vZDyVf9ETgvG57H0Y0zdQA32JqsX6GcHha+NRdLldw660D+H+Dq5s6ml+J8iUkG2Zp
+ U2/GGEeJROl4gVcXbCjDyEzLckSKGJE=
+X-Proofpoint-GUID: Rj_kA5K7kt8_pHPhwswaZsb2PiIoezFc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
+ definitions=2026-06-17_02,2026-06-17_03,2025-10-01_01
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-10.66 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
-	WHITELIST_SPF_DKIM(-3.00)[alibaba.com:d:+,kernel.org:s:+];
-	MID_CONTAINS_FROM(1.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+X-Spamd-Result: default: False [-3.16 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[meta.com:d:+,kernel.org:s:+];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[meta.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[meta.com:s=s2048-2025-q2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22345-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22344-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER(0.00)[boshiyu@linux.alibaba.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS(0.00)[m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:chengyou@linux.alibaba.com,m:kaishen@linux.alibaba.com,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[boshiyu@linux.alibaba.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
-	TO_DN_NONE(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FORGED_SENDER(0.00)[zhipingz@meta.com,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:leon@kernel.org,m:jgg@ziepe.ca,m:michaelgur@nvidia.com,m:sumit.semwal@linaro.org,m:christian.koenig@amd.com,m:alex@shazbot.org,m:bhelgaas@google.com,m:kvm@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-pci@vger.kernel.org,m:dri-devel@lists.freedesktop.org,s:lists@lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[meta.com:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[zhipingz@meta.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,alibaba.com:email,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,linux.alibaba.com:dkim,linux.alibaba.com:mid,linux.alibaba.com:from_mime]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,mail.gmail.com:mid,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 602B169D8F4
+X-Rspamd-Queue-Id: 33E8669DCB9
 
-Support DMA-BUF based user memory registration using the pinned
-revocable dmabuf interface, so that erdma can import dmabufs from
-exporters that may require revocation, such as VFIO.
+On Wed, Jun 17, 2026 at 2:25=E2=80=AFAM Leon Romanovsky <leon@kernel.org> w=
+rote:
+>
+> >
+> On Sun, Jun 14, 2026 at 11:59:01PM -0700, Zhiping Zhang wrote:
+> > Query dma-buf PCI TPH metadata when registering a dma-buf MR for
+> > peer-to-peer access to a PCIe endpoint and use it to program
+> > requester-side TPH on the outbound mkey. If the exporter has no
+> > metadata, fall back to the existing no-TPH path.
+> >
+> > Use mlx5_st_alloc_index_by_tag() to translate exporter-provided
+> > steering tags into local ST entries when table mode is active, and add
+> > mlx5_st_get_index() for DMAH-backed flows that already carry an ST
+> > index.
+> >
+> > For TPH-backed FRMRs, keep the extra ST-table reference tied to MR
+> > lifetime rather than pooled mkey lifetime. Acquire the ref before MR
+> > creation and release it again when the MR is returned to the pool or
+> > the backing mkey is destroyed, while leaving the generic FRMR pool core
+> > unchanged.
+> >
+> > Import the DMA_BUF namespace for the new dma_buf_get_pci_tph() call so
+> > modular mlx5_ib builds link cleanly.
+>
+> The commit message explains *what* the patch does, but it lacks context on
+> *why* the change is needed. The 'what' is mostly clear from reading the c=
+ode;
+> the important part missing here is the rationale behind the change.
+>
+> Thanks
 
-On revocation, the revoke callback destroys the MPT entry in hardware
-to stop the device from accessing the revoked memory, while the stag
-index is reserved until the MR is fully deregistered, ensuring the key
-cannot be obtained by a new region in the meantime.
+Noted, will change the msg in the next version.
 
-Refactor the existing erdma_reg_user_mr() into a common
-_erdma_reg_user_mr() function that handles both regular and DMA-BUF
-memory registration.
-
-Reviewed-by: Cheng Xu <chengyou@linux.alibaba.com>
-Signed-off-by: Boshi Yu <boshiyu@linux.alibaba.com>
----
- drivers/infiniband/hw/erdma/erdma_main.c  |   1 +
- drivers/infiniband/hw/erdma/erdma_verbs.c | 189 ++++++++++++++++------
- drivers/infiniband/hw/erdma/erdma_verbs.h |   4 +
- 3 files changed, 142 insertions(+), 52 deletions(-)
-
-diff --git a/drivers/infiniband/hw/erdma/erdma_main.c b/drivers/infiniband/hw/erdma/erdma_main.c
-index 7e87a815e853..6e4860428e5b 100644
---- a/drivers/infiniband/hw/erdma/erdma_main.c
-+++ b/drivers/infiniband/hw/erdma/erdma_main.c
-@@ -526,6 +526,7 @@ static const struct ib_device_ops erdma_device_ops = {
- 	.query_qp = erdma_query_qp,
- 	.req_notify_cq = erdma_req_notify_cq,
- 	.reg_user_mr = erdma_reg_user_mr,
-+	.reg_user_mr_dmabuf = erdma_reg_user_mr_dmabuf,
- 	.modify_qp = erdma_modify_qp,
- 
- 	INIT_RDMA_OBJ_SIZE(ib_cq, erdma_cq, ibcq),
-diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.c b/drivers/infiniband/hw/erdma/erdma_verbs.c
-index 98278432ba80..5c6d84d83fc9 100644
---- a/drivers/infiniband/hw/erdma/erdma_verbs.c
-+++ b/drivers/infiniband/hw/erdma/erdma_verbs.c
-@@ -189,6 +189,20 @@ static int regmr_cmd(struct erdma_dev *dev, struct erdma_mr *mr)
- 				   true);
- }
- 
-+static int dereg_mr_cmd(struct erdma_dev *dev, struct erdma_mr *mr)
-+{
-+	struct erdma_cmdq_dereg_mr_req req = {};
-+
-+	erdma_cmdq_build_reqhdr(&req.hdr, CMDQ_SUBMOD_RDMA,
-+				CMDQ_OPCODE_DEREG_MR);
-+
-+	req.cfg = FIELD_PREP(ERDMA_CMD_MR_MPT_IDX_MASK, mr->ibmr.lkey >> 8) |
-+		  FIELD_PREP(ERDMA_CMD_MR_KEY_MASK, mr->ibmr.lkey & 0xFF);
-+
-+	return erdma_post_cmd_wait(&dev->cmdq, &req, sizeof(req), NULL, NULL,
-+				   true);
-+}
-+
- static int create_cq_cmd(struct erdma_ucontext *uctx, struct erdma_cq *cq)
- {
- 	struct erdma_dev *dev = to_edev(cq->ibcq.device);
-@@ -828,50 +842,50 @@ static void erdma_destroy_mtt(struct erdma_dev *dev, struct erdma_mtt *mtt)
- 	}
- }
- 
--static int erdma_mem_init(struct erdma_dev *dev, struct erdma_mem *mem,
--			  struct erdma_mem_init_attr *attr)
-+static int erdma_mem_init_by_umem(struct erdma_dev *dev, struct erdma_mem *mem,
-+				  struct erdma_mem_init_attr *attr,
-+				  struct ib_umem *umem)
- {
--	int ret = 0;
--
--	mem->umem =
--		ib_umem_get_va(&dev->ibdev, attr->start, attr->len, attr->access);
--	if (IS_ERR(mem->umem)) {
--		ret = PTR_ERR(mem->umem);
--		mem->umem = NULL;
--		return ret;
--	}
--
-+	mem->umem = umem;
- 	mem->va = attr->virt;
- 	mem->len = attr->len;
- 
- 	mem->page_size = ib_umem_find_best_pgsz(mem->umem, attr->req_page_size,
- 						attr->virt);
--	if (!mem->page_size) {
--		ret = -EINVAL;
--		goto error_ret;
--	}
-+	if (!mem->page_size)
-+		return -EINVAL;
- 
- 	mem->page_offset = attr->start & (mem->page_size - 1);
- 	mem->mtt_nents = ib_umem_num_dma_blocks(mem->umem, mem->page_size);
- 	mem->page_cnt = mem->mtt_nents;
- 	mem->mtt = erdma_create_mtt(dev, MTT_SIZE(mem->page_cnt),
- 				    attr->flags & ERDMA_MEM_FLAG_MTT_PHYS_CONT);
--	if (IS_ERR(mem->mtt)) {
--		ret = PTR_ERR(mem->mtt);
--		goto error_ret;
--	}
-+	if (IS_ERR(mem->mtt))
-+		return PTR_ERR(mem->mtt);
- 
- 	erdma_fill_bottom_mtt(dev, mem);
- 
- 	return 0;
-+}
- 
--error_ret:
--	if (mem->umem) {
--		ib_umem_release(mem->umem);
--		mem->umem = NULL;
-+static int erdma_mem_init(struct erdma_dev *dev, struct erdma_mem *mem,
-+			  struct erdma_mem_init_attr *attr)
-+{
-+	struct ib_umem *umem;
-+	int ret;
-+
-+	umem = ib_umem_get_va(&dev->ibdev, attr->start, attr->len,
-+			      attr->access);
-+	if (IS_ERR(umem))
-+		return PTR_ERR(umem);
-+
-+	ret = erdma_mem_init_by_umem(dev, mem, attr, umem);
-+	if (ret) {
-+		ib_umem_release(umem);
-+		return ret;
- 	}
- 
--	return ret;
-+	return 0;
- }
- 
- static void erdma_mem_uninit(struct erdma_dev *dev, struct erdma_mem *mem)
-@@ -1244,9 +1258,20 @@ int erdma_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
- 	return num;
- }
- 
--struct ib_mr *erdma_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 len,
--				u64 virt, int access, struct ib_dmah *dmah,
--				struct ib_udata *udata)
-+static void erdma_umem_dmabuf_revoke(void *priv)
-+{
-+	struct erdma_mr *mr = priv;
-+	struct erdma_dev *dev = to_edev(mr->ibmr.device);
-+	int ret;
-+
-+	ret = dereg_mr_cmd(dev, mr);
-+	if (ret)
-+		ibdev_err(&dev->ibdev, "dmabuf mr revoke failed %d", ret);
-+}
-+
-+static struct ib_mr *
-+_erdma_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 len, u64 virt, int access,
-+		   struct ib_umem *umem, struct ib_dmah *dmah)
- {
- 	struct erdma_dev *dev = to_edev(ibpd->device);
- 	struct erdma_mem_init_attr attr = {};
-@@ -1254,12 +1279,6 @@ struct ib_mr *erdma_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 len,
- 	u32 stag;
- 	int ret;
- 
--	if (dmah)
--		return ERR_PTR(-EOPNOTSUPP);
--
--	if (!len || len > dev->attrs.max_mr_size)
--		return ERR_PTR(-EINVAL);
--
- 	mr = kzalloc_obj(*mr);
- 	if (!mr)
- 		return ERR_PTR(-ENOMEM);
-@@ -1269,16 +1288,17 @@ struct ib_mr *erdma_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 len,
- 	attr.start = start;
- 	attr.access = access;
- 	attr.req_page_size = SZ_2G - SZ_4K;
--	ret = erdma_mem_init(dev, &mr->mem, &attr);
-+	ret = erdma_mem_init_by_umem(dev, &mr->mem, &attr, umem);
- 	if (ret)
- 		goto err_out_free;
- 
- 	ret = erdma_create_stag(dev, &stag);
- 	if (ret)
--		goto err_uninit_mem;
-+		goto err_destroy_mtt;
- 
- 	mr->ibmr.lkey = mr->ibmr.rkey = stag;
- 	mr->ibmr.pd = ibpd;
-+	mr->ibmr.device = ibpd->device;
- 	mr->access = ERDMA_MR_ACC_LR | to_erdma_access_flags(access);
- 	mr->valid = 1;
- 	mr->type = ERDMA_MR_TYPE_NORMAL;
-@@ -1293,8 +1313,8 @@ struct ib_mr *erdma_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 len,
- 	erdma_free_idx(&dev->res_cb[ERDMA_RES_TYPE_STAG_IDX],
- 		       mr->ibmr.lkey >> 8);
- 
--err_uninit_mem:
--	erdma_mem_uninit(dev, &mr->mem);
-+err_destroy_mtt:
-+	erdma_destroy_mtt(dev, mr->mem.mtt);
- 
- err_out_free:
- 	kfree(mr);
-@@ -1302,30 +1322,95 @@ struct ib_mr *erdma_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 len,
- 	return ERR_PTR(ret);
- }
- 
-+struct ib_mr *erdma_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 len,
-+				u64 virt, int access, struct ib_dmah *dmah,
-+				struct ib_udata *udata)
-+{
-+	struct erdma_dev *dev = to_edev(ibpd->device);
-+	struct ib_umem *umem;
-+	struct ib_mr *ibmr;
-+
-+	if (dmah)
-+		return ERR_PTR(-EOPNOTSUPP);
-+
-+	if (!len || len > dev->attrs.max_mr_size)
-+		return ERR_PTR(-EINVAL);
-+
-+	umem = ib_umem_get_va(&dev->ibdev, start, len, access);
-+	if (IS_ERR(umem))
-+		return ERR_CAST(umem);
-+
-+	ibmr = _erdma_reg_user_mr(ibpd, start, len, virt, access, umem, dmah);
-+	if (IS_ERR(ibmr)) {
-+		ib_umem_release(umem);
-+		return ibmr;
-+	}
-+
-+	return ibmr;
-+}
-+
-+struct ib_mr *erdma_reg_user_mr_dmabuf(struct ib_pd *ibpd, u64 start, u64 len,
-+				       u64 virt, int fd, int access,
-+				       struct ib_dmah *dmah,
-+				       struct uverbs_attr_bundle *attrs)
-+{
-+	struct erdma_dev *dev = to_edev(ibpd->device);
-+	struct ib_umem_dmabuf *umem_dmabuf;
-+	struct ib_mr *ibmr;
-+
-+	if (dmah)
-+		return ERR_PTR(-EOPNOTSUPP);
-+
-+	if (!len || len > dev->attrs.max_mr_size)
-+		return ERR_PTR(-EINVAL);
-+
-+	umem_dmabuf =
-+		ib_umem_dmabuf_get_pinned_revocable_and_lock(&dev->ibdev, start,
-+							     len, fd, access);
-+	if (IS_ERR(umem_dmabuf))
-+		return ERR_CAST(umem_dmabuf);
-+
-+	ibmr = _erdma_reg_user_mr(ibpd, start, len, virt, access,
-+				  &umem_dmabuf->umem, dmah);
-+	if (IS_ERR(ibmr)) {
-+		ib_umem_dmabuf_revoke_unlock(umem_dmabuf);
-+		ib_umem_release(&umem_dmabuf->umem);
-+		return ibmr;
-+	}
-+
-+	ib_umem_dmabuf_set_revoke_locked(umem_dmabuf, erdma_umem_dmabuf_revoke,
-+					 to_emr(ibmr));
-+	ib_umem_dmabuf_revoke_unlock(umem_dmabuf);
-+
-+	return ibmr;
-+}
-+
- int erdma_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
- {
--	struct erdma_mr *mr;
- 	struct erdma_dev *dev = to_edev(ibmr->device);
--	struct erdma_cmdq_dereg_mr_req req;
-+	struct erdma_mr *mr = to_emr(ibmr);
-+	bool dmabuf;
- 	int ret;
- 
--	mr = to_emr(ibmr);
--
--	erdma_cmdq_build_reqhdr(&req.hdr, CMDQ_SUBMOD_RDMA,
--				CMDQ_OPCODE_DEREG_MR);
-+	dmabuf = mr->mem.umem && mr->mem.umem->is_dmabuf;
-+	if (!dmabuf) {
-+		ret = dereg_mr_cmd(dev, mr);
-+		if (ret)
-+			return ret;
-+	}
- 
--	req.cfg = FIELD_PREP(ERDMA_CMD_MR_MPT_IDX_MASK, ibmr->lkey >> 8) |
--		  FIELD_PREP(ERDMA_CMD_MR_KEY_MASK, ibmr->lkey & 0xFF);
-+	if (mr->mem.umem) {
-+		ib_umem_release(mr->mem.umem);
-+		mr->mem.umem = NULL;
-+	}
- 
--	ret = erdma_post_cmd_wait(&dev->cmdq, &req, sizeof(req), NULL, NULL,
--				  true);
--	if (ret)
--		return ret;
-+	if (mr->mem.mtt) {
-+		erdma_destroy_mtt(dev, mr->mem.mtt);
-+		mr->mem.mtt = NULL;
-+	}
- 
- 	erdma_free_idx(&dev->res_cb[ERDMA_RES_TYPE_STAG_IDX], ibmr->lkey >> 8);
- 
--	erdma_mem_uninit(dev, &mr->mem);
--
- 	kfree(mr);
- 	return 0;
- }
-diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.h b/drivers/infiniband/hw/erdma/erdma_verbs.h
-index 79b3a90b03e7..f576f062aff3 100644
---- a/drivers/infiniband/hw/erdma/erdma_verbs.h
-+++ b/drivers/infiniband/hw/erdma/erdma_verbs.h
-@@ -467,6 +467,10 @@ int erdma_req_notify_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags);
- struct ib_mr *erdma_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 len,
- 				u64 virt, int access, struct ib_dmah *dmah,
- 				struct ib_udata *udata);
-+struct ib_mr *erdma_reg_user_mr_dmabuf(struct ib_pd *ibpd, u64 start, u64 len,
-+				       u64 virt, int fd, int access,
-+				       struct ib_dmah *dmah,
-+				       struct uverbs_attr_bundle *attrs);
- struct ib_mr *erdma_get_dma_mr(struct ib_pd *ibpd, int rights);
- int erdma_dereg_mr(struct ib_mr *ibmr, struct ib_udata *data);
- int erdma_mmap(struct ib_ucontext *ctx, struct vm_area_struct *vma);
--- 
-2.46.0
-
+Thanks,
+Zhiping
 
