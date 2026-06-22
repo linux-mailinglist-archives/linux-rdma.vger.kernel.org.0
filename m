@@ -1,171 +1,157 @@
-Return-Path: <linux-rdma+bounces-22419-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22420-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id /YaiJj42OWqAogcAu9opvQ
-	(envelope-from <linux-rdma+bounces-22419-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jun 2026 15:18:54 +0200
+	id IAt8DZ48OWoepAcAu9opvQ
+	(envelope-from <linux-rdma+bounces-22420-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jun 2026 15:46:06 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 378926AFC01
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jun 2026 15:18:54 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 959776AFFAF
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jun 2026 15:46:05 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b="k/i5uTze";
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22419-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22419-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
+	dkim=none;
+	dmarc=none;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22420-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22420-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CA4C03056AB7
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jun 2026 13:12:00 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id A1A78300A108
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jun 2026 13:46:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 630E33B14B5;
-	Mon, 22 Jun 2026 13:11:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B347B3ACA77;
+	Mon, 22 Jun 2026 13:46:03 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yx1-f50.google.com (mail-yx1-f50.google.com [74.125.224.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3FAC378D98
-	for <linux-rdma@vger.kernel.org>; Mon, 22 Jun 2026 13:11:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F40C022D7B5;
+	Mon, 22 Jun 2026 13:45:59 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782133913; cv=none; b=i8lFmVhbHdEI4RT8EQ77QH1vF8qRPvzFKMij6aXkHKMF+pkU1ZicM/Qr5xek6HkRlJ1PJsHkIdq1+Nvd4ox0ZvSEb4E5zK0Ll3aCQrheIK/xfikM716IYFv4QyDJbi4mdAhqlVgOsgIWIoyUnitZMSoDihDkNaDE/Lm/j5xmiPE=
+	t=1782135963; cv=none; b=OwbMw3ejHijcJjuYZKJnIg+BlpSLhU4nFTqmL30evyJPL/4K/Y2BL3PVb5jnA0lUhPCm9fFKSEs7GRUoJ/pkx+NgRA+AY0SR4/Y84DHayANI0LRMhhGRT6KoFBM3Zx1NpipoBfvqvZkzwif+/dEKkl2s4Z3iXMviKxTwxkYUyxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782133913; c=relaxed/simple;
-	bh=HQz5Bgb9Ix6CxIn/K74tfrlANhIDMynRIFpNpd4eCGE=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R9/iltRR7zu/SavVswJ2ioc14sON18PqPCBkSAR8oSKuo1uBx8DIioJGeSx+ZRMaPhLs7nxj3IqgXLxYnPVbHewYoC6joUxDaBgvEYbijDDSLXKGzuQdCJqX4SlE5vNhAadVchBP99Pa/Jsljj9iSTHYf8U10L5/tpMbAj6sWG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k/i5uTze; arc=none smtp.client-ip=74.125.224.50
-Received: by mail-yx1-f50.google.com with SMTP id 956f58d0204a3-662bb8b1f93so4130291d50.1
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Jun 2026 06:11:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1782133911; x=1782738711; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XkaEWxUJkCuHp/17+ud4oWXJ3qqAKnltzqopfMTtFIs=;
-        b=k/i5uTzeJQR4+7Wet36cQgSo4sxL7JHnWkI80+xtkrP/9oBTFyHZ8X3t1Q2CnMTDp6
-         Psigzn+fygxUIibpKJV8vugNaeMafjx2dbtYSsLvity3z1Woqbw59/7qieJHFyH4Adan
-         iIRyDi8CMOCz/az4EFMKhiAYGCpfEhizDTOzb65ymOvZsLNvI1F9BvcwvMSLbbcXXmc6
-         lyPBLK7m1zPmKDIwdT1nVVOesfeemXdJZa83ea/kP7geAEZB8UZ24UFkA43weVCRdqNX
-         kqhXI7Jym8KGVdZHNk1qUH7mqWCLBnaTI9Bl96kF6LQYh6lfzYB59dUz5+jAHbpHTf5O
-         SP5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782133911; x=1782738711;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XkaEWxUJkCuHp/17+ud4oWXJ3qqAKnltzqopfMTtFIs=;
-        b=E5vXcojgBf2GpEpFzcCqF11sGM6+w9kJ6jARLSNLdpE7nqqNjSxpYGR29/5+IxMp0Z
-         oC5z6xxdFQ2NVyw+WLlCr71k9wKhwopWUtf7OG+egB2rDjNLAtaHX/jXvJ40y5UI/Tia
-         6ndyT8u6yWTUqDPoo8o6OO+IJh2OjvPprfWizzQ3g/6A6WL8P0V/qfH2UhfScgndHXJZ
-         yxQHuFOMKzAAOLDy+t0jJ3HcI5bNW0C1x7tOLt6rh+6hq2RRXzI5Ne2uWIVBS/Lz5daU
-         d+6tciLBTVUMpsxsornl14oS5wGHmT+vXNc8JIX+OA1iu0qkPI86U1yXbixzC7M6qnye
-         NkYQ==
-X-Forwarded-Encrypted: i=1; AHgh+RoSJ6Kslkgna0EslN1meiunYE5IEBtwytjU1UkCF5a3qYMje6urZov3SV59qeisRoVgJrCU2AtSXtEk@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy97GAiF04KH8HzsSFjaZlIn/F8FIoIcM+xaFryA5PchXngfT+R
-	ceuhBp2BJb5a75k2KWgJ0vnZsgauo+FTlhXH1KHmkpEb67zA9RWQwIdO
-X-Gm-Gg: AfdE7cl5xN/XYx8rIGtOhjRang0PVlTeYRPmK5oGk8Ov1CAXpak/JXlrmzOutAwuHoE
-	Wmqv5oxMeEVuUavSxXjsj1frn5H/iJUoZewq65TPscgnmoTQ8zvqR0SEN6zsYkJvAZwy6hKezhz
-	NjCEgCH/erqWwo5YI2HY8EqJblzydZRAhINSrEyNkbvzReMnZDOuc2YLHhASkVdn7VNcyrOk8+o
-	jbjGpJkIfMd4DVz5es1dty2KHhJH+/10miPSgRxvNwhjgK9t1qqbF1aNQ6zknq1FmE9GfOizlxN
-	ufW99YPWSf4owWkyHGdmYYUr76LB30IIiLDKdSG67dOQ66CnUdwmwSuaigv7nXqX3QUX6GN3FSi
-	mvVu/UHCfLb7dXUeyqsKTxkiPHsnkc6u/ST0xXoDksCh00XxYgg1QrImEoap6hon4I07SEtEDCS
-	dK9goyQMg=
-X-Received: by 2002:a05:690e:120c:b0:660:54e4:5dd1 with SMTP id 956f58d0204a3-6630333ac1bmr11505521d50.44.1782133910591;
-        Mon, 22 Jun 2026 06:11:50 -0700 (PDT)
-Received: from localhost ([38.101.158.131])
-        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-66314ac3f96sm3600882d50.1.2026.06.22.06.11.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2026 06:11:50 -0700 (PDT)
-From: Yury Norov <yury.norov@gmail.com>
-X-Google-Original-From: Yury Norov <ynorov@nvidia.com>
-Date: Mon, 22 Jun 2026 09:11:49 -0400
-To: Steven Rostedt <rostedt@kernel.org>
-Cc: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	John Ogness <john.ogness@linutronix.de>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Julia Lawall <julia.lawall@inria.fr>,
-	Yury Norov <yury.norov@gmail.com>, linux-doc@vger.kernel.org,
-	linux-kbuild@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	dri-devel@lists.freedesktop.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-rdma@vger.kernel.org,
-	linux-usb@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-nfs@vger.kernel.org, kvm@vger.kernel.org,
-	intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH 0/2] tracing: Move trace_printk.h out of kernel.h
-Message-ID: <ajk0lT9P0SeuD94j@yury>
-References: <20260621093430.264983361@kernel.org>
- <dbb5915e-6587-4de9-87f3-76bea5024da8@kernel.org>
- <20260622090826.20efadb3@fedora>
+	s=arc-20240116; t=1782135963; c=relaxed/simple;
+	bh=a/2YOkObeQGf7kdEKWIe5J44FDhZm5hBH01a0gkw6qE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=QMmTYVwTNmqo9pmcWdrM97TPZmgt5LCyw42XugSYObmc1Ow1qAR4TZs9xaXLNCnS3mdod/kUCzIHSpVY14a+n80cPqDIcfXTD8a75unJF9Ta0oPna98rFIZI3bFvkW/Od4BKp3TdzzjC1dtOckNVKCYKdJdzQzXT+9ZeMare5Q8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.21
+Received: from localhost.localdomain (unknown [117.182.74.238])
+	by APP-01 (Coremail) with SMTP id qwCowADXfdaTPDlqFpC_Ag--.43180S2;
+	Mon, 22 Jun 2026 21:45:57 +0800 (CST)
+From: Wentao Liang <vulab@iscas.ac.cn>
+To: Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>
+Cc: Florian Westphal <fw@strlen.de>,
+	Kees Cook <kees@kernel.org>,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Wentao Liang <vulab@iscas.ac.cn>
+Subject: [PATCH v2] IB/iwpm: fix memory leaks in error paths
+Date: Mon, 22 Jun 2026 21:45:53 +0800
+Message-Id: <20260622134553.43186-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260622090826.20efadb3@fedora>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:qwCowADXfdaTPDlqFpC_Ag--.43180S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZrykuFWUKw17XF1kWw4UJwb_yoW8Aw1kpr
+	45Ja129r45Ww4fA3WUuFyYqFySqa97JasrGFyUKwnrZrn8Jw4Iv3W2k3WUXF45Ar1kKFsx
+	Grs29F4qgFnFgF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+	6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+	1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkF7I0En4kS14v26r12
+	6r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+	0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y
+	0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+	WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+	IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbSfO7UUUU
+	U==
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBgsGA2o5IaJNOAAAst
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-0.46 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	DMARC_NA(0.00)[iscas.ac.cn];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22419-lists,linux-rdma=lfdr.de];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_SENDER(0.00)[yurynorov@gmail.com,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	FORGED_RECIPIENTS(0.00)[m:rostedt@kernel.org,m:chleroy@kernel.org,m:linux-kernel@vger.kernel.org,m:linux-trace-kernel@vger.kernel.org,m:mhiramat@kernel.org,m:mark.rutland@arm.com,m:mathieu.desnoyers@efficios.com,m:akpm@linux-foundation.org,m:torvalds@linux-foundation.org,m:bigeasy@linutronix.de,m:john.ogness@linutronix.de,m:tglx@kernel.org,m:peterz@infradead.org,m:julia.lawall@inria.fr,m:yury.norov@gmail.com,m:linux-doc@vger.kernel.org,m:linux-kbuild@vger.kernel.org,m:linuxppc-dev@lists.ozlabs.org,m:dri-devel@lists.freedesktop.org,m:linux-stm32@st-md-mailman.stormreply.com,m:linux-arm-kernel@lists.infradead.org,m:linux-rdma@vger.kernel.org,m:linux-usb@vger.kernel.org,m:linux-ext4@vger.kernel.org,m:linux-nfs@vger.kernel.org,m:kvm@vger.kernel.org,m:intel-gfx@lists.freedesktop.org,m:yurynorov@gmail.com,s:lists@lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[27];
-	FORWARDED(0.00)[lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:jgg@ziepe.ca,m:leon@kernel.org,m:fw@strlen.de,m:kees@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:vulab@iscas.ac.cn,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[vulab@iscas.ac.cn,linux-rdma@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-22420-lists,linux-rdma=lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	ALIAS_RESOLVED(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yurynorov@gmail.com,linux-rdma@vger.kernel.org];
-	PRECEDENCE_BULK(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,arm.com,efficios.com,linux-foundation.org,linutronix.de,infradead.org,inria.fr,gmail.com,lists.ozlabs.org,lists.freedesktop.org,st-md-mailman.stormreply.com,lists.infradead.org];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[vulab@iscas.ac.cn,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	R_DKIM_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[yury:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp,iscas.ac.cn:email,iscas.ac.cn:mid,iscas.ac.cn:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 378926AFC01
+X-Rspamd-Queue-Id: 959776AFFAF
 
-On Mon, Jun 22, 2026 at 09:08:26AM -0400, Steven Rostedt wrote:
-> On Mon, 22 Jun 2026 10:05:13 +0200
-> "Christophe Leroy (CS GROUP)" <chleroy@kernel.org> wrote:
-> 
-> > > There's been complaints about trace_printk() being defined in kernel.h as it
-> > > can increase the compilation time. As it is only used by some developers for
-> > > debugging purposes, it should not be in kernel.h causing lots of wasted CPU
-> > > cycles for those that do not ever care about it.  
-> > 
-> > Do we have a measurement of the increased compilation time ?
-> 
-> I believe Yury does.
+In iwpm_register_pid(),iwpm_add_mapping() and
+iwpm_add_and_query_mapping(), when the send operations fail,
+the allocated message buffers are not freed before returning,
+causing memory leaks.
 
-I re-run compilation is a more strict environment, and the difference
-is negligible.
+Fix this by adding proper error handling with goto labels to
+ensure kfree() is called on all error paths in both functions.
+Fixes: 30dc5e63d6a5 ("RDMA/core: Add support for iWARP Port Mapper user space service")
+Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
+---
+ drivers/infiniband/core/iwpm_msg.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/infiniband/core/iwpm_msg.c b/drivers/infiniband/core/iwpm_msg.c
+index 4625abd29ac0..bac3d1f321ab 100644
+--- a/drivers/infiniband/core/iwpm_msg.c
++++ b/drivers/infiniband/core/iwpm_msg.c
+@@ -122,7 +122,7 @@ int iwpm_register_pid(struct iwpm_dev_data *pm_msg, u8 nl_client)
+ 	pr_info("%s: %s (client = %u)\n", __func__, err_str, nl_client);
+ 	dev_kfree_skb(skb);
+ 	if (nlmsg_request)
+-		iwpm_free_nlmsg_request(&nlmsg_request->kref);
++		kref_put(&nlmsg_request->kref, iwpm_free_nlmsg_request);
+ 	return ret;
+ }
+ 
+@@ -207,7 +207,7 @@ int iwpm_add_mapping(struct iwpm_sa_data *pm_msg, u8 nl_client)
+ add_mapping_error_nowarn:
+ 	dev_kfree_skb(skb);
+ 	if (nlmsg_request)
+-		iwpm_free_nlmsg_request(&nlmsg_request->kref);
++		kref_put(&nlmsg_request->kref, iwpm_free_nlmsg_request);
+ 	return ret;
+ }
+ 
+@@ -296,7 +296,7 @@ int iwpm_add_and_query_mapping(struct iwpm_sa_data *pm_msg, u8 nl_client)
+ query_mapping_error_nowarn:
+ 	dev_kfree_skb(skb);
+ 	if (nlmsg_request)
+-		iwpm_free_nlmsg_request(&nlmsg_request->kref);
++		kref_put(&nlmsg_request->kref, iwpm_free_nlmsg_request);
+ 	return ret;
+ }
+ 
+-- 
+2.39.5 (Apple Git-154)
+
 
