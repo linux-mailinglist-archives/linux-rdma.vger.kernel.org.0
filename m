@@ -1,205 +1,183 @@
-Return-Path: <linux-rdma+bounces-22428-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22429-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id oQgTC4EhOmoX2AcAu9opvQ
-	(envelope-from <linux-rdma+bounces-22428-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2026 08:02:41 +0200
+	id ffmwDutNOmq+5gcAu9opvQ
+	(envelope-from <linux-rdma+bounces-22429-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2026 11:12:11 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AAA26B4566
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2026 08:02:40 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACF326B5A4F
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2026 11:12:10 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.alibaba.com header.s=default header.b=Y9vekp61;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22428-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22428-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.alibaba.com;
+	dkim=pass header.d=queasysnail.net header.s=fm2 header.b="b eFqV/F";
+	dkim=pass header.d=messagingengine.com header.s=fm1 header.b=VTsXWTFi;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22429-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22429-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 82054302001F
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2026 06:02:32 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 8B459303D818
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2026 09:11:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A8863A9636;
-	Tue, 23 Jun 2026 06:02:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 909A83438B1;
+	Tue, 23 Jun 2026 09:10:59 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+Received: from fhigh-b1-smtp.messagingengine.com (fhigh-b1-smtp.messagingengine.com [202.12.124.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D4C331EB8;
-	Tue, 23 Jun 2026 06:02:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 425072D4B68;
+	Tue, 23 Jun 2026 09:10:55 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782194551; cv=none; b=GPnnoC+Gp4ucLnPAmh7NgQf0fx6ygvjrruuwPa4QEWLcZn4ceGzWTVO6pc+ubZEoQB7EgxVJ2CrOE1UQrag8JdWVgKFkUltLbPaYvtSMxPMXS1PTy5Ngc4lACYCuefnUhyJ8/MOJGDwlhKPhe7Nbu4hIhl5N7aQcDIpzSa0Zjqw=
+	t=1782205859; cv=none; b=VgIr4OlKwKtKdAoEnJkVgPZmJnVJmRnA3wbduTcZQg0blRUSFSuqfrxxR9FfwV7ngJYJLmZTZfyrW4SFVgb2RgblcM1vUnJfSz7R6efvkcUnPANFZjUOtDgDDDfZH8HstMwZFDlv/VSSxCvE3YjVK357i1LsF+HN3bPxHwLyjoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782194551; c=relaxed/simple;
-	bh=Ohl8H5CIdVJ0LZVBp5/kkC99ycMWv9vhyOY2FRSkPyc=;
+	s=arc-20240116; t=1782205859; c=relaxed/simple;
+	bh=H0ejhMob9U1Tp7NLyQih5D7xrwz4zP/ui9ghCzP4aqU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M5NJdIBsjhoREWewXt3UKF+B+4o2Y7VYdAzmw6q9SyF1TLn5Rrwyl6YcTHS16L7ffFUDs6x9SnKeYLMgCA7d5Yp23A9h3YLF2kgo82/oi1bhimGRwOp+8n923FWLfOnDKwIBtEN5jmWQyviHDZxFq6Tk7qLSn9Eydzs8JmU1bIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Y9vekp61; arc=none smtp.client-ip=115.124.30.97
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1782194539; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=5D6qSgcvkXY5fZhgXS+3C6PguwJ4UnErXlSfTf6hK/0=;
-	b=Y9vekp61xn2XhxSvykk9bYtq5TyJ6bTyOa86OlMAzzOKGVp7HLoKyayz+2iRlV0yUWUgJ0rpjkJJiltf4J4gpnu6HSfSAtR+g96UMf83HyOIfEEbjwR2ogbGhYzTS5E+NVe9Cx/IVg0vVDkKqVHGhMd9/lRUH+wK+EgmWBuHjjc=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045098064;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0X5SwrVe_1782194538;
-Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0X5SwrVe_1782194538 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Tue, 23 Jun 2026 14:02:18 +0800
-Date: Tue, 23 Jun 2026 14:02:18 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com    >
-To: Sechang Lim <rhkrqnwk98@gmail.com>
-Cc: "D . Wythe" <alibuda@linux.alibaba.com>,
-	Dust Li <dust.li@linux.alibaba.com>,
-	Sidraya Jayagond <sidraya@linux.ibm.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>,
-	"David S . Miller" <davem@davemloft.net>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=JeX5mXjPAXSY7L4TstosWWwRurolLaliHwGeZGoYYLbgvo0ZEz6EQtmMPJC15IVGTqpJfeCECcqJMMx9NLR/TQHMGlbsjCetRFv1ukgdxofb3v7SdnPVBPSEzG0Nf6okfoYVUatvnln5T5ku/8x6V4y3qk5yYKLdNUiHUo1ZTy4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net; spf=pass smtp.mailfrom=queasysnail.net; dkim=pass (2048-bit key) header.d=queasysnail.net header.i=@queasysnail.net header.b=beFqV/F7; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=VTsXWTFi; arc=none smtp.client-ip=202.12.124.152
+Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 165347A015F;
+	Tue, 23 Jun 2026 05:10:55 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-05.internal (MEProxy); Tue, 23 Jun 2026 05:10:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=queasysnail.net;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm2; t=1782205854; x=
+	1782292254; bh=8hZD5mizY6mE9lDCe600zLjaG96JwIduRGgsYhIAe9I=; b=b
+	eFqV/F7UtNB0TBq0IIZZGfPqfFTBd0IYWOHhLqFmk8Xiqss3EYR90wSwDi/v0GYR
+	m/37H3TjWdnOyJcAxnxnG96iiRQVkMg8i8jkuIufAzObUIUuzVRM1SF/LQuQKc0j
+	F9JH3wOplE1rNStXLwqwBKJuF4kxnwcgjjxn7J7QIvu/5T/Rca0NciCs4Prz1MfW
+	5fdA1BA+V0SIVS9kBrAMQTSaKHnWQ8RvM4ZnJuBXSyZ/Em6eABk3xQxfwhcjYWGu
+	UttFFyabF62zRmHXylJCzqho67HRZYtM1tB10/MpGnShn+oBavQzXILUEjRDqkE5
+	SgVnyNxS8dQvwKBIJNcOQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1782205854; x=1782292254; bh=8hZD5mizY6mE9lDCe600zLjaG96JwIduRGg
+	sYhIAe9I=; b=VTsXWTFiZo/w2/i5o4DbnDqkLyw2vCn9mAfNRU/UkZGJzrEO+xc
+	uy10sWJenOnFD8fP5uBYaweuxOi5Vf54CuxWsAO+8TolYZCJEIkbJE2gZwtzXK88
+	yHqKk/TFaKFJJTuYD3/eyYJ/OXXiWgED2j1ADcYIGgfeUOXc45rqPIiId3IfnOoX
+	8R2EC5cJXKFC44N5SPLRisj7rE3o+WqKH/5dYUqghycwDVk8pw3aFG/CmfABrAuz
+	r3GrFAjH7D/6NJ//ApyWbVdBvwYxbyMJjxyf10n7MGHRwoAaAtpwTvV+28KyAPHF
+	36BbpJ1i5tbrSDtXpSDCbBcexI9uKjO7FPg==
+X-ME-Sender: <xms:nk06amji6U1cneISU_LV-tNczGrwqX-ojUn0jJeoj6JfrJN_sj99SA>
+    <xme:nk06an9UF3JbkItc77S3QWLKnijqXnCmxF50NYCEeugIsg6V3EmYBf8Jq4NdsFMNS
+    NObQjIcUXZKtty8luZIs9DRraRauQHzusGR0jtLvxk6cPa-Ak0bKeg>
+X-ME-Received: <xmr:nk06auYZmm8xuMPtP-kyMUqJ5A3b4K8urb4KwJgluY63LWRZD3UA7JZMw9uk50HTFPP2AVLPr69Nl--W_OS0ZfA>
+X-ME-Proxy-Cause: dmFkZTEZ26e5DWSZZNJ6NO2CAGw1Wd8AuwmZtVtuY9zTCrJXg2jF63KkKQWmSfegBPLJpH
+    /0KzGFi5gcfsMWGJefzPH6JR8um+ccoGk2BdPu+9TADe/Z62pgCUNAWsk4s7Gw482gKDd4
+    bQtzq1zdT79L0U2SJ9zzIeOPdnhNpVOUR622rzOiPb2ZaVu9y+0V/8T99l705kcGvMbJOG
+    YeXzfqG03OCM0ylXMnMIGQBJBIoKH40Z0eZZzJPkRaGH6ehtES+bqyy3/TndlCYUQKXo2Z
+    Fn7zf/mTmKENN/1l6gRxCOKf5/bkWMAAu4KpaDkDDsQNbN+NZlVYrwTawrztbL2Z0/KuD2
+    m5gttXcaW79O+igZDGeviVmBTlH+7syG/XPCDiMi/nZWEhyIUE92ozYxDykmXJDQyA1Mri
+    4ZpELle3+F43/q5Omj4/q7XINXaDiJN3+VnCMLdHGELWHrqkb6HOLz1gZ8R5xl8ivaV5r7
+    PIlDcGk3Uk7NeZ9msvaAPxIAkLH1O8vJoOZyT1bnJT3VvVhNIJDppkLffzkTQZQI91wtK+
+    Eb8fyyfJnEcHfreRIb0/NCJcSKwSmdTNdK16xxf+Y95EnIqJijmQFXZzdTlqCnIrhg4p4x
+    ZCUnGuZN2fboAqajHBVfh19M4dDqrH0PvH6bcL7y2WXZPoFbKIMVTk1H+BBA
+X-ME-Proxy: <xmx:nk06att0a_nSnJIFPDJnNru_rFkDVTSynUbbsw5EfcDY1gCZ1G_XiQ>
+    <xmx:nk06aqkllxvDWusrpPERAvftnr_f866TmR9-jXI5zobTRLBnNlZ3iw>
+    <xmx:nk06atydQRoCSltBS3ZWA_eysLFP1L5VHuIBu9vgxRC8WHbuLUFQlQ>
+    <xmx:nk06aux6dTPSo8zJ95JPcuMGG4OspXr-zeP-MHjFNg8u8UO1u5gwRw>
+    <xmx:nk06auTwgSbHnaPHkJCblc1hTLvDwHS24lb45GkPJQkL-grtKNttCkY8>
+Feedback-ID: i934648bf:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 23 Jun 2026 05:10:54 -0400 (EDT)
+Date: Tue, 23 Jun 2026 11:10:51 +0200
+From: Sabrina Dubroca <sd@queasysnail.net>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Mahanta Jambigi <mjambigi@linux.ibm.com>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>, Simon Horman <horms@kernel.org>,
-	Ursula Braun <ubraun@linux.ibm.com>,
-	Karsten Graul <kgraul@linux.ibm.com>,
-	Guvenc Gulce <guvenc@linux.ibm.com>, linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net v2] net/smc: fix out-of-bounds read when sk_user_data
- holds a sk_psock
-Message-ID: <20260623060218.GA29925@j66a10360.sqa.eu95>
-References: <20260619150342.3626224-1-rhkrqnwk98@gmail.com>
+	Arnd Bergmann <arnd@arndb.de>,
+	Daniel Zahka <daniel.zahka@gmail.com>,
+	Rahul Rameshbabu <rrameshbabu@nvidia.com>,
+	Raed Salem <raeds@nvidia.com>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [net] eth: mlx5: fix macsec dependency
+Message-ID: <ajpNm2ULHJ1QgSAy@krikkit>
+References: <20260622124229.2444502-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260619150342.3626224-1-rhkrqnwk98@gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20260622124229.2444502-1-arnd@kernel.org>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-12.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
-	WHITELIST_SPF_DKIM(-3.00)[alibaba.com:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[queasysnail.net:s=fm2,messagingengine.com:s=fm1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:rhkrqnwk98@gmail.com,m:alibuda@linux.alibaba.com,m:dust.li@linux.alibaba.com,m:sidraya@linux.ibm.com,m:wenjia@linux.ibm.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:mjambigi@linux.ibm.com,m:tonylu@linux.alibaba.com,m:guwen@linux.alibaba.com,m:horms@kernel.org,m:ubraun@linux.ibm.com,m:kgraul@linux.ibm.com,m:guvenc@linux.ibm.com,m:linux-rdma@vger.kernel.org,m:linux-s390@vger.kernel.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:bpf@vger.kernel.org,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	FORGED_SENDER(0.00)[alibuda@linux.alibaba.com,linux-rdma@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22429-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[queasysnail.net];
+	FORGED_SENDER(0.00)[sd@queasysnail.net,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	FORGED_RECIPIENTS(0.00)[m:arnd@kernel.org,m:saeedm@nvidia.com,m:leon@kernel.org,m:tariqt@nvidia.com,m:mbloch@nvidia.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:arnd@arndb.de,m:daniel.zahka@gmail.com,m:rrameshbabu@nvidia.com,m:raeds@nvidia.com,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:andrew@lunn.ch,m:danielzahka@gmail.com,s:lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FREEMAIL_CC(0.00)[nvidia.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,arndb.de,gmail.com,vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alibuda@linux.alibaba.com,linux-rdma@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-22428-lists,linux-rdma=lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[sd@queasysnail.net,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[queasysnail.net:+,messagingengine.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.alibaba.com:dkim,linux.alibaba.com:from_mime,vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,j66a10360.sqa.eu95:mid]
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,vger.kernel.org:from_smtp,messagingengine.com:dkim,arndb.de:email,krikkit:mid,queasysnail.net:dkim,queasysnail.net:email,queasysnail.net:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 9AAA26B4566
+X-Rspamd-Queue-Id: ACF326B5A4F
 
-On Fri, Jun 19, 2026 at 03:03:41PM +0000, Sechang Lim wrote:
-> SMC stores its smc_sock in the clcsock's sk_user_data tagged
-> SK_USER_DATA_NOCOPY and reads it back with smc_clcsock_user_data(), which
-> only strips that flag. sockmap stores a sk_psock in the same field tagged
-> SK_USER_DATA_NOCOPY | SK_USER_DATA_PSOCK. Nothing keeps both off one
-> socket, and SMC then casts the sk_psock to an smc_sock.
+2026-06-22, 14:41:07 +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> A passive-open child hits this. It inherits the listener's
-> smc_clcsock_data_ready(), but sk_clone_lock() clears its NOCOPY
-> sk_user_data, and a BPF sock_ops program then adds the child to a sockmap,
-> installing a sk_psock in that field. The inherited callback reads it as an
-> smc_sock and dereferences a clcsk_* pointer past the end of the sk_psock:
+> Configurations with mlx5 built-in but macsec=m fail to link:
 > 
->   BUG: KASAN: slab-out-of-bounds in smc_clcsock_data_ready+0x84/0x200 net/smc/af_smc.c:2637
->   Read of size 8 at addr ffff8880013b8674 by task syz.6.12484/67930
->    <IRQ>
->    smc_clcsock_data_ready+0x84/0x200 net/smc/af_smc.c:2637
->    tcp_urg+0x24d/0x360 net/ipv4/tcp_input.c:6264
->    tcp_rcv_state_process+0x280d/0x4940 net/ipv4/tcp_input.c:7336
->    tcp_child_process+0x371/0xa50 net/ipv4/tcp_minisocks.c:1002
->    tcp_v4_rcv+0x1eaa/0x2a00 net/ipv4/tcp_ipv4.c:2186
->    [...]
->    </IRQ>
+> x86_64-linux-ld: drivers/infiniband/hw/mlx5/macsec.o: in function `mlx5r_add_gid_macsec_operations':
+> macsec.c:(.text+0x77d): undefined reference to `macsec_netdev_is_offloaded'
+> x86_64-linux-ld: drivers/infiniband/hw/mlx5/macsec.o: in function `mlx5r_del_gid_macsec_operations':
+> macsec.c:(.text+0xe81): undefined reference to `macsec_netdev_is_offloaded'
 > 
->   Allocated by task 67930:
->    sk_psock_init+0x142/0x740 net/core/skmsg.c:766
->    sock_hash_update_common+0xd3/0x990 net/core/sock_map.c:1010
->    bpf_sock_hash_update+0x114/0x170 net/core/sock_map.c:1229
->    __cgroup_bpf_run_filter_sock_ops+0x74/0xa0 kernel/bpf/cgroup.c:1727
->    tcp_init_transfer+0x1085/0x1100 net/ipv4/tcp_input.c:6693
->    [...]
+> Fix the dependency so this configuration cannot happen.
 > 
-> sk_psock() already guards the other side, returning NULL unless
-> SK_USER_DATA_PSOCK is set. Make smc_clcsock_user_data() and its RCU
-> variant return the smc_sock only when sk_user_data carries SMC's tag
-> alone. A sk_psock then reads back as NULL, which the data_ready and
-> fallback callbacks already handle.
-> 
-> Fixes: a60a2b1e0af1 ("net/smc: reduce active tcp_listen workers")
-> Signed-off-by: Sechang Lim <rhkrqnwk98@gmail.com>
-> ---
->  net/smc/smc.h | 18 +++++++++++++++---
->  1 file changed, 15 insertions(+), 3 deletions(-)
-> 
-> diff --git a/net/smc/smc.h b/net/smc/smc.h
-> index 52145df83f6e..88dfb459b7cc 100644
-> --- a/net/smc/smc.h
-> +++ b/net/smc/smc.h
-> @@ -342,13 +342,25 @@ static inline void smc_init_saved_callbacks(struct smc_sock *smc)
->  
->  static inline struct smc_sock *smc_clcsock_user_data(const struct sock *clcsk)
->  {
-> -	return (struct smc_sock *)
-> -	       ((uintptr_t)clcsk->sk_user_data & ~SK_USER_DATA_NOCOPY);
-> +	uintptr_t data = (uintptr_t)clcsk->sk_user_data;
-> +
-> +	/*
-> +	 * Return the smc_sock only if the slot carries SMC's tag alone.
-> +	 * sockmap stores a sk_psock here tagged SK_USER_DATA_PSOCK; it is
-> +	 * not an smc_sock and must not be dereferenced as one.
-> +	 */
-> +	if ((data & ~SK_USER_DATA_PTRMASK) != SK_USER_DATA_NOCOPY)
-> +		return NULL;
-> +	return (struct smc_sock *)(data & SK_USER_DATA_PTRMASK);
->  }
->  
->  static inline struct smc_sock *smc_clcsock_user_data_rcu(const struct sock *clcsk)
->  {
-> -	return (struct smc_sock *)rcu_dereference_sk_user_data(clcsk);
-> +	uintptr_t data = (uintptr_t)rcu_dereference(__sk_user_data(clcsk));
-> +
-> +	if ((data & ~SK_USER_DATA_PTRMASK) != SK_USER_DATA_NOCOPY)
-> +		return NULL;
-> +	return (struct smc_sock *)(data & SK_USER_DATA_PTRMASK);
->  }
->  
->  /* save target_cb in saved_cb, and replace target_cb with new_cb */
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-No. The core issue is how to resolve the ownership conflict between
-sockmap and SMC over sk_user_data, which can by no means be solved by
-adding runtime checks on the read path.
+Reviewed-by: Sabrina Dubroca <sd@queasysnail.net>
 
-Following sk_psock_init(), the simplest approach would be to always
-explicitly set sk_user_data or ulp_ops during the active/passive
-creation of smc->clcsock, thereby avoiding the conflict at its root.
+>  drivers/net/ethernet/mellanox/mlx5/core/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Additionally, compatibility with sockmap in the fallback path needs to
-be considered, though that can be addressed later.
+...
+> @@ -144,7 +144,7 @@ config MLX5_CORE_IPOIB
+>  config MLX5_MACSEC
+>  	bool "Connect-X support for MACSec offload"
+>  	depends on MLX5_CORE_EN
+> -	depends on MACSEC
+> +	depends on MACSEC=y || MACSEC=MLX5_CORE
 
-> -- 
-> 2.43.0
+I'd never seen this 'configA=configB' syntax, cool.
+
+-- 
+Sabrina
 
