@@ -1,69 +1,103 @@
-Return-Path: <linux-rdma+bounces-22456-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22450-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 0C7XLsZZPGpPnAgAu9opvQ
-	(envelope-from <linux-rdma+bounces-22456-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 00:27:18 +0200
+	id mAwYMxURPGrLjQgAu9opvQ
+	(envelope-from <linux-rdma+bounces-22450-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2026 19:17:09 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D0F86C1BF8
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 00:27:18 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D8DE6C0495
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2026 19:17:09 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=microsoft.com (policy=reject);
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22456-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22456-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=broadcom.com header.s=google header.b=PYR3LznY;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22450-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22450-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=broadcom.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 6434E3031764
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2026 22:27:09 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 3A7DB3028E91
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2026 17:17:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 911FE37AA75;
-	Wed, 24 Jun 2026 22:26:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 219DE330675;
+	Wed, 24 Jun 2026 17:17:05 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68EED375F8E;
-	Wed, 24 Jun 2026 22:26:55 +0000 (UTC)
+Received: from mail-pf1-f225.google.com (mail-pf1-f225.google.com [209.85.210.225])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B45AF265CDD
+	for <linux-rdma@vger.kernel.org>; Wed, 24 Jun 2026 17:17:03 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782340016; cv=none; b=ZDjt3CfWWWhcjwQK8Ba0J4D5X29B18cjoO+fL/2TUaguzs6s0TUe+0iOVto0r03K+2z5KAPDy7I+YaUhn8gX5qm6lCp3RnU6gh5o3Cs1pOwpyxBjo/Q2SammfIlg1sX6giSMsUg32NT3MHFjUIt1/e1jGxwnO3jSA+c87A4BROM=
+	t=1782321424; cv=none; b=H4PYyTKPvb258Qg2FlbDm6uxZC3pwBEdGCbrSLJxBP7M+RU9suwungNw3j9f4gjiMoHLH9yloN67c2KQctNCMQfe3GkE0Jeq7sR/TTPDcpalzdqfnq+YnWzrCe7JSL8pxcAqOLd2KwICT2OnRMXLXiZ9CgxmmzhS6lFdq5ywO6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782340016; c=relaxed/simple;
-	bh=jDqZRJ4PXdEFuDDYPi1ZXEQJ6F/inovLlss3k9Dw2kE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rMU5eXuQz0xt9ywWe2pCLFEf9A6/k0bzmFfFjFUfEqG8wf0AIDXoJsxRKVMx/hO/WndoZwHNFt2jp+XCjW8Mxhvp4Jzi1s4EV4Hr71oQ72S37Oue6v5IU6+kTVOfW8Ci0YwJQYoIKn5GL/pLPTjOgYMiiIZc9Xsd4V3Fh3/IACw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; arc=none smtp.client-ip=13.77.154.182
-Received: by linux.microsoft.com (Postfix, from userid 1009)
-	id E4A2F20B7167; Wed, 24 Jun 2026 15:26:50 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E4A2F20B7167
-From: Dexuan Cui <decui@microsoft.com>
-To: kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	longli@microsoft.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	kotaranov@microsoft.com,
-	horms@kernel.org,
-	ernis@linux.microsoft.com,
-	dipayanroy@linux.microsoft.com,
-	kees@kernel.org,
-	jacob.e.keller@intel.com,
-	ssengar@linux.microsoft.com,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Cc: stable@vger.kernel.org
-Subject: [PATCH net v2 2/2] net: mana: Validate the packet length reported by the NIC
-Date: Wed, 24 Jun 2026 15:26:05 -0700
-Message-ID: <20260624222605.1794719-3-decui@microsoft.com>
-X-Mailer: git-send-email 2.43.7
-In-Reply-To: <20260624222605.1794719-1-decui@microsoft.com>
-References: <20260624222605.1794719-1-decui@microsoft.com>
+	s=arc-20240116; t=1782321424; c=relaxed/simple;
+	bh=Kb05kdShIuc+E7Uzru/2B+0gKdEyMYtbn+kwMUC0ZUk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RIwzXDv7tA6Z/uf3xko71YKBXRA2aJMGlzlEI99jVF9jmUFO0BhIXAcvx0vj7SE28uzIjpVbh5fcofwf+C9FXfpVJnbv6hSwZnyiPUUJgIJnpEiewud98WkYLcuKSUziQh0y/XP+wQMHrF2iwlIkPMcf6wzjyGAhnAo/biH/dgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=PYR3LznY; arc=none smtp.client-ip=209.85.210.225
+Received: by mail-pf1-f225.google.com with SMTP id d2e1a72fcca58-8423610ec93so1513317b3a.2
+        for <linux-rdma@vger.kernel.org>; Wed, 24 Jun 2026 10:17:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1782321423; x=1782926223;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eyFBwcVILgIVPmyDlAUtHNWHENpOxGXV4IsNvHLlX+E=;
+        b=ioZMDAn7AFmbe9Si2eVPIAlobdt4FROp6fq+38GU9fWLBikGpFQ+0FORnXotxfGdNs
+         +S0tn/7I+UQQQfSlJpQnBzb5a6Bbbhs9ek/G1HJt03/e3F3JMCzh2EwGHV0kcT7BUgv0
+         k/dEPHQ3oBDHVVJvqVvRWiZVhflz/g570AyQWSof7Wn6LruU2O1LKC+zEaE5m7sq7Hyy
+         n5hogJKhPlO1Luir7oAyyF9+bXHqLQe5MRcjXL9RbA6EE+bVyLIQcHgjp5iwXBF1qj5r
+         o0cP8PL1UrZiG4/MCPLycHRdRpj6bdg3NJnr6LxLyi/nmmDjBYknMQel8EBdI9woMm0j
+         F0hw==
+X-Gm-Message-State: AOJu0YyAjzvAHlbOSXGAxzgoBnLEcaEmG6v5q6K/9E6PATfckxQhlY5V
+	T5rSHoDgaabSgapAaEYBNmnKLmXWi5T9Fl4FJI/DI/jVUSAJi8qfFz5SiTyorHZ93zrOu0bGa8F
+	2FD5WBkjTOl7EDYL/30hqKZlMbjzhJE5o9zCCPxnoMx8h905QaX/GODkxO2faG4k7anE27HvJ0D
+	ldv/wL3QSHupyyGIzNUSbXrwqky5RfwK525SNUTqumFzaGWN8VqrS6P4psIKxoKUfKqmVQ8Q+ge
+	jLAH/VCHz6H95slMbDt
+X-Gm-Gg: AfdE7cndt+Mvb2xK0osidyBI7qbyK2/PpTxlXBNEDd6B1nEEB8BGCD49qp1VlheiucR
+	i/qHHGP83fQ/BOH9CLXtFzUf7BG6xBTHKX0WLz1JwtazdVqBZzSlyQvuYntWrndc5ott7fRYry1
+	KLk+HJOZdLk6NKe1DyEYFahscFWufoiTdC+6rAqixrmgqOr8WMR5tv2e77XVmp+LbIzQsh8ySxO
+	oJCpn6KmNClW9eltnRrs7/WTLYFE23drsGL79HQKh5IXtoEnXbJLrUE51WCoNA4ohk8aLY6dftJ
+	qwml4186xeUTSJYHUEXbPCoUbOAdg1YGtO8yxa+SIgolg9NdH8WoFHuqH69WiAfEUfs7u4AHeGH
+	+MRgjE7uYwsuu0KnllXGRVP2ZjmhwRI5KKHEVAQ87HDqFmf8LZnkXiHBMofTgCrIK/D02yudJnA
+	Ybbl03FFvlye6+fm5l9o+O+C/2CcY2ANb/VfC7avqLiK/MWMc=
+X-Received: by 2002:a05:6a00:b4a:b0:843:49f0:f5a0 with SMTP id d2e1a72fcca58-845a2caa198mr5332847b3a.32.1782321422835;
+        Wed, 24 Jun 2026 10:17:02 -0700 (PDT)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-23.dlp.protect.broadcom.com. [144.49.247.23])
+        by smtp-relay.gmail.com with ESMTPS id d2e1a72fcca58-845a407d6ccsm296852b3a.4.2026.06.24.10.17.02
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 24 Jun 2026 10:17:02 -0700 (PDT)
+X-Relaying-Domain: broadcom.com
+X-CFilter-Loop: Reflected
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-2c6b7d5118fso19011525ad.0
+        for <linux-rdma@vger.kernel.org>; Wed, 24 Jun 2026 10:17:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1782321421; x=1782926221; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eyFBwcVILgIVPmyDlAUtHNWHENpOxGXV4IsNvHLlX+E=;
+        b=PYR3LznYq31yTUt7M6NbFd5JMBQCxGnNaoq5KbTlVs/DonhlX74u5Phrr/6w1EpJTI
+         QOEIbRL1ATXoireF1oKRC8ad9vtHwLc6u9qml/+Q1Npb0X1kXTmuwUewjhzDLROIDnjE
+         lnAVkulExBtAIT6ulh2g40NujqMKmsWm1XtwI=
+X-Received: by 2002:a17:903:2346:b0:2c7:f7e6:99f8 with SMTP id d9443c01a7336-2c7f7e69b08mr326385ad.9.1782321421141;
+        Wed, 24 Jun 2026 10:17:01 -0700 (PDT)
+X-Received: by 2002:a17:903:2346:b0:2c7:f7e6:99f8 with SMTP id d9443c01a7336-2c7f7e69b08mr325975ad.9.1782321420649;
+        Wed, 24 Jun 2026 10:17:00 -0700 (PDT)
+Received: from dhcp-10-123-156-114.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2c7f5afbbd9sm3004965ad.28.2026.06.24.10.16.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jun 2026 10:17:00 -0700 (PDT)
+From: Selvin Xavier <selvin.xavier@broadcom.com>
+To: leon@kernel.org,
+	jgg@ziepe.ca
+Cc: linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com,
+	kalesh-anakkur.purayil@broadcom.com,
+	sriharsha.basavapatna@broadcom.com,
+	Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH for-next v2 0/2] RDMA/bnxt_re: Update the toggle page handling of CQ and SRQ
+Date: Wed, 24 Jun 2026 15:39:25 -0700
+Message-Id: <20260624223927.521882-1-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -71,94 +105,75 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [3.54 / 15.00];
-	DMARC_POLICY_REJECT(2.00)[microsoft.com : SPF not aligned (relaxed), No valid DKIM,reject];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[broadcom.com:D:+];
+	DATE_IN_FUTURE(4.00)[5];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[broadcom.com,reject];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
+	R_DKIM_ALLOW(-0.20)[broadcom.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:kys@microsoft.com,m:haiyangz@microsoft.com,m:wei.liu@kernel.org,m:decui@microsoft.com,m:longli@microsoft.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:kotaranov@microsoft.com,m:horms@kernel.org,m:ernis@linux.microsoft.com,m:dipayanroy@linux.microsoft.com,m:kees@kernel.org,m:jacob.e.keller@intel.com,m:ssengar@linux.microsoft.com,m:linux-hyperv@vger.kernel.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:stable@vger.kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22456-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[decui@microsoft.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22450-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:leon@kernel.org,m:jgg@ziepe.ca,m:linux-rdma@vger.kernel.org,m:andrew.gospodarek@broadcom.com,m:kalesh-anakkur.purayil@broadcom.com,m:sriharsha.basavapatna@broadcom.com,m:selvin.xavier@broadcom.com,s:lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[decui@microsoft.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,vger.kernel.org:from_smtp];
-	TO_DN_NONE(0.00)[];
+	FORGED_SENDER(0.00)[selvin.xavier@broadcom.com,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[selvin.xavier@broadcom.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[broadcom.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	R_DKIM_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[22];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	FORGED_SENDER_FORWARDING(0.00)[]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 4D0F86C1BF8
+X-Rspamd-Queue-Id: 3D8DE6C0495
 
-Validate the packet length reported in the RX CQE before using it as a DMA
-sync length or passing it to skb processing. The CQE is supplied by the
-NIC device and should not be blindly trusted.
+Based on the suggestion from Jason (
+https://patchwork.kernel.org/project/linux-rdma/patch/20260615224751.232802-5-selvin.xavier@broadcom.com/)
+, adding the uverb object to retrieve the CQ an SRQ structures while getting the
+toggle mem. To work with older rdma-core, retain the existing code with
+modification.
 
-Cc: stable@vger.kernel.org
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Signed-off-by: Dexuan Cui <decui@microsoft.com>
----
+The rdma-core pull request is here: https://github.com/linux-rdma/rdma-core/pull/1761
 
-Changes since v1:
-    v1 is split into two patches in the v2.
-    Add Haiyang's Reviewed-by.
+Please review and apply the series.
 
- drivers/net/ethernet/microsoft/mana/mana_en.c | 24 +++++++++++++++----
- 1 file changed, 19 insertions(+), 5 deletions(-)
+Thanks,
+Selvin Xavier
 
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index 1875bffd82b7..0b44c51ae6ec 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -2190,12 +2190,26 @@ static void mana_process_rx_cqe(struct mana_rxq *rxq, struct mana_cq *cq,
- 		rxbuf_oob = &rxq->rx_oobs[curr];
- 		WARN_ON_ONCE(rxbuf_oob->wqe_inf.wqe_size_in_bu != 1);
- 
--		mana_refill_rx_oob(dev, rxq, rxbuf_oob, pktlen, &old_buf, &old_fp);
-+		if (unlikely(pktlen > rxq->datasize)) {
-+			/* Increase it even if mana_rx_skb() isn't called. */
-+			rxq->rx_cq.work_done++;
- 
--		/* Unsuccessful refill will have old_buf == NULL.
--		 * In this case, mana_rx_skb() will drop the packet.
--		 */
--		mana_rx_skb(old_buf, old_fp, oob, rxq, i);
-+			++ndev->stats.rx_dropped;
-+			netdev_warn_once(ndev,
-+				"Dropped oversized RX packet: len=%u, datasize=%u\n",
-+				pktlen, rxq->datasize);
-+
-+			/* Reuse the RX buffer since rxbuf_oob is unchanged. */
-+		} else {
-+
-+			mana_refill_rx_oob(dev, rxq, rxbuf_oob, pktlen,
-+					   &old_buf, &old_fp);
-+
-+			/* Unsuccessful refill will have old_buf == NULL.
-+			 * In this case, mana_rx_skb() will drop the packet.
-+			 */
-+			mana_rx_skb(old_buf, old_fp, oob, rxq, i);
-+		}
- 
- 		mana_move_wq_tail(rxq->gdma_rq,
- 				  rxbuf_oob->wqe_inf.wqe_size_in_bu);
+v1->v2 :
+    - Fix the error cleanup for SRQ and CQ create paths
+    - Fix a synchronization issue for the legacy path which can cause a
+      UAF
+
+Selvin Xavier (2):
+  RDMA/bnxt_re: Replace per-device hash tables with per-context XArray
+  RDMA/bnxt_re: Add uverbs object handle path for CQ/SRQ toggle page
+
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h  |   6 --
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c |  91 +++++++++++++----
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h |   5 +-
+ drivers/infiniband/hw/bnxt_re/main.c     |   5 -
+ drivers/infiniband/hw/bnxt_re/uapi.c     | 124 +++++++++++------------
+ include/uapi/rdma/bnxt_re-abi.h          |   4 +
+ 6 files changed, 139 insertions(+), 96 deletions(-)
+
 -- 
-2.34.1
+2.39.3
 
 
