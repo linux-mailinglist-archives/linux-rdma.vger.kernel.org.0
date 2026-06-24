@@ -1,207 +1,157 @@
-Return-Path: <linux-rdma+bounces-22448-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22449-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id A2nfDCnnO2ppfAgAu9opvQ
-	(envelope-from <linux-rdma+bounces-22448-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2026 16:18:17 +0200
+	id ds0VHGfuO2o7fggAu9opvQ
+	(envelope-from <linux-rdma+bounces-22449-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2026 16:49:11 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86CD66BF05D
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2026 16:18:16 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA9B96BF4B1
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2026 16:49:10 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=BlXyAMiP;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22448-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22448-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.dev;
+	dkim=pass header.d=itb.spb.ru header.s=mail header.b="P/1r03dX";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22449-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22449-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D3109300F52D
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2026 14:17:33 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 32790300398B
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2026 14:49:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72E653BD63C;
-	Wed, 24 Jun 2026 14:17:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33A4E3B6349;
+	Wed, 24 Jun 2026 14:49:07 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from forward100d.mail.yandex.net (forward100d.mail.yandex.net [178.154.239.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A97553BCD3D
-	for <linux-rdma@vger.kernel.org>; Wed, 24 Jun 2026 14:17:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F3E02BDC2F;
+	Wed, 24 Jun 2026 14:49:00 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782310653; cv=none; b=CK+2Gz8enFKX0X4WJB9EfhitP1vv1aIDdgw2QYClOMPCbQNhbPnsaZOgiVL3A2+2F4Gc+EqHP1qnL7G21fDmmAjc1TURk4cdmgAaKmM/MvwAZUsYGZAfJ8ki8+k4hfr3Z7lYSV1LYMCj59yhbqALVjNA/Chz29nQwJw8hunX9cQ=
+	t=1782312547; cv=none; b=k87faDKIfKRfei+sOkQbNmNDocICheAeOpTCHXfWYaIDUNnCm9NrtbzdA4jLu01I5e5EL0i3i/6/lOtNbYQj94BUm8Jd2XXwFQno92I4fh9368qKhl+1frdKSN8GAXzo2dkrBDfbZ4BO/Do6+th1P6Tbs3OyxdkR114EeeTueRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782310653; c=relaxed/simple;
-	bh=5hSgeoSWJSRpago6TbMqK7JDZoc9A25CfcxutslSlCI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TnZhT5MfOzDmtrsdvLZ+IdPWQ3GLpZ0fGQSbIqutVCmnnMBn1FecMSNqGyW5qOBkP3R8h1xOkY2h4recKCBGCbn7QaOMDDBUMurVy2xD8rnw3s8fySCpV5KwlI1uXLITs+6e1NLuesUVq621fBzqiOWJ8f9GFYy+vh+zEua3nE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BlXyAMiP; arc=none smtp.client-ip=95.215.58.178
-Message-ID: <0b131e1d-0459-4524-974b-17870172a87f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1782310649;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1V3GV21sCx/eIQ00kyK522+MLAjRj/BfJbTXfGGiQYA=;
-	b=BlXyAMiP688rzUQbhSl60KB2qv/94n5+6dwIazeZIFd+Jeb342FkzYxRy5J5jyIi5GmKNu
-	x+PCYaN5k3fAthHOGC3rGDHCIcvZQyQvoDsEusf7P9F8jZeMrBPyLtm/UPu6E0Q01eBd7i
-	0LRFWIPz53Tp6lEh0KE0JrlsTTR47P0=
-Date: Wed, 24 Jun 2026 16:16:50 +0200
+	s=arc-20240116; t=1782312547; c=relaxed/simple;
+	bh=i00klzCP9CwLXMYKZNmuASfnbmTqXSmjU6VkBZEQ2LE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XXg3GxZ9VsZyb6H93A1An2w7WuEPe805xkrkxR5yCLxsqQRg96H8EmVbV2D7RUA7PIZvwNu6Q3u47e3YX7X70D19olwbA4A+yy2d/U/msSpUZqEUnRzc+JHjPN0kNUtgLq+jTLNGvfoLbM5BlwueDKc0BT9CR4bsaB7CkuNIZj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=itb.spb.ru; spf=pass smtp.mailfrom=itb.spb.ru; dkim=pass (1024-bit key) header.d=itb.spb.ru header.i=@itb.spb.ru header.b=P/1r03dX; arc=none smtp.client-ip=178.154.239.211
+Received: from mail-nwsmtp-smtp-production-main-52.klg.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-52.klg.yp-c.yandex.net [IPv6:2a02:6b8:c42:ea2:0:640:ef77:0])
+	by forward100d.mail.yandex.net (Yandex) with ESMTPS id 0D388C0101;
+	Wed, 24 Jun 2026 17:48:52 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-52.klg.yp-c.yandex.net (smtp) with ESMTPSA id kmZg0cNgGGk0-HRq8mJA1;
+	Wed, 24 Jun 2026 17:48:51 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=itb.spb.ru; s=mail;
+	t=1782312531; bh=Gz3lOv/CI79YjE1aN0wfylGlI3Iny8zFySyBDdhs1Tw=;
+	h=Message-Id:Date:Cc:Subject:To:From;
+	b=P/1r03dXoV5pEzF7MbonCIfV35Odh6IwmwDb0HcRgqDx5T6JGUQoo0NG01DpqmHz7
+	 b6k5qOzAYpuf/Cba9OYTReLtsCeQGO96/8p9ufBXglknhXNDk9RuhCS6/E6GRIE8Ge
+	 cfArRzqBQyH489aNaXwGAwjP1YILJH0NsQkLeSws=
+From: Aleksandrova Alyona <aga@itb.spb.ru>
+To: Krzysztof Czurylo <krzysztof.czurylo@intel.com>,
+	Tatyana Nikolova <tatyana.e.nikolova@intel.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Mustafa Ismail <mustafa.ismail@intel.com>,
+	Shiraz Saleem <shiraz.saleem@intel.com>,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: [PATCH] RDMA/irdma: Prevent overflows in memory contiguity checks
+Date: Wed, 24 Jun 2026 17:48:46 +0300
+Message-Id: <20260624144846.61242-1-aga@itb.spb.ru>
+X-Mailer: git-send-email 2.26.2
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] RDMA/siw: publish QP after initialization
-To: Ruoyu Wang <ruoyuw560@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Leon Romanovsky <leon@kernel.org>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20260620155306.78919-1-ruoyuw560@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Bernard Metzler <bernard.metzler@linux.dev>
-In-Reply-To: <20260620155306.78919-1-ruoyuw560@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[itb.spb.ru:s=mail];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:ruoyuw560@gmail.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER(0.00)[bernard.metzler@linux.dev,linux-rdma@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-22448-lists,linux-rdma=lfdr.de];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[bernard.metzler@linux.dev,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22449-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:krzysztof.czurylo@intel.com,m:tatyana.e.nikolova@intel.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:mustafa.ismail@intel.com,m:shiraz.saleem@intel.com,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:lvc-project@linuxtesting.org,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[aga@itb.spb.ru,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DMARC_NA(0.00)[itb.spb.ru];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[itb.spb.ru:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[aga@itb.spb.ru,linux-rdma@vger.kernel.org];
+	ALIAS_RESOLVED(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linux.dev:dkim,linux.dev:mid,linux.dev:from_mime,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,vger.kernel.org:from_smtp,linuxtesting.org:url]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 86CD66BF05D
+X-Rspamd-Queue-Id: DA9B96BF4B1
 
-On 20.06.2026 17:53, Ruoyu Wang wrote:
-> siw_create_qp() allocates a QP number before the queues, CQ pointers,
-> state, completion, and device list entry are ready. A QPN lookup can
-> therefore reach a QP that is still being constructed if the object is
-> published at allocation time.
-> 
-> Reserve the QPN with an empty XArray entry first. Publish the QP object
-> only after the kernel-visible QP state is initialized and just before
-> siw_create_qp() returns it to the caller.
-> 
-> Fixes: f29dd55b0236 ("rdma/siw: queue pair methods")
-> Signed-off-by: Ruoyu Wang <ruoyuw560@gmail.com>
-> ---
->   drivers/infiniband/sw/siw/siw.h       |  1 +
->   drivers/infiniband/sw/siw/siw_qp.c    | 26 ++++++++++++++++++--------
->   drivers/infiniband/sw/siw/siw_verbs.c | 12 +++++++++++-
->   3 files changed, 30 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
-> index f5fd71717b80..ade7c96135c2 100644
-> --- a/drivers/infiniband/sw/siw/siw.h
-> +++ b/drivers/infiniband/sw/siw/siw.h
-> @@ -511,6 +511,7 @@ void siw_send_terminate(struct siw_qp *qp);
->   void siw_qp_get_ref(struct ib_qp *qp);
->   void siw_qp_put_ref(struct ib_qp *qp);
->   int siw_qp_add(struct siw_device *sdev, struct siw_qp *qp);
-> +int siw_qp_publish(struct siw_qp *qp);
->   void siw_free_qp(struct kref *ref);
->   
->   void siw_init_terminate(struct siw_qp *qp, enum term_elayer layer,
-> diff --git a/drivers/infiniband/sw/siw/siw_qp.c b/drivers/infiniband/sw/siw/siw_qp.c
-> index bb780e3904a2..1a9135d9a2a7 100644
-> --- a/drivers/infiniband/sw/siw/siw_qp.c
-> +++ b/drivers/infiniband/sw/siw/siw_qp.c
-> @@ -1281,15 +1281,25 @@ void siw_rq_flush(struct siw_qp *qp)
->   
->   int siw_qp_add(struct siw_device *sdev, struct siw_qp *qp)
->   {
-> -	int rv = xa_alloc(&sdev->qp_xa, &qp->base_qp.qp_num, qp, xa_limit_32b,
-> -			  GFP_KERNEL);
-> +	qp->sdev = sdev;
->   
-> -	if (!rv) {
-> -		kref_init(&qp->ref);
-> -		qp->sdev = sdev;
-> -		siw_dbg_qp(qp, "new QP\n");
-> -	}
-> -	return rv;
-> +	return xa_alloc(&sdev->qp_xa, &qp->base_qp.qp_num, NULL,
-> +			xa_limit_32b, GFP_KERNEL);
-> +}
-> +
-> +int siw_qp_publish(struct siw_qp *qp)
-> +{
-> +	void *old;
-> +
-> +	kref_init(&qp->ref);
-> +
-> +	old = xa_store(&qp->sdev->qp_xa, qp_id(qp), qp, GFP_KERNEL);
-> +	if (xa_is_err(old))
-> +		return xa_err(old);
-> +
-> +	siw_dbg_qp(qp, "new QP\n");
-> +
-> +	return 0;
->   }
->   
->   void siw_free_qp(struct kref *ref)
-> diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-> index 1e1d262a4ae2..71bc0cc59e3d 100644
-> --- a/drivers/infiniband/sw/siw/siw_verbs.c
-> +++ b/drivers/infiniband/sw/siw/siw_verbs.c
-> @@ -482,14 +482,24 @@ int siw_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attrs,
->   		goto err_out_xa;
->   	}
->   	INIT_LIST_HEAD(&qp->devq);
-> +	init_completion(&qp->qp_free);
-> +
->   	spin_lock_irqsave(&sdev->lock, flags);
->   	list_add_tail(&qp->devq, &sdev->qp_list);
->   	spin_unlock_irqrestore(&sdev->lock, flags);
->   
-> -	init_completion(&qp->qp_free);
-> +	rv = siw_qp_publish(qp);
+irdma_check_mem_contiguous() and irdma_check_mr_contiguous() verify that
+PBL entries describe physically contiguous memory ranges.
 
-To avoid this transient visibility of a not-yet-initialized
-QP - can't we just move siw_qp_add() to the end of the
-siw_create_qp() function?
+Both functions calculate byte offsets using 32-bit operands. For example,
+with 4 KiB pages, pg_size * pg_idx overflows 32-bit arithmetic when
+pg_idx reaches 1048576. In the level-2 check, PBLE_PER_PAGE is 512, so
+i * pg_size * PBLE_PER_PAGE overflows when i reaches 2048.
 
+These values are reachable in the driver. For MRs, palloc->total_cnt
+comes from iwmr->page_cnt, which is calculated by
+ib_umem_num_dma_blocks(). The MR size is limited by IRDMA_MAX_MR_SIZE,
+so a 4 GiB MR with 4 KiB pages can reach page_cnt of 1048576. PBLE
+resources do not exclude this value either: for gen3, the limit is based
+on avail_sds * MAX_PBLE_PER_SD, and MAX_PBLE_PER_SD is 0x40000, so 4 SDs
+are enough for 1048576 PBLEs.
 
-> +	if (rv)
-> +		goto err_out_list;
->   
->   	return 0;
->   
-> +err_out_list:
-> +	spin_lock_irqsave(&sdev->lock, flags);
-> +	list_del(&qp->devq);
-> +	spin_unlock_irqrestore(&sdev->lock, flags);
-> +
-> +	siw_put_tx_cpu(qp->tx_cpu);
->   err_out_xa:
->   	xa_erase(&sdev->qp_xa, qp_id(qp));
->   	if (uctx) {
+Cast one operand to u64 before the multiplications so that the offset
+calculations are performed in 64-bit arithmetic.
+
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
+
+Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
+Signed-off-by: Aleksandrova Alyona <aga@itb.spb.ru>
+---
+ drivers/infiniband/hw/irdma/verbs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 17086048d2d7..ab55f674cb63 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -2819,7 +2819,7 @@ static bool irdma_check_mem_contiguous(u64 *arr, u32 npages, u32 pg_size)
+ 	u32 pg_idx;
+ 
+ 	for (pg_idx = 0; pg_idx < npages; pg_idx++) {
+-		if ((*arr + (pg_size * pg_idx)) != arr[pg_idx])
++		if ((*arr + ((u64)pg_size * pg_idx)) != arr[pg_idx])
+ 			return false;
+ 	}
+ 
+@@ -2852,7 +2852,7 @@ static bool irdma_check_mr_contiguous(struct irdma_pble_alloc *palloc,
+ 
+ 	for (i = 0; i < lvl2->leaf_cnt; i++, leaf++) {
+ 		arr = leaf->addr;
+-		if ((*start_addr + (i * pg_size * PBLE_PER_PAGE)) != *arr)
++		if ((*start_addr + ((u64)i * pg_size * PBLE_PER_PAGE)) != *arr)
+ 			return false;
+ 		ret = irdma_check_mem_contiguous(arr, leaf->cnt, pg_size);
+ 		if (!ret)
+-- 
+2.26.2
 
 
