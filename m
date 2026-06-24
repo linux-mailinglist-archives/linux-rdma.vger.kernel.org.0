@@ -1,133 +1,207 @@
-Return-Path: <linux-rdma+bounces-22447-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22448-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id YPYYCzrXO2okeAgAu9opvQ
-	(envelope-from <linux-rdma+bounces-22447-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2026 15:10:18 +0200
+	id A2nfDCnnO2ppfAgAu9opvQ
+	(envelope-from <linux-rdma+bounces-22448-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2026 16:18:17 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C3AF6BE724
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2026 15:10:17 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86CD66BF05D
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2026 16:18:16 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=launchpad.net header.s=20210803 header.b=RPwilU3Y;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22447-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22447-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=launchpad.net;
+	dkim=pass header.d=linux.dev header.s=key1 header.b=BlXyAMiP;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22448-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22448-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=linux.dev;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C6875312EBD2
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2026 13:03:31 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D3109300F52D
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2026 14:17:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F326C358D00;
-	Wed, 24 Jun 2026 13:03:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72E653BD63C;
+	Wed, 24 Jun 2026 14:17:33 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B0DD2E63C
-	for <linux-rdma@vger.kernel.org>; Wed, 24 Jun 2026 13:03:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A97553BCD3D
+	for <linux-rdma@vger.kernel.org>; Wed, 24 Jun 2026 14:17:31 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782306210; cv=none; b=THLRnIBKNsdVnMrsTt7usCOKv5oHH8Mx1EYW5wx2CEUdZGsoIIf039T0K98ThsFfuMQWUd89mp69ym59Z0AHbUqMbT5yf9y4vq05ucj7U4HSQw2SDLuo4oUVa5CvH/mLbkVWGitx4lsJ2H7DTI1uaQAhSDZXY3hLu2gqUu2Qy0M=
+	t=1782310653; cv=none; b=CK+2Gz8enFKX0X4WJB9EfhitP1vv1aIDdgw2QYClOMPCbQNhbPnsaZOgiVL3A2+2F4Gc+EqHP1qnL7G21fDmmAjc1TURk4cdmgAaKmM/MvwAZUsYGZAfJ8ki8+k4hfr3Z7lYSV1LYMCj59yhbqALVjNA/Chz29nQwJw8hunX9cQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782306210; c=relaxed/simple;
-	bh=fZnTtIjSLXpNcuqYBK9JcBPbwHna+kwShW3LM676oas=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=lP/ND+JxtKHMROrte5IGB0SzKvJ2BJwPd3ov5/T7NBH2q+p25y3psUje9z/2zshjZ7EsjTOYo8HjsWPy7LUDHqmOl1C1kMjnR08ayDG6IvkxjsJjSMShC0r0ZUnO9ED4AiE2sXEqg/lkYfqY7XU48mb6xehaSj2t943aAnCKvlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=RPwilU3Y; arc=none smtp.client-ip=185.125.188.250
-Received: from juju-98d295-prod-launchpad-51.localdomain (unknown [10.131.215.15])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id 6A0F340597
-	for <linux-rdma@vger.kernel.org>; Wed, 24 Jun 2026 13:03:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-	s=20210803; t=1782306201;
-	bh=fZnTtIjSLXpNcuqYBK9JcBPbwHna+kwShW3LM676oas=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
-	 Reply-To;
-	b=RPwilU3Y+e3EL1Fm53a24K93B+qzA2D6NZ4acjAi/coLE/fvHShFV/ZDgHM9xCePO
-	 VH5xIr/SnKkS2Gv96kFLreJGMqzIZo2Xq9SL5o/cZgRlq5qdjLaGHSXbwzt2XKEZLZ
-	 C4xz1IPH5F7bBgL4l1l2jVkuz12DqcPzTrpE7fdItXTQk1dj3sfckGPyClXmTsP3Me
-	 jQdxESTCb1RPEOjR5aAOOhsa884ciBgTKx1Llsf6QpHO0J9Bq9lw9zni5labuCCUno
-	 kBZcEQpa2oaS32ZGuin5Hj97v9TaNsfxPtoHVCtLDX3ORR5Plat0z1vyxnuCi5MTHv
-	 DqMSLC8sHIAvw==
-Received: from [10.131.215.15] (localhost [127.0.0.1])
-	by juju-98d295-prod-launchpad-51.localdomain (Postfix) with ESMTP id 33FF3BDA79
-	for <linux-rdma@vger.kernel.org>; Wed, 24 Jun 2026 13:03:21 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1782310653; c=relaxed/simple;
+	bh=5hSgeoSWJSRpago6TbMqK7JDZoc9A25CfcxutslSlCI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TnZhT5MfOzDmtrsdvLZ+IdPWQ3GLpZ0fGQSbIqutVCmnnMBn1FecMSNqGyW5qOBkP3R8h1xOkY2h4recKCBGCbn7QaOMDDBUMurVy2xD8rnw3s8fySCpV5KwlI1uXLITs+6e1NLuesUVq621fBzqiOWJ8f9GFYy+vh+zEua3nE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BlXyAMiP; arc=none smtp.client-ip=95.215.58.178
+Message-ID: <0b131e1d-0459-4524-974b-17870172a87f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1782310649;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1V3GV21sCx/eIQ00kyK522+MLAjRj/BfJbTXfGGiQYA=;
+	b=BlXyAMiP688rzUQbhSl60KB2qv/94n5+6dwIazeZIFd+Jeb342FkzYxRy5J5jyIi5GmKNu
+	x+PCYaN5k3fAthHOGC3rGDHCIcvZQyQvoDsEusf7P9F8jZeMrBPyLtm/UPu6E0Q01eBd7i
+	0LRFWIPz53Tp6lEh0KE0JrlsTTR47P0=
+Date: Wed, 24 Jun 2026 16:16:50 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Launchpad-Message-Rationale: Requester @linux-rdma
-X-Launchpad-Message-For: linux-rdma
-X-Launchpad-Notification-Type: recipe-build-status
-X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
-X-Launchpad-Build-State: MANUALDEPWAIT
-To: Linux RDMA <linux-rdma@vger.kernel.org>
-From: noreply@launchpad.net
-Subject: [recipe build #4056915] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
-Message-Id: <178230620114.2634524.7582466509536963802.launchpad@juju-98d295-prod-launchpad-51>
-Date: Wed, 24 Jun 2026 13:03:21 -0000
-Reply-To: noreply@launchpad.net
-Sender: noreply@launchpad.net
-Errors-To: noreply@launchpad.net
-Precedence: bulk
-X-Generated-By: Launchpad (canonical.com); Revision="b14b31288034a9920506d3068d695d7e27dca403"; Instance="launchpad-buildd-manager"
-X-Launchpad-Hash: cc26f26a5e80418f2b2df8abf1b62a5b3a64e5f5
+Subject: Re: [PATCH] RDMA/siw: publish QP after initialization
+To: Ruoyu Wang <ruoyuw560@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Leon Romanovsky <leon@kernel.org>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20260620155306.78919-1-ruoyuw560@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Bernard Metzler <bernard.metzler@linux.dev>
+In-Reply-To: <20260620155306.78919-1-ruoyuw560@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[launchpad.net,none];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[launchpad.net:s=20210803];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22447-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TO_DN_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,launchpad.net:dkim,launchpad.net:replyto,launchpad.net:url,launchpad.net:from_mime];
-	FORGED_SENDER(0.00)[noreply@launchpad.net,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:linux-rdma@vger.kernel.org,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:ruoyuw560@gmail.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER(0.00)[bernard.metzler@linux.dev,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-22448-lists,linux-rdma=lfdr.de];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_ONE(0.00)[1];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[launchpad.net:+];
-	MISSING_XM_UA(0.00)[];
-	HAS_REPLYTO(0.00)[noreply@launchpad.net];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[noreply@launchpad.net,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[bernard.metzler@linux.dev,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	FROM_NO_DN(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	REPLYTO_EQ_FROM(0.00)[]
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linux.dev:dkim,linux.dev:mid,linux.dev:from_mime,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 9C3AF6BE724
+X-Rspamd-Queue-Id: 86CD66BF05D
 
- * State: Dependency wait
- * Recipe: linux-rdma/rdma-core-daily
- * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Distroseries: xenial
- * Duration: 3 minutes
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+recipebuild/4056915/+files/buildlog.txt.gz
- * Upload Log:=20
- * Builder: https://launchpad.net/builders/lcy02-amd64-063
+On 20.06.2026 17:53, Ruoyu Wang wrote:
+> siw_create_qp() allocates a QP number before the queues, CQ pointers,
+> state, completion, and device list entry are ready. A QPN lookup can
+> therefore reach a QP that is still being constructed if the object is
+> published at allocation time.
+> 
+> Reserve the QPN with an empty XArray entry first. Publish the QP object
+> only after the kernel-visible QP state is initialized and just before
+> siw_create_qp() returns it to the caller.
+> 
+> Fixes: f29dd55b0236 ("rdma/siw: queue pair methods")
+> Signed-off-by: Ruoyu Wang <ruoyuw560@gmail.com>
+> ---
+>   drivers/infiniband/sw/siw/siw.h       |  1 +
+>   drivers/infiniband/sw/siw/siw_qp.c    | 26 ++++++++++++++++++--------
+>   drivers/infiniband/sw/siw/siw_verbs.c | 12 +++++++++++-
+>   3 files changed, 30 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
+> index f5fd71717b80..ade7c96135c2 100644
+> --- a/drivers/infiniband/sw/siw/siw.h
+> +++ b/drivers/infiniband/sw/siw/siw.h
+> @@ -511,6 +511,7 @@ void siw_send_terminate(struct siw_qp *qp);
+>   void siw_qp_get_ref(struct ib_qp *qp);
+>   void siw_qp_put_ref(struct ib_qp *qp);
+>   int siw_qp_add(struct siw_device *sdev, struct siw_qp *qp);
+> +int siw_qp_publish(struct siw_qp *qp);
+>   void siw_free_qp(struct kref *ref);
+>   
+>   void siw_init_terminate(struct siw_qp *qp, enum term_elayer layer,
+> diff --git a/drivers/infiniband/sw/siw/siw_qp.c b/drivers/infiniband/sw/siw/siw_qp.c
+> index bb780e3904a2..1a9135d9a2a7 100644
+> --- a/drivers/infiniband/sw/siw/siw_qp.c
+> +++ b/drivers/infiniband/sw/siw/siw_qp.c
+> @@ -1281,15 +1281,25 @@ void siw_rq_flush(struct siw_qp *qp)
+>   
+>   int siw_qp_add(struct siw_device *sdev, struct siw_qp *qp)
+>   {
+> -	int rv = xa_alloc(&sdev->qp_xa, &qp->base_qp.qp_num, qp, xa_limit_32b,
+> -			  GFP_KERNEL);
+> +	qp->sdev = sdev;
+>   
+> -	if (!rv) {
+> -		kref_init(&qp->ref);
+> -		qp->sdev = sdev;
+> -		siw_dbg_qp(qp, "new QP\n");
+> -	}
+> -	return rv;
+> +	return xa_alloc(&sdev->qp_xa, &qp->base_qp.qp_num, NULL,
+> +			xa_limit_32b, GFP_KERNEL);
+> +}
+> +
+> +int siw_qp_publish(struct siw_qp *qp)
+> +{
+> +	void *old;
+> +
+> +	kref_init(&qp->ref);
+> +
+> +	old = xa_store(&qp->sdev->qp_xa, qp_id(qp), qp, GFP_KERNEL);
+> +	if (xa_is_err(old))
+> +		return xa_err(old);
+> +
+> +	siw_dbg_qp(qp, "new QP\n");
+> +
+> +	return 0;
+>   }
+>   
+>   void siw_free_qp(struct kref *ref)
+> diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+> index 1e1d262a4ae2..71bc0cc59e3d 100644
+> --- a/drivers/infiniband/sw/siw/siw_verbs.c
+> +++ b/drivers/infiniband/sw/siw/siw_verbs.c
+> @@ -482,14 +482,24 @@ int siw_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attrs,
+>   		goto err_out_xa;
+>   	}
+>   	INIT_LIST_HEAD(&qp->devq);
+> +	init_completion(&qp->qp_free);
+> +
+>   	spin_lock_irqsave(&sdev->lock, flags);
+>   	list_add_tail(&qp->devq, &sdev->qp_list);
+>   	spin_unlock_irqrestore(&sdev->lock, flags);
+>   
+> -	init_completion(&qp->qp_free);
+> +	rv = siw_qp_publish(qp);
 
---=20
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
-ild/4056915
-Your team Linux RDMA is the requester of the build.
+To avoid this transient visibility of a not-yet-initialized
+QP - can't we just move siw_qp_add() to the end of the
+siw_create_qp() function?
+
+
+> +	if (rv)
+> +		goto err_out_list;
+>   
+>   	return 0;
+>   
+> +err_out_list:
+> +	spin_lock_irqsave(&sdev->lock, flags);
+> +	list_del(&qp->devq);
+> +	spin_unlock_irqrestore(&sdev->lock, flags);
+> +
+> +	siw_put_tx_cpu(qp->tx_cpu);
+>   err_out_xa:
+>   	xa_erase(&sdev->qp_xa, qp_id(qp));
+>   	if (uctx) {
 
 
