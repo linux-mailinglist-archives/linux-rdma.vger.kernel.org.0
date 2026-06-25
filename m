@@ -1,194 +1,182 @@
-Return-Path: <linux-rdma+bounces-22470-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22471-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id khp8CNgLPWplwQgAu9opvQ
-	(envelope-from <linux-rdma+bounces-22470-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 13:07:04 +0200
+	id wll0MXEtPWoVyggAu9opvQ
+	(envelope-from <linux-rdma+bounces-22471-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 15:30:25 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EF906C4F8A
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 13:07:03 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B3DC6C623E
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 15:30:25 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=intel.com header.s=Intel header.b=Js69GYC6;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22470-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22470-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=intel.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=google.com header.s=20251104 header.b=DJHN6FTZ;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22471-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22471-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=google.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BE8643027714
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 11:06:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E2284305B976
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 13:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D347F3BBA1D;
-	Thu, 25 Jun 2026 11:06:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47AD3339719;
+	Thu, 25 Jun 2026 13:29:30 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86F71383C83;
-	Thu, 25 Jun 2026 11:06:46 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782385608; cv=none; b=pTl8fZ0Sdr4+1GQY6JUIxG9ux2o6N8h3hbLAidtTi6EUb2IyeRjHpFA5NMwc+6jeYLLO8xLuIyQA0SY/7F2JquMA92t5AcHkl/uw2fBcE4ezpl3B+LXEgTaRKVUBzXUYF6WrHRVbZe0dYngKj5SKCnOeQK8DMmhw9XBC84LYbF8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782385608; c=relaxed/simple;
-	bh=3mMUyu41hsUV3+8vmn2FEljozTYUkLukSLGnNifcCP4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Cbz7X52MNL1FaPpJw8jICrIUQKV6VCw01AVB5sLFRur7Hp2gta/wZCu+aKgTOHd2cV/r3wl4Lna5NIvQEpaYm0/lpwS9F4+vYA+O+dfrkUX1PyhaKG0jsLtvhcU1hditx2z01ZCoIuB1P4hzSLNF9vWlKwA4TyEZA/X+GnSll64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Js69GYC6; arc=none smtp.client-ip=192.198.163.19
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1782385607; x=1813921607;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=3mMUyu41hsUV3+8vmn2FEljozTYUkLukSLGnNifcCP4=;
-  b=Js69GYC6fPLCmm3RJpgVDxjHsPhZnw+5+6KFzihp882O06PtIoCXAo2T
-   10kSV1qxrTt/iba+zaaTOIHMtN5jvHFyJQ838xzLilBO+EsNCOhbWv8XL
-   L1Z50MXDL2M8HlXZaEdXmGK0GniIT/PP5gKrGhQRrMoscvEwv4GxcdzWT
-   RmvsnHcNXFVALmUxxJGpVx19mpkF2eiR6YwE/JTOlTbMXta7jW7jGvBIY
-   rjC4wgj/dIPHEfglrzRDeudGe7zXkP/x+EG6KqwulyOtDCAriSI/aOppp
-   rbv6daJsl0jnarPW3Vdss2jWf58zbnBG4tA1hT/Cri6QX233yC7BMRxqG
-   A==;
-X-CSE-ConnectionGUID: vWWc4pIlSFaabSR50gPX9Q==
-X-CSE-MsgGUID: fh2MkgcUTC6A4QxgfSLFaA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11827"; a="82144902"
-X-IronPort-AV: E=Sophos;i="6.24,224,1774335600"; 
-   d="scan'208";a="82144902"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2026 04:06:05 -0700
-X-CSE-ConnectionGUID: Ff5wjq2eS3y4NEnYZUPVEg==
-X-CSE-MsgGUID: /T55+aBtS92ybM5/4REhrg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,224,1774335600"; 
-   d="scan'208";a="249131302"
-Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.126])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2026 04:05:58 -0700
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Linus Torvalds
- <torvalds@linux-foundation.org>, Sebastian Andrzej Siewior
- <bigeasy@linutronix.de>, John Ogness <john.ogness@linutronix.de>, Thomas
- Gleixner <tglx@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Julia
- Lawall <julia.lawall@inria.fr>, Yury Norov <yury.norov@gmail.com>,
- linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-rdma@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-nfs@vger.kernel.org, kvm@vger.kernel.org,
- intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH v4 0/2] tracing: Move non-trace_printk prototypes into
- trace_controls.h
-In-Reply-To: <20260625104007.041432666@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park,
- 6 krs Bertel Jungin Aukio 5, 02600 Espoo, Finland
-References: <20260625104007.041432666@kernel.org>
-Date: Thu, 25 Jun 2026 14:05:56 +0300
-Message-ID: <2037b6b62264c0192d45733ec1099c3ec14085a2@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7D9A328610
+	for <linux-rdma@vger.kernel.org>; Thu, 25 Jun 2026 13:29:28 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1782394170; cv=pass; b=CCPADJ/MjaIsFJiBD37ttxIhCiMQgVKs1Q6wVc3y8uu5qwMniFSePXtB13ztY5aTzfr1X5G2cKiO5YrHgZPmd77UbC6S77i3YeHSvkYvNHVadF1/cQLm687xgrLUlY0OrDmsPwSI1l+DFfqRjKL/DI66tzaKPIjZLG8xZMVH4rQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1782394170; c=relaxed/simple;
+	bh=xNyFddjqdOPUcLqjKI6cf/kZxvmO5gXEEvzzreF5G9Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nmapbuJfVlRRkVMVY/eQnLgCHHcMea7iMC3qH3ca7M9gdO+ky6ZEluX/uRCs/5BGRa0POVUVYTMpG3x3FTt7Xgv1nk/XZJdO2wNjk1QBKpunHHbcG5oA7on8VQW6lB7CZ0YhE8re347FqPtQLmAEvpjgWYJUBWbD8Gbz2Q7eOIc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DJHN6FTZ; arc=pass smtp.client-ip=209.85.210.53
+Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-7e6fa36a1b6so1517142a34.1
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Jun 2026 06:29:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1782394168; cv=none;
+        d=google.com; s=arc-20260327;
+        b=geY+GjpdOvZVGhinE8pq0hJ/x7RDnyXYeZYtAa9iwO99kNkEB/T2qFEuLjAQ81JEWb
+         tp1wdzay1paScJVdhCNMt7cJLGJKYilxJaECSHYBlAoG1Pizt+z/w5TIEETezk1YlYzn
+         TLarY5JeZ+NSOCZibn1NbEgDRBBhoc4oZzMl4NV/zEBZJ0eysFDLb/h+E8DL0TR/2Z12
+         7pFuDan2qzc8QLfoyBisHn0e8QYnN6WVz2RBINUuRPLjlANwDMUbCQYi80YMu+6gQtqm
+         pZmF9CGG841mCedz00TDnMHGdD4r73rSPeiVC/5wqt5zC+GjMYKvSyIVF+TzpOBOJ6dB
+         kcyg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=xNyFddjqdOPUcLqjKI6cf/kZxvmO5gXEEvzzreF5G9Y=;
+        fh=SDlC2WazE21zNVKMHVElU8CZUsuHx4bQgMhuHB0fnXc=;
+        b=d4tXd5mvlLD/HMgpDuD2bO3ru4Wgoj3aJUcjSS0Pnv1YKxSjVPJRsNsXMbmhKT8CYJ
+         8Ie6HMF8nZC2pIydKaxhjtmxNCUIVYspDKJLbhvOMQSUJ9xI8W2pJoXUmlB/xcCfJd9m
+         chLLp1unFZ6heb2jefUMDkTXR5wdX52rz47zxtnhOnnlDIIiJI8DjAHsIz8/Z7HYhMi0
+         muQvxQwnOXzFfwchGiISS7+heztSrsECMamzyEs8+OinSAo+OVgM3OCh/YcLuB2X5LZl
+         ZwqDoMVv1aOpg07WKf5d5HSuWbcupagVqn5P/dDSd72XT8kFFaNnHdzUJALXcmv2lbnU
+         UQAA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1782394168; x=1782998968; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=xNyFddjqdOPUcLqjKI6cf/kZxvmO5gXEEvzzreF5G9Y=;
+        b=DJHN6FTZMnfB5hXMxsjJIbmJrY433ndSW8iN9ITX+YybB5w3i4Uzk76q15AS+JpPED
+         kNCa7kamJS2bX8mozSoVPaZWRavuvGtcbTJvmYQPlOXphkwx4wcY72JiRnlmHHkkaZ0C
+         5oLhZGOZC0FO4AJXvCZ2Jy36aToz32LuZ/UY3RGBAEcgWBsL0Vkn9+m/RaL+JU7NXlZf
+         pbDWysoAAMRNhsDhVtG61RDX6p69MPVZvHPlLomFFPCySQJHekbNMw4Isb+n7oAfqdBv
+         LEJNhckmagqirYSELH5Rl3NPUxgTxyPwiv+9ZzTyvytfru7L4fGx8xXilXur1tdfEuBr
+         Ldnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1782394168; x=1782998968;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xNyFddjqdOPUcLqjKI6cf/kZxvmO5gXEEvzzreF5G9Y=;
+        b=idgwSjm+ow2zqONAHvscYSlXVxZM8scPOwnZa3bzE/VcyhuxvI+qFIn7SAV8uissZc
+         Qh52c+VLCMIK/cPzWeHe1aG93or88/GY1SGVZsUx2zqjhn+MATC+/tcUmxg2WXGg66zN
+         daTeHitYFj+wPGiTy11WVQDNaL4ji/3StRwzu0RVKqDLDqfwNVPfYCcRF9vC0dlk2d9k
+         DrEQXJ87E+MeWwEdmfOo5IAHY1v9xOeGZEZa7Bag3LXHHMVcXe0vgmMgPpk3DKzUPVfb
+         cnRlOgBm9NNd7EUrmxkq2G42lF3qPgpqrV9ifCIFVZCWrgHIy9YPvYlt033bZlqbsER2
+         Fi7g==
+X-Forwarded-Encrypted: i=1; AFNElJ/pNf7zwY3CNZvnQ7GU9V6++b5Tl6NVvtPa6NmE6RKQ9FLiyUZNdPSyO7C+BzvgYuOTFvfidoyCjNpJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YwggANPsXYj62V/tL5Q1u0RDAKVRwtFGPZNLTnH6MxwCugwEtzG
+	hXzSqdTR6OKh4kR7uRCQ1Rvv4EGtBcdhbspnbhOjuI+0RYmVskrLFlgp7T7pbwp3WWwFlNNq+Vn
+	QPIGEIYhv65szYCP/PoB5R3jVJs0qj38aTSz04d14
+X-Gm-Gg: AfdE7cljAmcDf6DegrofopxmB/VpfBUsrX2gvZrNBEcM4MNb6mk9NQQ2+JJxs4iZsSY
+	7uHzpTWsTOAHPmVjj5IHdLLRadnnuFFQxlDgyiqfLgtKKPChlEpwKjQG/NFCAFFKQAR8uVXui/3
+	vyi1kRt17a1eJaxogohynYDDDAFzieRRT4CvHx0pSzDOX01PB3KAHR0UvzBHYsQgFj8UN539OYJ
+	lfuQCt6Zcd73p4gwKxzRxkN61h8IaTdxMEl6+VKAhLBAhu4hAdsZ4QdKZcJv0Tw3VBjaZnMQfcW
+	0gG/UFV3RjuNm7plhBgyHDnLs2nzmxRrBrEMtiIZ8g==
+X-Received: by 2002:a05:6830:378e:b0:7d7:e142:2ead with SMTP id
+ 46e09a7af769-7e99c3fc680mr2338205a34.20.1782394167344; Thu, 25 Jun 2026
+ 06:29:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20260623114444.1429042-1-kotaranov@linux.microsoft.com>
+ <CAHYDg1RQ8vEMrKPoS3qHgtf5S+T1Wzrm=YuwdfzFEX3g22Ruhg@mail.gmail.com> <DU8PR83MB0975639D552898AC93801EEBB4EC2@DU8PR83MB0975.EURPRD83.prod.outlook.com>
+In-Reply-To: <DU8PR83MB0975639D552898AC93801EEBB4EC2@DU8PR83MB0975.EURPRD83.prod.outlook.com>
+From: Jacob Moroni <jmoroni@google.com>
+Date: Thu, 25 Jun 2026 09:29:15 -0400
+X-Gm-Features: AVVi8CfW--73HPVfv5gY3M4mrv2TaEMvHnRLa5K_dCso2zVWSyJNactDTwFlzuM
+Message-ID: <CAHYDg1SiAfCFBUy6JsdC=ROuLcxy4_ro40MNeieJ3sJp4R_cuA@mail.gmail.com>
+Subject: Re: [PATCH rdma-next 1/1] RDMA/mana_ib: Adopt robust udata
+To: Konstantin Taranov <kotaranov@microsoft.com>
+Cc: Konstantin Taranov <kotaranov@linux.microsoft.com>, 
+	"shirazsaleem@microsoft.com" <shirazsaleem@microsoft.com>, Long Li <longli@microsoft.com>, 
+	"jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>, 
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[intel.com:d:+,kernel.org:s:+];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[kernel.org,arm.com,efficios.com,linux-foundation.org,linutronix.de,infradead.org,inria.fr,gmail.com,vger.kernel.org,lists.ozlabs.org,lists.freedesktop.org,st-md-mailman.stormreply.com,lists.infradead.org];
-	TAGGED_FROM(0.00)[bounces-22470-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[26];
-	FORWARDED(0.00)[lists@lfdr.de];
-	HAS_ORG_HEADER(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER(0.00)[jani.nikula@linux.intel.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS(0.00)[m:rostedt@kernel.org,m:linux-kernel@vger.kernel.org,m:linux-trace-kernel@vger.kernel.org,m:mhiramat@kernel.org,m:mark.rutland@arm.com,m:mathieu.desnoyers@efficios.com,m:akpm@linux-foundation.org,m:torvalds@linux-foundation.org,m:bigeasy@linutronix.de,m:john.ogness@linutronix.de,m:tglx@kernel.org,m:peterz@infradead.org,m:julia.lawall@inria.fr,m:yury.norov@gmail.com,m:linux-doc@vger.kernel.org,m:linux-kbuild@vger.kernel.org,m:linuxppc-dev@lists.ozlabs.org,m:dri-devel@lists.freedesktop.org,m:linux-stm32@st-md-mailman.stormreply.com,m:linux-arm-kernel@lists.infradead.org,m:linux-rdma@vger.kernel.org,m:linux-usb@vger.kernel.org,m:linux-ext4@vger.kernel.org,m:linux-nfs@vger.kernel.org,m:kvm@vger.kernel.org,m:intel-gfx@lists.freedesktop.org,m:yurynorov@gmail.com,s:lists@lfdr.de];
-	DKIM_TRACE(0.00)[intel.com:+];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:kotaranov@microsoft.com,m:kotaranov@linux.microsoft.com,m:shirazsaleem@microsoft.com,m:longli@microsoft.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	FORGED_SENDER(0.00)[jmoroni@google.com,linux-rdma@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22471-lists,linux-rdma=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jani.nikula@linux.intel.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
 	MISSING_XM_UA(0.00)[];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jmoroni@google.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[google.com:+];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp,linux.intel.com:from_mime,intel.com:dkim,intel.com:email,intel.com:mid]
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,mail.gmail.com:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 8EF906C4F8A
+X-Rspamd-Queue-Id: 1B3DC6C623E
 
-On Thu, 25 Jun 2026, Steven Rostedt <rostedt@kernel.org> wrote:
-> Remove trace_printk.h by creating a trace_controls.h for those places that
-> need access to tracing prototypes like tracing_off() and for the places that
-> need trace_printk() directly, to have it included directly.
->
-> Changse since v3: https://lore.kernel.org/all/20260624081806.120105649@kernel.org/
->
-> - Always include trace_controls.h in rcu.h (kernel test robot)
->
->   There are other configs that may include tracing_off() in rcu.h besides
->   the one that had the include of trace_controls.h. Just always include
->   it in that header to be safe.
->
-> Steven Rostedt (2):
->       tracing: Move non-trace_printk prototypes into trace_controls.h
->       tracing: Remove trace_printk.h from kernel.h
->
-> ----
->  arch/powerpc/kvm/book3s_xics.c         |  1 +
->  arch/powerpc/xmon/xmon.c               |  1 +
->  arch/s390/kernel/ipl.c                 |  1 +
->  arch/s390/kernel/machine_kexec.c       |  1 +
->  drivers/gpu/drm/i915/gt/intel_gtt.h    |  1 +
->  drivers/gpu/drm/i915/i915_gem.h        |  2 ++
+Thanks for explaining. I think it makes sense.
 
-For the i915 parts,
+> Otherwise, the change would be more complex: new response for alloc_ucontex
 
-Acked-by: Jani Nikula <jani.nikula@intel.com>
+Do you still need new response fields/bits for alloc_ucontext so that
+the client knows whether it can actually use the new capability - like
+a driver "ack"?
 
-for merging via whichever tree.
+The fixed WQE capability may be special in that it sounds more like
+a one-way hint, but I am wondering about features that require explicit
+kernel support (just hypothetical) before the client can actually use it,
+like maybe features that require activation in HW, etc.
 
->  drivers/hwtracing/stm/dummy_stm.c      |  1 +
->  drivers/infiniband/hw/hfi1/trace_dbg.h |  1 +
->  drivers/tty/sysrq.c                    |  1 +
->  drivers/usb/early/xhci-dbc.c           |  1 +
->  fs/ext4/inline.c                       |  1 +
->  include/linux/ftrace.h                 |  2 ++
->  include/linux/kernel.h                 |  1 -
->  include/linux/sunrpc/debug.h           |  1 +
->  include/linux/trace_controls.h         | 54 ++++++++++++++++++++++++++++++++
->  include/linux/trace_printk.h           | 56 ++--------------------------------
->  kernel/debug/debug_core.c              |  1 +
->  kernel/panic.c                         |  1 +
->  kernel/rcu/rcu.h                       |  1 +
->  kernel/rcu/rcutorture.c                |  1 +
->  kernel/trace/ring_buffer_benchmark.c   |  1 +
->  kernel/trace/trace.h                   |  1 +
->  kernel/trace/trace_benchmark.c         |  1 +
->  lib/sys_info.c                         |  1 +
->  samples/fprobe/fprobe_example.c        |  1 +
->  samples/ftrace/ftrace-direct-too.c     |  1 -
->  samples/trace_printk/trace-printk.c    |  1 +
->  27 files changed, 82 insertions(+), 55 deletions(-)
->  create mode 100644 include/linux/trace_controls.h
+> With the wave of robust udata,
+> providers will be locked to one udata request format for alloc_ucontext() without a chance of extending.
+> That is why, I try to introduce the idea now.
 
--- 
-Jani Nikula, Intel
+Good point - I was wondering if alloc_ucontext would be an exception to
+the robust udata policy since it's the first part of the handshake. As in,
+clients would be allowed to provide non-zero udata input that the driver
+may not understand and it would be up to the driver to acknowledge
+features or not by sending a response. Seems kind of similar to how I
+think your solution would work.
+
+Otherwise, it's kind of locked in as you said. Enforcing a real comp_mask
+in alloc_ucontext would mean that clients wouldn't be compatible with older
+kernels since context allocation is too early for them to know which bits
+are allowed or not. I could be misunderstanding though.
+
+Thanks,
+Jake
 
