@@ -1,174 +1,166 @@
-Return-Path: <linux-rdma+bounces-22474-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22475-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id KP+rFq1NPWoW1AgAu9opvQ
-	(envelope-from <linux-rdma+bounces-22474-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 17:47:57 +0200
+	id oISeFVlSPWo61QgAu9opvQ
+	(envelope-from <linux-rdma+bounces-22475-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 18:07:53 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 590C06C7294
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 17:47:56 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C46016C7535
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 18:07:52 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=iZMz6q6U;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22474-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22474-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.dev;
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=Pht8evVM;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22475-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22475-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=gmail.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 5BF9B3019B35
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 15:47:46 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E7A9D30B2BF2
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 16:05:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF5DF26F2BE;
-	Thu, 25 Jun 2026 15:47:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C450730DEB8;
+	Thu, 25 Jun 2026 16:05:41 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com [209.85.214.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 622A7192B75
-	for <linux-rdma@vger.kernel.org>; Thu, 25 Jun 2026 15:47:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F5043B47E6
+	for <linux-rdma@vger.kernel.org>; Thu, 25 Jun 2026 16:05:38 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782402464; cv=none; b=QUPGcNQviSEhuwFXuBPqiMBPX7/SQQJTQ7aahClACWvk788a0Z/fr5G6I3S8p0MOB/M6D883g3N13rfGPvauDcA7P5nKKpZ3L3RibagTruMZV5n3SDz46oxGC+KapHNPrtxgpzH13PC0s9dyDd39v82LdoeSRuzZwK2u0t9BbiE=
+	t=1782403541; cv=none; b=c+1dv201kC28UEMbnwOrpD21B9R4Dge0tG+NTXndKEvFtk4t0Qwb7S5RNp+Q2loaCmkrmICPKvzyz1Dd43VdKChAu1J4PubFqPPM1FeH31hv8YREikzfJhrBOS7gmSjNJcVtgdT7I7JzUd/dQqa9sWcz4FZh/S6XpSjN2KYYgMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782402464; c=relaxed/simple;
-	bh=4dfb0H9aYM7Ikzfhq72r90WUDFnRyvqFDcV2upgd+Kg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jeu9vy3IhEtT+/4UkiaD3/uMDvmzo7RrJtqL1z725BurWt7H92/7039KqADtbMaSXr2RSZp+yBa0nWSQmnkd5Z4rJxgr5qgveKKWPvJkbdQNw/XHGxEEo8iEdjmXUVFU2hOVi56L4D5iUs8jx37Yy5fQKDDSYI5J8lbXQ883fPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iZMz6q6U; arc=none smtp.client-ip=91.218.175.172
-Message-ID: <0060137c-acb5-4965-bdea-a5601cc4df61@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1782402451;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=S+D52fC4BDBRKqnk4I5sV3yu2/ACyckCpzkGYD8v7HE=;
-	b=iZMz6q6UShfFM3g5YT5ps2nTry2AGb5bbp+/YgkPHKdYwaZDNuWdvMbiDb4A0yVXjAyyza
-	k+FRyoqkQSkhj8jvHERWOQVu5x9HbAI3SDOIb+j0cxRCZj89EboopKr2blYsmAFWWEUNEW
-	y5DUc8jR/5RDSwFFV9unk8lbPzepTUw=
-Date: Thu, 25 Jun 2026 08:47:27 -0700
+	s=arc-20240116; t=1782403541; c=relaxed/simple;
+	bh=KgPJePNXcynL5wVdvESOxTecPqRWFfNIHcFNR4q+q9c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U+eHUMsSiQ1NJrqoX93N3ODxryNwI63zlkOE8w8I7tHd6/oUlAIsOdgE5WAnCxNSpq9dIuxmFo6kYW8NOcRqRf5Equxtc2E0NuK3aFziplWyCDV245Nsfmu1LUkGESj39X01xFsQCXSNoeFrrRAtWIzQvLYgSdeTV2wg7S3GGss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pht8evVM; arc=none smtp.client-ip=209.85.214.193
+Received: by mail-pl1-f193.google.com with SMTP id d9443c01a7336-2c7ee0d7f1fso674635ad.2
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Jun 2026 09:05:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1782403537; x=1783008337; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q2MJP6G+0qiz8VruHee0NS0DtXdE/aa4R8BvTRRv9rU=;
+        b=Pht8evVMH8uAy8YyOIR+NHbB/QuSgB/d3L5cl3CxOuf3Xt9cji6s5xP7gqOAc8LZaz
+         76h3PpodPpZH5ojY3Esbhu57ixM9kx/Esrqj4r0fc6sm7v1At8Y6umX0JIPpN5IamOkQ
+         nmtw8T/LCJb8kPY96S5k9GCfZb4k7/j91Si0U5Ww+iELWYUWzaXIAv36qcYB8F5QL6G7
+         TghBU65QihvIk0tQG/mKqCH+5DP2omBMZiI9aLntVeyX3TCKIE6/o51HX1xNbzpxtzgF
+         OLSvEAOX4w5+eZ6gdJHyMYwU5RR9QcxHc8kPTc1s+rX1e+PJgEA1DxXgmZVMhkP+07mL
+         KKnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1782403537; x=1783008337;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q2MJP6G+0qiz8VruHee0NS0DtXdE/aa4R8BvTRRv9rU=;
+        b=d7Edh7ik/mdElkdKpvYFN5v2RKQW+o9N2D40jeakhA8GV0YG7sbY38n3ie8j/MQwBI
+         BAKbn0xXTTxw9p48S4vHJCmxXELWv6sG32ircS7G1eJswrLygp9zD9Fc/upC/QgWfv2R
+         5my4jSLJgn9URcRtcu6jRYMByMsMmh3FiSnCTTxG7ohRltsHuJIYD0dY3/klGZj+QaV0
+         Q9u8voHKhQmqv2jeic5hKkyrK7nXGIuI+FDYuRpTefNdtjUl4ehToggrb/Y1wfrDZEKF
+         j5RpmFk/xXAJoN9WGS0fhMholbkR6y4aKL1YrySZcOJDTLQk5MXAAJmJ/qgrjFZnScJv
+         JHlA==
+X-Forwarded-Encrypted: i=1; AHgh+Rox/nEEV4BrWl1AlKyrTp0Vp8/l4IAD+rTbVjz903ql15kw222O4jTvETQiKPjxrYFicnnB+08nGj6c@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy1ycPHEhTJFvqwCPiUiqb7lLMLjQnl5xJym1ni4xKyDrr0fI6Y
+	Ltx31EYoU2pHHVMv9yWjmlSguGt73XUWl/0HCpCYBR8r46R6c/Me/IfB
+X-Gm-Gg: AfdE7cnUzwFfWfwuJcF4UI5/Rn+26MEL+9O2MLx0wbJEmjjE9K1JARTw3xC6VxN/W3Z
+	YMFnPY5mUbLrpXEgvLPpikg7in+ppYRWSNS8C9OgfGAOVYhYGSBn0G4f1pU4ZEkBHVj4VkwdmN8
+	kqwKHlqQw19PZKaRDFV/WstgAZqt1ASpB51UZOqg3TA9IjA0S3k0oLBUOBGMnnZWHx+EWMiSFcD
+	xhDnoIm07SH+Vhzj3bIJGEgQN8e7wRXW4y4yHMdoRNXyLhwjgNjiPc8UNyqJjO81IIqpUEtgp4T
+	OC5KE9zcORwH/Akeum5VQEPZlJBQu66p5geAPH47QiZfdO8HvB94pfwVSkQgdtv5mrTXp889QdO
+	VxXqsgPu7VEtHU1VLQECjO/6IutyUBMWN6up7ADVelRkkEn7RLR96HJwdzheJAl6eo8MnrRx+V5
+	o6Kizt
+X-Received: by 2002:a17:902:ef03:b0:2c0:d9b7:b7a3 with SMTP id d9443c01a7336-2c7fc740665mr30975935ad.21.1782403537535;
+        Thu, 25 Jun 2026 09:05:37 -0700 (PDT)
+Received: from localhost ([2a03:2880:2ff:8::])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2c7f63b27dasm22916635ad.45.2026.06.25.09.05.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jun 2026 09:05:36 -0700 (PDT)
+Date: Thu, 25 Jun 2026 08:48:03 -0700
+From: Stanislav Fomichev <sdf.kernel@gmail.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com, 
+	pabeni@redhat.com, andrew+netdev@lunn.ch, horms@kernel.org, 
+	Breno Leitao <leitao@debian.org>, joshwash@google.com, hramamurthy@google.com, 
+	anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com, saeedm@nvidia.com, 
+	tariqt@nvidia.com, mbloch@nvidia.com, leon@kernel.org, alexanderduyck@fb.com, 
+	kernel-team@meta.com, kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org, 
+	decui@microsoft.com, longli@microsoft.com, jordanrhee@google.com, 
+	jacob.e.keller@intel.com, nktgrg@google.com, debarghyak@google.com, mohsin.bashr@gmail.com, 
+	ernis@linux.microsoft.com, sdf@fomichev.me, gal@nvidia.com, linux-rdma@vger.kernel.org, 
+	linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH net] net: ethtool: keep rtnl_lock for ops using
+ ethtool_op_get_link()
+Message-ID: <aj1Nqe3RoITzxSEb@devvm7509.cco0.facebook.com>
+References: <20260624190439.2521219-1-kuba@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] RDMA/rxe: Check PDs for memory window binds
-To: Zhiwei Zhang <202275009@qq.com>, Zhu Yanjun <zyjzyj2000@gmail.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <tencent_88CB6CA0A60CDD53B24EA5E3A865E6FF5A0A@qq.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <tencent_88CB6CA0A60CDD53B24EA5E3A865E6FF5A0A@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260624190439.2521219-1-kuba@kernel.org>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22474-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22475-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:202275009@qq.com,m:zyjzyj2000@gmail.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:yanjun.zhu@linux.dev,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	FREEMAIL_TO(0.00)[qq.com,gmail.com,ziepe.ca,kernel.org,linux.dev];
-	FORGED_SENDER(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:kuba@kernel.org,m:davem@davemloft.net,m:netdev@vger.kernel.org,m:edumazet@google.com,m:pabeni@redhat.com,m:andrew+netdev@lunn.ch,m:horms@kernel.org,m:leitao@debian.org,m:joshwash@google.com,m:hramamurthy@google.com,m:anthony.l.nguyen@intel.com,m:przemyslaw.kitszel@intel.com,m:saeedm@nvidia.com,m:tariqt@nvidia.com,m:mbloch@nvidia.com,m:leon@kernel.org,m:alexanderduyck@fb.com,m:kernel-team@meta.com,m:kys@microsoft.com,m:haiyangz@microsoft.com,m:wei.liu@kernel.org,m:decui@microsoft.com,m:longli@microsoft.com,m:jordanrhee@google.com,m:jacob.e.keller@intel.com,m:nktgrg@google.com,m:debarghyak@google.com,m:mohsin.bashr@gmail.com,m:ernis@linux.microsoft.com,m:sdf@fomichev.me,m:gal@nvidia.com,m:linux-rdma@vger.kernel.org,m:linux-hyperv@vger.kernel.org,m:andrew@lunn.ch,m:mohsinbashr@gmail.com,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[sdfkernel@gmail.com,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[33];
+	FREEMAIL_CC(0.00)[davemloft.net,vger.kernel.org,google.com,redhat.com,lunn.ch,kernel.org,debian.org,intel.com,nvidia.com,fb.com,meta.com,microsoft.com,gmail.com,linux.microsoft.com,fomichev.me];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[sdfkernel@gmail.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ALIAS_RESOLVED(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	FORGED_SENDER_MAILLIST(0.00)[]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 590C06C7294
+X-Rspamd-Queue-Id: C46016C7535
 
-在 2026/6/24 23:16, Zhiwei Zhang 写道:
-> The IBTA Software Transport Verbs specification requires the QP,
-> Memory Window and Memory Region for a Bind Memory Window operation
-> to belong to the same HCA and protection domain.
+On 06/24, Jakub Kicinski wrote:
+> Breno reports following splats on mlx5:
 > 
-> rxe only checked the QP and MW protection domain for type 2 MWs.
-> Move the QP/MW PD check to the common bind path and also reject
-> binding an MW to an MR from a different PD.
+>   RTNL: assertion failed at net/core/dev.c (2241)
+>   WARNING: net/core/dev.c:2241 at netif_state_change+0xed/0x130, CPU#5: ethtool/1335
+>   RIP: 0010:netif_state_change+0xf9/0x130
+>   Call Trace:
+>     <TASK>
+>      __linkwatch_sync_dev+0xea/0x120
+>      ethtool_op_get_link+0xe/0x20
+>      __ethtool_get_link+0x26/0x40
+>      linkstate_prepare_data+0x51/0x200
+>      ethnl_default_doit+0x213/0x470
+>      genl_family_rcv_msg_doit+0xdd/0x110
 > 
-> Invalid bind requests continue to fail with IB_WC_MW_BIND_ERR.
+> Looks like I missed ethtool_op_get_link() trying to sync linkwatch,
+> which needs rtnl_lock. Not all drivers do this - bnxt doesn't,
+> it just returns the link state, so add an opt-in bit.
 > 
-> Signed-off-by: Zhiwei Zhang <202275009@qq.com>
-> ---
->   drivers/infiniband/sw/rxe/rxe_mw.c | 20 ++++++++++++--------
->   1 file changed, 12 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
-> index 379e65bfcd49..aa9371e4ccd5 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_mw.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_mw.c
-> @@ -72,13 +72,6 @@ static int rxe_check_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
->   			return -EINVAL;
->   		}
->   
-> -		/* C10-72 */
-> -		if (unlikely(qp->pd != to_rpd(mw->ibmw.pd))) {
-> -			rxe_dbg_mw(mw,
-> -				"attempt to bind type 2 MW with qp with different PD\n");
-> -			return -EINVAL;
-> -		}
-> -
->   		/* o10-37.2.40 */
->   		if (unlikely(!mr || wqe->wr.wr.mw.length == 0)) {
->   			rxe_dbg_mw(mw,
-> @@ -87,10 +80,21 @@ static int rxe_check_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
->   		}
->   	}
->   
-> -	/* remaining checks only apply to a nonzero MR */
-> +	/* C10-72 */
-> +	if (unlikely(qp->pd != rxe_mw_pd(mw))) {
-> +		rxe_dbg_mw(mw, "attempt to bind MW with qp with different PD\n");
-> +		return -EINVAL;
-> +	}
-> +
->   	if (!mr)
->   		return 0;
->   
-> +	/* remaining checks only apply to a nonzero MR */
-> +	if (unlikely(qp->pd != mr_pd(mr))) {
-> +		rxe_dbg_mw(mw, "attempt to bind MW to MR with different PD\n");
-> +		return -EINVAL;
-> +	}
+> Reported-by: Breno Leitao <leitao@debian.org>
+> Fixes: 45079e00133e ("net: ethtool: optionally skip rtnl_lock on Netlink path for GET ops")
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 
-Since the previous check has already explicitly confirmed that qp->pd == 
-rxe_mw_pd(mw), this second check implicitly means mw->pd != mr_pd(mr). 
-However, for the sake of absolute precision in the kernel logs—and to 
-help anyone debugging immediately identify which of the three entities 
-is mismatched—it would be better to make the log message more explicit.
-"attempt to bind MW/QP to MR with different PD\n"
-
-Except this log, I am fine with this patch.
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-
-Zhu Yanjun
-
-> +
->   	if (unlikely(mr->access & IB_ZERO_BASED)) {
->   		rxe_dbg_mw(mw, "attempt to bind MW to zero based MR\n");
->   		return -EINVAL;
-
+Acked-by: Stanislav Fomichev <sdf@fomichev.me>
 
