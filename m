@@ -1,55 +1,76 @@
-Return-Path: <linux-rdma+bounces-22462-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22463-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id TvlLG8aSPGotpggAu9opvQ
-	(envelope-from <linux-rdma+bounces-22462-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 04:30:30 +0200
+	id L1RlNMDHPGq6rwgAu9opvQ
+	(envelope-from <linux-rdma+bounces-22463-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 08:16:32 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD23B6C2646
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 04:30:29 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id B30C26C2F29
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 08:16:31 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=ampBiOQu;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22462-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22462-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	dkim=pass header.d=qq.com header.s=s201512 header.b=kPcFkaQm;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22463-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22463-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=qq.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D920E301FC93
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 02:30:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3FE173032F7B
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 06:16:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 042F428506F;
-	Thu, 25 Jun 2026 02:30:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 577F62FB969;
+	Thu, 25 Jun 2026 06:16:27 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from out162-62-57-87.mail.qq.com (out162-62-57-87.mail.qq.com [162.62.57.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C69671E9B1A;
-	Thu, 25 Jun 2026 02:30:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 684E427707;
+	Thu, 25 Jun 2026 06:16:21 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782354627; cv=none; b=XOChQRk77ACSojsEOgKmhJ9RxD/ZXKeAEeid+kDPePK4tPkomzEUcsXku0CEWmHpYS2umfTOUzIIScSAdTCWUJVTKrRQSTyDvZvrHak2ssR5RqBBi/mM4WkxY/ad1YLPyTt2SLnR+3r0+QtXiMVwVuJinG+0pl9rgfVrAP+4/3A=
+	t=1782368187; cv=none; b=dsKzYM8xm7LrxNiUO/VHhobPIQuO7J5DXMLF9zdLSuM4jdUGY6gT1lR2GfadKuWKgGpUsw+qcXu0D4A+VIuyNyZ3B9jDchDvvof+rD740AKMB9YlEpkeY3G8452Ywr8i5DsINdxXLuWNkyXcc+usLr9A1qpazkewzcpVF+IFrmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782354627; c=relaxed/simple;
-	bh=7iYkk8y6Fl+w8ovQoLHaKhe5T5ygMg587cWSuWWQJyc=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=i6VBmU9MDdyD/Eo8gxXl0owqJR5vM4rzx0YVAA4dyZeYGc7KEdxbdC+GKVJ5kn8PAPc9wAF1iXBNsNe7eOCZscowSiIzHVSuvKnxowb96+DuEcLR8Ohb7Pyn/oYlztcp+jnVM5H//fmHbC9UZ03WWXzt3I0mQNJHLALchaMcAdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ampBiOQu; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 634B11F000E9;
-	Thu, 25 Jun 2026 02:30:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782354626;
-	bh=mx6lDxibRBKnV9McTUCEfClyqAAJhAcv43UNZJYFLow=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc;
-	b=ampBiOQui+23Z4FRDLeuyf57DopNepY7E6xrfWAubAyqeBjlfhGPzJChlW+Japn3I
-	 XypWOrHM0RI/b1qaDLMM00aaoNL05C/HiAvYBOVtOFm7RIOSnZKiYC+rBhJo9TNi6K
-	 5i6/civOyx9t5fz3R03muVsuXmAnLwHR7tySKpIROFkJ33m9UfqQySZXGHkE+oOiXH
-	 NTbRnHBrCgzfcAt/kTvEROrLJpfgqCnRGytMG7cpTCA7JizsCuQFJlZSTL8i6ECEqi
-	 wFKmeBdn87LqtlnbmMWkBN5g3X7S4m7zi72Ih5aED+jSLWYMAc6T3mvMUPcmQXcKgv
-	 WloSdTCS5146w==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id D0BFB3AAA6DE;
-	Thu, 25 Jun 2026 02:30:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1782368187; c=relaxed/simple;
+	bh=m94FP2S7yW5fcFsA/1C6pDNATxziBsG6xZzwrCPUfEk=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=oSeY76afBgVryPgS5PvH6Vmqo5ZJN/qUmvrHJIFLOK3ys1hBf0cr2SoTEAd31R5h2RO0uP9ImcCxkxlFecfJw+A6P9dhK0ybAFPNGvfFALySvsed60DJvyPBfHf8qNkOwJJYygR4FVcS40w0vSvEnNfJlOYhKfAypej92b+S/es=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=kPcFkaQm; arc=none smtp.client-ip=162.62.57.87
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1782368178; bh=FR0mYuXCL/PqVO5fp2WD+k2ON797gpcyXnLtBL1DkLw=;
+	h=From:To:Cc:Subject:Date;
+	b=kPcFkaQmaz0ryN+RLTjhXDnGNuskJJFcYBQdr6d0vHvzogkl77FNskwPwkXJYExnv
+	 mFvMRe3jA2jgmwpIZK5D8L1i8LHpOcFmT5WphbCroYY2Wfb2ZMLyAPXLavI+udLa10
+	 OQZ87fSI944fkvxDKEML4lYaW+mshvKgjJ6RCtg4=
+Received: from localhost.localdomain ([140.207.156.139])
+	by newxmesmtplogicsvrsza53-0.qq.com (NewEsmtp) with SMTP
+	id 405A6882; Thu, 25 Jun 2026 14:16:05 +0800
+X-QQ-mid: xmsmtpt1782368165trb3qp81x
+Message-ID: <tencent_88CB6CA0A60CDD53B24EA5E3A865E6FF5A0A@qq.com>
+X-QQ-XMAILINFO: NIZUVneQWgbc/1QrYg6pRNKre9mIZxubxyDuBND0nKqojKgutqtUNG277sjNRS
+	 vDlaGrPH9o2UIg5UvaVWCB6iVHMZc+Tw2WkQqQ2o/FUJ/HKKHns6SgtOTFWFPchZmy7GjYOuyBFa
+	 iYHnnVyn8TDrVo8lBxF5oPa6FYMp9K/M5FzMxmIdmpZz+5cLJXFfaAPbNjxyNipoXZWEAgQrlUYJ
+	 RoNAa9SHyKCDSxFY0IOGMXY+g+eK9UmU+qdO/ztAMBq1Ziu++CMDsmlFGMdV5XfKll9Lfm62EW8x
+	 YPAa0rk38MaaZWl7TmTLJlkWFaPaL1xRbl930GN67/xvyrdOoXGbtQ5tHAhz65UwgxkRXLQrpQYg
+	 LvKC/37AIhJMWsusPyXABoeTlIs4BHSspxDwn28v1SLG743RK0v6O8lfZ2G1wL1Qd2/XmkZMzSGt
+	 gthEVo/sp4wgmOD1UVqb18agH2YimMmPwdQ7G1AMOIyNKBl62exQiH56H8tNKPjHSFLvyKHEuYBz
+	 +MMWl2hEFGcKwFMlMeitQeXxU1xEnLCk7/7GiR4W7y+GxNMDxZNRi2r9lkUZViD63kRYSbpbGzQN
+	 IX3Gg6CYrL6G0NdWnU6twmWRCDq6j48HJUqE3d8kPm5QU1Z8EjJV0YMMkNsY81M4DyE0t1b3C7AH
+	 u2QjIuKQHwrbIJ9eytJ9d4Nd+VvSG2WWHwNiXSx3SZbYQy4p8WRIYW4Xl5W3TF1pg1+JEoa0gk2V
+	 KiPW2nv1/hnWR7OahtPiF6VW1aay0gjWUc7RXumkm2l39pcqwfvLIUnrz3sMlRumswQcBpf5KRvz
+	 rtH6ReOeWLCADGIh5dzV7xV1Hih2qADkd6g2apx8afb5P5289w7hW2ayLuQ4uryE0idBboCrmlos
+	 r50vAcyASCotaEGvMJtv5dbi7GiL6wn1IeKfZzQvw11WHzaHxVPSjPF6jNyuk0bOslMezVI2Bpxx
+	 5megrjRW3KfA7r0kiJuslbXgYsIqHZqzT5M1BK6jFwI7TqPjozr/BPJuYf4aC4e+SxmhF0WP4IMy
+	 KASmSS0C08cFMFSqGUtTjXf/lL24usQ9pFFaIMP536dLdLHqIRiRL+0ovdDCJGWFGGPGFeKQ==
+X-QQ-XMRINFO: OD9hHCdaPRBwH5bRRRw8tsiH4UAatJqXfg==
+From: Zhiwei Zhang <202275009@qq.com>
+To: Zhu Yanjun <zyjzyj2000@gmail.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Zhiwei Zhang <202275009@qq.com>
+Subject: [PATCH] RDMA/rxe: Check PDs for memory window binds
+Date: Thu, 25 Jun 2026 14:16:02 +0800
+X-OQ-MSGID: <20260625061602.88142-1-202275009@qq.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -57,84 +78,101 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] [net] eth: mlx5: fix macsec dependency
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <178235461433.3088510.128149227233180114.git-patchwork-notify@kernel.org>
-Date: Thu, 25 Jun 2026 02:30:14 +0000
-References: <20260622124229.2444502-1-arnd@kernel.org>
-In-Reply-To: <20260622124229.2444502-1-arnd@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, sd@queasysnail.net, arnd@arndb.de,
- daniel.zahka@gmail.com, rrameshbabu@nvidia.com, raeds@nvidia.com,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.66 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[qq.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[qq.com:s=s201512];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[nvidia.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,queasysnail.net,arndb.de,gmail.com,vger.kernel.org];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22462-lists,linux-rdma=lfdr.de,netdevbpf];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FORGED_SENDER(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:zyjzyj2000@gmail.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:202275009@qq.com,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER(0.00)[202275009@qq.com,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:arnd@kernel.org,m:saeedm@nvidia.com,m:leon@kernel.org,m:tariqt@nvidia.com,m:mbloch@nvidia.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:sd@queasysnail.net,m:arnd@arndb.de,m:daniel.zahka@gmail.com,m:rrameshbabu@nvidia.com,m:raeds@nvidia.com,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:andrew@lunn.ch,m:danielzahka@gmail.com,s:lists@lfdr.de];
-	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FREEMAIL_FROM(0.00)[qq.com];
+	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,kernel.org];
+	TO_DN_SOME(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-22463-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[qq.com:+];
+	RCPT_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FROM_NEQ_ENVFROM(0.00)[202275009@qq.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,qq.com];
+	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	FROM_NO_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,qq.com:dkim,qq.com:email,qq.com:mid,qq.com:from_mime,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: CD23B6C2646
+X-Rspamd-Queue-Id: B30C26C2F29
 
-Hello:
+The IBTA Software Transport Verbs specification requires the QP,
+Memory Window and Memory Region for a Bind Memory Window operation
+to belong to the same HCA and protection domain.
 
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+rxe only checked the QP and MW protection domain for type 2 MWs.
+Move the QP/MW PD check to the common bind path and also reject
+binding an MW to an MR from a different PD.
 
-On Mon, 22 Jun 2026 14:41:07 +0200 you wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Configurations with mlx5 built-in but macsec=m fail to link:
-> 
-> x86_64-linux-ld: drivers/infiniband/hw/mlx5/macsec.o: in function `mlx5r_add_gid_macsec_operations':
-> macsec.c:(.text+0x77d): undefined reference to `macsec_netdev_is_offloaded'
-> x86_64-linux-ld: drivers/infiniband/hw/mlx5/macsec.o: in function `mlx5r_del_gid_macsec_operations':
-> macsec.c:(.text+0xe81): undefined reference to `macsec_netdev_is_offloaded'
-> 
-> [...]
+Invalid bind requests continue to fail with IB_WC_MW_BIND_ERR.
 
-Here is the summary with links:
-  - [net] eth: mlx5: fix macsec dependency
-    https://git.kernel.org/netdev/net/c/87ab8276ed24
+Signed-off-by: Zhiwei Zhang <202275009@qq.com>
+---
+ drivers/infiniband/sw/rxe/rxe_mw.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-You are awesome, thank you!
+diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
+index 379e65bfcd49..aa9371e4ccd5 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mw.c
++++ b/drivers/infiniband/sw/rxe/rxe_mw.c
+@@ -72,13 +72,6 @@ static int rxe_check_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
+ 			return -EINVAL;
+ 		}
+ 
+-		/* C10-72 */
+-		if (unlikely(qp->pd != to_rpd(mw->ibmw.pd))) {
+-			rxe_dbg_mw(mw,
+-				"attempt to bind type 2 MW with qp with different PD\n");
+-			return -EINVAL;
+-		}
+-
+ 		/* o10-37.2.40 */
+ 		if (unlikely(!mr || wqe->wr.wr.mw.length == 0)) {
+ 			rxe_dbg_mw(mw,
+@@ -87,10 +80,21 @@ static int rxe_check_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
+ 		}
+ 	}
+ 
+-	/* remaining checks only apply to a nonzero MR */
++	/* C10-72 */
++	if (unlikely(qp->pd != rxe_mw_pd(mw))) {
++		rxe_dbg_mw(mw, "attempt to bind MW with qp with different PD\n");
++		return -EINVAL;
++	}
++
+ 	if (!mr)
+ 		return 0;
+ 
++	/* remaining checks only apply to a nonzero MR */
++	if (unlikely(qp->pd != mr_pd(mr))) {
++		rxe_dbg_mw(mw, "attempt to bind MW to MR with different PD\n");
++		return -EINVAL;
++	}
++
+ 	if (unlikely(mr->access & IB_ZERO_BASED)) {
+ 		rxe_dbg_mw(mw, "attempt to bind MW to zero based MR\n");
+ 		return -EINVAL;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.51.0
 
 
