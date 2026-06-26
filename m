@@ -1,186 +1,181 @@
-Return-Path: <linux-rdma+bounces-22481-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22482-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 4fLZJAW9PWpI6AgAu9opvQ
-	(envelope-from <linux-rdma+bounces-22481-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jun 2026 01:43:01 +0200
+	id fUPgNBvdPWoO7QgAu9opvQ
+	(envelope-from <linux-rdma+bounces-22482-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jun 2026 03:59:55 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC49A6C9292
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jun 2026 01:43:00 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8937D6C9A26
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jun 2026 03:59:54 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=ERWk9tSf;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22481-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22481-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	dkim=pass header.d=qq.com header.s=s201512 header.b=ZDwKBhex;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22482-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22482-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=qq.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A5D0F30547F6
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2026 23:42:10 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B95AD304D702
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jun 2026 01:59:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37366372049;
-	Thu, 25 Jun 2026 23:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DBB02E1EE0;
+	Fri, 26 Jun 2026 01:59:37 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from out203-205-221-209.mail.qq.com (out203-205-221-209.mail.qq.com [203.205.221.209])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E18BE13B7AE;
-	Thu, 25 Jun 2026 23:42:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E358013B293;
+	Fri, 26 Jun 2026 01:59:33 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782430928; cv=none; b=LUz93YxxdARVhH4drYsSK1hwl3DPX3X2Jip6k0WL9ZwHfyUx6USkkvQ7ma+TZZzoZaIRLPG1QRiVBHn0y85mQsW8sugV9K52kKvlrscrMeN7f+kFpQQFVkbO1ZVBkHyWcbI/0xgdJS+b8jKQ2rQ8Y42YDhj4kfXzN3RHKoKtfT8=
+	t=1782439176; cv=none; b=XZzWvvMuyfPMCS8/QGXDYi8kdoPN2iu3tCRAa8b8yeEbPIj2s5Vktzo0sh5gnrQr5CUFCfspWUGTjiX41J7K1Zq94BSAIylAyBK7yv+G7HQaD0Ax3uxPKzmS9nJuhkDCMLmZqhfhS1Fwdjj8/Uyzj0J5W1kuUG8ohZH7Ued4u+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782430928; c=relaxed/simple;
-	bh=XLWncx6sAi2SL2n9opoom94BbjE0WreKNCFruJ4bcbc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eSX1vhnyPXqWCfZMe2VumjoUiaDOsXft3XSYjbcuLce5UiTdxVqCpP0eDgmAtJa84XpgBaU7gQXFhUH7S+jpcQBvWiUM1IJaCLir4dAViIP9ZA6d/qjEiGfi2WRQxfWXUfd5v6Ue1wRQNWvEkEy6VyPOTEXpi++zHqR7NMKS9hU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ERWk9tSf; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DEF11F000E9;
-	Thu, 25 Jun 2026 23:42:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782430926;
-	bh=7rTeWGRC3qlYe3M/STi4OqC/ckIFBCcw0pmuKzcM+Ms=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=ERWk9tSfkvUB3gpMoi+r8/npeOf+VTcK6LEcTQ+ydlZM4R04BnjE7NoxRlL2Y7oOp
-	 HwEILF3l/MEtXv4l1oapXtPAddR7mVIcAbFM+/NzAauaraVXtWjthqV/7Xr9jV0rmP
-	 iV/aTYKta1D6uPYRp+2hh9+GTlghECm8I505IDeByN96e5NV0eCKP7muVv5sc3JnQG
-	 O3K8AFvvCi6QK5nN6WRqQQQyuO2ODeP0WbSkJkHgCIFXVq1+HVSkMdVsvtq4txrVyP
-	 sezhtjuTBGj4tnd2fWtTX6Neebzlxe0449kNqUc5+ZQaEKrKtQDmJHaKYNRwLyfJcc
-	 gFiMuxnkCmkKg==
-Date: Thu, 25 Jun 2026 16:41:58 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Steven Rostedt <rostedt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	John Ogness <john.ogness@linutronix.de>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Julia Lawall <julia.lawall@inria.fr>,
-	Yury Norov <yury.norov@gmail.com>, linux-doc@vger.kernel.org,
-	linux-kbuild@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	dri-devel@lists.freedesktop.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-rdma@vger.kernel.org,
-	linux-usb@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-nfs@vger.kernel.org, kvm@vger.kernel.org,
-	intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH v4 2/2] tracing: Remove trace_printk.h from kernel.h
-Message-ID: <20260625234158.GA261868@ax162>
-References: <20260625104007.041432666@kernel.org>
- <20260625104402.210473477@kernel.org>
+	s=arc-20240116; t=1782439176; c=relaxed/simple;
+	bh=QU4VQ1NI2vmvU3yni1jO0ItWKCzbj6dXF9gr1V43mNw=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=HtPOd+VsoxbGSHGwroWRxt0g/ES790Oe/7hQruJ6jEX2O2UnHQOGjGs9JGvjrYNkVEwtGkBSyTBuwhWdypPz1phuvi5vXyhv+CEF1uNFajFgoqNQbw+D7Is4cQIjwqXQ1BIaghnFYHFR2+2NlFobKRitTxpPn8K+AU6ZDLt15DA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=ZDwKBhex; arc=none smtp.client-ip=203.205.221.209
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1782439165; bh=gHs8BzXaityAs9x7go1yQ94PsWKxnAwQ7y1DYOue/hk=;
+	h=From:To:Cc:Subject:Date;
+	b=ZDwKBhexiFVGM/bGMG+0hJlDkl2UUmNCvjRiJVB5CBecJZTUJJA5dVPJVTWAHT9t5
+	 9Bv1G8aIxT8tQSelv5+i5yP99yk+ShRimCAJMrMcJaHzH2LOKHE8VwihYl9hX1hFCV
+	 IZG4zUeSsdj1IupCOQwtvnoQZ7PYD66ctYrqUQJo=
+Received: from localhost.localdomain ([140.207.156.139])
+	by newxmesmtplogicsvrszb51-0.qq.com (NewEsmtp) with SMTP
+	id ED7088BC; Fri, 26 Jun 2026 09:59:23 +0800
+X-QQ-mid: xmsmtpt1782439163tgj8a2orl
+Message-ID: <tencent_FD4FB25AA4FFA845E63F5AC36CF4A46CDC0A@qq.com>
+X-QQ-XMAILINFO: MWBbVm9/0ltknOqqYzp4/8SXEi0plpZfft52ZJqeYX4a8SUzzAIt2YaMaygDZQ
+	 vFhtLDA2k6lP9cQ2PyiGTTNhGZUTYgLzAHqJqY7nVkRBtBWYL8UA+0s82O4+u0/HahDe5rqjmR7w
+	 QjlhBeh9nlsqCAJ92G15LCqEMO0eNPaAVJ7LumeVl30+XaHEzVrrzv/8VqzhqNX8BqSnCUd7jMrw
+	 doxMppRThF7slR7Emr6XGf/Ew6EEgm4C4YhEWFV3hExVhyV44WXgCjHHXxI5A6QslyxJcSAA8YPe
+	 vPGG/P/8ZTOsxdBOd++XFJIByV7zq25mbU5uc6uEjLLGjbptqyXo/r3jI/coD9lIuVUFmAUUvZ6t
+	 uKhmxe9Rbvizi8pPZ/RBJlXhc1tVDgXS5WoXWIIyJtSHa7ll+pyC5IROpkGweitthKTfilLJ5QK5
+	 W4zCS/yT7VDUoJzc+bupVkslSiuZ7noXt1M6XdZw2qiFO8HFntflRNEDtN9srx+fIG/0u4x9LBqD
+	 G78F4yD1fY8onQZUNUJNBjV2ORMHIaAqHyVgkDoPOezSuCmhBqsOIKCmP5/G9agA5S1UCo0mERHf
+	 ppmDoo5WHF8z203XAWadrR5OEtZ0u7uZuFcKTLB/35m1cLMvLe2ZuliRFQlcTxevNXl/h6qDO6Y4
+	 zYcPcPzXfTgCqe8qMrJ2NKkBlrRRO9jZI6ADPX17KPtj96cF4MCa3Sfv9wf7XH3SK+tz2rrVmtC4
+	 NaV7FJodqKMPHR/77jR2x7vxP6BGG0nOWmAeolzVDntTJDd366pWivanj+H2ePYnE6AOHSZQwb2Z
+	 4a4BXKvoz6Eh5IdK5MGJFZpjDl/+VueGWqe5/uJl10Td2uH/E73kSgzcgflNzAK0eX5RamQ4e4px
+	 K5XOs1s10Bw6HbckhHAcDq5nVLjeWOPtrgEnYRTZ5rSeCCpUp6S4Xt0PQBaWmPqHOXw1AKREFc4k
+	 8WvxClYNMiEgBxEWI7TpukJkXyw9Nyv7Cm1W4XrDuPfevWoPeQRKT03m6BvMcoXs2xTvya263DfQ
+	 axJDGb+q3MmtExtpkxYk44dfgI+cFvWeBmY/vBmTL3cRViXjsC63PsKw0StIKxWRf6NFf/BzKfsx
+	 RqjjcDcrwNyHGwaXQ+RUxRzERQAA==
+X-QQ-XMRINFO: Nq+8W0+stu50tPAe92KXseR0ZZmBTk3gLg==
+From: Zhiwei Zhang <202275009@qq.com>
+To: Zhu Yanjun <zyjzyj2000@gmail.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Zhiwei Zhang <202275009@qq.com>,
+	Zhu Yanjun <yanjun.zhu@linux.dev>
+Subject: [PATCH v2] RDMA/rxe: Check PDs for memory window binds
+Date: Fri, 26 Jun 2026 09:59:20 +0800
+X-OQ-MSGID: <20260626015920.48132-1-202275009@qq.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260625104402.210473477@kernel.org>
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[qq.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[qq.com:s=s201512];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[26];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:rostedt@kernel.org,m:linux-kernel@vger.kernel.org,m:linux-trace-kernel@vger.kernel.org,m:mhiramat@kernel.org,m:mark.rutland@arm.com,m:mathieu.desnoyers@efficios.com,m:akpm@linux-foundation.org,m:torvalds@linux-foundation.org,m:bigeasy@linutronix.de,m:john.ogness@linutronix.de,m:tglx@kernel.org,m:peterz@infradead.org,m:julia.lawall@inria.fr,m:yury.norov@gmail.com,m:linux-doc@vger.kernel.org,m:linux-kbuild@vger.kernel.org,m:linuxppc-dev@lists.ozlabs.org,m:dri-devel@lists.freedesktop.org,m:linux-stm32@st-md-mailman.stormreply.com,m:linux-arm-kernel@lists.infradead.org,m:linux-rdma@vger.kernel.org,m:linux-usb@vger.kernel.org,m:linux-ext4@vger.kernel.org,m:linux-nfs@vger.kernel.org,m:kvm@vger.kernel.org,m:intel-gfx@lists.freedesktop.org,m:yurynorov@gmail.com,s:lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22481-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER(0.00)[nathan@kernel.org,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_FROM(0.00)[bounces-22482-lists,linux-rdma=lfdr.de];
 	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[nathan@kernel.org,linux-rdma@vger.kernel.org];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,arm.com,efficios.com,linux-foundation.org,linutronix.de,infradead.org,inria.fr,gmail.com,lists.ozlabs.org,lists.freedesktop.org,st-md-mailman.stormreply.com,lists.infradead.org];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:zyjzyj2000@gmail.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:202275009@qq.com,m:yanjun.zhu@linux.dev,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[202275009@qq.com,linux-rdma@vger.kernel.org];
+	FREEMAIL_CC(0.00)[vger.kernel.org,qq.com,linux.dev];
+	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[qq.com];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[202275009@qq.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[qq.com:+];
+	ALIAS_RESOLVED(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,goodmis.org:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,qq.com:dkim,qq.com:email,qq.com:mid,qq.com:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: EC49A6C9292
+X-Rspamd-Queue-Id: 8937D6C9A26
 
-Hi Steve,
+The IBTA Software Transport Verbs specification requires the QP,
+Memory Window and Memory Region for a Bind Memory Window operation
+to belong to the same HCA and protection domain.
 
-On Thu, Jun 25, 2026 at 06:40:09AM -0400, Steven Rostedt wrote:
-> From: Steven Rostedt <rostedt@goodmis.org>
-> 
-> There have been complaints about trace_printk.h causing more build time
-> for being in kernel.h if it changes. There is also an effort to clean up
-> kernel.h to have it not include unneeded header files. Move trace_printk.h
-> out of kernel.h and place it in the headers and C files that use it.
-> 
-> Link: https://lore.kernel.org/all/CAHk-=wikCBeVFjVXiY4o-oepdbjAoir5+TcAgtL12c4u1TpZLQ@mail.gmail.com/
-> 
-> Suggested-by: Yury Norov <yury.norov@gmail.com>
-> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
+rxe only checked the QP and MW protection domain for type 2 MWs.
+Move the QP/MW PD check to the common bind path and also reject
+binding an MW to an MR from a different PD.
 
-This patch breaks lib/test_context-analysis.c for me in several
-configurations:
+Invalid bind requests continue to fail with IB_WC_MW_BIND_ERR.
 
-  In file included from lib/test_context-analysis.c:9:
-  In file included from include/linux/local_lock.h:5:
-  include/linux/local_lock_internal.h:46:2: error: use of undeclared identifier '_THIS_IP_'
-     46 |         lock_map_acquire(&l->dep_map);
-        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  include/linux/lockdep.h:541:69: note: expanded from macro 'lock_map_acquire'
-    541 | #define lock_map_acquire(l)                     lock_acquire_exclusive(l, 0, 0, NULL, _THIS_IP_)
-        |                                                                                       ^~~~~~~~~
-  In file included from lib/test_context-analysis.c:9:
-  In file included from include/linux/local_lock.h:5:
-  include/linux/local_lock_internal.h:53:2: error: use of undeclared identifier '_THIS_IP_'
-     53 |         lock_map_acquire_try(&l->dep_map);
-        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  include/linux/lockdep.h:542:73: note: expanded from macro 'lock_map_acquire_try'
-    542 | #define lock_map_acquire_try(l)                 lock_acquire_exclusive(l, 0, 1, NULL, _THIS_IP_)
-        |                                                                                       ^~~~~~~~~
-  In file included from lib/test_context-analysis.c:9:
-  In file included from include/linux/local_lock.h:5:
-  include/linux/local_lock_internal.h:62:2: error: use of undeclared identifier '_THIS_IP_'
-     62 |         lock_map_release(&l->dep_map);
-        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  include/linux/lockdep.h:545:47: note: expanded from macro 'lock_map_release'
-    545 | #define lock_map_release(l)                     lock_release(l, _THIS_IP_)
-        |                                                                 ^~~~~~~~~
-  3 errors generated.
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+Signed-off-by: Zhiwei Zhang <202275009@qq.com>
+---
+ drivers/infiniband/sw/rxe/rxe_mw.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-The following diff resolves it for me, should I send it as a separate
-patch or do you want to just fold it in with a note?
-
-diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-index 621566345406..2301a701ffbb 100644
---- a/include/linux/lockdep.h
-+++ b/include/linux/lockdep.h
-@@ -10,6 +10,7 @@
- #ifndef __LINUX_LOCKDEP_H
- #define __LINUX_LOCKDEP_H
+diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
+index 379e65bfcd49..bddb7a257831 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mw.c
++++ b/drivers/infiniband/sw/rxe/rxe_mw.c
+@@ -72,13 +72,6 @@ static int rxe_check_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
+ 			return -EINVAL;
+ 		}
  
-+#include <linux/instruction_pointer.h>
- #include <linux/lockdep_types.h>
- #include <linux/smp.h>
- #include <asm/percpu.h>
+-		/* C10-72 */
+-		if (unlikely(qp->pd != to_rpd(mw->ibmw.pd))) {
+-			rxe_dbg_mw(mw,
+-				"attempt to bind type 2 MW with qp with different PD\n");
+-			return -EINVAL;
+-		}
+-
+ 		/* o10-37.2.40 */
+ 		if (unlikely(!mr || wqe->wr.wr.mw.length == 0)) {
+ 			rxe_dbg_mw(mw,
+@@ -87,10 +80,21 @@ static int rxe_check_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
+ 		}
+ 	}
+ 
+-	/* remaining checks only apply to a nonzero MR */
++	/* C10-72 */
++	if (unlikely(qp->pd != rxe_mw_pd(mw))) {
++		rxe_dbg_mw(mw, "attempt to bind MW with qp with different PD\n");
++		return -EINVAL;
++	}
++
+ 	if (!mr)
+ 		return 0;
+ 
++	/* remaining checks only apply to a nonzero MR */
++	if (unlikely(qp->pd != mr_pd(mr))) {
++		rxe_dbg_mw(mw, "attempt to bind MW/QP to MR with different PD\n");
++		return -EINVAL;
++	}
++
+ 	if (unlikely(mr->access & IB_ZERO_BASED)) {
+ 		rxe_dbg_mw(mw, "attempt to bind MW to zero based MR\n");
+ 		return -EINVAL;
 -- 
-Cheers,
-Nathan
+2.51.0
+
 
