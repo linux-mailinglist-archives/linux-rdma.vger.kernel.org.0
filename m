@@ -1,65 +1,65 @@
-Return-Path: <linux-rdma+bounces-22533-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22535-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id fo1iMNj5P2qpawkAu9opvQ
-	(envelope-from <linux-rdma+bounces-22533-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 27 Jun 2026 18:27:04 +0200
+	id Z13pG+v5P2qzawkAu9opvQ
+	(envelope-from <linux-rdma+bounces-22535-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 27 Jun 2026 18:27:23 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66F926D2443
-	for <lists+linux-rdma@lfdr.de>; Sat, 27 Jun 2026 18:27:04 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 958D26D244F
+	for <lists+linux-rdma@lfdr.de>; Sat, 27 Jun 2026 18:27:22 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=cornelisnetworks.com header.s=selector1 header.b=GZAF7yk7;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22533-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22533-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=cornelisnetworks.com header.s=selector1 header.b="dFbt/uO7";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22535-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22535-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=none) header.from=cornelisnetworks.com;
 	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id D06A43004F21
-	for <lists+linux-rdma@lfdr.de>; Sat, 27 Jun 2026 16:27:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6F01B301E956
+	for <lists+linux-rdma@lfdr.de>; Sat, 27 Jun 2026 16:27:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E92CA2EFD95;
-	Sat, 27 Jun 2026 16:27:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D93D0306D3F;
+	Sat, 27 Jun 2026 16:27:08 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from BL2PR02CU003.outbound.protection.outlook.com (mail-eastusazon11021091.outbound.protection.outlook.com [52.101.52.91])
+Received: from CH1PR05CU001.outbound.protection.outlook.com (mail-northcentralusazon11020089.outbound.protection.outlook.com [52.101.193.89])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A71A82EFDA4
-	for <linux-rdma@vger.kernel.org>; Sat, 27 Jun 2026 16:26:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D25A02F1FFC
+	for <linux-rdma@vger.kernel.org>; Sat, 27 Jun 2026 16:27:01 +0000 (UTC)
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782577622; cv=fail; b=cK/H+Z3QfMib2eocaZ88EI+xtmeky3KleiMrVkiBo6B9DZ2FRz8SS3orMwMDDQqXqsrjCs38KlkpvvJZo/dL36VPw9df78oAxlLsUnazM60kQDVXG7nbJSj0F2CnqDC6A9zJk0uRhtB0/5RkExWtUrS3dW+fHmlAobt9qfFCK0M=
+	t=1782577628; cv=fail; b=KjfWUHA01OaPXFnmNtNMk9o5wtVYpReqLOCT6UTT35JOnu/dXDBcXbkaVmNIo2MvPpLSiY3XBtT+9Rw7aGsMerrL2jsKCNscvKdakFOoxtAhlvdVA1+XzPIoejZKxG/CR2izIyyVsclri5DZc6uTV5WNHezH0247t4OdQfadsf8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782577622; c=relaxed/simple;
-	bh=aYvws7P86tRrwoHZArkmBy2ajwaWGjNyVs4JSijYHcQ=;
+	s=arc-20240116; t=1782577628; c=relaxed/simple;
+	bh=B0dIqYyFNh4Pm6gFRFFHZMm8dn7571nX8S8Twa48ZyE=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=n6pmm9TfnSyCpKuFrMOwDiUdpcRjKX8xaaxdT+BsZLZpHkpmEFpBm2UJr9Qk6cvl0Q1g9jwhiJXrr7kocOC46DTU3iAIwqdyR5TwcMHf6zmCR32ZMyGMUsCYQHvprUfV8l4ZNEFHzgNJhJfy8+5ylPVthndy9BXOrT4uuSNUgBI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=GZAF7yk7; arc=fail smtp.client-ip=52.101.52.91
+	 MIME-Version:Content-Type; b=fesffgNa1fKzUWgX8nbBCxdijvRvSj6MlAwO5zpUhiNE8xa4owUm3xiZC+wzuXKIrWSg2TD1U7tjxvMx441EHAN23Gx+0FG5BqllwnEwGav6vJtL/wNoX0z7Q/I/U4oxlzf3q1puUKDWPIXmj+yK5uInyvB6nbeBm2PrBAZe/zA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=dFbt/uO7; arc=fail smtp.client-ip=52.101.193.89
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=LycMDWb3R/+TMAcBpEiltS9/lAkxfiVPQ9AQZf+Qw9TYquVJWWUqzYHG9bNbbQJjDA24dygQBJKDcKFM7aSpshdSA8wveySxg82e41XG6EZPcclOBXYIhqIvBON61n27iWoqh3gnC9OO68O96h9q/KNw8bYaNY9VaZzyQ4oWOOki/MAOgJ7V9b4d8RdR/42qrLOkKJ1dD+S045QSHbJWG1OZ/oEBrnG5AnSId0sRpYs1YuPK+hF/cNQ/s1xKGcIvIHyVaWomMrkeUm/Znx9PUbnJzxgYV4MuOPCYz+8069q98cwKjDGj+YKMnYJnQ1mHPPNmCW8nGea2LG93VNX0fA==
+ b=R28Zlu+PFZnMFNRwH6k4y8cCJfaFKbKzOvH+MiOiYSM4g+1bxu/SSXNw7fCa1ckD/8qD4O6YbkQvkoTvQA33C9eG5ANCKGCFCxjghO7Vtrt7qUEQQHP+PPV3AViJAGbF4tInu5lQZPf3WQwjtzf74KOUShbcZuoy8+06zEQ38BjLdktWkJghptkh83fMjmNrFQ+4rrLYGFQ6LMQkF8wYwzaRmx+CUbPiyWSgvG1DKSg3071WrTK2168uo68LcdL8u+RA+IHnDCTFp4APiOGfYQ+Ll46PhL4C9a/P/xeb5I/5XIYfsSL8yo5xZ+mhpxxgt1/SqCLA+RzeiI9rCG0mQQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jozylsm3mejPQD8/qViRSi3XXMj5AnjXtiCd1GNfreI=;
- b=U+UsYtsEZokFWvwV1YV3ryJLmrVJWUDgvSaEp2vUfX2HaKMmA76m1YWq236sB5wYllEeIipjwy79lyD8DCBhxJheFkDT4+EUbN5LqFWRHTkNxzGhNsddN77kvtXV1sLjAcCQw0VNOrbUQCLUXQrxfHaK/gQeNlV8HnDnJLk/afIvnbZIzBCjUHomcAR7PAWxvv9H2ZdO134wv7kYAHlJLCl9fL6NWf8P1fPtPhZ/DK91Xy0Qwjrqs0sVtCPldKAWe575FESCqNDysBdt4lg6xENPgkzdsAn0TWMHw7j9Shxma6v9qMsUlxVtTPKBHdEvd8hxRI7rwZVrO6aQk6KvDQ==
+ bh=4jIbYGeAmYNK38X/pb9f+TDt3XlLVPeITFRvNcmi0Mk=;
+ b=Pa4YRTjJ0VtC1c8UzpOoZmmTCzeGTsV/mnENMIZZhyza4zf2HEzJ53cOkyEzSCuTYaTm8sM21et2LrWwKzVX4EG/BWNIXHCSufQnOdmgjpBFACbtcqntjlXdS9K7NyQicwhgRQGNvo78DYzdw4lYesLwCcatCSSmV6lzHq3ct+qFqUCshbUWeVW+9gjWRkna7C/uiJK3dsO7UQehBEj4Upjpk0Th3JsXLpicdMxY5h50g46n/HLLNP+BTXNIgEnZKNQTF/eCuuIrzI0X3kDIRXK+115VTV4WY5IFkCvgrRC445bpvfeGhCLy8/vSkkeSrFskd+Qlbfi2XSysheoX9g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 50.148.235.34) smtp.rcpttodomain=kernel.org
+ 50.148.235.34) smtp.rcpttodomain=cornelisnetworks.com
  smtp.mailfrom=cornelisnetworks.com; dmarc=fail (p=none sp=none pct=100)
  action=none header.from=cornelisnetworks.com; dkim=none (message not signed);
  arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jozylsm3mejPQD8/qViRSi3XXMj5AnjXtiCd1GNfreI=;
- b=GZAF7yk76Pc3YtVmqsO8nhx62BtZOrjyxXaCvoW6JQfAaYvspkiajGtdsQ5hwKZ4tMid0puZsxVVosSKBCPaSviP4JP0bURpN1ZhAmFrG/ZTyZSzLZWZRQ7rzsdIY7DgPtmnlPx4q4zMl+PbMQpMcpRC8bPnm+4xsXNRoGB6eJYC6ZI07nGkTdtID4tljGvW9bxKpiBzq0RNn/usU0y3sWel8VFttN7Pc77JkHtVBbZzHxAvtdR5b7gL6sNoKUiX+bjQN56MuRLgjj1JThvO0eBGQ4ZuynfyRQpvNYD0TOyEykooALGD/vUHsvzdUpuv51X3JSjqmSk5t9JTXqF6JQ==
-Received: from CH2PR08CA0021.namprd08.prod.outlook.com (2603:10b6:610:5a::31)
- by PH0PR01MB6342.prod.exchangelabs.com (2603:10b6:510:17::23) with Microsoft
+ bh=4jIbYGeAmYNK38X/pb9f+TDt3XlLVPeITFRvNcmi0Mk=;
+ b=dFbt/uO7W93ScmF9zsQiMbjdAYrtC17l0NwztyVlu2rOyU7CKQb4a835Qrl3BcN+1t281SwahQhhclcLdcYIf1exaWDVMW+WdTv9AiUguGP1S7iiGX3zhEofgGJIQk+Sa9HwUmS+3AhQ272OW9J1ciCw+qGzQQo3kZwZqk3ZFjOK00LgiFomwu/VBiu5Hotk3aOxaRVqcaynVK/2eqoOuaR8NVwRj1APwWQxD/2CZTrGq3rXHgPIEglR4F7dr0DZ16JrCMxxSIIX2F4KoWp80r9HaWLAkAAQkHKw7YDt76YROGY3qZn3nUMM2hoG8I/luV4tsrSBbwURK1DkY4OIHQ==
+Received: from CH2PR17CA0019.namprd17.prod.outlook.com (2603:10b6:610:53::29)
+ by DS3PR01MB994616.prod.exchangelabs.com (2603:10b6:8:39b::18) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.159.18; Sat, 27 Jun 2026 16:26:52 +0000
-Received: from CH2PEPF00000143.namprd02.prod.outlook.com
- (2603:10b6:610:5a:cafe::3e) by CH2PR08CA0021.outlook.office365.com
- (2603:10b6:610:5a::31) with Microsoft SMTP Server (version=TLS1_3,
+ 15.21.139.20; Sat, 27 Jun 2026 16:26:56 +0000
+Received: from CH2PEPF00000145.namprd02.prod.outlook.com
+ (2603:10b6:610:53:cafe::79) by CH2PR17CA0019.outlook.office365.com
+ (2603:10b6:610:53::29) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.21.159.18 via Frontend Transport; Sat,
- 27 Jun 2026 16:26:51 +0000
+ 27 Jun 2026 16:26:56 +0000
 X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 50.148.235.34)
  smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
  header.d=none;dmarc=fail action=none header.from=cornelisnetworks.com;
@@ -68,22 +68,23 @@ Received-SPF: Fail (protection.outlook.com: domain of cornelisnetworks.com
  receiver=protection.outlook.com; client-ip=50.148.235.34;
  helo=cn-mailer-00.localdomain;
 Received: from cn-mailer-00.localdomain (50.148.235.34) by
- CH2PEPF00000143.mail.protection.outlook.com (10.167.244.100) with Microsoft
+ CH2PEPF00000145.mail.protection.outlook.com (10.167.244.102) with Microsoft
  SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.21.181.6
- via Frontend Transport; Sat, 27 Jun 2026 16:26:51 +0000
+ via Frontend Transport; Sat, 27 Jun 2026 16:26:56 +0000
 Received: from awdrv-04.localdomain (unknown [10.228.212.218])
-	by cn-mailer-00.localdomain (Postfix) with ESMTPS id CAB96146565;
-	Sat, 27 Jun 2026 12:26:50 -0400 (EDT)
+	by cn-mailer-00.localdomain (Postfix) with ESMTPS id D5AD3146565;
+	Sat, 27 Jun 2026 12:26:55 -0400 (EDT)
 Received: from [10.228.212.218] (localhost [IPv6:::1])
-	by awdrv-04.localdomain (Postfix) with ESMTP id C5AF11810D6C7;
-	Sat, 27 Jun 2026 12:26:50 -0400 (EDT)
-Subject: [PATCH v2 for-next 23/24] RDMA/hfi2: Modernize mmap to use
- rdma_user_mmap_entry infrastructure
+	by awdrv-04.localdomain (Postfix) with ESMTP id D1D4C1810D6C7;
+	Sat, 27 Jun 2026 12:26:55 -0400 (EDT)
+Subject: [PATCH v2 for-next 24/24] RDMA/hfi2: Support ipoib
 From: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 To: jgg@ziepe.ca, leon@kernel.org
-Cc: linux-rdma@vger.kernel.org
-Date: Sat, 27 Jun 2026 12:26:50 -0400
-Message-ID: <178257761077.371918.10395526634276702355.stgit@awdrv-04>
+Cc: Dean Luick <dean.luick@cornelisnetworks.com>,
+ Breandan Cunningham <brendan.cunningham@cornelisnetworks.com>,
+ linux-rdma@vger.kernel.org
+Date: Sat, 27 Jun 2026 12:26:55 -0400
+Message-ID: <178257761581.371918.15625290667827678064.stgit@awdrv-04>
 In-Reply-To: <178257721001.371918.6610421101075283586.stgit@awdrv-04>
 References: <178257721001.371918.6610421101075283586.stgit@awdrv-04>
 User-Agent: StGit/1.5
@@ -97,464 +98,1933 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH2PEPF00000143:EE_|PH0PR01MB6342:EE_
-X-MS-Office365-Filtering-Correlation-Id: bc0ebb4d-bf3c-4a15-495d-08ded468e4bb
+X-MS-TrafficTypeDiagnostic: CH2PEPF00000145:EE_|DS3PR01MB994616:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7d4833ea-2f54-4aba-827e-08ded468e7c4
 X-MS-Exchange-AtpMessageProperties: SA
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|23010399003|1800799024|82310400026|36860700016|22082099003|18002099003|56012099006|3023799007|55112099003;
+	BCL:0;ARA:13230040|36860700016|1800799024|82310400026|376014|23010399003|55112099003|56012099006|6133799003|3023799007|22082099003|18002099003;
 X-Microsoft-Antispam-Message-Info:
-	s24EhRkX97x/Y7ewtlBYPuhfx2Op6PxPP35WP/e4V9tSfh0JeOIKIX61wik8jjYUOo5IuIz2l0/t4Bz1C6JFZrQqce78VBANQ+4mgp6V4pFbp4QpKNchfR++pWzTHty7HG3oJniZAmmZHPmp/E3TKcuX6ACkRsFT8xzGs0EY+xigU5xns/D2zXSGNxTBRikTfPsdJG/QvgMOluM2URtlnUwdiqZYsFmqHSnsq4CzBKk72MsZRbxBEiXsWA3qu0HX8E+Osxtfkg4MzfOhfDgoqqV23cB14iQqW4nCCXJEfe8EnCGVODF/4Hv8leWw6gS4QaPz/vM8ji4fqGsrW4ydseJ+s9QKjq0lmbYcjYwqpngakCWgs4uqQoLxLn4r8WKKmzDtjhKX7Xb6OEZODeoZ53BeIPiMkuom3UMRuzY33nKjHwinXmVBQu4NTj73DCrZFVGRPvPIav/Zp/fFQE9lWuXPExPwhFGJT6MAp6IV2sKk3hl+RCziQqU+8w1fpL53WV6jAauk6HHHi9ESMdTWMaoY1T+7fdG9i2nVnr9acWvt/uZ6muuzXv86vrEDUHw2DkM0akmf3lqNYoh20vU8LMSlsb0gzCJr8yqZto1Hylk8qUznJZdnqgYDP3hI42l0uW12RyT6JDmkGQvTdm3OSi6v4NptNN828VGaOF/UycFy3Sf+OohFSFAkPzWu1NjOQT3Exwu8h4un1RMDYKHEmA==
+	ylYV9FrdXIKsQ0W5v3rtoNZYrRtwakCSuJh+Pcxuz/ifh5tEkvPh74UNvyd7+axz0/7XIXFInulGqL6NLOY1U0kgpA+flaJRCsoXoZvfnAVgbZTb6rxnaKEds+LKQS/8WIo8ZrAggs5WeQLLCiwJgPw6ltC2bVLG5EefyQJ14rHHX704Ic94KkA87WCI7W7nuNZo9eqI6kpWRg2jOuEH4tadMnWGcjdU1ucXRzQpZT8gdDv+ZbCD70mCE5a5KTYfEubSx1C0vL8WbyPGnivfAgPW7h9wt37Rcv0Lz8fTrelhz3P/q5QJJFSJSBsSiLbWjh8kP7nB7Kv4jzL92kgm4wpwuuzmsGVV3POj6ZvBV+sRnHwh/bzfCSZ7EeZBcrXxXQKvKs4SBoowfoEtNb3Ht++CBBkYMjLgLbVE29e9b8qrD61FtA9WYOTUWBI1MQxTk761EcoaoA+fzIvPB6Hnpq8zWO0e3Uu4nqwdQ1zCHK7Rv3ZLkYmqbPVrhPGCnWkwVB0hlCvrcjljLPxujwPWIIc7olmzQItUS7QxYN/xbkTAJ93pcrddklpDEI765c//Pkuf2niV3o6+f5N94EbVpTZUEql81XRs00PfHyVZe1cPP1+/piYsp4AOfsntoKH367PS8XBjhoYowUEfABo1XKPb9LqDJeAhAeNkgzywegVZ+inLjybYDgUh8MGNbdUlfvpg8MNVwA6hC02MaEplWw==
 X-Forefront-Antispam-Report:
-	CIP:50.148.235.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:cn-mailer-00.localdomain;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(23010399003)(1800799024)(82310400026)(36860700016)(22082099003)(18002099003)(56012099006)(3023799007)(55112099003);DIR:OUT;SFP:1102;
+	CIP:50.148.235.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:cn-mailer-00.localdomain;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700016)(1800799024)(82310400026)(376014)(23010399003)(55112099003)(56012099006)(6133799003)(3023799007)(22082099003)(18002099003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	m8/g8YvZnt+uDrzZYPsjgU+gUa9MMrmC7A+e3QoAUhh5BNp2VS2GkQfoA8UQuWCy31ut5xMX0/Hu9sQVjUB7YMov+XAEXofnFBSrKHfkPaYNf7+EKqVRxR2B+owy2I1K6C/RYwnscrH5et7n0/up59GhKQxqrpq7pw/colflCJ1/2DTaxForCymMizwNIZPBaeHZ8/crj9fFS7EbGGd0G8zPmL4wWX6FpWP9s9TDh/aiWf0iIgxX3BdeWJ6yU4/u1ZEfEQZXJrn0Ab1YcTxNDYHC3A2TW/tNhJ4Pokrtf7GVYxYNAQhjmZH8Fv4UZZ4SSKhKHZmO+xC/J2X+m89vBeIT1Qo5nVG6jy0JiyCAcjhj8vQUoQFOA/J2CtzHyldM0W2zsOunHj6QlmUa5d6JPOolwU2B+g4+HxXqsmkhqbO2Y+SD2ACZuBchzrOvcnOu
+	9v/NSSJxV4mSZcxTs5MFqfhXDLklYC1ZpdA3rvSG/lsqGCrVTmjn7jBQu/V9wrahf3rZ4yB1T+MLckBjylk1KjofoCmAR3U7le7XrTvp0BHQ2TbIMJpTv8H85FBIWvU2ABQ3y7eRCB6V1JCdjNuCpQ40QQS/LF24pZGqk6naH4+9YIqWwVHI2XZ9E0/TEEmiL2720VWDeqAS/UlqcQOajiO0pxi3Db0adYqWHcuxm0fEhpRCUeJvRXdr6FqA2HiJJG4ElnQ+cQ6ifHJ4RA4txwM30f9qfC6K38xuBs9nsnBcibQUinNTF2unZiz/VuGRlW8xYylTLZZ130SmDv8xqTTOKKyiGaqLKR7a2keNqOlpmyeY4FPCAzjiZ5QxO/QQ1PSkLYYkzO0uXLupsOi353BZYAQ9v8kvw76bzv1X1DXb8aKv/b7ff2hB8CSbiF8B
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jun 2026 16:26:51.1292
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jun 2026 16:26:56.1620
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc0ebb4d-bf3c-4a15-495d-08ded468e4bb
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7d4833ea-2f54-4aba-827e-08ded468e7c4
 X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[50.148.235.34];Helo=[cn-mailer-00.localdomain]
 X-MS-Exchange-CrossTenant-AuthSource:
-	CH2PEPF00000143.namprd02.prod.outlook.com
+	CH2PEPF00000145.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6342
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS3PR01MB994616
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [0.34 / 15.00];
 	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[cornelisnetworks.com,none];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[cornelisnetworks.com,none];
 	R_DKIM_ALLOW(-0.20)[cornelisnetworks.com:s=selector1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22533-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER(0.00)[dennis.dalessandro@cornelisnetworks.com,linux-rdma@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22535-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,s:lists@lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[cornelisnetworks.com:dkim,cornelisnetworks.com:email,cornelisnetworks.com:from_mime,vger.kernel.org:from_smtp,awdrv-04:mid,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo];
-	RCPT_COUNT_THREE(0.00)[3];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:jgg@ziepe.ca,m:leon@kernel.org,m:dean.luick@cornelisnetworks.com,m:brendan.cunningham@cornelisnetworks.com,m:linux-rdma@vger.kernel.org,s:lists@lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[dennis.dalessandro@cornelisnetworks.com,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[cornelisnetworks.com:dkim,cornelisnetworks.com:email,cornelisnetworks.com:from_mime,vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,awdrv-04:mid];
+	DKIM_TRACE(0.00)[cornelisnetworks.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[dennis.dalessandro@cornelisnetworks.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[cornelisnetworks.com:+];
-	TO_DN_NONE(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCVD_COUNT_SEVEN(0.00)[8]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 66F926D2443
+X-Rspamd-Queue-Id: 958D26D244F
 
-New RDMA drivers are required to use the rdma_user_mmap_entry API
-instead of encoding buffer types directly into vm_pgoff tokens. Add
-the mmap_entries array to hfi2_filedata to track per-context mmap
-entry pointers for cleanup on context teardown. Export rvt_mmap()
-from rdmavt so hfi2 can call it as a fallback for CQ/QP/SRQ mmaps
-managed by rdmavt's pending_mmaps list. Also remove the dead
-hfi1_tid_info struct from the hfi2 ABI header.
+Bring in ipoib support.
 
+Co-developed-by: Dean Luick <dean.luick@cornelisnetworks.com>
+Signed-off-by: Dean Luick <dean.luick@cornelisnetworks.com>
+Co-developed-by: Bendan Cunningham <brendan.cunningham@cornelisnetworks.com>
+Signed-off-by: Breandan Cunningham <brendan.cunningham@cornelisnetworks.com>
 Assisted-by: Claude:claude-sonnet-4-5
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
----
- drivers/infiniband/hw/hfi2/hfi2.h   |  123 ++++++++++++++++++++++-------------
- drivers/infiniband/sw/rdmavt/mmap.c |    7 +-
- include/uapi/rdma/hfi2-abi.h        |   11 ---
- 3 files changed, 79 insertions(+), 62 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi2/hfi2.h b/drivers/infiniband/hw/hfi2/hfi2.h
-index 5ad8cefc7dc1..32a755c0d3d0 100644
---- a/drivers/infiniband/hw/hfi2/hfi2.h
-+++ b/drivers/infiniband/hw/hfi2/hfi2.h
-@@ -1284,6 +1284,12 @@ struct chip_params {
- 	u32 csr_err_mask_reg;
- 	u32 csr_err_clear_reg;
- 
+---
+  Changes since v2:
+    - Fix kernel-doc: @dd -> @ppd in hfi2_netdev_rx_init,
+      hfi2_netdev_rx_destroy, hfi2_netdev_enable_queues,
+      hfi2_netdev_add_data, hfi2_netdev_remove_data,
+      hfi2_netdev_get_data, hfi2_netdev_get_first_data
+  Changes since v1:
+    - Address Leon's feedback (Re: v1 patch 07, Mar 17 2026): change
+      hfi2_num_netdev_contexts() to take a 'const struct cpumask *'
+      since callers now pass cpu_online_mask (a const pointer) once
+      the affinity-policy real_cpu_mask is gone.
+---
+ drivers/infiniband/hw/hfi2/ipoib_main.c |  252 +++++++++
+ drivers/infiniband/hw/hfi2/ipoib_rx.c   |   93 +++
+ drivers/infiniband/hw/hfi2/ipoib_tx.c   |  872 +++++++++++++++++++++++++++++++
+ drivers/infiniband/hw/hfi2/netdev.h     |   94 +++
+ drivers/infiniband/hw/hfi2/netdev_rx.c  |  494 ++++++++++++++++++
+ 5 files changed, 1805 insertions(+)
+ create mode 100644 drivers/infiniband/hw/hfi2/ipoib_main.c
+ create mode 100644 drivers/infiniband/hw/hfi2/ipoib_rx.c
+ create mode 100644 drivers/infiniband/hw/hfi2/ipoib_tx.c
+ create mode 100644 drivers/infiniband/hw/hfi2/netdev.h
+ create mode 100644 drivers/infiniband/hw/hfi2/netdev_rx.c
+
+diff --git a/drivers/infiniband/hw/hfi2/ipoib_main.c b/drivers/infiniband/hw/hfi2/ipoib_main.c
+new file mode 100644
+index 000000000000..fd8f43e742a1
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/ipoib_main.c
+@@ -0,0 +1,252 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++/*
++ * Copyright(c) 2020 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ *
++ */
++
++/*
++ * This file contains HFI2 support for ipoib functionality
++ */
++
++#include "ipoib.h"
++#include "hfi2.h"
++
++static u32 qpn_from_mac(const u8 *mac_arr)
++{
++	return (u32)mac_arr[1] << 16 | mac_arr[2] << 8 | mac_arr[3];
++}
++
++static int hfi2_ipoib_dev_init(struct net_device *dev)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++	int ret;
++
++	ret = priv->netdev_ops->ndo_init(dev);
++	if (ret)
++		return ret;
++
++	ret = hfi2_netdev_add_data(priv->ppd,
++				   qpn_from_mac(priv->netdev->dev_addr), dev);
++	if (ret < 0) {
++		priv->netdev_ops->ndo_uninit(dev);
++		return ret;
++	}
++
++	return 0;
++}
++
++static void hfi2_ipoib_dev_uninit(struct net_device *dev)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++
++	free_percpu(dev->tstats);
++	dev->tstats = NULL;
++
++	hfi2_netdev_remove_data(priv->ppd,
++				qpn_from_mac(priv->netdev->dev_addr));
++
++	priv->netdev_ops->ndo_uninit(dev);
++}
++
++static int hfi2_ipoib_dev_open(struct net_device *dev)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++	int ret;
++
++	ret = priv->netdev_ops->ndo_open(dev);
++	if (!ret) {
++		struct hfi2_ibport *ibp =
++			to_iport(priv->device, priv->port_num);
++		struct rvt_qp *qp;
++		u32 qpn = qpn_from_mac(priv->netdev->dev_addr);
++
++		rcu_read_lock();
++		qp = rvt_lookup_qpn(ib_to_rvt(priv->device), &ibp->rvp,
++				    qpn | RVT_AIP_QP_BASE);
++		if (!qp) {
++			rcu_read_unlock();
++			priv->netdev_ops->ndo_stop(dev);
++			return -EINVAL;
++		}
++		rvt_get_qp(qp);
++		priv->qp = qp;
++		rcu_read_unlock();
++
++		hfi2_netdev_enable_queues(priv->ppd);
++		hfi2_ipoib_napi_tx_enable(dev);
++	}
++
++	return ret;
++}
++
++static int hfi2_ipoib_dev_stop(struct net_device *dev)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++
++	if (!priv->qp)
++		return 0;
++
++	hfi2_ipoib_napi_tx_disable(dev);
++	hfi2_netdev_disable_queues(priv->ppd);
++
++	rvt_put_qp(priv->qp);
++	priv->qp = NULL;
++
++	return priv->netdev_ops->ndo_stop(dev);
++}
++
++static const struct net_device_ops hfi2_ipoib_netdev_ops = {
++	.ndo_init = hfi2_ipoib_dev_init,
++	.ndo_uninit = hfi2_ipoib_dev_uninit,
++	.ndo_open = hfi2_ipoib_dev_open,
++	.ndo_stop = hfi2_ipoib_dev_stop,
++};
++
++static int hfi2_ipoib_mcast_attach(struct net_device *dev,
++				   struct ib_device *device, union ib_gid *mgid,
++				   u16 mlid, int set_qkey, u32 qkey)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++	u32 qpn = (u32)qpn_from_mac(priv->netdev->dev_addr);
++	struct hfi2_ibport *ibp = to_iport(priv->device, priv->port_num);
++	struct rvt_qp *qp;
++	int ret = -EINVAL;
++
++	rcu_read_lock();
++
++	qp = rvt_lookup_qpn(ib_to_rvt(priv->device), &ibp->rvp,
++			    qpn | RVT_AIP_QP_BASE);
++	if (qp) {
++		rvt_get_qp(qp);
++		rcu_read_unlock();
++		if (set_qkey)
++			priv->qkey = qkey;
++
++		/* attach QP to multicast group */
++		ret = qp->ibqp.device->ops.attach_mcast(&qp->ibqp, mgid, mlid);
++		rvt_put_qp(qp);
++	} else {
++		rcu_read_unlock();
++	}
++
++	return ret;
++}
++
++static int hfi2_ipoib_mcast_detach(struct net_device *dev,
++				   struct ib_device *device, union ib_gid *mgid,
++				   u16 mlid)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++	u32 qpn = (u32)qpn_from_mac(priv->netdev->dev_addr);
++	struct hfi2_ibport *ibp = to_iport(priv->device, priv->port_num);
++	struct rvt_qp *qp;
++	int ret = -EINVAL;
++
++	rcu_read_lock();
++
++	qp = rvt_lookup_qpn(ib_to_rvt(priv->device), &ibp->rvp,
++			    qpn | RVT_AIP_QP_BASE);
++	if (qp) {
++		rvt_get_qp(qp);
++		rcu_read_unlock();
++		ret = qp->ibqp.device->ops.detach_mcast(&qp->ibqp, mgid, mlid);
++		rvt_put_qp(qp);
++	} else {
++		rcu_read_unlock();
++	}
++	return ret;
++}
++
++static void hfi2_ipoib_netdev_dtor(struct net_device *dev)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++
++	hfi2_ipoib_txreq_deinit(priv);
++	hfi2_ipoib_rxq_deinit(priv->netdev);
++}
++
++static void hfi2_ipoib_set_id(struct net_device *dev, int id)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++
++	priv->pkey_index = (u16)id;
++	ib_query_pkey(priv->device, priv->port_num, priv->pkey_index,
++		      &priv->pkey);
++}
++
++static int hfi2_ipoib_setup_rn(struct ib_device *device, u32 port_num,
++			       struct net_device *netdev, void *param)
++{
++	struct hfi2_devdata *dd = dd_from_ibdev(device);
++	struct rdma_netdev *rn = netdev_priv(netdev);
++	struct hfi2_ipoib_dev_priv *priv;
++	int rc;
++
++	rn->send = hfi2_ipoib_send;
++	rn->tx_timeout = hfi2_ipoib_tx_timeout;
++	rn->attach_mcast = hfi2_ipoib_mcast_attach;
++	rn->detach_mcast = hfi2_ipoib_mcast_detach;
++	rn->set_id = hfi2_ipoib_set_id;
++	rn->hca = device;
++	rn->port_num = port_num;
++	rn->mtu = netdev->mtu;
++
++	priv = hfi2_ipoib_priv(netdev);
++	priv->dd = dd;
++	priv->ppd = &dd->pport[port_num - 1];
++	priv->netdev = netdev;
++	priv->device = device;
++	priv->port_num = port_num;
++	priv->netdev_ops = netdev->netdev_ops;
++
++	ib_query_pkey(device, port_num, priv->pkey_index, &priv->pkey);
++
++	rc = hfi2_ipoib_txreq_init(priv);
++	if (rc) {
++		dd_dev_err(dd, "IPoIB netdev TX init - failed(%d)\n", rc);
++		return rc;
++	}
++
++	rc = hfi2_ipoib_rxq_init(netdev);
++	if (rc) {
++		dd_dev_err(dd, "IPoIB netdev RX init - failed(%d)\n", rc);
++		hfi2_ipoib_txreq_deinit(priv);
++		return rc;
++	}
++
++	netdev->netdev_ops = &hfi2_ipoib_netdev_ops;
++
++	netdev->priv_destructor = hfi2_ipoib_netdev_dtor;
++	netdev->needs_free_netdev = true;
++	netdev->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
++
++	return 0;
++}
++
++int hfi2_ipoib_rn_get_params(struct ib_device *device, u32 port_num,
++			     enum rdma_netdev_t type,
++			     struct rdma_netdev_alloc_params *params)
++{
++	struct hfi2_devdata *dd = dd_from_ibdev(device);
++	struct hfi2_devrsrcs *dr = &dd->rsrcs;
++	struct hfi2_portrsrcs *pr;
++
++	if (type != RDMA_NETDEV_IPOIB)
++		return -EOPNOTSUPP;
++
++	if (!port_num || port_num > dd->num_pports)
++		return -EINVAL;
++	pr = &dr->ppr[port_num - 1];
++
++	if (!HFI2_CAP_IS_KSET(AIP) || !pr->num_netdev_contexts)
++		return -EOPNOTSUPP;
++
++	params->sizeof_priv = sizeof(struct hfi2_ipoib_rdma_netdev);
++	params->txqs = dr->last_sdma_engine - dr->first_sdma_engine;
++	params->rxqs = pr->num_netdev_contexts;
++	params->param = NULL;
++	params->initialize_rdma_netdev = hfi2_ipoib_setup_rn;
++
++	return 0;
++}
+diff --git a/drivers/infiniband/hw/hfi2/ipoib_rx.c b/drivers/infiniband/hw/hfi2/ipoib_rx.c
+new file mode 100644
+index 000000000000..be001c3d9b29
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/ipoib_rx.c
+@@ -0,0 +1,93 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++/*
++ * Copyright(c) 2020 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ *
++ */
++
++#include "netdev.h"
++#include "ipoib.h"
++
++#define HFI2_IPOIB_SKB_PAD ((NET_SKB_PAD) + (NET_IP_ALIGN))
++
++static void copy_ipoib_buf(struct sk_buff *skb, void *data, int size)
++{
++	skb_checksum_none_assert(skb);
++	skb->protocol = *((__be16 *)data);
++
++	skb_put_data(skb, data, size);
++	skb->mac_header = HFI2_IPOIB_PSEUDO_LEN;
++	skb_pull(skb, HFI2_IPOIB_ENCAP_LEN);
++}
++
++static struct sk_buff *prepare_frag_skb(struct napi_struct *napi, int size)
++{
++	struct sk_buff *skb;
++	int skb_size = SKB_DATA_ALIGN(size + HFI2_IPOIB_SKB_PAD);
++	void *frag;
++
++	skb_size += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
++	skb_size = SKB_DATA_ALIGN(skb_size);
++	frag = napi_alloc_frag(skb_size);
++
++	if (unlikely(!frag))
++		return napi_alloc_skb(napi, size);
++
++	skb = build_skb(frag, skb_size);
++
++	if (unlikely(!skb)) {
++		skb_free_frag(frag);
++		return NULL;
++	}
++
++	skb_reserve(skb, HFI2_IPOIB_SKB_PAD);
++	return skb;
++}
++
++struct sk_buff *hfi2_ipoib_prepare_skb(struct hfi2_netdev_rxq *rxq,
++				       int size, void *data)
++{
++	struct napi_struct *napi = &rxq->napi;
++	int skb_size = size + HFI2_IPOIB_ENCAP_LEN;
++	struct sk_buff *skb;
++
 +	/*
-+	 * Chip-variant operation callbacks. Function pointers are used here
-+	 * to abstract differences between chip variants (e.g. JKR and future
-+	 * generations). Each variant populates its own chip_params instance
-+	 * with the appropriate implementations at driver init time.
++	 * For smaller(4k + skb overhead) allocations we will go using
++	 * napi cache. Otherwise we will try to use napi frag cache.
 +	 */
- 	void (*hfi2_setextled)(struct hfi2_pportdata *ppd, u32 on);
- 	void (*start_led_override)(struct hfi2_pportdata *ppd,
- 				   unsigned int timeon, unsigned int timeoff);
-@@ -1307,9 +1313,9 @@ struct chip_params {
- 				    u32 size);
- 	bool (*check_synth_status)(struct hfi2_devdata *dd);
- 	void (*update_synth_status)(struct hfi2_devdata *dd);
--	u64 (*create_pbc)(struct hfi2_pportdata *ppd, bool hfi2_loopback, u64 flags,
--			  int srate_mbs, u32 vl, u32 dw_len, u32 l2, u32 dlid,
--			  u32 sctxt);
-+	u64 (*create_pbc)(struct hfi2_pportdata *ppd, bool hfi2_loopback,
-+			  u64 flags, int srate_mbs, u32 vl, u32 dw_len, u32 l2,
-+			  u32 dlid, u32 sctxt);
- 	void (*set_pio_integrity)(struct hfi2_devdata *dd, u32 pidx, u32 ctxt,
- 				  int type, enum spi_cmds cmd);
- 	int (*find_used_resources)(struct hfi2_devdata *dd);
-@@ -1834,7 +1840,7 @@ void hfi2_pf0_cleanup(struct hfi2_devdata *dd);
- 
- void hfi2_handle_linkup_change(struct hfi2_pportdata *ppd, u32 linkup);
- void hfi2_cport_handle_linkup_change(struct hfi2_pportdata *ppd,
--				struct opa_port_info *pi, u32 linkup);
-+				     struct opa_port_info *pi, u32 linkup);
- void hfi2_go_port_active(struct hfi2_pportdata *ppd);
- 
- void hfi2_handle_user_interrupt(struct hfi2_ctxtdata *rcd);
-@@ -1854,10 +1860,14 @@ int hfi2_rcd_put(struct hfi2_ctxtdata *rcd);
- int hfi2_rcd_get(struct hfi2_ctxtdata *rcd);
- struct hfi2_ctxtdata *hfi2_rcd_get_by_index(struct hfi2_devdata *dd, u16 ctxt);
- int hfi2_handle_receive_interrupt(struct hfi2_ctxtdata *rcd, int thread);
--int hfi2_handle_receive_interrupt_nodma_rtail(struct hfi2_ctxtdata *rcd, int thread);
--int hfi2_handle_receive_interrupt_dma_rtail(struct hfi2_ctxtdata *rcd, int thread);
--int hfi2_handle_receive_interrupt_napi_fp(struct hfi2_ctxtdata *rcd, int budget);
--int hfi2_handle_receive_interrupt_napi_sp(struct hfi2_ctxtdata *rcd, int budget);
-+int hfi2_handle_receive_interrupt_nodma_rtail(struct hfi2_ctxtdata *rcd,
-+					      int thread);
-+int hfi2_handle_receive_interrupt_dma_rtail(struct hfi2_ctxtdata *rcd,
-+					    int thread);
-+int hfi2_handle_receive_interrupt_napi_fp(struct hfi2_ctxtdata *rcd,
-+					  int budget);
-+int hfi2_handle_receive_interrupt_napi_sp(struct hfi2_ctxtdata *rcd,
-+					  int budget);
- void hfi2_set_all_slowpath(struct hfi2_pportdata *ppd);
- 
- extern const struct pci_device_id hfi2_pci_tbl[];
-@@ -2154,20 +2164,20 @@ static inline u32 egress_cycles(u32 len, u32 rate)
- 
- void hfi2_set_link_ipg(struct hfi2_pportdata *ppd);
- void hfi2_process_becn(struct hfi2_pportdata *ppd, u8 sl, u32 rlid, u32 lqpn,
--		  u32 rqpn, u8 svc_type);
-+		       u32 rqpn, u8 svc_type);
- void hfi2_return_cnp(struct hfi2_ibport *ibp, struct rvt_qp *qp, u32 remote_qpn,
--		u16 pkey, u32 slid, u32 dlid, u8 sc5,
--		const struct ib_grh *old_grh);
--void hfi2_return_cnp_16B(struct hfi2_ibport *ibp, struct rvt_qp *qp, u32 remote_qpn,
--		    u16 pkey, u32 slid, u32 dlid, u8 sc5,
--		    const struct ib_grh *old_grh);
-+		     u16 pkey, u32 slid, u32 dlid, u8 sc5,
-+		     const struct ib_grh *old_grh);
-+void hfi2_return_cnp_16B(struct hfi2_ibport *ibp, struct rvt_qp *qp,
-+			 u32 remote_qpn, u16 pkey, u32 slid, u32 dlid, u8 sc5,
-+			 const struct ib_grh *old_grh);
- typedef void (*hfi2_handle_cnp)(struct hfi2_ibport *ibp, struct rvt_qp *qp,
- 				u32 remote_qpn, u16 pkey, u32 slid, u32 dlid,
- 				u8 sc5, const struct ib_grh *old_grh);
- 
- #define PKEY_CHECK_INVALID -1
--int hfi2_egress_pkey_check(struct hfi2_pportdata *ppd, u32 slid, u16 pkey, u8 sc5,
--		      int8_t s_pkey_index);
-+int hfi2_egress_pkey_check(struct hfi2_pportdata *ppd, u32 slid, u16 pkey,
-+			   u8 sc5, int8_t s_pkey_index);
- 
- #define PACKET_EGRESS_TIMEOUT 350
- static inline void pause_for_credit_return(struct hfi2_devdata *dd)
-@@ -2357,7 +2367,8 @@ void hfi2_set_up_vl15(struct hfi2_pportdata *ppd, u16 vl15buf);
- void hfi2_reset_link_credits(struct hfi2_pportdata *ppd);
- void hfi2_assign_remote_cm_au_table(struct hfi2_pportdata *ppd, u8 vcu);
- 
--int hfi2_set_buffer_control(struct hfi2_pportdata *ppd, struct buffer_control *bc);
-+int hfi2_set_buffer_control(struct hfi2_pportdata *ppd,
-+			    struct buffer_control *bc);
- 
- static inline struct hfi2_devdata *dd_from_ppd(struct hfi2_pportdata *ppd)
- {
-@@ -3158,14 +3169,16 @@ static inline u64 read_iport_csr(const struct hfi2_devdata *dd, int pidx,
- 				 u32 offset)
- {
- 	/* IPORT CSRs are separated by rxe_iport_stride */
--	return hfi2_read_csr(dd, offset + (dd->params->rxe_iport_stride * pidx));
-+	return hfi2_read_csr(dd,
-+			     offset + (dd->params->rxe_iport_stride * pidx));
- }
- 
- static inline void write_iport_csr(struct hfi2_devdata *dd, int pidx,
- 				   u32 offset, u64 value)
- {
- 	/* IPORT CSRs are separated by rxe_iport_stride */
--	hfi2_write_csr(dd, offset + (dd->params->rxe_iport_stride * pidx), value);
-+	hfi2_write_csr(dd, offset + (dd->params->rxe_iport_stride * pidx),
-+		       value);
- }
- 
- static inline u64 read_iprc_csr(const struct hfi2_devdata *dd, int pidx, int rc,
-@@ -3175,8 +3188,9 @@ static inline u64 read_iprc_csr(const struct hfi2_devdata *dd, int pidx, int rc,
- 	 * IPORT receive context CSRs are separated by rxe_iport_stride and
- 	 * rxe_iprc_stride.
- 	 */
--	return hfi2_read_ctxt_csr(dd, offset + (dd->params->rxe_iport_stride * pidx),
--			     rc, dd->params->rxe_iprc_stride);
-+	return hfi2_read_ctxt_csr(
-+		dd, offset + (dd->params->rxe_iport_stride * pidx), rc,
-+		dd->params->rxe_iprc_stride);
- }
- 
- static inline void write_iprc_csr(struct hfi2_devdata *dd, int pidx, int rc,
-@@ -3186,36 +3200,40 @@ static inline void write_iprc_csr(struct hfi2_devdata *dd, int pidx, int rc,
- 	 * IPORT receive context CSRs are separated by rxe_iport_stride and
- 	 * rxe_iprc_stride.
- 	 */
--	hfi2_write_ctxt_csr(dd, offset + (dd->params->rxe_iport_stride * pidx), rc,
--		       dd->params->rxe_iprc_stride, value);
-+	hfi2_write_ctxt_csr(dd, offset + (dd->params->rxe_iport_stride * pidx),
-+			    rc, dd->params->rxe_iprc_stride, value);
- }
- 
- static inline u64 read_rctxt_csr(const struct hfi2_devdata *dd, int ctxt,
- 				 u32 offset)
- {
- 	/* restricted rcv context CSRs are separated by rxe_rctxt_stride */
--	return hfi2_read_ctxt_csr(dd, offset, ctxt, dd->params->rxe_rctxt_stride);
-+	return hfi2_read_ctxt_csr(dd, offset, ctxt,
-+				  dd->params->rxe_rctxt_stride);
- }
- 
- static inline void write_rctxt_csr(struct hfi2_devdata *dd, int ctxt,
- 				   u32 offset, u64 value)
- {
- 	/* restricted rcv context CSRs are separated by rxe_rctxt_stride */
--	hfi2_write_ctxt_csr(dd, offset, ctxt, dd->params->rxe_rctxt_stride, value);
-+	hfi2_write_ctxt_csr(dd, offset, ctxt, dd->params->rxe_rctxt_stride,
-+			    value);
- }
- 
- static inline u64 read_kctxt_csr(const struct hfi2_devdata *dd, int ctxt,
- 				 u32 offset)
- {
- 	/* kernel rcv context CSRs are separated by rxe_kctxt_stride */
--	return hfi2_read_ctxt_csr(dd, offset, ctxt, dd->params->rxe_kctxt_stride);
-+	return hfi2_read_ctxt_csr(dd, offset, ctxt,
-+				  dd->params->rxe_kctxt_stride);
- }
- 
- static inline void write_kctxt_csr(struct hfi2_devdata *dd, int ctxt,
- 				   u32 offset, u64 value)
- {
- 	/* kernel rcv context CSRs are separated by rxe_kctxt_stride */
--	hfi2_write_ctxt_csr(dd, offset, ctxt, dd->params->rxe_kctxt_stride, value);
-+	hfi2_write_ctxt_csr(dd, offset, ctxt, dd->params->rxe_kctxt_stride,
-+			    value);
- }
- 
- static inline u64 read_ku_csr(const struct hfi2_devdata *dd, int ctxt,
-@@ -3236,42 +3254,48 @@ static inline u64 read_uctxt_csr(const struct hfi2_devdata *dd, int ctxt,
- 				 u32 offset)
- {
- 	/* user per-context CSRs are separated by rxe_uctxt_stride */
--	return hfi2_read_ctxt_csr(dd, offset, ctxt, dd->params->rxe_uctxt_stride);
-+	return hfi2_read_ctxt_csr(dd, offset, ctxt,
-+				  dd->params->rxe_uctxt_stride);
- }
- 
- static inline void write_uctxt_csr(struct hfi2_devdata *dd, int ctxt,
- 				   u32 offset, u64 value)
- {
- 	/* user per-context CSRs are separated by rxe_uctxt_stride */
--	hfi2_write_ctxt_csr(dd, offset, ctxt, dd->params->rxe_uctxt_stride, value);
-+	hfi2_write_ctxt_csr(dd, offset, ctxt, dd->params->rxe_uctxt_stride,
-+			    value);
- }
- 
- static inline u64 read_sctxt_csr(const struct hfi2_devdata *dd, int ctxt,
- 				 u32 offset)
- {
- 	/* send context CSRs are separated by txe_sctxt_stride */
--	return hfi2_read_ctxt_csr(dd, offset, ctxt, dd->params->txe_sctxt_stride);
-+	return hfi2_read_ctxt_csr(dd, offset, ctxt,
-+				  dd->params->txe_sctxt_stride);
- }
- 
- static inline void write_sctxt_csr(struct hfi2_devdata *dd, int ctxt,
- 				   u32 offset, u64 value)
- {
- 	/* send context CSRs are separated by txe_sctxt_stride */
--	hfi2_write_ctxt_csr(dd, offset, ctxt, dd->params->txe_sctxt_stride, value);
-+	hfi2_write_ctxt_csr(dd, offset, ctxt, dd->params->txe_sctxt_stride,
-+			    value);
- }
- 
- static inline u64 read_tctxt_csr(const struct hfi2_devdata *dd, int ctxt,
- 				 u32 offset)
- {
- 	/* TXE send context CSRs are separated by txe_tctxt_stride */
--	return hfi2_read_ctxt_csr(dd, offset, ctxt, dd->params->txe_tctxt_stride);
-+	return hfi2_read_ctxt_csr(dd, offset, ctxt,
-+				  dd->params->txe_tctxt_stride);
- }
- 
- static inline void write_tctxt_csr(struct hfi2_devdata *dd, int ctxt,
- 				   u32 offset, u64 value)
- {
- 	/* TXE send context CSRs are separated by txe_tctxt_stride */
--	hfi2_write_ctxt_csr(dd, offset, ctxt, dd->params->txe_tctxt_stride, value);
-+	hfi2_write_ctxt_csr(dd, offset, ctxt, dd->params->txe_tctxt_stride,
-+			    value);
- }
- 
- static inline u64 read_sdma_csr(const struct hfi2_devdata *dd, int eng,
-@@ -3292,28 +3316,32 @@ static inline u64 read_sdmacfg_csr(const struct hfi2_devdata *dd, int eng,
- 				   u32 offset)
- {
- 	/* SDMA config engine CSRs are separated by txe_sdmacfg_stride */
--	return hfi2_read_csr(dd, offset + (dd->params->txe_sdmacfg_stride * eng));
-+	return hfi2_read_csr(dd,
-+			     offset + (dd->params->txe_sdmacfg_stride * eng));
- }
- 
- static inline void write_sdmacfg_csr(struct hfi2_devdata *dd, int eng,
- 				     u32 offset, u64 value)
- {
- 	/* SDMA config engine CSRs are separated by txe_sdmacfg_stride */
--	hfi2_write_csr(dd, offset + (dd->params->txe_sdmacfg_stride * eng), value);
-+	hfi2_write_csr(dd, offset + (dd->params->txe_sdmacfg_stride * eng),
-+		       value);
- }
- 
- static inline u64 read_eport_csr(const struct hfi2_devdata *dd, int pidx,
- 				 u32 offset)
- {
- 	/* EPORT CSRs are separated by txe_eport_stride */
--	return hfi2_read_csr(dd, offset + (dd->params->txe_eport_stride * pidx));
-+	return hfi2_read_csr(dd,
-+			     offset + (dd->params->txe_eport_stride * pidx));
- }
- 
- static inline void write_eport_csr(struct hfi2_devdata *dd, int pidx,
- 				   u32 offset, u64 value)
- {
- 	/* EPORT CSRs are separated by txe_eport_stride */
--	hfi2_write_csr(dd, offset + (dd->params->txe_eport_stride * pidx), value);
-+	hfi2_write_csr(dd, offset + (dd->params->txe_eport_stride * pidx),
-+		       value);
- }
- 
- static inline u64 read_epsc_csr(const struct hfi2_devdata *dd, int pidx, int sc,
-@@ -3323,8 +3351,9 @@ static inline u64 read_epsc_csr(const struct hfi2_devdata *dd, int pidx, int sc,
- 	 * EPORT send context CSRs are separated by txe_eport_stride and
- 	 * txe_epsc_stride.
- 	 */
--	return hfi2_read_ctxt_csr(dd, offset + (dd->params->txe_eport_stride * pidx),
--			     sc, dd->params->txe_epsc_stride);
-+	return hfi2_read_ctxt_csr(
-+		dd, offset + (dd->params->txe_eport_stride * pidx), sc,
-+		dd->params->txe_epsc_stride);
- }
- 
- static inline void write_epsc_csr(struct hfi2_devdata *dd, int pidx, int sc,
-@@ -3334,8 +3363,8 @@ static inline void write_epsc_csr(struct hfi2_devdata *dd, int pidx, int sc,
- 	 * EPORT send context CSRs are separated by txe_eport_stride and
- 	 * txe_epsc_stride.
- 	 */
--	hfi2_write_ctxt_csr(dd, offset + (dd->params->txe_eport_stride * pidx), sc,
--		       dd->params->txe_epsc_stride, value);
-+	hfi2_write_ctxt_csr(dd, offset + (dd->params->txe_eport_stride * pidx),
-+			    sc, dd->params->txe_epsc_stride, value);
- }
- 
- static inline u64 read_epscarr_csr(const struct hfi2_devdata *dd, int pidx,
-@@ -3345,8 +3374,8 @@ static inline u64 read_epscarr_csr(const struct hfi2_devdata *dd, int pidx,
- 	 * EPORT send context array CSRs are separated by txe_eport_stride and
- 	 * a per-context stride of 8.
- 	 */
--	return hfi2_read_ctxt_csr(dd, offset + (dd->params->txe_eport_stride * pidx),
--			     sc, 8);
-+	return hfi2_read_ctxt_csr(
-+		dd, offset + (dd->params->txe_eport_stride * pidx), sc, 8);
- }
- 
- static inline void write_epscarr_csr(struct hfi2_devdata *dd, int pidx, int sc,
-@@ -3356,8 +3385,8 @@ static inline void write_epscarr_csr(struct hfi2_devdata *dd, int pidx, int sc,
- 	 * EPORT send context array CSRs are separated by txe_eport_stride and
- 	 * a per-context stride of 8.
- 	 */
--	hfi2_write_ctxt_csr(dd, offset + (dd->params->txe_eport_stride * pidx), sc,
--		       8, value);
-+	hfi2_write_ctxt_csr(dd, offset + (dd->params->txe_eport_stride * pidx),
-+			    sc, 8, value);
- }
- 
- static inline u32 rhe_rcv_type_err(struct hfi2_packet *packet)
-@@ -3408,7 +3437,7 @@ enum preg_op {
- };
- 
- int hfi2_priv_reg_op(struct hfi2_devdata *dd, int pidx, u32 ctxt, int type,
--		enum preg_op op, u64 arg);
-+		     enum preg_op op, u64 arg);
- 
- enum csr_type {
- 	CSR_TYPE_IPORT = 1,
-@@ -3427,6 +3456,6 @@ enum csr_type {
- };
- 
- u64 hfi2_read_csr_type(struct hfi2_devdata *dd, enum csr_type type, u32 off,
--		  u16 ctxt, u8 pidx_eng);
-+		       u16 ctxt, u8 pidx_eng);
- 
- #endif /* _HFI2_KERNEL_H */
-diff --git a/drivers/infiniband/sw/rdmavt/mmap.c b/drivers/infiniband/sw/rdmavt/mmap.c
-index 473f464f33fa..f0bd096f457c 100644
---- a/drivers/infiniband/sw/rdmavt/mmap.c
-+++ b/drivers/infiniband/sw/rdmavt/mmap.c
-@@ -32,8 +32,7 @@ void rvt_mmap_init(struct rvt_dev_info *rdi)
-  */
- void rvt_release_mmap_info(struct kref *ref)
- {
--	struct rvt_mmap_info *ip =
--		container_of(ref, struct rvt_mmap_info, ref);
-+	struct rvt_mmap_info *ip = container_of(ref, struct rvt_mmap_info, ref);
- 	struct rvt_dev_info *rdi = ib_to_rvt(ip->context->device);
- 
- 	spin_lock_irq(&rdi->pending_lock);
-@@ -91,8 +90,7 @@ int rvt_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
- 	 * CQ, QP, or SRQ is soon followed by a call to mmap().
- 	 */
- 	spin_lock_irq(&rdi->pending_lock);
--	list_for_each_entry_safe(ip, pp, &rdi->pending_mmaps,
--				 pending_mmaps) {
-+	list_for_each_entry_safe(ip, pp, &rdi->pending_mmaps, pending_mmaps) {
- 		/* Only the creator is allowed to mmap the object */
- 		if (context != ip->context || (__u64)offset != ip->offset)
- 			continue;
-@@ -115,6 +113,7 @@ int rvt_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
- done:
- 	return ret;
- }
-+EXPORT_SYMBOL(rvt_mmap);
- 
- /**
-  * rvt_create_mmap_info - allocate information for hfi1_mmap
-diff --git a/include/uapi/rdma/hfi2-abi.h b/include/uapi/rdma/hfi2-abi.h
-index 7b7ca198b539..5b5b619bf1a8 100644
---- a/include/uapi/rdma/hfi2-abi.h
-+++ b/include/uapi/rdma/hfi2-abi.h
-@@ -248,17 +248,6 @@ struct hfi2_ctxt_info {
- 	__u16 sdma_ring_size; /* number of entries in SDMA request ring */
- };
- 
--struct hfi1_tid_info {
--	/* virtual address of first page in transfer */
--	__aligned_u64 vaddr;
--	/* pointer to tid array. this array is big enough */
--	__aligned_u64 tidlist;
--	/* number of tids programmed by this request */
--	__u32 tidcnt;
--	/* length of transfer buffer programmed by this request */
--	__u32 length;
--};
--
- #define HFI2_TID_UPDATE_FLAGS_MEMINFO_MASK 0xfUL
- #define HFI2_TID_UPDATE_FLAGS_RESERVED_MASK \
- 	(~(__u64)(HFI2_TID_UPDATE_FLAGS_MEMINFO_MASK))
++	if (size <= SKB_WITH_OVERHEAD(PAGE_SIZE))
++		skb = napi_alloc_skb(napi, skb_size);
++	else
++		skb = prepare_frag_skb(napi, skb_size);
++
++	if (unlikely(!skb))
++		return NULL;
++
++	copy_ipoib_buf(skb, data, size);
++
++	return skb;
++}
++
++int hfi2_ipoib_rxq_init(struct net_device *netdev)
++{
++	struct hfi2_ipoib_dev_priv *ipoib_priv = hfi2_ipoib_priv(netdev);
++	struct hfi2_pportdata *ppd = ipoib_priv->ppd;
++	int ret;
++
++	ret = hfi2_netdev_rx_init(ppd);
++	if (ret)
++		return ret;
++
++	hfi2_init_aip_rsm(ppd);
++
++	return ret;
++}
++
++void hfi2_ipoib_rxq_deinit(struct net_device *netdev)
++{
++	struct hfi2_ipoib_dev_priv *ipoib_priv = hfi2_ipoib_priv(netdev);
++	struct hfi2_pportdata *ppd = ipoib_priv->ppd;
++
++	hfi2_deinit_aip_rsm(ppd);
++	hfi2_netdev_rx_destroy(ppd);
++}
+diff --git a/drivers/infiniband/hw/hfi2/ipoib_tx.c b/drivers/infiniband/hw/hfi2/ipoib_tx.c
+new file mode 100644
+index 000000000000..52ab2887afcb
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/ipoib_tx.c
+@@ -0,0 +1,872 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++/*
++ * Copyright(c) 2020 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ *
++ */
++
++/*
++ * This file contains HFI2 support for IPOIB SDMA functionality
++ */
++
++#include <linux/log2.h>
++#include <linux/circ_buf.h>
++
++#include "sdma.h"
++#include "verbs.h"
++#include "trace_ibhdrs.h"
++#include "ipoib.h"
++#include "trace_tx.h"
++#include "qp.h"
++
++/* Add a convenience helper */
++#define CIRC_ADD(val, add, size) (((val) + (add)) & ((size) - 1))
++#define CIRC_NEXT(val, size) CIRC_ADD(val, 1, size)
++#define CIRC_PREV(val, size) CIRC_ADD(val, -1, size)
++
++struct ipoib_txparms {
++	struct hfi2_devdata        *dd;
++	struct rdma_ah_attr        *ah_attr;
++	struct hfi2_ibport         *ibp;
++	struct hfi2_ipoib_txq      *txq;
++	union hfi2_ipoib_flow       flow;
++	u32                         dqpn;
++	u8                          hdr_dwords;
++	u8                          entropy;
++};
++
++static struct ipoib_txreq *
++hfi2_txreq_from_idx(struct hfi2_ipoib_circ_buf *r, u32 idx)
++{
++	return (struct ipoib_txreq *)(r->items + (idx << r->shift));
++}
++
++static u32 hfi2_ipoib_txreqs(const u64 sent, const u64 completed)
++{
++	return sent - completed;
++}
++
++static u64 hfi2_ipoib_used(struct hfi2_ipoib_txq *txq)
++{
++	return hfi2_ipoib_txreqs(txq->tx_ring.sent_txreqs,
++				 txq->tx_ring.complete_txreqs);
++}
++
++static void hfi2_ipoib_stop_txq(struct hfi2_ipoib_txq *txq)
++{
++	trace_hfi2_txq_stop(txq);
++	if (atomic_inc_return(&txq->tx_ring.stops) == 1)
++		netif_stop_subqueue(txq->priv->netdev, txq->q_idx);
++}
++
++static void hfi2_ipoib_wake_txq(struct hfi2_ipoib_txq *txq)
++{
++	trace_hfi2_txq_wake(txq);
++	if (atomic_dec_and_test(&txq->tx_ring.stops))
++		netif_wake_subqueue(txq->priv->netdev, txq->q_idx);
++}
++
++static uint hfi2_ipoib_ring_hwat(struct hfi2_ipoib_txq *txq)
++{
++	return min_t(uint, txq->priv->netdev->tx_queue_len,
++		     txq->tx_ring.max_items - 1);
++}
++
++static uint hfi2_ipoib_ring_lwat(struct hfi2_ipoib_txq *txq)
++{
++	return min_t(uint, txq->priv->netdev->tx_queue_len,
++		     txq->tx_ring.max_items) >> 1;
++}
++
++static void hfi2_ipoib_check_queue_depth(struct hfi2_ipoib_txq *txq)
++{
++	++txq->tx_ring.sent_txreqs;
++	if (hfi2_ipoib_used(txq) >= hfi2_ipoib_ring_hwat(txq) &&
++	    !atomic_xchg(&txq->tx_ring.ring_full, 1)) {
++		trace_hfi2_txq_full(txq);
++		hfi2_ipoib_stop_txq(txq);
++	}
++}
++
++static void hfi2_ipoib_check_queue_stopped(struct hfi2_ipoib_txq *txq)
++{
++	struct net_device *dev = txq->priv->netdev;
++
++	/* If shutting down just return as queue state is irrelevant */
++	if (unlikely(dev->reg_state != NETREG_REGISTERED))
++		return;
++
++	/*
++	 * When the queue has been drained to less than half full it will be
++	 * restarted.
++	 * The size of the txreq ring is fixed at initialization.
++	 * The tx queue len can be adjusted upward while the interface is
++	 * running.
++	 * The tx queue len can be large enough to overflow the txreq_ring.
++	 * Use the minimum of the current tx_queue_len or the rings max txreqs
++	 * to protect against ring overflow.
++	 */
++	if (hfi2_ipoib_used(txq) < hfi2_ipoib_ring_lwat(txq) &&
++	    atomic_xchg(&txq->tx_ring.ring_full, 0)) {
++		trace_hfi2_txq_xmit_unstopped(txq);
++		hfi2_ipoib_wake_txq(txq);
++	}
++}
++
++static void hfi2_ipoib_free_tx(struct ipoib_txreq *tx, int budget)
++{
++	struct hfi2_ipoib_dev_priv *priv = tx->txq->priv;
++
++	if (likely(!tx->sdma_status)) {
++		dev_sw_netstats_tx_add(priv->netdev, 1, tx->skb->len);
++	} else {
++		++priv->netdev->stats.tx_errors;
++		dd_dev_warn(priv->dd,
++			    "%s: Status = 0x%x pbc 0x%llx txq = %d sde = %d\n",
++			    __func__, tx->sdma_status,
++			    le64_to_cpu(tx->sdma_hdr->pbc), tx->txq->q_idx,
++			    tx->txq->sde->this_idx);
++	}
++
++	napi_consume_skb(tx->skb, budget);
++	tx->skb = NULL;
++	sdma_txclean(priv->dd, &tx->txreq);
++}
++
++static void hfi2_ipoib_drain_tx_ring(struct hfi2_ipoib_txq *txq)
++{
++	struct hfi2_ipoib_circ_buf *tx_ring = &txq->tx_ring;
++	int i;
++	struct ipoib_txreq *tx;
++
++	for (i = 0; i < tx_ring->max_items; i++) {
++		tx = hfi2_txreq_from_idx(tx_ring, i);
++		tx->complete = 0;
++		dev_kfree_skb_any(tx->skb);
++		tx->skb = NULL;
++		sdma_txclean(txq->priv->dd, &tx->txreq);
++	}
++	tx_ring->head = 0;
++	tx_ring->tail = 0;
++	tx_ring->complete_txreqs = 0;
++	tx_ring->sent_txreqs = 0;
++	tx_ring->avail = hfi2_ipoib_ring_hwat(txq);
++}
++
++static int hfi2_ipoib_poll_tx_ring(struct napi_struct *napi, int budget)
++{
++	struct hfi2_ipoib_txq *txq =
++		container_of(napi, struct hfi2_ipoib_txq, napi);
++	struct hfi2_ipoib_circ_buf *tx_ring = &txq->tx_ring;
++	u32 head = tx_ring->head;
++	u32 max_tx = tx_ring->max_items;
++	int work_done;
++	struct ipoib_txreq *tx =  hfi2_txreq_from_idx(tx_ring, head);
++
++	trace_hfi2_txq_poll(txq);
++	for (work_done = 0; work_done < budget; work_done++) {
++		/* See hfi2_ipoib_sdma_complete() */
++		if (!smp_load_acquire(&tx->complete))
++			break;
++		tx->complete = 0;
++		trace_hfi2_tx_produce(tx, head);
++		hfi2_ipoib_free_tx(tx, budget);
++		head = CIRC_NEXT(head, max_tx);
++		tx =  hfi2_txreq_from_idx(tx_ring, head);
++	}
++	tx_ring->complete_txreqs += work_done;
++
++	/* Finished freeing tx items so store the head value. */
++	smp_store_release(&tx_ring->head, head);
++
++	hfi2_ipoib_check_queue_stopped(txq);
++
++	if (work_done < budget)
++		napi_complete_done(napi, work_done);
++
++	return work_done;
++}
++
++static void hfi2_ipoib_sdma_complete(struct sdma_txreq *txreq, int status)
++{
++	struct ipoib_txreq *tx = container_of(txreq, struct ipoib_txreq, txreq);
++
++	trace_hfi2_txq_complete(tx->txq);
++	tx->sdma_status = status;
++	/* see hfi2_ipoib_poll_tx_ring */
++	smp_store_release(&tx->complete, 1);
++	napi_schedule_irqoff(&tx->txq->napi);
++}
++
++static int hfi2_ipoib_build_ulp_payload(struct ipoib_txreq *tx,
++					struct ipoib_txparms *txp)
++{
++	struct hfi2_devdata *dd = txp->dd;
++	struct sdma_txreq *txreq = &tx->txreq;
++	struct sk_buff *skb = tx->skb;
++	int ret = 0;
++	int i;
++
++	if (skb_headlen(skb)) {
++		ret = sdma_txadd_kvaddr(dd, txreq, skb->data, skb_headlen(skb));
++		if (unlikely(ret))
++			return ret;
++	}
++
++	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
++		const skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
++
++		ret = sdma_txadd_page(dd,
++				      txreq,
++				      skb_frag_page(frag),
++				      skb_frag_off(frag),
++				      skb_frag_size(frag));
++		if (unlikely(ret))
++			break;
++	}
++
++	return ret;
++}
++
++static int hfi2_ipoib_build_tx_desc(struct ipoib_txreq *tx,
++				    struct ipoib_txparms *txp)
++{
++	struct hfi2_devdata *dd = txp->dd;
++	struct sdma_txreq *txreq = &tx->txreq;
++	struct hfi2_sdma_header *sdma_hdr = tx->sdma_hdr;
++	u16 pkt_bytes =
++		sizeof(sdma_hdr->pbc) + (txp->hdr_dwords << 2) + tx->skb->len;
++	int ret;
++
++	ret = sdma_txinit(dd, txreq, 0, pkt_bytes, hfi2_ipoib_sdma_complete);
++	if (unlikely(ret))
++		return ret;
++
++	/* add pbc + headers */
++	ret = sdma_txadd_kvaddr(dd,
++				txreq,
++				sdma_hdr,
++				sizeof(sdma_hdr->pbc) + (txp->hdr_dwords << 2));
++	if (unlikely(ret))
++		return ret;
++
++	/* add the ulp payload */
++	return hfi2_ipoib_build_ulp_payload(tx, txp);
++}
++
++static void hfi2_ipoib_build_ib_tx_headers(struct ipoib_txreq *tx,
++					   struct ipoib_txparms *txp)
++{
++	struct hfi2_ipoib_dev_priv *priv = tx->txq->priv;
++	struct send_context *sc = hfi2_qp_to_send_context(priv->qp, txp->flow.sc5);
++	struct hfi2_sdma_header *sdma_hdr = tx->sdma_hdr;
++	struct sk_buff *skb = tx->skb;
++	struct hfi2_pportdata *ppd = ppd_from_ibp(txp->ibp);
++	struct hfi2_devdata *dd = ppd->dd;
++	struct rdma_ah_attr *ah_attr = txp->ah_attr;
++	struct ib_other_headers *ohdr;
++	struct ib_grh *grh;
++	u64 pbc;
++	u16 dwords;
++	u16 slid;
++	u16 dlid;
++	u16 lrh0;
++	u32 bth0;
++	u32 sqpn = (u32)(priv->netdev->dev_addr[1] << 16 |
++			 priv->netdev->dev_addr[2] << 8 |
++			 priv->netdev->dev_addr[3]);
++	u16 payload_dwords;
++	u8 pad_cnt;
++
++	pad_cnt = -skb->len & 3;
++
++	/* Includes ICRC */
++	payload_dwords = ((skb->len + pad_cnt) >> 2) + SIZE_OF_CRC;
++
++	/* header size in dwords LRH+BTH+DETH = (8+12+8)/4. */
++	txp->hdr_dwords = 7;
++
++	if (rdma_ah_get_ah_flags(ah_attr) & IB_AH_GRH) {
++		grh = &sdma_hdr->hdr.ibh.u.l.grh;
++		txp->hdr_dwords +=
++			hfi2_make_grh(txp->ibp,
++				      grh,
++				      rdma_ah_read_grh(ah_attr),
++				      txp->hdr_dwords - LRH_9B_DWORDS,
++				      payload_dwords);
++		lrh0 = HFI2_LRH_GRH;
++		ohdr = &sdma_hdr->hdr.ibh.u.l.oth;
++	} else {
++		lrh0 = HFI2_LRH_BTH;
++		ohdr = &sdma_hdr->hdr.ibh.u.oth;
++	}
++
++	lrh0 |= (rdma_ah_get_sl(ah_attr) & 0xf) << 4;
++	lrh0 |= (txp->flow.sc5 & 0xf) << 12;
++
++	dlid = opa_get_lid(rdma_ah_get_dlid(ah_attr), 9B);
++	if (dlid == be16_to_cpu(IB_LID_PERMISSIVE)) {
++		slid = be16_to_cpu(IB_LID_PERMISSIVE);
++	} else {
++		u16 lid = (u16)ppd->lid;
++
++		if (lid) {
++			lid |= rdma_ah_get_path_bits(ah_attr) &
++				((1 << ppd->lmc) - 1);
++			slid = lid;
++		} else {
++			slid = be16_to_cpu(IB_LID_PERMISSIVE);
++		}
++	}
++
++	/* Includes ICRC */
++	dwords = txp->hdr_dwords + payload_dwords;
++
++	/* Build the lrh */
++	sdma_hdr->hdr.hdr_type = HFI2_PKT_TYPE_9B;
++	hfi2_make_ib_hdr(&sdma_hdr->hdr.ibh, lrh0, dwords, dlid, slid);
++
++	/* Build the bth */
++	bth0 = (IB_OPCODE_UD_SEND_ONLY << 24) | (pad_cnt << 20) | priv->pkey;
++
++	ohdr->bth[0] = cpu_to_be32(bth0);
++	ohdr->bth[1] = cpu_to_be32(txp->dqpn);
++	ohdr->bth[2] = cpu_to_be32(mask_psn((u32)txp->txq->tx_ring.sent_txreqs));
++
++	/* Build the deth */
++	ohdr->u.ud.deth[0] = cpu_to_be32(priv->qkey);
++	ohdr->u.ud.deth[1] = cpu_to_be32((txp->entropy <<
++					  HFI2_IPOIB_ENTROPY_SHIFT) | sqpn);
++
++	/* Construct the pbc. */
++	pbc = dd->params->create_pbc(ppd, false, pbc_sc4_flag(txp->flow.sc5), 0,
++				     sc_to_vlt(ppd, txp->flow.sc5),
++				     dwords - SIZE_OF_CRC +
++					(sizeof(sdma_hdr->pbc) >> 2),
++				     PBC_L2_9B, dlid,
++				     sc->hw_context);
++	sdma_hdr->pbc = cpu_to_le64(pbc);
++}
++
++static struct ipoib_txreq *hfi2_ipoib_send_dma_common(struct net_device *dev,
++						      struct sk_buff *skb,
++						      struct ipoib_txparms *txp)
++{
++	struct hfi2_pportdata *ppd = ppd_from_ibp(txp->ibp);
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++	struct hfi2_ipoib_txq *txq = txp->txq;
++	struct ipoib_txreq *tx;
++	struct hfi2_ipoib_circ_buf *tx_ring = &txq->tx_ring;
++	u32 tail = tx_ring->tail;
++	int ret;
++
++	if (unlikely(!tx_ring->avail)) {
++		u32 head;
++
++		if (hfi2_ipoib_used(txq) >= hfi2_ipoib_ring_hwat(txq))
++			/* This shouldn't happen with a stopped queue */
++			return ERR_PTR(-ENOMEM);
++		/* See hfi2_ipoib_poll_tx_ring() */
++		head = smp_load_acquire(&tx_ring->head);
++		tx_ring->avail =
++			min_t(u32, hfi2_ipoib_ring_hwat(txq),
++			      CIRC_CNT(head, tail, tx_ring->max_items));
++	} else {
++		tx_ring->avail--;
++	}
++	tx = hfi2_txreq_from_idx(tx_ring, tail);
++	trace_hfi2_txq_alloc_tx(txq);
++
++	/* so that we can test if the sdma descriptors are there */
++	tx->txreq.num_desc = 0;
++	tx->txq = txq;
++	tx->skb = skb;
++	INIT_LIST_HEAD(&tx->txreq.list);
++
++	hfi2_ipoib_build_ib_tx_headers(tx, txp);
++
++	ret = hfi2_ipoib_build_tx_desc(tx, txp);
++	if (likely(!ret)) {
++		if (txq->flow.as_int != txp->flow.as_int) {
++			txq->flow.tx_queue = txp->flow.tx_queue;
++			txq->flow.sc5 = txp->flow.sc5;
++			txq->sde = hfi2_sdma_select_engine_sc(ppd,
++							 txp->flow.tx_queue,
++							 txp->flow.sc5);
++			trace_hfi2_flow_switch(txq);
++		}
++
++		return tx;
++	}
++
++	sdma_txclean(priv->dd, &tx->txreq);
++
++	return ERR_PTR(ret);
++}
++
++static int hfi2_ipoib_submit_tx_list(struct net_device *dev,
++				     struct hfi2_ipoib_txq *txq)
++{
++	int ret;
++	u16 count_out;
++
++	ret = hfi2_sdma_send_txlist(txq->sde,
++			       iowait_get_ib_work(&txq->wait),
++			       &txq->tx_list,
++			       &count_out);
++	if (likely(!ret) || ret == -EBUSY || ret == -ECOMM)
++		return ret;
++
++	dd_dev_warn(txq->priv->dd, "cannot send skb tx list, err %d.\n", ret);
++
++	return ret;
++}
++
++static int hfi2_ipoib_flush_tx_list(struct net_device *dev,
++				    struct hfi2_ipoib_txq *txq)
++{
++	int ret = 0;
++
++	if (!list_empty(&txq->tx_list)) {
++		/* Flush the current list */
++		ret = hfi2_ipoib_submit_tx_list(dev, txq);
++
++		if (unlikely(ret))
++			if (ret != -EBUSY)
++				++dev->stats.tx_carrier_errors;
++	}
++
++	return ret;
++}
++
++static int hfi2_ipoib_submit_tx(struct hfi2_ipoib_txq *txq,
++				struct ipoib_txreq *tx)
++{
++	int ret;
++
++	ret = hfi2_sdma_send_txreq(txq->sde,
++			      iowait_get_ib_work(&txq->wait),
++			      &tx->txreq,
++			      txq->pkts_sent);
++	if (likely(!ret)) {
++		txq->pkts_sent = true;
++		iowait_starve_clear(txq->pkts_sent, &txq->wait);
++	}
++
++	return ret;
++}
++
++static int hfi2_ipoib_send_dma_single(struct net_device *dev,
++				      struct sk_buff *skb,
++				      struct ipoib_txparms *txp)
++{
++	struct hfi2_ipoib_txq *txq = txp->txq;
++	struct hfi2_ipoib_circ_buf *tx_ring;
++	struct ipoib_txreq *tx;
++	int ret;
++
++	tx = hfi2_ipoib_send_dma_common(dev, skb, txp);
++	if (IS_ERR(tx)) {
++		int ret = PTR_ERR(tx);
++
++		dev_kfree_skb_any(skb);
++
++		if (ret == -ENOMEM)
++			++dev->stats.tx_errors;
++		else
++			++dev->stats.tx_carrier_errors;
++
++		return NETDEV_TX_OK;
++	}
++
++	tx_ring = &txq->tx_ring;
++	trace_hfi2_tx_consume(tx, tx_ring->tail);
++	/* consume tx */
++	smp_store_release(&tx_ring->tail, CIRC_NEXT(tx_ring->tail, tx_ring->max_items));
++	ret = hfi2_ipoib_submit_tx(txq, tx);
++	trace_sdma_output_ibhdr(txq->priv->dd,
++				&tx->sdma_hdr->hdr,
++				ib_is_sc5(txp->flow.sc5), ret);
++	if (likely(!ret)) {
++tx_ok:
++		hfi2_ipoib_check_queue_depth(txq);
++		return NETDEV_TX_OK;
++	}
++
++	txq->pkts_sent = false;
++
++	if (ret == -EBUSY || ret == -ECOMM)
++		goto tx_ok;
++
++	/* mark complete and kick napi tx */
++	smp_store_release(&tx->complete, 1);
++	napi_schedule(&tx->txq->napi);
++
++	++dev->stats.tx_carrier_errors;
++
++	return NETDEV_TX_OK;
++}
++
++static int hfi2_ipoib_send_dma_list(struct net_device *dev,
++				    struct sk_buff *skb,
++				    struct ipoib_txparms *txp)
++{
++	struct hfi2_ipoib_txq *txq = txp->txq;
++	struct hfi2_ipoib_circ_buf *tx_ring;
++	struct ipoib_txreq *tx;
++
++	/* Has the flow change ? */
++	if (txq->flow.as_int != txp->flow.as_int) {
++		int ret;
++
++		trace_hfi2_flow_flush(txq);
++		ret = hfi2_ipoib_flush_tx_list(dev, txq);
++		if (unlikely(ret)) {
++			if (ret == -EBUSY)
++				++dev->stats.tx_dropped;
++			dev_kfree_skb_any(skb);
++			return NETDEV_TX_OK;
++		}
++	}
++	tx = hfi2_ipoib_send_dma_common(dev, skb, txp);
++	if (IS_ERR(tx)) {
++		int ret = PTR_ERR(tx);
++
++		dev_kfree_skb_any(skb);
++
++		if (ret == -ENOMEM)
++			++dev->stats.tx_errors;
++		else
++			++dev->stats.tx_carrier_errors;
++
++		return NETDEV_TX_OK;
++	}
++
++	tx_ring = &txq->tx_ring;
++	trace_hfi2_tx_consume(tx, tx_ring->tail);
++	/* consume tx */
++	smp_store_release(&tx_ring->tail, CIRC_NEXT(tx_ring->tail, tx_ring->max_items));
++	list_add_tail(&tx->txreq.list, &txq->tx_list);
++
++	hfi2_ipoib_check_queue_depth(txq);
++
++	trace_sdma_output_ibhdr(txq->priv->dd,
++				&tx->sdma_hdr->hdr,
++				ib_is_sc5(txp->flow.sc5), 0);
++
++	if (!netdev_xmit_more())
++		(void)hfi2_ipoib_flush_tx_list(dev, txq);
++
++	return NETDEV_TX_OK;
++}
++
++static u8 hfi2_ipoib_calc_entropy(struct sk_buff *skb)
++{
++	if (skb_transport_header_was_set(skb)) {
++		u8 *hdr = (u8 *)skb_transport_header(skb);
++
++		return (hdr[0] ^ hdr[1] ^ hdr[2] ^ hdr[3]);
++	}
++
++	return (u8)skb_get_queue_mapping(skb);
++}
++
++int hfi2_ipoib_send(struct net_device *dev,
++		    struct sk_buff *skb,
++		    struct ib_ah *address,
++		    u32 dqpn)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++	struct ipoib_txparms txp;
++	struct rdma_netdev *rn = netdev_priv(dev);
++
++	if (unlikely(skb->len > rn->mtu + HFI2_IPOIB_ENCAP_LEN)) {
++		dd_dev_warn(priv->dd, "packet len %d (> %d) too long to send, dropping\n",
++			    skb->len,
++			    rn->mtu + HFI2_IPOIB_ENCAP_LEN);
++		++dev->stats.tx_dropped;
++		++dev->stats.tx_errors;
++		dev_kfree_skb_any(skb);
++		return NETDEV_TX_OK;
++	}
++
++	txp.dd = priv->dd;
++	txp.ah_attr = &ibah_to_rvtah(address)->attr;
++	txp.ibp = to_iport(priv->device, priv->port_num);
++	txp.txq = &priv->txqs[skb_get_queue_mapping(skb)];
++	txp.dqpn = dqpn;
++	txp.flow.sc5 = txp.ibp->sl_to_sc[rdma_ah_get_sl(txp.ah_attr)];
++	txp.flow.tx_queue = (u8)skb_get_queue_mapping(skb);
++	txp.entropy = hfi2_ipoib_calc_entropy(skb);
++
++	if (netdev_xmit_more() || !list_empty(&txp.txq->tx_list))
++		return hfi2_ipoib_send_dma_list(dev, skb, &txp);
++
++	return hfi2_ipoib_send_dma_single(dev, skb,  &txp);
++}
++
++/*
++ * hfi2_ipoib_sdma_sleep - ipoib sdma sleep function
++ *
++ * This function gets called from hfi2_sdma_send_txreq() when there are not enough
++ * sdma descriptors available to send the packet. It adds Tx queue's wait
++ * structure to sdma engine's dmawait list to be woken up when descriptors
++ * become available.
++ */
++static int hfi2_ipoib_sdma_sleep(struct sdma_engine *sde,
++				 struct iowait_work *wait,
++				 struct sdma_txreq *txreq,
++				 uint seq,
++				 bool pkts_sent)
++{
++	struct hfi2_ipoib_txq *txq =
++		container_of(wait->iow, struct hfi2_ipoib_txq, wait);
++
++	write_seqlock(&sde->waitlock);
++
++	if (likely(txq->priv->netdev->reg_state == NETREG_REGISTERED)) {
++		if (sdma_progress(sde, seq, txreq)) {
++			write_sequnlock(&sde->waitlock);
++			return -EAGAIN;
++		}
++
++		if (list_empty(&txreq->list))
++			/* came from non-list submit */
++			list_add_tail(&txreq->list, &txq->tx_list);
++		if (list_empty(&txq->wait.list)) {
++			struct hfi2_ibport *ibp = to_iport(txq->priv->device,
++							   txq->priv->port_num);
++
++			if (!atomic_xchg(&txq->tx_ring.no_desc, 1)) {
++				trace_hfi2_txq_queued(txq);
++				hfi2_ipoib_stop_txq(txq);
++			}
++			ibp->rvp.n_dmawait++;
++			iowait_queue(pkts_sent, wait->iow, &sde->dmawait);
++		}
++
++		write_sequnlock(&sde->waitlock);
++		return -EBUSY;
++	}
++
++	write_sequnlock(&sde->waitlock);
++	return -EINVAL;
++}
++
++/*
++ * hfi2_ipoib_sdma_wakeup - ipoib sdma wakeup function
++ *
++ * This function gets called when SDMA descriptors becomes available and Tx
++ * queue's wait structure was previously added to sdma engine's dmawait list.
++ */
++static void hfi2_ipoib_sdma_wakeup(struct iowait *wait, int reason)
++{
++	struct hfi2_ipoib_txq *txq =
++		container_of(wait, struct hfi2_ipoib_txq, wait);
++
++	trace_hfi2_txq_wakeup(txq);
++	if (likely(txq->priv->netdev->reg_state == NETREG_REGISTERED))
++		iowait_schedule(wait, system_highpri_wq, WORK_CPU_UNBOUND);
++}
++
++static void hfi2_ipoib_flush_txq(struct work_struct *work)
++{
++	struct iowait_work *ioww =
++		container_of(work, struct iowait_work, iowork);
++	struct iowait *wait = iowait_ioww_to_iow(ioww);
++	struct hfi2_ipoib_txq *txq =
++		container_of(wait, struct hfi2_ipoib_txq, wait);
++	struct net_device *dev = txq->priv->netdev;
++
++	if (likely(dev->reg_state == NETREG_REGISTERED) &&
++	    likely(!hfi2_ipoib_flush_tx_list(dev, txq)))
++		if (atomic_xchg(&txq->tx_ring.no_desc, 0))
++			hfi2_ipoib_wake_txq(txq);
++}
++
++int hfi2_ipoib_txreq_init(struct hfi2_ipoib_dev_priv *priv)
++{
++	struct net_device *dev = priv->netdev;
++	u32 tx_ring_size, tx_item_size;
++	struct hfi2_ipoib_circ_buf *tx_ring;
++	int i, j;
++
++	/*
++	 * Ring holds 1 less than tx_ring_size
++	 * Round up to next power of 2 in order to hold at least tx_queue_len
++	 */
++	tx_ring_size = roundup_pow_of_two(dev->tx_queue_len + 1);
++	tx_item_size = roundup_pow_of_two(sizeof(struct ipoib_txreq));
++
++	priv->txqs = kcalloc_node(dev->num_tx_queues,
++				  sizeof(struct hfi2_ipoib_txq),
++				  GFP_KERNEL,
++				  priv->dd->node);
++	if (!priv->txqs)
++		return -ENOMEM;
++
++	for (i = 0; i < dev->num_tx_queues; i++) {
++		struct hfi2_ipoib_txq *txq = &priv->txqs[i];
++		struct ipoib_txreq *tx;
++
++		tx_ring = &txq->tx_ring;
++		hfi2_iowait_init(&txq->wait,
++			    0,
++			    hfi2_ipoib_flush_txq,
++			    NULL,
++			    hfi2_ipoib_sdma_sleep,
++			    hfi2_ipoib_sdma_wakeup,
++			    NULL,
++			    NULL);
++		txq->priv = priv;
++		txq->sde = NULL;
++		INIT_LIST_HEAD(&txq->tx_list);
++		atomic_set(&txq->tx_ring.stops, 0);
++		atomic_set(&txq->tx_ring.ring_full, 0);
++		atomic_set(&txq->tx_ring.no_desc, 0);
++		txq->q_idx = i;
++		txq->flow.tx_queue = 0xff;
++		txq->flow.sc5 = 0xff;
++		txq->pkts_sent = false;
++
++		netdev_queue_numa_node_write(netdev_get_tx_queue(dev, i),
++					     priv->dd->node);
++
++		txq->tx_ring.items =
++			kvzalloc_node(array_size(tx_ring_size, tx_item_size),
++				      GFP_KERNEL, priv->dd->node);
++		if (!txq->tx_ring.items)
++			goto free_txqs;
++
++		txq->tx_ring.max_items = tx_ring_size;
++		txq->tx_ring.shift = ilog2(tx_item_size);
++		txq->tx_ring.avail = hfi2_ipoib_ring_hwat(txq);
++		tx_ring = &txq->tx_ring;
++		for (j = 0; j < tx_ring_size; j++) {
++			hfi2_txreq_from_idx(tx_ring, j)->sdma_hdr =
++				kzalloc_node(sizeof(*tx->sdma_hdr),
++					     GFP_KERNEL, priv->dd->node);
++			if (!hfi2_txreq_from_idx(tx_ring, j)->sdma_hdr)
++				goto free_txqs;
++		}
++
++		netif_napi_add_tx(dev, &txq->napi, hfi2_ipoib_poll_tx_ring);
++	}
++
++	return 0;
++
++free_txqs:
++	for (i--; i >= 0; i--) {
++		struct hfi2_ipoib_txq *txq = &priv->txqs[i];
++
++		netif_napi_del(&txq->napi);
++		tx_ring = &txq->tx_ring;
++		for (j = 0; j < tx_ring_size; j++)
++			kfree(hfi2_txreq_from_idx(tx_ring, j)->sdma_hdr);
++		kvfree(tx_ring->items);
++	}
++
++	kfree(priv->txqs);
++	priv->txqs = NULL;
++	return -ENOMEM;
++}
++
++static void hfi2_ipoib_drain_tx_list(struct hfi2_ipoib_txq *txq)
++{
++	struct sdma_txreq *txreq;
++	struct sdma_txreq *txreq_tmp;
++
++	list_for_each_entry_safe(txreq, txreq_tmp, &txq->tx_list, list) {
++		struct ipoib_txreq *tx =
++			container_of(txreq, struct ipoib_txreq, txreq);
++
++		list_del(&txreq->list);
++		sdma_txclean(txq->priv->dd, &tx->txreq);
++		dev_kfree_skb_any(tx->skb);
++		tx->skb = NULL;
++		txq->tx_ring.complete_txreqs++;
++	}
++
++	if (hfi2_ipoib_used(txq))
++		dd_dev_warn(txq->priv->dd,
++			    "txq %d not empty found %u requests\n",
++			    txq->q_idx,
++			    hfi2_ipoib_txreqs(txq->tx_ring.sent_txreqs,
++					      txq->tx_ring.complete_txreqs));
++}
++
++void hfi2_ipoib_txreq_deinit(struct hfi2_ipoib_dev_priv *priv)
++{
++	int i, j;
++
++	for (i = 0; i < priv->netdev->num_tx_queues; i++) {
++		struct hfi2_ipoib_txq *txq = &priv->txqs[i];
++		struct hfi2_ipoib_circ_buf *tx_ring = &txq->tx_ring;
++
++		hfi2_iowait_cancel_work(&txq->wait);
++		iowait_sdma_drain(&txq->wait);
++		hfi2_ipoib_drain_tx_list(txq);
++		netif_napi_del(&txq->napi);
++		hfi2_ipoib_drain_tx_ring(txq);
++		for (j = 0; j < tx_ring->max_items; j++)
++			kfree(hfi2_txreq_from_idx(tx_ring, j)->sdma_hdr);
++		kvfree(tx_ring->items);
++	}
++
++	kfree(priv->txqs);
++	priv->txqs = NULL;
++}
++
++void hfi2_ipoib_napi_tx_enable(struct net_device *dev)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++	int i;
++
++	for (i = 0; i < dev->num_tx_queues; i++) {
++		struct hfi2_ipoib_txq *txq = &priv->txqs[i];
++
++		napi_enable(&txq->napi);
++	}
++}
++
++void hfi2_ipoib_napi_tx_disable(struct net_device *dev)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++	int i;
++
++	for (i = 0; i < dev->num_tx_queues; i++) {
++		struct hfi2_ipoib_txq *txq = &priv->txqs[i];
++
++		napi_disable(&txq->napi);
++		hfi2_ipoib_drain_tx_ring(txq);
++	}
++}
++
++void hfi2_ipoib_tx_timeout(struct net_device *dev, unsigned int q)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++	struct hfi2_ipoib_txq *txq = &priv->txqs[q];
++
++	dd_dev_info(priv->dd, "timeout txq %p q %u stopped %u stops %d no_desc %d ring_full %d\n",
++		    txq, q,
++		    __netif_subqueue_stopped(dev, txq->q_idx),
++		    atomic_read(&txq->tx_ring.stops),
++		    atomic_read(&txq->tx_ring.no_desc),
++		    atomic_read(&txq->tx_ring.ring_full));
++	dd_dev_info(priv->dd, "sde %p engine %u\n",
++		    txq->sde,
++		    txq->sde ? txq->sde->this_idx : 0);
++	dd_dev_info(priv->dd, "flow %x\n", txq->flow.as_int);
++	dd_dev_info(priv->dd, "sent %llu completed %llu used %llu\n",
++		    txq->tx_ring.sent_txreqs, txq->tx_ring.complete_txreqs,
++		    hfi2_ipoib_used(txq));
++	dd_dev_info(priv->dd, "tx_queue_len %u max_items %u\n",
++		    dev->tx_queue_len, txq->tx_ring.max_items);
++	dd_dev_info(priv->dd, "head %u tail %u\n",
++		    txq->tx_ring.head, txq->tx_ring.tail);
++	dd_dev_info(priv->dd, "wait queued %u\n",
++		    !list_empty(&txq->wait.list));
++	dd_dev_info(priv->dd, "tx_list empty %u\n",
++		    list_empty(&txq->tx_list));
++}
++
+diff --git a/drivers/infiniband/hw/hfi2/netdev.h b/drivers/infiniband/hw/hfi2/netdev.h
+new file mode 100644
+index 000000000000..1f0bfef0ff54
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/netdev.h
+@@ -0,0 +1,94 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++/*
++ * Copyright(c) 2020 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ *
++ */
++
++#ifndef HFI2_NETDEV_H
++#define HFI2_NETDEV_H
++
++#include "hfi2.h"
++
++#include <linux/netdevice.h>
++#include <linux/xarray.h>
++
++/**
++ * struct hfi2_netdev_rxq - Receive Queue for HFI
++ * IPoIB netdevices will be working on the rx abstraction.
++ * @napi: napi object
++ * @rx: ptr to netdev_rx
++ * @rcd:  ptr to receive context data
++ */
++struct hfi2_netdev_rxq {
++	struct napi_struct napi;
++	struct hfi2_netdev_rx *rx;
++	struct hfi2_ctxtdata *rcd;
++};
++
++#define HFI2_MAX_NETDEV_CTXTS 8
++
++/* Number of NETDEV RSM entries */
++#define NUM_NETDEV_MAP_ENTRIES HFI2_MAX_NETDEV_CTXTS
++
++/**
++ * struct hfi2_netdev_rx: data required to setup and run HFI netdev.
++ * @rx_napi:	the dummy netdevice to support "polling" the receive contexts
++ * @dd:		hfi2_devdata
++ * @ppd:	hfi2_pportdata
++ * @rxq:	pointer to dummy netdev receive queues.
++ * @num_rx_q:	number of receive queues
++ * @rmt_start:	first allocated index in the RMT
++ * @dev_tbl:	netdev table for unique identifier VNIC and IPoIb VLANs.
++ * @enabled:	atomic counter of netdevs enabling receive queues.
++ *		When 0 NAPI will be disabled.
++ * @netdevs:	count of netdev_rx users, protected by hfi2_mutex.
++ *		When 0 receive queues will be freed.
++ */
++struct hfi2_netdev_rx {
++	struct net_device *rx_napi;
++	struct hfi2_devdata *dd;
++	struct hfi2_pportdata *ppd;
++	struct hfi2_netdev_rxq *rxq;
++	int num_rx_q;
++	int rmt_start;
++	struct xarray dev_tbl;
++	/* count of enabled napi polls */
++	atomic_t enabled;
++	int netdevs;
++};
++
++static inline int hfi2_netdev_ctxt_count(struct hfi2_pportdata *ppd)
++{
++	return ppd->netdev_rx->num_rx_q;
++}
++
++static inline struct hfi2_ctxtdata *
++hfi2_netdev_get_ctxt(struct hfi2_pportdata *ppd, int ctxt)
++{
++	return ppd->netdev_rx->rxq[ctxt].rcd;
++}
++
++static inline int hfi2_netdev_get_free_rmt_idx(struct hfi2_pportdata *ppd)
++{
++	return ppd->netdev_rx->rmt_start;
++}
++
++u32 hfi2_num_netdev_contexts(struct hfi2_devdata *dd, u32 available_contexts,
++			     const struct cpumask *cpu_mask);
++
++void hfi2_netdev_enable_queues(struct hfi2_pportdata *ppd);
++void hfi2_netdev_disable_queues(struct hfi2_pportdata *ppd);
++int hfi2_netdev_rx_init(struct hfi2_pportdata *ppd);
++int hfi2_netdev_rx_destroy(struct hfi2_pportdata *ppd);
++int hfi2_alloc_rx(struct hfi2_devdata *dd);
++void hfi2_free_rx(struct hfi2_devdata *dd);
++int hfi2_netdev_add_data(struct hfi2_pportdata *ppd, int id, void *data);
++void *hfi2_netdev_remove_data(struct hfi2_pportdata *ppd, int id);
++void *hfi2_netdev_get_data(struct hfi2_pportdata *ppd, int id);
++void *hfi2_netdev_get_first_data(struct hfi2_pportdata *ppd, int *start_id);
++
++/* chip.c  */
++int hfi2_netdev_rx_napi(struct napi_struct *napi, int budget);
++
++#endif /* HFI2_NETDEV_H */
+diff --git a/drivers/infiniband/hw/hfi2/netdev_rx.c b/drivers/infiniband/hw/hfi2/netdev_rx.c
+new file mode 100644
+index 000000000000..64a96c74b544
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/netdev_rx.c
+@@ -0,0 +1,494 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++/*
++ * Copyright(c) 2020 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ *
++ */
++
++/*
++ * This file contains HFI2 support for netdev RX functionality
++ */
++
++#include "sdma.h"
++#include "verbs.h"
++#include "netdev.h"
++#include "hfi2.h"
++
++#include <linux/netdevice.h>
++#include <linux/etherdevice.h>
++#include <rdma/ib_verbs.h>
++
++static void hfi2_netdev_rxq_deinit(struct hfi2_netdev_rx *rx);
++
++static int hfi2_netdev_setup_ctxt(struct hfi2_netdev_rx *rx,
++				  struct hfi2_ctxtdata *uctxt)
++{
++	unsigned int rcvctrl_ops;
++	struct hfi2_devdata *dd = rx->dd;
++	int ret;
++
++	uctxt->rhf_rcv_function_map = hfi2_netdev_rhf_rcv_functions;
++	uctxt->do_interrupt = &hfi2_handle_receive_interrupt_napi_sp;
++
++	/* Now allocate the RcvHdr queue and eager buffers. */
++	ret = hfi2_create_rcvhdrq(dd, uctxt);
++	if (ret)
++		goto done;
++
++	ret = hfi2_setup_eagerbufs(uctxt);
++	if (ret)
++		goto done;
++
++	clear_rcvhdrtail(uctxt);
++
++	rcvctrl_ops = HFI2_RCVCTRL_CTXT_DIS;
++	rcvctrl_ops |= HFI2_RCVCTRL_INTRAVAIL_DIS;
++
++	if (!HFI2_CAP_KGET_MASK(uctxt->flags, MULTI_PKT_EGR))
++		rcvctrl_ops |= HFI2_RCVCTRL_ONE_PKT_EGR_ENB;
++	if (HFI2_CAP_KGET_MASK(uctxt->flags, NODROP_EGR_FULL))
++		rcvctrl_ops |= HFI2_RCVCTRL_NO_EGR_DROP_ENB;
++	if (HFI2_CAP_KGET_MASK(uctxt->flags, NODROP_RHQ_FULL))
++		rcvctrl_ops |= HFI2_RCVCTRL_NO_RHQ_DROP_ENB;
++	if (HFI2_CAP_KGET_MASK(uctxt->flags, DMA_RTAIL))
++		rcvctrl_ops |= HFI2_RCVCTRL_TAILUPD_ENB;
++
++	hfi2_rcvctrl(uctxt->dd, rcvctrl_ops, uctxt);
++done:
++	return ret;
++}
++
++static int hfi2_netdev_allocate_ctxt(struct hfi2_pportdata *ppd,
++				     struct hfi2_ctxtdata **ctxt)
++{
++	struct hfi2_devdata *dd = ppd->dd;
++	struct hfi2_ctxtdata *uctxt;
++	int ret;
++
++	if (dd->flags & HFI2_FROZEN)
++		return -EIO;
++
++	ret = hfi2_create_ctxtdata(ppd, dd->node, DYNAMIC_CONTEXT, &uctxt);
++	if (ret < 0) {
++		dd_dev_err(dd, "Unable to create ctxtdata, failing open\n");
++		return -ENOMEM;
++	}
++
++	uctxt->flags =
++		HFI2_CAP_KGET(MULTI_PKT_EGR) | HFI2_CAP_KGET(NODROP_RHQ_FULL) |
++		HFI2_CAP_KGET(NODROP_EGR_FULL) | HFI2_CAP_KGET(DMA_RTAIL);
++	/* Netdev contexts are always NO_RDMA_RTAIL */
++	uctxt->fast_handler = hfi2_handle_receive_interrupt_napi_fp;
++	uctxt->slow_handler = hfi2_handle_receive_interrupt_napi_sp;
++	hfi2_set_seq_cnt(uctxt, 1);
++
++	hfi2_stats.sps_ctxts++;
++
++	dd_dev_info(dd, "created netdev context %d\n", uctxt->ctxt);
++	*ctxt = uctxt;
++
++	return 0;
++}
++
++static void hfi2_netdev_deallocate_ctxt(struct hfi2_pportdata *ppd,
++					struct hfi2_ctxtdata *uctxt)
++{
++	struct hfi2_devdata *dd = ppd->dd;
++
++	flush_wc();
++
++	/*
++	 * Disable receive context and interrupt available, reset all
++	 * RcvCtxtCtrl bits to default values.
++	 */
++	hfi2_rcvctrl(dd,
++		     HFI2_RCVCTRL_CTXT_DIS | HFI2_RCVCTRL_TIDFLOW_DIS |
++			     HFI2_RCVCTRL_INTRAVAIL_DIS |
++			     HFI2_RCVCTRL_ONE_PKT_EGR_DIS |
++			     HFI2_RCVCTRL_NO_RHQ_DROP_DIS |
++			     HFI2_RCVCTRL_NO_EGR_DROP_DIS,
++		     uctxt);
++
++	if (uctxt->msix_intr != CCE_NUM_MSIX_VECTORS)
++		hfi2_msix_free_irq(dd, uctxt->msix_intr);
++
++	uctxt->msix_intr = CCE_NUM_MSIX_VECTORS;
++	uctxt->event_flags = 0;
++
++	hfi2_clear_tids(uctxt);
++	hfi2_clear_ctxt_pkey(dd, uctxt);
++
++	hfi2_stats.sps_ctxts--;
++
++	hfi2_free_ctxt(uctxt);
++}
++
++static int hfi2_netdev_allot_ctxt(struct hfi2_netdev_rx *rx,
++				  struct hfi2_ctxtdata **ctxt)
++{
++	int rc;
++	struct hfi2_devdata *dd = rx->dd;
++	struct hfi2_pportdata *ppd = rx->ppd;
++
++	rc = hfi2_netdev_allocate_ctxt(ppd, ctxt);
++	if (rc) {
++		dd_dev_err(dd, "netdev ctxt alloc failed %d\n", rc);
++		return rc;
++	}
++
++	rc = hfi2_netdev_setup_ctxt(rx, *ctxt);
++	if (rc) {
++		dd_dev_err(dd, "netdev ctxt setup failed %d\n", rc);
++		hfi2_netdev_deallocate_ctxt(ppd, *ctxt);
++		*ctxt = NULL;
++	}
++
++	return rc;
++}
++
++/**
++ * hfi2_num_netdev_contexts - Count of netdev recv contexts to use.
++ * @dd: device on which to allocate netdev contexts
++ * @available_contexts: count of available receive contexts
++ * @cpu_mask: mask of possible cpus to include for contexts
++ *
++ * Return: count of physical cores on a node or the remaining available recv
++ * contexts for netdev recv context usage up to the maximum of
++ * HFI2_MAX_NETDEV_CTXTS.
++ * A value of 0 can be returned when acceleration is explicitly turned off,
++ * a memory allocation error occurs or when there are no available contexts.
++ *
++ */
++u32 hfi2_num_netdev_contexts(struct hfi2_devdata *dd, u32 available_contexts,
++			     const struct cpumask *cpu_mask)
++{
++	cpumask_var_t node_cpu_mask;
++	unsigned int available_cpus;
++
++	if (!HFI2_CAP_IS_KSET(AIP))
++		return 0;
++
++	/* Always give user contexts priority over netdev contexts */
++	if (available_contexts == 0) {
++		dd_dev_info(dd, "No receive contexts available for netdevs.\n");
++		return 0;
++	}
++
++	if (!zalloc_cpumask_var(&node_cpu_mask, GFP_KERNEL)) {
++		dd_dev_err(dd, "Unable to allocate cpu_mask for netdevs.\n");
++		return 0;
++	}
++
++	cpumask_and(node_cpu_mask, cpu_mask, cpumask_of_node(dd->node));
++
++	available_cpus = cpumask_weight(node_cpu_mask);
++
++	free_cpumask_var(node_cpu_mask);
++
++	return min3(available_cpus, available_contexts,
++		    (u32)HFI2_MAX_NETDEV_CTXTS);
++}
++
++static int hfi2_netdev_rxq_init(struct hfi2_netdev_rx *rx)
++{
++	int i;
++	int rc;
++	struct hfi2_devdata *dd = rx->dd;
++	struct hfi2_pportdata *ppd = rx->ppd;
++	struct net_device *dev = rx->rx_napi;
++
++	rx->num_rx_q = dd->rsrcs.ppr[rx->ppd->hw_pidx].num_netdev_contexts;
++	rx->rxq = kcalloc_node(rx->num_rx_q, sizeof(*rx->rxq), GFP_KERNEL,
++			       dd->node);
++
++	if (!rx->rxq) {
++		ppd_dev_err(ppd, "Unable to allocate netdev queue data\n");
++		return (-ENOMEM);
++	}
++
++	for (i = 0; i < rx->num_rx_q; i++) {
++		struct hfi2_netdev_rxq *rxq = &rx->rxq[i];
++
++		rc = hfi2_netdev_allot_ctxt(rx, &rxq->rcd);
++		if (rc)
++			goto bail_context_irq_failure;
++
++		hfi2_rcd_get(rxq->rcd);
++		rxq->rx = rx;
++		rxq->rcd->napi = &rxq->napi;
++		ppd_dev_info(ppd, "Setting rcv queue %d napi to context %d\n",
++			     i, rxq->rcd->ctxt);
++		/*
++		 * Disable BUSY_POLL on this NAPI as this is not supported
++		 * right now.
++		 */
++		set_bit(NAPI_STATE_NO_BUSY_POLL, &rxq->napi.state);
++		netif_napi_add(dev, &rxq->napi, hfi2_netdev_rx_napi);
++		rc = hfi2_msix_netdev_request_rcd_irq(rxq->rcd);
++		if (rc)
++			goto bail_context_irq_failure;
++	}
++
++	return 0;
++
++bail_context_irq_failure:
++	ppd_dev_err(ppd, "Unable to allot receive context\n");
++	hfi2_netdev_rxq_deinit(rx);
++	return rc;
++}
++
++static void hfi2_netdev_rxq_deinit(struct hfi2_netdev_rx *rx)
++{
++	int i;
++
++	for (i = 0; i < rx->num_rx_q; i++) {
++		struct hfi2_netdev_rxq *rxq = &rx->rxq[i];
++
++		if (!rxq->rcd)
++			continue;
++		netif_napi_del(&rxq->napi);
++		hfi2_netdev_deallocate_ctxt(rx->ppd, rxq->rcd);
++		hfi2_rcd_put(rxq->rcd);
++		rxq->rcd = NULL;
++	}
++
++	kfree(rx->rxq);
++	rx->rxq = NULL;
++	rx->num_rx_q = 0;
++}
++
++static void enable_queues(struct hfi2_netdev_rx *rx)
++{
++	int i;
++
++	for (i = 0; i < rx->num_rx_q; i++) {
++		struct hfi2_netdev_rxq *rxq = &rx->rxq[i];
++
++		dd_dev_info(rx->dd, "enabling queue %d on context %d\n", i,
++			    rxq->rcd->ctxt);
++		napi_enable(&rxq->napi);
++		hfi2_rcvctrl(rx->dd,
++			     HFI2_RCVCTRL_CTXT_ENB | HFI2_RCVCTRL_INTRAVAIL_ENB,
++			     rxq->rcd);
++	}
++}
++
++static void disable_queues(struct hfi2_netdev_rx *rx)
++{
++	int i;
++
++	hfi2_msix_netdev_synchronize_irq(rx->ppd);
++
++	for (i = 0; i < rx->num_rx_q; i++) {
++		struct hfi2_netdev_rxq *rxq = &rx->rxq[i];
++
++		dd_dev_info(rx->dd, "disabling queue %d on context %d\n", i,
++			    rxq->rcd->ctxt);
++
++		/* wait for napi if it was scheduled */
++		hfi2_rcvctrl(rx->dd,
++			     HFI2_RCVCTRL_CTXT_DIS | HFI2_RCVCTRL_INTRAVAIL_DIS,
++			     rxq->rcd);
++		napi_synchronize(&rxq->napi);
++		napi_disable(&rxq->napi);
++	}
++}
++
++/**
++ * hfi2_netdev_rx_init - Incrememnts netdevs counter. When called first time,
++ * it allocates receive queue data and calls netif_napi_add for each queue.
++ *
++ * @ppd: hfi2 port data
++ */
++int hfi2_netdev_rx_init(struct hfi2_pportdata *ppd)
++{
++	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
++	int res = 0;
++
++	mutex_lock(&hfi2_mutex);
++	if (rx->netdevs++ == 0) {
++		res = hfi2_netdev_rxq_init(rx);
++		if (res)
++			rx->netdevs--;
++	}
++	mutex_unlock(&hfi2_mutex);
++	return res;
++}
++
++/**
++ * hfi2_netdev_rx_destroy - Decrements netdevs counter, when it reaches 0
++ * napi is deleted and receive queses memory is freed.
++ *
++ * @ppd: hfi2 port data
++ */
++int hfi2_netdev_rx_destroy(struct hfi2_pportdata *ppd)
++{
++	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
++
++	/* destroy the RX queues only if it is the last netdev going away */
++	mutex_lock(&hfi2_mutex);
++	if (--rx->netdevs == 0)
++		hfi2_netdev_rxq_deinit(rx);
++	mutex_unlock(&hfi2_mutex);
++
++	return 0;
++}
++
++/**
++ * hfi2_alloc_rx - Allocates the rx support structure
++ * @dd: hfi2 dev data
++ *
++ * Allocate the rx structure to support gathering the receive
++ * resources and the dummy netdev.
++ *
++ * Updates ppd struct pointers upon success.
++ *
++ * Return: 0 (success) -error on failure
++ *
++ */
++int hfi2_alloc_rx(struct hfi2_devdata *dd)
++{
++	struct hfi2_pportdata *ppd;
++	struct hfi2_netdev_rx *rx;
++	int i;
++
++	dd_dev_info(dd, "hfi2 rx allocating, size %ld\n", sizeof(*rx));
++
++	for (i = 0; i < dd->num_pports; i++) {
++		ppd = &dd->pport[i];
++
++		rx = kzalloc_node(sizeof(*rx), GFP_KERNEL, dd->node);
++
++		if (!rx) {
++			hfi2_free_rx(dd);
++			return -ENOMEM;
++		}
++		rx->dd = dd;
++		rx->ppd = ppd;
++		rx->rx_napi = alloc_netdev_dummy(0);
++		if (!rx->rx_napi) {
++			kfree(rx);
++			return -ENOMEM;
++		}
++
++		xa_init(&rx->dev_tbl);
++		atomic_set(&rx->enabled, 0);
++		/* rx->netdevs is already zero from kzalloc */
++		ppd->netdev_rx = rx;
++	}
++
++	return 0;
++}
++
++void hfi2_free_rx(struct hfi2_devdata *dd)
++{
++	struct hfi2_pportdata *ppd;
++	int i;
++
++	dd_dev_info(dd, "hfi2 rx freed\n");
++	for (i = 0; i < dd->num_pports; i++) {
++		ppd = &dd->pport[i];
++		kfree(ppd->netdev_rx);
++		ppd->netdev_rx = NULL;
++	}
++}
++
++/**
++ * hfi2_netdev_enable_queues - This is napi enable function.
++ * It enables napi objects associated with queues.
++ * When at least one device has called it, it increments atomic counter.
++ * Disable function decrements counter and when it is 0,
++ * calls napi_disable for every queue.
++ *
++ * @ppd: hfi2 port data
++ */
++void hfi2_netdev_enable_queues(struct hfi2_pportdata *ppd)
++{
++	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
++
++	if (!rx)
++		return;
++
++	if (atomic_fetch_inc(&rx->enabled))
++		return;
++
++	mutex_lock(&hfi2_mutex);
++	enable_queues(rx);
++	mutex_unlock(&hfi2_mutex);
++}
++
++void hfi2_netdev_disable_queues(struct hfi2_pportdata *ppd)
++{
++	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
++
++	if (!rx)
++		return;
++
++	if (atomic_dec_if_positive(&rx->enabled))
++		return;
++
++	mutex_lock(&hfi2_mutex);
++	disable_queues(rx);
++	mutex_unlock(&hfi2_mutex);
++}
++
++/**
++ * hfi2_netdev_add_data - Registers data with unique identifier
++ * to be requested later this is needed for IPoIB VLANs
++ * implementations.
++ * This call is protected by mutex idr_lock.
++ *
++ * @ppd: hfi2 port data
++ * @id: requested integer id up to INT_MAX
++ * @data: data to be associated with index
++ */
++int hfi2_netdev_add_data(struct hfi2_pportdata *ppd, int id, void *data)
++{
++	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
++
++	return xa_insert(&rx->dev_tbl, id, data, GFP_NOWAIT);
++}
++
++/**
++ * hfi2_netdev_remove_data - Removes data with previously given id.
++ * Returns the reference to removed entry.
++ *
++ * @ppd: hfi2 port data
++ * @id: requested integer id up to INT_MAX
++ */
++void *hfi2_netdev_remove_data(struct hfi2_pportdata *ppd, int id)
++{
++	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
++
++	return xa_erase(&rx->dev_tbl, id);
++}
++
++/**
++ * hfi2_netdev_get_data - Gets data with given id
++ *
++ * @ppd: hfi2 port data
++ * @id: requested integer id up to INT_MAX
++ */
++void *hfi2_netdev_get_data(struct hfi2_pportdata *ppd, int id)
++{
++	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
++
++	return xa_load(&rx->dev_tbl, id);
++}
++
++/**
++ * hfi2_netdev_get_first_data - Gets first entry with greater or equal id.
++ *
++ * @ppd: hfi2 port data
++ * @start_id: requested integer id up to INT_MAX
++ */
++void *hfi2_netdev_get_first_data(struct hfi2_pportdata *ppd, int *start_id)
++{
++	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
++	unsigned long index = *start_id;
++	void *ret;
++
++	ret = xa_find(&rx->dev_tbl, &index, UINT_MAX, XA_PRESENT);
++	*start_id = (int)index;
++	return ret;
++}
 
 
 
