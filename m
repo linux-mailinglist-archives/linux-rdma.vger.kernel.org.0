@@ -1,54 +1,55 @@
-Return-Path: <linux-rdma+bounces-22582-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22583-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id tGujOFKgQ2q0dgoAu9opvQ
-	(envelope-from <linux-rdma+bounces-22582-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jun 2026 12:54:10 +0200
+	id syraK1ugQ2q+dgoAu9opvQ
+	(envelope-from <linux-rdma+bounces-22583-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jun 2026 12:54:19 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CED86E32C2
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jun 2026 12:54:10 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D1856E32CA
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jun 2026 12:54:19 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=RPi4dWR9;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22582-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22582-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=M3BTn0r4;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22583-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22583-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 04DF2303B21D
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jun 2026 10:53:19 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 994723040033
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jun 2026 10:53:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3355C3FFADA;
-	Tue, 30 Jun 2026 10:52:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B19C73F8EDE;
+	Tue, 30 Jun 2026 10:52:45 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D713F8EDA;
-	Tue, 30 Jun 2026 10:52:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0436138C41B;
+	Tue, 30 Jun 2026 10:52:36 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782816762; cv=none; b=DN1+Vnak6qqr3h5WZ57yd3RaATDKJeN47G30XQzG5agw6Yav4rlQnHNTMHaIxU6jPdpsdXVUNy8jmtXNvAV/VE0enRf0vVUCmLPJBCECWBE09IVQjCRgawIPG/Ch/Wh6iYhFVTGx2IX7MYkh/6hCsaj+P9xz9zbmotDw1+GbsBc=
+	t=1782816764; cv=none; b=srhtAcshrOQUySXEN7C/YC2bXHenKwvvgHh/0DDtPolwSi14muF29fE4TOYzTyvp6RfCK+k1TxCcyUCO1fcKAXP7wFWOcGC6N5KBllx3mxwaYksNFmXfjGBqqdkXtNkYC46HIneIUrWtrvYQZV7svgjQ4G7E9RLtKUqID/KpY6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782816762; c=relaxed/simple;
-	bh=Dz2agsNXnIpErK3hvQaWBKqYDMIOWWjir+TLa2waK/4=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Pylp80EqMXopxAvI+YZ5TP+Cx333nYC+ON92NDgr6U2zwQDIs4RdyWevK/+OGFY0AyMyiWS7pnbXJxeZglTAQeQDNXCksAg2LpsCA9rzS4QqjMFAtopjx58Z5NsHIOVMzydnERbVJF/7iMGl/vkHJo0QMqVguZjw/9JBi8LMzvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RPi4dWR9; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D7591F000E9;
-	Tue, 30 Jun 2026 10:52:32 +0000 (UTC)
+	s=arc-20240116; t=1782816764; c=relaxed/simple;
+	bh=HMFf+FOxgexw9evQqbH3lMXr0udh1c1zHa40kS0eSO8=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=JDSNgnDDjvePQ82VTdkuZ9oOwtIVo4UND/uJOJdnDoCgwxnZQNRr16y3HLSI1NyT9GnDyuqSA0wBDFCgI1CoLvVd8nTEXAt+ZQqz5SF0ybE350cpG0zUtqG3E2Jf18FtuUeLX5R6rea6J6CPdnvXOCEkiTSiWtf8gn2FY+wml2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M3BTn0r4; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D1891F00A3A;
+	Tue, 30 Jun 2026 10:52:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782816754;
-	bh=bOKPhFGTJ86jvnMjbZoaau33s5xEcyP30nMyJtIcVHs=;
-	h=From:Subject:Date:To:Cc;
-	b=RPi4dWR9zUKEQydt7dzmtalQ9G2Qo4u61ROaqpb6uEkJf3XllkWPBqUMliGXBmE2L
-	 4gsTOBDJIMG6l1eba9K0jJFPK4XrK7nK/KbqnMmAfKIxYCXe/L+PY5l/bvBaNcJjFL
-	 4ZPhoMWoPDMuoG85vL+ZWHvxk5iV1drj4q4L8cLVvD2Axz8Zz0DHZgjWvHHlvyuDNc
-	 sS12j+2D0qdswekgMN7G4tGFpbcv1bLQBqzqVHiL9HtoHMBWx2Nc6MHU9h2DXOlYpn
-	 Bv/xUt7/auFMKLMf+xMpPemJlGgx/C/ALBh+7Uq50twF4L8UmnuuSWdo0KgXTHZcoL
-	 I1YuzYeS0HPOQ==
+	s=k20260515; t=1782816756;
+	bh=RgvAPeibeFQxp8pOU9O5j9nPVFhn3WJwFhauJ32wTvY=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc;
+	b=M3BTn0r4NqPQw3QUITJfljAld7kLxy1+/Qd1XPHB/Ud0Lg5c2vBkpXMAm8+VLxt6z
+	 IOUy+k5i3XRwFPP0UVKOblQHyU41gg3SPV/7gGa+CUzcA8KBYg6jyfklZCy2Vh8U1/
+	 wg0IRuZzXv+7muzS1ObXYiteA8vilrXM0lpE+Yqg9pZLGmvFO/p77tOu2U/hLmf1V9
+	 DKYHK/QMrc/GSlBd6DfNpJit+3y125TPx0r/zLn5nKYlXpVrVWbUnIYYkEpmFaxZNR
+	 bRv8DBb/NUhsPQDRZPbjRXLL9EdGIUjv/SJ8/VxcRsXq7DL2E3hoggvLeuS1YKUsEi
+	 kQbDKNhNge/mQ==
 From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-Subject: [PATCH 0/5] RDMA, IB: replace __get_free_pages() with kmalloc()
-Date: Tue, 30 Jun 2026 13:52:28 +0300
-Message-Id: <20260630-b4-rdma-v1-0-ab42bcf0de92@kernel.org>
+Date: Tue, 30 Jun 2026 13:52:29 +0300
+Subject: [PATCH 1/5] RDMA/umem: ib_umem_get(): use kmalloc() to allocate
+ page array
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -57,10 +58,9 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAOyfQ2oC/yXMwQrCMBAE0F8pe3YhWdKA/op4SNKtXcEouypC6
- b+b1OMbZmYFYxU2OA0rKH/E5FEb/GGAsqR6ZZSpGchRdNE7zAF1uicMIdJ4JJrZR2jtp/Is3/3
- pfPnb3vnG5dXnvZGTMWZNtSw96oRt+wHDOMXHggAAAA==
-X-Change-ID: 20260610-b4-rdma-44625922fe16
+Message-Id: <20260630-b4-rdma-v1-1-ab42bcf0de92@kernel.org>
+References: <20260630-b4-rdma-v1-0-ab42bcf0de92@kernel.org>
+In-Reply-To: <20260630-b4-rdma-v1-0-ab42bcf0de92@kernel.org>
 To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
 Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, 
  Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org, 
@@ -71,13 +71,13 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22582-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22583-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS(0.00)[m:jgg@ziepe.ca,m:leon@kernel.org,m:dennis.dalessandro@cornelisnetworks.com,m:rppt@kernel.org,m:linux-kernel@vger.kernel.org,m:linux-mm@kvack.org,m:linux-rdma@vger.kernel.org,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER(0.00)[rppt@kernel.org,linux-rdma@vger.kernel.org];
@@ -96,66 +96,61 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 5CED86E32C2
+X-Rspamd-Queue-Id: 8D1856E32CA
 
-This is a (small) part of larger work of replacing page allocator calls
-with kmalloc.
+ib_umem_get() allocates an array of pointers to struct page for
+pin_user_pages_fast() calls during memory registration.
 
-My initial intention a few month ago was to remove ugly casts [1], but then
-willy pointed out that Linus objected to something like this [2] and it
-looks like more than a decade old technical debt.
+This array can be allocated with kmalloc() as there's nothing special
+about it to go directly to the page allocator.
 
-Largely, anything that doesn't need struct page (or a memdesc in the
-future) should just use kmalloc() or kvmalloc() to allocate memory.
-kmalloc() guarantees alignment, physical contiguity and working
-virt_to_phys() and beside nicer API that returns void * on alloc and
-doesn't require to know the allocation size on free, kmalloc() provides
-better debugging capabilities than page allocator.
+kmalloc() provides a better API that does not require ugly casts and
+kfree() does not need to know the size of the freed object.
 
-Another thing is that touching these allocation sites gives the reviewers
-opportunity to see if a PAGE_SIZE buffer is actually needed or maybe
-another size is appropriate.
+Performance difference between kmalloc() and __get_free_pages() is not
+measurable as both allocators take an object/page from a per-CPU list for
+fast path allocations.
 
-For larger allocations that don't need physically contiguous memory
-kvmalloc() can be a better option that __get_free_pages() because under
-memory pressure it's is easier to allocate several order-0 pages than a
-physically contiguous chunk with the same number of pages.
+For the slow path the performance is anyway determined by the amount of
+reclaim involved rather than by what allocator is used.
 
-And last, but not least, removing needless calls to page allocator should
-help with memdesc (aka project folio) conversion. There will be way less
-places to audit to see if the user was actually using struct page.
+Replace use of __get_free_page() with kmalloc() and free_page() with
+kfree().
 
-Also in git:
-https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git gfp-to-kmalloc/rdma
-
-[1] https://lore.kernel.org/all/20251018093002.3660549-1-rppt@kernel.org/
-[2] https://lore.kernel.org/all/CA+55aFwp4iy4rtX2gE2WjBGFL=NxMVnoFeHqYa2j1dYOMMGqxg@mail.gmail.com/ 
-
+Link: https://lore.kernel.org/all/635405e4-9423-4a25-a6e7-e03c8ea0bcbe@redhat.com
+Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
-Mike Rapoport (Microsoft) (5):
-      RDMA/umem: ib_umem_get(): use kmalloc() to allocate page array
-      RDMA/mlx5: replace __get_free_page() with kmalloc()
-      IB/mthca: mthca_reg_user_mr(): use kmalloc() to allocate addresses array
-      IB/mthca: allocate mthca_array memory with kzalloc()
-      IB/rdmavt: use kzalloc() to allocate QPN-map pages
+ drivers/infiniband/core/umem.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- drivers/infiniband/core/umem.c                | 4 ++--
- drivers/infiniband/hw/mlx5/odp.c              | 5 +++--
- drivers/infiniband/hw/mthca/mthca_allocator.c | 6 +++---
- drivers/infiniband/hw/mthca/mthca_provider.c  | 4 ++--
- drivers/infiniband/sw/rdmavt/qp.c             | 8 ++++----
- 5 files changed, 14 insertions(+), 13 deletions(-)
----
-base-commit: dc59e4fea9d83f03bad6bddf3fa2e52491777482
-change-id: 20260610-b4-rdma-44625922fe16
+diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+index 73498723a5d5..5c42497f32e2 100644
+--- a/drivers/infiniband/core/umem.c
++++ b/drivers/infiniband/core/umem.c
+@@ -209,7 +209,7 @@ static struct ib_umem *__ib_umem_get_va(struct ib_device *device,
+ 
+ 	mmgrab(mm);
+ 
+-	page_list = (struct page **) __get_free_page(GFP_KERNEL);
++	page_list = kmalloc(PAGE_SIZE, GFP_KERNEL);
+ 	if (!page_list) {
+ 		ret = -ENOMEM;
+ 		goto umem_kfree;
+@@ -269,7 +269,7 @@ static struct ib_umem *__ib_umem_get_va(struct ib_device *device,
+ 	__ib_umem_release(device, umem, 0);
+ 	atomic64_sub(ib_umem_num_pages(umem), &mm->pinned_vm);
+ out:
+-	free_page((unsigned long) page_list);
++	kfree(page_list);
+ umem_kfree:
+ 	if (ret) {
+ 		mmdrop(umem->owning_mm);
 
-Best regards,
---  
-Sincerely yours,
-Mike.
+-- 
+2.53.0
 
 
