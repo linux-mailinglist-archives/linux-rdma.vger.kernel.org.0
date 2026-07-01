@@ -1,78 +1,78 @@
-Return-Path: <linux-rdma+bounces-22631-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22630-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id wvT8AujtRGqJ3QoAu9opvQ
-	(envelope-from <linux-rdma+bounces-22631-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Jul 2026 12:37:28 +0200
+	id l8Z/L2ntRGpo3QoAu9opvQ
+	(envelope-from <linux-rdma+bounces-22630-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 01 Jul 2026 12:35:21 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91E246EC372
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Jul 2026 12:37:27 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 155E16EC309
+	for <lists+linux-rdma@lfdr.de>; Wed, 01 Jul 2026 12:35:21 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=amazon.com header.s=amazoncorp2 header.b=NQMJO6iN;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22631-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22631-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=amazon.com header.s=amazoncorp2 header.b=n+otddaA;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22630-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22630-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=amazon.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 64A4D3024135
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jul 2026 10:35:18 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 3C6793022DE6
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jul 2026 10:35:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF64541C30F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40DF6426D1E;
 	Wed,  1 Jul 2026 10:35:04 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from pdx-out-002.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-002.esa.us-west-2.outbound.mail-perimeter.amazon.com [44.246.1.125])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC049423164
-	for <linux-rdma@vger.kernel.org>; Wed,  1 Jul 2026 10:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9A7440E8D3
+	for <linux-rdma@vger.kernel.org>; Wed,  1 Jul 2026 10:34:58 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782902104; cv=none; b=DF7fizdD7N20SxCUFg54sab6J38LB56KPU95Y8jUXG8W899yF7U7zQjrm4FG4KXaBc8EvW4vZ6h5qvh/b1xeTyicXDE0oEfCTsildZH2sunBwDbcAaSRvuvs3e5sI+mFQJCJBtAX83kkgGo+uk0sFtE0vobGbr1eKR0vBN/hFdU=
+	t=1782902103; cv=none; b=MQQ0eSwoXzD6u43vBAxL7Rpfz2aPhUyZicbM80fIUMGYQfpJUxdU16wo/bILqR9Qz7eLPkdocFE3Bz4gix1VZl84PCRa2QG364G1/YFAo2cBloRN0SNYXGGP2gO75d4/RPt61RVmINha4p7ThXiBrPMp4Ql/ox4UhudDriBeyNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782902104; c=relaxed/simple;
-	bh=FN0jpEuIYbKnE9H3PEc5zEm/hHLJkMyL0qY2ZZHXwoY=;
+	s=arc-20240116; t=1782902103; c=relaxed/simple;
+	bh=tZa6YQLUwVeKwWAI/ZeuMyQfheGMGmUBEbdTHL6iE4g=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=E3EnkSy/A/RpMsMbTFUFluRjVApQm+w/20yyADRMV73bfQ8BVB1V3XQekPyzC2vLzi/M51mAjfOLQ7UMpR4cIOJeqStJB6tMZ19wtWwY3zFyYVu8+PKy9qqgAyfnK6bujqG9b2YEhsIY3/YdJuuUSp9K5u+WIQot9KHak/8CYAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=NQMJO6iN; arc=none smtp.client-ip=44.246.1.125
+	 MIME-Version:Content-Type; b=hh1xfvd3YGBNSbvCzOBRPqkvHCvsHtpQCay+tuEZqm1A/w1zVr+zWGbyBKCJqn/5mBP1VoZr31MMPgu3SO65JfOPc9oQJSJF4U2/FdTXgWOb1zxmqhzDffXOrUFrqQ2R4FNBnNwxPWwxXkLkq0Mn1+uGmAPSD7MixvOl97m1pXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=n+otddaA; arc=none smtp.client-ip=44.246.1.125
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1782902096; x=1814438096;
+  t=1782902098; x=1814438098;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=qymgZlqIUJMaQ90SccLpVD5uG7Qq03Ps/ewuS3tDCIw=;
-  b=NQMJO6iNvnrWXTz8r91R4ZK8tdhgHXvWHuNT76NC/xOKUWFCCv7Ml+vH
-   sCboB/yj0MEvpgpSXQAr+l5H113Wgm7TI5T6+iAyVr4oXjJDLyoONDFPz
-   ROOeJTKTYSrRGLTz/d72U80DVDqy58CIjTVG5HZccN/nOps/voHevZsAj
-   REJ0rX+ojfRddJq1d9GiniG/CJzWEtQukv4Vjc5lnld1bRup1qWpPVtrX
-   FlprofCq/X2xVu0pJMrEA6H3CARVwdtRJ+DW6flu9CX7KtvBwm2lRlgGs
-   rv1hfkKKvRuyt5GH+ybHVHawh0VZ7uONr0gyAfR7mfsMF/RwJzoUo4vjI
-   w==;
-X-CSE-ConnectionGUID: UsuW1+nbSCeAKOdaBtsObg==
-X-CSE-MsgGUID: ZvJwo/C+Tk2UnTddQEQ/kw==
+  bh=Ps7AvSN4kZOrHTRYsD2yP1/NiSkDU/bL77yp118ks+Y=;
+  b=n+otddaAv/PrBWRI8G0U6v5Qcyfx43Ca7a31w+0Gb085wcgPD5TrdivS
+   w3YApY3rPVzmC2+DwWscOo0Ngi1OMaoLVrgpEW6J6n5oSi28b80joqROp
+   nVVcz7nzSaT048H59Gw/Vm9whteg9/nfVIOjbYnlVgrOa6GxD8bVg2qgF
+   O3et5BlSmfHqRv5ZN+o4CW0TqJK6vnhKApnaEuhnUN8Ncj/SqMLOnxXWq
+   J8zn/AtRHNVO0IFM1QlbN8+g8c7mAYjK5HyHy0jvLWM310Uju8sBSmT7+
+   MfVNngpLJcozHzbpCL+mVy8h/AcjcIf9QP8p3LepYJLUAcrnoWWkZ5DMZ
+   Q==;
+X-CSE-ConnectionGUID: sqGBLIv0SK2DRrxEGr0N/A==
+X-CSE-MsgGUID: kToIvQ7QSv+rQBMXWzp6XQ==
 X-IronPort-AV: E=Sophos;i="6.25,141,1779148800"; 
-   d="scan'208";a="22851247"
+   d="scan'208";a="22851256"
 Received: from ip-10-5-6-203.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.6.203])
-  by internal-pdx-out-002.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2026 10:34:53 +0000
-Received: from EX19MTAUWB002.ant.amazon.com [205.251.233.48:14575]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.52.142:2525] with esmtp (Farcaster)
- id cdd181e5-0615-48e2-b159-7ad896c408e4; Wed, 1 Jul 2026 10:34:53 +0000 (UTC)
-X-Farcaster-Flow-ID: cdd181e5-0615-48e2-b159-7ad896c408e4
+  by internal-pdx-out-002.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2026 10:34:54 +0000
+Received: from EX19MTAUWA002.ant.amazon.com [205.251.233.234:20132]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.31.226:2525] with esmtp (Farcaster)
+ id f347b116-d733-4f2a-a614-175e4b0d2698; Wed, 1 Jul 2026 10:34:54 +0000 (UTC)
+X-Farcaster-Flow-ID: f347b116-d733-4f2a-a614-175e4b0d2698
 Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.43;
- Wed, 1 Jul 2026 10:34:53 +0000
+ Wed, 1 Jul 2026 10:34:54 +0000
 Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
  (10.253.103.172) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.43; Wed, 1 Jul 2026
- 10:34:51 +0000
+ 10:34:53 +0000
 From: Michael Margolin <mrgolin@amazon.com>
 To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
 CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>,
 	"Yonatan Nachum" <ynachum@amazon.com>
-Subject: [PATCH for-next v7 1/5] RDMA/core: Add Completion Counters support
-Date: Wed, 1 Jul 2026 10:34:44 +0000
-Message-ID: <20260701103448.17895-2-mrgolin@amazon.com>
+Subject: [PATCH for-next v7 2/5] RDMA/core: Prevent destroying in-use completion counters
+Date: Wed, 1 Jul 2026 10:34:45 +0000
+Message-ID: <20260701103448.17895-3-mrgolin@amazon.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260701103448.17895-1-mrgolin@amazon.com>
 References: <20260701103448.17895-1-mrgolin@amazon.com>
@@ -94,7 +94,7 @@ X-Spamd-Result: default: False [-10.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -104,12 +104,12 @@ X-Spamd-Result: default: False [-10.66 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER(0.00)[mrgolin@amazon.com,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22631-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22630-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_NEQ_ENVFROM(0.00)[mrgolin@amazon.com,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[amazon.com:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	ALIAS_RESOLVED(0.00)[];
@@ -118,566 +118,128 @@ X-Spamd-Result: default: False [-10.66 / 15.00];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 91E246EC372
+X-Rspamd-Queue-Id: 155E16EC309
 
-Add core infrastructure for Completion Counters, a light-weight
-alternative to polling CQ for tracking operation completions.
-
-Define the UVERBS_OBJECT_COMP_CNTR ioctl object with create, destroy,
-modify and read methods for both success and error counters. Add a QP
-attach method on the QP object to associate a completion counter with a
-queue pair.
-
-Add ib_comp_cntr struct, ib_comp_cntr_attach_attr, device ops, and
-DECLARE_RDMA_OBJ_SIZE for driver object allocation.
-
-Only userspace Completion Counters are supported at this stage.
+Reject comp_cntr destroy while it is attached to any QP. Track
+attachments using an xarray in ib_qp keyed by the attach op_mask.
+Use op bitmask to reject overlapping attaches early.
 
 Reviewed-by: Yonatan Nachum <ynachum@amazon.com>
 Signed-off-by: Michael Margolin <mrgolin@amazon.com>
 ---
- drivers/infiniband/core/Makefile              |   1 +
- drivers/infiniband/core/device.c              |   6 +
- drivers/infiniband/core/rdma_core.h           |   1 +
- drivers/infiniband/core/uverbs_cmd.c          |   1 +
- .../core/uverbs_std_types_comp_cntr.c         | 173 ++++++++++++++++++
- drivers/infiniband/core/uverbs_std_types_qp.c |  48 ++++-
- drivers/infiniband/core/uverbs_uapi.c         |   1 +
- include/rdma/ib_verbs.h                       |  40 ++++
- include/uapi/rdma/ib_user_ioctl_cmds.h        |  38 ++++
- include/uapi/rdma/ib_user_ioctl_verbs.h       |  19 ++
- include/uapi/rdma/ib_user_verbs.h             |   2 +-
- 11 files changed, 328 insertions(+), 2 deletions(-)
- create mode 100644 drivers/infiniband/core/uverbs_std_types_comp_cntr.c
+ .../core/uverbs_std_types_comp_cntr.c          |  3 +++
+ drivers/infiniband/core/uverbs_std_types_qp.c  | 18 +++++++++++++++++-
+ drivers/infiniband/core/verbs.c                |  8 ++++++++
+ include/rdma/ib_verbs.h                        |  3 +++
+ 4 files changed, 31 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/Makefile b/drivers/infiniband/core/Makefile
-index ab7a2197bc86..47ef6b0afd29 100644
---- a/drivers/infiniband/core/Makefile
-+++ b/drivers/infiniband/core/Makefile
-@@ -38,6 +38,7 @@ ib_umad-y :=			user_mad.o
- ib_uverbs-y :=			uverbs_main.o uverbs_cmd.o uverbs_marshall.o \
- 				uverbs_std_types.o uverbs_ioctl.o \
- 				uverbs_std_types_cq.o \
-+				uverbs_std_types_comp_cntr.o \
- 				uverbs_std_types_dmabuf.o \
- 				uverbs_std_types_dmah.o \
- 				uverbs_std_types_flow_action.o uverbs_std_types_dm.o \
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index b8193e077a74..a4c57279f19d 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -2742,6 +2742,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
- 	SET_DEVICE_OP(dev_ops, create_ah);
- 	SET_DEVICE_OP(dev_ops, create_counters);
- 	SET_DEVICE_OP(dev_ops, create_cq);
-+	SET_DEVICE_OP(dev_ops, create_comp_cntr);
- 	SET_DEVICE_OP(dev_ops, create_user_cq);
- 	SET_DEVICE_OP(dev_ops, create_flow);
- 	SET_DEVICE_OP(dev_ops, create_qp);
-@@ -2762,6 +2763,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
- 	SET_DEVICE_OP(dev_ops, destroy_ah);
- 	SET_DEVICE_OP(dev_ops, destroy_counters);
- 	SET_DEVICE_OP(dev_ops, destroy_cq);
-+	SET_DEVICE_OP(dev_ops, destroy_comp_cntr);
- 	SET_DEVICE_OP(dev_ops, destroy_flow);
- 	SET_DEVICE_OP(dev_ops, destroy_flow_action);
- 	SET_DEVICE_OP(dev_ops, destroy_qp);
-@@ -2813,6 +2815,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
- 	SET_DEVICE_OP(dev_ops, modify_hw_stat);
- 	SET_DEVICE_OP(dev_ops, modify_port);
- 	SET_DEVICE_OP(dev_ops, modify_qp);
-+	SET_DEVICE_OP(dev_ops, qp_attach_comp_cntr);
- 	SET_DEVICE_OP(dev_ops, modify_srq);
- 	SET_DEVICE_OP(dev_ops, modify_wq);
- 	SET_DEVICE_OP(dev_ops, peek_cq);
-@@ -2836,12 +2839,14 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
- 	SET_DEVICE_OP(dev_ops, query_ucontext);
- 	SET_DEVICE_OP(dev_ops, rdma_netdev_get_params);
- 	SET_DEVICE_OP(dev_ops, read_counters);
-+	SET_DEVICE_OP(dev_ops, read_comp_cntr);
- 	SET_DEVICE_OP(dev_ops, reg_dm_mr);
- 	SET_DEVICE_OP(dev_ops, reg_user_mr);
- 	SET_DEVICE_OP(dev_ops, reg_user_mr_dmabuf);
- 	SET_DEVICE_OP(dev_ops, req_notify_cq);
- 	SET_DEVICE_OP(dev_ops, rereg_user_mr);
- 	SET_DEVICE_OP(dev_ops, resize_user_cq);
-+	SET_DEVICE_OP(dev_ops, modify_comp_cntr);
- 	SET_DEVICE_OP(dev_ops, set_vf_guid);
- 	SET_DEVICE_OP(dev_ops, set_vf_link_state);
- 	SET_DEVICE_OP(dev_ops, ufile_hw_cleanup);
-@@ -2850,6 +2855,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
- 	SET_OBJ_SIZE(dev_ops, ib_ah);
- 	SET_OBJ_SIZE(dev_ops, ib_counters);
- 	SET_OBJ_SIZE(dev_ops, ib_cq);
-+	SET_OBJ_SIZE(dev_ops, ib_comp_cntr);
- 	SET_OBJ_SIZE(dev_ops, ib_dmah);
- 	SET_OBJ_SIZE(dev_ops, ib_mw);
- 	SET_OBJ_SIZE(dev_ops, ib_pd);
-diff --git a/drivers/infiniband/core/rdma_core.h b/drivers/infiniband/core/rdma_core.h
-index 56121103e9f4..2b91e8527287 100644
---- a/drivers/infiniband/core/rdma_core.h
-+++ b/drivers/infiniband/core/rdma_core.h
-@@ -159,6 +159,7 @@ void uverbs_user_mmap_disassociate(struct ib_uverbs_file *ufile);
- 
- extern const struct uapi_definition uverbs_def_obj_async_fd[];
- extern const struct uapi_definition uverbs_def_obj_counters[];
-+extern const struct uapi_definition uverbs_def_obj_comp_cntr[];
- extern const struct uapi_definition uverbs_def_obj_cq[];
- extern const struct uapi_definition uverbs_def_obj_device[];
- extern const struct uapi_definition uverbs_def_obj_dm[];
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index aca7c6ab55cd..ff6a37ad3155 100644
---- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -3597,6 +3597,7 @@ static int ib_uverbs_ex_query_device(struct uverbs_attr_bundle *attrs)
- 	resp.cq_moderation_caps.max_cq_moderation_period =
- 		attr.cq_caps.max_cq_moderation_period;
- 	resp.max_dm_size = attr.max_dm_size;
-+	resp.max_comp_cntr = attr.max_comp_cntr;
- 	resp.response_length = uverbs_response_length(attrs, sizeof(resp));
- 
- 	return uverbs_response(attrs, &resp, sizeof(resp));
 diff --git a/drivers/infiniband/core/uverbs_std_types_comp_cntr.c b/drivers/infiniband/core/uverbs_std_types_comp_cntr.c
-new file mode 100644
-index 000000000000..91ad54b270cf
---- /dev/null
+index 91ad54b270cf..967f05f76bbe 100644
+--- a/drivers/infiniband/core/uverbs_std_types_comp_cntr.c
 +++ b/drivers/infiniband/core/uverbs_std_types_comp_cntr.c
-@@ -0,0 +1,173 @@
-+// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-+/*
-+ * Copyright Amazon.com, Inc. or its affiliates. All rights reserved.
-+ */
+@@ -13,6 +13,9 @@ static int uverbs_free_comp_cntr(struct ib_uobject *uobject, enum rdma_remove_re
+ 	struct ib_comp_cntr *cc = uobject->object;
+ 	int ret;
+ 
++	if (atomic_read(&cc->usecnt))
++		return -EBUSY;
 +
-+#include <rdma/uverbs_std_types.h>
-+#include "rdma_core.h"
-+#include "uverbs.h"
-+
-+static int uverbs_free_comp_cntr(struct ib_uobject *uobject, enum rdma_remove_reason why,
-+				 struct uverbs_attr_bundle *attrs)
-+{
-+	struct ib_comp_cntr *cc = uobject->object;
-+	int ret;
-+
-+	ret = cc->device->ops.destroy_comp_cntr(cc);
-+	if (ret)
-+		return ret;
-+
-+	kfree(cc);
-+	return 0;
-+}
-+
-+static int UVERBS_HANDLER(UVERBS_METHOD_COMP_CNTR_CREATE)(struct uverbs_attr_bundle *attrs)
-+{
-+	struct ib_uobject *uobj = uverbs_attr_get_uobject(attrs,
-+							  UVERBS_ATTR_CREATE_COMP_CNTR_HANDLE);
-+	struct ib_device *ib_dev = attrs->context->device;
-+	struct ib_comp_cntr *cc;
-+	int ret;
-+
-+	if (!ib_dev->ops.create_comp_cntr ||
-+	    !ib_dev->ops.destroy_comp_cntr ||
-+	    !ib_dev->ops.qp_attach_comp_cntr)
-+		return -EOPNOTSUPP;
-+
-+	cc = rdma_zalloc_drv_obj(ib_dev, ib_comp_cntr);
-+	if (!cc)
-+		return -ENOMEM;
-+
-+	cc->device = ib_dev;
-+	cc->uobject = uobj;
-+
-+	ret = ib_dev->ops.create_comp_cntr(cc, attrs);
-+	if (ret)
-+		goto err_free;
-+
-+	uobj->object = cc;
-+	uverbs_finalize_uobj_create(attrs, UVERBS_ATTR_CREATE_COMP_CNTR_HANDLE);
-+
-+	ret = uverbs_copy_to(attrs, UVERBS_ATTR_CREATE_COMP_CNTR_RESP_COUNT_MAX_VALUE,
-+			     &cc->comp_count_max_value, sizeof(cc->comp_count_max_value));
-+	if (ret)
-+		return ret;
-+
-+	ret = uverbs_copy_to(attrs, UVERBS_ATTR_CREATE_COMP_CNTR_RESP_ERR_COUNT_MAX_VALUE,
-+			     &cc->err_count_max_value, sizeof(cc->err_count_max_value));
-+	return ret;
-+
-+err_free:
-+	kfree(cc);
-+	return ret;
-+}
-+
-+static int UVERBS_HANDLER(UVERBS_METHOD_COMP_CNTR_MODIFY)(struct uverbs_attr_bundle *attrs)
-+{
-+	struct ib_comp_cntr *cc = uverbs_attr_get_obj(attrs, UVERBS_ATTR_MODIFY_COMP_CNTR_HANDLE);
-+	enum ib_comp_cntr_modify_op op;
-+	enum ib_comp_cntr_entry entry;
-+	u64 value;
-+	int ret;
-+
-+	if (!cc->device->ops.modify_comp_cntr)
-+		return -EOPNOTSUPP;
-+
-+	ret = uverbs_get_const(&entry, attrs, UVERBS_ATTR_MODIFY_COMP_CNTR_ENTRY);
-+	if (ret)
-+		return ret;
-+
-+	ret = uverbs_get_const(&op, attrs, UVERBS_ATTR_MODIFY_COMP_CNTR_OP);
-+	if (ret)
-+		return ret;
-+
-+	ret = uverbs_copy_from(&value, attrs, UVERBS_ATTR_MODIFY_COMP_CNTR_VALUE);
-+	if (ret)
-+		return ret;
-+
-+	return cc->device->ops.modify_comp_cntr(cc, entry, op, value);
-+}
-+
-+static int UVERBS_HANDLER(UVERBS_METHOD_COMP_CNTR_READ)(struct uverbs_attr_bundle *attrs)
-+{
-+	struct ib_comp_cntr *cc = uverbs_attr_get_obj(attrs, UVERBS_ATTR_READ_COMP_CNTR_HANDLE);
-+	enum ib_comp_cntr_entry entry;
-+	u64 value;
-+	int ret;
-+
-+	if (!cc->device->ops.read_comp_cntr)
-+		return -EOPNOTSUPP;
-+
-+	ret = uverbs_get_const(&entry, attrs, UVERBS_ATTR_READ_COMP_CNTR_ENTRY);
-+	if (ret)
-+		return ret;
-+
-+	ret = cc->device->ops.read_comp_cntr(cc, entry, &value);
-+	if (ret)
-+		return ret;
-+
-+	return uverbs_copy_to(attrs, UVERBS_ATTR_READ_COMP_CNTR_RESP_VALUE, &value, sizeof(value));
-+}
-+
-+DECLARE_UVERBS_NAMED_METHOD(
-+	UVERBS_METHOD_COMP_CNTR_CREATE,
-+	UVERBS_ATTR_IDR(UVERBS_ATTR_CREATE_COMP_CNTR_HANDLE,
-+			UVERBS_OBJECT_COMP_CNTR,
-+			UVERBS_ACCESS_NEW,
-+			UA_MANDATORY),
-+	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_CREATE_COMP_CNTR_RESP_COUNT_MAX_VALUE,
-+			    UVERBS_ATTR_TYPE(u64),
-+			    UA_MANDATORY),
-+	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_CREATE_COMP_CNTR_RESP_ERR_COUNT_MAX_VALUE,
-+			    UVERBS_ATTR_TYPE(u64),
-+			    UA_MANDATORY));
-+
-+DECLARE_UVERBS_NAMED_METHOD_DESTROY(
-+	UVERBS_METHOD_COMP_CNTR_DESTROY,
-+	UVERBS_ATTR_IDR(UVERBS_ATTR_DESTROY_COMP_CNTR_HANDLE,
-+			UVERBS_OBJECT_COMP_CNTR,
-+			UVERBS_ACCESS_DESTROY,
-+			UA_MANDATORY));
-+
-+DECLARE_UVERBS_NAMED_METHOD(
-+	UVERBS_METHOD_COMP_CNTR_MODIFY,
-+	UVERBS_ATTR_IDR(UVERBS_ATTR_MODIFY_COMP_CNTR_HANDLE,
-+			UVERBS_OBJECT_COMP_CNTR,
-+			UVERBS_ACCESS_WRITE,
-+			UA_MANDATORY),
-+	UVERBS_ATTR_CONST_IN(UVERBS_ATTR_MODIFY_COMP_CNTR_ENTRY,
-+			     enum ib_uverbs_comp_cntr_entry,
-+			     UA_MANDATORY),
-+	UVERBS_ATTR_CONST_IN(UVERBS_ATTR_MODIFY_COMP_CNTR_OP,
-+			     enum ib_uverbs_comp_cntr_modify_op,
-+			     UA_MANDATORY),
-+	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_MODIFY_COMP_CNTR_VALUE,
-+			   UVERBS_ATTR_TYPE(u64),
-+			   UA_MANDATORY));
-+
-+DECLARE_UVERBS_NAMED_METHOD(
-+	UVERBS_METHOD_COMP_CNTR_READ,
-+	UVERBS_ATTR_IDR(UVERBS_ATTR_READ_COMP_CNTR_HANDLE,
-+			UVERBS_OBJECT_COMP_CNTR,
-+			UVERBS_ACCESS_READ,
-+			UA_MANDATORY),
-+	UVERBS_ATTR_CONST_IN(UVERBS_ATTR_READ_COMP_CNTR_ENTRY,
-+			     enum ib_uverbs_comp_cntr_entry,
-+			     UA_MANDATORY),
-+	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_READ_COMP_CNTR_RESP_VALUE,
-+			    UVERBS_ATTR_TYPE(u64),
-+			    UA_MANDATORY));
-+
-+DECLARE_UVERBS_NAMED_OBJECT(
-+	UVERBS_OBJECT_COMP_CNTR,
-+	UVERBS_TYPE_ALLOC_IDR(uverbs_free_comp_cntr),
-+	&UVERBS_METHOD(UVERBS_METHOD_COMP_CNTR_CREATE),
-+	&UVERBS_METHOD(UVERBS_METHOD_COMP_CNTR_DESTROY),
-+	&UVERBS_METHOD(UVERBS_METHOD_COMP_CNTR_MODIFY),
-+	&UVERBS_METHOD(UVERBS_METHOD_COMP_CNTR_READ));
-+
-+const struct uapi_definition uverbs_def_obj_comp_cntr[] = {
-+	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(UVERBS_OBJECT_COMP_CNTR,
-+				      UAPI_DEF_OBJ_NEEDS_FN(destroy_comp_cntr)),
-+	{}
-+};
+ 	ret = cc->device->ops.destroy_comp_cntr(cc);
+ 	if (ret)
+ 		return ret;
 diff --git a/drivers/infiniband/core/uverbs_std_types_qp.c b/drivers/infiniband/core/uverbs_std_types_qp.c
-index 5767607dd420..6ef5ea2bd7a7 100644
+index 6ef5ea2bd7a7..f6e9c33f23e3 100644
 --- a/drivers/infiniband/core/uverbs_std_types_qp.c
 +++ b/drivers/infiniband/core/uverbs_std_types_qp.c
-@@ -372,11 +372,57 @@ DECLARE_UVERBS_NAMED_METHOD(
- 			    UVERBS_ATTR_TYPE(struct ib_uverbs_destroy_qp_resp),
- 			    UA_MANDATORY));
+@@ -400,7 +400,23 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_ATTACH_COMP_CNTR)(
+ 	if (!attr.op_mask)
+ 		return -EINVAL;
  
-+static int UVERBS_HANDLER(UVERBS_METHOD_QP_ATTACH_COMP_CNTR)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct ib_uobject *qp_uobj = uverbs_attr_get_uobject(
-+		attrs, UVERBS_ATTR_QP_ATTACH_COMP_CNTR_HANDLE);
-+	struct ib_comp_cntr *cc = uverbs_attr_get_obj(
-+		attrs, UVERBS_ATTR_QP_ATTACH_COMP_CNTR_CNTR_HANDLE);
-+	struct ib_qp_attach_comp_cntr_attr attr = {};
-+	struct ib_qp *qp = qp_uobj->object;
-+	int ret;
+-	return qp->device->ops.qp_attach_comp_cntr(qp, cc, &attr);
++	if (attr.op_mask & qp->comp_cntr_op_mask)
++		return -EBUSY;
 +
-+	if (!cc->device->ops.qp_attach_comp_cntr)
-+		return -EOPNOTSUPP;
-+
-+	ret = uverbs_get_flags32(&attr.op_mask, attrs,
-+				 UVERBS_ATTR_QP_ATTACH_COMP_CNTR_OP_MASK,
-+				 IB_UVERBS_QP_ATTACH_COMP_CNTR_OP_SEND |
-+				 IB_UVERBS_QP_ATTACH_COMP_CNTR_OP_RECV |
-+				 IB_UVERBS_QP_ATTACH_COMP_CNTR_OP_RDMA_READ |
-+				 IB_UVERBS_QP_ATTACH_COMP_CNTR_OP_REMOTE_RDMA_READ |
-+				 IB_UVERBS_QP_ATTACH_COMP_CNTR_OP_RDMA_WRITE |
-+				 IB_UVERBS_QP_ATTACH_COMP_CNTR_OP_REMOTE_RDMA_WRITE);
++	ret = xa_err(xa_store(&qp->comp_cntrs, attr.op_mask, cc, GFP_KERNEL));
 +	if (ret)
 +		return ret;
 +
-+	if (!attr.op_mask)
-+		return -EINVAL;
++	ret = qp->device->ops.qp_attach_comp_cntr(qp, cc, &attr);
++	if (ret) {
++		xa_erase(&qp->comp_cntrs, attr.op_mask);
++		return ret;
++	}
 +
-+	return qp->device->ops.qp_attach_comp_cntr(qp, cc, &attr);
-+}
++	atomic_inc(&cc->usecnt);
++	qp->comp_cntr_op_mask |= attr.op_mask;
 +
-+DECLARE_UVERBS_NAMED_METHOD(
-+	UVERBS_METHOD_QP_ATTACH_COMP_CNTR,
-+	UVERBS_ATTR_IDR(UVERBS_ATTR_QP_ATTACH_COMP_CNTR_HANDLE,
-+			UVERBS_OBJECT_QP,
-+			UVERBS_ACCESS_WRITE,
-+			UA_MANDATORY),
-+	UVERBS_ATTR_IDR(UVERBS_ATTR_QP_ATTACH_COMP_CNTR_CNTR_HANDLE,
-+			UVERBS_OBJECT_COMP_CNTR,
-+			UVERBS_ACCESS_READ,
-+			UA_MANDATORY),
-+	UVERBS_ATTR_FLAGS_IN(UVERBS_ATTR_QP_ATTACH_COMP_CNTR_OP_MASK,
-+			     enum ib_uverbs_qp_attach_comp_cntr_op,
-+			     UA_MANDATORY));
-+
- DECLARE_UVERBS_NAMED_OBJECT(
- 	UVERBS_OBJECT_QP,
- 	UVERBS_TYPE_ALLOC_IDR_SZ(sizeof(struct ib_uqp_object), uverbs_free_qp),
- 	&UVERBS_METHOD(UVERBS_METHOD_QP_CREATE),
--	&UVERBS_METHOD(UVERBS_METHOD_QP_DESTROY));
-+	&UVERBS_METHOD(UVERBS_METHOD_QP_DESTROY),
-+	&UVERBS_METHOD(UVERBS_METHOD_QP_ATTACH_COMP_CNTR));
++	return 0;
+ }
  
- const struct uapi_definition uverbs_def_obj_qp[] = {
- 	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(UVERBS_OBJECT_QP,
-diff --git a/drivers/infiniband/core/uverbs_uapi.c b/drivers/infiniband/core/uverbs_uapi.c
-index 4e2e556c8119..d150099b99d2 100644
---- a/drivers/infiniband/core/uverbs_uapi.c
-+++ b/drivers/infiniband/core/uverbs_uapi.c
-@@ -628,6 +628,7 @@ void uverbs_destroy_api(struct uverbs_api *uapi)
- static const struct uapi_definition uverbs_core_api[] = {
- 	UAPI_DEF_CHAIN(uverbs_def_obj_async_fd),
- 	UAPI_DEF_CHAIN(uverbs_def_obj_counters),
-+	UAPI_DEF_CHAIN(uverbs_def_obj_comp_cntr),
- 	UAPI_DEF_CHAIN(uverbs_def_obj_cq),
- 	UAPI_DEF_CHAIN(uverbs_def_obj_device),
- 	UAPI_DEF_CHAIN(uverbs_def_obj_dm),
+ DECLARE_UVERBS_NAMED_METHOD(
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 3b613b57e269..e30e250640c8 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -1293,6 +1293,7 @@ static struct ib_qp *create_qp(struct ib_device *dev, struct ib_pd *pd,
+ 	qp->qp_context = attr->qp_context;
+ 
+ 	spin_lock_init(&qp->mr_lock);
++	xa_init(&qp->comp_cntrs);
+ 	INIT_LIST_HEAD(&qp->rdma_mrs);
+ 	INIT_LIST_HEAD(&qp->sig_mrs);
+ 	init_completion(&qp->srq_completion);
+@@ -1327,6 +1328,7 @@ static struct ib_qp *create_qp(struct ib_device *dev, struct ib_pd *pd,
+ 		qp, uattrs ? uverbs_get_cleared_udata(uattrs) : NULL);
+ err_create:
+ 	rdma_restrack_put(&qp->res);
++	xa_destroy(&qp->comp_cntrs);
+ 	kfree(qp);
+ 	return ERR_PTR(ret);
+ 
+@@ -2144,6 +2146,8 @@ int ib_destroy_qp_user(struct ib_qp *qp, struct ib_udata *udata)
+ 	const struct ib_gid_attr *alt_path_sgid_attr = qp->alt_path_sgid_attr;
+ 	const struct ib_gid_attr *av_sgid_attr = qp->av_sgid_attr;
+ 	struct ib_qp_security *sec;
++	struct ib_comp_cntr *cc;
++	unsigned long index;
+ 	int ret;
+ 
+ 	WARN_ON_ONCE(qp->mrs_used > 0);
+@@ -2174,6 +2178,10 @@ int ib_destroy_qp_user(struct ib_qp *qp, struct ib_udata *udata)
+ 	if (av_sgid_attr)
+ 		rdma_put_gid_attr(av_sgid_attr);
+ 
++	xa_for_each(&qp->comp_cntrs, index, cc)
++		atomic_dec(&cc->usecnt);
++	xa_destroy(&qp->comp_cntrs);
++
+ 	ib_qp_usecnt_dec(qp);
+ 	if (sec)
+ 		ib_destroy_qp_security_end(sec);
 diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 794746de8db0..8ad9584ba0cc 100644
+index 8ad9584ba0cc..723bf368c41f 100644
 --- a/include/rdma/ib_verbs.h
 +++ b/include/rdma/ib_verbs.h
-@@ -454,6 +454,7 @@ struct ib_device_attr {
- 	u64			max_dm_size;
- 	/* Max entries for sgl for optimized performance per READ */
- 	u32			max_sgl_rd;
-+	u32			max_comp_cntr;
+@@ -1752,6 +1752,7 @@ struct ib_comp_cntr {
+ 	struct ib_uobject *uobject;
+ 	u64 comp_count_max_value;
+ 	u64 err_count_max_value;
++	atomic_t usecnt;
  };
  
- enum ib_mtu {
-@@ -1746,6 +1747,36 @@ struct ib_cq {
- 	struct rdma_restrack_entry res;
- };
+ enum ib_comp_cntr_entry {
+@@ -1947,6 +1948,8 @@ struct ib_qp {
+ 	struct completion	srq_completion;
+ 	struct ib_xrcd	       *xrcd; /* XRC TGT QPs only */
+ 	struct list_head	xrcd_list;
++	struct xarray		comp_cntrs; /* op_mask -> comp_cntr */
++	u32			comp_cntr_op_mask;
  
-+struct ib_comp_cntr {
-+	struct ib_device *device;
-+	struct ib_uobject *uobject;
-+	u64 comp_count_max_value;
-+	u64 err_count_max_value;
-+};
-+
-+enum ib_comp_cntr_entry {
-+	IB_COMP_CNTR_ENTRY_COMP = IB_UVERBS_COMP_CNTR_ENTRY_COMP,
-+	IB_COMP_CNTR_ENTRY_ERR = IB_UVERBS_COMP_CNTR_ENTRY_ERR,
-+};
-+
-+enum ib_comp_cntr_modify_op {
-+	IB_COMP_CNTR_MODIFY_OP_SET = IB_UVERBS_COMP_CNTR_MODIFY_OP_SET,
-+	IB_COMP_CNTR_MODIFY_OP_INC = IB_UVERBS_COMP_CNTR_MODIFY_OP_INC,
-+};
-+
-+enum ib_qp_attach_comp_cntr_op {
-+	IB_QP_ATTACH_COMP_CNTR_OP_SEND = IB_UVERBS_QP_ATTACH_COMP_CNTR_OP_SEND,
-+	IB_QP_ATTACH_COMP_CNTR_OP_RECV = IB_UVERBS_QP_ATTACH_COMP_CNTR_OP_RECV,
-+	IB_QP_ATTACH_COMP_CNTR_OP_RDMA_READ = IB_UVERBS_QP_ATTACH_COMP_CNTR_OP_RDMA_READ,
-+	IB_QP_ATTACH_COMP_CNTR_OP_REMOTE_RDMA_READ = IB_UVERBS_QP_ATTACH_COMP_CNTR_OP_REMOTE_RDMA_READ,
-+	IB_QP_ATTACH_COMP_CNTR_OP_RDMA_WRITE = IB_UVERBS_QP_ATTACH_COMP_CNTR_OP_RDMA_WRITE,
-+	IB_QP_ATTACH_COMP_CNTR_OP_REMOTE_RDMA_WRITE = IB_UVERBS_QP_ATTACH_COMP_CNTR_OP_REMOTE_RDMA_WRITE,
-+};
-+
-+struct ib_qp_attach_comp_cntr_attr {
-+	u32 op_mask;
-+};
-+
- struct ib_srq {
- 	struct ib_device       *device;
- 	struct ib_pd	       *pd;
-@@ -2629,6 +2660,8 @@ struct ib_device_ops {
- 			 struct ib_udata *udata);
- 	int (*modify_qp)(struct ib_qp *qp, struct ib_qp_attr *qp_attr,
- 			 int qp_attr_mask, struct ib_udata *udata);
-+	int (*qp_attach_comp_cntr)(struct ib_qp *qp, struct ib_comp_cntr *cc,
-+				   struct ib_qp_attach_comp_cntr_attr *attr);
- 	int (*query_qp)(struct ib_qp *qp, struct ib_qp_attr *qp_attr,
- 			int qp_attr_mask, struct ib_qp_init_attr *qp_init_attr);
- 	int (*destroy_qp)(struct ib_qp *qp, struct ib_udata *udata);
-@@ -2650,6 +2683,12 @@ struct ib_device_ops {
- 	 * post_destroy_cq - Free all kernel resources
- 	 */
- 	void (*post_destroy_cq)(struct ib_cq *cq);
-+	int (*create_comp_cntr)(struct ib_comp_cntr *cc,
-+				struct uverbs_attr_bundle *attrs);
-+	int (*destroy_comp_cntr)(struct ib_comp_cntr *cc);
-+	int (*modify_comp_cntr)(struct ib_comp_cntr *cc, enum ib_comp_cntr_entry entry,
-+				enum ib_comp_cntr_modify_op op, u64 value);
-+	int (*read_comp_cntr)(struct ib_comp_cntr *cc, enum ib_comp_cntr_entry entry, u64 *value);
- 	struct ib_mr *(*get_dma_mr)(struct ib_pd *pd, int mr_access_flags);
- 	struct ib_mr *(*reg_user_mr)(struct ib_pd *pd, u64 start, u64 length,
- 				     u64 virt_addr, int mr_access_flags,
-@@ -2883,6 +2922,7 @@ struct ib_device_ops {
- 	DECLARE_RDMA_OBJ_SIZE(ib_ah);
- 	DECLARE_RDMA_OBJ_SIZE(ib_counters);
- 	DECLARE_RDMA_OBJ_SIZE(ib_cq);
-+	DECLARE_RDMA_OBJ_SIZE(ib_comp_cntr);
- 	DECLARE_RDMA_OBJ_SIZE(ib_dmah);
- 	DECLARE_RDMA_OBJ_SIZE(ib_mw);
- 	DECLARE_RDMA_OBJ_SIZE(ib_pd);
-diff --git a/include/uapi/rdma/ib_user_ioctl_cmds.h b/include/uapi/rdma/ib_user_ioctl_cmds.h
-index 839835bd4b23..1fd537ebb69e 100644
---- a/include/uapi/rdma/ib_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/ib_user_ioctl_cmds.h
-@@ -57,6 +57,7 @@ enum uverbs_default_objects {
- 	UVERBS_OBJECT_ASYNC_EVENT,
- 	UVERBS_OBJECT_DMAH,
- 	UVERBS_OBJECT_DMABUF,
-+	UVERBS_OBJECT_COMP_CNTR,
- };
- 
- enum {
-@@ -169,9 +170,16 @@ enum uverbs_attrs_destroy_qp_cmd_attr_ids {
- 	UVERBS_ATTR_DESTROY_QP_RESP,
- };
- 
-+enum uverbs_attrs_qp_attach_comp_cntr_cmd_attr_ids {
-+	UVERBS_ATTR_QP_ATTACH_COMP_CNTR_HANDLE,
-+	UVERBS_ATTR_QP_ATTACH_COMP_CNTR_CNTR_HANDLE,
-+	UVERBS_ATTR_QP_ATTACH_COMP_CNTR_OP_MASK,
-+};
-+
- enum uverbs_methods_qp {
- 	UVERBS_METHOD_QP_CREATE,
- 	UVERBS_METHOD_QP_DESTROY,
-+	UVERBS_METHOD_QP_ATTACH_COMP_CNTR,
- };
- 
- enum uverbs_attrs_create_srq_cmd_attr_ids {
-@@ -438,4 +446,34 @@ enum uverbs_attrs_query_gid_entry_cmd_attr_ids {
- 	UVERBS_ATTR_QUERY_GID_ENTRY_RESP_ENTRY,
- };
- 
-+enum uverbs_methods_comp_cntr {
-+	UVERBS_METHOD_COMP_CNTR_CREATE,
-+	UVERBS_METHOD_COMP_CNTR_DESTROY,
-+	UVERBS_METHOD_COMP_CNTR_MODIFY,
-+	UVERBS_METHOD_COMP_CNTR_READ,
-+};
-+
-+enum uverbs_attrs_create_comp_cntr_cmd_attr_ids {
-+	UVERBS_ATTR_CREATE_COMP_CNTR_HANDLE,
-+	UVERBS_ATTR_CREATE_COMP_CNTR_RESP_COUNT_MAX_VALUE,
-+	UVERBS_ATTR_CREATE_COMP_CNTR_RESP_ERR_COUNT_MAX_VALUE,
-+};
-+
-+enum uverbs_attrs_destroy_comp_cntr_cmd_attr_ids {
-+	UVERBS_ATTR_DESTROY_COMP_CNTR_HANDLE,
-+};
-+
-+enum uverbs_attrs_modify_comp_cntr_cmd_attr_ids {
-+	UVERBS_ATTR_MODIFY_COMP_CNTR_HANDLE,
-+	UVERBS_ATTR_MODIFY_COMP_CNTR_ENTRY,
-+	UVERBS_ATTR_MODIFY_COMP_CNTR_OP,
-+	UVERBS_ATTR_MODIFY_COMP_CNTR_VALUE,
-+};
-+
-+enum uverbs_attrs_read_comp_cntr_cmd_attr_ids {
-+	UVERBS_ATTR_READ_COMP_CNTR_HANDLE,
-+	UVERBS_ATTR_READ_COMP_CNTR_ENTRY,
-+	UVERBS_ATTR_READ_COMP_CNTR_RESP_VALUE,
-+};
-+
- #endif
-diff --git a/include/uapi/rdma/ib_user_ioctl_verbs.h b/include/uapi/rdma/ib_user_ioctl_verbs.h
-index 51030c27d479..21f86cc7bb1f 100644
---- a/include/uapi/rdma/ib_user_ioctl_verbs.h
-+++ b/include/uapi/rdma/ib_user_ioctl_verbs.h
-@@ -300,4 +300,23 @@ struct ib_uverbs_buffer_desc {
- 	__aligned_u64 length;
- };
- 
-+enum ib_uverbs_comp_cntr_entry {
-+	IB_UVERBS_COMP_CNTR_ENTRY_COMP,
-+	IB_UVERBS_COMP_CNTR_ENTRY_ERR,
-+};
-+
-+enum ib_uverbs_comp_cntr_modify_op {
-+	IB_UVERBS_COMP_CNTR_MODIFY_OP_SET,
-+	IB_UVERBS_COMP_CNTR_MODIFY_OP_INC,
-+};
-+
-+enum ib_uverbs_qp_attach_comp_cntr_op {
-+	IB_UVERBS_QP_ATTACH_COMP_CNTR_OP_SEND = 1 << 0,
-+	IB_UVERBS_QP_ATTACH_COMP_CNTR_OP_RECV = 1 << 1,
-+	IB_UVERBS_QP_ATTACH_COMP_CNTR_OP_RDMA_READ = 1 << 2,
-+	IB_UVERBS_QP_ATTACH_COMP_CNTR_OP_REMOTE_RDMA_READ = 1 << 3,
-+	IB_UVERBS_QP_ATTACH_COMP_CNTR_OP_RDMA_WRITE = 1 << 4,
-+	IB_UVERBS_QP_ATTACH_COMP_CNTR_OP_REMOTE_RDMA_WRITE = 1 << 5,
-+};
-+
- #endif
-diff --git a/include/uapi/rdma/ib_user_verbs.h b/include/uapi/rdma/ib_user_verbs.h
-index d2aeadb6d2f9..d212bb470a4a 100644
---- a/include/uapi/rdma/ib_user_verbs.h
-+++ b/include/uapi/rdma/ib_user_verbs.h
-@@ -299,7 +299,7 @@ struct ib_uverbs_ex_query_device_resp {
- 	struct ib_uverbs_cq_moderation_caps cq_moderation_caps;
- 	__aligned_u64 max_dm_size;
- 	__u32 xrc_odp_caps;
--	__u32 reserved;
-+	__u32 max_comp_cntr;
- };
- 
- struct ib_uverbs_query_port {
+ 	/* count times opened, mcast attaches, flow attaches */
+ 	atomic_t		usecnt;
 -- 
 2.47.3
 
