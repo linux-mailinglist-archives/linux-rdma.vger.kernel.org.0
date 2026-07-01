@@ -1,88 +1,92 @@
-Return-Path: <linux-rdma+bounces-22644-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22645-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 4P7yANcTRWpB6goAu9opvQ
-	(envelope-from <linux-rdma+bounces-22644-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Jul 2026 15:19:19 +0200
+	id ZCkyENkTRWpE6goAu9opvQ
+	(envelope-from <linux-rdma+bounces-22645-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 01 Jul 2026 15:19:21 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48CA56EDFE8
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Jul 2026 15:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C11656EDFEF
+	for <lists+linux-rdma@lfdr.de>; Wed, 01 Jul 2026 15:19:20 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=resnulli-us.20251104.gappssmtp.com header.s=20251104 header.b=deZxlc6W;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22644-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22644-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=resnulli-us.20251104.gappssmtp.com header.s=20251104 header.b="B+U/l4YF";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22645-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22645-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 288993144CDF
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jul 2026 12:41:25 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 467C43290EBC
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jul 2026 12:41:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F4F73EF0A4;
-	Wed,  1 Jul 2026 12:40:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4250C480DDC;
+	Wed,  1 Jul 2026 12:40:28 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DE2D3FC5A7
-	for <linux-rdma@vger.kernel.org>; Wed,  1 Jul 2026 12:40:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 657671A680A
+	for <linux-rdma@vger.kernel.org>; Wed,  1 Jul 2026 12:40:24 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782909627; cv=none; b=gWY0bn7fceeJ/Zi5Zacf8V3zegVndxMGmcbKAL7XIBQTy0zKkPZuqdJKSZ6MGm18rMsrZuGeLoteijNo/IjejShk/Ws/bpbjHI8t/6Oo3ZZ0RyVUbClxp9zncPr3LuELbjGXnerP1M5Sl8vEQ3f+ni2P4cKaA6ueuRPYZ/DYiG4=
+	t=1782909628; cv=none; b=MeKWAGGO+Y26Ykq4w9Vcw9LgDiJFe0oNsYncLI7VGDTypD/uNjR2Od15yUNEMbSq02UvabwVtIFToFw8Y9+XOVH2wyWfLZoRng9OetCMlwHqTTHKqLTQIapxZB3LOponeXZGgmNJJymsuYzLwFXCRhAiWCi+LDvk3ca0EPQciHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782909627; c=relaxed/simple;
-	bh=Yh0kDNc6omqEX8TSdsfs08ah2baD7/v+s7Ia+TxvXxY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RdNeXUwSHu5EdQ3KGZQTIrwdVs0ZFY1/kPSQ7SSB43LZ+pPlvdLoCuM/PPeFhPvfPZ8kJW3WliQr0kl0WvowjoMMgnLK3ZTr9lch8twtfbH27uqUVf79xMYCFNq0XjnWyN+SrpQB/32mxN/Ur8hGKcQE+QKtGO5t8z9ccXcNzr8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=deZxlc6W; arc=none smtp.client-ip=209.85.128.44
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-493b691cb44so4158865e9.0
-        for <linux-rdma@vger.kernel.org>; Wed, 01 Jul 2026 05:40:21 -0700 (PDT)
+	s=arc-20240116; t=1782909628; c=relaxed/simple;
+	bh=Rn/ufL0hqyC5Vey8BQji5BJZm+oRSTxXo98e6B2TtVk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=jhENyAV6p6yKANJD9CCWtUHbVgH7b+zOBInq85oiXARGoTq8RrKRyxC6FjX786ho8a1xeJS1nZO6jgBBNXr+sTz7u69H8vHvlIB2hLF7bs2Rp7pYWDPpC0DT/LQf3hNy8e0BPDG11X2iBQGFjIwaYhuMuWqIUrzqvuYunwvaov8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=B+U/l4YF; arc=none smtp.client-ip=209.85.221.42
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-47362928f65so598727f8f.2
+        for <linux-rdma@vger.kernel.org>; Wed, 01 Jul 2026 05:40:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1782909620; x=1783514420; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rsL4LMBLr4o9YX9OfFGOwIduj9iO00ZLz7xyGEgof2M=;
-        b=deZxlc6WzsDHl7t/7OGUINj31WDub3V1xefiFbsJRuoo2fG1DdLSiPHcEQvqZcUQwE
-         pkKBLBICXE1ofpThCky1KyuzJ02Wg1uUCbGMiK0GXQ76p/l/BoG0RCKsKWfISlf3d19/
-         DUtkz94JEm7k6ykvO/r6xoTP2Hv4RfGj8F9ifxTDORSIbhNOcNOmABZEw9xjMAWf9Suq
-         368lFszmSbw5zes355i9YBWGOcqRKwdFT5C+h3+PKxQgviVevJH3QO5D621vgcEBL6sV
-         n+Hkq+cknsZ3Ua82t0KqsCUbhyW4vv4pmnL8mxQZ1ShwVdpmv/QuN27SgpWPqw+c6mrA
-         dTmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782909620; x=1783514420;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1782909623; x=1783514423; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rsL4LMBLr4o9YX9OfFGOwIduj9iO00ZLz7xyGEgof2M=;
-        b=Yg+0h8g+AaT22BZ+wCChKWGy6go0KIbVq6GAl2lNl8ayT8Qxd9UD+VmvhmX1eQn2/d
-         HUMOpXuIeDm9K4lhCGtSyV+wjd+P6xSYlbd2ekmPw5pk4avoMDoolGTxj4Nsf/G8gjPX
-         k8I5KMlOLNpLGYoGn3ybuzQl1Lpv31JDBPOV+UAqGUU/IVQpxT5w7yD+cucf9ECXznTQ
-         IbX4J2pKYHyEY3XCPyXtmFGyhm7CqlLkMBPRgaxoyrj3YRDbK9kktomb/lr/bjiBh5Zx
-         g8RBGKCTQqRjuyP0BVXH89qK4ieUNrwTkat5O09RrqllIhH3WyVDTnXVP+6R2MykN5aH
-         B6QA==
-X-Gm-Message-State: AOJu0YzJtTvD0AU2x81WHLDBt6Pm9Y17idsEhMwjr3y4kLHWjp/1i5q8
-	Kej7IO/l55CpI4MPn0azilP7Z13zHDmpvz7PQopOAWmVHwzl7WyLBxZoe1L7GChkWho8e1Oqj3Y
-	Qs8Sp
-X-Gm-Gg: AfdE7cmIj96afhH+t+/oEII4aKnoA+xTYRqXyjl35of+48e08Z+NawA4cbGO44ZzcKp
-	Z4C0TVq8DXMOpcvzCMat3haarSC/iMKblCSqTKRhybaEYlRADQzwdXiAwA59bbVWoDoISRIeDTa
-	Wx7WCqVbhEGnP2vVtMVWxJYD5rRsHCvEb2HXUhrKXo9mwe6T+mpHYiZN4rTIlsLLNkhzAX4+j6Q
-	kxX9KQvfVX3+rEgM6ayTgud/g7ilxTO6alaw5Gyj+jXAkdCVPyIQ3YPTbK4kktz4a2d4Oco98yn
-	asMO2FvnFykV6yi8c5wfb/bppgEalghMVA3wgmj5QEyFm/mmEViYMb2BqSUqm/kbGe85XBj9xLZ
-	dCgCMrMv4lOk/CrYLY8pvZqiAt+7jKqFbKnYOj+wcE4LNTqWU2yZSqH+AGFp243viBaEsYh3Esp
-	Vs9Fa5ZZuEt4fhqsZkQ+dULQ==
-X-Received: by 2002:a05:600c:5851:b0:492:1e7f:d41e with SMTP id 5b1f17b1804b1-493c2b4e778mr15990135e9.10.1782909619121;
-        Wed, 01 Jul 2026 05:40:19 -0700 (PDT)
+        bh=EjquPjnSxlH1NouQC11hdL93bCB5PiSU+rHY36k2irI=;
+        b=B+U/l4YF9R5FycNmSf3GLWWbI7gxThhgugKx7oan1gDkWD6oG+NaDOn6/z7s/XqIC+
+         r6FCCx6gGge+A8m8B1pQ+/boEsvvCegZ+pzAxbbI/4yKFzw7QAjnNahcucizf7Sccsq5
+         cMnXYh5dKViu/QytZcvIQc+SbauKPm5pUWc73w7Ikbr/TDTwVWNSXSlvD2w4W93GqkLa
+         bFwK+uDW59AEi/HlHYsEEFQpH1yFsjkiZHzw9Vn5es5sFAdI0NJWCJkD5Ux9mvT7nCf6
+         2fhRtbPmKwEekaUQveNwQPy36Tt5wnnvDwlI6ZCGkn3oYus0jBNYz++/QHSkMsc/X+k7
+         oP5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1782909623; x=1783514423;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=EjquPjnSxlH1NouQC11hdL93bCB5PiSU+rHY36k2irI=;
+        b=MTpYKfZuTUaTzh7HZWEG3gAsGSBcVYpv9t4inOAJWQ+RYRa2KYW4Sy0gSB+K2gfexU
+         XnngSsFWlhhDG8MIXat2LR/eI8MfBi7Hmi9dJ24RfGAbM4sVvaO+jZBZJd6eK171nB72
+         gyEFV3XtlhHIclzotHD4YMFJFyqZmtmZj/AHPWoz+XxVNDvrbOPz8q5r+OLC1a6h/OGQ
+         kS9ERvJAi6KFpl78tJYvJSrZDnGCJGQasVqPXz8glwzETgr4NNtZi0Qb60wyQ+jP3QST
+         DPx/BRI89xyt8o5CgUXyPTIFZox4/RXUxfmkK2wxRJyQw6S1jBojc1u0eCcPEY/pPXrh
+         ugSw==
+X-Gm-Message-State: AOJu0Yye7umWkQOjkrDWDjTzOz6mEsQxEaIulkW9bnAhV5G1fVeFjuFt
+	0mo+UQvR/YukG0C8CN6CFoy7Zdr0ChEDl6btHBDO7y+wahs/fQA1wgmS3BfxgjXFOTtOgBUUF88
+	m5+Zg
+X-Gm-Gg: AfdE7clADuQnjK0g9QyPpbo5RreX4X+SElzV6CRiMaf5d0BJEx3YYoVy4aH2zIYx/5b
+	V+p/A0z5qL1aMIorq++EOpV4qftYF2xvh+BS069ISx6UJrq9kbkid1P0PeHyWatmFpmnLw8CXa8
+	/UWfw3B0pUlB8gfz/lqNuwZAYysvRikp6X/heO4MDRtwjyCpphk7Rl1jloRobwooIbXDXMK00Lw
+	kTawUzgaOptWsx+ss0k94z5PnEI6wK/+dBvjiCytekMEkgBAVzSUJbgK1qtPh2FoXxj7wenBVc2
+	B4eP6H+zKyiSWcudcldV1ORYyAICnMoYevJzK65hnyWIexIE/WKruLof3Mmo/1eAH7aR77TCXF0
+	pFHCviCrVqt7ZdHn/MoQtdf3MicctHWEFekmkeW/uCwa4J/P9HAMpm6+Jio/mh3rEcask5krVXB
+	PXRvyj/31pC2H354J3IzadHw==
+X-Received: by 2002:a05:600c:350f:b0:490:b8c0:d470 with SMTP id 5b1f17b1804b1-493c2b6e607mr24274435e9.19.1782909622677;
+        Wed, 01 Jul 2026 05:40:22 -0700 (PDT)
 Received: from localhost ([140.209.217.212])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47563d195b3sm17380614f8f.8.2026.07.01.05.40.18
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-493be4da247sm71146375e9.7.2026.07.01.05.40.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2026 05:40:18 -0700 (PDT)
+        Wed, 01 Jul 2026 05:40:22 -0700 (PDT)
 From: Jiri Pirko <jiri@resnulli.us>
 To: linux-rdma@vger.kernel.org
 Cc: jgg@ziepe.ca,
 	leon@kernel.org,
 	mrgolin@amazon.com
-Subject: [PATCH rdma-next v3 0/3] RDMA: add per-attribute UMEM for SRQ create
-Date: Wed,  1 Jul 2026 14:40:12 +0200
-Message-ID: <20260701124015.64350-1-jiri@resnulli.us>
+Subject: [PATCH rdma-next v3 1/3] RDMA/uverbs: Add SRQ buffer UMEM attribute
+Date: Wed,  1 Jul 2026 14:40:13 +0200
+Message-ID: <20260701124015.64350-2-jiri@resnulli.us>
 X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260701124015.64350-1-jiri@resnulli.us>
+References: <20260701124015.64350-1-jiri@resnulli.us>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -102,7 +106,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22644-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22645-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS(0.00)[m:linux-rdma@vger.kernel.org,m:jgg@ziepe.ca,m:leon@kernel.org,m:mrgolin@amazon.com,s:lists@lfdr.de];
 	PRECEDENCE_BULK(0.00)[];
 	DMARC_NA(0.00)[resnulli.us];
@@ -123,43 +127,52 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,nvidia.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,resnulli-us.20251104.gappssmtp.com:dkim,resnulli.us:mid,resnulli.us:from_mime]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,resnulli-us.20251104.gappssmtp.com:dkim,nvidia.com:email,resnulli.us:mid,resnulli.us:from_mime,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 48CA56EDFE8
+X-Rspamd-Queue-Id: C11656EDFEF
 
 From: Jiri Pirko <jiri@nvidia.com>
 
-This series continues extending the per-attribute UMEM model to the
-SRQ create uverb flow, so that userspace can back related buffers
-using previously introduce descriptor infrastructure.
+Apply the per-attribute UMEM model to the SRQ create method. Add an
+optional UMEM attribute that backs the SRQ WQE buffer, so userspace can
+supply it as either a VA or a dma-buf through a single descriptor,
+consistent with the CQ and QP create methods.
 
-The underlying infrastructure - ib_umem_get_attr_or_va() and the
-per-command UMEM attributes - is already in place and used by the CQ and
-QP create uverbs. This series applies the same model to the SRQ create
-flow (the WQE buffer and the mlx5 doorbell record) and wire this up
-in mlx5 driver.
+mlx5 is the only driver that pins an SRQ WQE buffer via umem; it maps a
+single ucmd->buf_addr region through this attribute. No other driver
+implements a user SRQ buffer, so none of them use the attribute.
 
+Signed-off-by: Jiri Pirko <jiri@nvidia.com>
 ---
-base-commit: dc59e4fea9d83f03bad6bddf3fa2e52491777482
+ drivers/infiniband/core/uverbs_std_types_srq.c | 2 ++
+ include/uapi/rdma/ib_user_ioctl_cmds.h         | 1 +
+ 2 files changed, 3 insertions(+)
 
-v2->v3:
-- dropped resize CQ support
-
-see individual patches for changelog
-
-Jiri Pirko (3):
-  RDMA/uverbs: Add SRQ buffer UMEM attribute
-  RDMA/mlx5: Use UMEM attribute for SRQ buffer in create_srq
-  RDMA/mlx5: Use UMEM attribute for SRQ doorbell record
-
- .../infiniband/core/uverbs_std_types_srq.c    |  2 ++
- drivers/infiniband/hw/mlx5/main.c             |  1 +
- drivers/infiniband/hw/mlx5/mlx5_ib.h          |  1 +
- drivers/infiniband/hw/mlx5/srq.c              | 25 +++++++++++++++++--
- include/uapi/rdma/ib_user_ioctl_cmds.h        |  1 +
- include/uapi/rdma/mlx5_user_ioctl_cmds.h      |  4 +++
- 6 files changed, 32 insertions(+), 2 deletions(-)
-
+diff --git a/drivers/infiniband/core/uverbs_std_types_srq.c b/drivers/infiniband/core/uverbs_std_types_srq.c
+index e5513f828bdc..0421bdd225df 100644
+--- a/drivers/infiniband/core/uverbs_std_types_srq.c
++++ b/drivers/infiniband/core/uverbs_std_types_srq.c
+@@ -192,6 +192,8 @@ DECLARE_UVERBS_NAMED_METHOD(
+ 	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_CREATE_SRQ_RESP_SRQ_NUM,
+ 			   UVERBS_ATTR_TYPE(u32),
+ 			   UA_OPTIONAL),
++	UVERBS_ATTR_UMEM(UVERBS_ATTR_CREATE_SRQ_BUF_UMEM,
++			 UA_OPTIONAL),
+ 	UVERBS_ATTR_UHW());
+ 
+ static int UVERBS_HANDLER(UVERBS_METHOD_SRQ_DESTROY)(
+diff --git a/include/uapi/rdma/ib_user_ioctl_cmds.h b/include/uapi/rdma/ib_user_ioctl_cmds.h
+index 839835bd4b23..1fef1e86b302 100644
+--- a/include/uapi/rdma/ib_user_ioctl_cmds.h
++++ b/include/uapi/rdma/ib_user_ioctl_cmds.h
+@@ -189,6 +189,7 @@ enum uverbs_attrs_create_srq_cmd_attr_ids {
+ 	UVERBS_ATTR_CREATE_SRQ_RESP_MAX_WR,
+ 	UVERBS_ATTR_CREATE_SRQ_RESP_MAX_SGE,
+ 	UVERBS_ATTR_CREATE_SRQ_RESP_SRQ_NUM,
++	UVERBS_ATTR_CREATE_SRQ_BUF_UMEM,
+ };
+ 
+ enum uverbs_attrs_destroy_srq_cmd_attr_ids {
 -- 
 2.54.0
 
