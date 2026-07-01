@@ -1,294 +1,582 @@
-Return-Path: <linux-rdma+bounces-22626-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22627-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id TpuTMxnPRGro1AoAu9opvQ
-	(envelope-from <linux-rdma+bounces-22626-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Jul 2026 10:26:01 +0200
+	id pgl5DQ3gRGrj2QoAu9opvQ
+	(envelope-from <linux-rdma+bounces-22627-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 01 Jul 2026 11:38:21 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 488C16EB128
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Jul 2026 10:26:01 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 993A46EBA80
+	for <lists+linux-rdma@lfdr.de>; Wed, 01 Jul 2026 11:38:20 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=amd.com header.s=selector1 header.b=GQoGDLmC;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22626-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22626-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=amd.com;
-	arc=reject ("cv is fail on i=2")
+	dkim=pass header.d=resnulli-us.20251104.gappssmtp.com header.s=20251104 header.b=o7Jc64IG;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22627-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22627-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=none;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 8E292303129B
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jul 2026 08:26:00 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0DC99301A530
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jul 2026 09:38:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F34B3E5EF3;
-	Wed,  1 Jul 2026 08:25:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57BE3F482D;
+	Wed,  1 Jul 2026 09:38:14 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011023.outbound.protection.outlook.com [52.101.62.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A42043E0C57;
-	Wed,  1 Jul 2026 08:25:51 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782894354; cv=fail; b=fDElzT7vUSAdlGFqA2LA18CHFJlAYmXWwMJBDeCD67g2Xii++iVOIAPKtSCpLF5zF64+nqUuOIQULNjg0u132YOyivsubaOVqUhtgj1F5WCccyeXYAOL09RXjSvy54TEl6tz+r+Oh0JNa3lvz3EIFU81ItsMFypo/nZIuq9EZMY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782894354; c=relaxed/simple;
-	bh=xSTEywQGMpIJr+ajtaXdLJJIcf8NKa41LyV4hEPyzhE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=l4RJ/XoAZmFYJYesa79GsEFnbAsA1cfJ/vPLyk0CJqiIPEe8/Q8UPQgIz2yyjqf0TnduVnRq0z2m8zvvV2LRvl6n+XKJMx8jw0dkrVPeGebUm+Ppnp4MkffXCvlZ8oYkpZ/9LV1XFzsZ3UM1BgXUxI1KgVhbBOX1VBlWvIMHZMU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=GQoGDLmC; arc=fail smtp.client-ip=52.101.62.23
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=azbMyLF51uzlyLjkQzHa6wGCz5yPc2mbvojwkZeUNNOZrvztyefUUh2Pbn/2zG9p/NEh1+P3fiF/OPsOupb4m9ZTWPs8f/ZnuX4ZMMCrT3gN4bgRsE8p6nyWd8skDWQM88jXGO89ZW691ZZvsjkPTiPsKmybCCX4PlX5ExeK/EatTScG5X0SVqAIn8Ll3DKq1TBd9UqRfRdiSRgepQMk4BATDZCQ6eRSEeVYqHJjRcH+mI1PgkCCVJzrJbGjLpwc4bMY+SYr4zuLmkzFTwQmU45WfoSdTOqxnZ8RrE506VUQwD/1eeUOxpdCocKPLb1lYhkfUbOWYU3ldYEOcocmZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sZWYg95CS3JmMphTfjHJXDa3klH27N6KybtROr5FkCE=;
- b=ni+8mUyyhNfCK6e+7TnJjoS3xaC8UwOTMdSVemlzWZ/VxKM061lCf6O6pnxgouryRXE1neCaWC4v0V8zBefnAl8yz8+bjxsKoUBX4/qRDIeM3lcDz4ajPsFI3//2uWrOP0cdoCh+BRw3rwCxjwVI57GN0BkvNfjeREchtEMAV48VCoD/uP+BEu+D7YhwWFUfLjvW/BZuFiuYI02R4C05RjvsVw9FlkCrejhzfEoVOTAOBYY+m8gnmIWE27nXM2O6dgJPUEnxsQQfOOdDj0P0Owcv3RYtXCLoSJkFI9WKAEmRaYmkivckQGT6dsvfMjNUJaH7tplxhzu3gBXQIPN55A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sZWYg95CS3JmMphTfjHJXDa3klH27N6KybtROr5FkCE=;
- b=GQoGDLmCPjgBQAeTIMN6NztbowATxQwvngC6z4j5XUWkjgSUgyUT99pLZ6a75lUnCJbsKVg197Vj8YIpsW+DKWYZwGmXmCPGtTBiepI5BjzXzlLaVqCEYqTJraYG2Ii33myrS8j0B1GohqUn6NlAjNw8rb00MWpmTMBeqxUA7gs=
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by SN7PR12MB6930.namprd12.prod.outlook.com (2603:10b6:806:262::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.181.8; Wed, 1 Jul 2026
- 08:25:46 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::ce69:cfae:774d:a65c]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::ce69:cfae:774d:a65c%5]) with mapi id 15.21.0181.008; Wed, 1 Jul 2026
- 08:25:46 +0000
-Message-ID: <e132eb91-554e-493f-9da2-aff5a538da6a@amd.com>
-Date: Wed, 1 Jul 2026 10:25:39 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 2/4] dma-buf: add optional get_pci_tph() callback
-To: Zhiping Zhang <zhipingz@meta.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Leon Romanovsky <leon@kernel.org>, Michael Guralnik <michaelgur@nvidia.com>,
- Sumit Semwal <sumit.semwal@linaro.org>, Alex Williamson <alex@shazbot.org>,
- Bjorn Helgaas <bhelgaas@google.com>
-Cc: kvm@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-pci@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20260630224328.3218796-1-zhipingz@meta.com>
- <20260630224328.3218796-3-zhipingz@meta.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20260630224328.3218796-3-zhipingz@meta.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0248.namprd13.prod.outlook.com
- (2603:10b6:208:2ba::13) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 379283DEFF0
+	for <linux-rdma@vger.kernel.org>; Wed,  1 Jul 2026 09:38:08 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1782898694; cv=none; b=sVi9/ohw8PDVqZbkuIRZ99Eft8raKx0q+eda4nlbXmoV89w8kyknU9LIKz277KpG5UgQXyFUy2xPP3ATgnOsoRfLTzF2OjBh9cq8fN0jnUT81AFpj1A3pBJOoZ6AXSQEepzD3lh0yVB73mkSZ16rYRtbsxDxyJUywRpKSR15ilI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1782898694; c=relaxed/simple;
+	bh=bqgHMpRFSgGpk0AqOluAyO4FRLxnNblUBJ9bU6f+as4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uUu8/JAy/kzckeLTQSHMUPk31DXCYt2HseJ5SkBbbAN1DtuB5PYxlTH756236L3hRa+bhMN9Y5w6PrlBoRVcR7JkjljdNcngZJJuZChzTQguxq5zLli9uTo3BW6M5J3tAaP7A7uujPmhqFWwIIBS+hGP1DR4QJRByiHRXn/gqdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=o7Jc64IG; arc=none smtp.client-ip=209.85.128.44
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-493bab44440so2244195e9.0
+        for <linux-rdma@vger.kernel.org>; Wed, 01 Jul 2026 02:38:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1782898687; x=1783503487; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nUnu+0Gw8HzfquafR9sctwwF95xwBUzlKcuLZcG2ARA=;
+        b=o7Jc64IGC/mjmA8FzgPnInOVyEaAn5OJvk65HU8OPnvilmSwhEWd8/t7nDoTLJ9G7I
+         +3in0juB6vlbdU8JNa9U4H51n8VNHaJPXmwg06p4XKqTv5/S1huc3y8ls5OxGJJT/Hbt
+         vL/2+3BQIge3troOS8fmouDZtUlc2gj5onwalZARN/fH8jzFaw/Rlex9mC3q0S1ZExgf
+         vNbTGu8aU6cphdhDrN8YuFr6EWshqmBdELYABCrWVG9pl40obydlC7bJc/2tgHQkuFKe
+         9KEjmSMZY2hh0a4Uablhv+muinvXLs2vk1+4+OHd7Gx3zUfXzLzbZUzM2ByfAEDZzd9R
+         bVtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1782898687; x=1783503487;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nUnu+0Gw8HzfquafR9sctwwF95xwBUzlKcuLZcG2ARA=;
+        b=OL0D3rZc2RUgsahE5ZiXWIxu0ulkSiOEh2iw7DizJyheLFP9Q+nZmgtuZF3z1h1edg
+         GoskIy8l02xVqrbVwoh1m5DHvSJxF2lNmexYtVkgGBs2tlFVVcdUwIGGRvwNkHPKnZnl
+         4JxNfS2aRqVEzeip/DUgYfOuckpOozIT5iZhItQPWMRxWv9n+6GBVuP+GaIwxGKop2UY
+         O99EWnXlykHK5rWsiC0hVdWttxT6uMHYRPt0azy5guUULUrrdmFNYihv8nBf6Av4lqvP
+         uBvbcUcI8NJ3O3m/QjoyxtrdCpMCmVPhn6djisWxTEQ/KGHJX02T0vCn2Wb0n9zfPVnq
+         0XVg==
+X-Forwarded-Encrypted: i=1; AFNElJ8nCy22/4x5ICnmXcEwwzwDvW+zLaXOcAx0bbVe2eIP/2lcPYg3XQ5p1KA38X9kIc3+hoH3E5OzS0vD@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx8Ex6QpLUWqnzflD363YGR6YICRaX3sXWIcrw56QsfZMeYyChX
+	GQ/OYwGlbj4Jf2N34LLba9t0Uv7vpQ1yuyL2Vqkiqk7afKROCl+PBlWnARsHtUwPYvQ=
+X-Gm-Gg: AfdE7cmGQ6HC7RC+mwiBAzSO1H/IrAK1OJOlwom8ILgRE3FDyC2Z1CVuaVXy/f9KdCf
+	odToklRtDRYxnOvRdWA9EI32/J+8txhH64gjKcaRAuVfJaXiwLBu/l2I2UQ1/1XUFWXKf3kfbLC
+	Wvi1rOvLSUteUutniNyWQd12OXtB3GIDCIo2XJkSV9+HDeJ4DShAuBlSAiVzN51Vn7DWLbth6bt
+	Jp+KIDBRb5NTmTi36X+TjFgfVFe1rrsGhZUkuNKT9GGq9DVxUXLBx96p25VUTQ3ANgdTzqiJPBu
+	QBstiUJyFa7MwlBui5bsUxfu7Yw0dc5AFII+J1mCMc3qu3KwwAbljPYAgRIzUUw3LnQnCXoc8o/
+	0wFd8exmSPoO43GjYWxejKIFQZIROzjoWKPgyQXhXm0K3nZDZrmvDhlvDte2tyYe52FsoQBpgha
+	3hH889AmrbvrT23Zzt0o9i9Q==
+X-Received: by 2002:a05:600c:8715:b0:493:b36b:4933 with SMTP id 5b1f17b1804b1-493bc2099a9mr74044725e9.3.1782898687239;
+        Wed, 01 Jul 2026 02:38:07 -0700 (PDT)
+Received: from localhost ([140.209.217.212])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-475643cd64bsm16217328f8f.14.2026.07.01.02.38.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jul 2026 02:38:06 -0700 (PDT)
+Date: Wed, 1 Jul 2026 11:38:03 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Mark Bloch <mbloch@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
+	Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, netdev@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH net-next V4 3/6] devlink: Parse eswitch mode boot defaults
+Message-ID: <akTencQhKSanuFeW@FV6GYCPJ69>
+References: <20260629182102.245150-1-mbloch@nvidia.com>
+ <20260629182102.245150-4-mbloch@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|SN7PR12MB6930:EE_
-X-MS-Office365-Filtering-Correlation-Id: bf865c8a-e46e-4e81-5c32-08ded74a5994
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|23010399003|1800799024|376014|7416014|366016|22082099003|18002099003|11063799006|4143699003|56012099006|6133799003;
-X-Microsoft-Antispam-Message-Info:
-	WrWv53ZKQumZp2YK1jFgwayi+P9/QkFtW42fgbFOA7TZ7ttXFL/c3MjQZZFsGgYtHqvLQFdYBpVX/55hzo4TGbJc2QxXP3EY2zfq54P8YpYtOxS0k2Ix2SWnKrkdNACRNrCxIy1HPnd7aMNGLUc7brNdhkSzEoyYSV+iK7ysFGOa5HFpqnzH+GFZqAy8sKWZwnI7/CnIxcnNW2CH7vxNnz49SwWN2b/GxriXook8+82M4I2XLKftntAzX0yZkKsJ3iflbIm6HrvmH+h+Q9U0TImxbk95Hm25ECAhOcifOcfUPGoJMLENYvbkx7hjTmCZdKboIXxmiWUVe6J+ePALHcdYjjQTCccMr+5KILRFIz3AecD1/XLy/rSJOwIUZci4qn9Ru8/LRCTiU+xyjHoXBRFpIA/niYYj/bK2w4AvFivlGYpEzAf6/PByabgaDkX+aHtj+rzaDmoWY+T3eKmMAqT7eTDZOdU/ZlebtKm0geSUNNVR//Vgi9tLVKgf5GM7gmrsKsz8xVi0yDqkMG/mQDIfaYSJVk/IDKQw+IfbDq1IFOyfNtYMrjUWm1CPDmg/HU4LaSKLMFk8WgA8TKr5JeO1P8Hb0H38H5d5HudYzB2hidOjYJHRZ4NoIWmDFc5xlE5P66wQ4PdUrKNKqxkp8Ibh1CBdJCRhJF2SlZSqiPY=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(1800799024)(376014)(7416014)(366016)(22082099003)(18002099003)(11063799006)(4143699003)(56012099006)(6133799003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?TXlvY1BoaUJsRVVHYTEza3hEZEROM2diU2xzK08zNUdYaHBBaHJCNlpZaEZH?=
- =?utf-8?B?a1R2dmd3Ym1oS2wwWmdVbEhGV1Q2bU55QWtPdUF3d3lVamsvUW9wUEZERXhS?=
- =?utf-8?B?MnJ6RUZ1SDd1N21LQ0ZXYXFjVlZRT0hqb2lGaW0zTll1MU1uRENlMVFrcDJY?=
- =?utf-8?B?U25kYWhNc3IySGgzdGR4aXR2aUllTVhXd0ZFN0dtb1dnSms2bmVBaUFRbGZ5?=
- =?utf-8?B?czZwZTZ4UjZncTZ6SFNSYXl3SmIwakZRVXFObjV6UjZENTNzaUtzakFIVG41?=
- =?utf-8?B?d0Z4RXVrUU92c0xPdExvOFdRYzduYUJUT0RyRDMyaHhSblZEL1I0RXZyV3Ba?=
- =?utf-8?B?RndoenhHaSsrNDZROGxwc3BnN0dHbm1DVDF4R3E0WUpIempkWDE1Wlcwb3hl?=
- =?utf-8?B?TXZmTkVjeFBTa0g0Y1dLRHUrcmhpUXEwaEc0VUloMHdYNDJ4cldOQ002NCtF?=
- =?utf-8?B?V3NCeVFCNHBrK0lPS0VDR0poNyt5N0tWK1Z2SEZmYjAwb0VqUml2K1FuWi80?=
- =?utf-8?B?eENjSExEZ3o5T3g2MTlodVRiQ0NZbWcxZ2J2OWlJN2Z2d3QwZDNROSs3UlUr?=
- =?utf-8?B?czh2KzRWbW55Y28zc1F3b0w0bitVUVZza3BoVmF0Zm1jc2U4Q09BWEE4Mk54?=
- =?utf-8?B?VFZBZndiNUd4RkNiQ3Y4U21GVWFRTHRrZ2pORFBUVGZCRGlVWFIrNTdNNktu?=
- =?utf-8?B?Zk5FWEl6MjNaSUZrVzFQVFFnL3lqbURFUlVLcURaZTdac1M1ZEc4Q2k1UUln?=
- =?utf-8?B?TnovNGRSRWxXMDE4UnFHdzJIMVB2c21jMm9UOG5qa2JxWDNHUG1xdGx4SHhC?=
- =?utf-8?B?V1BEVURUc0h1REF4STNRUnpUUlNtSHo4SnFhL2ppaFNnUy9PNGFoODhHMHUy?=
- =?utf-8?B?STgrQnBqNVpFM25aTUVUR0FCUGFmWDVac3hjcnNCS3dQS2ZibUxEVnZWcGF2?=
- =?utf-8?B?VVQvNXlnakJubnhrY3RIeEJvQ1c2RGV3MGNSVUVkNE9JVEdTMHpQeW9taTlj?=
- =?utf-8?B?RGJaUXFhaGowQ0pDL2pYY1pVSHpFRG96REFqZUFjR1VybE9UNlJNYXFlZVRx?=
- =?utf-8?B?aEZWanhFcm9PSU5NYkQvZGJWaGtaVkwrK3RxWFpMNjRpUlhPbm1oOUg3andH?=
- =?utf-8?B?N2NnMURteWowY3ZXZDVXWHkxNWt6L1VGWVJkKzB4YTY0MzUxS0VaaFhWcWF3?=
- =?utf-8?B?dzRqSlpBN3RwU2dTTzNtKzQvZko5Umo4WmpaVFQwTFN5K1FmVEFNY29VTTVv?=
- =?utf-8?B?UHErMlJSSlY1MC8yV3dQZTQ5UG4vOGVVejFBNDlERXRJU001K0t1L3dLKzhw?=
- =?utf-8?B?VU5XWTEremFvK2dJLzNOenlrZlhMWGJ3ZEJlQXNSeTk4WnZ6TFdKaFpFTUdO?=
- =?utf-8?B?QldPZ2E3QkI3Rmt2YlV3eTBwU2pQUWp4bktoNHl2NVlGMzk0OTV5TlZua0ZJ?=
- =?utf-8?B?dnN5SWdZK0wwNkxJV2cxL2VMWnVpSVdUQmJXOGpyNUVTVi9jcFpMQ0FyZXo3?=
- =?utf-8?B?dklzK1pGMUtRS29lUXpJY1d1bkE4NEV0bmM0M0ZlVUViS0duWlBrTXlPbDJj?=
- =?utf-8?B?RG53bHpicHJkcHJnQWtYVFJBR3NCeC9vd1FOY2JTVE80WTJ5UkdlZDZkYkNo?=
- =?utf-8?B?akp2aU1sbHVQNWR0cVk0YUp2Mkp3Y2hTYTllMTI1cENTZHpCVWZNWHlLVWxa?=
- =?utf-8?B?SElpUjY1YjFxOSt5YlIyeGJ1SkoyWDZTQUJDYndtaHhxc29DSmE1a2ZIWUVQ?=
- =?utf-8?B?NjJoRXNwT1YwS3FwL3JCWHhkakJQWjF2dDV3Ym9GSmtLc2cyTFk0azVXUkRz?=
- =?utf-8?B?dU9Ram9RSTQxQmlXUjRYaDlMTElZNWJQODRnb0hiZ1F2eE9aSkJLYkhuY0xw?=
- =?utf-8?B?cXJMWC9JN3JEU3VGUXd4dDhRYUlsMkxYQUt6cU9wZHNCQmw0T0FuMDVJVHZG?=
- =?utf-8?B?R1Bad2psOFk0T1l1TGZRZUUwUXFicTNZRE85NEs2c1MyVU9SSGRQVThDY2RJ?=
- =?utf-8?B?Q09NcW9kL0xmRHEvY1JQR1IwalkzR3R0S0o5N0pFL1BXSFBHem0yK2VGUGx4?=
- =?utf-8?B?enNLWGhiTm9jWGZsYzZOV2tBT0laYmRKWFpLR3h5TW4wLzNFWHRaMmx0MWUv?=
- =?utf-8?B?S25mZHRJMzh6bmhKbzZCaysvSURVdGdsY2w1dHpWV0FGbld6RzViZ091a0x3?=
- =?utf-8?B?R1ZqSHNPK3dtNXF6eS9zMHpmb1hBZThYNEZMcVcwM1IvZkhxQit5RytOK01o?=
- =?utf-8?B?UmN3MjB3eHJreTdqR00rN0JTSE1KSWxacmovYnZhSzBYT0JobTF4VjlFeFNP?=
- =?utf-8?Q?AHO3w4aX6SwAG2Vp4H?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bf865c8a-e46e-4e81-5c32-08ded74a5994
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jul 2026 08:25:46.5288
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5ZIivxfv06jVkznQhPMvWJizJuPhBGtHi11YKMrDoixeqPm5Ns8Kl7Jd8AHLXOS6
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6930
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260629182102.245150-4-mbloch@nvidia.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[amd.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22626-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:zhipingz@meta.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:michaelgur@nvidia.com,m:sumit.semwal@linaro.org,m:alex@shazbot.org,m:bhelgaas@google.com,m:kvm@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-pci@vger.kernel.org,m:dri-devel@lists.freedesktop.org,s:lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[christian.koenig@amd.com,linux-rdma@vger.kernel.org];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:mbloch@nvidia.com,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:saeedm@nvidia.com,m:leon@kernel.org,m:tariqt@nvidia.com,m:andrew+netdev@lunn.ch,m:corbet@lwn.net,m:skhan@linuxfoundation.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-doc@vger.kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
+	DMARC_NA(0.00)[resnulli.us];
+	FORGED_SENDER(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	TAGGED_FROM(0.00)[bounces-22627-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[amd.com:+];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[christian.koenig@amd.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[amd.com:dkim,amd.com:mid,amd.com:from_mime,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,vger.kernel.org:from_smtp,meta.com:email]
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mellanox.com:email,vger.kernel.org:from_smtp,resnulli.us:from_mime,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 488C16EB128
+X-Rspamd-Queue-Id: 993A46EBA80
 
-On 7/1/26 00:42, Zhiping Zhang wrote:
-> Add an optional dma_buf_ops.get_pci_tph callback and a
-> DMA-buf importer wrapper, dma_buf_get_pci_tph().
+Mon, Jun 29, 2026 at 08:20:58PM +0200, mbloch@nvidia.com wrote:
+>Add devlink_eswitch_mode= kernel command line parsing for a default
+>eswitch mode.
+>
+>The supported syntax selects either all devlink handles or one explicit
+>comma-separated handle list:
+>
+>  devlink_eswitch_mode=*=<mode>
+>
+>  devlink_eswitch_mode=<handle>[,<handle>...]=<mode>
+>
+>where <mode> is one of legacy, switchdev or switchdev_inactive. All
+>selected handles receive the same mode. Assigning different modes to
+>different handle lists in the same parameter value is not supported.
+>
+>Store the parsed selector and mode in devlink core so the default can be
+>applied by a downstream patch.
+>
+>Document the devlink_eswitch_mode= syntax and duplicate handle handling.
+>
+>Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+>---
+> .../admin-guide/kernel-parameters.txt         |  25 ++
+> .../networking/devlink/devlink-defaults.rst   |  78 ++++++
+> Documentation/networking/devlink/index.rst    |   1 +
+> net/devlink/core.c                            | 227 ++++++++++++++++++
+> 4 files changed, 331 insertions(+)
+> create mode 100644 Documentation/networking/devlink/devlink-defaults.rst
+>
+>diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+>index b5493a7f8f22..117300dd589c 100644
+>--- a/Documentation/admin-guide/kernel-parameters.txt
+>+++ b/Documentation/admin-guide/kernel-parameters.txt
+>@@ -1249,6 +1249,31 @@ Kernel parameters
+> 	dell_smm_hwmon.fan_max=
+> 			[HW] Maximum configurable fan speed.
 > 
-> TPH is PCIe TLP Processing Hint. 8-bit ST and 16-bit Extended ST are
-> distinct PCIe TPH namespaces, so the importer requests the namespace it
-> can emit and the exporter returns the matching ST/PH tuple or
-> -EOPNOTSUPP.
+>+	devlink_eswitch_mode=
+>+			[NET]
+>+			Format:
+>+			<selector>=<mode>
+>+
+>+			<selector>:
+>+			* | <handle>[,<handle>...]
+>+
+>+			<handle>:
+>+			<bus-name>/<dev-name>
+>+
+>+			Configure default devlink eswitch mode for matching
+>+			devlink instances during device initialization.
+>+
+>+			<mode>:
+>+			legacy | switchdev | switchdev_inactive
+>+
+>+			Examples:
+>+			devlink_eswitch_mode=*=switchdev
+>+			devlink_eswitch_mode=pci/0000:08:00.0=switchdev
+>+			devlink_eswitch_mode=pci/0000:08:00.0,pci/0000:09:00.1=switchdev_inactive
+>+
+>+			See Documentation/networking/devlink/devlink-defaults.rst
+>+			for the full syntax.
+>+
+> 	dfltcc=		[HW,S390]
+> 			Format: { on | off | def_only | inf_only | always }
+> 			on:       s390 zlib hardware support for compression on
+>diff --git a/Documentation/networking/devlink/devlink-defaults.rst b/Documentation/networking/devlink/devlink-defaults.rst
+>new file mode 100644
+>index 000000000000..380c9e99210e
+>--- /dev/null
+>+++ b/Documentation/networking/devlink/devlink-defaults.rst
+>@@ -0,0 +1,78 @@
+>+.. SPDX-License-Identifier: GPL-2.0
+>+
+>+==============================
+>+Devlink Eswitch Mode Defaults
+>+==============================
+>+
+>+Devlink eswitch mode defaults allow the eswitch mode to be provided on the
+>+kernel command line and applied to matching devlink instances during device
+>+initialization.
+>+
+>+The devlink device is selected by its devlink handle. For PCI devices this is
+>+the same handle shown by ``devlink dev show``, for example
+>+``pci/0000:08:00.0``.
+>+
+>+Kernel command line syntax
+>+==========================
+>+
+>+Defaults are specified with the ``devlink_eswitch_mode=`` kernel command line
+>+parameter.
+>+
+>+The general syntax is::
+>+
+>+  devlink_eswitch_mode=<selector>=<mode>
+>+
+>+``<selector>`` is either ``*`` or one or more devlink handles::
+>+
+>+  * | <bus-name>/<dev-name>[,<bus-name>/<dev-name>...]
+>+
+>+``*`` applies the mode to every devlink instance. All handles in the same
+>+selector receive the same eswitch mode.
+>+
+>+``<mode>`` is one of ``legacy``, ``switchdev`` or ``switchdev_inactive``.
+>+
+>+Syntax rules
+>+------------
+>+
+>+The following syntax rules apply:
+>+
+>+* Specify the default in one ``devlink_eswitch_mode=`` parameter. Repeated
+>+  ``devlink_eswitch_mode=`` parameters are not accumulated.
+>+* The ``devlink_eswitch_mode=`` value is limited by the kernel command line
+>+  size.
+>+* Whitespace is not allowed within the parameter value.
+>+* ``<selector>`` must be either ``*`` or a handle list. ``*`` cannot be
+>+  combined with explicit handles.
+>+* ``<bus-name>`` and ``<dev-name>`` must not be empty.
+>+* ``<dev-name>`` may contain ``:``. This allows PCI names such as
+>+  ``0000:08:00.0``.
+>+* Handles must not contain whitespace, ``*``, ``=`` or more than one ``/``.
+>+* A comma separates handles.
+>+* Comma-separated default assignments are not supported.
+>+* Duplicate handles are rejected and the devlink eswitch mode default is
+>+  ignored.
+>+
+>+The eswitch mode default corresponds to the userspace command::
+>+
+>+  devlink dev eswitch set <handle> mode <value>
+>+
+>+
+>+Examples
+>+========
+>+
+>+Set all devlink instances to switchdev mode::
+>+
+>+  devlink_eswitch_mode=*=switchdev
+>+
+>+Set one PCI devlink instance to switchdev mode::
+>+
+>+  devlink_eswitch_mode=pci/0000:08:00.0=switchdev
+>+
+>+Set two PCI devlink instances to switchdev inactive mode::
+>+
+>+  devlink_eswitch_mode=pci/0000:08:00.0,pci/0000:09:00.1=switchdev_inactive
+>+
+>+The following is invalid because comma-separated default assignments are not
+>+supported::
+>+
+>+  devlink_eswitch_mode=pci/0000:08:00.0=switchdev,pci/0000:09:00.0=switchdev_inactive
+
+Interesting. I would think that this is something user may want to set
+for some usecases, no?
+
+
+>diff --git a/Documentation/networking/devlink/index.rst b/Documentation/networking/devlink/index.rst
+>index 32f70879ddd0..93f09cb18c44 100644
+>--- a/Documentation/networking/devlink/index.rst
+>+++ b/Documentation/networking/devlink/index.rst
+>@@ -56,6 +56,7 @@ general.
+>    :maxdepth: 1
 > 
-> dma_buf_get_pci_tph() is the importer entry point. It requires
-> &dmabuf->resv to be held while the callback runs and returns
-> -EOPNOTSUPP when the exporter does not provide PCI TPH metadata.
+>    devlink-dpipe
+>+   devlink-defaults
+>    devlink-eswitch-attr
+>    devlink-flash
+>    devlink-health
+>diff --git a/net/devlink/core.c b/net/devlink/core.c
+
+Wanna have this in a separate file perhaps? "default.c"?
+
+
+>index fe9f6a0a67d5..5126509a9c4e 100644
+>--- a/net/devlink/core.c
+>+++ b/net/devlink/core.c
+>@@ -4,6 +4,10 @@
+>  * Copyright (c) 2016 Jiri Pirko <jiri@mellanox.com>
+>  */
 > 
-> The first user is VFIO_DEVICE_FEATURE_DMA_BUF_TPH in vfio-pci, with
-> mlx5 as the first importer.
+>+#include <linux/init.h>
+>+#include <linux/list.h>
+>+#include <linux/slab.h>
+>+#include <linux/string.h>
+> #include <net/genetlink.h>
+> #define CREATE_TRACE_POINTS
+> #include <trace/events/devlink.h>
+>@@ -16,6 +20,193 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(devlink_trap_report);
 > 
-> Signed-off-by: Zhiping Zhang <zhipingz@meta.com>
-> ---
->  drivers/dma-buf/dma-buf.c | 25 +++++++++++++++++++++++++
->  include/linux/dma-buf.h   | 22 ++++++++++++++++++++++
->  2 files changed, 47 insertions(+)
+> DEFINE_XARRAY_FLAGS(devlinks, XA_FLAGS_ALLOC);
 > 
-> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> index d504c636dc29..7a4c9b0d5dab 100644
-> --- a/drivers/dma-buf/dma-buf.c
-> +++ b/drivers/dma-buf/dma-buf.c
-> @@ -1144,6 +1144,31 @@ void dma_buf_unpin(struct dma_buf_attachment *attach)
->  }
->  EXPORT_SYMBOL_NS_GPL(dma_buf_unpin, "DMA_BUF");
->  
-> +/**
-> + * dma_buf_get_pci_tph - Retrieve PCIe TLP Processing Hint (TPH) metadata
-> + * @dmabuf: DMA buffer to query
-> + * @extended: false for 8-bit ST, true for 16-bit Extended ST
-> + * @steering_tag: returns the raw steering tag for the requested namespace
-> + * @ph: returns the TPH processing hint
-> + *
-> + * Wrapper for the optional &dma_buf_ops.get_pci_tph callback.
-> + *
-> + * Must be called with &dma_buf.resv held. Returns -EOPNOTSUPP if the
-> + * exporter does not implement the callback or has no metadata for the
-> + * requested namespace.
+>+static char *devlink_default_esw_mode_param;
+>+static bool devlink_default_esw_mode_match_all;
+>+static enum devlink_eswitch_mode devlink_default_esw_mode;
+>+static LIST_HEAD(devlink_default_esw_mode_nodes);
+>+
+>+struct devlink_default_esw_mode_node {
+>+	struct list_head list;
+>+	char *bus_name;
+>+	char *dev_name;
+>+};
+>+
+>+static int __init
+>+devlink_default_esw_mode_to_value(const char *str,
+>+				  enum devlink_eswitch_mode *mode)
+>+{
+>+	if (!strcmp(str, "legacy")) {
+>+		*mode = DEVLINK_ESWITCH_MODE_LEGACY;
+>+		return 0;
+>+	}
+>+	if (!strcmp(str, "switchdev")) {
+>+		*mode = DEVLINK_ESWITCH_MODE_SWITCHDEV;
+>+		return 0;
+>+	}
+>+	if (!strcmp(str, "switchdev_inactive")) {
+>+		*mode = DEVLINK_ESWITCH_MODE_SWITCHDEV_INACTIVE;
+>+		return 0;
+>+	}
+>+
+>+	return -EINVAL;
+>+}
+>+
+>+static int __init
+>+devlink_default_esw_mode_handle_parse(char *handle, char **bus_name,
+>+				      char **dev_name)
+>+{
+>+	char *slash;
+>+	char *p;
+>+
+>+	if (!*handle)
+>+		return -EINVAL;
+>+
+>+	for (p = handle; *p; p++) {
+>+		if (*p == '*' || *p == '=')
+>+			return -EINVAL;
+>+	}
+>+
+>+	slash = strchr(handle, '/');
+>+	if (!slash || slash == handle || !slash[1])
+>+		return -EINVAL;
+>+	if (strchr(slash + 1, '/'))
+>+		return -EINVAL;
+>+
+>+	*slash = '\0';
+>+
+>+	*bus_name = handle;
+>+	*dev_name = slash + 1;
+>+	return 0;
+>+}
+>+
+>+static struct devlink_default_esw_mode_node *
+>+devlink_default_esw_mode_node_find(const char *bus_name, const char *dev_name)
+>+{
+>+	struct devlink_default_esw_mode_node *node;
+>+
+>+	list_for_each_entry(node, &devlink_default_esw_mode_nodes, list) {
+>+		if (!strcmp(node->bus_name, bus_name) &&
+>+		    !strcmp(node->dev_name, dev_name))
+>+			return node;
+>+	}
+>+
+>+	return NULL;
+>+}
+>+
+>+static int __init
+>+devlink_default_esw_mode_node_add(const char *bus_name, const char *dev_name)
+>+{
+>+	struct devlink_default_esw_mode_node *node;
+>+
+>+	if (devlink_default_esw_mode_node_find(bus_name, dev_name))
+>+		return -EEXIST;
+>+
+>+	node = kzalloc_obj(*node);
+>+	if (!node)
+>+		return -ENOMEM;
+>+
+>+	INIT_LIST_HEAD(&node->list);
+>+	node->bus_name = kstrdup(bus_name, GFP_KERNEL);
+>+	node->dev_name = kstrdup(dev_name, GFP_KERNEL);
+>+	if (!node->bus_name || !node->dev_name) {
+>+		kfree(node->bus_name);
+>+		kfree(node->dev_name);
+>+		kfree(node);
+>+		return -ENOMEM;
+>+	}
+>+
+>+	list_add_tail(&node->list, &devlink_default_esw_mode_nodes);
+>+	return 0;
+>+}
+>+
+>+static int __init devlink_default_esw_mode_handles_parse(char *handles)
+>+{
+>+	char *handle;
+>+	int err;
+>+
+>+	if (!strcmp(handles, "*")) {
+>+		devlink_default_esw_mode_match_all = true;
+>+		return 0;
+>+	}
+>+
+>+	while ((handle = strsep(&handles, ",")) != NULL) {
+>+		char *bus_name;
+>+		char *dev_name;
+>+
+>+		err = devlink_default_esw_mode_handle_parse(handle, &bus_name,
+>+							    &dev_name);
+>+		if (err)
+>+			return err;
+>+
+>+		err = devlink_default_esw_mode_node_add(bus_name, dev_name);
+>+		if (err)
+>+			return err;
+>+	}
+>+
+>+	return 0;
+>+}
+>+
+>+static void __init
+>+devlink_default_esw_mode_node_free(struct devlink_default_esw_mode_node *node)
+>+{
+>+	kfree(node->bus_name);
+>+	kfree(node->dev_name);
+>+	kfree(node);
+>+}
+>+
+>+static void __init devlink_default_esw_mode_nodes_clear(void)
+>+{
+>+	struct devlink_default_esw_mode_node *node;
+>+	struct devlink_default_esw_mode_node *node_tmp;
+>+
+>+	list_for_each_entry_safe(node, node_tmp,
+>+				 &devlink_default_esw_mode_nodes, list) {
+>+		list_del(&node->list);
+>+		devlink_default_esw_mode_node_free(node);
+>+	}
+>+
+>+	devlink_default_esw_mode_match_all = false;
+>+}
+>+
+>+static int __init devlink_default_esw_mode_parse(char *str)
+>+{
+>+	char *handles;
+>+	char *separator;
+>+	char *mode;
+>+	enum devlink_eswitch_mode esw_mode;
+>+	int err;
+>+
+>+	if (!*str)
+>+		return -EINVAL;
+>+
+>+	separator = strrchr(str, '=');
+>+	if (!separator || separator == str || !separator[1])
+>+		return -EINVAL;
+>+
+>+	*separator = '\0';
+>+	handles = str;
+>+	mode = separator + 1;
+>+
+>+	err = devlink_default_esw_mode_to_value(mode, &esw_mode);
+>+	if (err)
+>+		return err;
+>+
+>+	err = devlink_default_esw_mode_handles_parse(handles);
+>+	if (err)
+>+		devlink_default_esw_mode_nodes_clear();
+>+	else
+>+		devlink_default_esw_mode = esw_mode;
+>+
+>+	return err;
+>+}
+>+
+>+static int __init devlink_default_esw_mode_setup(char *str)
+>+{
+>+	devlink_default_esw_mode_param = str;
+>+	return 1;
+>+}
+>+__setup("devlink_eswitch_mode=", devlink_default_esw_mode_setup);
+>+
+> static struct devlink *devlinks_xa_get(unsigned long index)
+> {
+> 	struct devlink *devlink;
+>@@ -382,6 +573,14 @@ struct devlink *devlinks_xa_lookup_get(struct net *net, unsigned long index)
+> /**
+>  * devl_register - Register devlink instance
+>  * @devlink: devlink
+>+ *
+>+ * Make @devlink visible to userspace. Drivers must call this only after the
+>+ * instance is fully initialized and its devlink operations can be called.
+>+ *
+>+ * Context: Caller must hold the devlink instance lock. Use devlink_register()
+>+ * when the lock is not already held.
+>+ *
+>+ * Return: 0 on success.
+>  */
+> int devl_register(struct devlink *devlink)
+> {
+>@@ -580,6 +779,31 @@ static int __init devlink_init(void)
+> {
+> 	int err;
+> 
+>+	if (devlink_default_esw_mode_param) {
+>+		char *def;
+>+
+>+		def = kstrdup(devlink_default_esw_mode_param, GFP_KERNEL);
+>+		if (!def) {
+>+			devlink_default_esw_mode_param = NULL;
+>+			pr_warn("devlink: devlink_eswitch_mode parameter ignored, failed to allocate memory\n");
+>+		} else {
+>+			err = devlink_default_esw_mode_parse(def);
+>+			kfree(def);
+>+			if (err == -EEXIST) {
+>+				devlink_default_esw_mode_param = NULL;
+>+				pr_warn("devlink: duplicate eswitch mode handles ignored\n");
+>+			} else if (err == -EINVAL) {
+>+				devlink_default_esw_mode_param = NULL;
+>+				pr_warn("devlink: invalid devlink_eswitch_mode parameter ignored\n");
+>+			} else if (err == -ENOMEM) {
+>+				devlink_default_esw_mode_param = NULL;
+>+				pr_warn("devlink: devlink_eswitch_mode parameter ignored, failed to allocate memory\n");
+>+			} else if (err) {
+>+				goto out;
+>+			}
 
-Please add something like this:
+Move this to a separate helper alongside the other "default" functions?
 
-* The returned information is only valid till the next invalidate_mappings() callback from the exporter and should be re-queried when a new mapping is created after invalidation.
 
-Apart from that it looks good to me, but I still think we need some kind of example that this works for other DMA-buf users as well.
-
-Just demonstrating that this also works with some simple FPGA or similar PCIe endpoint should be sufficient.
-
-Regards,
-Christian.
-
-> + */
-> +int dma_buf_get_pci_tph(struct dma_buf *dmabuf, bool extended,
-> +			u16 *steering_tag, u8 *ph)
-> +{
-> +	dma_resv_assert_held(dmabuf->resv);
-> +
-> +	if (!dmabuf->ops->get_pci_tph)
-> +		return -EOPNOTSUPP;
-> +
-> +	return dmabuf->ops->get_pci_tph(dmabuf, extended, steering_tag, ph);
-> +}
-> +EXPORT_SYMBOL_NS_GPL(dma_buf_get_pci_tph, "DMA_BUF");
-> +
->  /**
->   * dma_buf_map_attachment - Returns the scatterlist table of the attachment;
->   * mapped into _device_ address space. Is a wrapper for map_dma_buf() of the
-> diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-> index d1203da56fc5..53b2686ad8fc 100644
-> --- a/include/linux/dma-buf.h
-> +++ b/include/linux/dma-buf.h
-> @@ -113,6 +113,26 @@ struct dma_buf_ops {
->  	 */
->  	void (*unpin)(struct dma_buf_attachment *attach);
->  
-> +	/**
-> +	 * @get_pci_tph:
-> +	 *
-> +	 * Retrieve PCIe TLP Processing Hint (TPH) steering metadata for
-> +	 * this buffer so an importer can program a matching ST/PH hint on
-> +	 * outbound TLPs targeting the exporter for peer-to-peer DMA.
-> +	 *
-> +	 * @dmabuf: DMA buffer for which to retrieve TPH metadata
-> +	 * @extended: false for 8-bit ST, true for 16-bit Extended ST
-> +	 * @steering_tag: Returns the raw TPH steering tag for the requested
-> +	 *                namespace
-> +	 * @ph: Returns the TPH processing hint (2-bit value)
-> +	 *
-> +	 * Optional callback for dma_buf_get_pci_tph(). Called with
-> +	 * &dma_buf.resv held. Returns 0 on success or -EOPNOTSUPP when
-> +	 * the exporter has no metadata for the requested namespace.
-> +	 */
-> +	int (*get_pci_tph)(struct dma_buf *dmabuf, bool extended,
-> +			   u16 *steering_tag, u8 *ph);
-> +
->  	/**
->  	 * @map_dma_buf:
->  	 *
-> @@ -563,6 +583,8 @@ void dma_buf_detach(struct dma_buf *dmabuf,
->  		    struct dma_buf_attachment *attach);
->  int dma_buf_pin(struct dma_buf_attachment *attach);
->  void dma_buf_unpin(struct dma_buf_attachment *attach);
-> +int dma_buf_get_pci_tph(struct dma_buf *dmabuf, bool extended,
-> +			u16 *steering_tag, u8 *ph);
->  
->  struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info);
->  
-
+>+		}
+>+	}
+>+
+> 	err = register_pernet_subsys(&devlink_pernet_ops);
+> 	if (err)
+> 		goto out;
+>@@ -595,7 +819,10 @@ static int __init devlink_init(void)
+> out_unreg_pernet_subsys:
+> 	unregister_pernet_subsys(&devlink_pernet_ops);
+> out:
+>+	if (err)
+>+		devlink_default_esw_mode_nodes_clear();
+> 	WARN_ON(err);
+>+
+> 	return err;
+> }
+> 
+>-- 
+>2.43.0
+>
 
