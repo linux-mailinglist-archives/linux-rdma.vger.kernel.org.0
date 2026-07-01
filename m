@@ -1,167 +1,198 @@
-Return-Path: <linux-rdma+bounces-22628-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22629-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id aOhoObPjRGqX2goAu9opvQ
-	(envelope-from <linux-rdma+bounces-22628-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Jul 2026 11:53:55 +0200
+	id V17XHNHtRGp+3QoAu9opvQ
+	(envelope-from <linux-rdma+bounces-22629-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 01 Jul 2026 12:37:05 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E0C56EBC1B
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Jul 2026 11:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C1AEA6EC35D
+	for <lists+linux-rdma@lfdr.de>; Wed, 01 Jul 2026 12:37:04 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=resnulli-us.20251104.gappssmtp.com header.s=20251104 header.b=snFLCVVT;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22628-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22628-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=none;
+	dkim=pass header.d=amazon.com header.s=amazoncorp2 header.b=XJtCAUAB;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22629-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22629-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=amazon.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DA6BB3145CA1
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jul 2026 09:48:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DB066308F8B7
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jul 2026 10:35:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C88E3FE363;
-	Wed,  1 Jul 2026 09:48:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A88723F8EA6;
+	Wed,  1 Jul 2026 10:35:00 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pdx-out-011.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-011.esa.us-west-2.outbound.mail-perimeter.amazon.com [52.35.192.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BAAD3F1ACE
-	for <linux-rdma@vger.kernel.org>; Wed,  1 Jul 2026 09:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFE4F42315B
+	for <linux-rdma@vger.kernel.org>; Wed,  1 Jul 2026 10:34:54 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782899296; cv=none; b=gB9uYDIRU26MWmBwLg+r6fs9SyemrxUnVykYnECV1ix3DcOHD4X6vfPTW9gYQN3lFmMgu+QvNWbTHHE5nqnTHmXJ1BvYMEWRqXb4mMhf1wCeQaJUJIyQaClfIgBx8/wxBZH6KP7vYz/myIe5IRmshSagyItiB25G4BU2kVc3tzc=
+	t=1782902100; cv=none; b=ArBGjUgitonR6GPkjorIhyiMSf8LJhLKSTYFt+bn9xG3qJr9FuW7FYFoaRWlJhohBdMi8I4wsYJIwOkbaMRJT9JzlCNhS5lxkyAM2pvojsZkiJelB6HnfvGE9PcIGjbe2IGQ01evSmrdOnBRdCFgt6FlFbZpdXiYaBBYuEEFvmA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782899296; c=relaxed/simple;
-	bh=mz0vRNQWV5JarJs5YU7f1UVIX6UZW0zFBNIMdXMVDrg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rZY0hv0I2CtpygHwFOK7X6bTj6456RjCN1IeUrI3EeFxR000VjsC+YlI3N9dsM3pfl0ecg+M2neY2cC29xqfeHC9DIGs3rgNVe+/1ugxO6PzOUygonfBnH39ZKgjelatz+kmf2mG9keNAQilHvcaTk6VeugEG/fK0jUhNuuJ0cY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=snFLCVVT; arc=none smtp.client-ip=209.85.128.50
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-49241dbf9c1so3598235e9.2
-        for <linux-rdma@vger.kernel.org>; Wed, 01 Jul 2026 02:48:13 -0700 (PDT)
+	s=arc-20240116; t=1782902100; c=relaxed/simple;
+	bh=bBdYGxhd3klCZw51B4iBPmdK/NYngSTsaP1FZVIQgyY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LBCzzakVeiYfYBspHM5M5WhUI7+BGHKZKAXcfclEUsZm+OrJdOO28+7O2yywM4bP/5kQo8w20Xk5zbV0Lo0Rv3M5Kya5cP3VJ0aUVFRVUTeYU4bC8XpUtmyUvsEOriAnbEArh0szxfzUzr+EGtW2JpjoA2A+lImNv62PrXw7uuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=XJtCAUAB; arc=none smtp.client-ip=52.35.192.45
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1782899292; x=1783504092; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mz0vRNQWV5JarJs5YU7f1UVIX6UZW0zFBNIMdXMVDrg=;
-        b=snFLCVVT9Q8TYu0Ii4Luf+Z7+h1E+Sy0+rdd597Lp2CjdotKOm/YaflZZZPoK3xZI/
-         DFIfniTh9a5XVRHuIHi0uZA23X7NwexbGAOdHumZkIpWcaTuS04LwGIJJEreOsuk6bu5
-         GAWiBfDZ7zflO7KEWgz8jnuAtb7bcGTZxgdQYuTFY61A4HtvoZgPX0Ts/8aseRqJ0B/r
-         JSXWco1PowUxxWYJq42RcPJ51V4Z1WoeegiuwtPrcxDOzRdfdVDo5Z0yETlUZHYr9yDO
-         qaPFo7aIDBrzLRccVCicxd+4TBhie0aGG8YLJMN3zYUcsFkjeK+88UQZkaKGTQBh0XYY
-         sEsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782899292; x=1783504092;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mz0vRNQWV5JarJs5YU7f1UVIX6UZW0zFBNIMdXMVDrg=;
-        b=p/31q2t7eFzNRB+Fl3sZXwqA9FPaW2JNSQa72OEwJ2MfoNyL6kb5F1JRGbevbB3OB1
-         dthaRou5NEgSwsr8sUTh34b+h3UKzMGIUu73jr/2rJwTl4s1GgEE+2FomxsZMoHEV/65
-         nFcdMNiUtUmV6SOYiBadc/6bLdrcytcBhM+lWITSbNB6VQSY+eZqwsThbORFQy9tD13p
-         uOmc84ZbSSDlsYq7ZEJ0lkuyUDUQxJIR7nBFPFrVX0i3CCgEVg61Nhrw6NnnRMcmwYpA
-         VVtfq0nlxMkSDdhA2+ssCbISUjMNXeg11Wl1eoP0z3nKlKuu+0gHCxTiOUFSL/dfnGqN
-         ESbg==
-X-Forwarded-Encrypted: i=1; AFNElJ8H1PwP7Ns3TgWevDDxQPTk2iIZiduX4k2NsSk/d3TdOhk7v+p09MI771mgpb2kNlpX2pQ5f2Ddd1CM@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzr8Knz8L+dCcS8nIbLsfZV7VRri7YC3kBfDHTb/0GOIk1mBFMm
-	sdN5+3SmtTYSk2HaQVqv7nQl7fAimrrJlGylS++d2mpid59KmQ+emaZPWMcCkoYnvTs=
-X-Gm-Gg: AfdE7cmAFAZaI3o7lZJoGOCtRH3/rgkk+8Gfmf9WVoU+kN/8849fX4UqNeFGZ6lYqMY
-	EVuhSnLtUQ/rbIsPAMnE4cU8W00T5WeW2h8vO3Rtn5N1H1l/NVhveE41FayBQEYKoh1leYPnTkG
-	bUXVHtVstd5nx8X9yEhzQ3PpEpGZmJ8LrbTZ0BT5bP5kvn/ArfX75X5rMo3OrvDzpSAUDeVJ0Ht
-	F0Y2U0lra4qX3LlAMFMRvnSHFv2gOtgnYcjHpD3n3MsSDNBYCS0koqbDZAieIHdhmKl/oyNmNyM
-	sdbhQIz3CLdcHkl9vGagprrT3C63Tk10Puy8XeDdCAUN4g6XYjWtYBLn7rHO3/OEW5ilf8/5FZ0
-	px0I7XaISxKhVRnKHTgCDMWOmcAeHS41GM0k3Mco3NZe+biaCsIhtWAP70P5BvTYQojZMkIdkxa
-	wY/7/wx2pCdoaSdho4OnlYKg==
-X-Received: by 2002:a05:600c:8b44:b0:492:5bb6:6d4b with SMTP id 5b1f17b1804b1-493c2ba5968mr15237255e9.34.1782899292593;
-        Wed, 01 Jul 2026 02:48:12 -0700 (PDT)
-Received: from localhost ([140.209.217.212])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4756778fac3sm14575152f8f.32.2026.07.01.02.48.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2026 02:48:12 -0700 (PDT)
-Date: Wed, 1 Jul 2026 11:48:07 +0200
-From: Jiri Pirko <jiri@resnulli.us>
-To: Mark Bloch <mbloch@nvidia.com>
-Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, netdev@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH net-next V4 4/6] devlink: Apply eswitch mode boot defaults
-Message-ID: <akThPmvUHvCMT2cp@FV6GYCPJ69>
-References: <20260629182102.245150-1-mbloch@nvidia.com>
- <20260629182102.245150-5-mbloch@nvidia.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1782902095; x=1814438095;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=mYtz4d3gR1XyKG2PCPnhBMPj4lQ/o6B53taffPcQexY=;
+  b=XJtCAUABwIdLEb0kj54c5th2eo1nlzyFxWJY2XHgCn/RvHxDtg+ovgGh
+   Di8BDAByrCnYTLpF+UjeFXEZKYtAhB/F83ZEk3NeYFkcPuLdBBeRsd2sf
+   BS3cqVUSOkGasmdmORMSbn0WAWcjihRbspaOruCe8mK82JrLOfx0HOqaF
+   oSvXJstpBnu7eFmdA3ndVfgdnevQtJnPs6r/dOmPL4PZIcwO/DvI4cBsS
+   XLrIeqtrAJmDNXEJOhx3/F7EZjDXczlSy6NVkG4qyY7o+rnOJ4X8+6NjE
+   VM+A1hH+fBdMIwrspn76mM/rYkJI+oAjQNHfNTNZrRKcgzkNqjHC1xLxB
+   g==;
+X-CSE-ConnectionGUID: NlD4otbaQl6gKd6PRCgTmw==
+X-CSE-MsgGUID: enJgY4C7T56Ot/XNHfADBQ==
+X-IronPort-AV: E=Sophos;i="6.25,141,1779148800"; 
+   d="scan'208";a="22613279"
+Received: from ip-10-5-9-48.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.9.48])
+  by internal-pdx-out-011.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2026 10:34:51 +0000
+Received: from EX19MTAUWC001.ant.amazon.com [205.251.233.105:12364]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.41.143:2525] with esmtp (Farcaster)
+ id 402461da-8607-4ef3-8bd3-830af624e937; Wed, 1 Jul 2026 10:34:51 +0000 (UTC)
+X-Farcaster-Flow-ID: 402461da-8607-4ef3-8bd3-830af624e937
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.43;
+ Wed, 1 Jul 2026 10:34:51 +0000
+Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
+ (10.253.103.172) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.43; Wed, 1 Jul 2026
+ 10:34:50 +0000
+From: Michael Margolin <mrgolin@amazon.com>
+To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>
+Subject: [PATCH for-next v7 0/5] Introduce Completion Counters
+Date: Wed, 1 Jul 2026 10:34:43 +0000
+Message-ID: <20260701103448.17895-1-mrgolin@amazon.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260629182102.245150-5-mbloch@nvidia.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D032UWA002.ant.amazon.com (10.13.139.81) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-10.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
+	WHITELIST_SPF_DKIM(-3.00)[amazon.com:d:+,kernel.org:s:+];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
-	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FORGED_RECIPIENTS(0.00)[m:jgg@nvidia.com,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:sleybo@amazon.com,m:matua@amazon.com,m:gal.pressman@linux.dev,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:mbloch@nvidia.com,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:saeedm@nvidia.com,m:leon@kernel.org,m:tariqt@nvidia.com,m:andrew+netdev@lunn.ch,m:corbet@lwn.net,m:skhan@linuxfoundation.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-doc@vger.kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
-	DMARC_NA(0.00)[resnulli.us];
-	FORGED_SENDER(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	TAGGED_FROM(0.00)[bounces-22628-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
-	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MISSING_XM_UA(0.00)[];
+	FORGED_SENDER(0.00)[mrgolin@amazon.com,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22629-lists,linux-rdma=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[mrgolin@amazon.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[amazon.com:+];
+	TO_DN_NONE(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_FIVE(0.00)[6];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,FV6GYCPJ69:mid,nvidia.com:email,resnulli-us.20251104.gappssmtp.com:dkim,resnulli.us:from_mime]
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 3E0C56EBC1B
+X-Rspamd-Queue-Id: C1AEA6EC35D
 
-Mon, Jun 29, 2026 at 08:20:59PM +0200, mbloch@nvidia.com wrote:
->Apply parsed devlink_eswitch_mode= defaults after devlink registration
->and after successful reload.
->
->devl_register() may still be called before the device is ready for an
+Add core infrastructure for Completion Counters, a light-weight
+alternative to polling CQ for tracking operation completions. The
+related rdma-core support is linked in [1].
 
-How so? I would assume that driver calls devl_register only after
-everything is up and running and ready. If not, isn't it a bug?
+Define the UVERBS_OBJECT_COMP_CNTR ioctl object with create, destroy,
+modify and read methods for both success and error counters. Add a QP
+attach method on the QP object to associate a completion counter with a
+queue pair.
 
+Add EFA Completion Counters support as first implementer.
 
->eswitch mode change, so keep a per-devlink delayed work item and pending
->flag for the registration path. Registration queues the work, and the
->worker tries to take the devlink instance lock.
->
->If the lock is busy, the worker requeues itself with a delay.
->
->For successful reloads that performed DRIVER_REINIT, devlink_reload()
->already holds the devlink instance lock and the driver has completed
->reload_up(). Clear pending work and apply the default directly from the
->reload path instead of queueing work.
->
->If a user sets eswitch mode through netlink before the pending
->registration work runs, clear the pending flag so the queued default does
->not override that user request. Cancel pending default apply work when
->freeing the devlink instance.
+[1] https://github.com/linux-rdma/rdma-core/pull/1701
 
-These AI generated code descriptive messages are generally not very
-useful :(
+---
+Changes in v7:
+- Rebased on latest rdma for-next
+- Link to v6: https://lore.kernel.org/all/20260604114627.6086-1-mrgolin@amazon.com/
+Changes in v6:
+- Moved to using ib_umem_get_attr util
+- Resolved additional Sashiko comments
+- Link to v5: https://lore.kernel.org/all/20260526090712.17575-1-mrgolin@amazon.com/
+Changes in v5:
+- Fixed Sashiko findings
+- Minor naming improvements
+- Link to v4: https://lore.kernel.org/all/20260511223721.18365-1-mrgolin@amazon.com/
+Changes in v4:
+- Replaced inc and set commands by a single modify command
+- Changed to passing buffers as EFA specific attributes using desc
+  struct aligned with the suggested common method of passing and
+  consuming umem in RDMA drivers
+- Link to v2: https://lore.kernel.org/all/20260416212327.18191-1-mrgolin@amazon.com/
+Changes in v3:
+- Skipped this version because of a wrong patch list
+Changes in v2:
+- United set, inc and read flows for successful and error completions
+  counters
+- Added comp_cntr usage count
+- Minor cleanups
+- Link to v1: https://lore.kernel.org/all/20260407115424.13359-1-mrgolin@amazon.com/
+
+Michael Margolin (5):
+  RDMA/core: Add Completion Counters support
+  RDMA/core: Prevent destroying in-use completion counters
+  RDMA/core: Add Completion Counters to resource tracking
+  RDMA/efa: Update device interface
+  RDMA/efa: Add Completion Counters support
+
+ drivers/infiniband/core/Makefile              |   1 +
+ drivers/infiniband/core/device.c              |   6 +
+ drivers/infiniband/core/nldev.c               |   1 +
+ drivers/infiniband/core/rdma_core.h           |   1 +
+ drivers/infiniband/core/restrack.c            |   2 +
+ drivers/infiniband/core/uverbs_cmd.c          |   1 +
+ .../core/uverbs_std_types_comp_cntr.c         | 182 ++++++++++++++++
+ drivers/infiniband/core/uverbs_std_types_qp.c |  64 +++++-
+ drivers/infiniband/core/uverbs_uapi.c         |   1 +
+ drivers/infiniband/core/verbs.c               |   8 +
+ drivers/infiniband/hw/efa/efa.h               |  17 +-
+ .../infiniband/hw/efa/efa_admin_cmds_defs.h   | 185 +++++++++++++++-
+ drivers/infiniband/hw/efa/efa_com_cmd.c       | 110 ++++++++++
+ drivers/infiniband/hw/efa/efa_com_cmd.h       |  36 ++++
+ drivers/infiniband/hw/efa/efa_io_defs.h       |  63 +++++-
+ drivers/infiniband/hw/efa/efa_main.c          |   7 +-
+ drivers/infiniband/hw/efa/efa_verbs.c         | 199 ++++++++++++++++++
+ include/rdma/ib_verbs.h                       |  44 ++++
+ include/rdma/restrack.h                       |   4 +
+ include/uapi/rdma/efa-abi.h                   |   6 +
+ include/uapi/rdma/ib_user_ioctl_cmds.h        |  38 ++++
+ include/uapi/rdma/ib_user_ioctl_verbs.h       |  19 ++
+ include/uapi/rdma/ib_user_verbs.h             |   2 +-
+ 23 files changed, 987 insertions(+), 10 deletions(-)
+ create mode 100644 drivers/infiniband/core/uverbs_std_types_comp_cntr.c
+
+-- 
+2.47.3
 
 
