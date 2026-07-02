@@ -1,127 +1,177 @@
-Return-Path: <linux-rdma+bounces-22775-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22685-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 4ThqJdJjSmoqCQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-22775-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 05 Jul 2026 16:01:54 +0200
+	id fvk6BFRcRmquRgsAu9opvQ
+	(envelope-from <linux-rdma+bounces-22685-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 02 Jul 2026 14:40:52 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15ED070A343
-	for <lists+linux-rdma@lfdr.de>; Sun, 05 Jul 2026 16:01:54 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5792C6F7C06
+	for <lists+linux-rdma@lfdr.de>; Thu, 02 Jul 2026 14:40:51 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=YpygdvFT;
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22775-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22775-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=none;
+	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=zte.com.cn (policy=none);
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22685-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22685-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CCE59300F5D5
-	for <lists+linux-rdma@lfdr.de>; Sun,  5 Jul 2026 14:00:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7F363313723B
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jul 2026 12:25:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC1FA37FF41;
-	Sun,  5 Jul 2026 14:00:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 123B647ECE6;
+	Thu,  2 Jul 2026 12:24:53 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [160.30.148.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2D6537DE9D
-	for <linux-rdma@vger.kernel.org>; Sun,  5 Jul 2026 14:00:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6825F47DD51;
+	Thu,  2 Jul 2026 12:24:50 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783260050; cv=none; b=b6UfZ1BSjidPS/gJ2TZtL7QuLWiGA84NFPamffzJdl+njqVpN+4PMiIwl3JNy7ISEY3tQoEpsgal/uwjK6P0fGlX4U878cKhXuqvGT6JrBGQZVwdCvFgU1fiZQE65Hqiqz+smVPqAYF3ftbZGJoiphQoc6r6C9Svjn2i3KXOfbo=
+	t=1782995092; cv=none; b=rq+mYetJXH+aPplwZ1iZb7TwGkJFdpDXXvO/CRPgMJdMB2v3I1fvFw+FIf3x76Ab/K7wMdCKdvlm2tMnyOu3rmQINZFYRfP/YSMkU8KPv0//VO8yJ1bOkXe8DRSBE1RU7snZ/he5H+XJW6jWUM+IMiDD05W4wn5Kwx5wUm6fQew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783260050; c=relaxed/simple;
-	bh=qN319TXaeYmRwxOpSozB9Hh25fWAFiHQJER0/QXq6Rg=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=CeLalmkQ/IMjvKKYXWgP2ipeXuHxp+TD6GD0eFXJCL417EuawX8jCQymCcqpRF0AyBslDOp7LP2gBfkPnE4QzOzClOO/1Vr3PqvtltvLeE5eodBqCWNfz3b7SgRZ65CTXWMYk2eYp/iqZdVjxYZK8APYD6PXOWbdKmPwqKNHUyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YpygdvFT; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB9D71F000E9;
-	Sun,  5 Jul 2026 14:00:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783260049;
-	bh=j6DuzcmkeTZrSDbVGek4Zy6e7b5YCkONK9X6hz+hltY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=YpygdvFT8UtYvoHNvgV+XD/SUv3Y5UgGGWBkNOKytI2Tz3piKbobbpwMP4MDOXvVE
-	 12PyU7/0goGTa+sY2iTY5yBh61hOYtVOW34iZp2z1SiJtByozAvzlFLjTFn8hMXBCN
-	 15pceuMfGvh6JvIOOgD1CSYJ5lCKDAeRGgCtTAQF/AL9Vf3h7AeVRunsRmdvQEe/08
-	 aTkee9FgtUfnNtOUK4PZRWUsNKGU1EpglbVbIEZ+pNHGfubdWEgqao0RTYLjarhGJ+
-	 LMl+ncKr59e6R3WyPTTeXCVNBiPfce0vTmYA+Ck9IKIIKA+hn83Mhk7TtNDDE46W/m
-	 8loNu/WN4cLEw==
-From: Leon Romanovsky <leon@kernel.org>
-To: tatyana.e.nikolova@intel.com, jgg@ziepe.ca, 
- Jacob Moroni <jmoroni@google.com>
-Cc: linux-rdma@vger.kernel.org
-In-Reply-To: <20260617141936.3280979-1-jmoroni@google.com>
-References: <20260617141936.3280979-1-jmoroni@google.com>
-Subject: Re: [PATCH rdma-next v2] RDMA/irdma: Prevent rereg_mr for non-mem
- regions
-Message-Id: <178299386411.615406.2919527433922934520.b4-ty@kernel.org>
-Date: Thu, 02 Jul 2026 08:04:24 -0400
+	s=arc-20240116; t=1782995092; c=relaxed/simple;
+	bh=8r/SwSBZtYe941TCkdHunOWp2NN3MYXQ8zomCQ56WpA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WgPWx3J5Tmsi1SquaUsHc2Z1WfZyoNEXKQ5qb7PuCRVfGPtmNgs8RnkZY19aoClfU5HPGZ19vPJXe+1z/04/CPKjooj7/ANnu0LCJJWrBsPijZYup4pkoXSk12Ad9gKloodxTPqULHOwk3EmVJ4oON+owX2+jmpgfpIQaJxSzZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn; spf=pass smtp.mailfrom=zte.com.cn; arc=none smtp.client-ip=160.30.148.35
+Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4grbfx6Rldz8XrrM;
+	Thu, 02 Jul 2026 20:24:41 +0800 (CST)
+Received: from szxlzmapp02.zte.com.cn ([10.5.231.79])
+	by mse-fl2.zte.com.cn with SMTP id 662COUD9077439;
+	Thu, 2 Jul 2026 20:24:30 +0800 (+08)
+	(envelope-from zhang.yanze@zte.com.cn)
+Received: from localhost.localdomain (unknown [192.168.6.15])
+	by smtp (Zmail) with SMTP;
+	Thu, 2 Jul 2026 20:24:33 +0800
+X-Zmail-TransId: 3e816a46585b008-5811f
+X-Zmail-LocalSMTP: 1
+X-Zmail-RealSender: zhang.yanze@zte.com.cn
+From: Yanze Zhang <zhang.yanze@zte.com.cn>
+To: jgg@ziepe.ca, leon@kernel.org, julianbraha@gmail.com,
+        huangjunxian6@hisilicon.com
+Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        wei.quan@zte.com.cn, han.junyang@zte.com.cn, ran.ming@zte.com.cn,
+        han.chengfei@zte.com.cn, zhang.yanze@zte.com.cn
+Subject: [PATCH rdma v3 0/2] Add ZTE DingHai Ethernet Protocol Driver for RDMA
+Date: Thu,  2 Jul 2026 20:22:54 +0800
+Message-ID: <20260702122256.569952-1-zhang.yanze@zte.com.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-18f8f
+X-ZMAIL-USEORIGINALEMLTOOUTBOUND: 1
+Content-Transfer-Encoding: 8bit
+X-MAIL:mse-fl2.zte.com.cn 662COUD9077439
+X-TLS: YES
+X-ENVELOPE-SENDER: zhang.yanze@zte.com.cn
+X-SOURCE-IP: 10.5.228.133 unknown Thu, 02 Jul 2026 20:24:41 +0800
+X-CLEAN: YES
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 6A465889.000/4grbfx6Rldz8XrrM
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
-	DATE_IN_PAST(1.00)[73];
+X-Spamd-Result: default: False [0.14 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[zte.com.cn : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22775-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22685-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:tatyana.e.nikolova@intel.com,m:jgg@ziepe.ca,m:jmoroni@google.com,m:linux-rdma@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:jgg@ziepe.ca,m:leon@kernel.org,m:julianbraha@gmail.com,m:huangjunxian6@hisilicon.com,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:wei.quan@zte.com.cn,m:han.junyang@zte.com.cn,m:ran.ming@zte.com.cn,m:han.chengfei@zte.com.cn,m:zhang.yanze@zte.com.cn,s:lists@lfdr.de];
+	FREEMAIL_TO(0.00)[ziepe.ca,kernel.org,gmail.com,hisilicon.com];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[zhang.yanze@zte.com.cn,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[zhang.yanze@zte.com.cn,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	ALIAS_RESOLVED(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	R_DKIM_NA(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 15ED070A343
+X-Rspamd-Queue-Id: 5792C6F7C06
 
+Hi maintainers and reviewers,
 
-On Wed, 17 Jun 2026 14:19:36 +0000, Jacob Moroni wrote:
-> When a QP/CQ/SRQ is created, a two step process is used
-> where the buffer is allocated in userspace and explicitly
-> registered with the normal reg_mr mechanism prior to creating
-> the actual QP/CQ/SRQ object.
-> 
-> These special registrations are indicated via an ABI field
-> so the driver knows that they do not have a valid mkey and
-> to skip the actual CQP command submission.
-> 
-> [...]
+This is v3 of the ZTE DingHai (ZXDH) RDMA driver submission.
+Thank you Junxian Zhuang and Julian Braha for your reviews on v1.
 
-Applied, thanks!
+Note: Both reviewers provided feedback exclusively on v1. Since v2 received
+no additional comments, this v3 applies all v1 feedback directly onto the
+v2 codebase. The changes below are relative to v2.
 
-[1/1] RDMA/irdma: Prevent rereg_mr for non-mem regions
-      https://git.kernel.org/rdma/rdma/c/a846aecb931b4d
+Changes in v3:
+- Fixed missing handle release in zxdh_remove() as pointed out by Junxian
+  on v1.
+- Removed outdated reference to "auxiliary bus following hns pattern" from
+  cover letter description (this was already corrected in v2; re-stating
+  here since Junxian's comment was on v1).
+- Addressed Junxian's indentation concern on v1: I verified the code against
+  checkpatch.pl --strict and confirmed 8-character indentation is used
+  throughout. This v3 was sent using a different email client/format to rule
+  out MUA-induced formatting corruption. If the indentation still appears
+  incorrect in your viewer, please review the updated series and let me know
+  if the issue persists.
+
+Changes in v2:
+- Removed redundant 'depends on INFINIBAND' from Kconfig as it is already
+  wrapped by the parent if-block (Julian Braha, v1 review).
+
+The driver provides RoCEv2 support for ZTE DingHai network adapters and has
+been tested with perftest and rping utilities.
 
 Best regards,
+Yanze Zhang
+
+Yanze Zhang (2):
+  RDMA/zrdma: Add ZTE Dinghai Ethernet Protocol Driver for RDMA
+  RDMA/zrdma: Add hardware config code and improve driver init flow
+
+ MAINTAINERS                              |   6 +
+ drivers/infiniband/Kconfig               |   1 +
+ drivers/infiniband/hw/Makefile           |   1 +
+ drivers/infiniband/hw/zrdma/Kconfig      |   9 +
+ drivers/infiniband/hw/zrdma/Makefile     |   6 +
+ drivers/infiniband/hw/zrdma/zrdma_ctrl.h | 248 +++++++++++++++++++++++
+ drivers/infiniband/hw/zrdma/zrdma_defs.h |  37 ++++
+ drivers/infiniband/hw/zrdma/zrdma_hw.c   | 135 ++++++++++++
+ drivers/infiniband/hw/zrdma/zrdma_hw.h   | 156 ++++++++++++++
+ drivers/infiniband/hw/zrdma/zrdma_main.c | 157 ++++++++++++++
+ drivers/infiniband/hw/zrdma/zrdma_main.h | 140 +++++++++++++
+ drivers/infiniband/hw/zrdma/zrdma_mem.h  | 105 ++++++++++
+ drivers/infiniband/hw/zrdma/zrdma_type.h | 110 ++++++++++
+ drivers/infiniband/hw/zrdma/zrdma_uk.h   |  18 ++
+ 14 files changed, 1129 insertions(+)
+ create mode 100644 drivers/infiniband/hw/zrdma/Kconfig
+ create mode 100644 drivers/infiniband/hw/zrdma/Makefile
+ create mode 100644 drivers/infiniband/hw/zrdma/zrdma_ctrl.h
+ create mode 100644 drivers/infiniband/hw/zrdma/zrdma_defs.h
+ create mode 100644 drivers/infiniband/hw/zrdma/zrdma_hw.c
+ create mode 100644 drivers/infiniband/hw/zrdma/zrdma_hw.h
+ create mode 100644 drivers/infiniband/hw/zrdma/zrdma_main.c
+ create mode 100644 drivers/infiniband/hw/zrdma/zrdma_main.h
+ create mode 100644 drivers/infiniband/hw/zrdma/zrdma_mem.h
+ create mode 100644 drivers/infiniband/hw/zrdma/zrdma_type.h
+ create mode 100644 drivers/infiniband/hw/zrdma/zrdma_uk.h
+
 -- 
-Leon Romanovsky <leon@kernel.org>
+2.27.0
 
 
