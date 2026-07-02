@@ -1,270 +1,239 @@
-Return-Path: <linux-rdma+bounces-22676-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22677-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 9cSWCKEaRmpDKAsAu9opvQ
-	(envelope-from <linux-rdma+bounces-22676-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 02 Jul 2026 10:00:33 +0200
+	id CZcvBZIcRmqyKAsAu9opvQ
+	(envelope-from <linux-rdma+bounces-22677-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 02 Jul 2026 10:08:50 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 583E56F484D
-	for <lists+linux-rdma@lfdr.de>; Thu, 02 Jul 2026 10:00:32 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C3F36F4997
+	for <lists+linux-rdma@lfdr.de>; Thu, 02 Jul 2026 10:08:49 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=YHesv645;
-	dkim=pass header.d=redhat.com header.s=google header.b=hs9gKVEx;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22676-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22676-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=redhat.com;
+	dkim=pass header.d=resnulli-us.20251104.gappssmtp.com header.s=20251104 header.b=LGzO9brO;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22677-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22677-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 37AEA3149DCF
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jul 2026 07:42:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 748EC3156863
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jul 2026 07:52:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74652393DF1;
-	Thu,  2 Jul 2026 07:42:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4E173D1CB4;
+	Thu,  2 Jul 2026 07:52:41 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E5313B2FF6
-	for <linux-rdma@vger.kernel.org>; Thu,  2 Jul 2026 07:41:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E55F30CDBC
+	for <linux-rdma@vger.kernel.org>; Thu,  2 Jul 2026 07:52:30 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782978120; cv=none; b=tGajXCaQI2lkG7lOWwGofkNf6fNxnXsGD2VaEebwzn/PGFEbCXjachOUqlihN4gyjIQ1cpUrIcDu44VUJb61fnmnuBHci6c78OFyLJtzooLubgTSD5mrK4MscKdPZq07j1/NK8hzv9cpfnZ1HSLPBU4A4ah1EXX/GpSciOvgDqM=
+	t=1782978760; cv=none; b=HGVeOMQwENYTwwbU2sF2XKms63DGQ3t0V/IJ0IiWsY5zXiMRibAAylFaDWzET6bBNYPIFVIhkfDLaH5uPy88kGozkE0KfVwaleak3y54tyzKVZbchTwfMIJjGSguP8Z3N/xqTYE3uWJKO5hlf6O4Z1Kn6igelIReO81qEyWb5iw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782978120; c=relaxed/simple;
-	bh=Jy7te9F4JzjiJ24kXaDzZA0x2YkjrWkIuXyfcffXSNI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mwUtpwCmbcs/gsolZE5iCaSuDiVgzDNUiehn4q8cxaxSGdek+xcpnv8XWfr6dh4kQNs+RkjopXUaOnWUrVJ1E6Uqf+FiH59R83+8wbAfT3Sc7HCG4V9xggHyFcCNbtUEfYc8FkrWksWH4qylOM06fwoikVYEgI9tcAzYLdTiKX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YHesv645; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=hs9gKVEx; arc=none smtp.client-ip=170.10.133.124
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1782978115;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UfJYqrcmN2j5NYMZu30t1ga7TK1DhGbiNFDYQD6B84Q=;
-	b=YHesv645QvJR2VpGIbaAgQEkurXUIumca+EuEVjVRkohQSc2LD+5VH274e203B87swZri9
-	Z2ViBo9BtdkNhIFm/niwAj5rbEmwpps60g4IPFCR1JIE4pUGm3x0tfKT3SjYO05AFITdbg
-	hvCSmTtAlACQexwKiyQm6+jF4TOFeQE=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-264-PUnQN74CMh2__VpTeJnHlw-1; Thu, 02 Jul 2026 03:41:54 -0400
-X-MC-Unique: PUnQN74CMh2__VpTeJnHlw-1
-X-Mimecast-MFC-AGG-ID: PUnQN74CMh2__VpTeJnHlw_1782978114
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-49260d6eaadso9675565e9.2
-        for <linux-rdma@vger.kernel.org>; Thu, 02 Jul 2026 00:41:54 -0700 (PDT)
+	s=arc-20240116; t=1782978760; c=relaxed/simple;
+	bh=tkTbs5WEomVgmghemsBWZ8vvMtlIsS90pwefFFYS67o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DHRvzdw6eIbSzsdnMWdX6X3Q9Um27EXlpE5AJK4O0EojSn4rSf+13rfESOZLh/1wU+rBzKTXJpkNU86CBbwbJjCYFKyDPpoyxx0XsMQN+m3+C7NfjdDMKz8i+YlQpXJsuHTkyRESso7LUQM/1F3P5hzRGTcFfbj00jaV4h0RIfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=LGzO9brO; arc=none smtp.client-ip=209.85.221.45
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-472326ca506so1089099f8f.2
+        for <linux-rdma@vger.kernel.org>; Thu, 02 Jul 2026 00:52:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1782978113; x=1783582913; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UfJYqrcmN2j5NYMZu30t1ga7TK1DhGbiNFDYQD6B84Q=;
-        b=hs9gKVExnvSis062Ar9tXMTNdD22HQOGQSwfUnQ0WYd6z3thW8f5O9lC+ho9k6OsX6
-         4TBT3ads+oNnd9iB6RJ42GQcXnZAyX8O9qOFtl/127dP9OpUIcE6jQMEIN5GtxPln4IF
-         VYuvWm/16+O+W5thcbB+wV/6GuyCRtoB/wK9vB3c3X61zm5J9ZJu9T9qYq2WaGH79WVf
-         HLSCxfKTgUYBzt0J28dmXFQ/xLlrnYDNT8hmiZPiMLv0AP/S2E6/l4z+/r8PkQ1vqytG
-         415rB6p0QD8JzVVZzFcuRb1r75j6TtX89Ns2qrnPP9JjO/wt1604hx8mYDtGVARpTNYM
-         WTmg==
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1782978748; x=1783583548; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kESoQxWQJP4S+fDdlEQZkP18r4Y5za67xWurR8NPaGI=;
+        b=LGzO9brOLsAmggJcjv2mpsSISA3wkiKChF1hBC3mjlzBxpToiPRqxUzAJg3u9PxWn+
+         MjJufWTFv3xlPnBH6C9Wf5RtZEeovjxJLea8QpAILr/Y9JZq+9/VzEsYUa3JWf6eY/qT
+         eS6IU2T/yluuO1KvWcDr+N5zNvXe3cO4C8XuS/DKDtbI9a3lUoEx3gFjjAYR5rNJIRGj
+         LEqpaaMf9EV/eCU4pP94N2bc3oPHvkFuv/hsw5tyGqI5Vs//XxC+xHfePBZ3oxyn06T+
+         e1aQhaKzoF7MlUjDEvskQG+XS5e7Kduz4VbzEEVUh7ou3sUSNSNclz4WZNw4OWBLTngP
+         SSnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782978113; x=1783582913;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UfJYqrcmN2j5NYMZu30t1ga7TK1DhGbiNFDYQD6B84Q=;
-        b=Wzb+s33TFO9Sj5tOYhalKxEBR9N3Pc7frgKPuIDOfREILf1UJ+IzgHJhKvVLHS7SoS
-         YpIl/3+kYCkFt70kGIyqyup1bs7vPm2Ck0f/SftLRze6rH2LAX1wQ5m2ZSabh/kULNIx
-         gOts5cIpfJWEcM5aezoIyTVQjAAcUFT6aYCXMdMlIk7RBhaYjkJIK5Cy26aoY66CVBy2
-         O/QDSL9SU1VQKE0+7zyCt3EL97q6hJR3d/pvIcyH4Z/GWL/cOtDzniYIwwoMnYHsBgkr
-         1DoSIrQKvYjIqsNrU3KSEugZb26dznC79IOoiGmziupiypTrayZTwOnW6m2G3taYfZtK
-         hXDA==
-X-Forwarded-Encrypted: i=1; AFNElJ/E8CUVFGZFkT5Kr1nieanE88uQjrxpuaBuGT8+tHlNzAZgGKzEZrvJEdkzcw00BJE2vcaC8csq4p/D@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw2aJiPtLQovuTT9LzLbHyYcmJ7fgTcYFkIG8PgnEbQy780mvXi
-	UZ+zLHh2GJSgafmQklAsN7BSUnkwtK9zYJ/YD+eX+d3gh1Vno4ZC4e2Web3xHG1dJ598ieg2Y8F
-	D21o7hNn2CDYZiR5mKVFjgv9YVoK1aQsGYd/HLCnMBF0nXHqUM6EJFxZeteSYeP4=
-X-Gm-Gg: AfdE7ckLicprokfZp0S2LCNzNXHESADzZPq/N8cWKTjpYNEzoQA/GhpBUIMkd3BzWUB
-	WIAfw48WgApxWXfKsM8btz1AxtLsUaGXVOatWkZzpag0YCjllwnSmrlDICAdtDwc/oYb/QZRlIT
-	lFNep2SplO5S0YzdFT9BGIszaWMq5XseB/af4HDKjl8zNCmmUXjgWw5g87aZl/4l6mnCxih2Xwr
-	CwmHrOMUQOeS5fTtm1ueftqQWp9rki/s4dwTkfvLfvrk77/mQFN+/Ny/Bd158DG2KHiIiwN/4D4
-	NHQs/SWXHwXwSkbrgB4vlrkH5MOlcAfWxyFRSMjmfURjwpiPrz5o6fYhOzviPGfXFOqVMNp5agH
-	3D04PuKT4npgi86wjv33ushh+kkaWa4b7PUbeazH/taSuixPgOdSB45uDN6cL3sQAfEAZ/JMO/H
-	vgQ7ziCxQuQQ==
-X-Received: by 2002:a05:600c:810b:b0:493:b61c:72c3 with SMTP id 5b1f17b1804b1-493c2b99c43mr64303535e9.32.1782978113456;
-        Thu, 02 Jul 2026 00:41:53 -0700 (PDT)
-X-Received: by 2002:a05:600c:810b:b0:493:b61c:72c3 with SMTP id 5b1f17b1804b1-493c2b99c43mr64303185e9.32.1782978112913;
-        Thu, 02 Jul 2026 00:41:52 -0700 (PDT)
-Received: from ?IPV6:2a0d:3344:5521:6b10:2eb7:f61a:75:4534? ([2a0d:3344:5521:6b10:2eb7:f61a:75:4534])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-493c6377479sm28151965e9.15.2026.07.02.00.41.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Jul 2026 00:41:52 -0700 (PDT)
-Message-ID: <b8ff6104-790e-441f-a095-d50843d241c4@redhat.com>
-Date: Thu, 2 Jul 2026 09:41:50 +0200
+        d=1e100.net; s=20251104; t=1782978748; x=1783583548;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kESoQxWQJP4S+fDdlEQZkP18r4Y5za67xWurR8NPaGI=;
+        b=WfyY9EY0dROhpZM9engPL12MjGpND240YXelQXo9tw+H0GS4hPGyIs/1VUlHioSEmn
+         2xpOr7zFck6xTFfMbJyo4DW/R6rYz/hexpth8pKpqYfJ8nWhNwvI3xuIcNDaCc53AgAx
+         2t39/46hd1Al4yxWCtg+9Fq2kIXjDa0I3++1Q49Qp0E64ID3n8/dCbNEJGe+hMXw+fd+
+         1Jw07253pNyqF8yNmJIUbPZfDX65JFIr3IEvg5Mg+4L0BSk9SIpwGYZxmqqe9F9D2VOM
+         6jka4Xlrau/7ftDI4zCSKeUqwJ/HZzwIgksQTf35ZILje0aYFS7F6uvZ2g0VEKP91FaQ
+         l0WA==
+X-Forwarded-Encrypted: i=1; AHgh+RrclYzwWW7lyNHihwCxLkMLhEmqbr0gNbKC1E47cLGVYUXI6HXfni6xP54bpKepSze4PFc+51n6ppab@vger.kernel.org
+X-Gm-Message-State: AOJu0YzOm+Tu5lV5lms6+qLI/D/zEaPpgcFsByxbuiCfIyLQWocYcdTg
+	3tpO4qKKAntfA9nEoxEiVEK/6Iv9xzIPC8W4z2pvaPaL/k83fDiWHooy6u/yaBN4nJw=
+X-Gm-Gg: AfdE7cnHPrQfjuemGPtX6H7nIqJb8TI3HK32oCbh3VoBPs/eKsXSUi1hNU49dOEbWhZ
+	28M/wqz5HyDwbt8yPPoGalfEUemO7R9u9eDTeQ1ZPSB9mtf5F/bAPAASijcqVSX04LscLuStRWJ
+	5iNpokaWwFVxMtk6qTbVR+aotNlHIQ2ECE9fGltYGsedeEil8/wZUOJ+MDoJgAyllV2Ta/Yvp1D
+	w2bYmxC/I1mg1ObSLO1jCmlv8Se9e9os++/0g4plzWUXcsCjwACWUXvfHf9qXopXUonSsJPf8I2
+	wpByEuqc6HwBa9cFIPZsFd44XquwXUPMUSSsICTcvBngg5nvVm2M7K2PrphGUMNURG6GsA4Kfkw
+	Cd1LJz1S6p1g4fjv8siU2dyelVb1Z0l/cQmUBZJZuhp0Kc1kH1dR65wS8evln9A1wCEmHbNmyn1
+	5+CAXrhZHmh84PGCBTSH2KosBUjZhV7T54
+X-Received: by 2002:a05:6000:4687:b0:475:e015:c2a with SMTP id ffacd0b85a97d-47757e57e6cmr5234114f8f.8.1782978747939;
+        Thu, 02 Jul 2026 00:52:27 -0700 (PDT)
+Received: from localhost ([140.209.217.212])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-477dd94cb64sm6592524f8f.23.2026.07.02.00.52.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2026 00:52:27 -0700 (PDT)
+Date: Thu, 2 Jul 2026 09:52:25 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Mark Bloch <mbloch@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
+	Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, netdev@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH net-next V4 4/6] devlink: Apply eswitch mode boot defaults
+Message-ID: <akYX4pMrDTnxa6yK@FV6GYCPJ69>
+References: <20260629182102.245150-1-mbloch@nvidia.com>
+ <20260629182102.245150-5-mbloch@nvidia.com>
+ <akThPmvUHvCMT2cp@FV6GYCPJ69>
+ <1d4ca929-82b8-4891-9058-1451bf71a660@nvidia.com>
+ <akUfXyKioGNAO_iB@FV6GYCPJ69>
+ <ecaeeef0-c463-4f10-885a-02ad2d648be0@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next V4 4/6] devlink: Apply eswitch mode boot defaults
-To: Mark Bloch <mbloch@nvidia.com>, Jiri Pirko <jiri@resnulli.us>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Simon Horman <horms@kernel.org>
-Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20260629182102.245150-1-mbloch@nvidia.com>
- <20260629182102.245150-5-mbloch@nvidia.com>
-From: Paolo Abeni <pabeni@redhat.com>
-Content-Language: en-US
-In-Reply-To: <20260629182102.245150-5-mbloch@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ecaeeef0-c463-4f10-885a-02ad2d648be0@nvidia.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22676-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[pabeni@redhat.com,linux-rdma@vger.kernel.org];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:mbloch@nvidia.com,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:saeedm@nvidia.com,m:leon@kernel.org,m:tariqt@nvidia.com,m:andrew+netdev@lunn.ch,m:corbet@lwn.net,m:skhan@linuxfoundation.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-doc@vger.kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
+	DMARC_NA(0.00)[resnulli.us];
+	FORGED_SENDER(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
 	RCPT_COUNT_TWELVE(0.00)[14];
-	FORGED_RECIPIENTS(0.00)[m:mbloch@nvidia.com,m:jiri@resnulli.us,m:edumazet@google.com,m:kuba@kernel.org,m:horms@kernel.org,m:saeedm@nvidia.com,m:leon@kernel.org,m:tariqt@nvidia.com,m:andrew+netdev@lunn.ch,m:corbet@lwn.net,m:skhan@linuxfoundation.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-doc@vger.kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22677-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pabeni@redhat.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,nvidia.com:email,resnulli-us.20251104.gappssmtp.com:dkim,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 583E56F484D
+X-Rspamd-Queue-Id: 9C3F36F4997
 
-On 6/29/26 8:20 PM, Mark Bloch wrote:
-> Apply parsed devlink_eswitch_mode= defaults after devlink registration
-> and after successful reload.
-> 
-> devl_register() may still be called before the device is ready for an
-> eswitch mode change, so keep a per-devlink delayed work item and pending
-> flag for the registration path. Registration queues the work, and the
-> worker tries to take the devlink instance lock.
-> 
-> If the lock is busy, the worker requeues itself with a delay.
-> 
-> For successful reloads that performed DRIVER_REINIT, devlink_reload()
-> already holds the devlink instance lock and the driver has completed
-> reload_up(). Clear pending work and apply the default directly from the
-> reload path instead of queueing work.
-> 
-> If a user sets eswitch mode through netlink before the pending
-> registration work runs, clear the pending flag so the queued default does
-> not override that user request. Cancel pending default apply work when
-> freeing the devlink instance.
-> 
-> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
-> ---
->  net/devlink/core.c          | 198 +++++++++++++++++++++++++++++++-----
->  net/devlink/dev.c           |   6 ++
->  net/devlink/devl_internal.h |   5 +
->  3 files changed, 182 insertions(+), 27 deletions(-)
-> 
-> diff --git a/net/devlink/core.c b/net/devlink/core.c
-> index 5126509a9c4e..998e4ffd5dce 100644
-> --- a/net/devlink/core.c
-> +++ b/net/devlink/core.c
-> @@ -5,6 +5,7 @@
->   */
->  
->  #include <linux/init.h>
-> +#include <linux/jiffies.h>
->  #include <linux/list.h>
->  #include <linux/slab.h>
->  #include <linux/string.h>
-> @@ -22,8 +23,12 @@ DEFINE_XARRAY_FLAGS(devlinks, XA_FLAGS_ALLOC);
->  
->  static char *devlink_default_esw_mode_param;
->  static bool devlink_default_esw_mode_match_all;
-> +static bool devlink_default_esw_mode_enabled;
->  static enum devlink_eswitch_mode devlink_default_esw_mode;
->  static LIST_HEAD(devlink_default_esw_mode_nodes);
-> +static struct workqueue_struct *devlink_default_esw_mode_wq;
-> +
-> +#define DEVLINK_DEFAULT_ESW_MODE_APPLY_DELAY msecs_to_jiffies(100)
->  
->  struct devlink_default_esw_mode_node {
->  	struct list_head list;
-> @@ -166,6 +171,7 @@ static void __init devlink_default_esw_mode_nodes_clear(void)
->  	}
->  
->  	devlink_default_esw_mode_match_all = false;
-> +	devlink_default_esw_mode_enabled = false;
->  }
->  
->  static int __init devlink_default_esw_mode_parse(char *str)
-> @@ -192,14 +198,113 @@ static int __init devlink_default_esw_mode_parse(char *str)
->  		return err;
->  
->  	err = devlink_default_esw_mode_handles_parse(handles);
-> -	if (err)
-> +	if (err) {
->  		devlink_default_esw_mode_nodes_clear();
-> -	else
-> +	} else {
->  		devlink_default_esw_mode = esw_mode;
-> +		devlink_default_esw_mode_enabled = true;
-> +	}
->  
->  	return err;
->  }
->  
-> +static bool devlink_default_esw_mode_match(struct devlink *devlink)
-> +{
-> +	const char *bus_name = devlink_bus_name(devlink);
-> +	const char *dev_name = devlink_dev_name(devlink);
-> +	struct devlink_default_esw_mode_node *node;
-> +
-> +	if (devlink_default_esw_mode_match_all)
-> +		return true;
-> +
-> +	node = devlink_default_esw_mode_node_find(bus_name, dev_name);
-> +	return !!node;
-> +}
-> +
-> +void devlink_default_esw_mode_apply(struct devlink *devlink)
-> +{
-> +	const struct devlink_ops *ops = devlink->ops;
-> +	int err;
-> +
-> +	devl_assert_locked(devlink);
-> +
-> +	if (!devlink_default_esw_mode_match(devlink))
-> +		return;
-> +
-> +	if (!ops->eswitch_mode_set) {
-> +		if (!devlink_default_esw_mode_match_all)
-> +			devl_warn(devlink,
-> +				  "devlink_eswitch_mode= selected this device but eswitch mode setting is not supported\n");
+Wed, Jul 01, 2026 at 07:42:57PM +0200, mbloch@nvidia.com wrote:
+>
+>
+>On 01/07/2026 17:09, Jiri Pirko wrote:
+>> Wed, Jul 01, 2026 at 02:57:21PM +0200, mbloch@nvidia.com wrote:
+>>>
+>>>
+>>> On 01/07/2026 12:48, Jiri Pirko wrote:
+>>>> Mon, Jun 29, 2026 at 08:20:59PM +0200, mbloch@nvidia.com wrote:
+>>>>> Apply parsed devlink_eswitch_mode= defaults after devlink registration
+>>>>> and after successful reload.
+>>>>>
+>>>>> devl_register() may still be called before the device is ready for an
+>>>>
+>>>> How so? I would assume that driver calls devl_register only after
+>>>> everything is up and running and ready. If not, isn't it a bug?
+>>>>
+>>>
+>>> You would think so :)
+>>>
+>>> Some drivers, mlx5 included, call devl_register() while holding the
+>>> devlink instance lock and then finish setting up state before releasing
+>>> the lock.
+>>>
+>>> In v3 I tried to enforce exactly that model, move devl_register() to
+>>> be the last thing the driver does. Jakub pushed back on making that a
+>>> general rule. So in v4 I changed the approach. devl_register() only
+>>> schedules the work, and the actual eswitch mode change can run only
+>>> after the driver releases the devlink lock.
+>> 
+>> Wouldn't it make sense to use a completion instead of loop-reschedule of
+>> delayed work?
+>
+>Just to make sure I understand the suggestion, this would mean that the
+>work waits until the devlink lock holder drops the lock, and devl_unlock()
+>would signal it, something like:
+>
+>void devl_unlock(struct devlink *devlink)
+>{
+>	ool complete_apply = devlink->default_esw_mode_apply_pending;
+>
+>	mutex_unlock(&devlink->lock);
+>
+>	if (complete_apply)
+>		complete(&devlink->default_esw_mode_apply_ready);
+>}
+>
+>That would avoid the retry loop, but it also means the queued work 
+>sleeps until the driver drops devl_lock. It does keep one worker
+>blocked per pending instance and adds this default-esw-mode signalling to
+>the generic devl_unlock() path.
+>
+>The delayed retry was meant to avoid a sleeping worker and keep the
+>instances independent. If one devlink instance is still locked, we just
+>try it again later while other instances can progress.
+>
+>If you prefer the completion approach I can switch to it, but I don't see
+>it as simpler overall.
 
-Not a very strong opinion on my side, but I *think* it would be more
-consistent to emit this warning even for devlink_default_esw_mode_match_all
+Yeah, I don't have preference. I was just wondering. Feel free to leave
+it as is.
 
-/P
+Maybe, instead of "complete", you can schedule with "0" delay in
+devl_unlock? Well, it does not really need to be delayed work, right?
+The only single schedule may be done from devl_unlock. That would help
+to eliminate the rescheduling. Am I missing something?
 
+
+>
+>Mark
+>
+>> 
+>>>
+>>> Mark
+>>>
+>>>>
+>>>>> eswitch mode change, so keep a per-devlink delayed work item and pending
+>>>>> flag for the registration path. Registration queues the work, and the
+>>>>> worker tries to take the devlink instance lock.
+>>>>>
+>>>>> If the lock is busy, the worker requeues itself with a delay.
+>>>>>
+>>>>> For successful reloads that performed DRIVER_REINIT, devlink_reload()
+>>>>> already holds the devlink instance lock and the driver has completed
+>>>>> reload_up(). Clear pending work and apply the default directly from the
+>>>>> reload path instead of queueing work.
+>>>>>
+>>>>> If a user sets eswitch mode through netlink before the pending
+>>>>> registration work runs, clear the pending flag so the queued default does
+>>>>> not override that user request. Cancel pending default apply work when
+>>>>> freeing the devlink instance.
+>>>>
+>>>> These AI generated code descriptive messages are generally not very
+>>>> useful :(
+>>>>
+>>>
+>
 
