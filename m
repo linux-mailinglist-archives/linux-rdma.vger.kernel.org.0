@@ -1,215 +1,225 @@
-Return-Path: <linux-rdma+bounces-22665-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22666-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id zN40E4+BRWpQBQsAu9opvQ
-	(envelope-from <linux-rdma+bounces-22665-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Jul 2026 23:07:27 +0200
+	id 2PwIJCLYRWr0FwsAu9opvQ
+	(envelope-from <linux-rdma+bounces-22666-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 02 Jul 2026 05:16:50 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BF2C6F1BDE
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Jul 2026 23:07:26 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E05AF6F32EA
+	for <lists+linux-rdma@lfdr.de>; Thu, 02 Jul 2026 05:16:49 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=meta.com header.s=s2048-2025-q2 header.b=JriekQid;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22665-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22665-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=reject) header.from=meta.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
+	dkim=pass header.d=linux.alibaba.com header.s=default header.b=D8oDRiTE;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22666-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22666-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=linux.alibaba.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 62CCE3008601
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jul 2026 21:07:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 03F843034B3A
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jul 2026 03:14:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15A963815E8;
-	Wed,  1 Jul 2026 21:07:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 314181CD2C;
+	Thu,  2 Jul 2026 03:14:57 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A29936F908
-	for <linux-rdma@vger.kernel.org>; Wed,  1 Jul 2026 21:07:20 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782940041; cv=pass; b=XML/kxIUFIyO5LkiE4PvhOYoUSrmfscXOdJ7vtYL+sKvRmFi7iXCgNRe9OI+UXf+7Oz4L7lr/zZzXQe1cv2hcde7Q0dUppsjVWVFos4fIyKEmuu0/y6VCwydpLzDlAx7RDWucAxqx18P8ZEwGYDlJzRoNoemGNrAu41B6KAtytM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782940041; c=relaxed/simple;
-	bh=Ceo/eQzTqKQOw6VV30yrUBdtzlEqkC/54DauyHODWuM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EsRxo4n75EiIQmWlMLmeKM43cmL7dpLlDbma/Aywco+CMLVsZ/ib05R7uFUvZKKrVJqhKYU5W3R1/F6fIH+UQgRY6lNGf6hK5CXrdRIKirJRsuDw8OxSR8Drsqp5MZvC9griO8U+Uy9H+AfH4J//W2/PpgWXiASR6bBS7p7zyLk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=JriekQid; arc=pass smtp.client-ip=67.231.145.42
-Received: from pps.filterd (m0528007.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 661GqCIW525508
-	for <linux-rdma@vger.kernel.org>; Wed, 1 Jul 2026 14:07:20 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
-	 bh=24aInYXtnwOY36q1nTcGx+GLSA67zMg6UsmTMMOvEvo=; b=JriekQidIHFn
-	3OZIro8QTgAFnzTOmG7w3ybAxj4FiStpeTTRGBLMAMypxTBXO/RGcUhrKlV7/8+I
-	NGp2k1oxd1md4lnH8eLkzcoRP6bO/irin9BMsg0lfaoBV8svypOfCmDIAXLNW5sK
-	GtZ3MwaSl62Wu0/6dVeDLcyETxRKmxu3+aaDSQG1+4lqXzSIaR/Z73n1wWbswdiY
-	JS+tG40E48v0uq/02iJ0qwE/0HOR2lWNrkfJif1YbJnyfmSRCgkJvV3Ifv5Qcrni
-	D5okVxBynFuMB98gOqC6WhFZmaUI875K2RzzzSTr2Jczefn/3aJenaP3WDlVdFCR
-	x47wIFjeLg==
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com [209.85.210.70])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4f46kw039s-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-rdma@vger.kernel.org>; Wed, 01 Jul 2026 14:07:19 -0700 (PDT)
-Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-7ead3468408so785684a34.0
-        for <linux-rdma@vger.kernel.org>; Wed, 01 Jul 2026 14:07:19 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1782940039; cv=none;
-        d=google.com; s=arc-20260327;
-        b=mO1qp+x4icJEguFto1+lQfVHfkTydKdxTcHG7q4mZEoUPal1mJ5Ureb/bCDEFeUjhh
-         ZWyPK2ItSopOC0dF+1WBOQ+RZTBQWa08hMPqOD+CEd0LvfJlVXoTS67tTlBeUaie87Gh
-         qtogYPtlUQrKYUdCCKF3A8LmeD9uVp9g/R2zrhVrdguQFRp52e6Pwi8JeGU3YYDnRzwr
-         nhIdGQFC+Qm4QxlsXQj8/j3w+w9O5PJsWTrq8N0y2/pQtwRx5sGZHb/ijGzgvIjGYLcc
-         LS+y87gcs6UUhlbwAbl+O3bWB6I9yrTMXE41JvK2IOxjCQeKQI95SXgNQ3mtH6XtpnsA
-         kOYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version;
-        bh=24aInYXtnwOY36q1nTcGx+GLSA67zMg6UsmTMMOvEvo=;
-        fh=rDG/aUyOjgvS/f1SncRXzSSaYvI0hZcJyUvhdpkGbWc=;
-        b=ZmyHNM8VdXEWt5ziX+VKwA9L+qe247KYAcWPXHypis10Aa/f+5ThdamZmdRei/3m+c
-         IKyPbm18dIrQ3kJfp9BOa8YMhg4362ToWcS7iamvidgmazhhV53HBkF81JcFYBW4n61E
-         x2hFZ2iFTesvZvLwHrPSKsfkcr8wGFoeTxMoLQ8e0cP6Q7330cVmXvVuEOycWMzu4D9D
-         JgTByUGgffPoz97QQ2kTRDCJtACm2/yluFvIZoC1rSrBSZl89hZigKvqnp1rTM4tqqc0
-         wYqZ1dx0FE2x65VJfMVRESXxdZuqafADbF7rDxvi2uPfrfq1Y9j0TducxLuyj1dhn7Go
-         HUDg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782940039; x=1783544839;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=24aInYXtnwOY36q1nTcGx+GLSA67zMg6UsmTMMOvEvo=;
-        b=n3ogLsaqHOhjxmPcfyk3xGxVWxz1EL1LR+fxMhyeOFtoLW8jDAARSnbV6jAOrSnmdz
-         GvFqcMIMhVrNLHeecXAazys6ZYqCj3xhbho1030Q2nJM0TaWnNl1rmsZTu+KVS3f4uYB
-         207WnEdsQW6ZnCxwcqDrsRmR4sfTRQBo9GnTt3QaPPAWD5wa1t+L4u2OqQmvhAD7kTJ9
-         KMgmha6u+4XUfvJ6A6i3Y1+omUsqidhq1zv81Vi6gyWFnZUiSUcVs2XssurC4oE5NKW0
-         u/mcvVF4lnlt3J5fLYR2ywHdV0/BobTvnmR3jRN2fk2Lw18OVk6PJ9Gb38NGw4ZZSnhu
-         jw8w==
-X-Forwarded-Encrypted: i=1; AFNElJ+ZX+fgjmmvWK7I884hNCpd4mdi0KLFIwHLVk372fkKVPbHHD/PjVnnMYhDERr0A1XYN0wJaxhdk1fG@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx8rNtXPz7oYucc+TOOJw0ZwSVq4emgk0miIWdhlsMWDxSlDnvY
-	s3SsUhSor9BiMRlSVCxpfrHX0pkfpWVZrIK09l8wvj0SvmzDSjrRmxyLJAZZcieZdl/6wmN3y+O
-	wK9OFPQaCr4Vr4aoDjqvMD3lF5p92lM1sCPXMKP4VIRemM+nLauEhorkEHLsaEr5FcB3YdPLJW7
-	+4WLDK9nz6MziwzPhjHxBykJYEV2+kT+FJ3TzY
-X-Gm-Gg: AfdE7ckfpKtmUTk7j38jrSp4S4wDmneygvJ9lJ+IusGRv/Gkuaf/e2GrXW/+7Pqt7BM
-	+2kFajoddBCe5v1rAAF+1Ta7w7PSeVA3DuQ18p+I9LonT+WRfjhgIpoVnweBDBDjHDYiMbrvTbD
-	sHFR0Qqs/njOTl+7GQU0w6n63ME+DwI3s2sxwbGykhDQaxo4mk5rPIjzoije7kF2PqaEyJJmClM
-	V5pot7QuQ==
-X-Received: by 2002:a05:6830:82b5:b0:7e9:c481:ff8a with SMTP id 46e09a7af769-7eb48b0dad2mr2267487a34.11.1782940039005;
-        Wed, 01 Jul 2026 14:07:19 -0700 (PDT)
-X-Received: by 2002:a05:6830:82b5:b0:7e9:c481:ff8a with SMTP id
- 46e09a7af769-7eb48b0dad2mr2267473a34.11.1782940038625; Wed, 01 Jul 2026
- 14:07:18 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8727C30C608;
+	Thu,  2 Jul 2026 03:14:53 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1782962097; cv=none; b=M7FxNBT+Xb4vg1yieHvhrt+VTNs9V9+rg+ysXzRFM6XR484wiDmhwY1iUacZxI74DzV+28EQDBCcfxvZuCn8Jx+yze8+zhqkHp0G+6aWbIePVRoJ52wENXgM5YS+eL02Z6BHgPHhbHyPXQBG0598jvAmjAn0WGEKz8wnorHvj20=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1782962097; c=relaxed/simple;
+	bh=Zv6zOOkhVDvrqkwg/FjknHbiL5iANFIai2Qud9WW5fo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PzglwP0Le9Fy7EaoMVqEzwJ//0nwXhfltCEyj1rL95XZ/xl1guqi5mX9VoTDz6VDGxtl7QrodYVnE1v7gntKezlHO9TjnBfYOFC/388wGQeRFne8XLAc6B2ijZC8sFcwh0DR2iDd/yA3gicv4tIdc0MFAca2eUDC4nKgXlgesDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=D8oDRiTE; arc=none smtp.client-ip=115.124.30.113
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1782962091; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=awjN/Bx8yx2Wa4cq+cg8hFgBXfy/kjaifVF3JoRAeCM=;
+	b=D8oDRiTEst2XV/FHXnAUZM/16sHSdYKqYK3Pdvkxj3SpW2jo11y3qGQ8QiiPg+sJq4vLl1uF07NRndm14o3eLiG20HwKLgsUrz/BFQkev4FMMR8A7LPXQ7/HQLnfMiHVp7ZlqkFahSI0hryeNpKrrORxFHkDImKhRkMRElTvAkY=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R321e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037033178;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0X6CTmoG_1782962090;
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0X6CTmoG_1782962090 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Thu, 02 Jul 2026 11:14:50 +0800
+Date: Thu, 2 Jul 2026 11:14:50 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com    >
+To: Sechang Lim <rhkrqnwk98@gmail.com>
+Cc: "D . Wythe" <alibuda@linux.alibaba.com>,
+	Dust Li <dust.li@linux.alibaba.com>,
+	Sidraya Jayagond <sidraya@linux.ibm.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jiayuan Chen <jiayuan.chen@linux.dev>,
+	Mahanta Jambigi <mjambigi@linux.ibm.com>,
+	Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>, Simon Horman <horms@kernel.org>,
+	Karsten Graul <kgraul@linux.ibm.com>,
+	Guvenc Gulce <guvenc@linux.ibm.com>,
+	Ursula Braun <ubraun@linux.ibm.com>, linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net v3] net/smc: fix out-of-bounds read when sk_user_data
+ holds a sk_psock
+Message-ID: <20260702031450.GA61525@j66a10360.sqa.eu95>
+References: <20260629095140.679754-1-rhkrqnwk98@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260630224328.3218796-1-zhipingz@meta.com> <20260630224328.3218796-4-zhipingz@meta.com>
- <20260701120700.58bcafa1@shazbot.org>
-In-Reply-To: <20260701120700.58bcafa1@shazbot.org>
-From: Zhiping Zhang <zhipingz@meta.com>
-Date: Wed, 1 Jul 2026 14:07:06 -0700
-X-Gm-Features: AVVi8CfZM9KJwSZGN9TaUIufGVTMoHcKZ-xzBFuNkplSBdDCFbtywxUsQs319WM
-Message-ID: <CAH3zFs0bmTTTtw-WZsbhFqzdPfriwOOqp4XAgo4TGekA8HYw0g@mail.gmail.com>
-Subject: Re: [PATCH v10 3/4] vfio/pci: implement get_pci_tph and DMA_BUF_TPH feature
-To: Alex Williamson <alex@shazbot.org>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Michael Guralnik <michaelgur@nvidia.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Konig <christian.koenig@amd.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, kvm@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-ORIG-GUID: N03d8ybd_pMKygyvyQClPSzF7VAClHQp
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNzAxMDIyNiBTYWx0ZWRfXzwRlO3CSybj+
- 7/RCHmXqtpFtKQSJNTVQJrO2sxNGZKssJuyJDm78QkKWg6O+I2H1GJ5GXyujJaBzAy2A2ZReV44
- x9xuybSbcYQF/3o3KVk6YN4MYQDMC8Q=
-X-Proofpoint-GUID: N03d8ybd_pMKygyvyQClPSzF7VAClHQp
-X-Authority-Analysis: v=2.4 cv=RJCD2Yi+ c=1 sm=1 tr=0 ts=6a458187 cx=c_pps
- a=7uPEO8VhqeOX8vTJ3z8K6Q==:117 a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=7x6HtfJdh03M6CCDgxCd:22 a=4h92JMTCafKA-fb_NiOh:22
- a=VabnemYjAAAA:8 a=r1p2_3pzAAAA:8 a=vGJ5o9TXFsc4WUGASEEA:9 a=QEXdDO2ut3YA:10
- a=EXS-LbY8YePsIyqnH6vw:22 a=gKebqoRLp9LExxC7YDUY:22 a=r_pkcD-q9-ctt7trBg_g:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzAxMDIyNiBTYWx0ZWRfX9x2A/XGrKH0T
- UXye5bQQEz6rN7nBEZ+6ztxZ8F9pGvbNv8jlyGlwQYpkJIyCOmu11uLFG0wmk3xv7+zIhG8CCtQ
- CbJCHPu6cKvricf4ZrhtiWlMmjbVltOdFgLnf/mZhaNv+S6uP7t7lMUwpkKJler1AJ4lhNOC3Bv
- 7R/31vMUg/VsIofcErmhSYC4YrBL9QdRnlNaBs2+jwb+EI3g8JreJRLxk6h7JptzPqArFBSIhW7
- is9CPb8KRwu3+5dAaRpzs890xoxFtbNr8DwikifBXZzXUBAwSAGTjPOznPOZKJRpEqD/c6eak+4
- Hesd02wS/UGT/LiJ/+einjOGgNK0Ci1V6eKEpDe9mSMTKn4n4Q1PZa1XJVg8W1Z+eT4IHIIUR0/
- w3fogiM36rHkJ29UW8oaoxnzeYcnZVZPzH4dZ/JkUxgBUyvqrCe9K/WtwXw0UKR0imn4n0rMJv3
- hCknOQTmXrt/FA9wV8Q==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
- definitions=2026-07-01_04,2026-06-26_01,2025-10-01_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260629095140.679754-1-rhkrqnwk98@gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[meta.com:d:+,kernel.org:s:+];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[meta.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[meta.com:s=s2048-2025-q2];
+X-Spamd-Result: default: False [-12.16 / 15.00];
+	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
+	WHITELIST_SPF_DKIM(-3.00)[alibaba.com:d:+,kernel.org:s:+];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22665-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:rhkrqnwk98@gmail.com,m:alibuda@linux.alibaba.com,m:dust.li@linux.alibaba.com,m:sidraya@linux.ibm.com,m:wenjia@linux.ibm.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:jiayuan.chen@linux.dev,m:mjambigi@linux.ibm.com,m:tonylu@linux.alibaba.com,m:guwen@linux.alibaba.com,m:horms@kernel.org,m:kgraul@linux.ibm.com,m:guvenc@linux.ibm.com,m:ubraun@linux.ibm.com,m:linux-rdma@vger.kernel.org,m:linux-s390@vger.kernel.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:bpf@vger.kernel.org,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[gmail.com];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[meta.com:+];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:alex@shazbot.org,m:jgg@ziepe.ca,m:leon@kernel.org,m:michaelgur@nvidia.com,m:sumit.semwal@linaro.org,m:christian.koenig@amd.com,m:bhelgaas@google.com,m:kvm@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-pci@vger.kernel.org,m:dri-devel@lists.freedesktop.org,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[zhipingz@meta.com,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	FORGED_SENDER(0.00)[alibuda@linux.alibaba.com,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[linux.alibaba.com:+];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[zhipingz@meta.com,linux-rdma@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[alibuda@linux.alibaba.com,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-22666-lists,linux-rdma=lfdr.de];
 	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	RWL_MAILSPIKE_POSSIBLE(0.00)[104.64.211.4:from];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,vger.kernel.org:from_smtp,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,shazbot.org:email,meta.com:dkim,meta.com:email,meta.com:from_mime]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linux.alibaba.com:dkim,linux.alibaba.com:from_mime,j66a10360.sqa.eu95:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 4BF2C6F1BDE
+X-Rspamd-Queue-Id: E05AF6F32EA
 
-> Since it seems there will be a v11, note again the comment made here on
-> v9:
->
-> On Tue, 23 Jun 2026 22:24:54 -0700
-> Zhiping Zhang <zhipingz@meta.com> wrote:
-> > On Tue, Jun 23, 2026 at 11:17=E2=80=AFAM Alex Williamson <alex@shazbot.=
-org> wrote:
-> > >
-> > > Nit, it would be more accurate to say:
-> > >
-> > >         /*
-> > >          * Updates protected by dmabuf->resv, @revoked additionally
-> > >          * protected by memory_lock.
-> > >          */
-> > >
-> > > revoked also has an unprotected read, but it's previously existing an=
-d
-> > > benign, and likely just needs a READ_ONCE() annotation.
-> > >
-> >
-> > Agreed, I'll update the comment and add READ_ONCE() as well.
->
-> The READ_ONCE was added, but the comment remains as in v9.  The
-> READ_ONCE rationale should be described in the commit log too.  Thanks,
->
-> Alex
+On Mon, Jun 29, 2026 at 09:51:33AM +0000, Sechang Lim wrote:
+> A passive-open child inherits the listener's smc_clcsock_data_ready().
+> sk_clone_lock() clears its sk_user_data to NULL because the listener tagged
+> it SK_USER_DATA_NOCOPY. Until accept restores the callback, a BPF sock_ops
+> program can add the established child to a sockmap, and sk_psock_init()
+> installs a sk_psock into the NULL sk_user_data. The inherited callback then
+> reads it back through smc_clcsock_user_data(), which strips only NOCOPY,
+> takes the sk_psock for an smc_sock, and dereferences a clcsk_* field past
+> its end:
+> 
+>   BUG: KASAN: slab-out-of-bounds in smc_clcsock_data_ready+0x84/0x200 net/smc/af_smc.c:2637
+>   Read of size 8 at addr ffff8880013b8674 by task syz.6.12484/67930
+>    <IRQ>
+>    smc_clcsock_data_ready+0x84/0x200 net/smc/af_smc.c:2637
+>    tcp_urg+0x24d/0x360 net/ipv4/tcp_input.c:6264
+>    tcp_rcv_state_process+0x280d/0x4940 net/ipv4/tcp_input.c:7336
+>    tcp_child_process+0x371/0xa50 net/ipv4/tcp_minisocks.c:1002
+>    tcp_v4_rcv+0x1eaa/0x2a00 net/ipv4/tcp_ipv4.c:2186
+>    [...]
+>    </IRQ>
+> 
+>   Allocated by task 67930:
+>    sk_psock_init+0x142/0x740 net/core/skmsg.c:766
+>    sock_hash_update_common+0xd3/0x990 net/core/sock_map.c:1010
+>    bpf_sock_hash_update+0x114/0x170 net/core/sock_map.c:1229
+>    __cgroup_bpf_run_filter_sock_ops+0x74/0xa0 kernel/bpf/cgroup.c:1727
+>    tcp_init_transfer+0x1085/0x1100 net/ipv4/tcp_input.c:6693
+>    [...]
+> 
+> Resolve the conflict on the write path. Reserve the child's sk_user_data
+> with a NULL pointer tagged SK_USER_DATA_NOCOPY so sk_psock_init() returns
+> -EBUSY, and release it at accept. smc_clcsock_user_data() still strips the
+> tag to NULL, so the inherited callback stays a no-op.
+> 
+> Fixes: a60a2b1e0af1 ("net/smc: reduce active tcp_listen workers")
+> Signed-off-by: Sechang Lim <rhkrqnwk98@gmail.com>
+> ---
+> v3:
+>  - reserve sk_user_data on the write path instead of the read-side check (D. Wythe)
+> 
+> v2:
+>  - https://lore.kernel.org/netdev/20260619150342.3626224-1-rhkrqnwk98@gmail.com/
+> 
+> v1:
+>  - https://lore.kernel.org/netdev/20260614120931.4041687-1-rhkrqnwk98@gmail.com/
+> 
+>  net/smc/af_smc.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+> index b5db69073e20..78f162344fe3 100644
+> --- a/net/smc/af_smc.c
+> +++ b/net/smc/af_smc.c
+> @@ -154,7 +154,11 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
+>  					       own_req, opt_child_init);
+>  	/* child must not inherit smc or its ops */
+>  	if (child) {
+> -		rcu_assign_sk_user_data(child, NULL);
+> +		/* reserve sk_user_data so sockmap cannot claim the slot */
+> +		write_lock_bh(&child->sk_callback_lock);
+> +		__rcu_assign_sk_user_data_with_flags(child, NULL,
+> +						     SK_USER_DATA_NOCOPY);
+> +		write_unlock_bh(&child->sk_callback_lock);
+>  
+>  		/* v4-mapped sockets don't inherit parent ops. Don't restore. */
+>  		if (inet_csk(child)->icsk_af_ops == inet_csk(sk)->icsk_af_ops)
+> @@ -1773,6 +1777,7 @@ static int smc_clcsock_accept(struct smc_sock *lsmc, struct smc_sock **new_smc)
+>  	/* new clcsock has inherited the smc listen-specific sk_data_ready
+>  	 * function; switch it back to the original sk_data_ready function
+>  	 */
+> +	write_lock_bh(&new_clcsock->sk->sk_callback_lock);
+>  	new_clcsock->sk->sk_data_ready = lsmc->clcsk_data_ready;
+>  
+>  	/* if new clcsock has also inherited the fallback-specific callback
+> @@ -1786,6 +1791,9 @@ static int smc_clcsock_accept(struct smc_sock *lsmc, struct smc_sock **new_smc)
+>  		if (lsmc->clcsk_error_report)
+>  			new_clcsock->sk->sk_error_report = lsmc->clcsk_error_report;
+>  	}
+> +	/* release the slot reserved in smc_tcp_syn_recv_sock() */
+> +	rcu_assign_sk_user_data(new_clcsock->sk, NULL);
+> +	write_unlock_bh(&new_clcsock->sk->sk_callback_lock);
+>  
+>  	(*new_smc)->clcsock = new_clcsock;
+>  out:
+> -- 
 
-Sure, sorry for the miss. will do!
 
-Thanks,
-Zhiping
+I do not think this is the right direction.
+
+You have now sent three versions of essentially the same patch, but I
+still do not see a clear explanation of why this approach is supposed to
+solve the problem you described. At this point, it looks like you are
+repeatedly posting changes without demonstrating that you fully
+understand the ownership and lifetime rules involved here.
+
+This is not the approach I suggested. My preference is to keep the
+sk_user_data reserved from the time the clcsock is created, by not
+setting NOCOPY, so that it remains inherited by the passive socket.
+That avoids the release-then-reacquire pattern entirely. The problem
+is more complicated than it may appear, and if you choose this direction,
+you also need to account for how SMC fallback continues to work with
+sockmap.
+
+If you do not think you can fully address that approach, then feel free
+to pursue other options that you are able to handle, but I will not ack
+any workaround version. You may seek ack from other maintainers.
+
+D. Wythe
+
+> 2.43.0
 
