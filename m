@@ -1,140 +1,145 @@
-Return-Path: <linux-rdma+bounces-22746-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22747-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id uy5vKfPDR2rcewAAu9opvQ
-	(envelope-from <linux-rdma+bounces-22746-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 03 Jul 2026 16:15:15 +0200
+	id usSoGO7oR2rRhQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-22747-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 03 Jul 2026 18:53:02 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81CE770353F
-	for <lists+linux-rdma@lfdr.de>; Fri, 03 Jul 2026 16:15:13 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0F787046D5
+	for <lists+linux-rdma@lfdr.de>; Fri, 03 Jul 2026 18:53:01 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=baidu.com header.s=selector1 header.b=mZdPJwmG;
-	dmarc=pass (policy=quarantine) header.from=baidu.com;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22746-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22746-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b="mBiD/Bit";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22747-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22747-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id B95AC3009CC6
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jul 2026 14:15:10 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 17412301F31F
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jul 2026 16:50:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C3413DCDBF;
-	Fri,  3 Jul 2026 14:15:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29441305E10;
+	Fri,  3 Jul 2026 16:50:29 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from outbound.baidu.com (mx15.baidu.com [111.202.115.100])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id 75E7D3DA7E4;
-	Fri,  3 Jul 2026 14:14:55 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F415A2D5937;
+	Fri,  3 Jul 2026 16:50:27 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783088106; cv=none; b=oF6DyvquZpS1lNCQkB7WsZMk/ljUt9TvZAgdGdgILp0mqsh5TVTd1d7x2R/jfwFL5Ni+gPGvbmeoLNhYxa3cyC41prT3CtJZn1Uf2T5JCqpJ/QvpbVxPiYbLhab6A+d7E5/ilNr2oGvzxylV2bDrkmRWZqX23uRyzXtOFgq6MqY=
+	t=1783097429; cv=none; b=YN7c3xOMSClO5s7t5lPBUYuIyCFoiPdX3Pm4gbVnvhzrGWHRcunTc1aw7egw9IO9CcvMxS6UoLEduMJlkD+61P1KVPNxy5CrZd33U1bGO0/zAyZYKmzPUXiTdCZqDFH3EphwzG/pQCixsNa66r7Vbf06YSCIJNKqCGd5bFfQX+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783088106; c=relaxed/simple;
-	bh=twwAxQPdUmab4X/guhrl6yiP2j3wT1GqyqKE26e3swc=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XURfhHr5KjJHrxhosqyU8fE5eI6U+kO1e4bliaglcBKe1myd1KBZUsmV8gAvALzVt15CahTOXOL9ugDpcYO4P8JY/duCfJYB5TsRCodOtMD/C4QLXReO/Ry6pLZd4XjU2+HGdmS3/U/Yx8pB7dQlO9S6kaMmkHrbhqb28KFbjLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com; spf=pass smtp.mailfrom=baidu.com; dkim=pass (2048-bit key) header.d=baidu.com header.i=@baidu.com header.b=mZdPJwmG; arc=none smtp.client-ip=111.202.115.100
-X-MD-Sfrom: lirongqing@baidu.com
-X-MD-SrcIP: 172.31.50.47
-From: lirongqing <lirongqing@baidu.com>
-To: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Andrew Lunn
-	<andrew+netdev@lunn.ch>, "David S . Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Li RongQing <lirongqing@baidu.com>, Simon Horman
-	<horms@kernel.org>, Eli Britstein <elibr@mellanox.com>, Roi Dayan
-	<roid@mellanox.com>, Eli Cohen <eli@mellanox.com>, <netdev@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [RESEND PATCH] net/mlx5: Fix L3 tunnel entropy refcount leak
-Date: Fri, 3 Jul 2026 22:14:23 +0800
-Message-ID: <20260703141423.1723-1-lirongqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1783097429; c=relaxed/simple;
+	bh=RtRXNN/V0/X0eR9cUP2zfRsYDCjS2hjSq/47L8qXT0E=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=GtAmBCk3ZVvOPe9ujWTgTsWf0Hch+0usAqJeD54LQfZSW1neoUcju7mo9zxW/81U24v4hpprhj/fs0WowwNT0nznctu7TyORVNCoPsOBWY9ghfbmtl5GyGErI537w8jS7Xqe+m4xITS/Ngj1gneZl52SRQn9cgJPL1sHC0nhXS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mBiD/Bit; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9048A1F000E9;
+	Fri,  3 Jul 2026 16:50:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783097427;
+	bh=WrF9vn0S3KoWGPkz3iUHZ+WnoOW53RPQRuaD93GH6vk=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc;
+	b=mBiD/Bite7zNPhxE8kCnAS9CU9i4lU9tn8H+8A+IEc72CKcc6NtCXaGjM15hKFfNo
+	 mp0FCyuxThyLYK0Ra7zmRLFmGBNTe4+IaMRndfi8VaCooeL+H/p6Bf0ysHl3Owvgay
+	 srwX2MIXoabivUd8opyuHDyTm85p+nogZpv7y0PgQNFvxzjsbE44CKH44+FKslbQBA
+	 pGMXxxwNbd0pToaIm5PLTz3hxeFgKWmf5sWRTKsSrMGAQy6VbUz41zZTi3VfRCYxOv
+	 Qg+15oWgz9OaIcrunMWknbZV1bfmlQI6Qdox23ouW/3CUL6HQRvbrsTuiVcGVcfq0h
+	 eSFT5OtzNom3Q==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 199B83939356;
+	Fri,  3 Jul 2026 16:50:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: bjkjy-exc5.internal.baidu.com (172.31.50.49) To
- bjkjy-exc3.internal.baidu.com (172.31.50.47)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=baidu.com;
-	s=selector1; t=1783088088;
-	bh=vbfPrz0d7bTAVwsqhRMTbt+9bVqsG0XKEvVVATU9zyQ=;
-	h=From:To:Subject:Date:Message-ID:Content-Type;
-	b=mZdPJwmGfGlCms0y1sYpKDG6xoyJ1MKSHaxOK+43ff19GUnuErIgM2fgYxWNSg2gs
-	 6pH9xF5Oir+Ua0M9DnKluew3bEVYrhFZfS0z+Imv8VTFIf2FQpl55hEkIw0uzwuL3X
-	 ws+EamDrtztPTtiD0oD85VFYph9CKfO2VoYomZzbbo8sOTb9QdP4e8NPFP7eBgEvmY
-	 OtB1rBxXi/Qjzbbbhl0mghpvnpCexNHrUE2pl2xviGEoB0Kodl5+ncgVuoQBbnVATW
-	 moWP4zc+BzNZqiPtXSw6S06uNwGoXhQq2ZUmUV7vYYVzGRKvS5LzQxkExYtDAdcCwV
-	 hI3dS+njE6JlQ==
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net V2 0/3] net/mlx5: LAG bug fixes
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <178309740989.3239271.7935908979849887301.git-patchwork-notify@kernel.org>
+Date: Fri, 03 Jul 2026 16:50:09 +0000
+References: <20260630112917.698313-1-tariqt@nvidia.com>
+In-Reply-To: <20260630112917.698313-1-tariqt@nvidia.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, netdev@vger.kernel.org, pabeni@redhat.com,
+ edwards@nvidia.com, jacob.e.keller@intel.com, kees@kernel.org,
+ leon@kernel.org, linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ msanalla@nvidia.com, mbloch@nvidia.com, moshe@nvidia.com,
+ ohartoov@nvidia.com, rongweil@nvidia.com, saeedm@nvidia.com,
+ shayd@nvidia.com, horms@kernel.org
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.84 / 15.00];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[baidu.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[baidu.com:s=selector1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:saeedm@nvidia.com,m:leon@kernel.org,m:tariqt@nvidia.com,m:mbloch@nvidia.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:lirongqing@baidu.com,m:horms@kernel.org,m:elibr@mellanox.com,m:roid@mellanox.com,m:eli@mellanox.com,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-22746-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	FORWARDED(0.00)[lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22747-lists,linux-rdma=lfdr.de,netdevbpf];
 	RCVD_TLS_LAST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_SENDER(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	FORGED_RECIPIENTS(0.00)[m:tariqt@nvidia.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:netdev@vger.kernel.org,m:pabeni@redhat.com,m:edwards@nvidia.com,m:jacob.e.keller@intel.com,m:kees@kernel.org,m:leon@kernel.org,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:msanalla@nvidia.com,m:mbloch@nvidia.com,m:moshe@nvidia.com,m:ohartoov@nvidia.com,m:rongweil@nvidia.com,m:saeedm@nvidia.com,m:shayd@nvidia.com,m:horms@kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER(0.00)[lirongqing@baidu.com,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_TRACE(0.00)[baidu.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lirongqing@baidu.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,nvidia.com:email,vger.kernel.org:from_smtp]
+	FROM_NO_DN(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 81CE770353F
+X-Rspamd-Queue-Id: D0F787046D5
 
-From: Li RongQing <lirongqing@baidu.com>
+Hello:
 
-mlx5_tun_entropy_refcount_inc() counts both VXLAN and L2-to-L3
-tunnel reformat entries as entropy-enabling users. The matching
-decrement path only handled VXLAN, leaving L2-to-L3 tunnel entries
-counted after release.
+This series was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-Handle MLX5_REFORMAT_TYPE_L2_TO_L3_TUNNEL in
-mlx5_tun_entropy_refcount_dec() as well so the enabling entry
-refcount remains balanced.
+On Tue, 30 Jun 2026 14:29:14 +0300 you wrote:
+> Hi,
+> 
+> Three bug fixes by Shay in the mlx5 LAG subsystem.
+> 
+> Patch 1 fixes an off-by-one in the error rollback path of
+> mlx5_lag_create_single_fdb_filter(): the loop started from the
+> failed index i, potentially operating on uninitialized state or
+> double-tearing-down an entry that had already self-rolled-back.
+> The rollback should start from i - 1.
+> 
+> [...]
 
-Fixes: f828ca6a2fb6 ("net/mlx5e: Add support for hw encapsulation of MPLS over UDP")
-Signed-off-by: Li RongQing <lirongqing@baidu.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/lib/port_tun.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Here is the summary with links:
+  - [net,V2,1/3] net/mlx5: LAG, Fix off-by-one in single-FDB error rollback
+    https://git.kernel.org/netdev/net/c/0f0e4ae6975c
+  - [net,V2,2/3] net/mlx5: LAG, MPESW, Fix missing complete() on devcom error
+    https://git.kernel.org/netdev/net/c/d4b85f9a668b
+  - [net,V2,3/3] net/mlx5e: TC, skip peer flow cleanup when LAG seq is unavailable
+    https://git.kernel.org/netdev/net/c/7bed4af0ced8
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/port_tun.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/port_tun.c
-index 4571c56..97f6097 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/port_tun.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/port_tun.c
-@@ -176,7 +176,8 @@ void mlx5_tun_entropy_refcount_dec(struct mlx5_tun_entropy *tun_entropy,
- 				   int reformat_type)
- {
- 	mutex_lock(&tun_entropy->lock);
--	if (reformat_type == MLX5_REFORMAT_TYPE_L2_TO_VXLAN)
-+	if (reformat_type == MLX5_REFORMAT_TYPE_L2_TO_VXLAN ||
-+	    reformat_type == MLX5_REFORMAT_TYPE_L2_TO_L3_TUNNEL)
- 		tun_entropy->num_enabling_entries--;
- 	else if (reformat_type == MLX5_REFORMAT_TYPE_L2_TO_NVGRE &&
- 		 --tun_entropy->num_disabling_entries == 0)
+You are awesome, thank you!
 -- 
-2.9.4
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
