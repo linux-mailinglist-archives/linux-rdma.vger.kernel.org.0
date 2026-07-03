@@ -1,155 +1,140 @@
-Return-Path: <linux-rdma+bounces-22745-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22746-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id AHYUEdiaR2oscAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-22745-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 03 Jul 2026 13:19:52 +0200
+	id uy5vKfPDR2rcewAAu9opvQ
+	(envelope-from <linux-rdma+bounces-22746-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 03 Jul 2026 16:15:15 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D420701C1E
-	for <lists+linux-rdma@lfdr.de>; Fri, 03 Jul 2026 13:19:51 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81CE770353F
+	for <lists+linux-rdma@lfdr.de>; Fri, 03 Jul 2026 16:15:13 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=intel.com header.s=Intel header.b=DsECINif;
-	dmarc=pass (policy=none) header.from=intel.com;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22745-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22745-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=baidu.com header.s=selector1 header.b=mZdPJwmG;
+	dmarc=pass (policy=quarantine) header.from=baidu.com;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22746-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22746-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id AC4DA3018224
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jul 2026 10:58:58 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id B95AC3009CC6
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jul 2026 14:15:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DC413B5820;
-	Fri,  3 Jul 2026 10:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C3413DCDBF;
+	Fri,  3 Jul 2026 14:15:09 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1143E3B71A6;
-	Fri,  3 Jul 2026 10:58:46 +0000 (UTC)
+Received: from outbound.baidu.com (mx15.baidu.com [111.202.115.100])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id 75E7D3DA7E4;
+	Fri,  3 Jul 2026 14:14:55 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783076330; cv=none; b=fICRNBwynurslbYzZAEnjXqjKZZ9L/BneX4tUF11JFn3P2EK4kNPbU6VZc2xJSkdAt7Z3P28sNB4PGy2P2uJUuhbOuASQg6OycY7jhXfcUIrkQRNvXXjRWK+P2utCR/JuBtnvvo7+b8jGsu68aqVCXK5vPEtaUoMs9r5oxfS/4Y=
+	t=1783088106; cv=none; b=oF6DyvquZpS1lNCQkB7WsZMk/ljUt9TvZAgdGdgILp0mqsh5TVTd1d7x2R/jfwFL5Ni+gPGvbmeoLNhYxa3cyC41prT3CtJZn1Uf2T5JCqpJ/QvpbVxPiYbLhab6A+d7E5/ilNr2oGvzxylV2bDrkmRWZqX23uRyzXtOFgq6MqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783076330; c=relaxed/simple;
-	bh=WKztYfUtYrSMu4Ej2zz70U0Lx8hwzhCWc55iHPpQtAc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Vk/qyFvm1H78hRODyjH2FOCMZpXoKPUp0CB6Vng3VzxSJjUmzAgwlfCSS2iDG/c8+PJdhI0OzlD7/YU5dtG/faEd3sxJdTP+Uk1HPA0YWlEFtnQYa98G9zIyjAKv9cPHWl3ckY04ECRzRY8to+d733bmg6xuohYASyFn7OqqXC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DsECINif; arc=none smtp.client-ip=192.198.163.13
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1783076328; x=1814612328;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=WKztYfUtYrSMu4Ej2zz70U0Lx8hwzhCWc55iHPpQtAc=;
-  b=DsECINifunT7K8/DR4ggd3j+Fkr+ph2NdC+q/d46T+AYBl59fmeELgxD
-   xZH9U3TNtjgjR17tmedc6j7VvLC6lrF+skzLvhAnOEbFvpxypRcrafmA2
-   9dFWL34KF0usQyDb4uR3mC2f9tGT3ltwPhok5/G+8CSuNNCRmOCeNjJwe
-   j9pEasOYK8Pjn11JvzcL8a3JmFtAPtU+vdeGgtouAIjiMVT2taijfTJky
-   9T7Ho7rEa8WGmTWtQF9lyOy4fH8I2fov2/rYlgnynKjPpzmOe2yRx5/7K
-   J3Jfn31QtaDsnMNiT9YQovwRLZSlOGqEUyiK2MipR6Ex4NrCVH8o8RuCL
-   A==;
-X-CSE-ConnectionGUID: KVEF5U+tQ9+lqyN6JH3Lgg==
-X-CSE-MsgGUID: U8eRDE2CTPC7FyNT/ppXHA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11835"; a="86377353"
-X-IronPort-AV: E=Sophos;i="6.25,145,1779174000"; 
-   d="scan'208";a="86377353"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2026 03:58:46 -0700
-X-CSE-ConnectionGUID: Zfja6slBTMGIuGRH8qgqkQ==
-X-CSE-MsgGUID: igGjEnQtTmS+eQHkuTQdkQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.25,145,1779174000"; 
-   d="scan'208";a="291228523"
-Received: from lkp-server02.sh.intel.com (HELO ea128546eb3d) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 03 Jul 2026 03:58:42 -0700
-Received: from kbuild by ea128546eb3d with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1wfbbT-00000000C1n-0ERm;
-	Fri, 03 Jul 2026 10:58:39 +0000
-Date: Fri, 3 Jul 2026 18:58:35 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ren Wei <enjou1224z@gmail.com>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
-Cc: oe-kbuild-all@lists.linux.dev, achender@kernel.org, davem@davemloft.net,
-	edumazet@google.com, pabeni@redhat.com, horms@kernel.org,
-	andy.grover@oracle.com, yuantan098@gmail.com, yifanwucs@gmail.com,
-	tomapufckgml@gmail.com, zcliangcn@gmail.com,
-	dstsmallbird@foxmail.com, bronzed_45_vested@icloud.com,
-	enjou1224z@gmail.com
-Subject: Re: [PATCH net 1/1] net: rds: reject oversized TCP receive messages
-Message-ID: <202607031832.sftbLQWx-lkp@intel.com>
-References: <c83365078ea649d7ab2d9c198a445469bffb2550.1782850818.git.bronzed_45_vested@icloud.com>
+	s=arc-20240116; t=1783088106; c=relaxed/simple;
+	bh=twwAxQPdUmab4X/guhrl6yiP2j3wT1GqyqKE26e3swc=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XURfhHr5KjJHrxhosqyU8fE5eI6U+kO1e4bliaglcBKe1myd1KBZUsmV8gAvALzVt15CahTOXOL9ugDpcYO4P8JY/duCfJYB5TsRCodOtMD/C4QLXReO/Ry6pLZd4XjU2+HGdmS3/U/Yx8pB7dQlO9S6kaMmkHrbhqb28KFbjLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com; spf=pass smtp.mailfrom=baidu.com; dkim=pass (2048-bit key) header.d=baidu.com header.i=@baidu.com header.b=mZdPJwmG; arc=none smtp.client-ip=111.202.115.100
+X-MD-Sfrom: lirongqing@baidu.com
+X-MD-SrcIP: 172.31.50.47
+From: lirongqing <lirongqing@baidu.com>
+To: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Andrew Lunn
+	<andrew+netdev@lunn.ch>, "David S . Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Li RongQing <lirongqing@baidu.com>, Simon Horman
+	<horms@kernel.org>, Eli Britstein <elibr@mellanox.com>, Roi Dayan
+	<roid@mellanox.com>, Eli Cohen <eli@mellanox.com>, <netdev@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [RESEND PATCH] net/mlx5: Fix L3 tunnel entropy refcount leak
+Date: Fri, 3 Jul 2026 22:14:23 +0800
+Message-ID: <20260703141423.1723-1-lirongqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c83365078ea649d7ab2d9c198a445469bffb2550.1782850818.git.bronzed_45_vested@icloud.com>
+Content-Type: text/plain
+X-ClientProxiedBy: bjkjy-exc5.internal.baidu.com (172.31.50.49) To
+ bjkjy-exc3.internal.baidu.com (172.31.50.47)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=baidu.com;
+	s=selector1; t=1783088088;
+	bh=vbfPrz0d7bTAVwsqhRMTbt+9bVqsG0XKEvVVATU9zyQ=;
+	h=From:To:Subject:Date:Message-ID:Content-Type;
+	b=mZdPJwmGfGlCms0y1sYpKDG6xoyJ1MKSHaxOK+43ff19GUnuErIgM2fgYxWNSg2gs
+	 6pH9xF5Oir+Ua0M9DnKluew3bEVYrhFZfS0z+Imv8VTFIf2FQpl55hEkIw0uzwuL3X
+	 ws+EamDrtztPTtiD0oD85VFYph9CKfO2VoYomZzbbo8sOTb9QdP4e8NPFP7eBgEvmY
+	 OtB1rBxXi/Qjzbbbhl0mghpvnpCexNHrUE2pl2xviGEoB0Kodl5+ncgVuoQBbnVATW
+	 moWP4zc+BzNZqiPtXSw6S06uNwGoXhQq2ZUmUV7vYYVzGRKvS5LzQxkExYtDAdcCwV
+	 hI3dS+njE6JlQ==
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[intel.com:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[baidu.com,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[baidu.com:s=selector1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:saeedm@nvidia.com,m:leon@kernel.org,m:tariqt@nvidia.com,m:mbloch@nvidia.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:lirongqing@baidu.com,m:horms@kernel.org,m:elibr@mellanox.com,m:roid@mellanox.com,m:eli@mellanox.com,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22746-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[17];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[lists.linux.dev,kernel.org,davemloft.net,google.com,redhat.com,oracle.com,gmail.com,foxmail.com,icloud.com];
-	TAGGED_FROM(0.00)[bounces-22745-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FORGED_RECIPIENTS(0.00)[m:enjou1224z@gmail.com,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:rds-devel@oss.oracle.com,m:oe-kbuild-all@lists.linux.dev,m:achender@kernel.org,m:davem@davemloft.net,m:edumazet@google.com,m:pabeni@redhat.com,m:horms@kernel.org,m:andy.grover@oracle.com,m:yuantan098@gmail.com,m:yifanwucs@gmail.com,m:tomapufckgml@gmail.com,m:zcliangcn@gmail.com,m:dstsmallbird@foxmail.com,m:bronzed_45_vested@icloud.com,s:lists@lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org,oss.oracle.com];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER(0.00)[lirongqing@baidu.com,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_TRACE(0.00)[baidu.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lirongqing@baidu.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[intel.com:+];
-	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	RWL_MAILSPIKE_POSSIBLE(0.00)[104.64.211.4:from];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,01.org:url,intel.com:from_mime,intel.com:email,intel.com:mid,intel.com:dkim,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+	ALIAS_RESOLVED(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,nvidia.com:email,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 3D420701C1E
+X-Rspamd-Queue-Id: 81CE770353F
 
-Hi Ren,
+From: Li RongQing <lirongqing@baidu.com>
 
-kernel test robot noticed the following build errors:
+mlx5_tun_entropy_refcount_inc() counts both VXLAN and L2-to-L3
+tunnel reformat entries as entropy-enabling users. The matching
+decrement path only handled VXLAN, leaving L2-to-L3 tunnel entries
+counted after release.
 
-[auto build test ERROR on net/main]
+Handle MLX5_REFORMAT_TYPE_L2_TO_L3_TUNNEL in
+mlx5_tun_entropy_refcount_dec() as well so the enabling entry
+refcount remains balanced.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ren-Wei/net-rds-reject-oversized-TCP-receive-messages/20260703-135123
-base:   net/main
-patch link:    https://lore.kernel.org/r/c83365078ea649d7ab2d9c198a445469bffb2550.1782850818.git.bronzed_45_vested%40icloud.com
-patch subject: [PATCH net 1/1] net: rds: reject oversized TCP receive messages
-config: x86_64-buildonly-randconfig-006-20260703 (https://download.01.org/0day-ci/archive/20260703/202607031832.sftbLQWx-lkp@intel.com/config)
-compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260703/202607031832.sftbLQWx-lkp@intel.com/reproduce)
+Fixes: f828ca6a2fb6 ("net/mlx5e: Add support for hw encapsulation of MPLS over UDP")
+Signed-off-by: Li RongQing <lirongqing@baidu.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/lib/port_tun.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202607031832.sftbLQWx-lkp@intel.com/
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/port_tun.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/port_tun.c
+index 4571c56..97f6097 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/port_tun.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/port_tun.c
+@@ -176,7 +176,8 @@ void mlx5_tun_entropy_refcount_dec(struct mlx5_tun_entropy *tun_entropy,
+ 				   int reformat_type)
+ {
+ 	mutex_lock(&tun_entropy->lock);
+-	if (reformat_type == MLX5_REFORMAT_TYPE_L2_TO_VXLAN)
++	if (reformat_type == MLX5_REFORMAT_TYPE_L2_TO_VXLAN ||
++	    reformat_type == MLX5_REFORMAT_TYPE_L2_TO_L3_TUNNEL)
+ 		tun_entropy->num_enabling_entries--;
+ 	else if (reformat_type == MLX5_REFORMAT_TYPE_L2_TO_NVGRE &&
+ 		 --tun_entropy->num_disabling_entries == 0)
+-- 
+2.9.4
 
-All errors (new ones prefixed by >>, old ones prefixed by <<):
-
->> ERROR: modpost: "__rds_conn_path_error" [net/rds/rds_tcp.ko] undefined!
-
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
