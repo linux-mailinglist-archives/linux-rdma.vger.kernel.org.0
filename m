@@ -1,610 +1,628 @@
-Return-Path: <linux-rdma+bounces-22752-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22755-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id JgEjCDbESGpstgAAu9opvQ
-	(envelope-from <linux-rdma+bounces-22752-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 04 Jul 2026 10:28:38 +0200
+	id l7D8J6HjSGr3uwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-22755-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 04 Jul 2026 12:42:41 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 181A8707174
-	for <lists+linux-rdma@lfdr.de>; Sat, 04 Jul 2026 10:28:37 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF2507075AB
+	for <lists+linux-rdma@lfdr.de>; Sat, 04 Jul 2026 12:42:40 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=zte.com.cn (policy=none);
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22752-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22752-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=IROJxqDN;
+	dmarc=pass (policy=none) header.from=gmail.com;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22755-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22755-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 2318230080B1
-	for <lists+linux-rdma@lfdr.de>; Sat,  4 Jul 2026 08:28:33 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A8BD23015C82
+	for <lists+linux-rdma@lfdr.de>; Sat,  4 Jul 2026 10:42:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0569C31F993;
-	Sat,  4 Jul 2026 08:28:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C924C397323;
+	Sat,  4 Jul 2026 10:42:37 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [160.30.148.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com [209.85.221.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BB8C199385;
-	Sat,  4 Jul 2026 08:28:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEE56314A84
+	for <linux-rdma@vger.kernel.org>; Sat,  4 Jul 2026 10:42:35 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783153711; cv=none; b=P30LjjfdBZbQUKa4UkIRmmnWaq11s3f7sCi3VcUd3RIpOJLR4s7zzekH+EFDZCb6mYlI84KYlfupd8GU/v4gPyZ9qpxPtkaAhtxDsrPZRDDWrBVNWzXW+v6mqvah6p2f2BBGCEli9jyl8KaHxBOrtMNsd0p2T9elo8ASfZAUQ5E=
+	t=1783161757; cv=none; b=U+8GZhfr0lesB+8WeMeMcwyz8jnpBmHin/ABssxnC23Yi0eDgpoXwt/w9yYKhWgkdzoZf9dg8PVxkZhcZbz+pWOlNY+OBTU5SemcpGI3feDeOdQpFwflbKO+qfZdAUCpqdEczeUvwKBTMQr330yb/hV7KIbgNWqasqYnTE9IoT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783153711; c=relaxed/simple;
-	bh=FJ0s2piJJo0UF0pCuSBntJ3DMyM2al29LUNUg0Im9dM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PJh41LIi9FicIjTE7QwxuNOjl5aeuScwBpbs07Ea6dxnkRGbhv1PF/BCtQ0U/4bWx59wtsDkrdPGciwyVMM40pRrUe/14gwunA3q2sAlEDFG2Xub7mG+4RJ8eXtIOBkzrfdso6kGe68224GWGyvWB002Z3PNsv01EhzhDiCNObs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn; spf=pass smtp.mailfrom=zte.com.cn; arc=none smtp.client-ip=160.30.148.34
-Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4gskKR4Fbgz5B0yy;
-	Sat, 04 Jul 2026 16:28:27 +0800 (CST)
-Received: from szxlzmapp03.zte.com.cn ([10.5.231.207])
-	by mse-fl2.zte.com.cn with SMTP id 6648SKYm043547;
-	Sat, 4 Jul 2026 16:28:20 +0800 (+08)
-	(envelope-from zhang.yanze@zte.com.cn)
-Received: from localhost.localdomain (unknown [192.168.6.15])
-	by smtp (Zmail) with SMTP;
-	Sat, 4 Jul 2026 16:28:22 +0800
-X-Zmail-TransId: 3e816a48c426008-bf8e2
-X-Zmail-LocalSMTP: 1
-X-Zmail-RealSender: zhang.yanze@zte.com.cn
-From: Yanze Zhang <zhang.yanze@zte.com.cn>
-To: jgg@ziepe.ca, leon@kernel.org, julianbraha@gmail.com,
-        huangjunxian6@hisilicon.com
-Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        wei.quan@zte.com.cn, han.junyang@zte.com.cn, ran.ming@zte.com.cn,
-        han.chengfei@zte.com.cn, zhang.yanze@zte.com.cn
-Subject: [PATCH rdma v4 2/2] RDMA/zrdma: Add hardware config code and improve driver init flow
-Date: Sat,  4 Jul 2026 16:26:40 +0800
-Message-ID: <20260704082640.664061-3-zhang.yanze@zte.com.cn>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260704082640.664061-1-zhang.yanze@zte.com.cn>
-References: <20260704082640.664061-1-zhang.yanze@zte.com.cn>
+	s=arc-20240116; t=1783161757; c=relaxed/simple;
+	bh=K8ZJXvGtZwtAC5ZhJ2lSMSFOVnJZVmdCBzA6NsHwvos=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=p18gemCyVkij27aPcWiCFuY+YpgkEWQ+Zon4MoRDXYjZtWdBL6wQU4ubqTxinBHFmIlv6YjRV9gAwVJLsWMtrBRW6roqHPAJVbiJ7XwPJsgH/D+4fVEHdCvyGi4Gi9NjSxN/i84oZddzywY/GPVH+6PUmtER67aZUn/wzP97naQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IROJxqDN; arc=none smtp.client-ip=209.85.221.68
+Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-4799b3f7c83so935167f8f.2
+        for <linux-rdma@vger.kernel.org>; Sat, 04 Jul 2026 03:42:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1783161754; x=1783766554; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uj0mlmjo8ysLWYouM9WXZnybVfYpqeQXeKLq68UG620=;
+        b=IROJxqDNYELkNg4ch7d5sHqUENE+NLohA7koxGQTTPRBVnbOGYk9lBmHh79O6ZTd0M
+         zo22cEXromeBBRoKYCPlwjRCxCbmRd+nUbX7vyWhgkxaon/FQcvOxWJXTlRfmHQE4zZf
+         SmdU4ATlP9tRHt1o5FCb8nR5h90KgDyqkU4CLrD3cwE5amMVfn4tjgotUmL8eE43Iy+p
+         1pCfQ0T4ooXASkmMrJk6DR2jdnwao9M4tcFRLl3yFiOMUXpJTjW6UJFBp+QOUk0bKXXn
+         qfTIbjt6pgkrap/GS4HUpesEOI0j2ABeafX15H/6dvatv+dmb/in/fvSPeB8ZM63fOcA
+         bJtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783161754; x=1783766554;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uj0mlmjo8ysLWYouM9WXZnybVfYpqeQXeKLq68UG620=;
+        b=YZFLCOboE+JYOp9MqVHN3/ZNSkq8pXXp0xifke7N4YjSxEx3DGPVdkmIY5noRf8svU
+         6zBoiip9uH3ZtMDUGZLcVwLQYXzowYBOuB2Zt67QsEPVRHUbZz697T9aMR+gINbwvHHu
+         SatWUqjPCr7u8Ye16+qjy+C/VFATzy/wn+Cjg7lPA2np2WU0y/PAxOeYHCHEu0SrCXzf
+         VywUe4eQfMvj+IXaloZcV8mniUcQvz7rEUgOfIoFbZfBFzFQ90qBj9kcHz9EzZ0+vP04
+         1nMx6brvAM86kVeu8QRFjF3N8jBGml38q0NIhIFlLwS9wKcWJDOpF5iROrwPxCMyY2bq
+         fPOQ==
+X-Forwarded-Encrypted: i=1; AHgh+Rpp2lt9DUVfAARh8MHD3XvakJ402qnRvFkjHiMnPLHIoYXxggChlPG3NN44V3fURiGlNxN7ig7p2ns6@vger.kernel.org
+X-Gm-Message-State: AOJu0YwIWvyojCNFmPSo3rofsyhTPO3+/lUPlD23Ijr9mZK/m0waj6mG
+	bZkEw+o24zZ3UetqE29qtoKpWNLFX+eKTF9Xo60c8ohBw3+08G551YeL
+X-Gm-Gg: AfdE7clRZuYVRDjrnt96D5d6g6T71KpWN6LH11aj5A7lrtXXMwAr3chi5Cs1GT5p/JC
+	3HPgeqhqJFZIUwfDtSxtuW0hFbrFVGdGN6P1sVYtHLVelDs+K2FnSxrG9vCk0ZpMLfBzOEzUsP9
+	dojbeTBgOOUrm2SxY+yf+SVM88CmhjxUbi+YH5rIIDRwuL8OH+NRYxpPXmAjKRP6GBWNpOvGlQT
+	wt+Ppqntyzf5U4igtRX2xlshka98LTKqJngHDMoJUdCYaWr+yTEY1oRw1JgJKh3m4FWoVxECM3J
+	uXi3QG7hGiu79ikKiunl23NigrZn6re9tkzDP9XsbiC2c3fVIXkfOCpLH/b7bH9v/eoEClFqgMa
+	3E57adO1CKXSHhLNJwXyWofx/Idcc4RlxcLP1UqHuPFJix+oaWAASbbC03vagWApVvVTPU1Rnf6
+	nyGv2ElpgjRAs=
+X-Received: by 2002:a05:6000:4691:b0:475:f0c2:75a3 with SMTP id ffacd0b85a97d-47aace8ea7fmr2162266f8f.52.1783161753795;
+        Sat, 04 Jul 2026 03:42:33 -0700 (PDT)
+Received: from fedora ([212.253.209.56])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47a9de1e736sm8023752f8f.7.2026.07.04.03.42.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Jul 2026 03:42:33 -0700 (PDT)
+From: Serhat Kumral <serhatkumral1@gmail.com>
+To: Zhu Yanjun <zyjzyj2000@gmail.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>
+Cc: David Ahern <dsahern@kernel.org>,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzbot+8c9eede336e3a843750e@syzkaller.appspotmail.com,
+	Serhat Kumral <serhatkumral1@gmail.com>
+Subject: [PATCH] RDMA/rxe: rework per-net tunnel socket lifetime to fix refcount underflow
+Date: Sat,  4 Jul 2026 13:25:03 +0300
+Message-ID: <20260704102503.89272-1-serhatkumral1@gmail.com>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ZMAIL-USEORIGINALEMLTOOUTBOUND: 1
 Content-Transfer-Encoding: 8bit
-X-MAIL:mse-fl2.zte.com.cn 6648SKYm043547
-X-TLS: YES
-X-ENVELOPE-SENDER: zhang.yanze@zte.com.cn
-X-SOURCE-IP: 10.5.228.133 unknown Sat, 04 Jul 2026 16:28:27 +0800
-X-CLEAN: YES
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 6A48C42B.001/4gskKR4Fbgz5B0yy
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.14 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	DMARC_POLICY_SOFTFAIL(0.10)[zte.com.cn : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22752-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER(0.00)[serhatkumral1@gmail.com,linux-rdma@vger.kernel.org];
+	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,syzkaller.appspotmail.com,gmail.com];
+	TAGGED_FROM(0.00)[bounces-22755-lists,linux-rdma=lfdr.de];
+	TO_DN_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:jgg@ziepe.ca,m:leon@kernel.org,m:julianbraha@gmail.com,m:huangjunxian6@hisilicon.com,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:wei.quan@zte.com.cn,m:han.junyang@zte.com.cn,m:ran.ming@zte.com.cn,m:han.chengfei@zte.com.cn,m:zhang.yanze@zte.com.cn,s:lists@lfdr.de];
-	FREEMAIL_TO(0.00)[ziepe.ca,kernel.org,gmail.com,hisilicon.com];
-	FORGED_SENDER(0.00)[zhang.yanze@zte.com.cn,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:zyjzyj2000@gmail.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:dsahern@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:syzbot+8c9eede336e3a843750e@syzkaller.appspotmail.com,m:serhatkumral1@gmail.com,m:syzbot@syzkaller.appspotmail.com,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	PRECEDENCE_BULK(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	R_DKIM_NA(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	FROM_NEQ_ENVFROM(0.00)[zhang.yanze@zte.com.cn,linux-rdma@vger.kernel.org];
+	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,zte.com.cn:from_mime,zte.com.cn:email,zte.com.cn:mid]
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[serhatkumral1@gmail.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ALIAS_RESOLVED(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,8c9eede336e3a843750e];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,appspotmail.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 181A8707174
+X-Rspamd-Queue-Id: EF2507075AB
 
-- Add TX/RX/IO register configuration logic to new zrdma_hw.c
-- Add zrdma_defs.h for common bitfield masks and constants
-- Add zrdma_uk.h for shared enum definitions
-- Update Makefile to build zrdma_hw.o as separate module
-- Call zxdh_ctrl_init_hw() in probe and add proper cleanup on error
+syzkaller reported a refcount_t underflow / use-after-free in
+sk_common_release() when tearing down an rxe device via
+RDMA_NLDEV_CMD_DELLINK. The shared per-namespace UDP tunnel sockets
+were released based on comparing sk->sk_refcnt against a magic
+constant (SK_REF_FOR_TUNNEL), but the network stack takes transient
+references on sk_refcnt of its own, so this check could pass on more
+than one path concurrently (dellink, NETDEV_UNREGISTER notifier,
+pernet exit), releasing the socket twice.
 
-Signed-off-by: Yanze Zhang <zhang.yanze@zte.com.cn>
+Stop overloading sk_refcnt for driver-level user counting. Track the
+number of rxe devices using each tunnel socket with an explicit
+per-socket counter in the pernet struct, serialised by a mutex:
+
+ - creation happens under the lock via a factory callback, closing
+   the create/create race,
+ - release happens in exactly one place, when the counter drops to
+   zero: clear the RCU pointer, wait a grace period, then call
+   udp_tunnel_sock_release(),
+ - a failed rxe_newlink() now drops the references it took, so the
+   counter cannot be left inflated,
+ - rxe_ns_exit() performs the same coordinated teardown for
+   namespace removal.
+
+IPv4 and IPv6 sockets get separate counters since the IPv6 socket may
+legitimately not exist (-EAFNOSUPPORT).
+
+Fixes: f1327abd6abe ("RDMA/rxe: Support RDMA link creation and destruction per net namespace")
+Reported-by: syzbot+8c9eede336e3a843750e@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=8c9eede336e3a843750e
+Signed-off-by: Serhat Kumral <serhatkumral1@gmail.com>
 ---
- drivers/infiniband/hw/zrdma/Makefile     |   4 +-
- drivers/infiniband/hw/zrdma/zrdma_defs.h |  37 ++++++
- drivers/infiniband/hw/zrdma/zrdma_hw.c   | 135 ++++++++++++++++++++
- drivers/infiniband/hw/zrdma/zrdma_hw.h   | 156 +++++++++++++++++++++++
- drivers/infiniband/hw/zrdma/zrdma_main.c |  22 ++++
- drivers/infiniband/hw/zrdma/zrdma_main.h |   1 +
- drivers/infiniband/hw/zrdma/zrdma_mem.h  |   2 +
- drivers/infiniband/hw/zrdma/zrdma_uk.h   |  18 +++
- 8 files changed, 374 insertions(+), 1 deletion(-)
- create mode 100644 drivers/infiniband/hw/zrdma/zrdma_defs.h
- create mode 100644 drivers/infiniband/hw/zrdma/zrdma_hw.c
- create mode 100644 drivers/infiniband/hw/zrdma/zrdma_hw.h
- create mode 100644 drivers/infiniband/hw/zrdma/zrdma_uk.h
+ drivers/infiniband/sw/rxe/rxe.c     |   1 +
+ drivers/infiniband/sw/rxe/rxe_net.c | 100 ++++++++-------------
+ drivers/infiniband/sw/rxe/rxe_net.h |   1 +
+ drivers/infiniband/sw/rxe/rxe_ns.c  | 132 ++++++++++++++++++++--------
+ drivers/infiniband/sw/rxe/rxe_ns.h  |  24 ++++-
+ 5 files changed, 157 insertions(+), 101 deletions(-)
 
-diff --git a/drivers/infiniband/hw/zrdma/Makefile b/drivers/infiniband/hw/zrdma/Makefile
-index 35daa5bdabd2..a0817b3dec30 100644
---- a/drivers/infiniband/hw/zrdma/Makefile
-+++ b/drivers/infiniband/hw/zrdma/Makefile
-@@ -1,4 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
+diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+index af39209d0fcf..bcc72b96ee00 100644
+--- a/drivers/infiniband/sw/rxe/rxe.c
++++ b/drivers/infiniband/sw/rxe/rxe.c
+@@ -243,6 +243,7 @@ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
+ 	err = rxe_net_add(ibdev_name, ndev);
+ 	if (err) {
+ 		rxe_err("failed to add %s\n", ndev->name);
++		rxe_net_uninit(ndev);
+ 		goto err;
+ 	}
+ err:
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+index 3741b2c4b0bb..e30a9e899faa 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -19,10 +19,6 @@
+ #include "rxe_loc.h"
+ #include "rxe_ns.h"
  
- obj-$(CONFIG_INFINIBAND_ZRDMA) += zrdma.o
--zrdma-y := zrdma_main.o
-+zrdma-y := \
-+	zrdma_hw.o \
-+	zrdma_main.o
-diff --git a/drivers/infiniband/hw/zrdma/zrdma_defs.h b/drivers/infiniband/hw/zrdma/zrdma_defs.h
-new file mode 100644
-index 000000000000..512a426281e6
---- /dev/null
-+++ b/drivers/infiniband/hw/zrdma/zrdma_defs.h
-@@ -0,0 +1,37 @@
-+/* SPDX-License-Identifier: GPL-2.0-only
-+ *
-+ * ZTE DingHai Rdma driver
-+ * Copyright (c) 2022-2026, ZTE Corporation
-+ */
+-#ifndef SK_REF_FOR_TUNNEL
+-#define SK_REF_FOR_TUNNEL	2
+-#endif
+-
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ /*
+  * lockdep can detect false positive circular dependencies
+@@ -81,9 +77,9 @@ static inline void rxe_reclassify_recv_socket(struct socket *sock)
+ 	 * from being called and 'rmmod rdma_rxe'
+ 	 * is refused because of the references.
+ 	 *
+-	 * For the global sockets in recv_sockets,
+-	 * we are sure that rxe_net_exit() will call
+-	 * rxe_release_udp_tunnel -> udp_tunnel_sock_release.
++	 * For the shared per-namespace sockets, we are sure
++	 * that the pernet layer (rxe_ns_pernet_put_skX or
++	 * rxe_ns_exit) will call udp_tunnel_sock_release.
+ 	 *
+ 	 * So we don't need the additional reference to
+ 	 * our own (THIS_MODULE).
+@@ -288,12 +284,6 @@ static struct socket *rxe_setup_udp_tunnel(struct net *net, __be16 port,
+ 	return sock;
+ }
+ 
+-static void rxe_release_udp_tunnel(struct sock *sk)
+-{
+-	if (sk)
+-		udp_tunnel_sock_release(sk);
+-}
+-
+ static void prepare_udp_hdr(struct sk_buff *skb, __be16 src_port,
+ 			    __be16 dst_port)
+ {
+@@ -631,38 +621,23 @@ int rxe_net_add(const char *ibdev_name, struct net_device *ndev)
+ 	return 0;
+ }
+ 
+-static void rxe_sock_put(struct sock *sk,
+-					void (*set_sk)(struct net *, struct sock *),
+-					struct net *net)
++void rxe_net_uninit(struct net_device *ndev)
+ {
+-	if (refcount_read(&sk->sk_refcnt) > SK_REF_FOR_TUNNEL) {
+-		__sock_put(sk);
+-	} else {
+-		rxe_release_udp_tunnel(sk);
+-		sk = NULL;
+-		set_sk(net, sk);
+-	}
++	struct net *net = dev_net(ndev);
 +
-+#ifndef ZRDMA_DEFS_H
-+#define ZRDMA_DEFS_H
-+
-+#include <linux/bitfield.h>
-+#include <rdma/ib_verbs.h>
-+
-+/* RDMA TX DDR Access REG Masks */
-+#define ZXDH_TX_CACHE_ID GENMASK_ULL(1, 0)
-+#define ZXDH_TX_INDICATE_ID GENMASK_ULL(3, 2)
-+#define ZXDH_TX_AXI_ID GENMASK_ULL(6, 4)
-+#define ZXDH_TX_WAY_PARTITION GENMASK_ULL(9, 7)
-+
-+/* RDMA RX DDR Access REG Masks */
-+#define ZXDH_RX_CACHE_ID GENMASK_ULL(1, 0)
-+#define ZXDH_RX_INDICATE_ID GENMASK_ULL(3, 2)
-+#define ZXDH_RX_AXI_ID GENMASK_ULL(6, 4)
-+#define ZXDH_RX_WAY_PARTITION GENMASK_ULL(9, 7)
-+
-+/* RDMA IO REG Masks */
-+#define ZXDH_IOTABLE2_SID GENMASK_ULL(5, 0)
-+
-+#define ZXDH_IOTABLE4_EPID GENMASK_ULL(14, 11)
-+#define ZXDH_IOTABLE4_VFID GENMASK_ULL(10, 3)
-+#define ZXDH_IOTABLE4_PFID GENMASK_ULL(2, 0)
-+
-+#define ZXDH_IOTABLE7_PFID GENMASK_ULL(4, 2)
-+#define ZXDH_IOTABLE7_EPID GENMASK_ULL(8, 5)
-+
-+#define RDMARX_MAX_MSG_SIZE 0x80000000
-+
-+#endif /* ZRDMA_DEFS_H */
-diff --git a/drivers/infiniband/hw/zrdma/zrdma_hw.c b/drivers/infiniband/hw/zrdma/zrdma_hw.c
-new file mode 100644
-index 000000000000..38eeb1f21d0b
---- /dev/null
-+++ b/drivers/infiniband/hw/zrdma/zrdma_hw.c
-@@ -0,0 +1,135 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * ZTE DingHai Rdma driver
-+ * Copyright (c) 2022-2026, ZTE Corporation
-+ */
-+
-+#include "zrdma_hw.h"
-+#include "zrdma_ctrl.h"
-+#include "zrdma_mem.h"
-+
-+static void zxdh_config_tx_regs(struct zxdh_sc_dev *dev)
-+{
-+	u32 temp;
-+
-+	temp = FIELD_PREP(ZXDH_TX_CACHE_ID, 0) |
-+	       FIELD_PREP(ZXDH_TX_INDICATE_ID, ZXDH_INDICATE_HOST_NOSMMU) |
-+	       FIELD_PREP(ZXDH_TX_AXI_ID, (ZXDH_AXID_HOST_EP0 + dev->ep_id)) |
-+	       FIELD_PREP(ZXDH_TX_WAY_PARTITION, 0);
-+
-+	writel(temp, dev->hw->hw_addr + RDMATX_ACK_SQWQE_PARA_CFG);
-+	writel(temp, dev->hw->hw_addr + RDMATX_ACK_DDR_PARA_CFG);
-+	writel(temp, dev->hw->hw_addr + RDMATX_DB_SQWQE_ID_CFG);
-+	writel(temp, dev->hw->hw_addr + RDMATX_SQWQE_PARA_CFG);
-+	writel(temp, dev->hw->hw_addr + RDMATX_PAYLOAD_PARA_CFG);
-+
-+	if (dev->hmc_use_dpu_ddr) {
-+		temp = FIELD_PREP(ZXDH_TX_CACHE_ID, dev->cache_id) |
-+		       FIELD_PREP(ZXDH_TX_INDICATE_ID, ZXDH_INDICATE_DPU_DDR) |
-+		       FIELD_PREP(ZXDH_TX_AXI_ID,
-+				  (ZXDH_AXID_HOST_EP0 + dev->ep_id)) |
-+		       FIELD_PREP(ZXDH_TX_WAY_PARTITION, 0);
-+	} else {
-+		temp = FIELD_PREP(ZXDH_TX_CACHE_ID, dev->cache_id) |
-+		       FIELD_PREP(ZXDH_TX_INDICATE_ID,
-+				  ZXDH_INDICATE_HOST_SMMU) |
-+		       FIELD_PREP(ZXDH_TX_AXI_ID,
-+				  (ZXDH_AXID_HOST_EP0 + dev->ep_id)) |
-+		       FIELD_PREP(ZXDH_TX_WAY_PARTITION, 0);
-+	}
-+	writel(temp, dev->hw->hw_addr + C_HMC_MRTE_TX2);
-+	writel(temp, dev->hw->hw_addr + C_HMC_PBLEMR_TX2);
-+	writel((ZXDH_AXID_HOST_EP0 + dev->ep_id),
-+	       dev->hw->hw_addr + RDMATX_HOSTID_CFG);
-+}
-+
-+static void zxdh_config_rx_regs(struct zxdh_sc_dev *dev)
-+{
-+	u32 temp;
-+
-+	temp = FIELD_PREP(ZXDH_RX_CACHE_ID, 0) |
-+	       FIELD_PREP(ZXDH_RX_INDICATE_ID, ZXDH_INDICATE_HOST_NOSMMU) |
-+	       FIELD_PREP(ZXDH_RX_AXI_ID, (ZXDH_AXID_HOST_EP0 + dev->ep_id)) |
-+	       FIELD_PREP(ZXDH_RX_WAY_PARTITION, 0);
-+
-+	writel(temp, dev->hw->hw_addr + RDMARX_PLD_WR_AXIID_RAM);
-+	writel(temp, dev->hw->hw_addr + RDMARX_RQ_AXI_RAM);
-+	writel(temp, dev->hw->hw_addr + RDMARX_SRQ_AXI_RAM);
-+	writel(temp, dev->hw->hw_addr + RDMARX_ACK_RQDB_AXI_RAM);
-+	writel(temp, dev->hw->hw_addr + RDMARX_CQ_CQE_AXI_INFO_RAM);
-+	writel(temp, dev->hw->hw_addr + RDMARX_CQ_DBSA_AXI_INFO_RAM);
-+	writel(dev->hmc_fn_id,
-+	       dev->hw->hw_addr + RDMARX_MUL_CACHE_CFG_SIDN_RAM);
-+	writel((ZXDH_AXID_HOST_EP0 + dev->ep_id),
-+	       dev->hw->hw_addr + RDMARX_MUL_COPY_QPN_INDICATE);
-+	writel(RDMARX_MAX_MSG_SIZE,
-+	       dev->hw->hw_addr + RDMARX_VHCA_MAX_SIZE_RAM);
-+}
-+
-+static void zxdh_config_io_regs(struct zxdh_sc_dev *dev)
-+{
-+	u32 temp0, temp1, temp2;
-+	struct zxdh_pci_f *rf = container_of(dev, struct zxdh_pci_f, sc_dev);
-+
-+	temp0 = FIELD_PREP(ZXDH_IOTABLE2_SID, dev->hmc_fn_id);
-+	writel(temp0, dev->hw->hw_addr + C_RDMAIO_TABLE2);
-+
-+	temp1 = FIELD_PREP(ZXDH_IOTABLE4_EPID,
-+			   (ZXDH_HOST_EP0_ID + dev->ep_id)) |
-+		FIELD_PREP(ZXDH_IOTABLE4_VFID, dev->vf_id) |
-+		FIELD_PREP(ZXDH_IOTABLE4_PFID, rf->pf_id);
-+	writel(temp1, dev->hw->hw_addr + C_RDMAIO_TABLE4);
-+
-+	temp0 = 0x10000;
-+	writel(temp0, dev->hw->hw_addr + C_RDMAIO_TABLE3);
-+	for (temp0 = 0; temp0 < 32; temp0++) {
-+		if (temp0 < ZXDH_RW_PAYLOAD || temp0 == ZXDH_QPC_OBJ_ID) {
-+			writel(0, dev->hw->hw_addr +
-+					  (C_RDMAIO_TABLE5_0 + (temp0 * 4)));
-+		} else {
-+			temp2 = (rf->ftype == 0) ? 0 : ZXDH_TABLE5_VF_EN;
-+			writel(temp2, dev->hw->hw_addr + (C_RDMAIO_TABLE5_0 +
-+							  (temp0 * 4)));
-+		}
-+	}
-+
-+	if (rf->ftype == 0) {
-+		writel(0, dev->hw->hw_addr + C_RDMAIO_TABLE6_0);
-+		writel(0, dev->hw->hw_addr + C_RDMAIO_TABLE6_1);
-+		writel(0, dev->hw->hw_addr + C_RDMAIO_TABLE6_2);
-+		writel(0, dev->hw->hw_addr + C_RDMAIO_TABLE6_3);
-+		writel(0, dev->hw->hw_addr + C_RDMAIO_TABLE6_4);
-+		writel(0, dev->hw->hw_addr + C_RDMAIO_TABLE6_5);
-+		writel(0, dev->hw->hw_addr + C_RDMAIO_TABLE6_6);
-+		writel(0, dev->hw->hw_addr + C_RDMAIO_TABLE6_7);
-+		writel(0, dev->hw->hw_addr + C_RDMAIO_TABLE6_8);
-+		writel(0, dev->hw->hw_addr + C_RDMAIO_TABLE6_9);
-+		writel(0, dev->hw->hw_addr + C_RDMAIO_TABLE6_10);
-+		writel(0, dev->hw->hw_addr + C_RDMAIO_TABLE6_11);
-+		writel(0, dev->hw->hw_addr + C_RDMAIO_TABLE6_12);
-+		writel(0, dev->hw->hw_addr + C_RDMAIO_TABLE6_13);
-+		writel(0, dev->hw->hw_addr + C_RDMAIO_TABLE6_14);
-+		writel(0, dev->hw->hw_addr + C_RDMAIO_TABLE6_15);
-+
-+		temp2 = FIELD_PREP(ZXDH_IOTABLE7_PFID, rf->pf_id) |
-+			FIELD_PREP(ZXDH_IOTABLE7_EPID,
-+				   (ZXDH_HOST_EP0_ID + rf->ep_id));
-+		writel(temp2, dev->hw->hw_addr + C_RDMAIO_TABLE7);
-+	}
-+}
-+
-+static void zxdh_config_hw_regs(struct zxdh_sc_dev *dev)
-+{
-+	zxdh_config_tx_regs(dev);
-+	zxdh_config_rx_regs(dev);
-+	zxdh_config_io_regs(dev);
-+}
-+
-+int zxdh_ctrl_init_hw(struct zxdh_pci_f *rf)
-+{
-+	struct zxdh_sc_dev *dev = &rf->sc_dev;
-+
-+	zxdh_config_hw_regs(dev);
++	rxe_ns_pernet_put_sk4(net);
++	rxe_ns_pernet_put_sk6(net);
+ }
+ 
+ void rxe_net_del(struct ib_device *dev)
+ {
+ 	struct net_device *ndev;
+-	struct sock *sk;
+-	struct net *net;
+ 
+ 	ndev = ib_device_get_netdev(dev, 1);
+ 	if (!ndev)
+ 		return;
+ 
+-	net = dev_net(ndev);
+-
+-	sk = rxe_ns_pernet_sk4(net);
+-	if (sk)
+-		rxe_sock_put(sk, rxe_ns_pernet_set_sk4, net);
+-
+-	sk = rxe_ns_pernet_sk6(net);
+-	if (sk)
+-		rxe_sock_put(sk, rxe_ns_pernet_set_sk6, net);
++	rxe_net_uninit(ndev);
+ 
+ 	dev_put(ndev);
+ }
+@@ -753,52 +728,58 @@ static struct notifier_block rxe_net_notifier = {
+ 	.notifier_call = rxe_notify,
+ };
+ 
+-static int rxe_net_ipv4_init(struct net *net)
++static struct sock *rxe_create_sk4(struct net *net)
+ {
+-	struct sock *sk;
+ 	struct socket *sock;
+ 
+-	sk = rxe_ns_pernet_sk4(net);
+-	if (sk) {
+-		sock_hold(sk);
+-		return 0;
+-	}
+-
+ 	sock = rxe_setup_udp_tunnel(net, htons(ROCE_V2_UDP_DPORT), false);
+ 	if (IS_ERR(sock)) {
+ 		pr_err("Failed to create IPv4 UDP tunnel\n");
+-		return -1;
++		return ERR_CAST(sock);
+ 	}
+-	rxe_ns_pernet_set_sk4(net, sock->sk);
+ 
+-	return 0;
++	return sock->sk;
+ }
+ 
+-static int rxe_net_ipv6_init(struct net *net)
++static int rxe_net_ipv4_init(struct net *net)
+ {
+-#if IS_ENABLED(CONFIG_IPV6)
+ 	struct sock *sk;
+-	struct socket *sock;
+ 
+-	sk = rxe_ns_pernet_sk6(net);
+-	if (sk) {
+-		sock_hold(sk);
+-		return 0;
+-	}
++	sk = rxe_ns_pernet_hold_sk4(net, rxe_create_sk4);
++	if (IS_ERR(sk))
++		return PTR_ERR(sk);
 +
 +	return 0;
 +}
-diff --git a/drivers/infiniband/hw/zrdma/zrdma_hw.h b/drivers/infiniband/hw/zrdma/zrdma_hw.h
-new file mode 100644
-index 000000000000..bfbe20461900
---- /dev/null
-+++ b/drivers/infiniband/hw/zrdma/zrdma_hw.h
-@@ -0,0 +1,156 @@
-+/* SPDX-License-Identifier: GPL-2.0-only
-+ *
-+ * ZTE DingHai Rdma driver
-+ * Copyright (c) 2022-2026, ZTE Corporation
-+ */
 +
-+#ifndef ZRDMA_HW_H
-+#define ZRDMA_HW_H
-+#include "zrdma_main.h"
-+
-+/**************** ZTE RDMA Registers ***************/
-+#define C_RDMA_RX_VHCA_REG_IDX (0x3400)
-+#define C_RDMA_TX_VHCA_REG_IDX (0x5800)
-+#define C_RDMA_IO_VHCA_REG_IDX (0x6000)
-+#define C_RDMA_IO_SIDN_REG_IDX (0x7800)
-+
-+/* rdmatx_ack_recv_vhca_pfvf */
-+#define RDMATX_ACK_SQWQE_PARA_CFG (C_RDMA_TX_VHCA_REG_IDX + 0x001u)
-+#define RDMATX_ACK_DDR_PARA_CFG (C_RDMA_TX_VHCA_REG_IDX + 0x004u)
-+#define RDMATX_ACK_PCI_MAX_MRTE_INDEX_PARA_CFG (C_RDMA_TX_VHCA_REG_IDX + 0x005u)
-+
-+/* rdmatx_doorbell_mgr_vhca_pfvf */
-+#define RDMATX_DB_PBLE_ID_CFG (C_RDMA_TX_VHCA_REG_IDX + 0x100u)
-+#define RDMATX_DB_SQWQE_ID_CFG (C_RDMA_TX_VHCA_REG_IDX + 0x103u)
-+#define RDMATX_QPN_BASEQPN_CFG (C_RDMA_TX_VHCA_REG_IDX + 0x109u)
-+#define RDMATX_QPN_CONTEXT_ID_CFG (C_RDMA_TX_VHCA_REG_IDX + 0x10Au)
-+#define RDMATX_QUEUE_VHCA_FLAG (C_RDMA_TX_VHCA_REG_IDX + 0x112u)
-+
-+/* rdmatx_wqe_parse_vhca_pfvf */
-+#define RDMATX_SQWQE_PBLE_PARA_CFG (C_RDMA_TX_VHCA_REG_IDX + 0x300u)
-+#define RDMATX_SQWQE_PARA_CFG (C_RDMA_TX_VHCA_REG_IDX + 0x301u)
-+#define RDMATX_AH_PARA_CFG (C_RDMA_TX_VHCA_REG_IDX + 0x302u)
-+#define RDMATX_LOCAL_MRTE_PARENT_PARA_CFG (C_RDMA_TX_VHCA_REG_IDX + 303u)
-+#define RDMATX_LOCAL_MRTE_PARA_CFG (C_RDMA_TX_VHCA_REG_IDX + 0x304u)
-+#define RDMATX_SGETRAN_MRTE_PARA_CFG (C_RDMA_TX_VHCA_REG_IDX + 0x305u)
-+#define RDMATX_SGETRAN_PBLE_PARA_CFG (C_RDMA_TX_VHCA_REG_IDX + 0x306u)
-+#define RDMATX_PAYLOAD_PARA_CFG (C_RDMA_TX_VHCA_REG_IDX + 0x307u)
-+#define RDMATX_HOSTID_CFG (C_RDMA_TX_VHCA_REG_IDX + 0x308u)
-+
-+/******************************MRTE***************************/
-+#define C_HMC_MRTE_RX1 (C_RDMA_RX_VHCA_REG_IDX + 0x0c0u)
-+#define C_HMC_MRTE_RX2 (C_RDMA_RX_VHCA_REG_IDX + 0x183u)
-+
-+#define C_HMC_MRTE_TX1 (C_RDMA_TX_VHCA_REG_IDX + 0x002u)
-+#define C_HMC_MRTE_TX2 (C_RDMA_TX_VHCA_REG_IDX + 0x305u)
-+#define C_HMC_MRTE_TX3 (C_RDMA_TX_VHCA_REG_IDX + 0x304u)
-+
-+#define C_HMC_MRTE_RDMAIO_INDICATE (C_RDMA_IO_VHCA_REG_IDX + 0x012u)
-+#define C_HMC_MRTE_RDMAIO_BASE_LOW (C_RDMA_IO_VHCA_REG_IDX + 0x004u)
-+#define C_HMC_MRTE_RDMAIO_BASE_HIGH (C_RDMA_IO_VHCA_REG_IDX + 0x005u)
-+
-+/* rdmarx_pkt_proc_pfvf */
-+#define RDMARX_MUL_CACHE_CFG_SIDN_RAM (C_RDMA_RX_VHCA_REG_IDX + 0x006u)
-+#define RDMARX_MUL_COPY_QPN_INDICATE (C_RDMA_RX_VHCA_REG_IDX + 0x085u)
-+
-+/* rdma_rdmarx_hd_cache_top_pfvf */
-+#define RDMARX_LIST_CACHE_BASE_QPN (C_RDMA_RX_VHCA_REG_IDX + 0x0A3u)
-+#define RDMARX_PLD_WR_AXIID_RAM (C_RDMA_RX_VHCA_REG_IDX + 0x0C1u)
-+
-+/* rdmarx_prifield_check_pfvf */
-+#define RDMARX_VHCA_MAX_SIZE_RAM (C_RDMA_RX_VHCA_REG_IDX + 0x100u)
-+
-+/* rdmarx_ceq_pfvf */
-+#define C_CEQ_CEQE_AXI_INFO_RAM (C_RDMA_RX_VHCA_REG_IDX + 0x1A0u)
-+#define C_CEQ_RPBLE_AXI_INFO_RAM (C_RDMA_RX_VHCA_REG_IDX + 0x1A1u)
-+#define C_CEQ_LPBLE_AXI_INFO_RAM (C_RDMA_RX_VHCA_REG_IDX + 0x1A2u)
-+#define C_CEQ_INT_INFO_RAM (C_RDMA_RX_VHCA_REG_IDX + 0x1A3u)
-+#define RDMARX_ACK_RQDB_AXI_RAM (C_RDMA_RX_VHCA_REG_IDX + 0x180u)
-+
-+/* rdmarx_completion_queue_pfvf */
-+#define RDMARX_CQ_CQN_BASE_OFFSET_RAM (C_RDMA_RX_VHCA_REG_IDX + 0x160u)
-+#define RDMARX_CQ_CQE_AXI_INFO_RAM (C_RDMA_RX_VHCA_REG_IDX + 0x165u)
-+#define RDMARX_CQ_DBSA_AXI_INFO_RAM (C_RDMA_RX_VHCA_REG_IDX + 0x166u)
-+
-+/* rdmarx_completion_queue_pf */
-+#define RDMARX_RQ_AXI_RAM (C_RDMA_RX_VHCA_REG_IDX + 0x140u)
-+#define RDMARX_SRQ_AXI_RAM (C_RDMA_RX_VHCA_REG_IDX + 0x142u)
-+#define RDMARX_PCI_MAX_MRTE_INDEX_RAM (C_RDMA_RX_VHCA_REG_IDX + 0x143u)
-+
-+/****** IO Module Register ******/
-+#define C_RDMAIO_TABLE2 (C_RDMA_IO_VHCA_REG_IDX + 0x018u)
-+#define C_RDMAIO_TABLE4 (C_RDMA_IO_VHCA_REG_IDX + 0x020u)
-+#define C_RDMAIO_TABLE3 (C_RDMA_IO_VHCA_REG_IDX + 0x01cu)
-+
-+#define C_RDMAIO_TABLE5_0 (C_RDMA_IO_VHCA_REG_IDX + 0x024u)
-+#define C_RDMAIO_TABLE5_1 (C_RDMA_IO_VHCA_REG_IDX + 0x025u)
-+#define C_RDMAIO_TABLE5_2 (C_RDMA_IO_VHCA_REG_IDX + 0x026u)
-+#define C_RDMAIO_TABLE5_3 (C_RDMA_IO_VHCA_REG_IDX + 0x027u)
-+
-+#define C_RDMAIO_TABLE5_4 (C_RDMA_IO_VHCA_REG_IDX + 0x028u)
-+#define C_RDMAIO_TABLE5_5 (C_RDMA_IO_VHCA_REG_IDX + 0x029u)
-+#define C_RDMAIO_TABLE5_6 (C_RDMA_IO_VHCA_REG_IDX + 0x02au)
-+#define C_RDMAIO_TABLE5_7 (C_RDMA_IO_VHCA_REG_IDX + 0x02bu)
-+
-+#define C_RDMAIO_TABLE5_8 (C_RDMA_IO_VHCA_REG_IDX + 0x02cu)
-+#define C_RDMAIO_TABLE5_9 (C_RDMA_IO_VHCA_REG_IDX + 0x02du)
-+#define C_RDMAIO_TABLE5_10 (C_RDMA_IO_VHCA_REG_IDX + 0x02eu)
-+#define C_RDMAIO_TABLE5_11 (C_RDMA_IO_VHCA_REG_IDX + 0x02fu)
-+
-+#define C_RDMAIO_TABLE5_12 (C_RDMA_IO_VHCA_REG_IDX + 0x030u)
-+#define C_RDMAIO_TABLE5_13 (C_RDMA_IO_VHCA_REG_IDX + 0x031u)
-+#define C_RDMAIO_TABLE5_14 (C_RDMA_IO_VHCA_REG_IDX + 0x032u)
-+#define C_RDMAIO_TABLE5_15 (C_RDMA_IO_VHCA_REG_IDX + 0x033u)
-+
-+#define C_RDMAIO_TABLE5_16 (C_RDMA_IO_VHCA_REG_IDX + 0x034u)
-+#define C_RDMAIO_TABLE5_17 (C_RDMA_IO_VHCA_REG_IDX + 0x035u)
-+#define C_RDMAIO_TABLE5_18 (C_RDMA_IO_VHCA_REG_IDX + 0x036u)
-+#define C_RDMAIO_TABLE5_19 (C_RDMA_IO_VHCA_REG_IDX + 0x037u)
-+
-+#define C_RDMAIO_TABLE5_20 (C_RDMA_IO_VHCA_REG_IDX + 0x038u)
-+#define C_RDMAIO_TABLE5_21 (C_RDMA_IO_VHCA_REG_IDX + 0x039u)
-+#define C_RDMAIO_TABLE5_22 (C_RDMA_IO_VHCA_REG_IDX + 0x03au)
-+#define C_RDMAIO_TABLE5_23 (C_RDMA_IO_VHCA_REG_IDX + 0x03bu)
-+
-+#define C_RDMAIO_TABLE5_24 (C_RDMA_IO_VHCA_REG_IDX + 0x03cu)
-+#define C_RDMAIO_TABLE5_25 (C_RDMA_IO_VHCA_REG_IDX + 0x03du)
-+#define C_RDMAIO_TABLE5_26 (C_RDMA_IO_VHCA_REG_IDX + 0x03eu)
-+#define C_RDMAIO_TABLE5_27 (C_RDMA_IO_VHCA_REG_IDX + 0x03fu)
-+
-+#define C_RDMAIO_TABLE5_28 (C_RDMA_IO_VHCA_REG_IDX + 0x040u)
-+#define C_RDMAIO_TABLE5_29 (C_RDMA_IO_VHCA_REG_IDX + 0x041u)
-+#define C_RDMAIO_TABLE5_30 (C_RDMA_IO_VHCA_REG_IDX + 0x042u)
-+#define C_RDMAIO_TABLE5_31 (C_RDMA_IO_VHCA_REG_IDX + 0x043u)
-+
-+#define C_RDMAIO_TABLE7 (C_RDMA_IO_SIDN_REG_IDX + 0x000u)
-+#define C_RDMAIO_TABLE6_0 (C_RDMA_IO_SIDN_REG_IDX + 0x004u)
-+#define C_RDMAIO_TABLE6_1 (C_RDMA_IO_SIDN_REG_IDX + 0x005u)
-+#define C_RDMAIO_TABLE6_2 (C_RDMA_IO_SIDN_REG_IDX + 0x006u)
-+#define C_RDMAIO_TABLE6_3 (C_RDMA_IO_SIDN_REG_IDX + 0x007u)
-+#define C_RDMAIO_TABLE6_4 (C_RDMA_IO_SIDN_REG_IDX + 0x008u)
-+#define C_RDMAIO_TABLE6_5 (C_RDMA_IO_SIDN_REG_IDX + 0x009u)
-+#define C_RDMAIO_TABLE6_6 (C_RDMA_IO_SIDN_REG_IDX + 0x00au)
-+#define C_RDMAIO_TABLE6_7 (C_RDMA_IO_SIDN_REG_IDX + 0x00bu)
-+#define C_RDMAIO_TABLE6_8 (C_RDMA_IO_SIDN_REG_IDX + 0x00cu)
-+#define C_RDMAIO_TABLE6_9 (C_RDMA_IO_SIDN_REG_IDX + 0x00du)
-+#define C_RDMAIO_TABLE6_10 (C_RDMA_IO_SIDN_REG_IDX + 0x00eu)
-+#define C_RDMAIO_TABLE6_11 (C_RDMA_IO_SIDN_REG_IDX + 0x00fu)
-+#define C_RDMAIO_TABLE6_12 (C_RDMA_IO_SIDN_REG_IDX + 0x010u)
-+#define C_RDMAIO_TABLE6_13 (C_RDMA_IO_SIDN_REG_IDX + 0x011u)
-+#define C_RDMAIO_TABLE6_14 (C_RDMA_IO_SIDN_REG_IDX + 0x012u)
-+#define C_RDMAIO_TABLE6_15 (C_RDMA_IO_SIDN_REG_IDX + 0x013u)
-+
-+/**************************PF HMC REGISTER *************************/
-+/******************************PBLEMR***************************/
-+
-+#define C_HMC_PBLEMR_RX1 (C_RDMA_RX_VHCA_REG_IDX + 0x0c2u)
-+#define C_HMC_PBLEMR_RX2 (C_RDMA_RX_VHCA_REG_IDX + 0x184u)
-+
-+#define C_HMC_PBLEMR_TX1 (C_RDMA_TX_VHCA_REG_IDX + 0x003u)
-+#define C_HMC_PBLEMR_TX2 (C_RDMA_TX_VHCA_REG_IDX + 0x306u)
-+
-+#define C_HMC_PBLEMR_RDMAIO_INDICATE (C_RDMA_IO_VHCA_REG_IDX + 0x010u)
-+#define C_HMC_PBLEMR_RDMAIO_BASE_LOW (C_RDMA_IO_VHCA_REG_IDX + 0x000u)
-+#define C_HMC_PBLEMR_RDMAIO_BASE_HIGH (C_RDMA_IO_VHCA_REG_IDX + 0x001u)
-+
-+#endif /* ZRDMA_HW_H */
-diff --git a/drivers/infiniband/hw/zrdma/zrdma_main.c b/drivers/infiniband/hw/zrdma/zrdma_main.c
-index d7296437071f..5cb55bdc52a4 100644
---- a/drivers/infiniband/hw/zrdma/zrdma_main.c
-+++ b/drivers/infiniband/hw/zrdma/zrdma_main.c
-@@ -68,6 +68,8 @@ static int zxdh_probe(struct auxiliary_device *aux_dev,
- 		container_of(aux_dev, struct zxdh_auxiliary_dev, adev);
- 	struct zxdh_handler *hdl;
- 	struct zxdh_device *zdev;
-+	struct zxdh_pci_f *rf;
-+	int err;
++#if IS_ENABLED(CONFIG_IPV6)
++static struct sock *rxe_create_sk6(struct net *net)
++{
++	struct socket *sock;
  
- 	zdev = ib_alloc_device(zxdh_device, ibdev);
- 	if (!zdev)
-@@ -75,10 +77,17 @@ static int zxdh_probe(struct auxiliary_device *aux_dev,
- 
- 	zdev->zxdh_adev = zxdh_adev;
- 
-+	zdev->rf = kzalloc_obj(*zdev->rf);
-+	if (!zdev->rf) {
-+		ib_dealloc_device(&zdev->ibdev);
-+		return -ENOMEM;
-+	}
-+
- 	zxdh_fill_device_info(zdev, zxdh_adev->zxdh_info);
- 
- 	hdl = kzalloc_obj(*hdl);
- 	if (!hdl) {
-+		kfree(zdev->rf);
- 		ib_dealloc_device(&zdev->ibdev);
- 		return -ENOMEM;
+ 	sock = rxe_setup_udp_tunnel(net, htons(ROCE_V2_UDP_DPORT), true);
+ 	if (PTR_ERR(sock) == -EAFNOSUPPORT) {
+ 		pr_warn("IPv6 is not supported, can not create a UDPv6 socket\n");
+-		return 0;
++		return NULL;
  	}
-@@ -87,11 +96,23 @@ static int zxdh_probe(struct auxiliary_device *aux_dev,
- 	zdev->hdl = hdl;
- 	zdev->netdev_speed = SPEED_UNKNOWN;
  
-+	rf = zdev->rf;
-+	err = zxdh_ctrl_init_hw(rf);
-+	if (err)
-+		goto err_ctrl_init;
+ 	if (IS_ERR(sock)) {
+ 		pr_err("Failed to create IPv6 UDP tunnel\n");
+-		return -1;
++		return ERR_CAST(sock);
+ 	}
+ 
+-	rxe_ns_pernet_set_sk6(net, sock->sk);
++	return sock->sk;
++}
++#endif
 +
- 	zxdh_add_handler(hdl);
++static int rxe_net_ipv6_init(struct net *net)
++{
++#if IS_ENABLED(CONFIG_IPV6)
++	struct sock *sk;
  
- 	dev_set_drvdata(&aux_dev->dev, zdev);
++	sk = rxe_ns_pernet_hold_sk6(net, rxe_create_sk6);
++	if (IS_ERR(sk))
++		return PTR_ERR(sk);
+ #endif
+ 	return 0;
+ }
+@@ -824,7 +805,6 @@ void rxe_net_exit(void)
+ int rxe_net_init(struct net_device *ndev)
+ {
+ 	struct net *net;
+-	struct sock *sk;
+ 	int err;
+ 
+ 	net = dev_net(ndev);
+@@ -840,10 +820,8 @@ int rxe_net_init(struct net_device *ndev)
+ 	return 0;
+ 
+ err_out:
+-	/* If ipv6 error, release ipv4 resource */
+-	sk = rxe_ns_pernet_sk4(net);
+-	if (sk)
+-		rxe_sock_put(sk, rxe_ns_pernet_set_sk4, net);
++	/* If ipv6 error, drop the ipv4 reference taken above. */
++	rxe_ns_pernet_put_sk4(net);
+ 
+ 	return err;
+ }
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.h b/drivers/infiniband/sw/rxe/rxe_net.h
+index 56249677d692..06e08a4d5897 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.h
++++ b/drivers/infiniband/sw/rxe/rxe_net.h
+@@ -13,6 +13,7 @@
+ 
+ int rxe_net_add(const char *ibdev_name, struct net_device *ndev);
+ void rxe_net_del(struct ib_device *dev);
++void rxe_net_uninit(struct net_device *ndev);
+ 
+ int rxe_register_notifier(void);
+ int rxe_net_init(struct net_device *ndev);
+diff --git a/drivers/infiniband/sw/rxe/rxe_ns.c b/drivers/infiniband/sw/rxe/rxe_ns.c
+index 64621c89f8bf..d12099a73aa2 100644
+--- a/drivers/infiniband/sw/rxe/rxe_ns.c
++++ b/drivers/infiniband/sw/rxe/rxe_ns.c
+@@ -4,6 +4,8 @@
+ #include <net/netns/generic.h>
+ #include <net/net_namespace.h>
+ #include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/err.h>
+ #include <linux/skbuff.h>
+ #include <linux/pid_namespace.h>
+ #include <net/udp_tunnel.h>
+@@ -11,11 +13,21 @@
+ #include "rxe_ns.h"
+ 
+ /*
+- * Per network namespace data
++ * Per network namespace data.
++ *
++ * The IPv4/IPv6 UDP tunnel sockets are shared by every rxe device created in
++ * a given namespace. Their lifetime is owned here and tracked by an explicit
++ * user count (nr_skX) rather than by overloading sk->sk_refcnt: the network
++ * stack takes transient references on sk_refcnt of its own, so it can never be
++ * used to decide when the last rxe device is gone. All fields are serialised
++ * by @lock.
+  */
+ struct rxe_ns_sock {
++	struct mutex lock; /* protects rxe_sk4/6 and nr_sk4/6 */
+ 	struct sock __rcu *rxe_sk4;
+ 	struct sock __rcu *rxe_sk6;
++	int nr_sk4;
++	int nr_sk6;
+ };
+ 
+ /*
+@@ -28,37 +40,39 @@ static unsigned int rxe_pernet_id;
+  */
+ static int rxe_ns_init(struct net *net)
+ {
+-	/* defer socket create in the namespace to the first
+-	 * device create.
+-	 */
++	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
++
++	/* Socket creation is deferred to the first device create. */
++	mutex_init(&ns_sk->lock);
  
  	return 0;
-+
-+err_ctrl_init:
-+	kfree(hdl);
-+	kfree(zdev->rf);
-+	ib_dealloc_device(&zdev->ibdev);
-+
-+	return err;
  }
  
- static void zxdh_remove(struct auxiliary_device *aux_dev)
-@@ -105,6 +126,7 @@ static void zxdh_remove(struct auxiliary_device *aux_dev)
- 
- 	zxdh_del_handler(zdev->hdl);
- 	kfree(zdev->hdl);
-+	kfree(zdev->rf);
- 	ib_dealloc_device(&zdev->ibdev);
+ static void rxe_ns_exit(struct net *net)
+ {
+-	/* called when the network namespace is removed
+-	 */
++	/* called when the network namespace is removed */
+ 	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
+-	struct sock *sk;
+-
+-	rcu_read_lock();
+-	sk = rcu_dereference(ns_sk->rxe_sk4);
+-	rcu_read_unlock();
+-	if (sk) {
+-		rcu_assign_pointer(ns_sk->rxe_sk4, NULL);
+-		udp_tunnel_sock_release(sk);
+-	}
+-
+-#if IS_ENABLED(CONFIG_IPV6)
+-	rcu_read_lock();
+-	sk = rcu_dereference(ns_sk->rxe_sk6);
+-	rcu_read_unlock();
+-	if (sk) {
+-		rcu_assign_pointer(ns_sk->rxe_sk6, NULL);
+-		udp_tunnel_sock_release(sk);
+-	}
+-#endif
++	struct sock *sk4, *sk6;
++
++	mutex_lock(&ns_sk->lock);
++	sk4 = rcu_dereference_protected(ns_sk->rxe_sk4,
++					lockdep_is_held(&ns_sk->lock));
++	sk6 = rcu_dereference_protected(ns_sk->rxe_sk6,
++					lockdep_is_held(&ns_sk->lock));
++	rcu_assign_pointer(ns_sk->rxe_sk4, NULL);
++	rcu_assign_pointer(ns_sk->rxe_sk6, NULL);
++	ns_sk->nr_sk4 = 0;
++	ns_sk->nr_sk6 = 0;
++	mutex_unlock(&ns_sk->lock);
++
++	if (sk4 || sk6)
++		synchronize_rcu();
++	if (sk4)
++		udp_tunnel_sock_release(sk4);
++	if (sk6)
++		udp_tunnel_sock_release(sk6);
++
++	mutex_destroy(&ns_sk->lock);
  }
  
-diff --git a/drivers/infiniband/hw/zrdma/zrdma_main.h b/drivers/infiniband/hw/zrdma/zrdma_main.h
-index 2eb2fc802f5c..5ba18669fa14 100644
---- a/drivers/infiniband/hw/zrdma/zrdma_main.h
-+++ b/drivers/infiniband/hw/zrdma/zrdma_main.h
-@@ -10,6 +10,7 @@
- #include <linux/auxiliary_bus.h>
- #include "zrdma_type.h"
- #include "zrdma_ctrl.h"
-+#include "zrdma_uk.h"
+ /*
+@@ -71,24 +85,64 @@ static struct pernet_operations rxe_net_ops = {
+ 	.size = sizeof(struct rxe_ns_sock),
+ };
  
- #define ZXDH_PF_NAME "dinghai10e"
- #define ZXDH_RDMA_DEV_NAME "rdma_aux"
-diff --git a/drivers/infiniband/hw/zrdma/zrdma_mem.h b/drivers/infiniband/hw/zrdma/zrdma_mem.h
-index b49df6d51d19..c81cd5ee2d31 100644
---- a/drivers/infiniband/hw/zrdma/zrdma_mem.h
-+++ b/drivers/infiniband/hw/zrdma/zrdma_mem.h
-@@ -7,6 +7,8 @@
- #ifndef ZRDMA_MEM_H
- #define ZRDMA_MEM_H
+-struct sock *rxe_ns_pernet_sk4(struct net *net)
++static struct sock *rxe_ns_hold(struct rxe_ns_sock *ns_sk,
++				struct sock __rcu **skp, int *nrp,
++				struct net *net, rxe_sk_create_t create)
+ {
+-	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
+ 	struct sock *sk;
  
-+#include "zrdma_defs.h"
+-	rcu_read_lock();
+-	sk = rcu_dereference(ns_sk->rxe_sk4);
+-	rcu_read_unlock();
++	mutex_lock(&ns_sk->lock);
++	sk = rcu_dereference_protected(*skp, lockdep_is_held(&ns_sk->lock));
++	if (sk) {
++		(*nrp)++;
++		mutex_unlock(&ns_sk->lock);
++		return sk;
++	}
 +
- #define ZXDH_TABLE5_VF_EN 0x04
++	sk = create(net);
++	if (IS_ERR_OR_NULL(sk)) {
++		mutex_unlock(&ns_sk->lock);
++		return sk;
++	}
++
++	rcu_assign_pointer(*skp, sk);
++	*nrp = 1;
++	mutex_unlock(&ns_sk->lock);
  
- #define ZXDH_HMC_MAX_SD_COUNT 8192
-diff --git a/drivers/infiniband/hw/zrdma/zrdma_uk.h b/drivers/infiniband/hw/zrdma/zrdma_uk.h
-new file mode 100644
-index 000000000000..d21755a521e3
---- /dev/null
-+++ b/drivers/infiniband/hw/zrdma/zrdma_uk.h
-@@ -0,0 +1,18 @@
-+/* SPDX-License-Identifier: GPL-2.0-only
-+ *
-+ * ZTE DingHai Rdma driver
-+ * Copyright (c) 2022-2026, ZTE Corporation
+ 	return sk;
+ }
+ 
+-void rxe_ns_pernet_set_sk4(struct net *net, struct sock *sk)
++static void rxe_ns_put(struct rxe_ns_sock *ns_sk,
++		       struct sock __rcu **skp, int *nrp)
++{
++	struct sock *sk = NULL;
++
++	mutex_lock(&ns_sk->lock);
++	if (*nrp > 0 && --(*nrp) == 0) {
++		sk = rcu_dereference_protected(*skp,
++					       lockdep_is_held(&ns_sk->lock));
++		rcu_assign_pointer(*skp, NULL);
++	}
++	mutex_unlock(&ns_sk->lock);
++
++	if (sk) {
++		synchronize_rcu();
++		udp_tunnel_sock_release(sk);
++	}
++}
++
++struct sock *rxe_ns_pernet_hold_sk4(struct net *net, rxe_sk_create_t create)
++{
++	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
++
++	return rxe_ns_hold(ns_sk, &ns_sk->rxe_sk4, &ns_sk->nr_sk4, net, create);
++}
++
++void rxe_ns_pernet_put_sk4(struct net *net)
+ {
+ 	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
+ 
+-	rcu_assign_pointer(ns_sk->rxe_sk4, sk);
+-	synchronize_rcu();
++	rxe_ns_put(ns_sk, &ns_sk->rxe_sk4, &ns_sk->nr_sk4);
+ }
+ 
+ #if IS_ENABLED(CONFIG_IPV6)
+@@ -104,12 +158,18 @@ struct sock *rxe_ns_pernet_sk6(struct net *net)
+ 	return sk;
+ }
+ 
+-void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk)
++struct sock *rxe_ns_pernet_hold_sk6(struct net *net, rxe_sk_create_t create)
++{
++	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
++
++	return rxe_ns_hold(ns_sk, &ns_sk->rxe_sk6, &ns_sk->nr_sk6, net, create);
++}
++
++void rxe_ns_pernet_put_sk6(struct net *net)
+ {
+ 	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
+ 
+-	rcu_assign_pointer(ns_sk->rxe_sk6, sk);
+-	synchronize_rcu();
++	rxe_ns_put(ns_sk, &ns_sk->rxe_sk6, &ns_sk->nr_sk6);
+ }
+ #endif /* IPV6 */
+ 
+diff --git a/drivers/infiniband/sw/rxe/rxe_ns.h b/drivers/infiniband/sw/rxe/rxe_ns.h
+index 4da2709e6b71..fe96b8abb8dc 100644
+--- a/drivers/infiniband/sw/rxe/rxe_ns.h
++++ b/drivers/infiniband/sw/rxe/rxe_ns.h
+@@ -3,19 +3,35 @@
+ #ifndef RXE_NS_H
+ #define RXE_NS_H
+ 
+-struct sock *rxe_ns_pernet_sk4(struct net *net);
+-void rxe_ns_pernet_set_sk4(struct net *net, struct sock *sk);
++/*
++ * Factory used to create a shared per-namespace tunnel socket while the
++ * pernet lock is held. It must return:
++ *   - a valid sk on success,
++ *   - NULL if the address family is unsupported (not treated as an error),
++ *   - an ERR_PTR() on failure.
 + */
++typedef struct sock *(*rxe_sk_create_t)(struct net *net);
 +
-+#ifndef ZRDMA_UK_H
-+#define ZRDMA_UK_H
++struct sock *rxe_ns_pernet_hold_sk4(struct net *net, rxe_sk_create_t create);
++void rxe_ns_pernet_put_sk4(struct net *net);
+ 
+ #if IS_ENABLED(CONFIG_IPV6)
+-void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk);
+ struct sock *rxe_ns_pernet_sk6(struct net *net);
++struct sock *rxe_ns_pernet_hold_sk6(struct net *net, rxe_sk_create_t create);
++void rxe_ns_pernet_put_sk6(struct net *net);
+ #else /* IPv6 */
+ static inline struct sock *rxe_ns_pernet_sk6(struct net *net)
+ {
+ 	return NULL;
+ }
+ 
+-static inline void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk)
++static inline struct sock *rxe_ns_pernet_hold_sk6(struct net *net,
++						  rxe_sk_create_t create)
++{
++	return NULL;
++}
 +
-+enum zxdh_host_epid {
-+	ZXDH_HOST_EP0_ID = 5,
-+	ZXDH_HOST_EP1_ID = 6,
-+	ZXDH_HOST_EP2_ID = 7,
-+	ZXDH_HOST_EP3_ID = 8,
-+	ZXDH_HOST_EP4_ID = 9,
-+};
-+
-+#endif /* ZRDMA_UK_H */
++static inline void rxe_ns_pernet_put_sk6(struct net *net)
+ {
+ }
+ #endif /* IPv6 */
 -- 
-2.27.0
+2.54.0
 
 
