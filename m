@@ -1,58 +1,58 @@
-Return-Path: <linux-rdma+bounces-22761-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22760-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id xhc3IqQNSmpn9wAAu9opvQ
-	(envelope-from <linux-rdma+bounces-22761-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 05 Jul 2026 09:54:12 +0200
+	id OLTDNbMNSmp09wAAu9opvQ
+	(envelope-from <linux-rdma+bounces-22760-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 05 Jul 2026 09:54:27 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 014CD709417
-	for <lists+linux-rdma@lfdr.de>; Sun, 05 Jul 2026 09:54:12 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E610709437
+	for <lists+linux-rdma@lfdr.de>; Sun, 05 Jul 2026 09:54:27 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20201202 header.b=sP0RVb+f;
+	dkim=pass header.d=kernel.org header.s=k20201202 header.b=b83cgTXA;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22761-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22761-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22760-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22760-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 900B7300CFFC
+	by sea.lore.kernel.org (Postfix) with ESMTP id 685AA301052E
 	for <lists+linux-rdma@lfdr.de>; Sun,  5 Jul 2026 07:54:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2FD4367285;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE52E36655C;
 	Sun,  5 Jul 2026 07:54:06 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A89F25B085;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A834433E89;
 	Sun,  5 Jul 2026 07:54:06 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783238046; cv=none; b=Gg81ZdFpTOg+a+FH9IP/UAI4LoRReYUN+PlYFM8/vx/SnLXnLjEq0eC+UjQUxat/4ARSFSsivxMRqeYdy5gzNs6rojuL0HVZyh/w1pK4cR4o9lavz6TjmTf54IA2USej2FmZgMpK7vZ0eQDcf5fPse1Y7v95nhrQlGLa1BLsjmk=
+	t=1783238046; cv=none; b=lISdpwGDYIypvK8jGgMQXZr1e375FWFVAcqkmWhor7514VRbAqEP6fdNDdF/pVk2uK9ceTSupJt2BxX6Ho+7og2EekfKJooWNl7dwnwG27GAIF58dhOHLKfieKkKu3vthsonARthaXawKTo+JXRGMgIYpwEFE97EKVO2hUfGD84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1783238046; c=relaxed/simple;
-	bh=n2GyQ/H/7d31tZ1hqL32A711a82Cf5C6FGNUFvFI2wo=;
+	bh=YL/WHd/8TFPHx4l3DQrXPuhucRcZBRkd5xOZrS5L7Yo=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ZM4wKFzMuYNrH13vPyepItQIkK/tF2TGaU9a/JBs54s0XRX0FoJkedqnl5O4QqfaMjXQq6r57czZqhQsfFCd/yZRRGsY++0kEdMXNwe9e3Srpz3v9nbtTeRYMbJyxwqljUMPywCHymEkGXPsIvaXQvRuQjxt0NB7eNBkzdTT1Ys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sP0RVb+f; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1B2EEC2BCC6;
+	 In-Reply-To:To:Cc; b=eZD0Nzu2INWqjYja/MWwzb/d/2ISAw33MO9nEnud/Ww92YnVdfaEkFeuOmHaWBmIih7R9eu4aIYqpwLJI92Y4W0h20hr4J11FMicvR+DnL7ffLkHlmR0xioA/6bVPRb73ByB/0IJB5UceqfPyK+2D9RXsGF4NSJaTxCeniFkp+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b83cgTXA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2B8F0C2BCF5;
 	Sun,  5 Jul 2026 07:54:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1783238046;
-	bh=n2GyQ/H/7d31tZ1hqL32A711a82Cf5C6FGNUFvFI2wo=;
+	bh=YL/WHd/8TFPHx4l3DQrXPuhucRcZBRkd5xOZrS5L7Yo=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=sP0RVb+f5OG2fkCdWzPXVW3E54v3SM12RCfOBZL/5z38kQ6DcLROrEF5ty7GzFVGD
-	 O0IJLJTXqT3ZAriOg2M1SHyw8lT7At2jZtkT9hgFZQQjcKQARANWMD4rPPAZbcFCs6
-	 JHK7FMwYIRKxtfog97F09IJfwfwCSOZDqYNyMd1oubd9OSftud4jbubJ+0DgLAKWd+
-	 0XbRo8f5zWRCPqODTsNetDcdHJLsVWCt3k3jYuEOVuMro4fNxik00fzUUjXO+aHiEc
-	 oqlSLfyADazNIDDs18Hi22X2NADjwHc1//owI5uNg89ptdHEqVP1jILUJiNeb+evYk
-	 e8FJ2ZCN4N3UQ==
+	b=b83cgTXAFOgwxU9jfBq+ziR4vJFH8dgNyF0QGn6zJEbMn+BWB3dJnySbkVrJDe/MY
+	 HHfdggWmrJd7cIHgZoW1Dyz3L2SqYErLLE/lqFG/KtRSayo2Inal+1LRP6aMeylxtw
+	 Wfshmlpv7x2Cd/EBXH6oLsjuW2av9QVb2peRDV4YFrGAURBVc/lPg5MLRr1BlH+i9U
+	 GTaBeZm2Ty1TkFp9aseiGRkGjNGAp55LA391RGmCUfHkyrbT0vPSlPA++yaUcPsP83
+	 pxr1nFqWIN1SXdK5Akvn3EJWYzgkoAmie4MUazb5ISvNDZdMizW0mTCMsuSXeuTThR
+	 YxcP08Ut0wkjQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1764C44500;
-	Sun,  5 Jul 2026 07:54:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BCD3C44501;
+	Sun,  5 Jul 2026 07:54:06 +0000 (UTC)
 From: Bryam Vargas via B4 Relay <devnull+hexlabsecurity.proton.me@kernel.org>
-Date: Sun, 05 Jul 2026 02:54:05 -0500
-Subject: [PATCH net v4 1/3] net/smc: bound the wire-controlled producer
- cursor to the RMB
+Date: Sun, 05 Jul 2026 02:54:06 -0500
+Subject: [PATCH net v4 2/3] net/smc: bound the receive length to the RMB in
+ smc_rx_recvmsg()
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -61,7 +61,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260705-b4-disp-28a1bbca-v4-1-be089b98acc6@proton.me>
+Message-Id: <20260705-b4-disp-28a1bbca-v4-2-be089b98acc6@proton.me>
 References: <20260705-b4-disp-28a1bbca-v4-0-be089b98acc6@proton.me>
 In-Reply-To: <20260705-b4-disp-28a1bbca-v4-0-be089b98acc6@proton.me>
 To: Dust Li <dust.li@linux.alibaba.com>, 
@@ -76,11 +76,11 @@ Cc: Stefan Raspl <raspl@linux.ibm.com>, Wen Gu <guwen@linux.alibaba.com>,
  Tony Lu <tonylu@linux.alibaba.com>, Ursula Braun <ubraun@linux.ibm.com>, 
  linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1783238044; l=3661;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783238044; l=2445;
  i=hexlabsecurity@proton.me; s=proton; h=from:subject:message-id;
- bh=dK/lA0d+Xw6g4N5W2Xg6NTDQYO7ediB5H1cZmNqV8pQ=;
- b=s1TEuFC9c3O8kmST6wxjYYkUaXsu9w/WlMvh7M1rhX+qNvjFC5ZrdMCHc4BwanxJqwMQ7D/T3
- NX7otoDTXYaCJ6qkRD1UwA+yKoQJHkgzd6cE+sWw5kP5jX8igf0Hxp9
+ bh=I0K6pB19Txw2xkjG1QzwzyDeX8rOXh7QApCt4GO9qIc=;
+ b=/I0Zd31bYSOXxpR0waqZvHv4r013dQLQJXOXfqYo0YJhIZvn5GziX/nXs6nYGTJsb/F5lHiMP
+ TVdAwebAdJHC6UL/D2LPnRi2QKME2z4EByX4fsntrARFHTsgcSv72ts
 X-Developer-Key: i=hexlabsecurity@proton.me; a=ed25519;
  pk=dmppBMZNLLoPzxHi9l8tZDzEZUunPbgsYqIZYXeUrL0=
 X-Endpoint-Received: by B4 Relay for hexlabsecurity@proton.me/proton with
@@ -93,7 +93,7 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -105,7 +105,7 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	FORGED_SENDER(0.00)[devnull@kernel.org,linux-rdma@vger.kernel.org];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22761-lists,linux-rdma=lfdr.de,hexlabsecurity.proton.me];
+	TAGGED_FROM(0.00)[bounces-22760-lists,linux-rdma=lfdr.de,hexlabsecurity.proton.me];
 	FROM_HAS_DN(0.00)[];
 	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
@@ -119,94 +119,61 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	HAS_REPLYTO(0.00)[hexlabsecurity@proton.me];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 014CD709417
+X-Rspamd-Queue-Id: 3E610709437
 
 From: Bryam Vargas <hexlabsecurity@proton.me>
 
-smcr_cdc_msg_to_host() and smcd_cdc_msg_to_host() import a peer's
-producer cursor from the wire into conn->local_rx_ctrl.prod without
-bounding it against the receive buffer. The urgent-data path in
-smc_cdc_msg_recv_action() then uses that count as a raw index into the
-RMB, so a peer that advertises a producer cursor past rmb_desc->len
-reads out of bounds of the RMB allocation in the receive tasklet and
-can disclose adjacent kernel memory.
+conn->bytes_to_rcv is accumulated in the receive tasklet from the
+peer's wire-controlled producer cursor via smc_curs_diff(), whose
+differing-wrap branch can exceed rmb_desc->len; a forged cursor drives
+bytes_to_rcv past the RMB, and over many CDC messages overflows the
+signed counter negative. smc_rx_recvmsg() reads it as the readable
+length and does a wrap-around copy whose second chunk is not re-bounded
+to rmb_desc->len, reading past the RMB into adjacent kernel memory and
+disclosing it to the peer. The nearby readable >= rmb_desc->len test
+only feeds SMC_STAT_RMB_RX_FULL on a separate earlier read; it does not
+bound the copy.
 
-Bound the producer cursor count to rmb_desc->len at the wire-to-host
-conversion, for both SMC-R and SMC-D. Bound only the producer cursor:
-the consumer cursor indexes the peer's RMB and is bounded by
-peer_rmbe_size, so clamping it to our rmb_desc->len would under-credit
-peer_rmbe_space and stall transmit to a peer with a larger RMB.
-Conforming peers are unaffected.
+Bound the readable length to rmb_desc->len at the consumer, treating a
+negative (sign-overflowed) value as out of range too, so the copy can
+never exceed the ring. This enforces the documented
+0 <= bytes_to_rcv <= rmb_desc->len invariant where it is race-free
+against the producer update in the tasklet; conforming peers are
+unaffected.
 
-Fixes: de8474eb9d50 ("net/smc: urgent data support")
+Fixes: 952310ccf2d8 ("smc: receive data from RMBE")
 Cc: stable@vger.kernel.org
 Signed-off-by: Bryam Vargas <hexlabsecurity@proton.me>
 ---
- net/smc/smc_cdc.h | 27 ++++++++++++++++++++++++---
- 1 file changed, 24 insertions(+), 3 deletions(-)
+ net/smc/smc_rx.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/net/smc/smc_cdc.h b/net/smc/smc_cdc.h
-index 696cc11f2303..ca76ef630356 100644
---- a/net/smc/smc_cdc.h
-+++ b/net/smc/smc_cdc.h
-@@ -221,7 +221,8 @@ static inline void smc_host_msg_to_cdc(struct smc_cdc_msg *peer,
- 
- static inline void smc_cdc_cursor_to_host(union smc_host_cursor *local,
- 					  union smc_cdc_cursor *peer,
--					  struct smc_connection *conn)
-+					  struct smc_connection *conn,
-+					  int max_count)
- {
- 	union smc_host_cursor temp, old;
- 	union smc_cdc_cursor net;
-@@ -235,6 +236,15 @@ static inline void smc_cdc_cursor_to_host(union smc_host_cursor *local,
- 	if ((old.wrap == temp.wrap) &&
- 	    (old.count > temp.count))
- 		return;
-+	/* The peer producer cursor is wire-controlled and is later used as a
-+	 * raw index into our RMB by the urgent path; bound its count to the
-+	 * RMB.  max_count == 0 leaves the consumer cursor unbounded here: it
-+	 * indexes the peer's RMB (bounded by peer_rmbe_size, not our
-+	 * rmb_desc->len), so clamping it to rmb_desc->len would under-credit
-+	 * peer_rmbe_space and stall transmit to peers with a larger RMB.
-+	 */
-+	if (max_count && temp.count > max_count)
-+		temp.count = max_count;
- 	smc_curs_copy(local, &temp, conn);
- }
- 
-@@ -246,8 +256,13 @@ static inline void smcr_cdc_msg_to_host(struct smc_host_cdc_msg *local,
- 	local->len = peer->len;
- 	local->seqno = ntohs(peer->seqno);
- 	local->token = ntohl(peer->token);
--	smc_cdc_cursor_to_host(&local->prod, &peer->prod, conn);
--	smc_cdc_cursor_to_host(&local->cons, &peer->cons, conn);
-+	/* bound the wire-controlled producer cursor to our RMB (used as a raw
-+	 * index by the urgent path); leave the consumer cursor unbounded -- it
-+	 * indexes the peer's RMB and is bounded by peer_rmbe_size.
-+	 */
-+	smc_cdc_cursor_to_host(&local->prod, &peer->prod, conn,
-+			       conn->rmb_desc->len);
-+	smc_cdc_cursor_to_host(&local->cons, &peer->cons, conn, 0);
- 	local->prod_flags = peer->prod_flags;
- 	local->conn_state_flags = peer->conn_state_flags;
- }
-@@ -260,6 +275,12 @@ static inline void smcd_cdc_msg_to_host(struct smc_host_cdc_msg *local,
- 
- 	temp.wrap = peer->prod.wrap;
- 	temp.count = peer->prod.count;
-+	/* the peer producer cursor is wire-controlled and is used as a raw
-+	 * index into our RMB by the urgent path; bound it to the RMB.  The
-+	 * consumer cursor below indexes the peer's RMB and is left unbounded.
-+	 */
-+	if (temp.count > conn->rmb_desc->len)
-+		temp.count = conn->rmb_desc->len;
- 	smc_curs_copy(&local->prod, &temp, conn);
- 
- 	temp.wrap = peer->cons.wrap;
+diff --git a/net/smc/smc_rx.c b/net/smc/smc_rx.c
+index c1d9b923938d..f461cf10b085 100644
+--- a/net/smc/smc_rx.c
++++ b/net/smc/smc_rx.c
+@@ -442,6 +442,18 @@ int smc_rx_recvmsg(struct smc_sock *smc, struct msghdr *msg,
+ 		/* initialize variables for 1st iteration of subsequent loop */
+ 		/* could be just 1 byte, even after waiting on data above */
+ 		readable = smc_rx_data_available(conn, peeked_bytes);
++		/* bytes_to_rcv is accumulated from the peer's wire-controlled
++		 * producer cursor; a forged cursor can drive it past the RMB,
++		 * or overflow the signed accumulator to a negative value across
++		 * many CDC messages (which a plain "> len" check would miss
++		 * before the size_t cast below turns it huge).  Bound it to the
++		 * RMB in either case so the wrap-around copy cannot run past
++		 * rmb_desc->len.  This enforces the documented
++		 * 0 <= bytes_to_rcv <= rmb_desc->len invariant at the consumer,
++		 * race-free against the producer update in the receive tasklet.
++		 */
++		if (readable < 0 || readable > conn->rmb_desc->len)
++			readable = conn->rmb_desc->len;
+ 		splbytes = atomic_read(&conn->splice_pending);
+ 		if (!readable || (msg && splbytes)) {
+ 			if (splbytes)
 
 -- 
 2.43.0
