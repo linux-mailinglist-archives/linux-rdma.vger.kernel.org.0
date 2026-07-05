@@ -1,65 +1,61 @@
-Return-Path: <linux-rdma+bounces-22778-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22779-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 2PJWGgxkSmo9CQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-22778-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 05 Jul 2026 16:02:52 +0200
+	id 48IcKDNkSmpMCQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-22779-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 05 Jul 2026 16:03:31 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF89E70A36D
-	for <lists+linux-rdma@lfdr.de>; Sun, 05 Jul 2026 16:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2969670A37D
+	for <lists+linux-rdma@lfdr.de>; Sun, 05 Jul 2026 16:03:31 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=e4sB04bL;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=lwZYOmD0;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22778-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22778-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22779-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22779-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 01BC3302D136
-	for <lists+linux-rdma@lfdr.de>; Sun,  5 Jul 2026 14:01:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E4E9C30151C6
+	for <lists+linux-rdma@lfdr.de>; Sun,  5 Jul 2026 14:01:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F04D37AA74;
-	Sun,  5 Jul 2026 14:01:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C412C3803D1;
+	Sun,  5 Jul 2026 14:01:03 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1783A3815DD;
-	Sun,  5 Jul 2026 14:00:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7790F3812E9;
+	Sun,  5 Jul 2026 14:01:02 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783260060; cv=none; b=fi3NWdqopEabJ7PoNSyR6IES8QcsiOO0pH/rv4gQy+U9bKNZXv8He/+lRDebNus2rbiWsq7WD8e10L3Rl3yR9oU5tafDiezG9BSKo/fC3dn1P2JdS5VpsF08vmjEAqDXLoLS9B9wgivuky5ovMMZBgJHWeS/95OubZ8IcJE9CF8=
+	t=1783260063; cv=none; b=WhxRzSAHn+29fLwNHOXky6pXxsgCeRvV9UAGCPhOMS2daMDjjNovvRfITmhrxqHQwiNVUbuz5VkhByVhlXWdYWq3inRj2gdQ+pPyQBW+WkXh7lkcy2+H19GFL8Th0+fafZrO1R0CfXb0P3Ws58vDbvtSeja3ISsXFhbVV+fN3X4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783260060; c=relaxed/simple;
-	bh=f8D3+xN9REuYOdEaTiuV1Y497YUkxMYf+sFbBacpUdU=;
+	s=arc-20240116; t=1783260063; c=relaxed/simple;
+	bh=DlyPBYJlINz7Lg8Mbj8wUArRC1mmNai5tqxowcuOqns=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=YbM/sQzN2m0Jj3UzsXLFvGzhdjPBdlVUbVtSXVEguDlqHAw7W0U1CV1a6mnB7uSPlnerOi1qOm/XtknRZOHsV4G7K9lOJ2XjrssyKXqxCQDUsqwoiRo1TTKWQliZ468ekZqd7G/YnzfsYI8WjW5ctanCMzYuuBublJud5XMGV44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e4sB04bL; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 507F11F00A3F;
-	Sun,  5 Jul 2026 14:00:58 +0000 (UTC)
+	 MIME-Version:Content-Type; b=sV3zfsm5QfbSeRuXLeio4eLseFQWBnJm8Iwn+RfM+/AsXe2icUzXrsyyHrEJfc/GXZIR9ebNeJLq3TuvI0ZakShZ5ubaDJmDUj0Bm/BFARuk5VldVGEDrbnZ8dJlIiQEYbycyHyon7RjE9WjF00ZUQ04gq8epzVY/Cc1sfbdhYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lwZYOmD0; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 916881F00A3A;
+	Sun,  5 Jul 2026 14:01:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783260058;
-	bh=I9V4OGY0llBBClorw61zvtdebs7AbefmNKvCwmr+1iI=;
+	s=k20260515; t=1783260062;
+	bh=GWH+Yuzy5R/1k2JotQRq7MsLt5R4bYQCbLWOzloCGcE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=e4sB04bLF6nufZ0C7PoK8JX0NKpjIlDkdUeWkKEQSZr1el5s24Y4CO7qMPxn9+cZb
-	 2SvqHj2ooR7RIhU8fdiuFUZ3hu8unv6MW46DYxvSi2OM3dWXyyiTQQX0dwc9qfUcYc
-	 F21YLYm6Ho8+hbX8jO6t+7nhbzaTr81dc9qqmdhcPpuOv2lW2JH69mk5qDGCQ+Howi
-	 EpW8KbXWd0PikV2AL4gx1MjjtCa1aOb+Zw4wsPZDtu3xhcWsBxPJ3QJqcPH8879Dw/
-	 Fy1uiTAtNTBrHN22x15eRntutMg/LLjdZK6YCUtHonXcbKSqnbUcJskk6zYEAkXeeO
-	 w3SeSx4Mwhr2A==
+	b=lwZYOmD0cEb/0TQOHtKZrhldnCB2QsQvNvWOzO6q1MhPzaHvddiYwrfzCmaqRiKXG
+	 /BA3aVMJ702ll3D+nu2cg9KzyR5LtAY/XVomFv1G36sLu8SFahtzEaEKsukimF17Cs
+	 EMYI9OEF0M0wo9vxOE2GrpH49ci/D6W0yp3QzwyKsbdMBsH3ya3LpQy3zqdgTtHf1L
+	 Iei+nQIqk+2JBko3nUadLzLg0W//mFeCAwva9qjKVJC2JRThVQXp3/nH15uADCYGAx
+	 pkSYw53IxxAh1vK/MEIs3cYnkXlU4J5QuuOmKuR/acEmMG9ECvBHJm57NP+XAJdD6d
+	 L4pte16R3JtEQ==
 From: Leon Romanovsky <leon@kernel.org>
-To: Krzysztof Czurylo <krzysztof.czurylo@intel.com>, 
- Tatyana Nikolova <tatyana.e.nikolova@intel.com>, 
- Aleksandrova Alyona <aga@itb.spb.ru>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, 
- Mustafa Ismail <mustafa.ismail@intel.com>, 
- Shiraz Saleem <shiraz.saleem@intel.com>, linux-rdma@vger.kernel.org, 
- linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-In-Reply-To: <20260624144846.61242-1-aga@itb.spb.ru>
-References: <20260624144846.61242-1-aga@itb.spb.ru>
-Subject: Re: [PATCH] RDMA/irdma: Prevent overflows in memory contiguity
- checks
-Message-Id: <178324946774.906796.6761274205609866502.b4-ty@kernel.org>
-Date: Sun, 05 Jul 2026 07:04:27 -0400
+To: Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+ Zhiwei Zhang <202275009@qq.com>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <tencent_FD4FB25AA4FFA845E63F5AC36CF4A46CDC0A@qq.com>
+References: <tencent_FD4FB25AA4FFA845E63F5AC36CF4A46CDC0A@qq.com>
+Subject: Re: [PATCH v2] RDMA/rxe: Check PDs for memory window binds
+Message-Id: <178325047028.908624.4141497133410727183.b4-ty@kernel.org>
+Date: Sun, 05 Jul 2026 07:21:10 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -80,47 +76,48 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22778-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:zyjzyj2000@gmail.com,m:jgg@ziepe.ca,m:202275009@qq.com,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:yanjun.zhu@linux.dev,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:krzysztof.czurylo@intel.com,m:tatyana.e.nikolova@intel.com,m:aga@itb.spb.ru,m:jgg@ziepe.ca,m:mustafa.ismail@intel.com,m:shiraz.saleem@intel.com,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:lvc-project@linuxtesting.org,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TO_DN_SOME(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,qq.com];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22779-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: DF89E70A36D
+X-Rspamd-Queue-Id: 2969670A37D
 
 
-On Wed, 24 Jun 2026 17:48:46 +0300, Aleksandrova Alyona wrote:
-> irdma_check_mem_contiguous() and irdma_check_mr_contiguous() verify that
-> PBL entries describe physically contiguous memory ranges.
+On Fri, 26 Jun 2026 09:59:20 +0800, Zhiwei Zhang wrote:
+> The IBTA Software Transport Verbs specification requires the QP,
+> Memory Window and Memory Region for a Bind Memory Window operation
+> to belong to the same HCA and protection domain.
 > 
-> Both functions calculate byte offsets using 32-bit operands. For example,
-> with 4 KiB pages, pg_size * pg_idx overflows 32-bit arithmetic when
-> pg_idx reaches 1048576. In the level-2 check, PBLE_PER_PAGE is 512, so
-> i * pg_size * PBLE_PER_PAGE overflows when i reaches 2048.
+> rxe only checked the QP and MW protection domain for type 2 MWs.
+> Move the QP/MW PD check to the common bind path and also reject
+> binding an MW to an MR from a different PD.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] RDMA/irdma: Prevent overflows in memory contiguity checks
-      https://git.kernel.org/rdma/rdma/c/3cda0dfe8c651d
+[1/1] RDMA/rxe: Check PDs for memory window binds
+      https://git.kernel.org/rdma/rdma/c/f58ea84a3584d1
 
 Best regards,
 -- 
