@@ -1,97 +1,93 @@
-Return-Path: <linux-rdma+bounces-22807-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22808-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id sM0lMoUETGpyewEAu9opvQ
-	(envelope-from <linux-rdma+bounces-22807-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 06 Jul 2026 21:39:49 +0200
+	id pu5eKkgLTGpHfQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-22808-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 06 Jul 2026 22:08:40 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2177171515C
-	for <lists+linux-rdma@lfdr.de>; Mon, 06 Jul 2026 21:39:49 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B8877154E5
+	for <lists+linux-rdma@lfdr.de>; Mon, 06 Jul 2026 22:08:40 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=cQXQCXk2;
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=nQIuSoko;
 	dmarc=pass (policy=none) header.from=gmail.com;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22807-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22807-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22808-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22808-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 32127326CDD2
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jul 2026 18:14:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6C2D530E0003
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jul 2026 18:55:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E84242A170;
-	Mon,  6 Jul 2026 18:14:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DF743C2779;
+	Mon,  6 Jul 2026 18:55:38 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mail-wm2-f2.google.com (mail-wm2-f2.google.com [74.125.225.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C09F42252A
-	for <linux-rdma@vger.kernel.org>; Mon,  6 Jul 2026 18:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7F63B5306
+	for <linux-rdma@vger.kernel.org>; Mon,  6 Jul 2026 18:55:35 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783361668; cv=none; b=CoiLAkUjTA9+TD0KT+hVWzctoq34hzwWjeXMD36KRDHGteCq8VpvMviyTU+utgMpQtv+w1pUSikVkXoEGv6vtdAeEals2YWT84GPv+/RESFDiwasJEYdACvtmF2Nj9UffeRGVC/AONi3KNt9ZBuwuG9dSndLvGS0xQtUu1wNyGA=
+	t=1783364138; cv=none; b=ACRfolSKy+jcS7WuQ2rMkE7/mvs1mbQw8fYenvRSHk8reUaKVDztmcjypotHIoVZfHzfGnTOpcdZxJkAmPNrFJBO6Yx+clQ/7bL6X9aKj6QjhbdvgNMud+MOw9Er6+OMTwWI8udn/bc9m6InGJ491Qy+7KsQd7QjbDqSJBQOW/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783361668; c=relaxed/simple;
-	bh=ZZ1exXk7oGlPYShd89mNu572yhSOwHdjoPg0JPA1PqI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MW5acHqQr10MsbwmLaXHDaeElWCnadT5KPFgBL2B6fijzh8MIS1yYvdXdhfNnU8ic+UPiuNQ8ywrzfDz81WMgqe2fzDvPecY8OKIYfTAawtRP1yassqJD6fDKHGzwyr86bssCA20x4VS7eRMp/qYH4CQyMDwXW7WZql+ZrvsbcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cQXQCXk2; arc=none smtp.client-ip=74.125.225.130
-Received: by mail-wm2-f2.google.com with SMTP id 5b1f17b1804b1-493af9b574cso2490175e9.0
-        for <linux-rdma@vger.kernel.org>; Mon, 06 Jul 2026 11:14:26 -0700 (PDT)
+	s=arc-20240116; t=1783364138; c=relaxed/simple;
+	bh=9crfu9ekO+G1JBbTiKse3GPkGN63r304auRSTDVShyM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=crr74M4ErttLPSHGe5odORdADq8+8X9bEuQ4bT+FpERQVtkX1m44IDrXPLnP/aYC2coHwUq7uuASXWoGfAyW12aZpesTs1pDcNhpmzntARp+h2cNqlsTZbbAgi789kSVd9IzD4vv47h3Zg7f46xs9ScM1LrwA4iQYnt8lIowIDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nQIuSoko; arc=none smtp.client-ip=74.125.225.130
+Received: by mail-wm2-f2.google.com with SMTP id 5b1f17b1804b1-4926d058720so2572805e9.0
+        for <linux-rdma@vger.kernel.org>; Mon, 06 Jul 2026 11:55:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783361665; x=1783966465; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=ZZ1exXk7oGlPYShd89mNu572yhSOwHdjoPg0JPA1PqI=;
-        b=cQXQCXk2lA/b21m0tQMfQw/BHnrN3/05cR2v3Cxno/7jFiX3fEU0renl0Lo502D7kA
-         Zc6R4CX5ajnXGx+Qg1IzKbjJkTggJ2qQRQis+20jK9YCzVilWAH+ryDSm+k7dflROlvZ
-         CdxnzVsXa8qZ7B4X82YKo40WwXkMlec5EiIqsmuFithFgVASvRqtJt0+SnD7c76kkiJy
-         LLCHGsKZD5N52BECD5GFXN/d+UwQxXQFqrvvRKWx/PCcvU7IlZDLZL/BKULJ5zxqYqa0
-         c7hyP3RDZBdM06AeQKhYMvEPCpG8SUeCBA9QLnmO2YW7EDu8B74jVh7xTpxVXqKNqAHT
-         8fYg==
+        d=gmail.com; s=20251104; t=1783364134; x=1783968934; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=aJGS69y+AtwLidxoak3qyaD+3/ZamLmtuRb9m5way+Y=;
+        b=nQIuSokorzfo/P/aSFCSsLDQCyNS8iAGw9UwaJJ9WrYf8JUHP+GI3llzLVG7MV2l+N
+         U6k8FKb8OuGVNJSGKUIbmWag6GnNLm6OQOV6uqRG0FuhfZtulAh+LU04etG9qoIjO+WJ
+         rCbb0pdIGLV4zVejdPiYqldhqQ6vXBR6mjvPf4yYYboga4Yek7RtqqWvmbdBoVNBPjwf
+         OrrHWu8jgfd53SRCEoAE+zKo70KYdkdzj5VXo8edhZYP3nxmmt2Mq9f60C3Y2KHd34n+
+         NYxm8zGbUAa10SicTGUfNbSAk8ZvQVknKLHxQmocThiVgcXqYhHskswTnMUk+E6xyRy3
+         Y27A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783361665; x=1783966465;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=ZZ1exXk7oGlPYShd89mNu572yhSOwHdjoPg0JPA1PqI=;
-        b=hqt4H1IkEYxiHq91HWttRaZXF+YPAa9nH61vSv8lJXfrpUZvDcoPcx1mVM/zNnv9JV
-         yM5DFrp0t+IPl5Tkpucqpy0UgqEr1t34cV7J4Myn/bSOdNHaFhm1FH/WO0OWJTYpPgFS
-         YnkKeltHHe6Vf2gKB0vI06v5lh/CYAJxEyZ0eXnkqtjyhY3RR7mbDGFVhJcmqoNL1WQ/
-         ISmaVVbzYYJlRwrp+4T0//txDRCHrVUWJ7r3TvIxnZ1PdHCZK1L7KQLFVqzza+vKDsgT
-         pT/O6l8/qX9iSimshu+IfdOiZ/IRiey9xYWhpOl75kYXSuKYS9Pq/BLvS9Vwckl+TOLi
-         42+w==
-X-Forwarded-Encrypted: i=1; AHgh+RoFP8Q3WeDxwj/PbRt9Hg5bDXZcz4g6EcGU7p3ktifd2QteQDqKLu8JWaTvTXCNLs/06KoVWtEpJldT@vger.kernel.org
-X-Gm-Message-State: AOJu0YwLSlGREI7tnFe1AQHa/oRJ7r8jmwkrPdlR88kzmL9Jt6lTy8ij
-	HeYJow/i6RKoqXZ1+jELjQP3LJNATM4YX4SJdoFVq5nlLLeKWtex/WlGw0YIq28RDnLgXWK3
-X-Gm-Gg: AfdE7ckMDvVgawp8wrH3F6xjakfai93DS8JplsHsvj9zg+iYUI1WsRvEjN8fu/pvRSn
-	bbkhkMHO2U5xlJPKg0TLfjsI8RA/r1yfA8hucgX0X+XgcsqJzVN6DHcL3/vvD5nMhPEGQODszMN
-	3AtDfErN3lAM7CgKNMhdhrXuiqExmgiGa4EkxkMLP83DynZ0eDzNxWdVT42QESiukw7G/+Ob9Xo
-	3uoYkQ7EJRoorGXkzAFGEr0BTxBNycGI7lmTyy4gXINj7DuPZbWEtQwJxVmJQ9nchcXgU/O+W/e
-	gp8weOXXmGEMZstKa1qqtAmHB/UalEXnHCYfXIQJko1tIBFBiMbocD0JETLBz0Z3dLX6zf/i1vy
-	Qp4H/e5spCh/m6AgU5S2oBE5Cic/W1GizKqPnmBlRbYwiPsXdwD8n89ETu04sMfKD8J/vqU0zER
-	ZR+xpEHXxMemY=
-X-Received: by 2002:a05:600c:b85:b0:493:c14a:a1ca with SMTP id 5b1f17b1804b1-493df06361dmr18240785e9.3.1783361664717;
-        Mon, 06 Jul 2026 11:14:24 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1783364134; x=1783968934;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=aJGS69y+AtwLidxoak3qyaD+3/ZamLmtuRb9m5way+Y=;
+        b=rcR305QQ1W3ZFAwe2c8IJUqNS4jLzPYuJQqygo89dCnECLibVfQ4ZQ13Ro+0Q969L2
+         2KBQu9bhNI7Ca4MKpHyURO7UMKxmOokb76K84k/DEfgUre4gjZKgbbWNpH7SbfOpGYrP
+         lgr/oBEjEC+Le5618vduzZutEfzDGTuHzBkstXIa2OpHtVyYNROFzFtUDKyuEQ+5QFZp
+         y1zs1cQufIJwxEruoE1XurssusguyueKIWoEhlNMkxx4Ry7/vdVtCQsLa7GQKxViAEbE
+         0eTLPe4mMRrG3/gjU5G9TPdmUtap13WS4jhuA258RiqrM6xKERWBZrPOjDM5ZC82s90V
+         17/g==
+X-Forwarded-Encrypted: i=1; AHgh+RotLeUcRhqhTN6iP3b0UQoaydmmp+uf8UHw8e0+IdZ9dTkrd1Xqq/5h4J6xlHt3ZwWvrhqumNK30vgM@vger.kernel.org
+X-Gm-Message-State: AOJu0YySKHGpWuxzDewtlB7gvoD2dFG8z3aZ9T0etJGznCr4NxWerWEJ
+	pVzbZUMwpNNu0BfzHG2xDIgOjE/oAtinlicwJ3wzCiasayWQp0GkEgxj
+X-Gm-Gg: AfdE7cmLor9lbD4f0sBizWMfjXlEPWa1EvJ2vZ1HMVvsd1BvkVjVn0j3zoBmwnWwUVU
+	iRQ71jltF1W34kdunxe/e4yY6zHmtAenpa0e6Ps50hGhYfLUJG1zKGXRXzc0vH7kri3AO7dXFgS
+	Dq+W4aRh8jYufUS0PmXQFlLOqPS1DsimK1k70LHMJK/J8GtdCuua6D4XnLy/f5GRESzFRO4WSYH
+	0aSarocuPO/ZTWEFT710tUQ2P3ad0KvGit7WKsXPJw83ysedFuRYmuhGQUYrD87jnVPpL0ozJid
+	zkVRyVkhqzyy9JmF0Oj41TZ8gABs6gOJYZmmuRLRMsW54/0NFs1iGBObitUGfG/Shj7zi//kPDH
+	JCExLVg0CYl4AzGz+gCSSege9Nm/0LEjHDzua+lZMDPlIjZesEP2tlDW7l9iQz9NYAA6dIjNskC
+	EdnqLas6MeBHI=
+X-Received: by 2002:a05:600c:4e56:b0:493:bc4b:b8c with SMTP id 5b1f17b1804b1-493df07d2d9mr19535925e9.38.1783364134143;
+        Mon, 06 Jul 2026 11:55:34 -0700 (PDT)
 Received: from fedora ([212.253.209.56])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-493e01e658asm658925e9.1.2026.07.06.11.14.21
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47a9de1d905sm27161230f8f.2.2026.07.06.11.55.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jul 2026 11:14:22 -0700 (PDT)
+        Mon, 06 Jul 2026 11:55:33 -0700 (PDT)
 From: Serhat Kumral <serhatkumral1@gmail.com>
-To: yanjun.zhu@linux.dev
-Cc: dsahern@kernel.org,
-	jgg@ziepe.ca,
-	leon@kernel.org,
-	linux-kernel@vger.kernel.org,
+To: Zhu Yanjun <yanjun.zhu@linux.dev>,
+	Zhu Yanjun <zyjzyj2000@gmail.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>
+Cc: David Ahern <dsahern@kernel.org>,
 	linux-rdma@vger.kernel.org,
-	serhatkumral1@gmail.com,
+	linux-kernel@vger.kernel.org,
 	syzbot+8c9eede336e3a843750e@syzkaller.appspotmail.com,
-	zyjzyj2000@gmail.com
-Subject: Re: [PATCH] RDMA/rxe: rework per-net tunnel socket lifetime to fix refcount underflow
-Date: Mon,  6 Jul 2026 21:14:04 +0300
-Message-ID: <20260706181404.6687-1-serhatkumral1@gmail.com>
+	Serhat Kumral <serhatkumral1@gmail.com>
+Subject: [PATCH v2] RDMA/rxe: rework per-net tunnel socket lifetime to fix refcount underflow
+Date: Mon,  6 Jul 2026 21:33:28 +0300
+Message-ID: <20260706183328.7022-1-serhatkumral1@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <1a4f521b-796e-46a4-8992-dc5955e463b4@linux.dev>
-References: <1a4f521b-796e-46a4-8992-dc5955e463b4@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -102,83 +98,578 @@ Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [0.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22807-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_SENDER(0.00)[serhatkumral1@gmail.com,linux-rdma@vger.kernel.org];
-	FREEMAIL_CC(0.00)[kernel.org,ziepe.ca,vger.kernel.org,gmail.com,syzkaller.appspotmail.com];
+	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,syzkaller.appspotmail.com,gmail.com];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:yanjun.zhu@linux.dev,m:dsahern@kernel.org,m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:serhatkumral1@gmail.com,m:syzbot+8c9eede336e3a843750e@syzkaller.appspotmail.com,m:zyjzyj2000@gmail.com,m:syzbot@syzkaller.appspotmail.com,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22808-lists,linux-rdma=lfdr.de];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:yanjun.zhu@linux.dev,m:zyjzyj2000@gmail.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:dsahern@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:syzbot+8c9eede336e3a843750e@syzkaller.appspotmail.com,m:serhatkumral1@gmail.com,m:syzbot@syzkaller.appspotmail.com,s:lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[linux.dev,gmail.com,ziepe.ca,kernel.org];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[serhatkumral1@gmail.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[serhatkumral1@gmail.com,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[gmail.com:+];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,8c9eede336e3a843750e];
-	FREEMAIL_FROM(0.00)[gmail.com];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	TAGGED_RCPT(0.00)[linux-rdma,8c9eede336e3a843750e];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,appspotmail.com:email,syzkaller.appspot.com:url]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2177171515C
+X-Rspamd-Queue-Id: 0B8877154E5
 
-Hi Yanjun,
+syzkaller reported a refcount_t underflow / use-after-free in
+sk_common_release() when tearing down an rxe device via
+RDMA_NLDEV_CMD_DELLINK. The shared per-namespace UDP tunnel sockets
+were released based on comparing sk->sk_refcnt against a magic
+constant (SK_REF_FOR_TUNNEL), but the network stack takes transient
+references on sk_refcnt of its own, so this check could pass on more
+than one path concurrently (dellink, NETDEV_UNREGISTER notifier,
+pernet exit), releasing the socket twice.
 
-Thanks for the review.
+Stop overloading sk_refcnt for driver-level user counting. Track the
+number of rxe devices using each tunnel socket with an explicit
+per-socket counter in the pernet struct, serialised by a mutex:
 
-> core problem is to serialize the dellink operation.
->
-> This commit replaces sk->sk_refcnt with the per-network-namespace
-> variables nr_sk4 and nr_sk6. However, this change does not actually
-> resolve the underlying issue, because it does not serialize dellink. As
-> a result, the race condition can still occur.
+ - creation happens under the lock via a factory callback, closing
+   the create/create race,
+ - release happens in exactly one place, when the counter drops to
+   zero: clear the RCU pointer, wait a grace period, then call
+   udp_tunnel_sock_release(),
+ - rxe_net_del() is idempotent per device: RDMA_NLDEV_CMD_DELLINK
+   and the NETDEV_UNREGISTER notifier can run concurrently for the
+   same device, and only the first invocation drops the references,
+ - a failed rxe_newlink() now drops the references it took, so the
+   counter cannot be left inflated,
+ - rxe_ns_exit() performs the same coordinated teardown for
+   namespace removal.
 
-You are right that v1 does not serialize dellink itself: if
-RDMA_NLDEV_CMD_DELLINK and the NETDEV_UNREGISTER notifier run
-concurrently for the same device, rxe_net_del() can be entered twice,
-and that device would then drop two references instead of one.
+IPv4 and IPv6 sockets get separate counters since the IPv6 socket may
+legitimately not exist (-EAFNOSUPPORT).
 
-What the per-net mutex does guarantee is that the socket pointer is
-cleared under the lock and udp_tunnel_sock_release() is called at most
-once per socket, so the refcount underflow / use-after-free from the
-syzbot report can no longer occur. The remaining effect of the
-unserialized dellink is that the shared socket could be released early
-while another device in the namespace still uses it.
+Fixes: f1327abd6abe ("RDMA/rxe: Support RDMA link creation and destruction per net namespace")
+Reported-by: syzbot+8c9eede336e3a843750e@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=8c9eede336e3a843750e
+Assisted-by: Claude:claude-fable-5
+Signed-off-by: Serhat Kumral <serhatkumral1@gmail.com>
+---
+v2:
+ - Make rxe_net_del() idempotent per device with test_and_set_bit()
+   in struct rxe_dev, so a concurrent RDMA_NLDEV_CMD_DELLINK and
+   NETDEV_UNREGISTER notifier cannot drop the pernet socket
+   references twice for the same device. Suggested as an alternative
+   to rtnl_lock()/a global mutex. [Zhu Yanjun]
+ - Add Assisted-by tag per Documentation/process/coding-assistants.rst.
 
-> One possible solution is to use rtnl_lock(). However, this is not an
-> ideal approach, since there is ongoing work in the kernel community to
-> reduce and eventually eliminate unnecessary uses of rtnl_lock().
->
-> Another option is to introduce a static mutex specifically for dellink
-> serialization. While this would likely solve the race, it is not an
-> elegant solution and adds another global lock solely to work around this
-> issue.
+ drivers/infiniband/sw/rxe/rxe.c       |   1 +
+ drivers/infiniband/sw/rxe/rxe_net.c   | 109 ++++++++++-----------
+ drivers/infiniband/sw/rxe/rxe_net.h   |   1 +
+ drivers/infiniband/sw/rxe/rxe_ns.c    | 132 +++++++++++++++++++-------
+ drivers/infiniband/sw/rxe/rxe_ns.h    |  24 ++++-
+ drivers/infiniband/sw/rxe/rxe_verbs.h |   6 ++
+ 6 files changed, 172 insertions(+), 101 deletions(-)
 
-For that remaining window, instead of rtnl_lock() or a global mutex,
-v2 makes rxe_net_del() idempotent per device with a test_and_set_bit()
-in struct rxe_dev, so only the first invocation drops the pernet
-socket references. This keeps the serialization at device granularity
-without adding any global locking. If you would rather serialize
-dellink itself, I am happy to respin that way.
+diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+index af39209d0fcf..bcc72b96ee00 100644
+--- a/drivers/infiniband/sw/rxe/rxe.c
++++ b/drivers/infiniband/sw/rxe/rxe.c
+@@ -243,6 +243,7 @@ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
+ 	err = rxe_net_add(ibdev_name, ndev);
+ 	if (err) {
+ 		rxe_err("failed to add %s\n", ndev->name);
++		rxe_net_uninit(ndev);
+ 		goto err;
+ 	}
+ err:
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+index 3741b2c4b0bb..eba10a86f353 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -19,10 +19,6 @@
+ #include "rxe_loc.h"
+ #include "rxe_ns.h"
+ 
+-#ifndef SK_REF_FOR_TUNNEL
+-#define SK_REF_FOR_TUNNEL	2
+-#endif
+-
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ /*
+  * lockdep can detect false positive circular dependencies
+@@ -81,9 +77,9 @@ static inline void rxe_reclassify_recv_socket(struct socket *sock)
+ 	 * from being called and 'rmmod rdma_rxe'
+ 	 * is refused because of the references.
+ 	 *
+-	 * For the global sockets in recv_sockets,
+-	 * we are sure that rxe_net_exit() will call
+-	 * rxe_release_udp_tunnel -> udp_tunnel_sock_release.
++	 * For the shared per-namespace sockets, we are sure
++	 * that the pernet layer (rxe_ns_pernet_put_skX or
++	 * rxe_ns_exit) will call udp_tunnel_sock_release.
+ 	 *
+ 	 * So we don't need the additional reference to
+ 	 * our own (THIS_MODULE).
+@@ -288,12 +284,6 @@ static struct socket *rxe_setup_udp_tunnel(struct net *net, __be16 port,
+ 	return sock;
+ }
+ 
+-static void rxe_release_udp_tunnel(struct sock *sk)
+-{
+-	if (sk)
+-		udp_tunnel_sock_release(sk);
+-}
+-
+ static void prepare_udp_hdr(struct sk_buff *skb, __be16 src_port,
+ 			    __be16 dst_port)
+ {
+@@ -631,38 +621,32 @@ int rxe_net_add(const char *ibdev_name, struct net_device *ndev)
+ 	return 0;
+ }
+ 
+-static void rxe_sock_put(struct sock *sk,
+-					void (*set_sk)(struct net *, struct sock *),
+-					struct net *net)
++void rxe_net_uninit(struct net_device *ndev)
+ {
+-	if (refcount_read(&sk->sk_refcnt) > SK_REF_FOR_TUNNEL) {
+-		__sock_put(sk);
+-	} else {
+-		rxe_release_udp_tunnel(sk);
+-		sk = NULL;
+-		set_sk(net, sk);
+-	}
++	struct net *net = dev_net(ndev);
++
++	rxe_ns_pernet_put_sk4(net);
++	rxe_ns_pernet_put_sk6(net);
+ }
+ 
+ void rxe_net_del(struct ib_device *dev)
+ {
++	struct rxe_dev *rxe = container_of(dev, struct rxe_dev, ib_dev);
+ 	struct net_device *ndev;
+-	struct sock *sk;
+-	struct net *net;
++
++	/*
++	 * Both RDMA_NLDEV_CMD_DELLINK and the NETDEV_UNREGISTER notifier
++	 * can get here concurrently for the same device. Only the first
++	 * one may drop the pernet socket references.
++	 */
++	if (test_and_set_bit(RXE_NET_SK_PUT, &rxe->net_flags))
++		return;
+ 
+ 	ndev = ib_device_get_netdev(dev, 1);
+ 	if (!ndev)
+ 		return;
+ 
+-	net = dev_net(ndev);
+-
+-	sk = rxe_ns_pernet_sk4(net);
+-	if (sk)
+-		rxe_sock_put(sk, rxe_ns_pernet_set_sk4, net);
+-
+-	sk = rxe_ns_pernet_sk6(net);
+-	if (sk)
+-		rxe_sock_put(sk, rxe_ns_pernet_set_sk6, net);
++	rxe_net_uninit(ndev);
+ 
+ 	dev_put(ndev);
+ }
+@@ -753,52 +737,58 @@ static struct notifier_block rxe_net_notifier = {
+ 	.notifier_call = rxe_notify,
+ };
+ 
+-static int rxe_net_ipv4_init(struct net *net)
++static struct sock *rxe_create_sk4(struct net *net)
+ {
+-	struct sock *sk;
+ 	struct socket *sock;
+ 
+-	sk = rxe_ns_pernet_sk4(net);
+-	if (sk) {
+-		sock_hold(sk);
+-		return 0;
+-	}
+-
+ 	sock = rxe_setup_udp_tunnel(net, htons(ROCE_V2_UDP_DPORT), false);
+ 	if (IS_ERR(sock)) {
+ 		pr_err("Failed to create IPv4 UDP tunnel\n");
+-		return -1;
++		return ERR_CAST(sock);
+ 	}
+-	rxe_ns_pernet_set_sk4(net, sock->sk);
+ 
+-	return 0;
++	return sock->sk;
+ }
+ 
+-static int rxe_net_ipv6_init(struct net *net)
++static int rxe_net_ipv4_init(struct net *net)
+ {
+-#if IS_ENABLED(CONFIG_IPV6)
+ 	struct sock *sk;
+-	struct socket *sock;
+ 
+-	sk = rxe_ns_pernet_sk6(net);
+-	if (sk) {
+-		sock_hold(sk);
+-		return 0;
+-	}
++	sk = rxe_ns_pernet_hold_sk4(net, rxe_create_sk4);
++	if (IS_ERR(sk))
++		return PTR_ERR(sk);
++
++	return 0;
++}
++
++#if IS_ENABLED(CONFIG_IPV6)
++static struct sock *rxe_create_sk6(struct net *net)
++{
++	struct socket *sock;
+ 
+ 	sock = rxe_setup_udp_tunnel(net, htons(ROCE_V2_UDP_DPORT), true);
+ 	if (PTR_ERR(sock) == -EAFNOSUPPORT) {
+ 		pr_warn("IPv6 is not supported, can not create a UDPv6 socket\n");
+-		return 0;
++		return NULL;
+ 	}
+ 
+ 	if (IS_ERR(sock)) {
+ 		pr_err("Failed to create IPv6 UDP tunnel\n");
+-		return -1;
++		return ERR_CAST(sock);
+ 	}
+ 
+-	rxe_ns_pernet_set_sk6(net, sock->sk);
++	return sock->sk;
++}
++#endif
+ 
++static int rxe_net_ipv6_init(struct net *net)
++{
++#if IS_ENABLED(CONFIG_IPV6)
++	struct sock *sk;
++
++	sk = rxe_ns_pernet_hold_sk6(net, rxe_create_sk6);
++	if (IS_ERR(sk))
++		return PTR_ERR(sk);
+ #endif
+ 	return 0;
+ }
+@@ -824,7 +814,6 @@ void rxe_net_exit(void)
+ int rxe_net_init(struct net_device *ndev)
+ {
+ 	struct net *net;
+-	struct sock *sk;
+ 	int err;
+ 
+ 	net = dev_net(ndev);
+@@ -840,10 +829,8 @@ int rxe_net_init(struct net_device *ndev)
+ 	return 0;
+ 
+ err_out:
+-	/* If ipv6 error, release ipv4 resource */
+-	sk = rxe_ns_pernet_sk4(net);
+-	if (sk)
+-		rxe_sock_put(sk, rxe_ns_pernet_set_sk4, net);
++	/* If ipv6 error, drop the ipv4 reference taken above. */
++	rxe_ns_pernet_put_sk4(net);
+ 
+ 	return err;
+ }
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.h b/drivers/infiniband/sw/rxe/rxe_net.h
+index 56249677d692..06e08a4d5897 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.h
++++ b/drivers/infiniband/sw/rxe/rxe_net.h
+@@ -13,6 +13,7 @@
+ 
+ int rxe_net_add(const char *ibdev_name, struct net_device *ndev);
+ void rxe_net_del(struct ib_device *dev);
++void rxe_net_uninit(struct net_device *ndev);
+ 
+ int rxe_register_notifier(void);
+ int rxe_net_init(struct net_device *ndev);
+diff --git a/drivers/infiniband/sw/rxe/rxe_ns.c b/drivers/infiniband/sw/rxe/rxe_ns.c
+index 64621c89f8bf..d12099a73aa2 100644
+--- a/drivers/infiniband/sw/rxe/rxe_ns.c
++++ b/drivers/infiniband/sw/rxe/rxe_ns.c
+@@ -4,6 +4,8 @@
+ #include <net/netns/generic.h>
+ #include <net/net_namespace.h>
+ #include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/err.h>
+ #include <linux/skbuff.h>
+ #include <linux/pid_namespace.h>
+ #include <net/udp_tunnel.h>
+@@ -11,11 +13,21 @@
+ #include "rxe_ns.h"
+ 
+ /*
+- * Per network namespace data
++ * Per network namespace data.
++ *
++ * The IPv4/IPv6 UDP tunnel sockets are shared by every rxe device created in
++ * a given namespace. Their lifetime is owned here and tracked by an explicit
++ * user count (nr_skX) rather than by overloading sk->sk_refcnt: the network
++ * stack takes transient references on sk_refcnt of its own, so it can never be
++ * used to decide when the last rxe device is gone. All fields are serialised
++ * by @lock.
+  */
+ struct rxe_ns_sock {
++	struct mutex lock; /* protects rxe_sk4/6 and nr_sk4/6 */
+ 	struct sock __rcu *rxe_sk4;
+ 	struct sock __rcu *rxe_sk6;
++	int nr_sk4;
++	int nr_sk6;
+ };
+ 
+ /*
+@@ -28,37 +40,39 @@ static unsigned int rxe_pernet_id;
+  */
+ static int rxe_ns_init(struct net *net)
+ {
+-	/* defer socket create in the namespace to the first
+-	 * device create.
+-	 */
++	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
++
++	/* Socket creation is deferred to the first device create. */
++	mutex_init(&ns_sk->lock);
+ 
+ 	return 0;
+ }
+ 
+ static void rxe_ns_exit(struct net *net)
+ {
+-	/* called when the network namespace is removed
+-	 */
++	/* called when the network namespace is removed */
+ 	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
+-	struct sock *sk;
+-
+-	rcu_read_lock();
+-	sk = rcu_dereference(ns_sk->rxe_sk4);
+-	rcu_read_unlock();
+-	if (sk) {
+-		rcu_assign_pointer(ns_sk->rxe_sk4, NULL);
+-		udp_tunnel_sock_release(sk);
+-	}
+-
+-#if IS_ENABLED(CONFIG_IPV6)
+-	rcu_read_lock();
+-	sk = rcu_dereference(ns_sk->rxe_sk6);
+-	rcu_read_unlock();
+-	if (sk) {
+-		rcu_assign_pointer(ns_sk->rxe_sk6, NULL);
+-		udp_tunnel_sock_release(sk);
+-	}
+-#endif
++	struct sock *sk4, *sk6;
++
++	mutex_lock(&ns_sk->lock);
++	sk4 = rcu_dereference_protected(ns_sk->rxe_sk4,
++					lockdep_is_held(&ns_sk->lock));
++	sk6 = rcu_dereference_protected(ns_sk->rxe_sk6,
++					lockdep_is_held(&ns_sk->lock));
++	rcu_assign_pointer(ns_sk->rxe_sk4, NULL);
++	rcu_assign_pointer(ns_sk->rxe_sk6, NULL);
++	ns_sk->nr_sk4 = 0;
++	ns_sk->nr_sk6 = 0;
++	mutex_unlock(&ns_sk->lock);
++
++	if (sk4 || sk6)
++		synchronize_rcu();
++	if (sk4)
++		udp_tunnel_sock_release(sk4);
++	if (sk6)
++		udp_tunnel_sock_release(sk6);
++
++	mutex_destroy(&ns_sk->lock);
+ }
+ 
+ /*
+@@ -71,24 +85,64 @@ static struct pernet_operations rxe_net_ops = {
+ 	.size = sizeof(struct rxe_ns_sock),
+ };
+ 
+-struct sock *rxe_ns_pernet_sk4(struct net *net)
++static struct sock *rxe_ns_hold(struct rxe_ns_sock *ns_sk,
++				struct sock __rcu **skp, int *nrp,
++				struct net *net, rxe_sk_create_t create)
+ {
+-	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
+ 	struct sock *sk;
+ 
+-	rcu_read_lock();
+-	sk = rcu_dereference(ns_sk->rxe_sk4);
+-	rcu_read_unlock();
++	mutex_lock(&ns_sk->lock);
++	sk = rcu_dereference_protected(*skp, lockdep_is_held(&ns_sk->lock));
++	if (sk) {
++		(*nrp)++;
++		mutex_unlock(&ns_sk->lock);
++		return sk;
++	}
++
++	sk = create(net);
++	if (IS_ERR_OR_NULL(sk)) {
++		mutex_unlock(&ns_sk->lock);
++		return sk;
++	}
++
++	rcu_assign_pointer(*skp, sk);
++	*nrp = 1;
++	mutex_unlock(&ns_sk->lock);
+ 
+ 	return sk;
+ }
+ 
+-void rxe_ns_pernet_set_sk4(struct net *net, struct sock *sk)
++static void rxe_ns_put(struct rxe_ns_sock *ns_sk,
++		       struct sock __rcu **skp, int *nrp)
++{
++	struct sock *sk = NULL;
++
++	mutex_lock(&ns_sk->lock);
++	if (*nrp > 0 && --(*nrp) == 0) {
++		sk = rcu_dereference_protected(*skp,
++					       lockdep_is_held(&ns_sk->lock));
++		rcu_assign_pointer(*skp, NULL);
++	}
++	mutex_unlock(&ns_sk->lock);
++
++	if (sk) {
++		synchronize_rcu();
++		udp_tunnel_sock_release(sk);
++	}
++}
++
++struct sock *rxe_ns_pernet_hold_sk4(struct net *net, rxe_sk_create_t create)
++{
++	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
++
++	return rxe_ns_hold(ns_sk, &ns_sk->rxe_sk4, &ns_sk->nr_sk4, net, create);
++}
++
++void rxe_ns_pernet_put_sk4(struct net *net)
+ {
+ 	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
+ 
+-	rcu_assign_pointer(ns_sk->rxe_sk4, sk);
+-	synchronize_rcu();
++	rxe_ns_put(ns_sk, &ns_sk->rxe_sk4, &ns_sk->nr_sk4);
+ }
+ 
+ #if IS_ENABLED(CONFIG_IPV6)
+@@ -104,12 +158,18 @@ struct sock *rxe_ns_pernet_sk6(struct net *net)
+ 	return sk;
+ }
+ 
+-void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk)
++struct sock *rxe_ns_pernet_hold_sk6(struct net *net, rxe_sk_create_t create)
++{
++	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
++
++	return rxe_ns_hold(ns_sk, &ns_sk->rxe_sk6, &ns_sk->nr_sk6, net, create);
++}
++
++void rxe_ns_pernet_put_sk6(struct net *net)
+ {
+ 	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
+ 
+-	rcu_assign_pointer(ns_sk->rxe_sk6, sk);
+-	synchronize_rcu();
++	rxe_ns_put(ns_sk, &ns_sk->rxe_sk6, &ns_sk->nr_sk6);
+ }
+ #endif /* IPV6 */
+ 
+diff --git a/drivers/infiniband/sw/rxe/rxe_ns.h b/drivers/infiniband/sw/rxe/rxe_ns.h
+index 4da2709e6b71..fe96b8abb8dc 100644
+--- a/drivers/infiniband/sw/rxe/rxe_ns.h
++++ b/drivers/infiniband/sw/rxe/rxe_ns.h
+@@ -3,19 +3,35 @@
+ #ifndef RXE_NS_H
+ #define RXE_NS_H
+ 
+-struct sock *rxe_ns_pernet_sk4(struct net *net);
+-void rxe_ns_pernet_set_sk4(struct net *net, struct sock *sk);
++/*
++ * Factory used to create a shared per-namespace tunnel socket while the
++ * pernet lock is held. It must return:
++ *   - a valid sk on success,
++ *   - NULL if the address family is unsupported (not treated as an error),
++ *   - an ERR_PTR() on failure.
++ */
++typedef struct sock *(*rxe_sk_create_t)(struct net *net);
++
++struct sock *rxe_ns_pernet_hold_sk4(struct net *net, rxe_sk_create_t create);
++void rxe_ns_pernet_put_sk4(struct net *net);
+ 
+ #if IS_ENABLED(CONFIG_IPV6)
+-void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk);
+ struct sock *rxe_ns_pernet_sk6(struct net *net);
++struct sock *rxe_ns_pernet_hold_sk6(struct net *net, rxe_sk_create_t create);
++void rxe_ns_pernet_put_sk6(struct net *net);
+ #else /* IPv6 */
+ static inline struct sock *rxe_ns_pernet_sk6(struct net *net)
+ {
+ 	return NULL;
+ }
+ 
+-static inline void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk)
++static inline struct sock *rxe_ns_pernet_hold_sk6(struct net *net,
++						  rxe_sk_create_t create)
++{
++	return NULL;
++}
++
++static inline void rxe_ns_pernet_put_sk6(struct net *net)
+ {
+ }
+ #endif /* IPv6 */
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index 0f5ffd94643f..5f4f1cd0402f 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -415,12 +415,18 @@ struct rxe_port {
+ 	u32			qp_gsi_index;
+ };
+ 
++enum rxe_net_flags {
++	/* rxe_net_del() must drop the pernet socket refs exactly once */
++	RXE_NET_SK_PUT,
++};
++
+ struct rxe_dev {
+ 	struct ib_device	ib_dev;
+ 	struct ib_device_attr	attr;
+ 	int			max_ucontext;
+ 	int			max_inline_data;
+ 	struct mutex		usdev_lock;
++	unsigned long		net_flags;
+ 
+ 	char			raw_gid[ETH_ALEN];
+ 
+-- 
+2.54.0
 
-I will send v2 shortly.
-
-Thanks,
-Serhat
 
