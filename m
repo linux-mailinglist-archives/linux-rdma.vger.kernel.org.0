@@ -1,176 +1,209 @@
-Return-Path: <linux-rdma+bounces-22814-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22815-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id aLwoBPLKTGprpwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-22814-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 07 Jul 2026 11:46:26 +0200
+	id DTEHI0bTTGp+qQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-22815-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 07 Jul 2026 12:21:58 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8335A719F16
-	for <lists+linux-rdma@lfdr.de>; Tue, 07 Jul 2026 11:46:25 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29E7C71A475
+	for <lists+linux-rdma@lfdr.de>; Tue, 07 Jul 2026 12:21:58 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=maIQV6fr;
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22814-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22814-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=linux.microsoft.com header.s=default header.b=YjtfsGHZ;
+	dmarc=pass (policy=none) header.from=linux.microsoft.com;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22815-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22815-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 06DA1305D82F
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2026 09:40:51 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 939F7305CDE7
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2026 10:21:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16BB13B5E07;
-	Tue,  7 Jul 2026 09:40:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 273053E1CF8;
+	Tue,  7 Jul 2026 10:20:46 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6FDC23BD1D;
-	Tue,  7 Jul 2026 09:40:47 +0000 (UTC)
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1446D3DEADC;
+	Tue,  7 Jul 2026 10:20:42 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783417248; cv=none; b=SsFPUhuyIhXXXRMjR+Qtq0m4lItGvs9j9go376fcorEPD4dj1zccHdgA8X3UhSOOOyVqAcHprZLuxQ1BNbKbHgGintgvyEuzcpe2ELeXY0cjuezgwFUKmcZEiaAktNg0a959R1pxSUXPhQWeNFT3/HGpt2mH5Hoqs0Fq4pxvXzU=
+	t=1783419645; cv=none; b=c2YQNhGvcULuc1n3cB3k2sklseRsibeugZb4+NiNrFG/LjovohBiQo8pjGyT0FAoiBx3m2MJ5i/l2rzoT7hZPyb+JDYpsT+mnCZPgpL0exkYZUPgDri/xPbzuab9U0os88prbiSkfmjNTtIU3c0ZIBjQiIb3736aObv2DO4ieUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783417248; c=relaxed/simple;
-	bh=2SvJG9DL3UqCvuRg7Vo6qhQ4H7IzR1naPKn5y4+0hpI=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=UZg3avxRiUeNs4QYADgLutU0pUM6Z3xULRodJ6oHA+ds7L6M6Ne5QN89ut8aT6WVDfnkmuLVafVkBcpfOwRjXwMwmO6DAdR93+IH8Akdigt/4RkPGM8VC9CD9Qjf+G4mmgPMNwbUFGQGfuY86KaN/uzpEoLRloLQXSMRhlzE1qY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=maIQV6fr; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C8761F000E9;
-	Tue,  7 Jul 2026 09:40:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783417247;
-	bh=6uJPozj/uhbrq91wleQ/hPHYt4I/QFVwHZxnDm65VnU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc;
-	b=maIQV6frxWzq57q2+mzWiIBsx546dKVfAEfuRxFY3qTAYTBdavS1NcqcIlgKNF7fl
-	 DPhrbrl6/3XvFUDXQ+qQd9yDqZYra3fHxiIVJdd6jKJl5J8E8YPSsypeZitq0lu+Ni
-	 jEDtfFnua+72m+Pena7SLoubtroRQFPrX/4UQsyaOEPjopE7RcVi8BbfTqN0SBmApH
-	 hqog+vLCxpLf1DsQA2lAvAolJtd7L2WHCEh64aV75WgOzVb0p0AQ33FO0W4qE9PBYm
-	 fvf8K9SFL9LpHZ6AEpaQfqIzpIv6ccJHLEyfux4ZJ3DXSDuSSGcbKccvtZJnFI6Ykd
-	 8yB3eclpGVDZQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id D0CB03925473;
-	Tue,  7 Jul 2026 09:40:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1783419645; c=relaxed/simple;
+	bh=PGSzmnmHGWQxJ7r1STAWYypX1PjNgCY/0z7SvAfUqgc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eJuKyYjGkDyZsOS7FSDm/1JhEHGMlqlIFCct7DHyt/CQe5iXDc+9C1px6y3D9UcraGaqdqYchEGxi+8uzFzmX8x0S15eBRFcMPmmy2hmb6Iyr9BBb8D8SYxvkcYsD31yczrS6AkrEln9T31TKjJSaQMygc5/oNjFSM3npyYzw8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=YjtfsGHZ; arc=none smtp.client-ip=13.77.154.182
+Received: by linux.microsoft.com (Postfix, from userid 1173)
+	id EF08620B716B; Tue,  7 Jul 2026 03:20:36 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EF08620B716B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1783419636;
+	bh=441oD1++hubgGUElzvL75rwNbLNzT7P+xGK0zmQs+Fg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YjtfsGHZJBrWJ+Vy4Ipz+WqFrtJd6xZWrR8UEtusUUwjXIr8jP+wo4On9qsOyJ+pA
+	 JnztyI1H/EvD+jIspehtVLEjQwRJEGFtTbArD4gVwsHH9VlNuQr6y4XZuKoSYZUyRU
+	 wdBJG2gkJwBJDu6T8/gqWpO/X6dc27dL+jU6UXmE=
+Date: Tue, 7 Jul 2026 03:20:36 -0700
+From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, mkalderon@marvell.com,
+	zyjzyj2000@gmail.com, sagi@grimberg.me, mgurtovoy@nvidia.com,
+	haris.iqbal@ionos.com, jinpu.wang@ionos.com, bvanassche@acm.org,
+	kbusch@kernel.org, Jens Axboe <axboe@kernel.dk>,
+	Christoph Hellwig <hch@lst.de>, kch@nvidia.com, smfrench@gmail.com,
+	linkinjeon@kernel.org, metze@samba.org, tom@talpey.com,
+	cel@kernel.org, jlayton@kernel.org, neil@brown.name,
+	okorniev@redhat.com, Dai.Ngo@oracle.com, trondmy@kernel.org,
+	anna@kernel.org, achender@kernel.org, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	horms@kernel.org, kees@kernel.org,
+	andriy.shevchenko@linux.intel.com, clm@meta.com,
+	ebadger@purestorage.com, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, target-devel@vger.kernel.org,
+	linux-nvme@lists.infradead.org, linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org, linux-nfs@vger.kernel.org,
+	netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+	Jason Gunthorpe <jgg@nvidia.com>
+Subject: Re: [PATCH rdma-next v9] RDMA: Change capability fields in
+ ib_device_attr from int to u32
+Message-ID: <akzS9EdxScQsx9n8@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20260703060329.896125-1-ernis@linux.microsoft.com>
+ <20260706084950.GK15188@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next V10 00/14] devlink and mlx5: Support
- cross-function
- rate scheduling
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <178341722764.1458887.13873598911208666533.git-patchwork-notify@kernel.org>
-Date: Tue, 07 Jul 2026 09:40:27 +0000
-References: <20260701073254.754518-1-tariqt@nvidia.com>
-In-Reply-To: <20260701073254.754518-1-tariqt@nvidia.com>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, netdev@vger.kernel.org, pabeni@redhat.com,
- ajayachandra@nvidia.com, bobbyeshleman@meta.com, cjubran@nvidia.com,
- cratiu@nvidia.com, daniel@iogearbox.net, danielj@nvidia.com,
- daniel.zahka@gmail.com, dw@davidwei.uk, donald.hunter@gmail.com,
- dtatulea@nvidia.com, jiri@nvidia.com, jiri@resnulli.us, joe@dama.to,
- corbet@lwn.net, kees@kernel.org, leon@kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-rdma@vger.kernel.org, mbloch@nvidia.com, moshe@nvidia.com,
- ohartoov@nvidia.com, parav@nvidia.com, petrm@nvidia.com,
- rkannoth@marvell.com, saeedm@nvidia.com, shshitrit@nvidia.com,
- shayd@nvidia.com, shuah@kernel.org, skhan@linuxfoundation.org,
- horms@kernel.org, sdf@fomichev.me, willemb@google.com, gal@nvidia.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260706084950.GK15188@unreal>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.66 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-5.16 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[microsoft.com:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[lunn.ch,davemloft.net,google.com,kernel.org,vger.kernel.org,redhat.com,nvidia.com,meta.com,iogearbox.net,gmail.com,davidwei.uk,resnulli.us,dama.to,lwn.net,marvell.com,linuxfoundation.org,fomichev.me];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22814-lists,linux-rdma=lfdr.de,netdevbpf];
-	RCPT_COUNT_TWELVE(0.00)[42];
-	FORGED_SENDER(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:leon@kernel.org,m:jgg@ziepe.ca,m:mkalderon@marvell.com,m:zyjzyj2000@gmail.com,m:sagi@grimberg.me,m:mgurtovoy@nvidia.com,m:haris.iqbal@ionos.com,m:jinpu.wang@ionos.com,m:bvanassche@acm.org,m:kbusch@kernel.org,m:axboe@kernel.dk,m:hch@lst.de,m:kch@nvidia.com,m:smfrench@gmail.com,m:linkinjeon@kernel.org,m:metze@samba.org,m:tom@talpey.com,m:cel@kernel.org,m:jlayton@kernel.org,m:neil@brown.name,m:okorniev@redhat.com,m:Dai.Ngo@oracle.com,m:trondmy@kernel.org,m:anna@kernel.org,m:achender@kernel.org,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:kees@kernel.org,m:andriy.shevchenko@linux.intel.com,m:clm@meta.com,m:ebadger@purestorage.com,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:target-devel@vger.kernel.org,m:linux-nvme@lists.infradead.org,m:linux-cifs@vger.kernel.org,m:samba-technical@lists.samba.org,m:linux-nfs@vger.kernel.org,m:netdev@vger.kernel.org,m:rds-devel@oss.oracle.com,m:jgg@nvidia
+ .com,s:lists@lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER(0.00)[ernis@linux.microsoft.com,linux-rdma@vger.kernel.org];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:tariqt@nvidia.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:netdev@vger.kernel.org,m:pabeni@redhat.com,m:ajayachandra@nvidia.com,m:bobbyeshleman@meta.com,m:cjubran@nvidia.com,m:cratiu@nvidia.com,m:daniel@iogearbox.net,m:danielj@nvidia.com,m:daniel.zahka@gmail.com,m:dw@davidwei.uk,m:donald.hunter@gmail.com,m:dtatulea@nvidia.com,m:jiri@nvidia.com,m:jiri@resnulli.us,m:joe@dama.to,m:corbet@lwn.net,m:kees@kernel.org,m:leon@kernel.org,m:linux-doc@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:mbloch@nvidia.com,m:moshe@nvidia.com,m:ohartoov@nvidia.com,m:parav@nvidia.com,m:petrm@nvidia.com,m:rkannoth@marvell.com,m:saeedm@nvidia.com,m:shshitrit@nvidia.com,m:shayd@nvidia.com,m:shuah@kernel.org,m:skhan@linuxfoundation.org,m:horms@kernel.org,m:sdf@fomichev.me,m:willemb@google.com,m:gal@nvidia.com,m:andrew@lunn.ch,m:danielzahka@gmail.com,m:donaldhunter@gmail.co
- m,s:lists@lfdr.de];
-	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[44];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-22815-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
 	TO_DN_SOME(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	FROM_NO_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	FORGED_SENDER_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ernis@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	FREEMAIL_CC(0.00)[ziepe.ca,marvell.com,gmail.com,grimberg.me,nvidia.com,ionos.com,acm.org,kernel.org,kernel.dk,lst.de,samba.org,talpey.com,brown.name,redhat.com,oracle.com,davemloft.net,google.com,linux.intel.com,meta.com,purestorage.com,vger.kernel.org,lists.infradead.org,lists.samba.org,oss.oracle.com];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 8335A719F16
+X-Rspamd-Queue-Id: 29E7C71A475
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Wed, 1 Jul 2026 10:32:40 +0300 you wrote:
-> Hi,
+On Mon, Jul 06, 2026 at 11:49:50AM +0300, Leon Romanovsky wrote:
+> > ---
+> >  drivers/infiniband/core/cq.c               |  3 +-
+> >  drivers/infiniband/hw/qedr/verbs.c         |  2 +-
+> >  drivers/infiniband/sw/rxe/rxe_qp.c         | 22 +++++-----
+> >  drivers/infiniband/sw/rxe/rxe_srq.c        | 16 +++----
+> >  drivers/infiniband/ulp/ipoib/ipoib_cm.c    | 10 ++---
+> >  drivers/infiniband/ulp/ipoib/ipoib_verbs.c |  3 +-
+> >  drivers/infiniband/ulp/iser/iser_verbs.c   |  5 +--
+> >  drivers/infiniband/ulp/isert/ib_isert.c    |  7 ++-
+> >  drivers/infiniband/ulp/rtrs/rtrs-clt.c     | 11 ++---
+> >  drivers/infiniband/ulp/rtrs/rtrs-srv.c     | 11 ++---
+> >  drivers/infiniband/ulp/srp/ib_srp.c        |  2 +-
+> >  drivers/infiniband/ulp/srpt/ib_srpt.c      | 21 +++++----
+> >  drivers/nvme/host/rdma.c                   |  8 ++--
+> >  drivers/nvme/target/rdma.c                 | 22 ++++++----
+> >  fs/smb/smbdirect/accept.c                  |  5 ++-
+> >  fs/smb/smbdirect/connect.c                 |  5 ++-
+> >  fs/smb/smbdirect/connection.c              |  8 ++--
+> >  include/linux/sunrpc/svc_rdma.h            |  4 +-
+> >  include/rdma/ib_verbs.h                    | 50 +++++++++++-----------
+> >  net/rds/ib.c                               | 10 ++---
+> >  net/rds/ib_cm.c                            | 10 ++---
+> >  net/sunrpc/xprtrdma/frwr_ops.c             |  7 +--
+> >  net/sunrpc/xprtrdma/svc_rdma_transport.c   |  5 +--
+> >  net/sunrpc/xprtrdma/verbs.c                |  2 +-
+> >  24 files changed, 122 insertions(+), 127 deletions(-)
 > 
-> This series by Cosmin adds support for cross-function rate scheduling in
-> devlink and mlx5.
-> See detailed explanation by Cosmin below [0].
+> The following code is still missing. 
+
+I'll make this change in the next version.
+
+>Also, what about mxa_srq?
+> Why wasn't it converted as well?
+
+I originally left max_srq as int because its only consumer pairs it with
+num_comp_vectors (a signed int) in nvmet_rdma, so keeping it int let
+that site stay a plain min() instead of a min_t().
+
+num_comp_vectors is the completion-vector count, legitimately int and
+never anywhere near INT_MAX, so I'd prefer to leave it signed rather
+than convert it everywhere. Does that work for you, or would you rather
+num_comp_vectors be converted too?
+
+If it needs converting, I'll do it as a separate patch, since it lives
+in a different struct (ib_device) and touches many call sites.
+Otherwise, using min_t() for just this one call is fine too.
+
+Thanks,
+Vennela
+
 > 
-> Regards,
-> Tariq
+> diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+> index f599c24b34e8..aae4f3f6bcba 100644
+> --- a/drivers/infiniband/core/nldev.c
+> +++ b/drivers/infiniband/core/nldev.c
+> @@ -454,7 +454,8 @@ static int fill_res_info(struct sk_buff *msg, struct ib_device *device,
+>         };
 > 
-> [...]
-
-Here is the summary with links:
-  - [net-next,V10,01/14] devlink: Update nested instance locking comment
-    https://git.kernel.org/netdev/net-next/c/3bf4c5970ca8
-  - [net-next,V10,02/14] devlink: Add a helper for getting a nested-in instance
-    https://git.kernel.org/netdev/net-next/c/9f2d908cc34e
-  - [net-next,V10,03/14] devlink: Migrate from info->user_ptr to info->ctx
-    https://git.kernel.org/netdev/net-next/c/e48abacd6e83
-  - [net-next,V10,04/14] devlink: Decouple rate storage from associated devlink object
-    https://git.kernel.org/netdev/net-next/c/db078bc2b031
-  - [net-next,V10,05/14] devlink: Add parent dev to devlink API
-    https://git.kernel.org/netdev/net-next/c/b5f90fd4580c
-  - [net-next,V10,06/14] devlink: Allow parent dev for rate-set and rate-new
-    https://git.kernel.org/netdev/net-next/c/58132b6fc4a5
-  - [net-next,V10,07/14] devlink: Allow rate node parents from other devlinks
-    https://git.kernel.org/netdev/net-next/c/6bbd1bce3099
-  - [net-next,V10,08/14] net/mlx5: qos: Use mlx5_lag_query_bond_speed to query LAG speed
-    https://git.kernel.org/netdev/net-next/c/f8128b13df66
-  - [net-next,V10,09/14] net/mlx5: qos: Refactor vport QoS cleanup
-    https://git.kernel.org/netdev/net-next/c/89a0881183d1
-  - [net-next,V10,10/14] net/mlx5: qos: Model the root node in the scheduling hierarchy
-    https://git.kernel.org/netdev/net-next/c/22d32def3ced
-  - [net-next,V10,11/14] net/mlx5: qos: Remove qos domains and use shd
-    https://git.kernel.org/netdev/net-next/c/450ed6b182de
-  - [net-next,V10,12/14] net/mlx5: qos: Support cross-device tx scheduling
-    https://git.kernel.org/netdev/net-next/c/2bc38232047c
-  - [net-next,V10,13/14] selftests: drv-net: Add test for cross-esw rate scheduling
-    https://git.kernel.org/netdev/net-next/c/b2aa7390967e
-  - [net-next,V10,14/14] net/mlx5: Document devlink rates
-    https://git.kernel.org/netdev/net-next/c/403ac520e893
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>         struct nlattr *table_attr;
+> -       int ret, i, curr, max;
+> +       u64 curr, max;
+> +       int ret, i;
+> 
+>         if (fill_nldev_handle(msg, device))
+>                 return -EMSGSIZE;
+> diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
+> index cfee2071586c..1b2f9df49e28 100644
+> --- a/drivers/infiniband/core/restrack.c
+> +++ b/drivers/infiniband/core/restrack.c
+> @@ -61,7 +61,7 @@ void rdma_restrack_clean(struct ib_device *dev)
+>   * @type: actual type of object to operate
+>   * @show_details: count driver specific objects
+>   */
+> -int rdma_restrack_count(struct ib_device *dev, enum rdma_restrack_type type,
+> +u32 rdma_restrack_count(struct ib_device *dev, enum rdma_restrack_type type,
+>                         bool show_details)
+>  {
+>         struct rdma_restrack_root *rt = &dev->res[type];
+> diff --git a/include/rdma/restrack.h b/include/rdma/restrack.h
+> index 451f99e3717d..c081384740ce 100644
+> --- a/include/rdma/restrack.h
+> +++ b/include/rdma/restrack.h
+> @@ -123,7 +123,7 @@ struct rdma_restrack_entry {
+>         u32 id;
+>  };
+> 
+> -int rdma_restrack_count(struct ib_device *dev, enum rdma_restrack_type type,
+> +u32 rdma_restrack_count(struct ib_device *dev, enum rdma_restrack_type type,
+>                         bool show_details);
+>  /**
+>   * rdma_is_kernel_res() - check the owner of resource
 
