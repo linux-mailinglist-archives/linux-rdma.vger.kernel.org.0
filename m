@@ -1,224 +1,254 @@
-Return-Path: <linux-rdma+bounces-22847-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22848-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id CelwI348TWrbxAEAu9opvQ
-	(envelope-from <linux-rdma+bounces-22847-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 07 Jul 2026 19:50:54 +0200
+	id nK25HLFFTWpYxgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-22848-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 07 Jul 2026 20:30:09 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3E5571E6B4
-	for <lists+linux-rdma@lfdr.de>; Tue, 07 Jul 2026 19:50:53 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1C3571EA42
+	for <lists+linux-rdma@lfdr.de>; Tue, 07 Jul 2026 20:30:08 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=Nvidia.com header.s=selector2 header.b=iMzDqxqq;
-	dmarc=pass (policy=reject) header.from=nvidia.com;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22847-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22847-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	arc=reject ("cv is fail on i=2")
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=dIYUo1Fj;
+	dmarc=pass (policy=none) header.from=gmail.com;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22848-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22848-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3087A3092FE4
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2026 17:46:49 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D954A302FA83
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2026 18:30:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2393443F4BE;
-	Tue,  7 Jul 2026 17:46:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AB5343F4B4;
+	Tue,  7 Jul 2026 18:30:04 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from PH7PR06CU001.outbound.protection.outlook.com (mail-westus3azon11010050.outbound.protection.outlook.com [52.101.201.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94D873859FD;
-	Tue,  7 Jul 2026 17:46:24 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783446385; cv=fail; b=JEpcMC/9cuGDx7GnBiJz0xoq+k0znOtJf0HFI7uVH1PEmDT11d2YEqBMAut+CaPu1AL98DqDic4jlLnPTfnpzIfP/AvP6+EeLYgZoKqK4/pu7SDkp+4fBxhZ6aKvuR1/l5IKqZR9UOKBde3BNwSmnIOfxTSdecxt71YPU8Ikclk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783446385; c=relaxed/simple;
-	bh=D7y1w1hAd0iotSyKh7CxtFC4/yc2h/GnCKbOuoAwXZ4=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=llrVzm4xRf2sGQ2xgdXAV9krFXJK2/R7XcyU3whYiOkfPaMbzntPubkO7siNxEnl6H04vC/Ckn/v/keLqvDAyaZhLt3HfKI1PHnRoxzL9/Z7N985O/yNUY4tR5V11KXV1LbUxMkhhlTYrdYiPoGLVPck08sI8ii5WZXWtGbSPr4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=iMzDqxqq; arc=fail smtp.client-ip=52.101.201.50
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=KiiZQ5+HdDQ3+OSUddg2oymm4J/z25OIl9yCCEJkwRDBF9U3bKcy6aNmD7NANojk9XLvTnYb5bSdsoXfGDeUU81gDoD3gn9zw9v4tZjTkKp5d6o0NizAC+NQeCR8rrEVsEdfCstmv2GXbANwF21rxEHYht6EPBj4+QCxPOwvQ2HCxfzniGQuUBJZ5XFUBOg//yRFBzGmuLKSdBFq8Npd+GiXGC6/uKSkE33QjWEZjsMpd9nrvNwP0W9PlKhWQwJr/RiJbXpGCyWwoI8+7T5JClDAnSjX+gsTjP5tuCCBpE0JtShwfajnBda5Nd0wgqH4jzGrQ1Q/Ras5ukGC1rfNbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YruQRGdooAus926mXQ5iORF2/vtVgeWZuFRhOiiAGHc=;
- b=AR0YFkTfDDbeJY1QNKY8VDG7gRaoAtooWBRUCu3xIok+79Ol7HciRhTmNlXjI1YHQikpHwhxXT3WSREDxXalWRlx1qDHqgQMTEwKDJ9MBwXcfIkRI3PEU8dFYfLDXSf/uIi+0lwtvmwEO8gNgFqP/Cv6iUItyTAmMIKTE7KjK2yEGtNicp/q0nRAoCQpapMSIjwby2EaDR1QVkD1d7uEJTud3F0HG7m+XXBWq0jebQ2voA0espSdEepa+/7azUkOh4HGjhVtl7Wx0Ef1aKnqEWTeU+poEoQlJkXJYbUueyTxsymaTe523V8zuTbgdDuHulfeuRkScwHS8m1qpXCV4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=resnulli.us smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YruQRGdooAus926mXQ5iORF2/vtVgeWZuFRhOiiAGHc=;
- b=iMzDqxqqnVRsym6noIrTuLgzyLlqZFU0w7bV0+Kzq5dfOA5z90SxWfM1ppdduUS8xL/CrekQALSYbmc1Ajm//KFfkhnsWKpXL/dCsoxlyXDZTLNyarKVcUpwQYqLpEWYkDuPaZbVgY0Yo8euEYyEu3rW8Ppv1qR8PRAeAHIcSufpbTJuYFxzSS6eEv2w2i0ahP+GLKCd9SwuyfGrMzJp3JRc7btMWd2VVvLjVOj9AmzFiXVzOwA5Ye8xKGRBjRTNm6rYNewCtN/HQGXlie270XNR1ddSovqporw7AA+B/K0ypazrp1LroTWvllk8TRk+2zo/QxSe6RMog35hqpp9aw==
-Received: from CH2PR20CA0016.namprd20.prod.outlook.com (2603:10b6:610:58::26)
- by SJ2PR12MB8720.namprd12.prod.outlook.com (2603:10b6:a03:539::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.181.10; Tue, 7 Jul
- 2026 17:46:18 +0000
-Received: from CH2PEPF0000013F.namprd02.prod.outlook.com
- (2603:10b6:610:58:cafe::7c) by CH2PR20CA0016.outlook.office365.com
- (2603:10b6:610:58::26) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.202.9 via Frontend Transport; Tue, 7
- Jul 2026 17:46:16 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- CH2PEPF0000013F.mail.protection.outlook.com (10.167.244.71) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.181.6 via Frontend Transport; Tue, 7 Jul 2026 17:46:16 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 7 Jul
- 2026 10:46:01 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.20; Tue, 7 Jul 2026 10:46:00 -0700
-Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
- Transport; Tue, 7 Jul 2026 10:45:57 -0700
-From: Mark Bloch <mbloch@nvidia.com>
-To: Jiri Pirko <jiri@resnulli.us>, Eric Dumazet <edumazet@google.com>, "Jakub
- Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman
-	<horms@kernel.org>
-CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
-	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, Mark Bloch <mbloch@nvidia.com>
-Subject: [PATCH net-next V5 6/6] net/mlx5: Apply devlink eswitch mode boot default on probe
-Date: Tue, 7 Jul 2026 20:45:27 +0300
-Message-ID: <20260707174527.425134-7-mbloch@nvidia.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260707174527.425134-1-mbloch@nvidia.com>
-References: <20260707174527.425134-1-mbloch@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EA4B37B40C
+	for <linux-rdma@vger.kernel.org>; Tue,  7 Jul 2026 18:30:02 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783449004; cv=none; b=WeCb29bpNOGFYsKx6cHOav91jIiN/RWAIwTZqXP+VYnBoGJjUtr44Lhkeop2LVwfppYWbur621ENrz2GaiFMtMDLgcHTwa1k0291l+FHLxwxn68F37JD3lditaA3Q0djO1dY/4ixbF8ms4cKalzqVRh3N3EBJgtqgkgyaqZHGXs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783449004; c=relaxed/simple;
+	bh=BC4hsNu1Ymw7Ru2UgY5LJ4zKQ7w97jP2orYIw5ekKU4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KmhJyso/01AmxYZVoyt3xo44kraHq14zhiThd6wRAMma/FMy/Lwn7lu4T+Y0NsE+xAW/2srLfZP1UpGQUAYfAO08vhiuVxarssW32rpIxT4Z8B7AAgc8STlWYXdZComrH5PMKjnliAbI2GFD1R89hjH2lJUsV2/ps90wJ4mWBc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dIYUo1Fj; arc=none smtp.client-ip=209.85.219.51
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-8f0079614b2so48311286d6.1
+        for <linux-rdma@vger.kernel.org>; Tue, 07 Jul 2026 11:30:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1783449001; x=1784053801; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CyPIHfNf3UfKvOML8iyzORC7dRkgEzIxIf93zJCMmMk=;
+        b=dIYUo1FjPh6U0U4vtqQ2emtre9QaFLdfVI8ni25pnfWxLGiBtJrTgBSo642/iL10fb
+         U6lw2EyKq7e6rKhKGs0G+mjtzUAcLI8FTi6O8STJjzxROh+LxkLCVJr0Vm1jEvK3nB8/
+         wdVyNS+ggniWX9wfTWMte2bg59UaAemeXXU/yYYKaBYUTuO80Rd8QVRtZphumMohrJdt
+         sggksQkW6Ayl8cLfkKTbVmfhfNlOpeYpTcHC9ukUsy+0j5KwBqdzw+qM9vsJQ5N7Mu5U
+         JYD6WkRo+LvThDfBnDfr/K1RwbXNm+idgzH9CyX7X9S9cJu0v58feCw1OMJNW0HkgIif
+         HrtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783449001; x=1784053801;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CyPIHfNf3UfKvOML8iyzORC7dRkgEzIxIf93zJCMmMk=;
+        b=jNAy90gSxP9HqnGiLvljaCMwYXwtI4HuLQhWGf1pP2xi/cpn6WHl//3h8GhP1Rf9bJ
+         RVUrjXpcOT7TACEw1PG+cfdVbh7UKyvALLktmcFKxlEXEK/2A/cX6CV9in1GVmpDVUep
+         5Fcs2xfiLQZpz3ALB85o7aJ8KmKRH9cWaXks+vSHK/Txp/Pvwc2D100phD7BzfaEUnfM
+         Ijcxc/xojvLJHRiQOWiC29c76N1vX3MvpP42e/VzSzKayMqUoameBQnhBREyTN7mz4Mt
+         p6ElloX8iJT2cEMRGCbOGCmhAiDdfJlwDhyy2CmX6mkzU5586wsaSLn/CeKmuYJkoOsO
+         3Ljw==
+X-Forwarded-Encrypted: i=1; AHgh+RoCqjTB6njLE2vgrzcGdc7OZb6OVTORs+xaJLXgt/x1IRAcye7LmwkGSbN4Bg8mE6juS62qg8oCzeZj@vger.kernel.org
+X-Gm-Message-State: AOJu0YxW5ZGH1y9ykUZR5+jhDPPg+LnNSmZlOFBc6RtSuowflEovHZuD
+	8UbYchhKO7nNYWpTh2c59rkg8CWOWAMOCNJGU83ID7i2xjoi0QISGt3D
+X-Gm-Gg: AfdE7ck5u8BT8KudS+oEAUBCSDYyrVKyn22d+zC7AmWkQe4fvbDrJkd19EC/RPQmFCn
+	vXjMc0gKq3SBvS5nkSH/gh9/J3iNAaEm7StMgM6JuV8aEaSSCuHR41AbJ3Yy+s/XFql/cJ5H1GA
+	PHPyB4S+RkPd329GF+oshYg5H/02ksx8juwEHwsSnhtIIib7Fhelgy8Eoce2qud27JA11zXxKKF
+	xLwkwnyGGJyZxmt/2HBHR5BgC38zEBZFYcPmmj8Mqf9QJ0ikgZNCrN8L1oR5dWodEnfdPkXmUD8
+	vSAI7gh9UJzvPTokz+yALAk6sLD4FbSCKiuGFwff+2HsZeet1V468YfsaIgbVsnk48Q5CIgzrfl
+	ZO2zeKOdzEKNwdJRTL2Zo7UjvMXhSShap9oVNTeK//y29rHvrzq1x+ycKrBMzT1Zd3MV9uaiLi9
+	aG3blGWz7XrFfLQJErHcdf/ffqv2BsT10KDOHGtCHzoMM=
+X-Received: by 2002:a05:6214:e4b:b0:8f2:f32c:6bbb with SMTP id 6a1803df08f44-8fcb628f719mr77752796d6.51.1783449001234;
+        Tue, 07 Jul 2026 11:30:01 -0700 (PDT)
+Received: from ?IPV6:2a03:83e0:1145:4:d844:20d:e589:1800? ([2620:10d:c091:500::3:f3b7])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8f46aecc908sm168889176d6.0.2026.07.07.11.29.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Jul 2026 11:30:00 -0700 (PDT)
+Message-ID: <0dfe5f6b-dbc8-4104-8883-e88e8e59ab58@gmail.com>
+Date: Tue, 7 Jul 2026 14:29:59 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 00/15] net/mlx5e: PSP cleanups and improvements
+To: Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+ Paolo Abeni <pabeni@redhat.com>
+Cc: Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+ Boris Pismenny <borisp@nvidia.com>, Chris Mi <cmi@nvidia.com>,
+ Cosmin Ratiu <cratiu@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>,
+ Gal Pressman <gal@nvidia.com>, Jacob Keller <jacob.e.keller@intel.com>,
+ Jianbo Liu <jianbol@nvidia.com>, Lama Kayal <lkayal@nvidia.com>,
+ Leon Romanovsky <leon@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, Mark Bloch <mbloch@nvidia.com>,
+ Raed Salem <raeds@nvidia.com>, Rahul Rameshbabu <rrameshbabu@nvidia.com>,
+ Saeed Mahameed <saeedm@nvidia.com>, Stanislav Fomichev <sdf@fomichev.me>,
+ Stanislav Fomichev <sdf.kernel@gmail.com>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+References: <20260707130858.969928-1-tariqt@nvidia.com>
+Content-Language: en-US
+From: Daniel Zahka <daniel.zahka@gmail.com>
+In-Reply-To: <20260707130858.969928-1-tariqt@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH2PEPF0000013F:EE_|SJ2PR12MB8720:EE_
-X-MS-Office365-Filtering-Correlation-Id: b232b0a8-5110-4bbc-e378-08dedc4fa52e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|376014|23010399003|82310400026|1800799024|36860700016|6133799003|11063799006|56012099006|22082099003|18002099003;
-X-Microsoft-Antispam-Message-Info:
-	zV/3cf9neZZwqObYjx1Xq6bFFaHGlk2J20b/ggFA3HTwnbZhpHOfFzX5uievavJTmXTHeCUCmRtxj1RitTBQnv2uEhNvVIAWVLacY1l5UEbQRXF0zg8rfTnkpwS25Gyf5OZzTsf3e5f05hEsXQ5kxqF8NCv5QXDEqzFZvHLjFdAuzr5771Z14p7fLBE9ChGIXtGNlHKm7ZUdvKqFhuJIKNteA+fNOQmBLId/5isV0X+Zgf2bPDDs+rIykvQLKrD+CORMMWZGl9sJoNGVG5P9sNm2ZWJxH3e6cDdKExym437GBU7W4eEwGJKlNtzea8+3YmJeu0le7Y/jDj1/M3kffHo6DYQTcfErHz9vbCisEHa/fczriqZhZhL5ZJzrHaVv+7FAGOPTgcIWzHJkBmdbbTzazulVkH+NPktzciGsui+Dc8hzFkWs+ntbPtpE9wP2sHdupwJYjmBDz+OSjWRKD1HQLmkVgaFrHkLQ0ch7u22Wom1BwR8wkafIC8DwegaX73Nv2il3cRvg7jUn1Jv1IlCatwb4vd3z8aPSCfR8GravKekMEi+7WNuwzXOoCpu/UnpakGOjdfIApCrDS7nHdfGVUhEFH84fiIvSblj8CbQ4SU2nZX3RLliWfMxWuPmXJe3xvAcH9NjDHu+uLF+YMMzD1Z2cHt8PLVagVdX91wpHL9v2zugK+Gi6KcxPce4bZDH1HrzTwsVB3P2B+La+eQ==
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(7416014)(376014)(23010399003)(82310400026)(1800799024)(36860700016)(6133799003)(11063799006)(56012099006)(22082099003)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	3lXWpWmaIrMYuv4qvXf+2c7SLFst7bdRjH+eYiBKVJ+eJq+ryyKOn1riurCEHhX8SDEB3WuPMGS5vVJN5HtxEwQUNgEkFB1FVyxdP1tcfwwoWYg1x6xIqGt79fB5D5D9rfGmhSWJ2/pT81DrVpo99yrUCguJi1QbMTefzGsFVqpD3mmCerhBtgr1MOA4/ycdwJVd1wWj5LWMzo1bhlgGNht71S+d1Rd1+PSVenU/XP3U3VyAe/vaaf61gSaL+MSyD9im6iSHTSKFzMHgTGqAMQ5s72Aaxt2/j8YOPokTXAPaI5cEEaxeVcazJjrys89sbP2RRWwZteR7J0xiqVO+EhkJ5sXV9ErQrrBceT6tWcSndBFAqBKSnwkpYCn+kfSZGJjhl1ATTPlsSOhnf2765zlQn86NWaFXlpSDvKKEw1HLZwZOizhEJcWfZLTKk4LA
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2026 17:46:16.3508
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b232b0a8-5110-4bbc-e378-08dedc4fa52e
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CH2PEPF0000013F.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8720
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[nvidia.com:D:+];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-22848-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[15];
+	FORGED_RECIPIENTS(0.00)[m:tariqt@nvidia.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:netdev@vger.kernel.org,m:pabeni@redhat.com,m:aleksandr.loktionov@intel.com,m:borisp@nvidia.com,m:cmi@nvidia.com,m:cratiu@nvidia.com,m:dtatulea@nvidia.com,m:gal@nvidia.com,m:jacob.e.keller@intel.com,m:jianbol@nvidia.com,m:lkayal@nvidia.com,m:leon@kernel.org,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:mbloch@nvidia.com,m:raeds@nvidia.com,m:rrameshbabu@nvidia.com,m:saeedm@nvidia.com,m:sdf@fomichev.me,m:sdf.kernel@gmail.com,m:willemdebruijn.kernel@gmail.com,m:andrew@lunn.ch,m:sdfkernel@gmail.com,m:willemdebruijnkernel@gmail.com,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[danielzahka@gmail.com,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22847-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER(0.00)[mbloch@nvidia.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS(0.00)[m:jiri@resnulli.us,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:saeedm@nvidia.com,m:leon@kernel.org,m:tariqt@nvidia.com,m:andrew+netdev@lunn.ch,m:corbet@lwn.net,m:skhan@linuxfoundation.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-doc@vger.kernel.org,m:mbloch@nvidia.com,m:andrew@lunn.ch,s:lists@lfdr.de];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[intel.com,nvidia.com,kernel.org,vger.kernel.org,fomichev.me,gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[26];
 	FORWARDED(0.00)[lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mbloch@nvidia.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,Nvidia.com:dkim,vger.kernel.org:from_smtp,nvidia.com:from_mime,nvidia.com:email,nvidia.com:mid];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[danielzahka@gmail.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	RCVD_COUNT_SEVEN(0.00)[9]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: F3E5571E6B4
+X-Rspamd-Queue-Id: C1C3571EA42
 
-Apply devlink_eswitch_mode= boot defaults for mlx5 after the initial
-probe finishes device initialization while holding the devlink instance
-lock.
 
-At this point the devlink instance is registered and mlx5 can perform an
-eswitch mode change. Calling devl_apply_default_esw_mode() also clears
-any pending default apply work queued by devl_register(), so the queued
-work will not apply the same default again.
+On 7/7/26 9:08 AM, Tariq Toukan wrote:
+> Hi,
+>
+> This series by Cosmin refactors mlx5 PSP support in preparation for
+> HW-GRO support.
+> There are almost no functionality changes in all but the last two
+> patches, which address a long-standing TODO in mlx5e_psp_set_config().
+>
+> Regards,
+> Tariq
+>
+> Cosmin Ratiu (15):
+>    net/mlx5e: psp: Rename the saved psp_dev to 'psd'
+>    net/mlx5e: psp: Remove PSP steering mutexes
+>    net/mlx5e: psp: Remove unneeded ref counting for PSP steering
+>    net/mlx5e: psp: Merge rx_err rule add/delete with ft create/delete
+>    net/mlx5e: psp: Use helpers for steering object manipulation
+>    net/mlx5e: psp: Factor out drop rule creation code
+>    net/mlx5e: psp: Remove unused PSP syndrome copy action
+>    net/mlx5e: psp: Rename and consolidate steering functions
+>    net/mlx5e: psp: Adjust rx_check FT size and use a drop_group
+>    net/mlx5e: psp: Add an RX steering table
+>    net/mlx5e: psp: Use a single rx_check table
+>    net/mlx5e: psp: Flatten steering structures
+>    net/mlx5e: psp: Make PSP steering config dynamic
+>    net/mlx5e: Return errors from profile->enable
+>    net/mlx5e: psp: Report PSP dev registration errors
+>
+>   drivers/net/ethernet/mellanox/mlx5/core/en.h  |    2 +-
+>   .../net/ethernet/mellanox/mlx5/core/en/fs.h   |    7 +-
+>   .../mellanox/mlx5/core/en_accel/en_accel.h    |   19 +-
+>   .../mellanox/mlx5/core/en_accel/psp.c         | 1007 ++++++++---------
+>   .../mellanox/mlx5/core/en_accel/psp.h         |   18 +-
+>   .../mellanox/mlx5/core/en_accel/psp_rxtx.c    |   13 +-
+>   .../mellanox/mlx5/core/en_accel/psp_rxtx.h    |    3 +-
+>   .../net/ethernet/mellanox/mlx5/core/en_main.c |   23 +-
+>   .../net/ethernet/mellanox/mlx5/core/en_rep.c  |    8 +-
+>   9 files changed, 516 insertions(+), 584 deletions(-)
+>
+>
+> base-commit: 31816fc5d9acf8cdf226cdd0dc296e8cf15cc033
 
-Keep this call in mlx5_init_one() rather than the lower-level
-devl-locked init helper. That helper is also used by devlink reload, and
-devlink core already applies the boot default after a successful
-DRIVER_REINIT reload.
+Thanks. Excited about the support for mlx5e_psp_set_config(). Jakub and 
+I had a test case for psp_dev_ops::set_config() that we were waiting to 
+upstream. I just rebased it onto net-next here: 
+https://github.com/danieldzahka/linux/commit/b58e9a99573cf6b884e5fe3227c9af7a1f0d80b0
 
-Signed-off-by: Mark Bloch <mbloch@nvidia.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/main.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+I ran it with the series but am seeing an error trying to catch 
+undecrypted PSP-UDP packets after disabling all versions with set_config()
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-index 643b4aac2033..0712efea74cc 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -1392,6 +1392,17 @@ static void mlx5_unload(struct mlx5_core_dev *dev)
- 	mlx5_free_bfreg(dev, &dev->priv.bfreg);
- }
- 
-+static void mlx5_devl_apply_default_esw_mode(struct mlx5_core_dev *dev)
-+{
-+	struct devlink *devlink = priv_to_devlink(dev);
-+
-+	if (!MLX5_ESWITCH_MANAGER(dev))
-+		return;
-+
-+	devl_assert_locked(devlink);
-+	devl_apply_default_esw_mode(devlink);
-+}
-+
- int mlx5_init_one_devl_locked(struct mlx5_core_dev *dev)
- {
- 	bool light_probe = mlx5_dev_is_lightweight(dev);
-@@ -1471,6 +1482,8 @@ int mlx5_init_one(struct mlx5_core_dev *dev)
- 	err = mlx5_init_one_devl_locked(dev);
- 	if (err)
- 		devl_unregister(devlink);
-+	else
-+		mlx5_devl_apply_default_esw_mode(dev);
- unlock:
- 	devl_unlock(devlink);
- 	return err;
--- 
-2.43.0
+TAP version 13
+1..30
+ok 1 psp.data_basic_send.v0_ip4 # SKIP Test requires IPv4 connectivity
+ok 2 psp.data_basic_send.v0_ip6
+ok 3 psp.data_basic_send.v1_ip4 # SKIP Test requires IPv4 connectivity
+ok 4 psp.data_basic_send.v1_ip6
+ok 5 psp.data_basic_send.v2_ip4 # SKIP Test requires IPv4 connectivity
+ok 6 psp.data_basic_send.v2_ip6 # SKIP ('PSP version not supported', 
+'hdr0-aes-gmac-128')
+ok 7 psp.data_basic_send.v3_ip4 # SKIP Test requires IPv4 connectivity
+ok 8 psp.data_basic_send.v3_ip6 # SKIP ('PSP version not supported', 
+'hdr0-aes-gmac-256')
+ok 9 psp.data_mss_adjust.ip4 # SKIP Test requires IPv4 connectivity
+ok 10 psp.data_mss_adjust.ip6
+ok 11 psp.data_send_off.ip4 # SKIP Test requires IPv4 connectivity
+# Exception| Traceback (most recent call last):
+# Exception|   File "/root/ksft-psp-set-config/net/lib/py/ksft.py", line 
+420, in ksft_run
+# Exception|     func(*args)
+# Exception|   File "/root/./ksft-psp-set-config/drivers/net/psp.py", 
+line 608, in data_send_off
+# Exception|     udps.recv(8192, socket.MSG_DONTWAIT)
+# Exception| BlockingIOError: [Errno 11] Resource temporarily unavailable
+# Exception|
+not ok 12 psp.data_send_off.ip6
+ok 13 psp.dev_list_devices
+ok 14 psp.dev_get_device
+ok 15 psp.dev_get_device_bad
+ok 16 psp.dev_rotate
+ok 17 psp.dev_rotate_spi
+ok 18 psp.assoc_basic
+ok 19 psp.assoc_bad_dev
+ok 20 psp.assoc_sk_only_conn
+ok 21 psp.assoc_sk_only_mismatch
+ok 22 psp.assoc_sk_only_mismatch_tx
+ok 23 psp.assoc_sk_only_unconn
+ok 24 psp.assoc_version_mismatch
+ok 25 psp.assoc_twice
+ok 26 psp.data_send_bad_key
+ok 27 psp.data_send_disconnect
+ok 28 psp.data_stale_key
+ok 29 psp.removal_device_rx # XFAIL Test only works on netdevsim
+ok 30 psp.removal_device_bi # XFAIL Test only works on netdevsim
+# Totals: pass:19 fail:1 xfail:2 xpass:0 skip:8 error:0
+#
+# Responder logs (0):
+# STDERR:
+# #  Set PSP enable on device 1 to 0x3
+# #  Set PSP enable on device 1 to 0x0
+
+I recall this working on an earlier prototype of this feature for mlx5. 
+Are the steering rules setup to drop PSP-UDP packets when the 
+corresponding psp version is disabled?
 
 
