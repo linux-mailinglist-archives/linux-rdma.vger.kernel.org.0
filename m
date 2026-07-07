@@ -1,700 +1,228 @@
-Return-Path: <linux-rdma+bounces-22866-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22867-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id TSCbKCWJTWo11wEAu9opvQ
-	(envelope-from <linux-rdma+bounces-22866-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 08 Jul 2026 01:17:57 +0200
+	id zWXxJhSNTWoJ2AEAu9opvQ
+	(envelope-from <linux-rdma+bounces-22867-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 08 Jul 2026 01:34:44 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3790F7205D8
-	for <lists+linux-rdma@lfdr.de>; Wed, 08 Jul 2026 01:17:57 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1580A7206CE
+	for <lists+linux-rdma@lfdr.de>; Wed, 08 Jul 2026 01:34:44 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=ARf+dZ7R;
-	dmarc=pass (policy=none) header.from=linux.dev;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22866-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22866-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=oracle.com header.s=corp-2025-04-25 header.b=TONy3GhC;
+	dmarc=pass (policy=reject) header.from=oracle.com;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22867-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22867-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id EAC0F301DC22
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2026 23:17:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5DF90304A9DF
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2026 23:34:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F8E731A7E4;
-	Tue,  7 Jul 2026 23:17:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58C8A36EA98;
+	Tue,  7 Jul 2026 23:34:02 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AECA42F6560
-	for <linux-rdma@vger.kernel.org>; Tue,  7 Jul 2026 23:17:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 841C23093DF;
+	Tue,  7 Jul 2026 23:34:00 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783466238; cv=none; b=njkB+9VmdcaU6CQ+qpQpXW54+2YfymD5PXRgeq8a+K5PS+SQF/DTS4ptw2faJYvR3B0aDKLkKXka7bsxnxNMiunxF8wDqqhgIxYJ2UL9SFZoNNkvbCAfEpmSJMDRlwzVnJ/tFn7HwBAE4n7lGH/pA5z1tihccKUpUOY2vrFAT0A=
+	t=1783467242; cv=none; b=MzCJ/N/zyK8tlPVeY7NVreAbWnOP61udbp9heb4R43mwD6JEgwuYrD3qQ8Ph2Pf0o43cpvN1eYYGhUwCrNXUbtM+E12wqd9c3KdScNq6XM93UDccN0QQeFgmIQVw0jisTW3qwdgtp+gVTLnvJRSu/UCiMN9SF5FV41xWn/FGIYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783466238; c=relaxed/simple;
-	bh=7P+vAlyy4ELfx4F8CZysB4VCRbz+2HPSL9m1wJOnGe8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G3/x4X6ygwvqOHjrcx4nuQyEX5OX/+6yVAgNHOpioe66Rvx4imRU6rmnXm6tQT21QQYq5rn8flISo9Ed8gr9ap9FZvEwLf25XfN9hfYREpq21SG5nxQlXXuTQ2KCp56e6Cbw8zggJdiHeA0UHPMwsf9ZKseHy4IvpewTWupTjJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ARf+dZ7R; arc=none smtp.client-ip=91.218.175.184
-Message-ID: <6ced0145-30ab-4af5-9005-9da024933fff@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1783466223;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fcXgQaDYgSQhv/m7uUk/Nt4NHNihQKEedi/4hj1/AGs=;
-	b=ARf+dZ7RY9Jp1iVIz62HUEuQ//3m3cGPPzdsmP8+SwTK/kKc8ATGcUPRGMU1CdKL2lfrJj
-	yixenSByluqEw5KA01raAAdbmAwdT9iRlEKgjIIUyQmR2HEpo01bxWjQkV5SwLU+pPkTKu
-	tRNSjEIamddovVaHfzC+pqR7ooWsJ48=
-Date: Tue, 7 Jul 2026 16:16:58 -0700
+	s=arc-20240116; t=1783467242; c=relaxed/simple;
+	bh=4IKLks/ucOA2auXD2KLMR9GT/BPTMyC9nZ/pdpCputg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=NeBz8XiYNbTaakO04YqATu8FHC5ErAU5XLMeo/4TNXwM9wovOIA1PKcECT7WQLgjWPoGyPOg969WTGb31ZArujVdAIPAvVu57k53YHnVkn47nPWLDOS+iTYX/zBMRgMpb8rpnbPwyOHERdz+BxPDIHxM8wB1ElK8W03xZZ/0Q3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=TONy3GhC; arc=none smtp.client-ip=205.220.177.32
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 667JCPva1347545;
+	Tue, 7 Jul 2026 23:33:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:date:from:in-reply-to:message-id
+	:mime-version:references:subject:to; s=corp-2025-04-25; bh=igrpj
+	jJQUd+/3TCJOxayjEdZm97gP08Q/nEq7T9dCWs=; b=TONy3GhCIpCyKpqmFFVrA
+	1MG8TK+bHWVR1PhIZoYms0TERlkCwi87YnyNmaXZpPxQLn2WsFoBxBScQ7E35OvK
+	ZDzlw9Lzm19ioTmDFA6gNjMMjBNfiilNaWqtXWg8jxrZE9bCnaM4G5rU+ifvvia7
+	2Ya16Yrfe/5Eay06KExyESYMSq2GVatif7jRPTu0znrJFrL0dXWyDoUlYKCAvDxp
+	O2H87f7rgMJcEAQeH01DH6kTQwFnTC3tuEbPM89bBGg+HgR020+cEroOOiBfk5Ah
+	TwRptbdpW2BGo54j/3xBPOwc6SyWIFnEOUAVeXDCt18GHfjUHw/b+LyZIddJKP1l
+	w==
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4f6rkbeqvr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 07 Jul 2026 23:33:47 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.7/8.18.1.7) with ESMTP id 667NXblx027095;
+	Tue, 7 Jul 2026 23:33:46 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4f6rmr37j1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 07 Jul 2026 23:33:46 +0000 (GMT)
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.1.12) with ESMTP id 667NXjpv028202;
+	Tue, 7 Jul 2026 23:33:45 GMT
+Received: from mbpatil-ws.osdevelopmeniad.oraclevcn.com (mbpatil-ol10-ws.webad1iad.osdevelopmeniad.oraclevcn.com [100.100.228.95])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 4f6rmr37gg-1;
+	Tue, 07 Jul 2026 23:33:45 +0000 (GMT)
+From: Manjunath Patil <manjunath.b.patil@oracle.com>
+To: Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
+        Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+        netdev@vger.kernel.org
+Cc: Manjunath Patil <manjunath.b.patil@oracle.com>,
+        Andrew Lunn <andrew+netdev@lunn.ch>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Patrisious Haddad <phaddad@nvidia.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: [PATCH net v2] net/mlx5e: Use sender devcom for MPV master-up
+Date: Tue,  7 Jul 2026 16:33:37 -0700
+Message-ID: <20260707233337.3650025-1-manjunath.b.patil@oracle.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20260610173915.4053423-1-manjunath.b.patil@oracle.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3] RDMA/rxe: rework per-net tunnel socket lifetime to fix
- refcount underflow
-To: Serhat Kumral <serhatkumral1@gmail.com>, Zhu Yanjun
- <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Leon Romanovsky <leon@kernel.org>, Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc: David Ahern <dsahern@kernel.org>, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- syzbot+8c9eede336e3a843750e@syzkaller.appspotmail.com
-References: <20260707160015.18208-1-serhatkumral1@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Yanjun.Zhu" <yanjun.zhu@linux.dev>
-In-Reply-To: <20260707160015.18208-1-serhatkumral1@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-07-07_06,2026-07-06_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0
+ mlxscore=0 spamscore=0 lowpriorityscore=0 suspectscore=0 malwarescore=0
+ adultscore=0 mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2606160000 definitions=main-2607070231
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzA3MDIzMSBTYWx0ZWRfX4sekCjK1gNAZ
+ QfpXJvUjUW1ubt/5/K0wfgEXhPPfG9rltDFRFDlAacmWTW9jl2Mr+W0SMMKQomSG6vgYINh3x1t
+ 7jnmLt82MFWNyy3GY2cBNYY5zSGCp5B70ImiaELAxip7pLz5A1m6
+X-Authority-Analysis: v=2.4 cv=QP1YgALL c=1 sm=1 tr=0 ts=6a4d8cdb b=1 cx=c_pps
+ a=qoll8+KPOyaMroiJ2sR5sw==:117 a=qoll8+KPOyaMroiJ2sR5sw==:17
+ a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=jiCTI4zE5U7BLdzWsZGv:22
+ a=x4eqshVgHu-cdnggieHk:22 a=yPCof4ZbAAAA:8 a=VwQbUJbxAAAA:8
+ a=JXUkVfB3YJkj4ag9OGkA:9 a=5yU3S35YU4bGjq-dph-N:22 a=Bho9c0fBagfJEIQBS7DQ:22
+ cc=ntf awl=host:12222
+X-Proofpoint-GUID: 3Rm26ahq8YpeFLvGo3iYoOo9mZdWgpRx
+X-Proofpoint-ORIG-GUID: 3Rm26ahq8YpeFLvGo3iYoOo9mZdWgpRx
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzA3MDIzMSBTYWx0ZWRfXwE0VWMd3mEQk
+ jZWl4eQToT5eO5BKmyFa7pPuo+GnZMf9MqGDBAPBrBkEKAq4kem8Bdyw7g16DqY2ShLrsEGhfxX
+ zhYDxBzxtGqDYVBSkU0KFnn/NdviWGMR1I2sHPwZuR6iF4pUV/DnxM4gAtbksf5KHcW6bUYU3eD
+ U0v7ueRi72G5lLgXnJT3vUU19wvMcaeGxMI0LnXAzX6YC2avaL/Y97TeExnFmDPYqRSh08eCM6d
+ +c5T0s0wVhTz45c6ka6GmtFYNpyaUaPvvGQMEhBCvChCOmmcSJLvOb3fKTebMODiXFDLVfUmmwv
+ iTI6W04a88x0Xi+WpRIR1Rr6+jAZA1dkk7/bzgD9bINHQvHNozxa6q+1jZtyrDN7s5BlosndQNr
+ U4/hKywlDkeRf+7aCNkc62KSYOcFyluAT7I4+BSuoLNMjNyKft96gJeXhhL/IHo+jONKkpyB3im
+ oVav9JIQpR8+VciMGlL8z3dS7b6Ncv7oYPjH9vTw=
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-6.16 / 15.00];
+	WHITELIST_DMARC(-7.00)[oracle.com:D:+];
 	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[oracle.com,reject];
+	R_DKIM_ALLOW(-0.20)[oracle.com:s=corp-2025-04-25];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22866-lists,linux-rdma=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:serhatkumral1@gmail.com,m:zyjzyj2000@gmail.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:yanjun.zhu@linux.dev,m:dsahern@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:syzbot+8c9eede336e3a843750e@syzkaller.appspotmail.com,m:syzbot@syzkaller.appspotmail.com,s:lists@lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,kernel.org,linux.dev];
-	FORGED_SENDER(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORWARDED(0.00)[lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22867-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[15];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER(0.00)[manjunath.b.patil@oracle.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:saeedm@nvidia.com,m:tariqt@nvidia.com,m:mbloch@nvidia.com,m:leon@kernel.org,m:netdev@vger.kernel.org,m:manjunath.b.patil@oracle.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:phaddad@nvidia.com,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:stable@vger.kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	TAGGED_RCPT(0.00)[linux-rdma,8c9eede336e3a843750e];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[manjunath.b.patil@oracle.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[oracle.com:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,oracle.com:from_mime,oracle.com:email,oracle.com:mid,oracle.com:dkim];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
 	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[syzkaller.appspot.com:url,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp,appspotmail.com:email,linux.dev:from_mime,linux.dev:dkim,linux.dev:mid]
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	RCVD_COUNT_SEVEN(0.00)[9]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 3790F7205D8
+X-Rspamd-Queue-Id: 1580A7206CE
 
+After PCIe DPC recovery, mlx5 reloads the affected functions and
+replays multiport affiliation events. In the reported failure, the
+first relevant device error was:
 
-On 7/7/26 9:00 AM, Serhat Kumral wrote:
-> syzkaller reported a refcount_t underflow / use-after-free in
-> sk_common_release() when tearing down an rxe device via
-> RDMA_NLDEV_CMD_DELLINK. The shared per-namespace UDP tunnel sockets
-> were released based on comparing sk->sk_refcnt against a magic
-> constant (SK_REF_FOR_TUNNEL), but the network stack takes transient
-> references on sk_refcnt of its own, so this check could pass on more
-> than one path concurrently (dellink, NETDEV_UNREGISTER notifier,
-> pernet exit), releasing the socket twice.
->
-> Stop overloading sk_refcnt for driver-level user counting. Track the
-> number of rxe devices using each tunnel socket with an explicit
-> per-socket counter in the pernet struct, serialised by a mutex:
->
->   - creation happens under the lock via a factory callback, closing
->     the create/create race,
->   - release happens in exactly one place, when the counter drops to
->     zero: clear the RCU pointer, wait a grace period, then call
->     udp_tunnel_sock_release(),
->   - rxe_net_del() is idempotent per device: RDMA_NLDEV_CMD_DELLINK
->     and the NETDEV_UNREGISTER notifier can run concurrently for the
->     same device, and only the first invocation drops the references.
->     The put uses the net pointer recorded at device creation time
->     instead of ib_device_get_netdev(), which can already return NULL
->     at this point (the queued unregister clears the association), so
->     the invocation that owns the put can never fail to perform it,
->   - a failed rxe_newlink() now drops the references it took, so the
->     counter cannot be left inflated,
->   - rxe_ns_exit() performs the same coordinated teardown for
->     namespace removal.
->
-> IPv4 and IPv6 sockets get separate counters since the IPv6 socket may
-> legitimately not exist (-EAFNOSUPPORT).
->
-> Fixes: f1327abd6abe ("RDMA/rxe: Support RDMA link creation and destruction per net namespace")
-> Reported-by: syzbot+8c9eede336e3a843750e@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=8c9eede336e3a843750e
-> Assisted-by: Claude:claude-fable-5
-> Signed-off-by: Serhat Kumral <serhatkumral1@gmail.com>
-> ---
-> v3:
->   - Fix the ordering problem Zhu Yanjun pointed out in v2: rxe_net_del()
->     consumed the once-only RXE_NET_SK_PUT bit before looking up the
->     netdev, so if ib_device_get_netdev() returned NULL (the queued
->     unregister already cleared the association), the pernet socket
->     references were never dropped. [Zhu Yanjun]
->   - Instead of only reordering the bit test against the netdev lookup,
->     record the struct net pointer in struct rxe_dev at creation time
->     and use it for the put, so the put cannot fail at all once the bit
->     is taken. I went this way because a reordered lookup still has a
->     (much smaller) window where both racing paths see a NULL netdev.
->     If you think this is over-engineered and would prefer the minimal
->     reordering fix, I am happy to respin it that way.
->
-> v2:
->   - Make rxe_net_del() idempotent per device with test_and_set_bit()
->     in struct rxe_dev, so a concurrent RDMA_NLDEV_CMD_DELLINK and
->     NETDEV_UNREGISTER notifier cannot drop the pernet socket
->     references twice for the same device. Suggested as an alternative
->     to rtnl_lock()/a global mutex. [Zhu Yanjun]
->   - Add Assisted-by tag per Documentation/process/coding-assistants.rst.
->
->   drivers/infiniband/sw/rxe/rxe.c       |   1 +
->   drivers/infiniband/sw/rxe/rxe_net.c   | 117 ++++++++++-------------
->   drivers/infiniband/sw/rxe/rxe_net.h   |   1 +
->   drivers/infiniband/sw/rxe/rxe_ns.c    | 132 +++++++++++++++++++-------
->   drivers/infiniband/sw/rxe/rxe_ns.h    |  24 ++++-
->   drivers/infiniband/sw/rxe/rxe_verbs.h |   8 ++
->   6 files changed, 177 insertions(+), 106 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-> index af39209d0fcf..bcc72b96ee00 100644
-> --- a/drivers/infiniband/sw/rxe/rxe.c
-> +++ b/drivers/infiniband/sw/rxe/rxe.c
-> @@ -243,6 +243,7 @@ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
->   	err = rxe_net_add(ibdev_name, ndev);
->   	if (err) {
->   		rxe_err("failed to add %s\n", ndev->name);
-> +		rxe_net_uninit(ndev);
->   		goto err;
->   	}
->   err:
-> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-> index 3741b2c4b0bb..02c0d2be36ad 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_net.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
-> @@ -19,10 +19,6 @@
->   #include "rxe_loc.h"
->   #include "rxe_ns.h"
->   
-> -#ifndef SK_REF_FOR_TUNNEL
-> -#define SK_REF_FOR_TUNNEL	2
-> -#endif
-> -
->   #ifdef CONFIG_DEBUG_LOCK_ALLOC
->   /*
->    * lockdep can detect false positive circular dependencies
-> @@ -81,9 +77,9 @@ static inline void rxe_reclassify_recv_socket(struct socket *sock)
->   	 * from being called and 'rmmod rdma_rxe'
->   	 * is refused because of the references.
->   	 *
-> -	 * For the global sockets in recv_sockets,
-> -	 * we are sure that rxe_net_exit() will call
-> -	 * rxe_release_udp_tunnel -> udp_tunnel_sock_release.
-> +	 * For the shared per-namespace sockets, we are sure
-> +	 * that the pernet layer (rxe_ns_pernet_put_skX or
-> +	 * rxe_ns_exit) will call udp_tunnel_sock_release.
->   	 *
->   	 * So we don't need the additional reference to
->   	 * our own (THIS_MODULE).
-> @@ -288,12 +284,6 @@ static struct socket *rxe_setup_udp_tunnel(struct net *net, __be16 port,
->   	return sock;
->   }
->   
-> -static void rxe_release_udp_tunnel(struct sock *sk)
-> -{
-> -	if (sk)
-> -		udp_tunnel_sock_release(sk);
-> -}
-> -
->   static void prepare_udp_hdr(struct sk_buff *skb, __be16 src_port,
->   			    __be16 dst_port)
->   {
-> @@ -620,6 +610,8 @@ int rxe_net_add(const char *ibdev_name, struct net_device *ndev)
->   	if (!rxe)
->   		return -ENOMEM;
->   
-> +	rxe->net = dev_net(ndev);
-> +
->   	ib_mark_name_assigned_by_user(&rxe->ib_dev);
->   
->   	err = rxe_add(rxe, ndev->mtu, ibdev_name, ndev);
-> @@ -631,40 +623,30 @@ int rxe_net_add(const char *ibdev_name, struct net_device *ndev)
->   	return 0;
->   }
->   
-> -static void rxe_sock_put(struct sock *sk,
-> -					void (*set_sk)(struct net *, struct sock *),
-> -					struct net *net)
-> +void rxe_net_uninit(struct net_device *ndev)
->   {
-> -	if (refcount_read(&sk->sk_refcnt) > SK_REF_FOR_TUNNEL) {
-> -		__sock_put(sk);
-> -	} else {
-> -		rxe_release_udp_tunnel(sk);
-> -		sk = NULL;
-> -		set_sk(net, sk);
-> -	}
-> +	struct net *net = dev_net(ndev);
-> +
-> +	rxe_ns_pernet_put_sk4(net);
-> +	rxe_ns_pernet_put_sk6(net);
->   }
->   
->   void rxe_net_del(struct ib_device *dev)
->   {
-> -	struct net_device *ndev;
-> -	struct sock *sk;
-> -	struct net *net;
-> +	struct rxe_dev *rxe = container_of(dev, struct rxe_dev, ib_dev);
->   
-> -	ndev = ib_device_get_netdev(dev, 1);
-> -	if (!ndev)
-> +	/*
-> +	 * Both RDMA_NLDEV_CMD_DELLINK and the NETDEV_UNREGISTER notifier
-> +	 * can get here concurrently for the same device. Only the first
-> +	 * one drops the pernet socket references. Use the net recorded
-> +	 * at rxe_net_add() time: the ib_device to netdev association may
-> +	 * already be gone here, so the put must not depend on it.
-> +	 */
-> +	if (test_and_set_bit(RXE_NET_SK_PUT, &rxe->net_flags))
->   		return;
->   
-> -	net = dev_net(ndev);
-> -
-> -	sk = rxe_ns_pernet_sk4(net);
-> -	if (sk)
-> -		rxe_sock_put(sk, rxe_ns_pernet_set_sk4, net);
-> -
-> -	sk = rxe_ns_pernet_sk6(net);
-> -	if (sk)
-> -		rxe_sock_put(sk, rxe_ns_pernet_set_sk6, net);
-> -
-> -	dev_put(ndev);
-> +	rxe_ns_pernet_put_sk4(rxe->net);
-> +	rxe_ns_pernet_put_sk6(rxe->net);
->   }
->   
->   static void rxe_port_event(struct rxe_dev *rxe,
-> @@ -753,52 +735,58 @@ static struct notifier_block rxe_net_notifier = {
->   	.notifier_call = rxe_notify,
->   };
->   
-> -static int rxe_net_ipv4_init(struct net *net)
-> +static struct sock *rxe_create_sk4(struct net *net)
->   {
-> -	struct sock *sk;
->   	struct socket *sock;
->   
-> -	sk = rxe_ns_pernet_sk4(net);
-> -	if (sk) {
-> -		sock_hold(sk);
-> -		return 0;
-> -	}
-> -
->   	sock = rxe_setup_udp_tunnel(net, htons(ROCE_V2_UDP_DPORT), false);
->   	if (IS_ERR(sock)) {
->   		pr_err("Failed to create IPv4 UDP tunnel\n");
-> -		return -1;
-> +		return ERR_CAST(sock);
->   	}
-> -	rxe_ns_pernet_set_sk4(net, sock->sk);
->   
-> -	return 0;
-> +	return sock->sk;
->   }
->   
-> -static int rxe_net_ipv6_init(struct net *net)
-> +static int rxe_net_ipv4_init(struct net *net)
->   {
-> -#if IS_ENABLED(CONFIG_IPV6)
->   	struct sock *sk;
-> -	struct socket *sock;
->   
-> -	sk = rxe_ns_pernet_sk6(net);
-> -	if (sk) {
-> -		sock_hold(sk);
-> -		return 0;
-> -	}
-> +	sk = rxe_ns_pernet_hold_sk4(net, rxe_create_sk4);
-> +	if (IS_ERR(sk))
-> +		return PTR_ERR(sk);
-> +
-> +	return 0;
-> +}
-> +
-> +#if IS_ENABLED(CONFIG_IPV6)
-> +static struct sock *rxe_create_sk6(struct net *net)
-> +{
-> +	struct socket *sock;
->   
->   	sock = rxe_setup_udp_tunnel(net, htons(ROCE_V2_UDP_DPORT), true);
->   	if (PTR_ERR(sock) == -EAFNOSUPPORT) {
->   		pr_warn("IPv6 is not supported, can not create a UDPv6 socket\n");
-> -		return 0;
-> +		return NULL;
->   	}
->   
->   	if (IS_ERR(sock)) {
->   		pr_err("Failed to create IPv6 UDP tunnel\n");
-> -		return -1;
-> +		return ERR_CAST(sock);
->   	}
->   
-> -	rxe_ns_pernet_set_sk6(net, sock->sk);
-> +	return sock->sk;
-> +}
-> +#endif
-> +
-> +static int rxe_net_ipv6_init(struct net *net)
-> +{
-> +#if IS_ENABLED(CONFIG_IPV6)
-> +	struct sock *sk;
->   
-> +	sk = rxe_ns_pernet_hold_sk6(net, rxe_create_sk6);
-> +	if (IS_ERR(sk))
-> +		return PTR_ERR(sk);
->   #endif
->   	return 0;
->   }
-> @@ -824,7 +812,6 @@ void rxe_net_exit(void)
->   int rxe_net_init(struct net_device *ndev)
->   {
->   	struct net *net;
-> -	struct sock *sk;
->   	int err;
->   
->   	net = dev_net(ndev);
-> @@ -840,10 +827,8 @@ int rxe_net_init(struct net_device *ndev)
->   	return 0;
->   
->   err_out:
-> -	/* If ipv6 error, release ipv4 resource */
-> -	sk = rxe_ns_pernet_sk4(net);
-> -	if (sk)
-> -		rxe_sock_put(sk, rxe_ns_pernet_set_sk4, net);
-> +	/* If ipv6 error, drop the ipv4 reference taken above. */
-> +	rxe_ns_pernet_put_sk4(net);
->   
->   	return err;
->   }
-> diff --git a/drivers/infiniband/sw/rxe/rxe_net.h b/drivers/infiniband/sw/rxe/rxe_net.h
-> index 56249677d692..06e08a4d5897 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_net.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_net.h
-> @@ -13,6 +13,7 @@
->   
->   int rxe_net_add(const char *ibdev_name, struct net_device *ndev);
->   void rxe_net_del(struct ib_device *dev);
-> +void rxe_net_uninit(struct net_device *ndev);
->   
->   int rxe_register_notifier(void);
->   int rxe_net_init(struct net_device *ndev);
-> diff --git a/drivers/infiniband/sw/rxe/rxe_ns.c b/drivers/infiniband/sw/rxe/rxe_ns.c
-> index 64621c89f8bf..d12099a73aa2 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_ns.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_ns.c
-> @@ -4,6 +4,8 @@
->   #include <net/netns/generic.h>
->   #include <net/net_namespace.h>
->   #include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/err.h>
->   #include <linux/skbuff.h>
->   #include <linux/pid_namespace.h>
->   #include <net/udp_tunnel.h>
-> @@ -11,11 +13,21 @@
->   #include "rxe_ns.h"
->   
->   /*
-> - * Per network namespace data
-> + * Per network namespace data.
-> + *
-> + * The IPv4/IPv6 UDP tunnel sockets are shared by every rxe device created in
-> + * a given namespace. Their lifetime is owned here and tracked by an explicit
-> + * user count (nr_skX) rather than by overloading sk->sk_refcnt: the network
-> + * stack takes transient references on sk_refcnt of its own, so it can never be
-> + * used to decide when the last rxe device is gone. All fields are serialised
-> + * by @lock.
->    */
->   struct rxe_ns_sock {
-> +	struct mutex lock; /* protects rxe_sk4/6 and nr_sk4/6 */
->   	struct sock __rcu *rxe_sk4;
->   	struct sock __rcu *rxe_sk6;
-> +	int nr_sk4;
-> +	int nr_sk6;
->   };
->   
->   /*
-> @@ -28,37 +40,39 @@ static unsigned int rxe_pernet_id;
->    */
->   static int rxe_ns_init(struct net *net)
->   {
-> -	/* defer socket create in the namespace to the first
-> -	 * device create.
-> -	 */
-> +	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
-> +
-> +	/* Socket creation is deferred to the first device create. */
-> +	mutex_init(&ns_sk->lock);
->   
->   	return 0;
->   }
->   
->   static void rxe_ns_exit(struct net *net)
->   {
-> -	/* called when the network namespace is removed
-> -	 */
-> +	/* called when the network namespace is removed */
->   	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
-> -	struct sock *sk;
-> -
-> -	rcu_read_lock();
-> -	sk = rcu_dereference(ns_sk->rxe_sk4);
-> -	rcu_read_unlock();
-> -	if (sk) {
-> -		rcu_assign_pointer(ns_sk->rxe_sk4, NULL);
-> -		udp_tunnel_sock_release(sk);
-> -	}
-> -
-> -#if IS_ENABLED(CONFIG_IPV6)
-> -	rcu_read_lock();
-> -	sk = rcu_dereference(ns_sk->rxe_sk6);
-> -	rcu_read_unlock();
-> -	if (sk) {
-> -		rcu_assign_pointer(ns_sk->rxe_sk6, NULL);
-> -		udp_tunnel_sock_release(sk);
-> -	}
-> -#endif
-> +	struct sock *sk4, *sk6;
-> +
-> +	mutex_lock(&ns_sk->lock);
-> +	sk4 = rcu_dereference_protected(ns_sk->rxe_sk4,
-> +					lockdep_is_held(&ns_sk->lock));
-> +	sk6 = rcu_dereference_protected(ns_sk->rxe_sk6,
-> +					lockdep_is_held(&ns_sk->lock));
-> +	rcu_assign_pointer(ns_sk->rxe_sk4, NULL);
-> +	rcu_assign_pointer(ns_sk->rxe_sk6, NULL);
-> +	ns_sk->nr_sk4 = 0;
-> +	ns_sk->nr_sk6 = 0;
-> +	mutex_unlock(&ns_sk->lock);
-> +
-> +	if (sk4 || sk6)
-> +		synchronize_rcu();
-> +	if (sk4)
-> +		udp_tunnel_sock_release(sk4);
-> +	if (sk6)
-> +		udp_tunnel_sock_release(sk6);
-> +
-> +	mutex_destroy(&ns_sk->lock);
+  pcieport 0000:10:01.1: DPC: containment event
+  pcieport 0000:10:01.1: PCIe Bus Error: severity=Uncorrected (Fatal)
+  pcieport 0000:10:01.1:    [ 5] SDES                   (First)
 
-When a network namespace containing an RDMA link is destroyed, 
-rxe_ns_exit() is invoked.
+mlx5 recovered the PCI functions and resumed 0000:11:00.1. During
+that resume, RDMA multiport binding replayed
+MLX5_DRIVER_EVENT_AFFILIATION_DONE and mlx5e sent
+MPV_DEVCOM_MASTER_UP. The host then panicked with:
 
-At the end of this function, mutex_destroy(&ns_sk->lock) is called to 
-destroy the ns_sk->lock mutex.
+  BUG: kernel NULL pointer dereference, address: 0000000000000010
+  RIP: mlx5_devcom_comp_set_ready+0x5/0x40 [mlx5_core]
+  RDI: 0000000000000000
 
-However, after the network namespace teardown, the associated netdevice 
-is still unregistered, which
+Call trace included:
 
-triggers the NETDEV_UNREGISTER notifier. In rxe_notify(), this event 
-eventually calls rxe_net_del() to
+  mlx5_devcom_comp_set_ready
+  mlx5e_devcom_event_mpv
+  mlx5_devcom_send_event
+  mlx5_ib_bind_slave_port
+  mlx5r_mp_probe
+  mlx5_pci_resume
 
-remove the RDMA link.
+MPV devcom registration publishes mlx5e private data to the component
+peer list before mlx5e_devcom_init_mpv() stores the returned component
+device in priv->devcom. A concurrent master-up event can therefore
+reach a peer whose private data is visible but whose priv->devcom
+backpointer is still NULL.
 
-rxe_net_del() acquires ns_sk->lock again, even though the mutex has 
-already been destroyed by rxe_ns_exit().
+MPV_DEVCOM_MASTER_UP already carries the sender/master mlx5e private
+data as event_data. The ready bit is stored on the shared devcom
+component, not on an individual peer. Use the sender devcom when
+marking the MPV component ready.
 
-This results in a use-after-free (or use-after-destroy) of the mutex.
+This preserves the readiness transition while avoiding a NULL
+dereference of the peer devcom pointer during affiliation replay after
+PCI error recovery.
 
+Fixes: bf11485f8419 ("net/mlx5: Register mlx5e priv to devcom in MPV mode")
+Assisted-by: Codex:gpt-5
+Signed-off-by: Manjunath Patil <manjunath.b.patil@oracle.com>
+Cc: stable@vger.kernel.org # 6.7+
+---
+v2:
+- Drop defensive master_priv/master_priv->devcom check as suggested by Tariq.
 
-Zhu Yanjun
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index 8f2b3abe0092..9b27afeb9b12 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -211,11 +211,11 @@ static void mlx5e_disable_async_events(struct mlx5e_priv *priv)
+ 
+ static int mlx5e_devcom_event_mpv(int event, void *my_data, void *event_data)
+ {
+-	struct mlx5e_priv *slave_priv = my_data;
++	struct mlx5e_priv *master_priv = event_data;
+ 
+ 	switch (event) {
+ 	case MPV_DEVCOM_MASTER_UP:
+-		mlx5_devcom_comp_set_ready(slave_priv->devcom, true);
++		mlx5_devcom_comp_set_ready(master_priv->devcom, true);
+ 		break;
+ 	case MPV_DEVCOM_MASTER_DOWN:
+ 		/* no need for comp set ready false since we unregister after
 
->   }
->   
->   /*
-> @@ -71,24 +85,64 @@ static struct pernet_operations rxe_net_ops = {
->   	.size = sizeof(struct rxe_ns_sock),
->   };
->   
-> -struct sock *rxe_ns_pernet_sk4(struct net *net)
-> +static struct sock *rxe_ns_hold(struct rxe_ns_sock *ns_sk,
-> +				struct sock __rcu **skp, int *nrp,
-> +				struct net *net, rxe_sk_create_t create)
->   {
-> -	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
->   	struct sock *sk;
->   
-> -	rcu_read_lock();
-> -	sk = rcu_dereference(ns_sk->rxe_sk4);
-> -	rcu_read_unlock();
-> +	mutex_lock(&ns_sk->lock);
-> +	sk = rcu_dereference_protected(*skp, lockdep_is_held(&ns_sk->lock));
-> +	if (sk) {
-> +		(*nrp)++;
-> +		mutex_unlock(&ns_sk->lock);
-> +		return sk;
-> +	}
-> +
-> +	sk = create(net);
-> +	if (IS_ERR_OR_NULL(sk)) {
-> +		mutex_unlock(&ns_sk->lock);
-> +		return sk;
-> +	}
-> +
-> +	rcu_assign_pointer(*skp, sk);
-> +	*nrp = 1;
-> +	mutex_unlock(&ns_sk->lock);
->   
->   	return sk;
->   }
->   
-> -void rxe_ns_pernet_set_sk4(struct net *net, struct sock *sk)
-> +static void rxe_ns_put(struct rxe_ns_sock *ns_sk,
-> +		       struct sock __rcu **skp, int *nrp)
-> +{
-> +	struct sock *sk = NULL;
-> +
-> +	mutex_lock(&ns_sk->lock);
-> +	if (*nrp > 0 && --(*nrp) == 0) {
-> +		sk = rcu_dereference_protected(*skp,
-> +					       lockdep_is_held(&ns_sk->lock));
-> +		rcu_assign_pointer(*skp, NULL);
-> +	}
-> +	mutex_unlock(&ns_sk->lock);
-> +
-> +	if (sk) {
-> +		synchronize_rcu();
-> +		udp_tunnel_sock_release(sk);
-> +	}
-> +}
-> +
-> +struct sock *rxe_ns_pernet_hold_sk4(struct net *net, rxe_sk_create_t create)
-> +{
-> +	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
-> +
-> +	return rxe_ns_hold(ns_sk, &ns_sk->rxe_sk4, &ns_sk->nr_sk4, net, create);
-> +}
-> +
-> +void rxe_ns_pernet_put_sk4(struct net *net)
->   {
->   	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
->   
-> -	rcu_assign_pointer(ns_sk->rxe_sk4, sk);
-> -	synchronize_rcu();
-> +	rxe_ns_put(ns_sk, &ns_sk->rxe_sk4, &ns_sk->nr_sk4);
->   }
->   
->   #if IS_ENABLED(CONFIG_IPV6)
-> @@ -104,12 +158,18 @@ struct sock *rxe_ns_pernet_sk6(struct net *net)
->   	return sk;
->   }
->   
-> -void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk)
-> +struct sock *rxe_ns_pernet_hold_sk6(struct net *net, rxe_sk_create_t create)
-> +{
-> +	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
-> +
-> +	return rxe_ns_hold(ns_sk, &ns_sk->rxe_sk6, &ns_sk->nr_sk6, net, create);
-> +}
-> +
-> +void rxe_ns_pernet_put_sk6(struct net *net)
->   {
->   	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
->   
-> -	rcu_assign_pointer(ns_sk->rxe_sk6, sk);
-> -	synchronize_rcu();
-> +	rxe_ns_put(ns_sk, &ns_sk->rxe_sk6, &ns_sk->nr_sk6);
->   }
->   #endif /* IPV6 */
->   
-> diff --git a/drivers/infiniband/sw/rxe/rxe_ns.h b/drivers/infiniband/sw/rxe/rxe_ns.h
-> index 4da2709e6b71..fe96b8abb8dc 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_ns.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_ns.h
-> @@ -3,19 +3,35 @@
->   #ifndef RXE_NS_H
->   #define RXE_NS_H
->   
-> -struct sock *rxe_ns_pernet_sk4(struct net *net);
-> -void rxe_ns_pernet_set_sk4(struct net *net, struct sock *sk);
-> +/*
-> + * Factory used to create a shared per-namespace tunnel socket while the
-> + * pernet lock is held. It must return:
-> + *   - a valid sk on success,
-> + *   - NULL if the address family is unsupported (not treated as an error),
-> + *   - an ERR_PTR() on failure.
-> + */
-> +typedef struct sock *(*rxe_sk_create_t)(struct net *net);
-> +
-> +struct sock *rxe_ns_pernet_hold_sk4(struct net *net, rxe_sk_create_t create);
-> +void rxe_ns_pernet_put_sk4(struct net *net);
->   
->   #if IS_ENABLED(CONFIG_IPV6)
-> -void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk);
->   struct sock *rxe_ns_pernet_sk6(struct net *net);
-> +struct sock *rxe_ns_pernet_hold_sk6(struct net *net, rxe_sk_create_t create);
-> +void rxe_ns_pernet_put_sk6(struct net *net);
->   #else /* IPv6 */
->   static inline struct sock *rxe_ns_pernet_sk6(struct net *net)
->   {
->   	return NULL;
->   }
->   
-> -static inline void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk)
-> +static inline struct sock *rxe_ns_pernet_hold_sk6(struct net *net,
-> +						  rxe_sk_create_t create)
-> +{
-> +	return NULL;
-> +}
-> +
-> +static inline void rxe_ns_pernet_put_sk6(struct net *net)
->   {
->   }
->   #endif /* IPv6 */
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> index 0f5ffd94643f..ffb2e2a71737 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> @@ -415,12 +415,20 @@ struct rxe_port {
->   	u32			qp_gsi_index;
->   };
->   
-> +enum rxe_net_flags {
-> +	/* rxe_net_del() must drop the pernet socket refs exactly once */
-> +	RXE_NET_SK_PUT,
-> +};
-> +
->   struct rxe_dev {
->   	struct ib_device	ib_dev;
->   	struct ib_device_attr	attr;
->   	int			max_ucontext;
->   	int			max_inline_data;
->   	struct mutex		usdev_lock;
-> +	unsigned long		net_flags;
-> +	/* netns whose pernet socket references this device holds */
-> +	struct net		*net;
->   
->   	char			raw_gid[ETH_ALEN];
->   
+base-commit: e43ffb69e0438cddd72aaa30898b4dc446f664f8
+-- 
+2.47.3
 
