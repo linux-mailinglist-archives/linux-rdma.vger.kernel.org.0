@@ -1,182 +1,176 @@
-Return-Path: <linux-rdma+bounces-22813-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22814-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id CLkAITzITGrFpgEAu9opvQ
-	(envelope-from <linux-rdma+bounces-22813-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 07 Jul 2026 11:34:52 +0200
+	id aLwoBPLKTGprpwEAu9opvQ
+	(envelope-from <linux-rdma+bounces-22814-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 07 Jul 2026 11:46:26 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6635D719D7D
-	for <lists+linux-rdma@lfdr.de>; Tue, 07 Jul 2026 11:34:52 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8335A719F16
+	for <lists+linux-rdma@lfdr.de>; Tue, 07 Jul 2026 11:46:25 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.alibaba.com header.s=default header.b=pHBhzdAI;
-	dmarc=pass (policy=none) header.from=linux.alibaba.com;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22813-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22813-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=maIQV6fr;
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22814-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22814-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 78DFA30022D7
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2026 09:29:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 06DA1305D82F
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2026 09:40:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F2A3914FF;
-	Tue,  7 Jul 2026 09:29:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16BB13B5E07;
+	Tue,  7 Jul 2026 09:40:49 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B04FF33066D;
-	Tue,  7 Jul 2026 09:29:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6FDC23BD1D;
+	Tue,  7 Jul 2026 09:40:47 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783416557; cv=none; b=ANfwTCPXLR7ae+f9BPVMcvZ9Y7bpTTNwUbYrMcOvhigF/FadaJqG4on24G0hMIY/mgbktDlkQBgqrjKLHN2vIRS6GKdUU2iOdM4IpxIKs7eVJIvUGg2osGVQZGkgW1hNGl7AWaDzpG5+S+v/lJkwwMmGtqVoqm86v1GWbCoVtt8=
+	t=1783417248; cv=none; b=SsFPUhuyIhXXXRMjR+Qtq0m4lItGvs9j9go376fcorEPD4dj1zccHdgA8X3UhSOOOyVqAcHprZLuxQ1BNbKbHgGintgvyEuzcpe2ELeXY0cjuezgwFUKmcZEiaAktNg0a959R1pxSUXPhQWeNFT3/HGpt2mH5Hoqs0Fq4pxvXzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783416557; c=relaxed/simple;
-	bh=hZkT2Dsk6x1Rc8lxbgya9SVeGD89lnwkYlre0tYxc2w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EaVvxV+8a4S0AsvCSDgff+Br7NDj2ibq+noCp08D1uYw4MrslasZBdeWyNyWbLUP8RjDwOdjiDLziKmQQlLhpJh/ajwYxsuIVDpB0rhTs6diKX1reZjO9F2MangL33mt27S+XwWUc0kVvix+xF0gZjqYidJqMR8wEmi3Nt0EDDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=pHBhzdAI; arc=none smtp.client-ip=115.124.30.118
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1783416546; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=x/JBmUH0AmD4h3bq2fvjuR02nLqqtA1dtweQcgT9r2k=;
-	b=pHBhzdAIaNpia0nJojGu+fKNii3HdKyNGNztCwxn8bFH7pDMawwPbLLOPG9JcPTWuQGz7YHS1VB/BGRNuEmhDfIEtoRuo+lS0/rKyM4FkwzudoUKAKVeRkLc+slZ/TSjhNizhZx5dxUdrZVPDGzPx1QYXNEVoax9hB07b6XcRx8=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045098064;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0X6cl3KV_1783416545;
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0X6cl3KV_1783416545 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Tue, 07 Jul 2026 17:29:05 +0800
-Date: Tue, 7 Jul 2026 17:29:04 +0800
-From: Dust Li <dust.li@linux.alibaba.com>
-To: hexlabsecurity@proton.me, "David S. Miller" <davem@davemloft.net>,
-	Sidraya Jayagond <sidraya@linux.ibm.com>,
-	Eric Dumazet <edumazet@google.com>,
-	"D. Wythe" <alibuda@linux.alibaba.com>,
-	Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>,
-	Wenjia Zhang <wenjia@linux.ibm.com>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Stefan Raspl <raspl@linux.ibm.com>, Wen Gu <guwen@linux.alibaba.com>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	Mahanta Jambigi <mjambigi@linux.ibm.com>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Ursula Braun <ubraun@linux.ibm.com>, linux-s390@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net v4 0/3] net/smc: bound wire-controlled CDC cursors
- against the local buffers
-Message-ID: <akzG4Hfeom6fNzFX@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20260705-b4-disp-28a1bbca-v4-0-be089b98acc6@proton.me>
+	s=arc-20240116; t=1783417248; c=relaxed/simple;
+	bh=2SvJG9DL3UqCvuRg7Vo6qhQ4H7IzR1naPKn5y4+0hpI=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=UZg3avxRiUeNs4QYADgLutU0pUM6Z3xULRodJ6oHA+ds7L6M6Ne5QN89ut8aT6WVDfnkmuLVafVkBcpfOwRjXwMwmO6DAdR93+IH8Akdigt/4RkPGM8VC9CD9Qjf+G4mmgPMNwbUFGQGfuY86KaN/uzpEoLRloLQXSMRhlzE1qY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=maIQV6fr; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C8761F000E9;
+	Tue,  7 Jul 2026 09:40:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783417247;
+	bh=6uJPozj/uhbrq91wleQ/hPHYt4I/QFVwHZxnDm65VnU=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc;
+	b=maIQV6frxWzq57q2+mzWiIBsx546dKVfAEfuRxFY3qTAYTBdavS1NcqcIlgKNF7fl
+	 DPhrbrl6/3XvFUDXQ+qQd9yDqZYra3fHxiIVJdd6jKJl5J8E8YPSsypeZitq0lu+Ni
+	 jEDtfFnua+72m+Pena7SLoubtroRQFPrX/4UQsyaOEPjopE7RcVi8BbfTqN0SBmApH
+	 hqog+vLCxpLf1DsQA2lAvAolJtd7L2WHCEh64aV75WgOzVb0p0AQ33FO0W4qE9PBYm
+	 fvf8K9SFL9LpHZ6AEpaQfqIzpIv6ccJHLEyfux4ZJ3DXSDuSSGcbKccvtZJnFI6Ykd
+	 8yB3eclpGVDZQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id D0CB03925473;
+	Tue,  7 Jul 2026 09:40:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260705-b4-disp-28a1bbca-v4-0-be089b98acc6@proton.me>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next V10 00/14] devlink and mlx5: Support
+ cross-function
+ rate scheduling
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <178341722764.1458887.13873598911208666533.git-patchwork-notify@kernel.org>
+Date: Tue, 07 Jul 2026 09:40:27 +0000
+References: <20260701073254.754518-1-tariqt@nvidia.com>
+In-Reply-To: <20260701073254.754518-1-tariqt@nvidia.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, netdev@vger.kernel.org, pabeni@redhat.com,
+ ajayachandra@nvidia.com, bobbyeshleman@meta.com, cjubran@nvidia.com,
+ cratiu@nvidia.com, daniel@iogearbox.net, danielj@nvidia.com,
+ daniel.zahka@gmail.com, dw@davidwei.uk, donald.hunter@gmail.com,
+ dtatulea@nvidia.com, jiri@nvidia.com, jiri@resnulli.us, joe@dama.to,
+ corbet@lwn.net, kees@kernel.org, leon@kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-rdma@vger.kernel.org, mbloch@nvidia.com, moshe@nvidia.com,
+ ohartoov@nvidia.com, parav@nvidia.com, petrm@nvidia.com,
+ rkannoth@marvell.com, saeedm@nvidia.com, shshitrit@nvidia.com,
+ shayd@nvidia.com, shuah@kernel.org, skhan@linuxfoundation.org,
+ horms@kernel.org, sdf@fomichev.me, willemb@google.com, gal@nvidia.com
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-12.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
-	WHITELIST_SPF_DKIM(-3.00)[alibaba.com:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FREEMAIL_CC(0.00)[lunn.ch,davemloft.net,google.com,kernel.org,vger.kernel.org,redhat.com,nvidia.com,meta.com,iogearbox.net,gmail.com,davidwei.uk,resnulli.us,dama.to,lwn.net,marvell.com,linuxfoundation.org,fomichev.me];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS(0.00)[m:hexlabsecurity@proton.me,m:davem@davemloft.net,m:sidraya@linux.ibm.com,m:edumazet@google.com,m:alibuda@linux.alibaba.com,m:kuba@kernel.org,m:horms@kernel.org,m:wenjia@linux.ibm.com,m:pabeni@redhat.com,m:raspl@linux.ibm.com,m:guwen@linux.alibaba.com,m:linux-kernel@vger.kernel.org,m:netdev@vger.kernel.org,m:mjambigi@linux.ibm.com,m:tonylu@linux.alibaba.com,m:ubraun@linux.ibm.com,m:linux-s390@vger.kernel.org,m:linux-rdma@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[dust.li@linux.alibaba.com,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22813-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FORWARDED(0.00)[lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22814-lists,linux-rdma=lfdr.de,netdevbpf];
+	RCPT_COUNT_TWELVE(0.00)[42];
+	FORGED_SENDER(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
-	PRECEDENCE_BULK(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dust.li@linux.alibaba.com,linux-rdma@vger.kernel.org];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	HAS_REPLYTO(0.00)[dust.li@linux.alibaba.com];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:tariqt@nvidia.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:netdev@vger.kernel.org,m:pabeni@redhat.com,m:ajayachandra@nvidia.com,m:bobbyeshleman@meta.com,m:cjubran@nvidia.com,m:cratiu@nvidia.com,m:daniel@iogearbox.net,m:danielj@nvidia.com,m:daniel.zahka@gmail.com,m:dw@davidwei.uk,m:donald.hunter@gmail.com,m:dtatulea@nvidia.com,m:jiri@nvidia.com,m:jiri@resnulli.us,m:joe@dama.to,m:corbet@lwn.net,m:kees@kernel.org,m:leon@kernel.org,m:linux-doc@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:mbloch@nvidia.com,m:moshe@nvidia.com,m:ohartoov@nvidia.com,m:parav@nvidia.com,m:petrm@nvidia.com,m:rkannoth@marvell.com,m:saeedm@nvidia.com,m:shshitrit@nvidia.com,m:shayd@nvidia.com,m:shuah@kernel.org,m:skhan@linuxfoundation.org,m:horms@kernel.org,m:sdf@fomichev.me,m:willemb@google.com,m:gal@nvidia.com,m:andrew@lunn.ch,m:danielzahka@gmail.com,m:donaldhunter@gmail.co
+ m,s:lists@lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FROM_NO_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 6635D719D7D
+X-Rspamd-Queue-Id: 8335A719F16
 
-On 2026-07-05 02:54:04, Bryam Vargas via B4 Relay wrote:
->A peer's CDC producer/consumer cursors are copied from the wire and used,
->without an upper bound against the local buffers, as (a) a raw index into the
->RMB on the urgent path, (b) the receive length in smc_rx_recvmsg(), and (c) the
->send length in smc_tx_sendmsg() on the SMC-D DMB-merge path. A malicious or
->buggy peer can forge a cursor so each runs past the relevant buffer: an
->out-of-bounds read of adjacent kernel memory (disclosed to the peer) on the
->receive/urgent side, and, on the send side, an out-of-bounds write whose
->length the peer controls and whose overflowing bytes are the local sender's
->own outbound data.
->
->This series bounds each length where it is consumed. The clamp is synchronous
->and race-free against the tasklet that advances the cursor, so it is the minimal
->fix for stable. A separate net-next series adds the wire-boundary validation and
->connection abort that Dust Li suggested; those do not replace these clamps.
->
->The clamp is not subsumed by validating cursors at the input boundary. A peer
->that only increments prod.wrap with count == 0 hits the differing-wrap branch of
->smc_curs_diff(), which returns (len - 0) + 0 == len every CDC, so bytes_to_rcv
->(and sndbuf_space on the send side) accumulates past the buffer while every
->per-cursor bound sees count == 0 and accepts the message. The overflow lives in
->the accumulator, not the cursor; only the consumer-side clamp bounds it. And
->because a queued abort runs asynchronously (queue_work -> smc_conn_kill) while
->smc_rx_recvmsg() reads the accumulator under lock_sock, only the synchronous
->clamp closes that window. So the clamp goes to stable; the abort is net-next.
->
->The nearby readable >= rmb_desc->len / len > sndbuf_desc->len tests only feed
->statistics counters (SMC_STAT_RMB_RX_FULL / SMC_STAT_RMB_TX_SIZE_SMALL) on an
->earlier, separate read; they do not bound the copy.
->
->A/B (in-kernel KASAN replaying the sink arithmetic over a real rmb_desc->len /
->sndbuf_desc->len slab; kasan.fault=report kasan_multi_shot, 2026-07-05):
->  - urgent index (1/3):  count = len+1        -> slab-out-of-bounds Read;  clamped -> clean
->  - recv length  (2/3):  bytes_to_rcv = 5*len via wrap++/count=0 -> OOB Read; clamped -> clean
->  - send length  (3/3):  sndbuf_space inflated -> slab-out-of-bounds Write; clamped -> clean
->  - signed overflow:     readable = -1 -> v1 ">len" misses -> OOB; "<0 || >len" -> clean
->  - concurrent TOCTOU race: a producer-side clamp is racy (OOB in a racing consumer
->    kthread on another CPU); the consumer-side clamp is race-free (0 hits / 5,000,000 reads).
->  - every in-bounds / honest-peer arm: clean.
->
->Changes since v3:
->  - split into this stable-bound clamp series and a separate net-next
->    validate/abort series, per Dust Li's review;
->  - tightened the commit messages; noted that the nearby SMC_STAT_* tests are not
->    bounds; no functional change to the three clamps.
->  v3: https://lore.kernel.org/all/20260614-b4-disp-edd64be9-v3-0-551fa514257e@proton.me/
+Hello:
 
-Hi Bryam,
+This series was applied to netdev/net-next.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-Are you planning to land these clamps first, and then follow up with a
-separate validate/abort series?
+On Wed, 1 Jul 2026 10:32:40 +0300 you wrote:
+> Hi,
+> 
+> This series by Cosmin adds support for cross-function rate scheduling in
+> devlink and mlx5.
+> See detailed explanation by Cosmin below [0].
+> 
+> Regards,
+> Tariq
+> 
+> [...]
 
-Looking at your earlier A/B test, it simulates this logic in userspace to
-demonstrate the bug, but it doesn't actually trigger the bug in our
-current kernel. If that's the case, the security risk here doesn't seem
-high to me, since SMC is only meant to be deployed in trusted environments.
+Here is the summary with links:
+  - [net-next,V10,01/14] devlink: Update nested instance locking comment
+    https://git.kernel.org/netdev/net-next/c/3bf4c5970ca8
+  - [net-next,V10,02/14] devlink: Add a helper for getting a nested-in instance
+    https://git.kernel.org/netdev/net-next/c/9f2d908cc34e
+  - [net-next,V10,03/14] devlink: Migrate from info->user_ptr to info->ctx
+    https://git.kernel.org/netdev/net-next/c/e48abacd6e83
+  - [net-next,V10,04/14] devlink: Decouple rate storage from associated devlink object
+    https://git.kernel.org/netdev/net-next/c/db078bc2b031
+  - [net-next,V10,05/14] devlink: Add parent dev to devlink API
+    https://git.kernel.org/netdev/net-next/c/b5f90fd4580c
+  - [net-next,V10,06/14] devlink: Allow parent dev for rate-set and rate-new
+    https://git.kernel.org/netdev/net-next/c/58132b6fc4a5
+  - [net-next,V10,07/14] devlink: Allow rate node parents from other devlinks
+    https://git.kernel.org/netdev/net-next/c/6bbd1bce3099
+  - [net-next,V10,08/14] net/mlx5: qos: Use mlx5_lag_query_bond_speed to query LAG speed
+    https://git.kernel.org/netdev/net-next/c/f8128b13df66
+  - [net-next,V10,09/14] net/mlx5: qos: Refactor vport QoS cleanup
+    https://git.kernel.org/netdev/net-next/c/89a0881183d1
+  - [net-next,V10,10/14] net/mlx5: qos: Model the root node in the scheduling hierarchy
+    https://git.kernel.org/netdev/net-next/c/22d32def3ced
+  - [net-next,V10,11/14] net/mlx5: qos: Remove qos domains and use shd
+    https://git.kernel.org/netdev/net-next/c/450ed6b182de
+  - [net-next,V10,12/14] net/mlx5: qos: Support cross-device tx scheduling
+    https://git.kernel.org/netdev/net-next/c/2bc38232047c
+  - [net-next,V10,13/14] selftests: drv-net: Add test for cross-esw rate scheduling
+    https://git.kernel.org/netdev/net-next/c/b2aa7390967e
+  - [net-next,V10,14/14] net/mlx5: Document devlink rates
+    https://git.kernel.org/netdev/net-next/c/403ac520e893
 
-On the other hand, once this is actually triggered, it means the data
-we've been handing to userspace is already wrong, which is already a
-serious problem, and the connection should be terminated. So I don't
-really see much value in merging the bound-clamp patches first.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-So, I'd expected to see the real bug and validation/abort patch.
-
-Best regards,
-Dust
 
 
