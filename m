@@ -1,58 +1,58 @@
-Return-Path: <linux-rdma+bounces-22912-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22913-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id uxcpICTTTmpVUwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-22912-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 00:45:56 +0200
+	id bgoOBDzTTmpiUwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-22913-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 00:46:20 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 359EA72AEE1
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 00:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AFAF872AEEF
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 00:46:19 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=auditcode.ai header.s=zmail header.b=YhthOYiN;
+	dkim=pass header.d=auditcode.ai header.s=zmail header.b=CvhVL2bG;
 	dmarc=pass (policy=none) header.from=auditcode.ai;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22912-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22912-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22913-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22913-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 826A0303A71C
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jul 2026 22:45:53 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 32342303B7FB
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jul 2026 22:46:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A2B22DF719;
-	Wed,  8 Jul 2026 22:45:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4092A2E7631;
+	Wed,  8 Jul 2026 22:46:07 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from sender-op-o17.zoho.eu (sender-op-o17.zoho.eu [136.143.169.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06F9233955;
-	Wed,  8 Jul 2026 22:45:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 169FC27A907;
+	Wed,  8 Jul 2026 22:46:04 +0000 (UTC)
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783550750; cv=pass; b=hpv7HKy4rtRn+XWOZx85kEWctQqUd6kqtbtqVkC2Px8Hk/qgSQPLWeBZVQLrdbRwz3dIh+jytntYO2wn1L7BYwSzui9mF9Os6KZ2caEuOfLfUyIwvo9n0m6r6mKHY+KE2eogShCip9c++g3VBnmm8k0xSKb+xafd4Dk/GTlwTzY=
+	t=1783550767; cv=pass; b=iFq9HvUG/B7/lRapzTL4eoB5TXZ5ZGX2I+5EKuU3fYEPUiCJaEOb+IqEHa4DNUKH2hOGu8ko5E7q0K16CdpFkSAzxIRyBOOmDx6xoIatUtfwPCO56D2qJHaZGBgeuhR4Ssg6jgBF+nNsoVI7tnNi0/ReWPGW1ZY5cLamIo602jQ=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783550750; c=relaxed/simple;
-	bh=1BXqvaegiwBMFTNvtId773TO+wCSJGm9zuNVe+aMTN8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=t1Nq4DqySd6/f15apMIG7wVKVOnvLvu3gk2u08wgZSe4w/ZZp+hgYWUKJFN3dZ19YsVXGKOjJ7yA59oXD1OhZuekpU3eZ+0egdnk4ErzNHV4Q2AX5ImqXXVjXQ+l1wb7z81VOJDRP2HNQwR7In1N56nGHV9AV0IhIOru1mzbs7w=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=auditcode.ai; spf=pass smtp.mailfrom=auditcode.ai; dkim=pass (1024-bit key) header.d=auditcode.ai header.i=security@auditcode.ai header.b=YhthOYiN; arc=pass smtp.client-ip=136.143.169.17
-ARC-Seal: i=1; a=rsa-sha256; t=1783550739; cv=none; 
+	s=arc-20240116; t=1783550767; c=relaxed/simple;
+	bh=f7hTj5Z6gRvSa0KtpoX7/eRvO2RceLcXei9E5wV8n3A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ahr9xFVU5uhKoZ1gB0lcX5uJgxSqiXvcT7rnuKUJcyuEfo3nNa6042wj616HAXEH12aWTwmFmys3MbVJwY9EouydyEDksmoV+2gsT+d3FW2W9hC8RAfEEHowsfnZgySxMltgfEDImT1WphT2iCZqnUpG9FNKrMjavOt0D63/4sI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=auditcode.ai; spf=pass smtp.mailfrom=auditcode.ai; dkim=pass (1024-bit key) header.d=auditcode.ai header.i=security@auditcode.ai header.b=CvhVL2bG; arc=pass smtp.client-ip=136.143.169.17
+ARC-Seal: i=1; a=rsa-sha256; t=1783550756; cv=none; 
 	d=zohomail.eu; s=zohoarc; 
-	b=IXzlc5PCLYVWiPk4sCq6Mr2JBMa1FtOgZK3MooaV7prWauQBhqhdhsMN1uJqDOZIB6aPy4lMs5tvXU9GN5RmYiGZDcPwFm5VcBh5ayfgnBPvhSvSqsedS8G01cr0Fk8f4bjPMLZdFrmDPuYsLqDE+bgSxefrJxlJpHLQUvA9cyQ=
+	b=EntOqNFnDL0j9g0Q8/LcCZsE3AMe4Cy55gFdZAX1IVbouzqN13rYpOpMiXXIdMBeJ+105gOIb09pXHxKY76YHZ99vRXYd3giKKI4eNTRLwcrOOVmS8iLCcr3RLaZsjJXswZC5KkJKGvEbHzyXRZkyazussOqS8bXIrYsXkRXMHc=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-	t=1783550739; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=A9ZSaY1dOlXF8qW8X5vfZ8p79gCdbkf6XGNk5YfsOvo=; 
-	b=FdndDBuDouBWIdPtdPSEKyYf0A8vAy9fTnHBVFbRjlcYKZFlDPqcaihMHkWCSEWp+zU/NLfAO6qK3L3YDlpqfQZzyb2hebT/I9sAhmQZCXEzeqyH0peMm6KCjCIGOSB/mIcAE8Xn3dk/FWt4XQTcUFCl7Ws4jEVCWEv0xn7yBrw=
+	t=1783550756; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=BLuv8CvIQiEDopySExwjFH41Ldb+fBdbqFUmbwvT514=; 
+	b=CLiE+9E34LBmq1RwvJrzKuP9Tz1bS0W3miCi2K1ZRUmX7ik06SvMgM1FPlkt8kp+OVGSBAoek/2dZXNBIgqjNMtPc0hujpYY77fJzXKmp+YQRJn9flVOVFMItaf3hn6Lp2VeVp5hGddeHkOcjq3MH10jJ8EZ5rrEkabJEDH1Mc8=
 ARC-Authentication-Results: i=1; mx.zohomail.eu;
 	dkim=pass  header.i=auditcode.ai;
 	spf=pass  smtp.mailfrom=security@auditcode.ai;
 	dmarc=pass header.from=<security@auditcode.ai>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1783550739;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1783550756;
 	s=zmail; d=auditcode.ai; i=security@auditcode.ai;
 	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=A9ZSaY1dOlXF8qW8X5vfZ8p79gCdbkf6XGNk5YfsOvo=;
-	b=YhthOYiNXwgKVEUZH9UgLKDaCf9kXKHblca3nYSk+UQyjAtBaT921cvcGWLCtHFw
-	cYTiabOytDOsUM6bFWso0R5vSErMcefAR46MmB9lD4Or6DMzAObmxboVj7+idyic8ZN
-	qM1G3V+NvkOsdIw1ymQAlxaVBbPLG2uc+7NzR/ks=
-Received: by mx.zoho.eu with SMTPS id 178355073702292.05988634109019;
-	Thu, 9 Jul 2026 00:45:37 +0200 (CEST)
+	bh=BLuv8CvIQiEDopySExwjFH41Ldb+fBdbqFUmbwvT514=;
+	b=CvhVL2bGy4TIMKeHHBqcGdUfbOHUaWZhhBBomigDD4Db8bo5o6kov7vLUrFK+5wu
+	Q0yJigXsQ3cutfSy7gv9+8iy+NPyC+22OGaNicBvh54rLdy7FpMHVd1xQFyX0rqlTRc
+	ye3ZlPC2oZA30lfRH7NjW4aUrzS97/cY1P4JrwTY=
+Received: by mx.zoho.eu with SMTPS id 1783550753234656.5754088413917;
+	Thu, 9 Jul 2026 00:45:53 +0200 (CEST)
 From: Ibrahim Hashimov <security@auditcode.ai>
 To: Zhu Yanjun <zyjzyj2000@gmail.com>,
 	Jason Gunthorpe <jgg@ziepe.ca>,
@@ -60,9 +60,9 @@ To: Zhu Yanjun <zyjzyj2000@gmail.com>,
 Cc: linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH] RDMA/rxe: validate num_sge/cur_sge before indexing wqe->dma.sge[]
-Date: Thu,  9 Jul 2026 00:45:34 +0200
-Message-ID: <20260708224534.1206-1-security@auditcode.ai>
+Subject: [PATCH] RDMA/rxe: fix responder UAF on IB_QP_MAX_DEST_RD_ATOMIC modify_qp
+Date: Thu,  9 Jul 2026 00:45:50 +0200
+Message-ID: <20260708224550.1281-1-security@auditcode.ai>
 X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -97,7 +97,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[security@auditcode.ai,linux-rdma@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-22912-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22913-lists,linux-rdma=lfdr.de];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
@@ -105,128 +105,112 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FROM_HAS_DN(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 359EA72AEE1
+X-Rspamd-Queue-Id: AFAF872AEEF
 
-A user QP's send queue (qp->sq.queue) is a shared ring the userspace
-application writes to directly via mmap (vmalloc_user(), see
-rxe_queue.c). For such a QP, rxe_post_send() takes the qp->is_user
-branch and only schedules the requester task -- it never validates or
-copies the posted WQE:
+rxe_qp_from_attr()'s IB_QP_MAX_DEST_RD_ATOMIC branch frees and
+reallocates qp->resp.resources[] (the rd_atomic resource array used by
+the responder to track in-flight RDMA READ/ATOMIC/FLUSH requests)
+completely outside of the IB_QP_STATE handling above it. Unlike every
+other place that tears this array down -- rxe_qp_reset(), reached only
+under IB_QP_STATE, always calls rxe_disable_task(&qp->recv_task) /
+rxe_disable_task(&qp->send_task) to drain the responder and requester
+tasks before touching per-QP state, then re-enables them -- this branch
+runs with the responder task (rxe_receiver(), scheduled as recv_task on
+the rxe_wq workqueue) fully live and unlocked. A userspace modify_qp()
+that sets only IB_QP_MAX_DEST_RD_ATOMIC (no state change, so
+__qp_chk_state()/ib_modify_qp_is_ok() never runs and qp->state_lock is
+never taken here) can therefore race the responder in two ways:
 
-	drivers/infiniband/sw/rxe/rxe_verbs.c:
-		if (qp->is_user) {
-			rxe_sched_task(&qp->send_task);
-			...
-		}
+ 1. free_rd_atomic_resources() calls kfree(qp->resp.resources) and
+    alloc_rd_atomic_resources() kzalloc_objs()'s a new array while
+    rxe_prepare_res()/find_resource() in rxe_resp.c are concurrently
+    walking &qp->resp.resources[i] with no lock held -- a straight
+    free-vs-read race on the array itself.
 
-The requester then consumes the WQE in place straight out of that
-mmap'd ring:
+ 2. free_rd_atomic_resources() only NULLs qp->resp.resources; it never
+    clears qp->resp.res, the raw pointer *into* that array that
+    rxe_resp.c caches across a multi-packet RDMA READ/ATOMIC/FLUSH
+    reply (set at rxe_resp.c read/atomic/flush-reply sites, cleared
+    only on the normal completion paths). If a modify_qp() races a
+    resource still referenced by qp->resp.res, the array is freed out
+    from under the cached pointer and the next reply packet dereferences
+    it -- independent of the kfree/kzalloc_objs() window in (1).
 
-	rxe_req.c:	wqe = req_next_wqe(qp);
-	rxe_req.c:	err = copy_data(qp->pd, 0, &wqe->dma,
-					payload_addr(pkt), payload,
-					RXE_FROM_MR_OBJ);
+Reproduced with KASAN: a single process driving one RC QP pair in rxe
+loopback, one thread pumping large multi-packet IBV_WR_RDMA_READs
+against qpB while a second thread hammers
+ibv_modify_qp(qpB, IB_QP_MAX_DEST_RD_ATOMIC), reliably (~11s) produces
 
-copy_data() immediately indexes the per-WQE sge array with the
-attacker-controlled cur_sge field, before any bound is checked:
+  BUG: KASAN: slab-use-after-free in rxe_receiver+0x4f78/0x89e0 [rdma_rxe]
+  Workqueue: rxe_wq do_work [rdma_rxe]
 
-	rxe_mr.c:	struct rxe_sge *sge = &dma->sge[dma->cur_sge];
-	rxe_mr.c:	...
-	rxe_mr.c:	if (sge->length && (offset < sge->length)) {
+with the freed kmalloc-1k object being the rd_atomic resource array
+freed by the modify_qp() thread while the recv_task kworker reads it.
+An identical run modifying only IB_QP_MIN_RNR_TIMER (no resource free)
+is clean.
 
-dma->sge[] is a flex array whose real backing storage is exactly
-qp->sq.max_sge entries per WQE slot (see rxe_qp.c, wqe_size computed
-from max_sge at QP create time). Since a user QP's WQE bytes are
-entirely attacker-supplied, both wqe->dma.num_sge and wqe->dma.cur_sge
-can be set to arbitrary values independent of each other and of
-max_sge. Only the *kernel*-QP post path bounds num_sge:
+Fix both races the same way rxe_qp_reset() already handles tearing down
+this exact array: quiesce the responder task around the free/realloc by
+calling rxe_disable_task(&qp->recv_task) before free_rd_atomic_resources()
+and rxe_enable_task(&qp->recv_task) after alloc_rd_atomic_resources(),
+so rxe_receiver() cannot observe the array mid-free/mid-realloc. And
+close the still-open window for (2) at the source: have
+free_rd_atomic_resources() clear qp->resp.res along with
+qp->resp.resources, exactly like the existing completion paths in
+rxe_resp.c (check_rkey()/duplicate_request()/RESPST_CLEANUP) already do
+when a resource's lifetime ends, so a drained-and-resumed responder
+restarts at RESPST_CHK_PSN against the fresh array instead of replaying
+a stale reference into the old one.
 
-	rxe_verbs.c: validate_send_wr()
-		if (num_sge > sq->max_sge) {
-			rxe_err_qp(qp, "num_sge > max_sge\n");
+Only qp->recv_task is drained: qp->resp.resources / qp->resp.res are
+touched exclusively by the responder (rxe_resp.c); the requester
+(send_task / rxe_sender()) never reads them, so there is no need to
+widen this beyond what rxe_qp_reset() would drain for the equivalent
+state.
 
-but that function is only reachable from rxe_post_one_send() for
-kernel-owned QPs; it is never consulted for a user QP's raw WQE.
-
-The sibling receive path already has the equivalent guard, with the
-literal comment documenting exactly why it is required:
-
-	rxe_resp.c: get_srq_wqe()
-		/* don't trust user space data */
-		if (unlikely(wqe->dma.num_sge > srq->rq.max_sge)) {
-			...
-			rxe_dbg_qp(qp, "invalid num_sge in SRQ entry\n");
-			return RESPST_ERR_MALFORMED_WQE;
-		}
-
-The send/requester path has no analogous check, so a local,
-unprivileged user who can open /dev/infiniband/uverbs* and create a
-user QP on a soft-RoCE (rxe) link can hand-craft a WQE in the shared
-send queue with an out-of-range wqe->dma.cur_sge (or an oversized
-wqe->dma.num_sge) and ring the send doorbell. rxe_requester() then
-calls copy_data(), which dereferences &dma->sge[cur_sge] out of the
-bounds of the per-WQE sge array -- a vmalloc out-of-bounds *read*
-(confirmed via KASAN: "KASAN: vmalloc-out-of-bounds in copy_data"),
-reliably panicking the kernel (local DoS). sge->addr itself is still
-bounds-checked later by lookup_mr()/rxe_mr_copy(), so the primitive is
-an OOB read of sge metadata, not an arbitrary read/write primitive.
-
-Fix this the same way get_srq_wqe() already does for SRQ entries:
-bound both fields pulled from the (possibly user-mapped) send queue
-entry before they are ever used to index wqe->dma.sge[], right where
-the requester fetches the next WQE off the ring in rxe_requester().
-num_sge is capped at qp->sq.max_sge (matching the sibling SRQ check
-and the kernel-QP validate_send_wr() check), and cur_sge is capped at
-qp->sq.max_sge directly, since that is the true per-WQE array capacity
-that copy_data() indexes into -- this also covers num_sge == 0 /
-cur_sge == 0 local-op and zero-payload WQEs, which remain valid.
-
-This is a long-standing bug in the rxe (soft-RoCE) driver: the
-qp->is_user bypass in rxe_post_send() and the unbounded
-&dma->sge[dma->cur_sge] indexing in copy_data() have been present
-since the driver was introduced.
-
-Runtime-verified on a v6.19 KASAN (CONFIG_KASAN_VMALLOC=y) stand: a
-reproducer that posts a user QP send WQE with an out-of-range
-cur_sge reliably tripped "KASAN: vmalloc-out-of-bounds in
-copy_data" (an out-of-bounds read) before this patch, and no longer
-triggers that report with the patch applied.
+Verified on the same v6.19 KASAN stand: with this fix applied, the
+identical differential reproducer drives sustained MAX_DEST_RD_ATOMIC
+storms against qpB well past the ~11s pre-fix time-to-first-splat with
+zero KASAN reports, versus reliably tripping the slab-use-after-free in
+rxe_receiver() described above before the fix.
 
 Fixes: 8700e3e7c485 ("Soft RoCE driver")
 Cc: stable@vger.kernel.org
 Signed-off-by: Ibrahim Hashimov <security@auditcode.ai>
 Assisted-by: AuditCode-AI:2026.07
 ---
- drivers/infiniband/sw/rxe/rxe_req.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/infiniband/sw/rxe/rxe_qp.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index 12d03f390b09..9fb2c49fb503 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -701,6 +701,22 @@ int rxe_requester(struct rxe_qp *qp)
- 	if (unlikely(!wqe))
- 		goto exit;
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index f3dff1aea96a..646957707765 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -172,6 +172,7 @@ static void free_rd_atomic_resources(struct rxe_qp *qp)
+ 		}
+ 		kfree(qp->resp.resources);
+ 		qp->resp.resources = NULL;
++		qp->resp.res = NULL;
+ 	}
+ }
  
-+	/*
-+	 * Don't trust user space data: qp->sq.queue is a raw ring the
-+	 * application writes directly for a user QP, so wqe->dma.num_sge
-+	 * and wqe->dma.cur_sge must be bounds-checked the same way
-+	 * get_srq_wqe() checks an SRQ entry's num_sge before it is used.
-+	 * Otherwise copy_data() indexes wqe->dma.sge[wqe->dma.cur_sge]
-+	 * with an unvalidated, attacker-controlled index/count and reads
-+	 * out of bounds of the per-wqe sge array.
-+	 */
-+	if (unlikely(wqe->dma.num_sge > qp->sq.max_sge ||
-+		     wqe->dma.cur_sge >= qp->sq.max_sge)) {
-+		rxe_dbg_qp(qp, "invalid num_sge/cur_sge in send wqe\n");
-+		wqe->status = IB_WC_LOC_QP_OP_ERR;
-+		goto err;
-+	}
-+
- 	if (rxe_wqe_is_fenced(qp, wqe)) {
- 		qp->req.wait_fence = 1;
- 		goto exit;
+@@ -709,9 +710,15 @@ int rxe_qp_from_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask,
+ 
+ 		qp->attr.max_dest_rd_atomic = max_dest_rd_atomic;
+ 
++		/*
++		 * Not gated by IB_QP_STATE above: quiesce the responder task
++		 * the same way rxe_qp_reset() does before touching this
++		 * array, so rxe_receiver() can't race the free/realloc.
++		 */
++		rxe_disable_task(&qp->recv_task);
+ 		free_rd_atomic_resources(qp);
+-
+ 		err = alloc_rd_atomic_resources(qp, max_dest_rd_atomic);
++		rxe_enable_task(&qp->recv_task);
+ 		if (err)
+ 			return err;
+ 	}
 -- 
 2.50.1 (Apple Git-155)
 
