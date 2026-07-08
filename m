@@ -1,93 +1,81 @@
-Return-Path: <linux-rdma+bounces-22905-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22906-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id s+KKMwB0TmpDNAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-22905-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 08 Jul 2026 18:00:00 +0200
+	id 5Q3vDOJ5TmoiNgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-22906-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 08 Jul 2026 18:25:06 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6286C7285E3
-	for <lists+linux-rdma@lfdr.de>; Wed, 08 Jul 2026 18:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 89563728AA3
+	for <lists+linux-rdma@lfdr.de>; Wed, 08 Jul 2026 18:25:05 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=F5Wu84Vj;
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22905-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22905-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=fail ("headers rsa verify failed") header.d=mail.ru header.s=mail4 header.b=cuv32GpM;
+	dkim=fail ("headers rsa verify failed") header.d=mail.ru header.s=mail4 header.b=Fqz72cvx;
+	dmarc=fail reason="SPF not aligned (relaxed)" header.from=mail.ru (policy=reject);
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22906-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22906-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 321693022B7A
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jul 2026 15:59:48 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id A82B63009094
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jul 2026 16:24:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46B0E41CB3D;
-	Wed,  8 Jul 2026 15:59:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20EA242DA46;
+	Wed,  8 Jul 2026 16:24:56 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from send288.i.mail.ru (send288.i.mail.ru [95.163.59.127])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD41E377003;
-	Wed,  8 Jul 2026 15:59:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C67D03F12D4;
+	Wed,  8 Jul 2026 16:24:51 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783526378; cv=none; b=MqT7u/hjuwpBEAk1JkTgaqUYSC2ESb9clo3FexhLHd2LGUW81ref4mfi2A72nekL9SshnxYuUvCJSpVEKYAqG1WE2WQlvEFCGSPqC6G8XKeY8N1SNV/wsMPtN9FssQQ6sVMkIRGGviA9+NtT+nJmD146rmlvWqhX7bIhDzNyrrY=
+	t=1783527895; cv=none; b=IhF51Mxin1Iec7+q9EWuwPJraz4dVDVpPeLIwXkoHZFp52lCXJsj6FUg6qQ1dVhdYFf2BPU89j6DuTBxGL1ZWcwb2s4e3ePBYo2IcGX3cDb1vD20AKFkEwvektYqgj2QleyhvvVRolQ+U1lO/87WBoOOGobd2pEPKZuVhI9C2Bg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783526378; c=relaxed/simple;
-	bh=egFSGt8kcBq7+3KTBcUr6rEZnhx2TON5wudYFkUgVRY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eaC5HssKQa3kBn1DNC9GlFYMJk4oW3Tsrda363/OkpvngeGapVzmdOyMc4N6pBtWNZnG81ZpS1UVFCIYr+4hWJRMazlIFkVVoiodZYdnxRp+Jjl4A9P9My2kYiGQFkksM4hqw2zRRmehfIPwwAhvvpAEzU6Vc1WHJ0lS3Z3XvBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F5Wu84Vj; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 236761F00A3D;
-	Wed,  8 Jul 2026 15:59:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783526376;
-	bh=bgHMjrz0F2NAw+WlnQWaUmYDJnFaPfiIHTo3qBDjSJY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=F5Wu84Vj55NlW+FO4CJe3VrjQ/dlbsOXnA6UuuZEYS/0GobWaudc4wJv7O0ESBN+p
-	 oXAl89FDn+G1JdiKRN8YMsY1+PvNd/vEKtclVXXzsOXbTsUbkrL+yg9E35muXyJ8m9
-	 3f57sVzFqlbr6y8M4GfR13FuhXFvwCev0bcRVZAulCZNl/S3siAbWlH5AvDPld9xl1
-	 bZRdR5acXvg8lRNMe0yqaoCbu19CQJ7gKAcSzIyKAg6esgbP6YQ+c1swqZqQFy2k4o
-	 5m5O445imASy8joEwTnsqqKMsS5x9115GCVYiIkabHX7I2wXJQcm6Z5uJ+Pvclmlcw
-	 YppmNw5DaJuuA==
-From: Simon Horman <horms@kernel.org>
-To: dipayanroy@linux.microsoft.com
-Cc: Simon Horman <horms@kernel.org>,
-	kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	leon@kernel.org,
-	longli@microsoft.com,
-	kotaranov@microsoft.com,
-	shradhagupta@linux.microsoft.com,
-	ssengar@linux.microsoft.com,
-	ernis@linux.microsoft.com,
-	shirazsaleem@microsoft.com,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
+	s=arc-20240116; t=1783527895; c=relaxed/simple;
+	bh=qg1NE8CG11A1gqi4QFTo/Fxw3S9CNpmoCcfQxIl4gSU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KdNN6/PbdjymKhG7WQSDzReEghxMXQS/1hoOuoO5pr2NI5rdhPNhv9g8WZleaCwdjaUKq9bnYKwKqD5g4N72s6svIMmn8Z4GzhBclqwP9loeSSgl8MJOqsICQAyGnf/6j9JikmAuE0dFrTPsogmj8e6pWHy/GB/RbliXVLdEunU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mail.ru; spf=pass smtp.mailfrom=mail.ru; dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b=cuv32GpM; dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b=Fqz72cvx; arc=none smtp.client-ip=95.163.59.127
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru;
+	s=mail4; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:
+	To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive:X-Cloud-Ids;
+	bh=388YApFBcN7uteJ1gWg2Ile4a78g62h/9cXnDx3811g=; t=1783527892; x=1783617892; 
+	b=cuv32GpMqFvvB/B6ffjC7P2gQzhrx2nLLCX+YLuxg4lsxlVp9xEmfZY4sMB5ZXkFXj1BcoWRUOf
+	Nw9vBgQZqwVWG9ohF2nHnL9zGA4hGSo/LCf6U06NMBBRJgUpdfJ1RSkJn1zMzSCUu2sqxhbYja6Z0
+	Ikyy0yA3ndqr286zpc05HhB5uFOabuoL8MjPIpxWN++dml1zlQFwbyny0ocQxOSgNA5wv3cm/foSh
+	CvLAeg1G/bWygtemvf/Fo3E3VRev/wl3EXJnSyvDsrSlP79V1xBb/kziemRAX2E8jkaIz8HJZvDZs
+	d2qIRJL/QbctPUVCCewLX2oXYc5tzmvCKftg==;
+Received: from [10.113.48.92] (port=39266 helo=send152.i.mail.ru)
+	by exim-fallback-b76dc578-8tbgd with esmtp (envelope-from <listdansp@mail.ru>)
+	id 1whV4k-0000000051x-1t5e; Wed, 08 Jul 2026 19:24:42 +0300
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru;
+	s=mail4; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:
+	To:From:From:Sender:Reply-To:To:Cc:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive:
+	X-Cloud-Ids:Disposition-Notification-To;
+	bh=388YApFBcN7uteJ1gWg2Ile4a78g62h/9cXnDx3811g=; t=1783527882; x=1783617882; 
+	b=Fqz72cvxhtimVDyi9eFWiWdMC4qYhl2cnqJSctyj9rOcIQA4w6Fas0kpvSYmCFP4sf7IdXMeI/C
+	y2vgoxBBY01px2F/qYvjfcsP0YtX3vdIdcHhzcWVZYDbz6LK/joxfXtwERn8YUS42ljUjJvJRmdGC
+	ELNft4QQdXFCoJdAdivC0nyxtLlbMNUz7k9lAUd8iMB8jkYCH3/AJVjRf1+VBjoYh/bjDwlmDrUWj
+	BrepJf61LSbHHWydWfseLGa8pHtntd+i8J0XaKERmXIsutbwI5alnWL+LIUIr+BrSmuVzGftcRrgy
+	+eiXS4p09XgZTVO0oM/TlqGRVNMDQvRNogkg==;
+Received: by exim-smtp-9d444bb98-kp2gx with esmtpa (envelope-from <listdansp@mail.ru>)
+	id 1whV4Y-000000004cQ-3uHC; Wed, 08 Jul 2026 19:24:31 +0300
+From: Danila Chernetsov <listdansp@mail.ru>
+To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc: Danila Chernetsov <listdansp@mail.ru>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
 	linux-rdma@vger.kernel.org,
-	stephen@networkplumber.org,
-	jacob.e.keller@intel.com,
-	dipayanroy@microsoft.com,
-	leitao@debian.org,
-	kees@kernel.org,
-	john.fastabend@gmail.com,
-	hawk@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	sdf@fomichev.me,
-	yury.norov@gmail.com,
-	pavan.chebbi@broadcom.com
-Subject: Re: [PATCH net-next v11 2/2] net: mana: force full-page RX buffers via ethtool private flag
-Date: Wed,  8 Jul 2026 16:57:42 +0100
-Message-ID: <20260708155741.1509815-2-horms@kernel.org>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260701141808.461554-3-dipayanroy@linux.microsoft.com>
-References: <20260701141808.461554-3-dipayanroy@linux.microsoft.com>
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: [PATCH] RDMA/hfi1: Propagate sdma_txinit_ahg() errors
+Date: Wed,  8 Jul 2026 16:22:52 +0000
+Message-Id: <20260708162252.936634-1-listdansp@mail.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -95,274 +83,110 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Mailru-Src: smtp
+X-7564579A: EEAE043A70213CC8
+X-77F55803: 4F1203BC0FB41BD9D32B667BE48EA3A0556D75B7D38F54C749613C0E45C3EB24182A05F5380850404C228DA9ACA6FE27BC59416DEC305EBE3DE06ABAFEAF67054B4B19C0AB6EF28CB090AB29B9DDCEAAF5EC2512189958EF
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE73230F712CF4B3924EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637AC83A81C8FD4AD23D82A6BABE6F325AC2E85FA5F3EDFCBAA7353EFBB553375660A3335E8F372667885F83DD305A585475DEA88E42FFB42822A6CD0C2E0BAF2218EEF46B7454FC60B9742502CCDD46D0D78444BBB7636F62AF6B57BC7E64490618DEB871D839B73339E8FC8737B5C2249E954A0C70C50C109CC7F00164DA146DAFE8445B8C89999729449624AB7ADAF37F6B57BC7E64490611E7FA7ABCAF51C92176DF2183F8FC7C03257DF78C985F6198941B15DA834481F9449624AB7ADAF37BA3038C0950A5D3613377AFFFEAFD269176DF2183F8FC7C088988B59C992DAD07B076A6E789B0E97A8DF7F3B2552694AD5FFEEA1DED7F25D49FD398EE364050FB28585415E75ADA99F804269016115C9B3661434B16C20ACC84D3B47A649675FE827F84554CEF5019E625A9149C048EE9ECD01F8117BC8BEE2021AF6380DFAD18AA50765F790063735872C767BF85DA227C277FBC8AE2E8B4E87A56E745D374075ECD9A6C639B01B4E70A05D1297E1BBCB5012B2E24CD356
+X-C1DE0DAB: 0D63561A33F958A5B0BFC91A95C4896F5002B1117B3ED6966F8DF8C317D1C41630C8F815570A35303610D81D389A125CDE35189EBF2DEA28FEA14CD2CD220BB99C5DF10A05D560A9880EC71AF561E0AAD9143641EC25BB39C559DAE3FA25FE38F36E2E0160E5C55395B8A2A0B6518DF68C46860778A80D548E8926FB43031F38
+X-C8649E89: 1C3962B70DF3F0AD73CAD6646DEDE191716CD42B3DD1D34C77DD89D51EBB774225B6776AC983F447FC0B9F89525902EE6F57B2FD27647F25E66C117BDB76D65984FED499FB928881DE06D021350E751DDED4ACD0BE66FA216DA8FEBBECF799DF56C5A7CDEF0DADA3B8341EE9D5BE9A0A46E59895C6F8A83AF07A01552131F06E513F15D1637C4E9FDABE3362BFED2FD64C41F94D744909CE04437D853D7CD20871FE3B1D98EC473624A389F0E278DBF4
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu53w8ahmwBjZKM/YPHZyZHvz5uv+WouB9+ObcCpyrx6l7KImUglyhkEat/+ysWwi0gdhEs0JGjl6ggRWTy1haxBpVdbIX1nthFXMZebaIdHP2ghjoIc/363UZI6Kf1ptIMVYrk7BQKFwEtRz7U2gjhlsbT9HN3PmyZQg==
+X-Mailru-Sender: 4CE1109FD677D277A25EA9D9B320DF5395CECFD5F3BD8862B951B70A5BD4BD8ED75840550A34FE02AAC282D28BAD6852C53BD13D3F6EEB2F3DDE9B364B0DF289C95E31D8FCF52BE1594FB4C9F0DBF4120D4ABDE8C577C2ED
+X-Mras: Ok
+X-Mailru-Src: fallback
+X-7564579A: B8F34718100C35BD
+X-77F55803: 6242723A09DB00B4B9BFAEC4A56250D11E81761E756FC7E79B63F64F0E380F52049FFFDB7839CE9E307654E31992F31C400CF023DED42349DA8B7F1810198C36FFC7DF070F7F7D4476DD166190F759F6
+X-7FA49CB5: 0D63561A33F958A52B850F3F3DE06D9C5002B1117B3ED6964C5B24D175B20F5EE409568A2FDEBC0902ED4CEA229C1FA827C277FBC8AE2E8B824111D70BBBF633
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu53w8ahmwBjZKM/YPHZyZHvz5uv+WouB9+OYcBso8Zm+oliTz8oZwnDrFsY77LZRcHyw5ht0smWrfSeTW5FiI8avd9v29gUBslpEZ9wIMwqVP4jLQVQ+dVm7x9BpDHadBV9RMjI809PraZZZ5UTgcompj0XBVlPOyn4g==
+X-Mailru-MI: 20000000020000000000000800
+X-Mras: Ok
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+X-Spamd-Result: default: False [3.04 / 15.00];
+	DMARC_POLICY_REJECT(2.00)[mail.ru : SPF not aligned (relaxed),reject];
+	R_DKIM_REJECT(1.00)[mail.ru:s=mail4];
 	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22905-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:dipayanroy@linux.microsoft.com,m:horms@kernel.org,m:kys@microsoft.com,m:haiyangz@microsoft.com,m:wei.liu@kernel.org,m:decui@microsoft.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:leon@kernel.org,m:longli@microsoft.com,m:kotaranov@microsoft.com,m:shradhagupta@linux.microsoft.com,m:ssengar@linux.microsoft.com,m:ernis@linux.microsoft.com,m:shirazsaleem@microsoft.com,m:linux-hyperv@vger.kernel.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:stephen@networkplumber.org,m:jacob.e.keller@intel.com,m:dipayanroy@microsoft.com,m:leitao@debian.org,m:kees@kernel.org,m:john.fastabend@gmail.com,m:hawk@kernel.org,m:bpf@vger.kernel.org,m:daniel@iogearbox.net,m:ast@kernel.org,m:sdf@fomichev.me,m:yury.norov@gmail.com,m:pavan.chebbi@broadcom.com,m:andrew@lunn.ch,m:johnfastabend@gmail.com,m:yurynorov@gmail.com,s:lists@lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[35];
-	FORWARDED(0.00)[lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[horms@kernel.org,linux-rdma@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-22906-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,microsoft.com,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me,broadcom.com];
-	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:dennis.dalessandro@cornelisnetworks.com,m:listdansp@mail.ru,m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:lvc-project@linuxtesting.org,s:lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[mail.ru,ziepe.ca,kernel.org,vger.kernel.org,linuxtesting.org];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER(0.00)[listdansp@mail.ru,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[listdansp@mail.ru,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linuxtesting.org:url,vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,kdeth.om:url];
+	RCVD_COUNT_FIVE(0.00)[5];
+	DKIM_TRACE(0.00)[mail.ru:-];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,vger.kernel.org:from_smtp,linux.dev:url]
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	FREEMAIL_FROM(0.00)[mail.ru];
+	FORGED_SENDER_FORWARDING(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 6286C7285E3
+X-Rspamd-Queue-Id: 89563728AA3
 
-This is an AI-generated review of your patch. The human sending this
-email has considered the AI review valid, or at least plausible.
-Full review at: https://netdev-ai.bots.linux.dev/sashiko/
+set_txreq_header_ahg() ignores the return value of sdma_txinit_ahg().
+
+If sdma_txinit_ahg() fails, it returns before initializing tx->txreq.
+However, set_txreq_header_ahg() ignores the error and returns the AHG
+change count, causing the caller to continue processing the request as
+though initialization had succeeded.
+
+Propagate sdma_txinit_ahg() failures to the caller and abort request
+processing when initialization fails.
+
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
+
+Fixes: e3304b7cc4f1 ("IB/hfi1: Optimize cachelines for user SDMA request structure")
+Signed-off-by: Danila Chernetsov <listdansp@mail.ru>
 ---
-net: mana: force full-page RX buffers via ethtool private flag
+ drivers/infiniband/hw/hfi1/user_sdma.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-This adds an ethtool private flag "full-page-rx" that forces one RX buffer
-per page to avoid a page_pool fragment path throughput regression on some
-4K PAGE_SIZE ARM64 platforms. Toggling the flag while the port is up
-triggers a mana_detach() + mana_attach() reconfiguration to apply the new
-buffer layout.
+diff --git a/drivers/infiniband/hw/hfi1/user_sdma.c b/drivers/infiniband/hw/hfi1/user_sdma.c
+index 8ea5ed918a02..be6b82ba93af 100644
+--- a/drivers/infiniband/hw/hfi1/user_sdma.c
++++ b/drivers/infiniband/hw/hfi1/user_sdma.c
+@@ -1026,6 +1026,7 @@ static int set_txreq_header_ahg(struct user_sdma_request *req,
+ 				struct user_sdma_txreq *tx, u32 datalen)
+ {
+ 	u32 ahg[AHG_KDETH_ARRAY_SIZE];
++	int ret;
+ 	int idx = 0;
+ 	u8 omfactor; /* KDETH.OM */
+ 	struct hfi1_user_sdma_pkt_q *pq = req->pq;
+@@ -1130,11 +1131,13 @@ static int set_txreq_header_ahg(struct user_sdma_request *req,
+ 	trace_hfi1_sdma_user_header_ahg(pq->dd, pq->ctxt, pq->subctxt,
+ 					req->info.comp_idx, req->sde->this_idx,
+ 					req->ahg_idx, ahg, idx, tidval);
+-	sdma_txinit_ahg(&tx->txreq,
+-			SDMA_TXREQ_F_USE_AHG,
+-			datalen, req->ahg_idx, idx,
+-			ahg, sizeof(req->hdr),
+-			user_sdma_txreq_cb);
++	ret = sdma_txinit_ahg(&tx->txreq,
++				SDMA_TXREQ_F_USE_AHG,
++				datalen, req->ahg_idx, idx,
++				ahg, sizeof(req->hdr),
++				user_sdma_txreq_cb);
++	if (ret)
++		return ret;
+ 
+ 	return idx;
+ }
+-- 
+2.25.1
 
-A few questions inline.
-
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> index 7438ea6b3f26..38f50b4eef87 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-
-[ ... mana_use_single_rxbuf_per_page() and mana_get_rxbuf_cfg() hunks
-      unrelated to the comments below ... ]
-
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> index 3531abfdaf43..24f6ce63b031 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-
-[ ... ]
-
-> @@ -611,6 +630,88 @@ static int mana_get_link_ksettings(struct net_device *ndev,
->  	return 0;
->  }
->  
-> +static u32 mana_get_priv_flags(struct net_device *ndev)
-> +{
-> +	struct mana_port_context *apc = netdev_priv(ndev);
-> +
-> +	return apc->priv_flags;
-> +}
-> +
-> +static int mana_set_priv_flags(struct net_device *ndev, u32 priv_flags)
-> +{
-> +	struct mana_port_context *apc = netdev_priv(ndev);
-> +	u32 changed = apc->priv_flags ^ priv_flags;
-> +	u32 old_priv_flags = apc->priv_flags;
-> +	bool schedule_port_reset = false;
-> +	int err = 0;
-> +
-> +	if (!changed)
-> +		return 0;
-> +
-> +	/* Reject unknown bits */
-> +	if (priv_flags & ~GENMASK(MANA_PRIV_FLAG_MAX - 1, 0))
-> +		return -EINVAL;
-> +
-> +	if (changed & BIT(MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF)) {
-> +		apc->priv_flags = priv_flags;
-
-[Low]
-Is the storage of priv_flags intentionally nested inside the per-flag
-branch?  With only one flag today this is fine, but when a second bit is
-added to enum mana_priv_flag_bits, a user toggling only the new bit
-passes the !changed and unknown-bits checks, the outer if is skipped,
-apc->priv_flags is never updated, and mana_set_priv_flags() returns 0
-while mana_get_priv_flags() keeps reporting the old state.
-
-Would it be cleaner to store priv_flags unconditionally after validation
-and use per-flag if (changed & BIT(...)) blocks only for the
-flag-specific reconfiguration?
-
-> +
-> +		if (!apc->port_is_up) {
-> +			/* Port is down, flag updated to apply on next up
-> +			 * so just return.
-> +			 */
-> +			return 0;
-> +		}
-> +
-> +		/* Pre-allocate buffers to prevent failure in mana_attach
-> +		 * later
-> +		 */
-> +		err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
-
-[Low]
-When the MTU is already jumbo (mtu + MANA_RXBUF_PAD > PAGE_SIZE / 2) or
-XDP is attached, mana_use_single_rxbuf_per_page() already returns true
-regardless of the new priv flag:
-
-	if (apc->priv_flags & BIT(MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF))
-		return true;
-
-	/* For xdp and jumbo frames make sure only one packet fits per page. */
-	if (mtu + MANA_RXBUF_PAD > PAGE_SIZE / 2 || mana_xdp_get(apc))
-		return true;
-
-In that case mana_get_rxbuf_cfg() produces identical output whether the
-new flag is on or off, yet toggling the flag here always performs a full
-mana_pre_alloc_rxbufs() + mana_detach() + mana_attach() cycle and flaps
-the link.
-
-Would a pre/post comparison of mana_get_rxbuf_cfg() output be worth
-adding to skip the reconfiguration when nothing actually changes?
-
-[High]
-mana_set_priv_flags() drives the same detach/attach sequence used by
-mana_set_channels() and mana_per_port_queue_reset_work_handler(), but
-does not take apc->vport_mutex and set apc->channel_changing = true
-across the window.
-
-The struct comment on channel_changing spells out the invariant:
-
-	/* Set by mana_set_channels() under vport_mutex to block RDMA
-	 * from grabbing the vport during the detach/attach window.
-	 * Checked by mana_cfg_vport() when called from the RDMA path.
-	 */
-	bool channel_changing;
-
-Without it, after mana_detach() uncfg's the vport an RDMA client can
-call mana_cfg_vport() and bump vport_use_count, and then mana_attach()
-will fail with -EBUSY when it re-cfg's the vport.
-
-There is also no equivalent of the '!port_is_up && vport_use_count'
-early -EBUSY check that mana_set_channels() performs, so is the flag
-allowed to be changed silently while an RDMA client is using the vport?
-
-> +		if (err) {
-> +			netdev_err(ndev,
-> +				   "Insufficient memory for new allocations\n");
-> +			apc->priv_flags = old_priv_flags;
-> +			return err;
-> +		}
-> +
-> +		err = mana_detach(ndev, false);
-
-[High]
-mana_detach() begins with ASSERT_RTNL(), and so does mana_attach()
-called below.  Is RTNL guaranteed to be held on the SET priv-flags path?
-
-mana registers net_shaper_ops in mana_devops, which makes it an
-ops-locked driver, so netdev_need_ops_lock() is true and the ethtool
-core acquires rtnl only when the driver opts in via
-ETHTOOL_OP_NEEDS_RTNL_* for that specific command.
-
-Looking at mana_ethtool_ops.op_needs_rtnl:
-
-	.op_needs_rtnl		= ETHTOOL_OP_NEEDS_RTNL_SCHANNELS |
-				  ETHTOOL_OP_NEEDS_RTNL_SRINGPARAM |
-				  ETHTOOL_OP_NEEDS_RTNL_GLINK,
-
-ETHTOOL_OP_NEEDS_RTNL_SPFLAGS is not listed, so ASSERT_RTNL() in the
-detach/attach helpers below will WARN, and the code races with
-RTNL-serialized mutators (mana_open, mana_close, mana_change_mtu,
-mana_tx_timeout) that read and write apc->port_is_up, apc->rxqs,
-apc->tx_qp and apc->port_st_save.
-
-Should ETHTOOL_OP_NEEDS_RTNL_SPFLAGS be added to op_needs_rtnl, matching
-what is already done for SET channels?
-
-> +		if (err) {
-> +			netdev_err(ndev, "mana_detach failed: %d\n", err);
-> +			apc->priv_flags = old_priv_flags;
-> +
-> +			/* Port is in an inconsistent state. Restore
-> +			 * 'port_is_up' so that queue reset work handler
-> +			 * can properly detach and re-attach.
-> +			 */
-> +			apc->port_is_up = true;
-> +			schedule_port_reset = true;
-> +			goto out;
-> +		}
-> +
-> +		err = mana_attach(ndev);
-> +		if (err) {
-> +			netdev_err(ndev, "mana_attach failed: %d\n", err);
-> +			apc->priv_flags = old_priv_flags;
-> +
-> +			/* Restore 'port_is_up' so the reset work handler
-> +			 * can properly detach/attach. Without this,
-> +			 * the handler sees port_is_up=false and skips
-> +			 * queue allocation, leaving the port dead.
-> +			 */
-> +			apc->port_is_up = true;
-> +			schedule_port_reset = true;
-
-[High]
-On this branch, mana_detach() has already succeeded and run
-mana_cleanup_port_context(), so apc->rxqs is NULL and queues are torn
-down.  Setting apc->port_is_up = true here between now and when
-queue_reset_work runs opens a window where callers gate on port_is_up
-as their "safe to access rxqs/tx_qp" predicate.
-
-For example, mana_get_ethtool_stats() does:
-
-	if (!apc->port_is_up)
-		return;
-	...
-	rxq = apc->rxqs[q];
-	...
-
-A concurrent ethtool -S invocation during that window will pass the
-port_is_up gate and dereference apc->rxqs[q]->stats on a NULL rxqs.
-
-Is the port_is_up restore actually needed for the reset work handler's
-mana_detach() call?  On the reset path, mana_detach() takes its early
-return when !netif_device_present(ndev):
-
-	if (!from_close && !netif_device_present(ndev))
-		return 0;
-
-That early return does not touch apc->port_st_save, so the saved state
-from the earlier successful mana_detach() should already be intact for
-the follow-up mana_attach().
-
-There is also no smp_wmb() paired with this write, unlike the pattern
-used inside mana_detach()/mana_attach() proper.
-
-> +		}
-> +	}
-> +
-> +out:
-> +	mana_pre_dealloc_rxbufs(apc);
-> +
-> +	if (schedule_port_reset)
-> +		queue_work(apc->ac->per_port_queue_reset_wq,
-> +			   &apc->queue_reset_work);
-> +
-> +	return err;
-> +}
-> +
-
-[ ... remaining hunks unrelated to the comments above ... ]
 
