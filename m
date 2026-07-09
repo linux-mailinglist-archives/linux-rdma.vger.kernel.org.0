@@ -1,117 +1,136 @@
-Return-Path: <linux-rdma+bounces-22940-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22941-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 1aPILixmT2rufwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-22940-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 11:13:16 +0200
+	id ei/SFHZsT2r6gQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-22941-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 11:40:06 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F72F72EC26
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 11:13:16 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42A0B72F0CE
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 11:40:05 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=BQg1OTCU;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=ZaKy1muY;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22940-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22940-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22941-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22941-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id DB6A03096A67
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 09:10:12 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 1BA003082BAC
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 09:30:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33446404BCD;
-	Thu,  9 Jul 2026 09:09:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 245713EDACE;
+	Thu,  9 Jul 2026 09:30:31 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDC7B3FF889
-	for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2026 09:09:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6C99374E66;
+	Thu,  9 Jul 2026 09:30:29 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783588183; cv=none; b=kg8s2hUPLXu/+NbBzv+1LXnDLOiBZ10cWaWHltDkJiTJ5ZQIXAU5X6ucc3fHETESDwueOp2pA3FqEbXIxBdulUzskGzBoDSlrCH3Tg1UsZDNNHDthV9umZ9YCBsx3eexkq29t0AG+fqXYydsVNUwGDss4IkN4Gyx8Xxdg2Z4bGg=
+	t=1783589430; cv=none; b=fBQ1omU2Skq8UyHok6P/j9vC1KMbVpauctaQS7Hd9o72q4vXYCIKQsNpjeHesDFsorwcaEf/CbdOeEVR8X4sIsQ8I0HK8A5Tsy/vVRyE4qP7CM/KCDV01JroiQlta7b90dR4JjVsWksDosrf4Y8m5wThnKqdfbzAu7g9C4sZoJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783588183; c=relaxed/simple;
-	bh=9thf/Ejhc35ynH9M61FWBd4ZmZ4cOOx2yKw+7ihsenk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=aJo+4GpWpsfG0HsZBybuDHW3oW0Xkq7TFubFPF4gm3pbaYeDwqEwKq/VHqtCkvzb+oEwn5mJ/3hZogrzNhkG2WklPwOtil+O9LfdWro6YLoc/udMZlFrsyF3zOsp0xpl3qY/FlrAkMXPurYj6YqOPeg1ftR+N/0prqKMEckSE4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BQg1OTCU; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 130FE1F000E9;
-	Thu,  9 Jul 2026 09:09:40 +0000 (UTC)
+	s=arc-20240116; t=1783589430; c=relaxed/simple;
+	bh=AVUhXc5gvHYPIuLaVgC6xqjBwF+9EyJkA4GiAuMx8H8=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=GJVGJ4TyP+v0SrcSOMI0ZpUtq/U702mfy1AcpboDHRM2Ssz8nKjViWbhlrA+NSKj/9OScDqSTySutTcVd28iWNpxPpXUAdFl73PMgX7tggDMFDWZQBQjFcIyy/QKyy8U+SBH98KgVQT2Bjo0ec7rMz9wLJ+gPqR4qOT82FwenLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZaKy1muY; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEC5A1F000E9;
+	Thu,  9 Jul 2026 09:30:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783588181;
-	bh=YULGzDcHM1TLPJpT1xYVlD9gHE+0cZICsht6KLUJ/N4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=BQg1OTCU2Q8w8y2M92mZmF+irSVNmsg3ruh0qpb8eAcdWCKXEtGJUfU+Coq6qYz2n
-	 dqmZ+gHoSXRD1ZeMxpD2iTTSqVEb8u2AQwsIKZrs8wCKDMZC/5nY/SCIKCkKzPW/tG
-	 JiCEcn/QwjXB2NTxwrhtLyLbZl2H/7vOy5Y+khh7vc1Zeiwg5e1oT+4JQJXmwKAa8n
-	 Yjg5Bd45GucJgSzkDOP/ZUv9GNmPNXPKxTc0xOOe46dbsYfFzwd9mmrtK82KVERK8/
-	 Q3jO2OjxemfMeifu7+E4Q/6fgf97hLRDqz3MYG+ljdwegPIUw6i+ZZ67bxA20hZgx1
-	 E2c36rlps4tMA==
-From: Leon Romanovsky <leon@kernel.org>
-To: linux-rdma@vger.kernel.org, Kamal Heib <kheib@redhat.com>
-Cc: Abhijit Gangurde <abhijit.gangurde@amd.com>, 
- Allen Hubbe <allen.hubbe@amd.com>, Jason Gunthorpe <jgg@ziepe.ca>
-In-Reply-To: <20260708210734.641411-1-kheib@redhat.com>
-References: <20260708210734.641411-1-kheib@redhat.com>
-Subject: Re: [PATCH rdma-next] RDMA/ionic: Remove duplicate IONIC_SPEC_HIGH
- definition
-Message-Id: <178358817866.1471117.4445800976843457612.b4-ty@kernel.org>
-Date: Thu, 09 Jul 2026 05:09:38 -0400
+	s=k20260515; t=1783589429;
+	bh=4nmXI1erR1f26Rw4ts+yuWXvBetde7F7kWDg0+7ajt4=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc;
+	b=ZaKy1muYWKhkn1npeBHlY0pBO83PiSYAa9fxQvARynnvkC8MqZHmylJi5xi3siLJQ
+	 L3uH30ZQ6iQZ9x7uFXbrtCTdKgdoN1ZjjmlcFtUNz7GYpzhmoiZ7O5new96tZEclob
+	 RjIPPeuf2HRlZK8v6YhFUq8HOYC9jSKzb5WM63tkVtzI4ADMTaLphqx3VOAN1G3237
+	 WUP2cDaSASOVTCr7m7FFcRcJEJprmsXjChKQ1yOr7r9QHBOB0d3a0b/cS/gfonMhCG
+	 ZitU8RMSE7DQVsP6L2NH103Sl7OP9nShTsM6nE1K3SmDdkcnLjwv/h4qkm6mMYRfHk
+	 07hkXssikik2A==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 93BA6393A570;
+	Thu,  9 Jul 2026 09:30:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-18f8f
+Content-Transfer-Encoding: 8bit
+Subject: Re: [RESEND PATCH] net/mlx5: Fix L3 tunnel entropy refcount leak
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <178358940809.3364831.6215387935440663585.git-patchwork-notify@kernel.org>
+Date: Thu, 09 Jul 2026 09:30:08 +0000
+References: <20260703141423.1723-1-lirongqing@baidu.com>
+In-Reply-To: <20260703141423.1723-1-lirongqing@baidu.com>
+To: lirongqing <lirongqing@baidu.com>
+Cc: saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, elibr@mellanox.com,
+ roid@mellanox.com, eli@mellanox.com, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.16 / 15.00];
+X-Spamd-Result: default: False [-3.66 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:linux-rdma@vger.kernel.org,m:kheib@redhat.com,m:abhijit.gangurde@amd.com,m:allen.hubbe@amd.com,m:jgg@ziepe.ca,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22941-lists,linux-rdma=lfdr.de,netdevbpf];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22940-lists,linux-rdma=lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_SENDER(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	FORGED_RECIPIENTS(0.00)[m:lirongqing@baidu.com,m:saeedm@nvidia.com,m:leon@kernel.org,m:tariqt@nvidia.com,m:mbloch@nvidia.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:elibr@mellanox.com,m:roid@mellanox.com,m:eli@mellanox.com,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	ALIAS_RESOLVED(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FROM_NO_DN(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 5F72F72EC26
+X-Rspamd-Queue-Id: 42A0B72F0CE
 
+Hello:
 
-On Wed, 08 Jul 2026 17:07:34 -0400, Kamal Heib wrote:
-> The macro IONIC_SPEC_HIGH is defined twice - remove it.
+This patch was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-Applied, thanks!
+On Fri, 3 Jul 2026 22:14:23 +0800 you wrote:
+> From: Li RongQing <lirongqing@baidu.com>
+> 
+> mlx5_tun_entropy_refcount_inc() counts both VXLAN and L2-to-L3
+> tunnel reformat entries as entropy-enabling users. The matching
+> decrement path only handled VXLAN, leaving L2-to-L3 tunnel entries
+> counted after release.
+> 
+> [...]
 
-[1/1] RDMA/ionic: Remove duplicate IONIC_SPEC_HIGH definition
-      https://git.kernel.org/rdma/rdma/c/b21d9bf627dd41
+Here is the summary with links:
+  - [RESEND] net/mlx5: Fix L3 tunnel entropy refcount leak
+    https://git.kernel.org/netdev/net/c/c914307e1d41
 
-Best regards,
+You are awesome, thank you!
 -- 
-Leon Romanovsky <leon@kernel.org>
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
