@@ -1,214 +1,238 @@
-Return-Path: <linux-rdma+bounces-22963-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22964-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id uc1QKYqcT2orlAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-22963-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 15:05:14 +0200
+	id OoJSIIi/T2oOnwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-22964-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 17:34:32 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F3457315FC
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 15:05:14 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC7E0732F6C
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 17:34:31 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=suse.com header.s=google header.b=GH6Q3lUU;
-	dmarc=pass (policy=quarantine) header.from=suse.com;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22963-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22963-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=O2zplw0o;
+	dmarc=pass (policy=none) header.from=gmail.com;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22964-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22964-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 4CC943041BCB
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 13:04:34 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 4442130D5A08
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 15:28:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD11925B09F;
-	Thu,  9 Jul 2026 13:04:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9207F383334;
+	Thu,  9 Jul 2026 15:28:06 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8CAB24E4C4
-	for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2026 13:04:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA16E382F02
+	for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2026 15:28:04 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783602269; cv=none; b=tuMuNAu2uJiyEspvu7rN9iW30n6VsxsVTYlmEQERGEsXcpfwRg5l9lVPkuBvCFuOeOsnZ7AuWCFYCWAHgP/EHpBtmRjNYkMmhBk1HZ9aE92iW+NkOpUtcdo4DO+dJUv66JwHgDcJ8tzz3GMdIXsL3GJeV0uTb3Er9cf9pM+PfPo=
+	t=1783610886; cv=none; b=ti7PJilCxnWkB2g8nAlXImL5l7HOSxyUHmokC0aZxRdhvhT1JZdfxEXUS5bv4WZuOOjt9itM1BpKWBtbrvrfzG+b509pCU4I62zOfHEqZtKCeH+QNxYPose2BoU3y+lNxVEgAc2rvktql4bSqtE1cJR5xZMBnkgPv4hM9YUjKps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783602269; c=relaxed/simple;
-	bh=pomWuPe/tr64a82692VQtY4Wk2PnNc+aTLslFAls9Aw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eQ/zx5QbVkm0qPd1L/fgxQGSMhpTNsVFJaeUtYXfaf+BOqfu8iLJnk8WyKki7DmvHgWDhRSeue95AVQqIZMgNRaoEUu3MZV8xSqjt3Nuck1K5EjFTtwZa/2ru3oU1EZgX73iGf4sVTFxoq7TfpMxiWkJpqKXCeVKalHZZcSJIwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=GH6Q3lUU; arc=none smtp.client-ip=209.85.128.51
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-493ec555a26so4925725e9.0
-        for <linux-rdma@vger.kernel.org>; Thu, 09 Jul 2026 06:04:27 -0700 (PDT)
+	s=arc-20240116; t=1783610886; c=relaxed/simple;
+	bh=gWk0Tx1PpSkQ7SrrEuYSkz1J6FwF7G6dNVcAD48RLZU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=sN8U7ym5gS3WqI5gXtEw2mHCNkHY2YtA31REgWVdo5bmWF7K2HV7Mw/EDtr5uSWCRhpFBiMGtqu5uEZ78hVXNQFYjRISIG6Dj48tetA/7Mk5/I2RiEvSx6i3hRmgpjbmP61Wk14p+d1GOSGU05siSCf5eO6loq0reYQjqMv8x4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O2zplw0o; arc=none smtp.client-ip=209.85.221.54
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-47d70879764so17864f8f.2
+        for <linux-rdma@vger.kernel.org>; Thu, 09 Jul 2026 08:28:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1783602266; x=1784207066; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+        d=gmail.com; s=20251104; t=1783610883; x=1784215683; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=fOOmFkjlODizpn7Pcs0slVGKdf2bx5h/bU795bDZqXU=;
-        b=GH6Q3lUUH5Jiyx1mink2Jtohp84TSDDEwackmOd/AdtmidnqTqsXgdvLLyetR8RVeK
-         lYMoyOeS8Ai9Rwkx8+q7VssbZtSYDSxbj9whzWtRuZvOBLIWBbNx2INXa/0s+13BvPxk
-         96qyo7AZNuJCGKyKsOaXepdd5rNpoDg/1+xvjfV5rIlrbjkeHeM7CLoxCnzFl8CDlgYQ
-         jIWtgmx+/T0Ej2CKK3kpkA7HGtUg7Ii4PBMMj3tx1p8NgvtubSTu5BLVTLvXAAlpfy+L
-         6g8NY3Do4fJXTEY1MdkqcOLUL/LUMjieUgAJ8jO/P4DSceQnZvVlACJ4A/zW6HgOL/HB
-         rtLQ==
+        bh=CHbf130yEa4XzJ/mR051Bre42Fa2Qf6EqrRM78ycRyA=;
+        b=O2zplw0opYDrs9XEFRoiSuNPe4G5TK8RLytwyhRA38cvVChmfrlJZY2pXxvI8fMak6
+         6tPINHKNR4Gp8RbzuXritr2f7L+hq/gWKOpaDDOFY9DaBlZE13EqgiFPhOODB6w6ZOJx
+         3Jgx1boyO6psQzSsJoULhaUO85R9oo0Z4vV7UUo5FHbYExmbbf73KnbEp3SUUFH+YPWi
+         v3BVKiRiYcxJPLe5ia4sp9vC788x8wq62cepvyeAXvulCpcr8G2czVPgYxcCbqrzIwCu
+         6hXKYAMEMdpGeX+gdTG2HqshtrpnEb7MpXCon+blToWhbkX56zGRCu+WKuAqGLRpD1HR
+         GSSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783602266; x=1784207066;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
+        d=1e100.net; s=20251104; t=1783610883; x=1784215683;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=fOOmFkjlODizpn7Pcs0slVGKdf2bx5h/bU795bDZqXU=;
-        b=cQB7XVPKtwbzrcaUSAYVqZIy0Ig0blWCf4v0wYx9clZ7/aT/dKxZQjQEeGJIF70w9u
-         0It1ikviDdoGkRkq4iWS9nXzWruDRFJHN9v1YGF7oSwALY5n6bgOw6EAjX1wvpN0H0fg
-         J3It2WC6DfykfZQPqrfr6v+56p7pgLx+oFTStGGEzRwPdD4sqLoZKjJCB8QOiTrQbC2q
-         b23r2NQmlNsaqQ4l8QheQr1EY7mxcCGBfZdSq7sJ17KLDcdk3aQJ+c/uriDcQCOC3gSg
-         8ibLqB/dswvJxCZS9qdRK6fphEJebJKabSgEJmpKzeOpTZSxC74hqkO5zdzD0wSeKGnQ
-         bpqA==
-X-Gm-Message-State: AOJu0YzSybsnI2gKQC5T7Ner/W3SuIAt78ZaQDQdrzjekeMhj+bFS7rJ
-	6laD4IdDikccAOsIGpfNGPFm9iXPMBVjTj5zHrRNGqVKQffnlpwB8nmCDPHyT4BwF7tt6PSI+j7
-	A5fxttGG9JA==
-X-Gm-Gg: AfdE7cmlTFrCqr3vnoZ2I+e2uAl2l1G6WIn/9wHF7uDENhXbp7GXzrEuSdpv2wFWsfx
-	m22hEZKJPAhKVFBYcyPs8W2fOhJ7to/E56TvFCVfUi2M88ojUUUch0N0IMvldVfSw3vMCoFRIo6
-	oJdBp8v9fRlY6e2dmoEpTNgXMn17d6EegEKhQjXjh7IVzp9Ta/VxPtCqezZa2rNZs/28a6YnlOe
-	cLMIJ6424xHGwXdGzSiklETW58XBIAfm+Ud/+QOTVopVELyIJKNvtgJu4fmwfv9lDBnM1q5f4pS
-	FwLOPQimlhqQjlzF+wiNQFErmSFRtnPtbO9MmuVRxnr9DX1UVYuCyPo3h2ps3C9O2Uu4PvHMZnT
-	X1NZZ1c90oFSOtcOkDcytQZDNfFe5niTpAjPYtEjDiWz6od/ppL6t3ynjNHEy9TlxJ60YmzyLZw
-	jx3speGkvgp51jAnv4YKwlzCq8w9A5GrJMA9cpWQ==
-X-Received: by 2002:a05:600c:6206:b0:493:d078:796 with SMTP id 5b1f17b1804b1-493e6a4a8a4mr66442385e9.17.1783602266150;
-        Thu, 09 Jul 2026 06:04:26 -0700 (PDT)
-Received: from localhost.localdomain (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-493eb6fb526sm69825665e9.15.2026.07.09.06.04.24
+        bh=CHbf130yEa4XzJ/mR051Bre42Fa2Qf6EqrRM78ycRyA=;
+        b=jd6agm5iiNsFcL++nS5PdQOKDnIdFEhltMkV0RvUbUyH32iE7VY1cRJsyYTN1wqgLM
+         Kx46eb73m1dMiObl7A1Hs3+75DBxnhTanu63Kzc16/+n4Ghx0FOHAgji21UJv80zHLV1
+         tX3FnIv1WyYA6CYP21kBVxjgu9u5Xjprz1o2vFvKEK0sSUfxbhukuCxY0iN59wWq/ig+
+         HaLWZfOgTupfCy5Hp+4U9QbHtyU5Fw5NX9iht5gHY4nu/iVPECfiE1B70giyBe1JClTh
+         Ogg/TUZTM7wCDHRDBGpAhfMnRYQfWCXkYwDLo5S2OFItKpR2cTuuT00K2w6jPt5jh7Dg
+         wBkw==
+X-Forwarded-Encrypted: i=1; AHgh+RoCS00XwG2l9+jFWvLufb5X1prapaRJSvyi6KkJyN81NgDcKWx0MgkrP3TDyPOLx9ClHu6NYywIcdM9@vger.kernel.org
+X-Gm-Message-State: AOJu0YxY5YXxYIKMBwcW4Q8cTZBIqzZAsRAIsh8gSVaL6+io8/WsdNaY
+	5ojQx707ZDhwVniRx1avFYkrWCJdKUrUldEv6QJEyrfkAlfQ4CWGtId9
+X-Gm-Gg: AfdE7clbG7fjMYgXWAcKJptrR3u3gZsmJX4sgJ8jxj+wFu6urmSUvIelJz207gOQxVW
+	Lv7NR5+J4wLnC2F836vBhvRIH0Dock2rFeLeb+DcdaepyE757ZwoMUqDa8jOjXCzPwChSuqpR0p
+	WxJ2x5kilLKO7uHI8Xr3Jg6kORvEoWHUzd0JrwLc9C0Tdh2cUBQ9v6yMb2wl1BD1EeyviaNlJGi
+	CsKdq+axtOUhGZ+25nO57zMlUi3Y4sbXmCwlFhlUlN+x+TJQJPijGkK6u2Rbio4e4e4GZIy9bLB
+	84sB1tJu77FmO9fhQMIAPMZnNG386BsxpT6KTTdeGAIr9iv5Q6SeSDn3cnWZCO+UsgHxfypOCFG
+	Kt0O564EKrtZ1E+BZ1RhiKWJxz174mkhTtl/Ckd2sD95c7ReKt/KbU+/myHqebD+gWLL30K/Hxx
+	9lWk4WafuwzaWJxhZjlQ/WwzqC2TJbpTkHUDO7fkdJkfSExg==
+X-Received: by 2002:a05:6000:18a3:b0:47d:ef25:ff3b with SMTP id ffacd0b85a97d-47df0812ef6mr8098275f8f.49.1783610882799;
+        Thu, 09 Jul 2026 08:28:02 -0700 (PDT)
+Received: from pumpkin (host-92-21-50-228.as13285.net. [92.21.50.228])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47aa039ae44sm49942587f8f.23.2026.07.09.08.28.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2026 06:04:25 -0700 (PDT)
-Date: Thu, 9 Jul 2026 15:04:23 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: linux-rdma@vger.kernel.org, cgroups@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-s390@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	jgg@ziepe.ca, leon@kernel.org, parav@nvidia.com, mbloch@nvidia.com, 
-	cmeiohas@nvidia.com, roman.gushchin@linux.dev, bvanassche@acm.org, 
-	zyjzyj2000@gmail.com, shuah@kernel.org, tj@kernel.org, hannes@cmpxchg.org, 
-	alibuda@linux.alibaba.com, dust.li@linux.alibaba.com, sidraya@linux.ibm.com, 
-	wenjia@linux.ibm.com
-Subject: Re: [PATCH rdma-next 08/13] RDMA/cgroup: Scope rdma cgroup device
- visibility to the net namespace
-Message-ID: <ak-Z071LrWhnI5lK@localhost.localdomain>
-References: <20260709095532.855647-1-jiri@resnulli.us>
- <20260709095532.855647-9-jiri@resnulli.us>
+        Thu, 09 Jul 2026 08:28:02 -0700 (PDT)
+Date: Thu, 9 Jul 2026 16:27:59 +0100
+From: David Laight <david.laight.linux@gmail.com>
+To: Alexander Chesnokov <Alexander.Chesnokov@kaspersky.com>
+Cc: "xuhaoyue1@hisilicon.com" <xuhaoyue1@hisilicon.com>,
+ "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>, Oleg Kazakov
+ <Oleg.Kazakov@kaspersky.com>, Pavel Zhigulin
+ <Pavel.Zhigulin@kaspersky.com>, "stable@vger.kernel.org"
+ <stable@vger.kernel.org>, Wenpeng Liang <liangwenpeng@huawei.com>, Jason
+ Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Xi Wang
+ <wangxi11@huawei.com>, Weihang Li <liweihang@huawei.com>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] RDMA/hns: Fix arithmetic overflow in
+ hns_roce_v2_set_hem()
+Message-ID: <20260709162759.1d836699@pumpkin>
+In-Reply-To: <24c0a3cf43074b37bb1c9c321a73f470@kaspersky.com>
+References: <20260707140938.3106919-1-Alexander.Chesnokov@kaspersky.com>
+	<20260708092146.3325855-1-Alexander.Chesnokov@kaspersky.com>
+	<20260708181941.1ad1e112@pumpkin>
+	<24c0a3cf43074b37bb1c9c321a73f470@kaspersky.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="y2qmoqgw5gkrylpt"
-Content-Disposition: inline
-In-Reply-To: <20260709095532.855647-9-jiri@resnulli.us>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.26 / 15.00];
-	SIGNED_PGP(-2.00)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FORGED_RECIPIENTS(0.00)[m:Alexander.Chesnokov@kaspersky.com,m:xuhaoyue1@hisilicon.com,m:lvc-project@linuxtesting.org,m:Oleg.Kazakov@kaspersky.com,m:Pavel.Zhigulin@kaspersky.com,m:stable@vger.kernel.org,m:liangwenpeng@huawei.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:wangxi11@huawei.com,m:liweihang@huawei.com,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,ziepe.ca,kernel.org,nvidia.com,linux.dev,acm.org,gmail.com,cmpxchg.org,linux.alibaba.com,linux.ibm.com];
-	TAGGED_FROM(0.00)[bounces-22963-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[mkoutny@suse.com,linux-rdma@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	FORGED_RECIPIENTS(0.00)[m:jiri@resnulli.us,m:linux-rdma@vger.kernel.org,m:cgroups@vger.kernel.org,m:netdev@vger.kernel.org,m:linux-s390@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:jgg@ziepe.ca,m:leon@kernel.org,m:parav@nvidia.com,m:mbloch@nvidia.com,m:cmeiohas@nvidia.com,m:roman.gushchin@linux.dev,m:bvanassche@acm.org,m:zyjzyj2000@gmail.com,m:shuah@kernel.org,m:tj@kernel.org,m:hannes@cmpxchg.org,m:alibuda@linux.alibaba.com,m:dust.li@linux.alibaba.com,m:sidraya@linux.ibm.com,m:wenjia@linux.ibm.com,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	FORGED_SENDER(0.00)[davidlaightlinux@gmail.com,linux-rdma@vger.kernel.org];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-22964-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[13];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[suse.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mkoutny@suse.com,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[davidlaightlinux@gmail.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	RCVD_COUNT_FIVE(0.00)[5];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TO_DN_SOME(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:from_mime,suse.com:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp,localhost.localdomain:mid,resnulli.us:email]
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1F3457315FC
+X-Rspamd-Queue-Id: EC7E0732F6C
 
+On Thu, 9 Jul 2026 04:56:56 +0000
+Alexander Chesnokov <Alexander.Chesnokov@kaspersky.com> wrote:
 
---y2qmoqgw5gkrylpt
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH rdma-next 08/13] RDMA/cgroup: Scope rdma cgroup device
- visibility to the net namespace
-MIME-Version: 1.0
+> > When does the value overflow.
+> > Yes, the expression can overflow and the result is assigned to a
+> > 64bit variable, but I'd have testing this code would have showed
+> > the problem. So what is the customer visible impact?  
+> 
+> You're right, there is no reachable overflow. In hns_roce_calc_hem_mhop()
+> the 32-bit table_idx is split into base-chunk_ba_num digits i, j, k, and
+> here they are recombined: i * chunk_ba_num + j equals table_idx /
+> chunk_ba_num, and the full expression equals table_idx, which is u32.
+> i is additionally bounded by ba_l0_num. So the arithmetic cannot exceed
+> U32_MAX on any real input - there is no customer-visible impact, and the
+> SVACE report is a false positive.
+> 
+> I'll drop the Fixes: and Cc: stable tags and resend as a standalone
+> hardening/readability change. If you'd prefer to just drop it, that's
+> fine too.
 
-Hi.
+Best just dropped.
 
-On Thu, Jul 09, 2026 at 11:55:27AM +0200, Jiri Pirko <jiri@resnulli.us> wro=
-te:
-> index 993446ab66d0..4523c1884d67 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -2752,6 +2752,13 @@ RDMA
->  The "rdma" controller regulates the distribution and accounting of
->  RDMA resources.
-> =20
-> +When RDMA devices are isolated per network namespace (exclusive mode),
-> +device names are unique only within a network namespace. The device lines
-> +below are therefore scoped to the reading or writing process's network
-> +namespace: only devices accessible from that namespace are listed, and a
-> +limit is applied to the device of that name in that namespace. Configure
-> +limits from the same network namespace as the workloads.
+	David
 
-OK.
+> 
+> -----Original Message-----
+> From: David Laight <david.laight.linux@gmail.com> 
+> Sent: Wednesday, July 8, 2026 8:20 PM
+> To: Alexander Chesnokov <Alexander.Chesnokov@kaspersky.com>
+> Cc: xuhaoyue1@hisilicon.com; lvc-project@linuxtesting.org; Oleg Kazakov <Oleg.Kazakov@kaspersky.com>; Pavel Zhigulin <Pavel.Zhigulin@kaspersky.com>; stable@vger.kernel.org; Wenpeng Liang <liangwenpeng@huawei.com>; Jason Gunthorpe <jgg@ziepe.ca>; Leon Romanovsky <leon@kernel.org>; Xi Wang <wangxi11@huawei.com>; Weihang Li <liweihang@huawei.com>; linux-rdma@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH v2] RDMA/hns: Fix arithmetic overflow in hns_roce_v2_set_hem()
+> 
+> Caution: This is an external email.
+> 
+> 
+> 
+> On Wed, 8 Jul 2026 12:21:46 +0300
+> <Alexander.Chesnokov@kaspersky.com> wrote:
+> 
+> > From: Alexander Chesnokov <Alexander.Chesnokov@kaspersky.com>
+> >
+> > If hop_num is 2 or 1, then the expressions like i * chunk_ba_num + j 
+> > are computed in 32-bit arithmetic before being assigned to a u64 index 
+> > field, which can lead to overflow.  
+> 
+> When does the value overflow.
+> Yes, the expression can overflow and the result is assigned to a 64bit variable, but I'd have testing this code would have showed the problem.
+> 
+> So what is the customer visible impact?
+> 
+>         David
+> 
+> >
+> > Declare i, j and k as u64 so that the address index arithmetic is 
+> > performed in 64-bit.
+> >
+> > Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> >
+> > Fixes: a81fba28136d ("RDMA/hns: Configure BT BA and BT attribute for 
+> > the contexts in hip08")
+> > Cc: stable@vger.kernel.org
+> > Suggested-by: David Laight <david.laight.linux@gmail.com>
+> > Signed-off-by: Alexander Chesnokov <Alexander.Chesnokov@kaspersky.com>
+> >
+> > ---
+> > Changes in v2:
+> > - Instead of casting the operands to u64, declare i, j and k as u64
+> >   so the index arithmetic is performed in 64-bit (David Laight).
+> >
+> > v1: 
+> > https://lore.kernel.org/linux-rdma/20260707140938.3106919-1-Alexander.
+> > Chesnokov@kaspersky.com/
+> > ---
+> >  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c 
+> > b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> > index 1c180a6b1c07..3469a9a68d3b 100644
+> > --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> > +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> > @@ -4238,7 +4238,7 @@ static int hns_roce_v2_set_hem(struct hns_roce_dev *hr_dev,
+> >       struct hns_roce_hem_mhop mhop;
+> >       struct hns_roce_hem *hem;
+> >       unsigned long mhop_obj = obj;
+> > -     int i, j, k;
+> > +     u64 i, j, k;
+> >       int ret = 0;
+> >       u64 hem_idx = 0;
+> >       u64 l1_idx = 0;  
+> 
 
-> --- a/include/linux/cgroup_rdma.h
-> +++ b/include/linux/cgroup_rdma.h
-> @@ -7,6 +7,7 @@
->  #define _CGROUP_RDMA_H
-> =20
->  #include <linux/cgroup.h>
-> +#include <net/net_namespace.h>
-> =20
->  enum rdmacg_resource_type {
->  	RDMACG_RESOURCE_HCA_HANDLE,
-> @@ -34,6 +35,15 @@ struct rdmacg_device {
->  	struct list_head	dev_node;
->  	struct list_head	rpools;
->  	char			*name;
-> +	/*
-> +	 * Net namespace the device belongs to. @netns_shared mirrors
-> +	 * ib_devices_shared_netns: when true the device is visible from every
-> +	 * net namespace (shared mode); otherwise @net is the only namespace
-> +	 * that may see and configure it. @netns_shared is updated when the
-> +	 * sharing mode changes, so use {READ,WRITE}_ONCE() to access it.
-> +	 */
-> +	possible_net_t		net;
-> +	bool			netns_shared;
-
-Any reason to store the netns_shared split per device? (IIUC, it's a
-global parameter.)
-
-Thanks,
-Michal
-
---y2qmoqgw5gkrylpt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCak+cKRsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMiwyLDIACgkQfj0C55Tb+AgSmgD/Vgg6K9wF0JX4NBgdz4NM
-xV33/zTua20t6++MDiv2LGQA/iiwBIKorFXkq2bd30gmVkdyXN6gNLUnmclqxnfK
-+M0P
-=L3DZ
------END PGP SIGNATURE-----
-
---y2qmoqgw5gkrylpt--
 
