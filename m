@@ -1,59 +1,59 @@
-Return-Path: <linux-rdma+bounces-22927-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22924-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 0kvYFxlQT2rgeAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-22927-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 09:39:05 +0200
+	id b5X+J7BNT2rcdwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-22924-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 09:28:48 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79E6772DD5A
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 09:39:04 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0353772DB21
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 09:28:48 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=auditcode.ai header.s=zmail header.b=VIS+K0JE;
+	dkim=pass header.d=auditcode.ai header.s=zmail header.b=CkPAAq9g;
 	dmarc=pass (policy=none) header.from=auditcode.ai;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22927-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22927-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22924-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22924-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7142C3026F1F
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 07:38:37 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 4C6733027379
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 07:27:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B08883C1974;
-	Thu,  9 Jul 2026 07:38:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C9923C819D;
+	Thu,  9 Jul 2026 07:27:06 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from sender-op-o19.zoho.eu (sender-op-o19.zoho.eu [136.143.169.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B02AC1E4AF
-	for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2026 07:38:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4524D329C60
+	for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2026 07:27:03 +0000 (UTC)
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783582716; cv=pass; b=iPtBf7Io1Wm0BP4TRppGlFeBa7N5tvfle+uEHF3zj+JQfZlwBWmAwk2tlGZuBdcaQoDfL3ZCzuWvmtiFoN29C+0nBpqdvhNqEz8AAsMF2qJYTRnYWWqYXaiFRjduk9k3ZFCql21RzqXBAWynyXnlI+8wPag6mQBzGLTVa0HQ/mU=
+	t=1783582026; cv=pass; b=b2hwZxh71vg8NT82s3Vs+2IifUwaib/tMXclilTU7NynueD7ClcmYCl1Xrvn/V9CWWe05qAdlR2olOYFOw0WHQzNS9Zp2AOuMDalAFyPibHcLUy2lk774RsAZek7sOqqac9jXu7rl2OcJcXK0q4iAQYohLUIBzgiqklz4AVZr14=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783582716; c=relaxed/simple;
-	bh=rYXFS9xHWuxQzCIZzhwsqpVUQPKRsFxknlyN1JD5Vos=;
+	s=arc-20240116; t=1783582026; c=relaxed/simple;
+	bh=fBn6Og3TAmYk+U9YH2s5EFECTNaCfEeWdtbwDDBLB/U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TaQ5qnP88Yq2afFGyYY3cu/KCiwTs/FT51hWbIjTg3Ik8Hk4ATvu7A45tZjeGcuCe14ZlBPb8gmrhMr3QskrYiAgEs94BN4nXVJkqQi2e/9FUBKlIkgIeDLcRNucSCuQNTr+9x/QBr+Enij6571U37/UoI2lmuLHEE5oOXlcX8Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=auditcode.ai; spf=pass smtp.mailfrom=auditcode.ai; dkim=pass (1024-bit key) header.d=auditcode.ai header.i=security@auditcode.ai header.b=VIS+K0JE; arc=pass smtp.client-ip=136.143.169.19
-ARC-Seal: i=1; a=rsa-sha256; t=1783581779; cv=none; 
+	 MIME-Version; b=EMc1wHjLuG1AZCT3rET/3uyBMaVCl/Tp89UyB4K76zlcLGL5Fqcu2TmvsXTextbVBGDoIFvtFahh8eqolLkLcgcPAHeWRXDkCPvd09HsUY3I2667UjWCzVcg5GyQ8zXHZLObJ296neTEVqBPAQ7DD6krtbp7BQ2lWyHVIauCeoI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=auditcode.ai; spf=pass smtp.mailfrom=auditcode.ai; dkim=pass (1024-bit key) header.d=auditcode.ai header.i=security@auditcode.ai header.b=CkPAAq9g; arc=pass smtp.client-ip=136.143.169.19
+ARC-Seal: i=1; a=rsa-sha256; t=1783582000; cv=none; 
 	d=zohomail.eu; s=zohoarc; 
-	b=VK21chKWofYbNuJIrzzGpsRRVvHoqOi+e6wXH1BWKh4LB7/UZ7VL1cXqbSj2ObBR9WvPplyYuKKIWi29nOOi/zFerjGiiINthO4HrDtV3rY3zucH+RAQQUnhIKHPfXehqHd6036pcjjgLSuFm2hG8emUBH/tmxDTS2E0Uzx3ly8=
+	b=cnpvpo0EMSR+aHzLhrVlFqNQzt+DrHOlgqIX+qeMOom+zPaOWOqfqolumjN0knceCeM0f0Na1QqxIu9spa3snqUjWBu2E7zoFvtGUYQ8JrK8fHTtC7ZmPkEba1ntJmyq/7aA7+pclNbaHL/r1t7GTI56OZVkIxvnTv3qdmFvQgw=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-	t=1783581779; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=VFtLFkRLEWW8l7BwPhVXWJVcL1yGskcHu0COgJoFJaw=; 
-	b=leuhatw7b67vDhbFlfCyG2s9zDd+q6T1sQ5dVwlS5WqRKZ1N4xdFvUTO01WSjQwCGSRJQ39nEYXon12zRl6hP+9gpBiaXFW9cYMbN06YxgTYqg329Ar2zQbPntsdS2d84zjXN0ISs6pjSriBD5TYqAPnfJrIRI+j0UGWx9azpa4=
+	t=1783582000; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=kvT5LHrGkA0PvjX6UGFEQesuaCcaql3UrEB+1IrHqGU=; 
+	b=F0G97fgPaS1VQsXsO2HFl4T3ch8GJwU/tUBkmtj3+jD3ACq6repVnKfej+G8BaP0fTBD8JLadYoOe+qbvYTpjIIEj/bmEO73vSo8PwAViNfpSqURHIZ8hWhP9VXbHih4PVtlwSDBWpG9Yne1C3oqnWghuS2zeUa5+2hqRa4T9xU=
 ARC-Authentication-Results: i=1; mx.zohomail.eu;
 	dkim=pass  header.i=auditcode.ai;
 	spf=pass  smtp.mailfrom=security@auditcode.ai;
 	dmarc=pass header.from=<security@auditcode.ai>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1783581779;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1783582000;
 	s=zmail; d=auditcode.ai; i=security@auditcode.ai;
 	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=VFtLFkRLEWW8l7BwPhVXWJVcL1yGskcHu0COgJoFJaw=;
-	b=VIS+K0JEDOAfm7QoGp134j5BPE88sBezBKc+E4lxROnWoooj+UD2INEh+yYOQ9sW
-	1F2h+mPbUTQsvOG95UhLo1VqURjB8FTCWLMJvvGam8NN6JjNDp1T/DHrOrsEsI+RYh+
-	UgPkKd/ns3XSayic4fI4YwSnyX9iPqql+7ufVcLc=
-Received: by mx.zoho.eu with SMTPS id 1783581778052657.1501097294694;
-	Thu, 9 Jul 2026 09:22:58 +0200 (CEST)
+	bh=kvT5LHrGkA0PvjX6UGFEQesuaCcaql3UrEB+1IrHqGU=;
+	b=CkPAAq9g8/xtLvfWZgD8z4PQv3HSZFQjCSPVs81mzYcJ2k8zriTXBeMDwj3Jlef3
+	tMgWARZNBQvnZj4mU4zyQK1vOPmJtPi5t9QE70TULE9TNlNWyNW6/fA85FCfUPMv78l
+	DxrAhM7VAEobKvDS6UZldYGHYtu7nWmW/29mkOtM=
+Received: by mx.zoho.eu with SMTPS id 178358199713461.53284917089161;
+	Thu, 9 Jul 2026 09:26:37 +0200 (CEST)
 From: Ibrahim Hashimov <security@auditcode.ai>
 To: yanjun.zhu@linux.dev,
 	zyjzyj2000@gmail.com,
@@ -61,12 +61,12 @@ To: yanjun.zhu@linux.dev,
 	leon@kernel.org
 Cc: linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/rxe: fix responder UAF on IB_QP_MAX_DEST_RD_ATOMIC modify_qp
-Date: Thu,  9 Jul 2026 09:22:53 +0200
-Message-ID: <20260709072253.8918-1-security@auditcode.ai>
+Subject: Re: [PATCH] RDMA/rxe: validate num_sge/cur_sge before indexing wqe->dma.sge[]
+Date: Thu,  9 Jul 2026 09:26:34 +0200
+Message-ID: <20260709072634.9004-1-security@auditcode.ai>
 X-Mailer: git-send-email 2.50.1
-In-Reply-To: <d4af0c54-3bd6-401c-905a-ce546f2da475@linux.dev>
-References: <20260708224550.1281-1-security@auditcode.ai> <d4af0c54-3bd6-401c-905a-ce546f2da475@linux.dev>
+In-Reply-To: <71562c7f-183c-40e4-bb90-84b078cf079d@linux.dev>
+References: <20260708224534.1206-1-security@auditcode.ai> <71562c7f-183c-40e4-bb90-84b078cf079d@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -81,14 +81,14 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[auditcode.ai,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[auditcode.ai:s=zmail];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22927-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22924-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER(0.00)[security@auditcode.ai,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS(0.00)[m:yanjun.zhu@linux.dev,m:zyjzyj2000@gmail.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
@@ -105,77 +105,61 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TO_DN_NONE(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,auditcode.ai:from_mime,auditcode.ai:dkim,auditcode.ai:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp,auditcode.ai:from_mime,auditcode.ai:dkim,auditcode.ai:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 79E6772DD5A
+X-Rspamd-Queue-Id: 0353772DB21
 
-Hi Zhu Yanjun, thanks for the review.
+Hi Zhu Yanjun, thanks for the review -- good catch, you're right.
 
-> > BUG: KASAN: slab-use-after-free in rxe_receiver+0x4f78/0x89e0 [rdma_rxe]
-> > Workqueue: rxe_wq do_work [rdma_rxe]
-> Can you share all the stack trace with us? Thanks a lot.
+> From this function,
+> static int rxe_init_sq(struct rxe_qp *qp, struct ibv_qp_init_attr *init_attr)
+> ...
+>      qp->sq.max_sge = init_attr->cap.max_send_sge;
+> ...
+> qp->sq.max_sge is also from the user space application. It is possible
+> that qp->sq.max_sge is 0.
+> Then this makes rxe_requester will return error and exit.
 
-Sure. The read side -- the recv_task kworker running rxe_receiver() on
-the freed rd_atomic resource array -- from the pre-fix v6.19 kernel
-(CONFIG_KASAN generic, rxe loopback):
+Correct: with max_sge == 0 my "cur_sge >= qp->sq.max_sge" check rejects
+a legitimate zero-SGE WQE (cur_sge == 0), so such a QP could never post.
+The claim in my commit message that zero-payload WQEs "remain valid" was
+simply wrong for the max_sge == 0 case -- thanks for catching it.
 
-  BUG: KASAN: slab-use-after-free in rxe_receiver+0x4f78/0x89e0 [rdma_rxe]
-  Read of size 4 at addr ffff88800b79f84c by task kworker/u8:2/51
-  CPU: 0 UID: 0 PID: 51 Comm: kworker/u8:2 Not tainted 6.19.0 #1
-  Workqueue: rxe_wq do_work [rdma_rxe]
-  Call Trace:
-   <TASK>
-   dump_stack_lvl+0x4d/0x70
-   print_report+0x170/0x4f3
-   kasan_report+0xda/0x110
-   rxe_receiver+0x4f78/0x89e0 [rdma_rxe]
-   do_work+0x144/0x470 [rdma_rxe]
-   process_one_work+0x611/0xe80
-   worker_thread+0x52e/0xdc0
-   kthread+0x30c/0x630
-   ret_from_fork+0x2fd/0x3e0
-   ret_from_fork_asm+0x1a/0x30
-   </TASK>
+One subtlety while fixing it: gating the check on num_sge alone is not
+enough. The requester's payload is wqe->dma.resid, which is independent
+of num_sge, so a crafted WQE with num_sge == 0, a large resid and an
+out-of-range cur_sge would still reach copy_data() and dereference
+dma->sge[cur_sge]. What actually makes a zero-SGE WQE safe is that
+copy_data() returns early on length == 0, before it ever touches
+dma->sge[]. So in v2 I gate the cur_sge bound on wqe->dma.resid (i.e.
+"is there payload that will make copy_data() index dma->sge[]") rather
+than on num_sge:
 
-  The buggy address belongs to the object at ffff88800b79f800
-   which belongs to the cache kmalloc-1k of size 1024
-  The buggy address is located 76 bytes inside of
-   freed 1024-byte region [ffff88800b79f800, ffff88800b79fc00)
+	if (unlikely(wqe->dma.num_sge > qp->sq.max_sge ||
+		     (wqe->dma.resid &&
+		      wqe->dma.cur_sge >= qp->sq.max_sge))) {
 
-The freed kmalloc-1k object is qp->resp.resources[] (the rd_atomic
-array); it is freed by the concurrent
-ib_modify_qp(IB_QP_MAX_DEST_RD_ATOMIC) thread in
-free_rd_atomic_resources() <- rxe_qp_from_attr(), while this recv_task
-kworker reads it. This was a kasan_multi_shot run and the per-object
-Allocated-by/Freed-by backtraces were lost in the splat storm -- I can
-send a single-shot capture that includes those two stacks if it would
-help.
+This lets a zero-payload WQE through (including on a max_sge == 0 QP),
+still rejects the oversized-num_sge and out-of-range-cur_sge cases, and
+keeps multi-packet sends valid (cur_sge advances within [0, num_sge)
+while resid > 0, and num_sge <= max_sge keeps that in the array).
 
-> If alloc_rd_atomic_resources fails, that is, qp->resp.resources is NULL.
-> After rxe_enable_task(&qp->recv_task);  qp->resp.resources(NULL) will be
-> used in resp. This will cause problems.
-> drivers/infiniband/sw/rxe/rxe_resp.c:656:    res = &qp->resp.resources[qp->resp.res_head];
-> drivers/infiniband/sw/rxe/rxe_resp.c:1325:        struct resp_res *res = &qp->resp.resources[i];
+Re-verified on the same v6.19 KASAN (CONFIG_KASAN_VMALLOC=y) stand: the
+original reproducer -- which posts a user-QP send WQE with an
+out-of-range cur_sge -- reaches the exploit path and the QP now
+completes cleanly with no "vmalloc-out-of-bounds in copy_data" report,
+whereas the pre-fix kernel trips it.
 
-Good catch -- you're right. Re-enabling recv_task before the error
-check resumes the responder against a NULL qp->resp.resources on the
-ENOMEM path. v2 moves rxe_enable_task() below the error check, so the
-responder is re-enabled only once a fresh array has been installed and
-stays quiesced on failure:
-
-	rxe_disable_task(&qp->recv_task);
-	free_rd_atomic_resources(qp);
-	err = alloc_rd_atomic_resources(qp, max_dest_rd_atomic);
-	if (err)
-		return err;
-	rxe_enable_task(&qp->recv_task);
-
-rxe_disable_task()/rxe_enable_task() are state-based (TASK_STATE_DRAINED
-/IDLE), not refcounted, so leaving recv_task drained on the failed
-modify is safe and recoverable: a subsequent successful modify_qp or a
-QP destroy both handle the DRAINED state.
+One thing worth flagging for completeness: this gate (like the sibling
+validate_send_wr()/get_srq_wqe() checks) validates the WQE in place in
+the mmap'd ring, so it narrows rather than fully closes the underlying
+race -- a userspace thread can still mutate cur_sge/resid after the
+check and before copy_data() re-reads them. The retransmit path
+(advance_dma_data() via req_retry()) also indexes dma->sge[cur_sge]
+ahead of this check. Both are pre-existing and out of scope for this
+one-liner, but I'm happy to look at them separately if you'd like.
 
 I'll send this as [PATCH v2].
 
