@@ -1,238 +1,219 @@
-Return-Path: <linux-rdma+bounces-22964-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22965-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id OoJSIIi/T2oOnwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-22964-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 17:34:32 +0200
+	id uvo3B1HBT2qXnwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-22965-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 17:42:09 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC7E0732F6C
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 17:34:31 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76DD67330AD
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 17:42:08 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=O2zplw0o;
-	dmarc=pass (policy=none) header.from=gmail.com;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22964-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22964-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=R7PFOk++;
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22965-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22965-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 4442130D5A08
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 15:28:12 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8FEF83024A3E
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 15:42:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9207F383334;
-	Thu,  9 Jul 2026 15:28:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5762940E8DF;
+	Thu,  9 Jul 2026 15:42:03 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA16E382F02
-	for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2026 15:28:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A32CE19995E;
+	Thu,  9 Jul 2026 15:42:01 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783610886; cv=none; b=ti7PJilCxnWkB2g8nAlXImL5l7HOSxyUHmokC0aZxRdhvhT1JZdfxEXUS5bv4WZuOOjt9itM1BpKWBtbrvrfzG+b509pCU4I62zOfHEqZtKCeH+QNxYPose2BoU3y+lNxVEgAc2rvktql4bSqtE1cJR5xZMBnkgPv4hM9YUjKps=
+	t=1783611723; cv=none; b=NdgVrVEwmS/Szzu8Cd3MaC1Ow81abyPF06HqSJTWOKhcdOZA0v/59j+51gRsNN1fMreFfXvMD5x8rPmFJSZZmdsYjS9nusNhjMoA6kFw+s7yb3JyiK7IVqo7VmSYLs/WacHuP/1Qd9DZ5ctvHx3b+kRt3aZbLpia657J+j01pRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783610886; c=relaxed/simple;
-	bh=gWk0Tx1PpSkQ7SrrEuYSkz1J6FwF7G6dNVcAD48RLZU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sN8U7ym5gS3WqI5gXtEw2mHCNkHY2YtA31REgWVdo5bmWF7K2HV7Mw/EDtr5uSWCRhpFBiMGtqu5uEZ78hVXNQFYjRISIG6Dj48tetA/7Mk5/I2RiEvSx6i3hRmgpjbmP61Wk14p+d1GOSGU05siSCf5eO6loq0reYQjqMv8x4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O2zplw0o; arc=none smtp.client-ip=209.85.221.54
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-47d70879764so17864f8f.2
-        for <linux-rdma@vger.kernel.org>; Thu, 09 Jul 2026 08:28:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783610883; x=1784215683; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=CHbf130yEa4XzJ/mR051Bre42Fa2Qf6EqrRM78ycRyA=;
-        b=O2zplw0opYDrs9XEFRoiSuNPe4G5TK8RLytwyhRA38cvVChmfrlJZY2pXxvI8fMak6
-         6tPINHKNR4Gp8RbzuXritr2f7L+hq/gWKOpaDDOFY9DaBlZE13EqgiFPhOODB6w6ZOJx
-         3Jgx1boyO6psQzSsJoULhaUO85R9oo0Z4vV7UUo5FHbYExmbbf73KnbEp3SUUFH+YPWi
-         v3BVKiRiYcxJPLe5ia4sp9vC788x8wq62cepvyeAXvulCpcr8G2czVPgYxcCbqrzIwCu
-         6hXKYAMEMdpGeX+gdTG2HqshtrpnEb7MpXCon+blToWhbkX56zGRCu+WKuAqGLRpD1HR
-         GSSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783610883; x=1784215683;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=CHbf130yEa4XzJ/mR051Bre42Fa2Qf6EqrRM78ycRyA=;
-        b=jd6agm5iiNsFcL++nS5PdQOKDnIdFEhltMkV0RvUbUyH32iE7VY1cRJsyYTN1wqgLM
-         Kx46eb73m1dMiObl7A1Hs3+75DBxnhTanu63Kzc16/+n4Ghx0FOHAgji21UJv80zHLV1
-         tX3FnIv1WyYA6CYP21kBVxjgu9u5Xjprz1o2vFvKEK0sSUfxbhukuCxY0iN59wWq/ig+
-         HaLWZfOgTupfCy5Hp+4U9QbHtyU5Fw5NX9iht5gHY4nu/iVPECfiE1B70giyBe1JClTh
-         Ogg/TUZTM7wCDHRDBGpAhfMnRYQfWCXkYwDLo5S2OFItKpR2cTuuT00K2w6jPt5jh7Dg
-         wBkw==
-X-Forwarded-Encrypted: i=1; AHgh+RoCS00XwG2l9+jFWvLufb5X1prapaRJSvyi6KkJyN81NgDcKWx0MgkrP3TDyPOLx9ClHu6NYywIcdM9@vger.kernel.org
-X-Gm-Message-State: AOJu0YxY5YXxYIKMBwcW4Q8cTZBIqzZAsRAIsh8gSVaL6+io8/WsdNaY
-	5ojQx707ZDhwVniRx1avFYkrWCJdKUrUldEv6QJEyrfkAlfQ4CWGtId9
-X-Gm-Gg: AfdE7clbG7fjMYgXWAcKJptrR3u3gZsmJX4sgJ8jxj+wFu6urmSUvIelJz207gOQxVW
-	Lv7NR5+J4wLnC2F836vBhvRIH0Dock2rFeLeb+DcdaepyE757ZwoMUqDa8jOjXCzPwChSuqpR0p
-	WxJ2x5kilLKO7uHI8Xr3Jg6kORvEoWHUzd0JrwLc9C0Tdh2cUBQ9v6yMb2wl1BD1EeyviaNlJGi
-	CsKdq+axtOUhGZ+25nO57zMlUi3Y4sbXmCwlFhlUlN+x+TJQJPijGkK6u2Rbio4e4e4GZIy9bLB
-	84sB1tJu77FmO9fhQMIAPMZnNG386BsxpT6KTTdeGAIr9iv5Q6SeSDn3cnWZCO+UsgHxfypOCFG
-	Kt0O564EKrtZ1E+BZ1RhiKWJxz174mkhTtl/Ckd2sD95c7ReKt/KbU+/myHqebD+gWLL30K/Hxx
-	9lWk4WafuwzaWJxhZjlQ/WwzqC2TJbpTkHUDO7fkdJkfSExg==
-X-Received: by 2002:a05:6000:18a3:b0:47d:ef25:ff3b with SMTP id ffacd0b85a97d-47df0812ef6mr8098275f8f.49.1783610882799;
-        Thu, 09 Jul 2026 08:28:02 -0700 (PDT)
-Received: from pumpkin (host-92-21-50-228.as13285.net. [92.21.50.228])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47aa039ae44sm49942587f8f.23.2026.07.09.08.28.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2026 08:28:02 -0700 (PDT)
-Date: Thu, 9 Jul 2026 16:27:59 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Alexander Chesnokov <Alexander.Chesnokov@kaspersky.com>
-Cc: "xuhaoyue1@hisilicon.com" <xuhaoyue1@hisilicon.com>,
- "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>, Oleg Kazakov
- <Oleg.Kazakov@kaspersky.com>, Pavel Zhigulin
- <Pavel.Zhigulin@kaspersky.com>, "stable@vger.kernel.org"
- <stable@vger.kernel.org>, Wenpeng Liang <liangwenpeng@huawei.com>, Jason
- Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Xi Wang
- <wangxi11@huawei.com>, Weihang Li <liweihang@huawei.com>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] RDMA/hns: Fix arithmetic overflow in
- hns_roce_v2_set_hem()
-Message-ID: <20260709162759.1d836699@pumpkin>
-In-Reply-To: <24c0a3cf43074b37bb1c9c321a73f470@kaspersky.com>
-References: <20260707140938.3106919-1-Alexander.Chesnokov@kaspersky.com>
-	<20260708092146.3325855-1-Alexander.Chesnokov@kaspersky.com>
-	<20260708181941.1ad1e112@pumpkin>
-	<24c0a3cf43074b37bb1c9c321a73f470@kaspersky.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	s=arc-20240116; t=1783611723; c=relaxed/simple;
+	bh=ufCl8aMrAz1jL1B91IWldSlGiwDY2Gd3/+SS6EBFTho=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=GZ31rNsSN2gCqtZB9u0l5e6SBUkz3b7+TV3ScsU9xyqQCH/VaRLvcB9I1z63+gweRpopVfxv6ruuhbcfsJ2TSXj/eQO5wHUUuKkDvYt6m3NaK6x3xmfMwXm8b6SLogUiHWzqWzeMXsk/hvPSk+wj0E3QXqfF6S+gFkA6MJKZDQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R7PFOk++; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BC601F000E9;
+	Thu,  9 Jul 2026 15:42:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783611721;
+	bh=rxQ6s6uIC1Xh4EK6Bix3qZbEKUNNeKF9f+msivycHww=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=R7PFOk++OXY0Hmgy4CIQn+jp2dY8n+Ca3VrhE1OOMsRicR2Fmtf5ckWlfDWBrBgAZ
+	 w3cxOob/AJqA1wE/2qBFyVJKneP1GWncZaPivTDkkeI68Qec1Q2otGxtjXzPOn5iM3
+	 A09qtIhcLvplOmSKPOLO9yc7qjGAu4ZtqV442+ZMZUInCjs1zf+Y9NKTn1jx8AjS/J
+	 VEepHxH9BIvKuuLILgGJ73luCZxz7TvW9jlMhKlfoVQosu0D789h7/ChIIdpvr8+sw
+	 9VJxqFDbEk/trsztJO3W7lF1xh1k0a4aYRO0BRBdOUJ1ksVh6E0FqtQfzFq8+uZ6qT
+	 DOkptDCFxjHUw==
+Message-ID: <a724cf77f2338776f44b465a25009c22a0ee7c43.camel@kernel.org>
+Subject: Re: [PATCH net] rds: Fix inet6_addr_lst NULL dereference when IPv6
+ is disabled
+From: Allison Henderson <achender@kernel.org>
+To: Ilia Gavrilov <Ilia.Gavrilov@infotecs.ru>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Ka-Cheong Poon
+ <ka-cheong.poon@oracle.com>, Santosh Shilimkar
+ <santosh.shilimkar@oracle.com>, "netdev@vger.kernel.org"
+ <netdev@vger.kernel.org>,  "linux-rdma@vger.kernel.org"
+ <linux-rdma@vger.kernel.org>, "rds-devel@oss.oracle.com"
+ <rds-devel@oss.oracle.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "lvc-project@linuxtesting.org"
+ <lvc-project@linuxtesting.org>
+Date: Thu, 09 Jul 2026 08:41:59 -0700
+In-Reply-To: <20260708115922.2226279-1-Ilia.Gavrilov@infotecs.ru>
+References: <20260708115922.2226279-1-Ilia.Gavrilov@infotecs.ru>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3-0ubuntu1.1 
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-5.16 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:Alexander.Chesnokov@kaspersky.com,m:xuhaoyue1@hisilicon.com,m:lvc-project@linuxtesting.org,m:Oleg.Kazakov@kaspersky.com,m:Pavel.Zhigulin@kaspersky.com,m:stable@vger.kernel.org,m:liangwenpeng@huawei.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:wangxi11@huawei.com,m:liweihang@huawei.com,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	FORGED_SENDER(0.00)[davidlaightlinux@gmail.com,linux-rdma@vger.kernel.org];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-22964-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[13];
 	FORWARDED(0.00)[lists@lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	FORGED_RECIPIENTS(0.00)[m:Ilia.Gavrilov@infotecs.ru,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:ka-cheong.poon@oracle.com,m:santosh.shilimkar@oracle.com,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:rds-devel@oss.oracle.com,m:linux-kernel@vger.kernel.org,m:lvc-project@linuxtesting.org,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22965-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[davidlaightlinux@gmail.com,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TO_DN_SOME(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp,linuxtesting.org:url]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: EC7E0732F6C
+X-Rspamd-Queue-Id: 76DD67330AD
 
-On Thu, 9 Jul 2026 04:56:56 +0000
-Alexander Chesnokov <Alexander.Chesnokov@kaspersky.com> wrote:
+On Wed, 2026-07-08 at 11:59 +0000, Ilia Gavrilov wrote:
+> When booting with the 'ipv6.disable=3D1' parameter, inet6_addr_lst
+> is never initialized because inet6_init() exits before addrconf_init()
+> is called to initialize it. An attempt to bind an RDS socket to
+> an ipv6 address results in a crash in __ipv6_chk_addr_and_flags()
 
-> > When does the value overflow.
-> > Yes, the expression can overflow and the result is assigned to a
-> > 64bit variable, but I'd have testing this code would have showed
-> > the problem. So what is the customer visible impact?  
-> 
-> You're right, there is no reachable overflow. In hns_roce_calc_hem_mhop()
-> the 32-bit table_idx is split into base-chunk_ba_num digits i, j, k, and
-> here they are recombined: i * chunk_ba_num + j equals table_idx /
-> chunk_ba_num, and the full expression equals table_idx, which is u32.
-> i is additionally bounded by ba_l0_num. So the arithmetic cannot exceed
-> U32_MAX on any real input - there is no customer-visible impact, and the
-> SVACE report is a false positive.
-> 
-> I'll drop the Fixes: and Cc: stable tags and resend as a standalone
-> hardening/readability change. If you'd prefer to just drop it, that's
-> fine too.
+Hello Ilia,
 
-Best just dropped.
+Thanks for the catch.  Some comments below:
 
-	David
+>=20
+> KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+> RIP: 0010:__ipv6_chk_addr_and_flags+0x1df/0x7e0
+> Call Trace:
+>  <TASK>
+>  ipv6_chk_addr+0x3b/0x50
+>  rds_tcp_laddr_check+0x155/0x3b0 [rds_tcp]
+>  rds_trans_get_preferred+0x15d/0x2d0 [rds]
+>  ? trace_hardirqs_on+0x2d/0x110
+>  rds_bind+0x1433/0x1d60 [rds]
+>  ? rds_remove_bound+0xd50/0xd50 [rds]
+>  ? aa_af_perm+0x250/0x250
+>  ? __might_fault+0xde/0x190
+>  ? __sys_bind+0x1dc/0x210
+>  __sys_bind+0x1dc/0x210
+>  ? __ia32_sys_socketpair+0x100/0x100
+>  ? restore_fpregs_from_fpstate+0x53/0x100
+>  __x64_sys_bind+0x73/0xb0
+>  ? syscall_enter_from_user_mode+0x1c/0x50
+>  do_syscall_64+0x34/0x80
+>  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> RIP: 0033:0x7f47f8269ea9
+>  </TASK>
+>=20
+> The following code reproduces the issue:
+>=20
+> struct sockaddr_in6 addr;
+> s =3D socket(PF_RDS, SOCK_SEQPACKET, 0);
+>=20
+> memset(&addr, 0, sizeof(addr));
+> inet_pton(AF_INET6, ADDRESS, &addr.sin6_addr);
+> addr.sin6_family =3D AF_INET6;
+> addr.sin6_port =3D htons(PORT);
+>=20
+> bind(s, &addr, sizeof(addr);
+nit: missing paren here
 
-> 
-> -----Original Message-----
-> From: David Laight <david.laight.linux@gmail.com> 
-> Sent: Wednesday, July 8, 2026 8:20 PM
-> To: Alexander Chesnokov <Alexander.Chesnokov@kaspersky.com>
-> Cc: xuhaoyue1@hisilicon.com; lvc-project@linuxtesting.org; Oleg Kazakov <Oleg.Kazakov@kaspersky.com>; Pavel Zhigulin <Pavel.Zhigulin@kaspersky.com>; stable@vger.kernel.org; Wenpeng Liang <liangwenpeng@huawei.com>; Jason Gunthorpe <jgg@ziepe.ca>; Leon Romanovsky <leon@kernel.org>; Xi Wang <wangxi11@huawei.com>; Weihang Li <liweihang@huawei.com>; linux-rdma@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH v2] RDMA/hns: Fix arithmetic overflow in hns_roce_v2_set_hem()
-> 
-> Caution: This is an external email.
-> 
-> 
-> 
-> On Wed, 8 Jul 2026 12:21:46 +0300
-> <Alexander.Chesnokov@kaspersky.com> wrote:
-> 
-> > From: Alexander Chesnokov <Alexander.Chesnokov@kaspersky.com>
-> >
-> > If hop_num is 2 or 1, then the expressions like i * chunk_ba_num + j 
-> > are computed in 32-bit arithmetic before being assigned to a u64 index 
-> > field, which can lead to overflow.  
-> 
-> When does the value overflow.
-> Yes, the expression can overflow and the result is assigned to a 64bit variable, but I'd have testing this code would have showed the problem.
-> 
-> So what is the customer visible impact?
-> 
->         David
-> 
-> >
-> > Declare i, j and k as u64 so that the address index arithmetic is 
-> > performed in 64-bit.
-> >
-> > Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> >
-> > Fixes: a81fba28136d ("RDMA/hns: Configure BT BA and BT attribute for 
-> > the contexts in hip08")
-> > Cc: stable@vger.kernel.org
-> > Suggested-by: David Laight <david.laight.linux@gmail.com>
-> > Signed-off-by: Alexander Chesnokov <Alexander.Chesnokov@kaspersky.com>
-> >
-> > ---
-> > Changes in v2:
-> > - Instead of casting the operands to u64, declare i, j and k as u64
-> >   so the index arithmetic is performed in 64-bit (David Laight).
-> >
-> > v1: 
-> > https://lore.kernel.org/linux-rdma/20260707140938.3106919-1-Alexander.
-> > Chesnokov@kaspersky.com/
-> > ---
-> >  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c 
-> > b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> > index 1c180a6b1c07..3469a9a68d3b 100644
-> > --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> > +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> > @@ -4238,7 +4238,7 @@ static int hns_roce_v2_set_hem(struct hns_roce_dev *hr_dev,
-> >       struct hns_roce_hem_mhop mhop;
-> >       struct hns_roce_hem *hem;
-> >       unsigned long mhop_obj = obj;
-> > -     int i, j, k;
-> > +     u64 i, j, k;
-> >       int ret = 0;
-> >       u64 hem_idx = 0;
-> >       u64 l1_idx = 0;  
-> 
+>=20
+> Found by InfoTeCS on behalf of Linux Verification Center
+> (linuxtesting.org) with Syzkaller.
+>=20
+> Fixes: eee2fa6ab322 ("rds: Changing IP address internal representation to=
+ struct in6_addr")
+> Fixes: 1e2b44e78eea ("rds: Enable RDS IPv6 support")
+> Signed-off-by: Ilia Gavrilov <Ilia.Gavrilov@infotecs.ru>
+> ---
+>  net/rds/ib.c  | 4 ++++
+>  net/rds/tcp.c | 8 +++++---
+>  2 files changed, 9 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/net/rds/ib.c b/net/rds/ib.c
+> index 39f87272e071..8f9cf491984f 100644
+> --- a/net/rds/ib.c
+> +++ b/net/rds/ib.c
+> @@ -429,6 +429,10 @@ static int rds_ib_laddr_check_cm(struct net *net, co=
+nst struct in6_addr *addr,
+>  		sa =3D (struct sockaddr *)&sin;
+>  	} else {
+>  #if IS_ENABLED(CONFIG_IPV6)
+> +		if (!ipv6_mod_enabled()) {
+> +			ret =3D -EADDRNOTAVAIL;
+> +			goto out;
+> +		}
+>  		memset(&sin6, 0, sizeof(sin6));
+>  		sin6.sin6_family =3D AF_INET6;
+>  		sin6.sin6_addr =3D *addr;
+> diff --git a/net/rds/tcp.c b/net/rds/tcp.c
+> index a1de114d5e2e..955d92277d5a 100644
+> --- a/net/rds/tcp.c
+> +++ b/net/rds/tcp.c
+> @@ -366,9 +366,11 @@ int rds_tcp_laddr_check(struct net *net, const struc=
+t in6_addr *addr,
+>  		rcu_read_unlock();
+>  	}
+>  #if IS_ENABLED(CONFIG_IPV6)
+> -	ret =3D ipv6_chk_addr(net, addr, dev, 0);
+> -	if (ret)
+> -		return 0;
+> +	if (ipv6_mod_enabled()) {
+> +		ret =3D ipv6_chk_addr(net, addr, dev, 0);
+> +		if (ret)
+> +			return 0;
+> +	}
+
+There's another ipv6_chk_addr() in __rds_find_ifindex() with the same issue=
+ that affects inbound link-local IPv6
+connects.  Can you add a similar guard there too?  Then I think that should=
+ cover all the points of exposure.  Thanks
+for working on this.
+
+Allison
+
+>  #endif
+>  	return -EADDRNOTAVAIL;
+>  }
 
 
