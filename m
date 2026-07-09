@@ -1,256 +1,184 @@
-Return-Path: <linux-rdma+bounces-22974-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22975-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id E6E2GXzqT2rdqAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-22974-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 20:37:48 +0200
+	id E+cFOHj2T2q7rAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-22975-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 21:28:56 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12BFA73455E
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 20:37:48 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38B6F734F55
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 21:28:56 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=Ry497XDY;
-	dmarc=pass (policy=none) header.from=linux.dev;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22974-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22974-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=shazbot.org header.s=fm1 header.b=fxrIC1xq;
+	dkim=pass header.d=messagingengine.com header.s=fm2 header.b="f o0u8uw";
+	dmarc=pass (policy=none) header.from=shazbot.org;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22975-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22975-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7979D3027351
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 18:37:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 367E1304B692
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 19:26:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 238354DBD7E;
-	Thu,  9 Jul 2026 18:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 395C53B895F;
+	Thu,  9 Jul 2026 19:26:09 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+Received: from fhigh-a7-smtp.messagingengine.com (fhigh-a7-smtp.messagingengine.com [103.168.172.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D7E84DB548
-	for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2026 18:37:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AD1E3B4EB7;
+	Thu,  9 Jul 2026 19:26:05 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783622254; cv=none; b=qOzWgsW9wycoNHfGAq+xevCEJjD1ZisuCuCgllt57gmh5snYimD12LEMVqIGHERUooCxeZxZQfGYeZb4M7g85aWvijoYC5X3ymLMBBepPcyfkiMJU0ZXdieSCQLcKrO1fgBylVL9r7SijQ7lSuedvpWqhWwzATkV/JUnTUJWHG8=
+	t=1783625168; cv=none; b=tcrajhyvZ9qGFf3xzmG8wU0P5Ij+cR8uXMort9rJwNsMmv2vgu98Op8YN/kkUj7fdCglr50g2vJnAdi8sbwb5QRhCjXz18uZ9QZsnEsXhg5eaeLzNyYFbcQyyqZHj8xhF4TpM0lCzBSxg9wEiFIf26fRO/NaKfKlBz+Ho1MyMZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783622254; c=relaxed/simple;
-	bh=hPON6rdlsK6qogJ8M57JeOTmmKD2AXgVYFZaBT5fhB0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=s3F41B4+++QAWjWKpJvHmxbgsoYg19sO6NBYIxxoxKK57uW840cBNMQZ6+/0s55CFcAUhbA3EjlW7aWoJRXkUp20XBmsZ5FQblhBng4JtxCq4qDnByxJiGH00/+pn0uRcmG8zseUuPz+jSwRsvpKGNq9jZAGjsPj12zPWeJ3okA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Ry497XDY; arc=none smtp.client-ip=95.215.58.180
-Message-ID: <3f5b2bfb-9ca0-4ece-aae6-177e7c845e08@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1783622239;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hTGRpd5XR3qZvQOxUVhMyy6tNzwyK8gZeBNAdQOz/8g=;
-	b=Ry497XDYc1Wp+nl06h0j6od+zPtCjpLw6ULiWPX62CZCiYeOLKlwRgiFoZUBJXBxE5ZFjZ
-	ROpswGdC/KJPctGNj6BpfIsh8FotfcGAUrr7vzQIOseeoleiVzlspD0TNX2nm/WFY6C0/c
-	Gez2gIOxXb1Pv+iQe4vJMMXmHdd7fFw=
-Date: Thu, 9 Jul 2026 11:37:08 -0700
+	s=arc-20240116; t=1783625168; c=relaxed/simple;
+	bh=Q7AjLGS/SFId1GInaNXeQDct9+gLnAZDYsTKp+4y6HE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Xc/Jmffa/IMRY9UQXB40qWVPQgIVh/sOkheD8MDoIADXPevU562PQwd4cixRhhg6HihUOdW3QX0ku/2kt/wX5SxtDK5Rd2xfjdJQcBYeIhI7fhB3UTgRN8JsrBjQGXlpAccbfyTReUzqGKTuCNGOphuStmwifMm5SMXyqB1TQC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shazbot.org; spf=pass smtp.mailfrom=shazbot.org; dkim=pass (2048-bit key) header.d=shazbot.org header.i=@shazbot.org header.b=fxrIC1xq; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=fo0u8uwX; arc=none smtp.client-ip=103.168.172.158
+Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 4E7D214001BD;
+	Thu,  9 Jul 2026 15:26:05 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-06.internal (MEProxy); Thu, 09 Jul 2026 15:26:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shazbot.org; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1783625165;
+	 x=1783711565; bh=I9rPXmDJECuT3ucAFK0IBkM4yWwM7Zo/Km35xBzf+0U=; b=
+	fxrIC1xqtyoqjQZDTd9Tvy7V9IjaUA3Xj3LBIx4hkYVL2ZHeh4xhyHIqYiczRFuJ
+	j4xcsYH+Q8Lx6Stb67/TmdChuNrQ/OWcsQkExF0cZBdmgJOcu7oMEj6tC9tBy8E7
+	qpt3nQ3vTJCSRm913JjRVQmxz4ifR5WzwL1uytC6lbWLcB/WYtR9D32djqZw4JiS
+	T3tp8bft46I4H12B3J25wziEoQNj9ooESOe0bfWwqLQR5/wCBEmOytaRXIg3xk/m
+	4BwrYzMNHEixkfz8U7vZFMZGucq3OrcEMjDcikjFqmUJ1x+xLaHjUvgMJaW9Jo12
+	5sd/Hq1Uep7eEaLbqeEQOg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1783625165; x=
+	1783711565; bh=I9rPXmDJECuT3ucAFK0IBkM4yWwM7Zo/Km35xBzf+0U=; b=f
+	o0u8uwXilBzSH8cZeu1sQST+IBGKX/jiQYeEjHSyub1h1VvjTk5y2pruyB3ddQd/
+	axac1nCW71UuDKAGIssjDAmqVqbea/SMEksnII3za5aNBu89nlLjjy6AZD15kMzu
+	rzaCCbhfzT2GOVz32/LWR9JQv1cj4HX2zVlZmm+dCt/xuHdSjv11T+pWqo0Qf+Hx
+	ydRsaYCZpYvRx8eu0BYQnncTye8shfqZJXOAe8wckIRgUTO0MAAwspefOhV/OnuY
+	9WcGUgYPLEs2Y1AZh6Wn5IBW/aSoI/1nFvjhFKh6JoBFnba1KLbhpP7m7BmAXxkl
+	Vyx/Z60MyoIkPkOTXCytw==
+X-ME-Sender: <xms:zPVPajHsvUEJWbQcU7Px2gDFeA8qoiNVrSC--6MWMiLavEWnKheo6w>
+    <xme:zPVPamsVqC3Yaj7KjCST76hUp6LhY2sy-4MeeDK_qV97q3L16IMdHwMbvaQiqn7hq
+    clRs_zlBgBTpSvL2VeGiYLSnhxK2s8o9uyg9ssWy2y0Dfv7fFJoEQ>
+X-ME-Received: <xmr:zPVPahZiY3mVU-PO-Zhn6L5tWelN7ciU5txUULlAABCnC8WsYNZVDWJwa78>
+X-ME-Proxy-Cause: dmFkZTE3N/VYUlCu+B/e+pNSYGOlK/ujHCY3wsoqBKl+7XqYvD9oq198P9rrmOx5R7DDOd
+    MgfX89m2DFOBXWuKmWTBm51sfp+Y+PFQ/mgKGd1L0i00oT86alC24ZEaKhq2LthuUBqatM
+    uV+xJpjA1vnjr1qImP77lzYxbXx7DZG1Iyv5GuLD/D3NC507byJOFzvPzhwIi7zKeiho6P
+    MHpelfRZi7iUgve4883YfxghCAzl8ZPE4tix0xLYOUAavbvS5sB/MMt3lPaD//cakO5/j0
+    eOm92iJ5bfCbrOsCHmBT9CYbBKXn6lXeTmDElUr4zSqsapmcIY+Se3wEGScsRix437e/F4
+    ZlLwDvpNpriuCsFQCmhPdxWxG1RHqRbC59VtrZL3RqsHPCPT+o0MGOlyA/oNlzovMIfgX/
+    IcpJHDhynCMsY+Nu4TaUd4Fza3x8fU3aCom3SvzPVfd7RjK+T2Ktn7BU5RNK9FaXSrV6Fj
+    k3cBjHU+fplJRuigW6sZukwT1NLNQuAdK4fFKvePDdv2AREMK5ATyuvpI2+oNftfcLkO+9
+    Os9pXgslQAE3aQIhX4YVsmigzqFA9ZVIAjGyjddJdefixSm5+MHhqKHKwwhbL+71w6Zooe
+    TjQMLezuDg3shi71YmxzF/ghMtiQ3C64q9viTnZPAvtgwf4ZSTzK/R1tAqwA
+X-ME-Proxy: <xmx:zPVPau4mJt-jTh9C8PZz0cuiBF3cfqfgnrxfGwcZ4sXuLLPnh9-Ilw>
+    <xmx:zPVPah9yiipmrsKK4l1ISLPwbdEx62F5SQKifJ48k2n9cQt5Yu4AHw>
+    <xmx:zPVPaia9uKMSkJLB8VGKOEAv0vPqxY5qYB_VQZ5PIK7CAGpu93hYrg>
+    <xmx:zPVPai6QjnzqZ5vs4UWhz3qcs3gUUIHSYQa-AGL0C6pC2Qjo0RYpHQ>
+    <xmx:zfVPanhbtxmh4S49JyjeFa_9ks2Wiq7dwwHJ5fpmmQEhY3vSOf_6s0bk>
+Feedback-ID: i03f14258:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 9 Jul 2026 15:26:03 -0400 (EDT)
+Date: Thu, 9 Jul 2026 13:26:02 -0600
+From: Alex Williamson <alex@shazbot.org>
+To: Zhiping Zhang <zhipingz@meta.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ Michael Guralnik <michaelgur@nvidia.com>, Sumit Semwal
+ <sumit.semwal@linaro.org>, Christian Konig <christian.koenig@amd.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, <kvm@vger.kernel.org>,
+ <linux-rdma@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+ <dri-devel@lists.freedesktop.org>, alex@shazbot.org
+Subject: Re: [PATCH v11 0/4] vfio/dma-buf: add TPH support for peer-to-peer
+ access
+Message-ID: <20260709132602.6a3fb084@shazbot.org>
+In-Reply-To: <20260702181025.2694961-1-zhipingz@meta.com>
+References: <20260702181025.2694961-1-zhipingz@meta.com>
+X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] RDMA/rxe: validate num_sge/cur_sge before indexing
- wqe->dma.sge[]
-To: Ibrahim Hashimov <security@auditcode.ai>, zyjzyj2000@gmail.com,
- jgg@ziepe.ca, leon@kernel.org, Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-References: <20260708224534.1206-1-security@auditcode.ai>
- <20260709072656.9074-1-security@auditcode.ai>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "yanjun.zhu" <yanjun.zhu@linux.dev>
-In-Reply-To: <20260709072656.9074-1-security@auditcode.ai>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[shazbot.org,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[shazbot.org:s=fm1,messagingengine.com:s=fm2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22974-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:security@auditcode.ai,m:zyjzyj2000@gmail.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:yanjun.zhu@linux.dev,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:stable@vger.kernel.org,s:lists@lfdr.de];
-	FREEMAIL_TO(0.00)[auditcode.ai,gmail.com,ziepe.ca,kernel.org,linux.dev];
-	FORGED_SENDER(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-22975-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[12];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_TLS_LAST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:zhipingz@meta.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:michaelgur@nvidia.com,m:sumit.semwal@linaro.org,m:christian.koenig@amd.com,m:bhelgaas@google.com,m:kvm@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-pci@vger.kernel.org,m:dri-devel@lists.freedesktop.org,m:alex@shazbot.org,s:lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FORGED_SENDER(0.00)[alex@shazbot.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[shazbot.org:+,messagingengine.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	FROM_NEQ_ENVFROM(0.00)[alex@shazbot.org,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ALIAS_RESOLVED(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,auditcode.ai:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:from_mime,linux.dev:email,linux.dev:mid,linux.dev:dkim]
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[shazbot.org:from_mime,shazbot.org:dkim,shazbot.org:mid,sashiko.dev:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,messagingengine.com:dkim]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 12BFA73455E
+X-Rspamd-Queue-Id: 38B6F734F55
 
-On 7/9/26 12:26 AM, Ibrahim Hashimov wrote:
-> A user QP's send queue (qp->sq.queue) is a shared ring the userspace
-> application writes to directly via mmap (vmalloc_user(), see
-> rxe_queue.c). For such a QP, rxe_post_send() takes the qp->is_user
-> branch and only schedules the requester task -- it never validates or
-> copies the posted WQE:
-> 
-> 	drivers/infiniband/sw/rxe/rxe_verbs.c:
-> 		if (qp->is_user) {
-> 			rxe_sched_task(&qp->send_task);
-> 			...
-> 		}
-> 
-> The requester then consumes the WQE in place straight out of that
-> mmap'd ring:
-> 
-> 	rxe_req.c:	wqe = req_next_wqe(qp);
-> 	rxe_req.c:	err = copy_data(qp->pd, 0, &wqe->dma,
-> 					payload_addr(pkt), payload,
-> 					RXE_FROM_MR_OBJ);
-> 
-> copy_data() indexes the per-WQE sge array with the attacker-controlled
-> cur_sge field and dereferences it (once there is payload to copy):
-> 
-> 	rxe_mr.c:	struct rxe_sge *sge = &dma->sge[dma->cur_sge];
-> 	rxe_mr.c:	...
-> 	rxe_mr.c:	if (sge->length && (offset < sge->length)) {
-> 
-> dma->sge[] is a flex array whose real backing storage is exactly
-> qp->sq.max_sge entries per WQE slot (see rxe_qp.c, wqe_size computed
-> from max_sge at QP create time). Since a user QP's WQE bytes are
-> entirely attacker-supplied, both wqe->dma.num_sge and wqe->dma.cur_sge
-> can be set to arbitrary values independent of each other and of
-> max_sge. Only the *kernel*-QP post path bounds num_sge:
-> 
-> 	rxe_verbs.c: validate_send_wr()
-> 		if (num_sge > sq->max_sge) {
-> 			rxe_err_qp(qp, "num_sge > max_sge\n");
-> 
-> but that function is only reachable from rxe_post_one_send() for
-> kernel-owned QPs; it is never consulted for a user QP's raw WQE.
-> 
-> The sibling receive path already has the equivalent guard, with the
-> literal comment documenting exactly why it is required:
-> 
-> 	rxe_resp.c: get_srq_wqe()
-> 		/* don't trust user space data */
-> 		if (unlikely(wqe->dma.num_sge > srq->rq.max_sge)) {
-> 			...
-> 			rxe_dbg_qp(qp, "invalid num_sge in SRQ entry\n");
-> 			return RESPST_ERR_MALFORMED_WQE;
-> 		}
-> 
-> The send/requester path has no analogous check, so a local,
-> unprivileged user who can open /dev/infiniband/uverbs* and create a
-> user QP on a soft-RoCE (rxe) link can hand-craft a WQE in the shared
-> send queue with an out-of-range wqe->dma.cur_sge (or an oversized
-> wqe->dma.num_sge) and ring the send doorbell. rxe_requester() then
-> calls copy_data(), which dereferences &dma->sge[cur_sge] out of the
-> bounds of the per-WQE sge array -- a vmalloc out-of-bounds *read*
-> (confirmed via KASAN: "KASAN: vmalloc-out-of-bounds in copy_data"),
-> reliably panicking the kernel (local DoS). sge->addr itself is still
-> bounds-checked later by lookup_mr()/rxe_mr_copy(), so the primitive is
-> an OOB read of sge metadata, not an arbitrary read/write primitive.
-> 
-> Fix this the same way get_srq_wqe() already does for SRQ entries:
-> bound the fields pulled from the (possibly user-mapped) send queue
-> entry before they are used to index wqe->dma.sge[], right where the
-> requester fetches the next WQE off the ring in rxe_requester(). num_sge
-> is capped at qp->sq.max_sge (matching the sibling SRQ check and the
-> kernel-QP validate_send_wr() check). cur_sge is bounded only when the
-> WQE actually carries payload (wqe->dma.resid): copy_data() dereferences
-> dma->sge[cur_sge] only after its own length == 0 early return, so a
-> zero-payload WQE never touches the sge array and must not be rejected
-> -- notably that is the only kind of WQE a max_sge == 0 QP can post
-> (qp->sq.max_sge is itself derived from user-supplied max_send_sge /
-> max_inline_data and may be 0). Gating on resid rather than num_sge is
-> deliberate: payload is wqe->dma.resid, which is independent of num_sge,
-> so a WQE with num_sge == 0 but a large resid and an out-of-range
-> cur_sge would still reach the sge dereference.
-> 
-> This is a long-standing bug in the rxe (soft-RoCE) driver: the
-> qp->is_user bypass in rxe_post_send() and the unbounded
-> &dma->sge[dma->cur_sge] indexing in copy_data() have been present
-> since the driver was introduced.
-> 
-> Runtime-verified on a v6.19 KASAN (CONFIG_KASAN_VMALLOC=y) stand: a
-> reproducer that posts a user QP send WQE with an out-of-range cur_sge
-> reliably tripped "KASAN: vmalloc-out-of-bounds in copy_data" (an
-> out-of-bounds read) before this patch, and no longer triggers that
-> report with the patch applied.
-> 
-> Fixes: 8700e3e7c485 ("Soft RoCE driver")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Ibrahim Hashimov <security@auditcode.ai>
-> Assisted-by: AuditCode-AI:2026.07
-> ---
-> v2: address Zhu Yanjun's review of v1
->      (https://lore.kernel.org/linux-rdma/20260708224534.1206-1-security@auditcode.ai/):
->      qp->sq.max_sge can legitimately be 0, and v1's unconditional
->      "cur_sge >= max_sge" check then wrongly rejected a valid zero-payload
->      WQE. Gate the cur_sge bound on wqe->dma.resid instead (copy_data()
->      dereferences dma->sge[] only when there is payload), so zero-payload
->      WQEs -- the only kind a max_sge == 0 QP can post -- are accepted while
->      the out-of-range cur_sge OOB is still rejected. Commit message fixed.
+On Thu, 2 Jul 2026 11:10:13 -0700
+Zhiping Zhang <zhipingz@meta.com> wrote:
+=20
+> Changes since v10:
+>   Patch 2 (dma-buf): Per Christian K=C3=B6nig, document that the ST/PH
+>   returned by dma_buf_get_pci_tph() is only valid until the exporter
+>   invalidates the current mapping and must be re-queried afterwards;
+>   note added to the wrapper kernel-doc and referenced from the callback
+>   kernel-doc. Also add dma_buf_get_pci_tph() and dma_buf_ops.get_pci_tph()
+>   to the central dma-buf locking convention.
+>=20
+>   Patch 3 (vfio/pci): Per Alex Williamson, update the vfio_pci_dma_buf
+>   comment to note that @revoked is additionally protected by memory_lock,
+>   and describe the READ_ONCE() rationale in the commit log. No behavior
+>   change.
 
-Thanks a lot. I am fine with this. Please Leon and Jason comment on this.
+Sashiko has valid comments[1] across most of the series.
 
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+ - Passing through 0b10 seems mis-categorized as High in patch 1, but
+   is valid hardening if tph_req_type can ever hold an invalid value.
 
-Zhu Yanjun
+ - The documentation error in patch 2 is real.
 
-> 
->   drivers/infiniband/sw/rxe/rxe_req.c | 22 ++++++++++++++++++++++
->   1 file changed, 22 insertions(+)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-> index 12d03f390b09..363c56a1edbb 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_req.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
-> @@ -701,6 +701,28 @@ int rxe_requester(struct rxe_qp *qp)
->   	if (unlikely(!wqe))
->   		goto exit;
->   
-> +	/*
-> +	 * Don't trust user space data: for a user QP, qp->sq.queue is a
-> +	 * raw ring the application writes directly, so this WQE's num_sge
-> +	 * and cur_sge are attacker-controlled. copy_data() dereferences
-> +	 * dma->sge[cur_sge] without bounding the initial cur_sge against
-> +	 * the per-WQE sge array, whose capacity is qp->sq.max_sge (the
-> +	 * loop there only bounds subsequent increments, against num_sge).
-> +	 * Bound num_sge to that capacity, the way get_srq_wqe() and
-> +	 * validate_send_wr() already do, and bound cur_sge only when the
-> +	 * WQE actually carries payload (dma.resid): copy_data() returns
-> +	 * early on a zero-length copy before it ever touches dma->sge[],
-> +	 * so a zero-payload WQE -- the only valid WQE on a max_sge == 0
-> +	 * QP -- must not be rejected here.
-> +	 */
-> +	if (unlikely(wqe->dma.num_sge > qp->sq.max_sge ||
-> +		     (wqe->dma.resid &&
-> +		      wqe->dma.cur_sge >= qp->sq.max_sge))) {
-> +		rxe_dbg_qp(qp, "invalid num_sge/cur_sge in send wqe\n");
-> +		wqe->status = IB_WC_LOC_QP_OP_ERR;
-> +		goto err;
-> +	}
-> +
->   	if (rxe_wqe_is_fenced(qp, wqe)) {
->   		qp->req.wait_fence = 1;
->   		goto exit;
+ - Patch 4 ironically fails to re-validate according to the lifecycle
+   requirements that patch 2 specifies.  This is a significant gap in
+   the implementation proof for a real requester.
 
+ - The broadened scope of the existing memory leak in patch 4 is
+   already addressed in [2], ok.  Maybe should be folded into this
+   series if mlx5 isn't going to pick it up separately.
+
+Thanks,
+Alex
+
+[1]https://sashiko.dev/#/patchset/20260702181025.2694961-1-zhipingz@meta.com
+[2]https://lore.kernel.org/linux-rdma/20260612170406.3339093-1-zhipingz@met=
+a.com
 
