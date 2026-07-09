@@ -1,219 +1,380 @@
-Return-Path: <linux-rdma+bounces-22965-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22966-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id uvo3B1HBT2qXnwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-22965-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 17:42:09 +0200
+	id aDlbKkDET2pJoAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-22966-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 17:54:40 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76DD67330AD
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 17:42:08 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFC50733287
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 17:54:39 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=R7PFOk++;
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22965-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22965-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=linux.microsoft.com header.s=default header.b=ECJiMV3l;
+	dmarc=pass (policy=none) header.from=linux.microsoft.com;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22966-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22966-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8FEF83024A3E
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 15:42:04 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id F1F68300DF50
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 15:48:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5762940E8DF;
-	Thu,  9 Jul 2026 15:42:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF7F14266B5;
+	Thu,  9 Jul 2026 15:48:11 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A32CE19995E;
-	Thu,  9 Jul 2026 15:42:01 +0000 (UTC)
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D940426694;
+	Thu,  9 Jul 2026 15:48:08 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783611723; cv=none; b=NdgVrVEwmS/Szzu8Cd3MaC1Ow81abyPF06HqSJTWOKhcdOZA0v/59j+51gRsNN1fMreFfXvMD5x8rPmFJSZZmdsYjS9nusNhjMoA6kFw+s7yb3JyiK7IVqo7VmSYLs/WacHuP/1Qd9DZ5ctvHx3b+kRt3aZbLpia657J+j01pRE=
+	t=1783612091; cv=none; b=EXRxQFjifsFOjk9hiZ+qakn2CyFCOBWLUImlbdvBsa6VWeTE67r+ts4Nrt7inrwPqmDGCWBcHcGu43R96QoqeMhiBIGO1Ym8QsmIBVDzQLXBmj48JKig0gh6rPtPiCDAJUE7kVwXTiHAMyoEEYLXma8h82xHOa2aGShBgWsW11s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783611723; c=relaxed/simple;
-	bh=ufCl8aMrAz1jL1B91IWldSlGiwDY2Gd3/+SS6EBFTho=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=GZ31rNsSN2gCqtZB9u0l5e6SBUkz3b7+TV3ScsU9xyqQCH/VaRLvcB9I1z63+gweRpopVfxv6ruuhbcfsJ2TSXj/eQO5wHUUuKkDvYt6m3NaK6x3xmfMwXm8b6SLogUiHWzqWzeMXsk/hvPSk+wj0E3QXqfF6S+gFkA6MJKZDQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R7PFOk++; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BC601F000E9;
-	Thu,  9 Jul 2026 15:42:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783611721;
-	bh=rxQ6s6uIC1Xh4EK6Bix3qZbEKUNNeKF9f+msivycHww=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=R7PFOk++OXY0Hmgy4CIQn+jp2dY8n+Ca3VrhE1OOMsRicR2Fmtf5ckWlfDWBrBgAZ
-	 w3cxOob/AJqA1wE/2qBFyVJKneP1GWncZaPivTDkkeI68Qec1Q2otGxtjXzPOn5iM3
-	 A09qtIhcLvplOmSKPOLO9yc7qjGAu4ZtqV442+ZMZUInCjs1zf+Y9NKTn1jx8AjS/J
-	 VEepHxH9BIvKuuLILgGJ73luCZxz7TvW9jlMhKlfoVQosu0D789h7/ChIIdpvr8+sw
-	 9VJxqFDbEk/trsztJO3W7lF1xh1k0a4aYRO0BRBdOUJ1ksVh6E0FqtQfzFq8+uZ6qT
-	 DOkptDCFxjHUw==
-Message-ID: <a724cf77f2338776f44b465a25009c22a0ee7c43.camel@kernel.org>
-Subject: Re: [PATCH net] rds: Fix inet6_addr_lst NULL dereference when IPv6
- is disabled
-From: Allison Henderson <achender@kernel.org>
-To: Ilia Gavrilov <Ilia.Gavrilov@infotecs.ru>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Ka-Cheong Poon
- <ka-cheong.poon@oracle.com>, Santosh Shilimkar
- <santosh.shilimkar@oracle.com>, "netdev@vger.kernel.org"
- <netdev@vger.kernel.org>,  "linux-rdma@vger.kernel.org"
- <linux-rdma@vger.kernel.org>, "rds-devel@oss.oracle.com"
- <rds-devel@oss.oracle.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "lvc-project@linuxtesting.org"
- <lvc-project@linuxtesting.org>
-Date: Thu, 09 Jul 2026 08:41:59 -0700
-In-Reply-To: <20260708115922.2226279-1-Ilia.Gavrilov@infotecs.ru>
-References: <20260708115922.2226279-1-Ilia.Gavrilov@infotecs.ru>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.3-0ubuntu1.1 
+	s=arc-20240116; t=1783612091; c=relaxed/simple;
+	bh=Gx3BetVdOhK9tL3J4kYCUB6lFM5K/OloIYl5fsDDOFQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QxgeSQEfIQQPWeSNYLLnwq/PaUNrNgx9g1d8wc+/t9taQ94rKlrH6ySRkRvazFjxROYzaVqm5anRqfk6/rteT43IU94waTjqJ/U8T1SH+uQm2SFvE4nsUyet93KPkH04XKM1bmwrdCYlDNjHCEoRdZXyCMSIHbwpwCuyP/Tz9nY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=ECJiMV3l; arc=none smtp.client-ip=13.77.154.182
+Received: by linux.microsoft.com (Postfix, from userid 1204)
+	id 1852720B716D; Thu,  9 Jul 2026 08:48:03 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1852720B716D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1783612083;
+	bh=KrNo05al+iHU65EqWsm2pT9OTDN3Qql+zzSQH5XVV/o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ECJiMV3l1QuK0yFx8wTLGR+6qMqz3l/AwK74cYG7G/q0DsO9ufiapDLnJulAJdhxn
+	 iTsI/WZQrL25aOZYr8+bbdAUrTxPlfgUth1SLpdHeSd6P/welskVBuGGl0VRn6a1Qe
+	 4AKFz8rByCM3n2haE/ILCOdfP2VGxXoUhvN3rc4c=
+Date: Thu, 9 Jul 2026 08:48:03 -0700
+From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+To: Simon Horman <horms@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	leon@kernel.org, longli@microsoft.com, kotaranov@microsoft.com,
+	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	stephen@networkplumber.org, jacob.e.keller@intel.com,
+	dipayanroy@microsoft.com, leitao@debian.org, kees@kernel.org,
+	john.fastabend@gmail.com, hawk@kernel.org, bpf@vger.kernel.org,
+	daniel@iogearbox.net, ast@kernel.org, sdf@fomichev.me,
+	yury.norov@gmail.com, pavan.chebbi@broadcom.com
+Subject: Re: [PATCH net-next v11 2/2] net: mana: force full-page RX buffers
+ via ethtool private flag
+Message-ID: <ak/Cs/qWVJD57qgl@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20260701141808.461554-3-dipayanroy@linux.microsoft.com>
+ <20260708155741.1509815-2-horms@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260708155741.1509815-2-horms@kernel.org>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[microsoft.com:d:+,kernel.org:s:+];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORWARDED(0.00)[lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:horms@kernel.org,m:pabeni@redhat.com,m:kys@microsoft.com,m:haiyangz@microsoft.com,m:wei.liu@kernel.org,m:decui@microsoft.com,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:leon@kernel.org,m:longli@microsoft.com,m:kotaranov@microsoft.com,m:shradhagupta@linux.microsoft.com,m:ssengar@linux.microsoft.com,m:ernis@linux.microsoft.com,m:shirazsaleem@microsoft.com,m:linux-hyperv@vger.kernel.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:stephen@networkplumber.org,m:jacob.e.keller@intel.com,m:dipayanroy@microsoft.com,m:leitao@debian.org,m:kees@kernel.org,m:john.fastabend@gmail.com,m:hawk@kernel.org,m:bpf@vger.kernel.org,m:daniel@iogearbox.net,m:ast@kernel.org,m:sdf@fomichev.me,m:yury.norov@gmail.com,m:pavan.chebbi@broadcom.com,m:andrew@lunn.ch,m:johnfastabend@gmail.com,m:yurynorov@gmail.com,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	FORGED_RECIPIENTS(0.00)[m:Ilia.Gavrilov@infotecs.ru,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:ka-cheong.poon@oracle.com,m:santosh.shilimkar@oracle.com,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:rds-devel@oss.oracle.com,m:linux-kernel@vger.kernel.org,m:lvc-project@linuxtesting.org,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
-	RCVD_COUNT_THREE(0.00)[4];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22965-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22966-lists,linux-rdma=lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[35];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_SENDER(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
 	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp,linuxtesting.org:url]
+	FORGED_SENDER_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me,broadcom.com];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linux.microsoft.com:from_mime,linux.microsoft.com:dkim,linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:url]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 76DD67330AD
+X-Rspamd-Queue-Id: EFC50733287
 
-On Wed, 2026-07-08 at 11:59 +0000, Ilia Gavrilov wrote:
-> When booting with the 'ipv6.disable=3D1' parameter, inet6_addr_lst
-> is never initialized because inet6_init() exits before addrconf_init()
-> is called to initialize it. An attempt to bind an RDS socket to
-> an ipv6 address results in a crash in __ipv6_chk_addr_and_flags()
-
-Hello Ilia,
-
-Thanks for the catch.  Some comments below:
-
->=20
-> KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-> RIP: 0010:__ipv6_chk_addr_and_flags+0x1df/0x7e0
-> Call Trace:
->  <TASK>
->  ipv6_chk_addr+0x3b/0x50
->  rds_tcp_laddr_check+0x155/0x3b0 [rds_tcp]
->  rds_trans_get_preferred+0x15d/0x2d0 [rds]
->  ? trace_hardirqs_on+0x2d/0x110
->  rds_bind+0x1433/0x1d60 [rds]
->  ? rds_remove_bound+0xd50/0xd50 [rds]
->  ? aa_af_perm+0x250/0x250
->  ? __might_fault+0xde/0x190
->  ? __sys_bind+0x1dc/0x210
->  __sys_bind+0x1dc/0x210
->  ? __ia32_sys_socketpair+0x100/0x100
->  ? restore_fpregs_from_fpstate+0x53/0x100
->  __x64_sys_bind+0x73/0xb0
->  ? syscall_enter_from_user_mode+0x1c/0x50
->  do_syscall_64+0x34/0x80
->  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> RIP: 0033:0x7f47f8269ea9
->  </TASK>
->=20
-> The following code reproduces the issue:
->=20
-> struct sockaddr_in6 addr;
-> s =3D socket(PF_RDS, SOCK_SEQPACKET, 0);
->=20
-> memset(&addr, 0, sizeof(addr));
-> inet_pton(AF_INET6, ADDRESS, &addr.sin6_addr);
-> addr.sin6_family =3D AF_INET6;
-> addr.sin6_port =3D htons(PORT);
->=20
-> bind(s, &addr, sizeof(addr);
-nit: missing paren here
-
->=20
-> Found by InfoTeCS on behalf of Linux Verification Center
-> (linuxtesting.org) with Syzkaller.
->=20
-> Fixes: eee2fa6ab322 ("rds: Changing IP address internal representation to=
- struct in6_addr")
-> Fixes: 1e2b44e78eea ("rds: Enable RDS IPv6 support")
-> Signed-off-by: Ilia Gavrilov <Ilia.Gavrilov@infotecs.ru>
+On Wed, Jul 08, 2026 at 04:57:42PM +0100, Simon Horman wrote:
+> This is an AI-generated review of your patch. The human sending this
+> email has considered the AI review valid, or at least plausible.
+> Full review at: https://netdev-ai.bots.linux.dev/sashiko/
 > ---
->  net/rds/ib.c  | 4 ++++
->  net/rds/tcp.c | 8 +++++---
->  2 files changed, 9 insertions(+), 3 deletions(-)
->=20
-> diff --git a/net/rds/ib.c b/net/rds/ib.c
-> index 39f87272e071..8f9cf491984f 100644
-> --- a/net/rds/ib.c
-> +++ b/net/rds/ib.c
-> @@ -429,6 +429,10 @@ static int rds_ib_laddr_check_cm(struct net *net, co=
-nst struct in6_addr *addr,
->  		sa =3D (struct sockaddr *)&sin;
->  	} else {
->  #if IS_ENABLED(CONFIG_IPV6)
-> +		if (!ipv6_mod_enabled()) {
-> +			ret =3D -EADDRNOTAVAIL;
-> +			goto out;
-> +		}
->  		memset(&sin6, 0, sizeof(sin6));
->  		sin6.sin6_family =3D AF_INET6;
->  		sin6.sin6_addr =3D *addr;
-> diff --git a/net/rds/tcp.c b/net/rds/tcp.c
-> index a1de114d5e2e..955d92277d5a 100644
-> --- a/net/rds/tcp.c
-> +++ b/net/rds/tcp.c
-> @@ -366,9 +366,11 @@ int rds_tcp_laddr_check(struct net *net, const struc=
-t in6_addr *addr,
->  		rcu_read_unlock();
->  	}
->  #if IS_ENABLED(CONFIG_IPV6)
-> -	ret =3D ipv6_chk_addr(net, addr, dev, 0);
-> -	if (ret)
-> -		return 0;
-> +	if (ipv6_mod_enabled()) {
-> +		ret =3D ipv6_chk_addr(net, addr, dev, 0);
-> +		if (ret)
-> +			return 0;
-> +	}
+> net: mana: force full-page RX buffers via ethtool private flag
+> 
+> This adds an ethtool private flag "full-page-rx" that forces one RX buffer
+> per page to avoid a page_pool fragment path throughput regression on some
+> 4K PAGE_SIZE ARM64 platforms. Toggling the flag while the port is up
+> triggers a mana_detach() + mana_attach() reconfiguration to apply the new
+> buffer layout.
+> 
+> A few questions inline.
+> 
+> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > index 7438ea6b3f26..38f50b4eef87 100644
+> > --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> 
+> [ ... mana_use_single_rxbuf_per_page() and mana_get_rxbuf_cfg() hunks
+>       unrelated to the comments below ... ]
+> 
+> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> > index 3531abfdaf43..24f6ce63b031 100644
+> > --- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> > +++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> 
+> [ ... ]
+> 
+> > @@ -611,6 +630,88 @@ static int mana_get_link_ksettings(struct net_device *ndev,
+> >  	return 0;
+> >  }
+> >  
+> > +static u32 mana_get_priv_flags(struct net_device *ndev)
+> > +{
+> > +	struct mana_port_context *apc = netdev_priv(ndev);
+> > +
+> > +	return apc->priv_flags;
+> > +}
+> > +
+> > +static int mana_set_priv_flags(struct net_device *ndev, u32 priv_flags)
+> > +{
+> > +	struct mana_port_context *apc = netdev_priv(ndev);
+> > +	u32 changed = apc->priv_flags ^ priv_flags;
+> > +	u32 old_priv_flags = apc->priv_flags;
+> > +	bool schedule_port_reset = false;
+> > +	int err = 0;
+> > +
+> > +	if (!changed)
+> > +		return 0;
+> > +
+> > +	/* Reject unknown bits */
+> > +	if (priv_flags & ~GENMASK(MANA_PRIV_FLAG_MAX - 1, 0))
+> > +		return -EINVAL;
+> > +
+> > +	if (changed & BIT(MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF)) {
+> > +		apc->priv_flags = priv_flags;
+> 
+> [Low]
+> Is the storage of priv_flags intentionally nested inside the per-flag
+> branch?  With only one flag today this is fine, but when a second bit is
+> added to enum mana_priv_flag_bits, a user toggling only the new bit
+> passes the !changed and unknown-bits checks, the outer if is skipped,
+> apc->priv_flags is never updated, and mana_set_priv_flags() returns 0
+> while mana_get_priv_flags() keeps reporting the old state.
+> 
+> Would it be cleaner to store priv_flags unconditionally after validation
+> and use per-flag if (changed & BIT(...)) blocks only for the
+> flag-specific reconfiguration?
+> 
 
-There's another ipv6_chk_addr() in __rds_find_ifindex() with the same issue=
- that affects inbound link-local IPv6
-connects.  Can you add a similar guard there too?  Then I think that should=
- cover all the points of exposure.  Thanks
-for working on this.
+Hi Simon, Paolo,
 
-Allison
+Agreed on this future concern,
+but also we donot plan to have another mana driver private flag.
 
->  #endif
->  	return -EADDRNOTAVAIL;
->  }
 
+> > +
+> > +		if (!apc->port_is_up) {
+> > +			/* Port is down, flag updated to apply on next up
+> > +			 * so just return.
+> > +			 */
+> > +			return 0;
+> > +		}
+> > +
+> > +		/* Pre-allocate buffers to prevent failure in mana_attach
+> > +		 * later
+> > +		 */
+> > +		err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
+> 
+> [Low]
+> When the MTU is already jumbo (mtu + MANA_RXBUF_PAD > PAGE_SIZE / 2) or
+> XDP is attached, mana_use_single_rxbuf_per_page() already returns true
+> regardless of the new priv flag:
+> 
+> 	if (apc->priv_flags & BIT(MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF))
+> 		return true;
+> 
+> 	/* For xdp and jumbo frames make sure only one packet fits per page. */
+> 	if (mtu + MANA_RXBUF_PAD > PAGE_SIZE / 2 || mana_xdp_get(apc))
+> 		return true;
+> 
+> In that case mana_get_rxbuf_cfg() produces identical output whether the
+> new flag is on or off, yet toggling the flag here always performs a full
+> mana_pre_alloc_rxbufs() + mana_detach() + mana_attach() cycle and flaps
+> the link.
+> 
+> Would a pre/post comparison of mana_get_rxbuf_cfg() output be worth
+> adding to skip the reconfiguration when nothing actually changes?
+Good point will add a pre and post comparison as well to skip the
+detach/attach when already in that configuration.
+
+> 
+> [High]
+> mana_set_priv_flags() drives the same detach/attach sequence used by
+> mana_set_channels() and mana_per_port_queue_reset_work_handler(), but
+> does not take apc->vport_mutex and set apc->channel_changing = true
+> across the window.
+> 
+> The struct comment on channel_changing spells out the invariant:
+> 
+> 	/* Set by mana_set_channels() under vport_mutex to block RDMA
+> 	 * from grabbing the vport during the detach/attach window.
+> 	 * Checked by mana_cfg_vport() when called from the RDMA path.
+> 	 */
+> 	bool channel_changing;
+> 
+> Without it, after mana_detach() uncfg's the vport an RDMA client can
+> call mana_cfg_vport() and bump vport_use_count, and then mana_attach()
+> will fail with -EBUSY when it re-cfg's the vport.
+> 
+> There is also no equivalent of the '!port_is_up && vport_use_count'
+> early -EBUSY check that mana_set_channels() performs, so is the flag
+> allowed to be changed silently while an RDMA client is using the vport?
+> 
+Agreed. Will add the same vport_mutex + channel_changing pattern used by
+mana_set_channels() and mana_per_port_queue_reset_work_handler() to
+block RDMA from grabbing the vport during the detach/attach window.
+
+> > +		if (err) {
+> > +			netdev_err(ndev,
+> > +				   "Insufficient memory for new allocations\n");
+> > +			apc->priv_flags = old_priv_flags;
+> > +			return err;
+> > +		}
+> > +
+> > +		err = mana_detach(ndev, false);
+> 
+> [High]
+> mana_detach() begins with ASSERT_RTNL(), and so does mana_attach()
+> called below.  Is RTNL guaranteed to be held on the SET priv-flags path?
+> 
+> mana registers net_shaper_ops in mana_devops, which makes it an
+> ops-locked driver, so netdev_need_ops_lock() is true and the ethtool
+> core acquires rtnl only when the driver opts in via
+> ETHTOOL_OP_NEEDS_RTNL_* for that specific command.
+> 
+> Looking at mana_ethtool_ops.op_needs_rtnl:
+> 
+> 	.op_needs_rtnl		= ETHTOOL_OP_NEEDS_RTNL_SCHANNELS |
+> 				  ETHTOOL_OP_NEEDS_RTNL_SRINGPARAM |
+> 				  ETHTOOL_OP_NEEDS_RTNL_GLINK,
+> 
+> ETHTOOL_OP_NEEDS_RTNL_SPFLAGS is not listed, so ASSERT_RTNL() in the
+> detach/attach helpers below will WARN, and the code races with
+> RTNL-serialized mutators (mana_open, mana_close, mana_change_mtu,
+> mana_tx_timeout) that read and write apc->port_is_up, apc->rxqs,
+> apc->tx_qp and apc->port_st_save.
+> 
+> Should ETHTOOL_OP_NEEDS_RTNL_SPFLAGS be added to op_needs_rtnl, matching
+> what is already done for SET channels?
+> 
+Agreed, Will add ETHTOOL_OP_NEEDS_RTNL_SPFLAGS to .op_needs_rtnl.
+> > +		if (err) {
+> > +			netdev_err(ndev, "mana_detach failed: %d\n", err);
+> > +			apc->priv_flags = old_priv_flags;
+> > +
+> > +			/* Port is in an inconsistent state. Restore
+> > +			 * 'port_is_up' so that queue reset work handler
+> > +			 * can properly detach and re-attach.
+> > +			 */
+> > +			apc->port_is_up = true;
+> > +			schedule_port_reset = true;
+> > +			goto out;
+> > +		}
+> > +
+> > +		err = mana_attach(ndev);
+> > +		if (err) {
+> > +			netdev_err(ndev, "mana_attach failed: %d\n", err);
+> > +			apc->priv_flags = old_priv_flags;
+> > +
+> > +			/* Restore 'port_is_up' so the reset work handler
+> > +			 * can properly detach/attach. Without this,
+> > +			 * the handler sees port_is_up=false and skips
+> > +			 * queue allocation, leaving the port dead.
+> > +			 */
+> > +			apc->port_is_up = true;
+> > +			schedule_port_reset = true;
+> 
+> [High]
+> On this branch, mana_detach() has already succeeded and run
+> mana_cleanup_port_context(), so apc->rxqs is NULL and queues are torn
+> down.  Setting apc->port_is_up = true here between now and when
+> queue_reset_work runs opens a window where callers gate on port_is_up
+> as their "safe to access rxqs/tx_qp" predicate.
+> 
+> For example, mana_get_ethtool_stats() does:
+> 
+> 	if (!apc->port_is_up)
+> 		return;
+> 	...
+> 	rxq = apc->rxqs[q];
+> 	...
+> 
+> A concurrent ethtool -S invocation during that window will pass the
+> port_is_up gate and dereference apc->rxqs[q]->stats on a NULL rxqs.
+> 
+> Is the port_is_up restore actually needed for the reset work handler's
+> mana_detach() call?  On the reset path, mana_detach() takes its early
+> return when !netif_device_present(ndev):
+> 
+> 	if (!from_close && !netif_device_present(ndev))
+> 		return 0;
+> 
+> That early return does not touch apc->port_st_save, so the saved state
+> from the earlier successful mana_detach() should already be intact for
+> the follow-up mana_attach().
+> 
+> There is also no smp_wmb() paired with this write, unlike the pattern
+> used inside mana_detach()/mana_attach() proper.
+> 
+
+For the mana_attach() failure path: agreed, will remove port_is_up =
+true. After a successful mana_detach(ndev, false), netif_device_detach()
+has already been called so the reset handler's mana_detach() takes the
+early return via !netif_device_present(), preserving port_st_save for
+the subsequent mana_attach().
+
+For the mana_detach() failure path: keeping port_is_up = true is
+intentional. Here netif_device_detach() was never reached, so the reset
+handler's mana_detach() would re-enter fully and overwrite port_st_save
+from port_is_up, if left as false, mana_attach() would skip queue
+allocation and leave the port dead.
+
+
+> > +		}
+> > +	}
+> > +
+> > +out:
+> > +	mana_pre_dealloc_rxbufs(apc);
+> > +
+> > +	if (schedule_port_reset)
+> > +		queue_work(apc->ac->per_port_queue_reset_wq,
+> > +			   &apc->queue_reset_work);
+> > +
+> > +	return err;
+> > +}
+> > +
+> 
+> [ ... remaining hunks unrelated to the comments above ... ]
+
+Thanks for the review comments, I will address them in the next
+version.
+
+
+Regards
+Dipayaan Roy
 
