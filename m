@@ -1,106 +1,105 @@
-Return-Path: <linux-rdma+bounces-22931-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22932-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id eIxKHzhkT2pdfwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-22931-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 11:04:56 +0200
+	id 6RchIFVmT2r9fwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-22932-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 11:13:57 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E0A072EA97
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 11:04:56 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB73172EC42
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 11:13:56 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=broadcom.com header.s=google header.b=QHsBujKL;
+	dkim=pass header.d=broadcom.com header.s=google header.b=eG+JCiUi;
 	dmarc=pass (policy=reject) header.from=broadcom.com;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22931-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22931-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22932-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22932-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 5E2AB318502F
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 08:57:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1A6AD30234F9
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 08:59:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 074374028FE;
-	Thu,  9 Jul 2026 08:55:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C25793EC2DB;
+	Thu,  9 Jul 2026 08:59:01 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yx1-f97.google.com (mail-yx1-f97.google.com [74.125.224.97])
+Received: from mail-oa1-f99.google.com (mail-oa1-f99.google.com [209.85.160.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6925E3EF0CD
-	for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2026 08:55:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D4EB3E5591
+	for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2026 08:59:00 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783587347; cv=none; b=oH76pr4rZ3Iznr7JLBEhagwVvsFWxVBsBr7rq8rE06t3JGx0F+1ogMjF2p2EpMeXiqYJ8hlNOZoM4XGtU9Ks9L7BsCti7pVCmJhQSRWU6ifYxXY+dWkQ4kFG40MZLJOfjF058eyz5jJazet8HBJ4XgBrHGopbkarn1kRriW7lDI=
+	t=1783587541; cv=none; b=UEpFYsvDrFKjjvw4t60KQHFoy4qbKwRHaZX6Auy6Ii2c56yaVVK/P/GR4im8auV812Wubii9va3TQ01TdX3k45sJwKjSoQgL5qGgPTQl21lHhzVQJbQQgyUYoMYcW7hv+ThURO7eZwBpFzlO56EkxDRDh9CWCf+TIzTkFhs4j6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783587347; c=relaxed/simple;
-	bh=gG5esoFveftpL2Ei16b4Q7xCuUBAkeaWjoF8W29taSc=;
+	s=arc-20240116; t=1783587541; c=relaxed/simple;
+	bh=innEXEB5nIbFSarStKSBRtvzWKNm8lFC5BOOILmE7oI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qdMqciqgNVS2oSkrQrZmHqUPP677S/lm/tYReiqqxlLAI26xi7fl5VnlCjZaa37FuzWI/tfyupdKHVU5uSCW4ePN+Efhjwteublpp1P63fXyuLUnXQvnz8+5MCufXBtGEl2YME0UyC/aLdLmhVfOnfzcqjl6uERW6L6P9jganSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=QHsBujKL; arc=none smtp.client-ip=74.125.224.97
-Received: by mail-yx1-f97.google.com with SMTP id 956f58d0204a3-6649ffb1d01so2293336d50.1
-        for <linux-rdma@vger.kernel.org>; Thu, 09 Jul 2026 01:55:46 -0700 (PDT)
+	 To:Cc:Content-Type; b=MZ4s8WQZF2BnlbwyYd1CYzzt5hq8v8/BcEyHb4K7KFwjrAsAe1Y5iz1Q6StcFVhCF9fGPK6NnbYCi5yRkBc2pXHr9GDHT8oBk0y5FDvtucgMs2LWIVteK9Xg/c+2unlfkHfhy5g/2CmgcvkHFvAjnIplZqn2abVzavWXVVodcCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=eG+JCiUi; arc=none smtp.client-ip=209.85.160.99
+Received: by mail-oa1-f99.google.com with SMTP id 586e51a60fabf-4472500e25fso832080fac.1
+        for <linux-rdma@vger.kernel.org>; Thu, 09 Jul 2026 01:59:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783587345; x=1784192145;
+        d=1e100.net; s=20251104; t=1783587539; x=1784192339;
         h=content-type:cc:to:subject:message-id:date:from:in-reply-to
          :references:mime-version:dkim-signature:x-gm-gg:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=gG5esoFveftpL2Ei16b4Q7xCuUBAkeaWjoF8W29taSc=;
-        b=PE4HXmnlY5NqLMvImldNgrTvcXJBJdyvHxeOzNtrDBb7T2FjJFeCbTegc+VKC1tl3g
-         XesbOIx9crcKwDa3//wHKYrW1QtT8gWp08hGmAXIWQv42wb3GqYUUuoB5qjoJoGY8LqN
-         +r0sXHF3dAUnzNnCiAwFLi7E/GIyTbt795BFSSjA14mMQx/N4SxmmkEXu0SNlA/mIiu1
-         RWbQ3BWWWp9CMa5OD9xivjfGvYYY25uFPJh4NMvvnXep9Kwo2M+/zBlnMZbwXwegBKtc
-         vmpVomfN/mYwpBCBtdY/A58D5q7Wl1DlCGonHzwJWyTkABAcuVyNoSiJPx0f93qwYZyR
-         x0YQ==
-X-Forwarded-Encrypted: i=1; AHgh+RoGLRHfQt032J1R552GpzhG2lAY9UbOIVLVySRxp5LKl+4ENkzl87Gj1zk60V1XVKycBwKPkgyAhztL@vger.kernel.org
-X-Gm-Message-State: AOJu0YzGU4snzZVbzfyOWvT7Aq4XeFeS1hBz/nmRtC5tcoXaF76IX5ir
-	sm4EeZgtAk78SGbaPaA+ViNWnmsQ468GbLR1Cve6eTP5AkS9Vfa0n0hAW91bDLTQ/lZwrmoiEKH
-	CgrD+eo/hP6/Ryk35+uzca1XwbR6KQVMVaTAfY9VQrcdQ4/yiDrIdYs8694hAnujEZVC+S4CjtV
-	6agQUGWumf0l6iBlrWocSdjKhk7UYqHKtGMSDi7Zvj5IWKh02V+/Vrir22GYqZXRG2pFs4EX81d
-	n00eGVUEstPl7kOlAg9hPS3BKuY8g==
-X-Gm-Gg: AfdE7cldV2H286NI4SvRw7TEhKSMS4cmrEoZ1jcuEgm4Vr0R5GoIvlgx6ls7dlyKGT/
-	ScYaJwp+9pQiUdoNicDpLetF1cTJWITtu+xODCMowAiUcy+QUrZittg6kwp9s/N3ayqzqWDm/NF
-	i1tq3AsI4HsJ+xkKzjM4y+H3nRUKHrkRIy3hP6dkBviaVia+y8t+/NcT/aFFHGAE/e++Gw7Js9p
-	HAdxWAXoHlVTzKV1Nj7lcO2yTTcf+Jg00/cd3bHfAX5gvFwVJkjnVuVOzkV82cEam031jg6XRkm
-	awtfDfxSIpNWwJEJJMZpsr+htUIUKstlaTL2MvA2J7J6+e94EEHTtVbZmpueu3gZq6RMKVEFaVU
-	PzUDmc45V3O0eL/nycnlhgJaX/F5mnsGCjCqABKHSNbubR+FH6zw/fpuXnVBIp0umzaPGov5Mny
-	st87PnP1JtaCMCVExbD7dQ0pJ+iby/gcWlCvCdl4m8zLOM7LtTjoB9R1a3M6s=
-X-Received: by 2002:a05:690e:190d:b0:667:9f48:d6e7 with SMTP id 956f58d0204a3-6679f48e5b6mr3957773d50.93.1783587345354;
-        Thu, 09 Jul 2026 01:55:45 -0700 (PDT)
+        bh=innEXEB5nIbFSarStKSBRtvzWKNm8lFC5BOOILmE7oI=;
+        b=ns09gvKybqNFihDLcQQllHhy9r8/B5hG79JFqnPPT3yPAxfB2N1rcl+QCXOUzNC6DE
+         yYv7PmFeBssYJ5MpPKSpr7n9lIqmsookJzB1XCgpRsluw6mJblBi4jd0ME+6yXyFMzzy
+         7CX2/fqzvfwXA3MHW58BXckrJOePKp2Rj8GkPgonZBlhyhgNnjum4QD7lLDOqIPSUulX
+         zf5oT3Lvl8iz60XAYbNfPhPDPoQsW2sXlP5ZVgSzx47OKris7xHsFNF2rAqDqm6dB5h3
+         P1MXWuUss7bNST3aA97DJd3pKaWVBkbz3HSIGCnG/nh0xNJcO+yY66XJ4hwjxJE+yx/T
+         sErA==
+X-Forwarded-Encrypted: i=1; AHgh+Rr4UJEN4GbHLXebSwHXfxJe7jh31YCTDk4YT2pcYYA14+1Mq2ArGsZo7n9GMB6E4KwxNYqzJG38z0KW@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz4jthv+TlJiJjp64SBs9VWgE99TUtwmwLWKMAH50u2cqggBTZd
+	vpcIYgpLM3x2ptU85h8pR+x+x6hVgvmFTQdOhBoPYqy5F7kn1JYb89HM4/xwv0YP+bXemSey5jm
+	FpQknU8A3OhAgJb67XtOJ4P+1StNpU4/elG1IiUPFHBr57gUp66+GQVS5stXSLe9I0ufK6pxE/t
+	5hmIiNgcYYJxTSx99hotMul1qFb23TYS874NjgaJTSLcVLsgE5lueswcpV/6KRLbGI+D2qGDTKL
+	D2d60JEwIyGoLHBLK0Ue0zNylRuNA==
+X-Gm-Gg: AfdE7cljnxr3t8l6cAOeZLlowRpx0Q1qMh0H2PY9TUMn9+zNz+uEPsA0KMw/Ghw2UgZ
+	VRRdec5oz3mbbZi1EjquRzqfw8AQCJimM8j1FcWdA3bqyIF4C6A7DlCyrLj9yDAehuCytlAkO/D
+	SB6XUQpTppJfQlEIHpg09PZv0sQMGmSgJL5epCu3Z9GAbYOOzik3Q6ZVwhisI4t7KRtlQ59KKjv
+	XQxv0a72tkwqX2pZZimNJXlneAmoUXvgHHeOTyPFUJxa+Mik3Vp0UH3UJ+j1Bv/MsKn6TnzAH8A
+	H8Q3UAOK6LQIZE2XRIowzghfOWFnd9w4QboX0tiHF6J+1Iubi9fW5zDHinbh1N2nnwdG57ZoQe7
+	IJqnMacxvx6L9D/K4GbTFYl1vLw1YTEaEETTzysY2QB3UX+xIbFCiEEQHrBbTB8YF86rW0X3/Y7
+	x/6dLHpnBBgv5L8nxLVrO+3BWrfjTO/nIMifl0c1SVDAsRR9uvbH9hrDVkA48=
+X-Received: by 2002:a05:6871:81f:b0:44a:e965:b9dd with SMTP id 586e51a60fabf-45163cf293dmr4385693fac.42.1783587538895;
+        Thu, 09 Jul 2026 01:58:58 -0700 (PDT)
 Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-11.dlp.protect.broadcom.com. [144.49.247.11])
-        by smtp-relay.gmail.com with ESMTPS id 956f58d0204a3-667879bff1esm376709d50.18.2026.07.09.01.55.44
+        by smtp-relay.gmail.com with ESMTPS id 586e51a60fabf-4519134e08csm144303fac.6.2026.07.09.01.58.58
         for <linux-rdma@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 09 Jul 2026 01:55:45 -0700 (PDT)
+        Thu, 09 Jul 2026 01:58:58 -0700 (PDT)
 X-Relaying-Domain: broadcom.com
 X-CFilter-Loop: Reflected
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-8482fd61e83so2874476b3a.1
-        for <linux-rdma@vger.kernel.org>; Thu, 09 Jul 2026 01:55:44 -0700 (PDT)
+Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-847ad67cc51so2046049b3a.3
+        for <linux-rdma@vger.kernel.org>; Thu, 09 Jul 2026 01:58:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1783587344; x=1784192144; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1783587537; x=1784192337; darn=vger.kernel.org;
         h=content-type:cc:to:subject:message-id:date:from:in-reply-to
          :references:mime-version:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=gG5esoFveftpL2Ei16b4Q7xCuUBAkeaWjoF8W29taSc=;
-        b=QHsBujKLUdbx3CRNVMTlX6nKdN95h+k8FcuPpBk/GCk+kMkbvlXEGbXWRQHEnsGVJU
-         ZYxtH8vmT1OKrBDIWp9a9X5U7RyqU265s3mAAoVRFJuXfjWIN9gqIOn8kmhJVR+tvweH
-         BR7cMQhXjZB1mPIO1L1Iz6Z42KLI6rzy2TTWo=
-X-Forwarded-Encrypted: i=1; AHgh+RosPry8dLBgW9KpoX0JBRvQcgmQaWhNwV/2MEI833JGh8sWpPhxdPhbmqbJGbCH592aAD1vJqzEsIw4@vger.kernel.org
-X-Received: by 2002:a05:6a00:8f0b:b0:842:708f:39be with SMTP id d2e1a72fcca58-84842fdf097mr6328551b3a.5.1783587343867;
-        Thu, 09 Jul 2026 01:55:43 -0700 (PDT)
-X-Received: by 2002:a05:6a00:8f0b:b0:842:708f:39be with SMTP id
- d2e1a72fcca58-84842fdf097mr6328534b3a.5.1783587343472; Thu, 09 Jul 2026
- 01:55:43 -0700 (PDT)
+        bh=innEXEB5nIbFSarStKSBRtvzWKNm8lFC5BOOILmE7oI=;
+        b=eG+JCiUinsXabxFcWU9vh20/u1cTC98yrmUMwn5iGHj9rETwAXNv6xIQfxufzyEvvS
+         4/FxHdRDzsjstiEZ+IYonZh7CETMCakuam+tvCxA2i6XjwDOQyBXC87o3PKHCHWNnR/3
+         VhGBKtsXiQAouppXoozhcXzUJ3dvdGC7V8OCs=
+X-Forwarded-Encrypted: i=1; AHgh+Rq9rD29+0Wvtiigj094rhaKhtRruJSCCYWKAq039AZY8IaLPXYwdn3I32pFSEp6ZHcmKhBhavZFNy01@vger.kernel.org
+X-Received: by 2002:a05:6a00:3cca:b0:845:e70c:da90 with SMTP id d2e1a72fcca58-84842ebd230mr6299181b3a.11.1783587537028;
+        Thu, 09 Jul 2026 01:58:57 -0700 (PDT)
+X-Received: by 2002:a05:6a00:3cca:b0:845:e70c:da90 with SMTP id
+ d2e1a72fcca58-84842ebd230mr6299167b3a.11.1783587536565; Thu, 09 Jul 2026
+ 01:58:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260708-clean-init-one-hfi1-v1-0-b9e9641268a5@nvidia.com> <20260708-clean-init-one-hfi1-v1-1-b9e9641268a5@nvidia.com>
-In-Reply-To: <20260708-clean-init-one-hfi1-v1-1-b9e9641268a5@nvidia.com>
+References: <20260708-clean-init-one-hfi1-v1-0-b9e9641268a5@nvidia.com> <20260708-clean-init-one-hfi1-v1-12-b9e9641268a5@nvidia.com>
+In-Reply-To: <20260708-clean-init-one-hfi1-v1-12-b9e9641268a5@nvidia.com>
 From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Date: Thu, 9 Jul 2026 14:25:30 +0530
-X-Gm-Features: AVVi8Cdm3SDfpMuK1vS4XvsGjWm-jGQnW6OeicGkTSCRj3LKFiqsfpLsCZle4T0
-Message-ID: <CAH-L+nOUaW5rG1JF3Yfk1RC-=U7Yz1qVJGd8qB+=oQtYomoJLA@mail.gmail.com>
-Subject: Re: [PATCH rdma-next 01/13] RDMA/rvt: Return NULL after port
- allocation failure
+Date: Thu, 9 Jul 2026 14:28:42 +0530
+X-Gm-Features: AVVi8CdDrvWms_xF8PFhF7ht0sMYX9odJd4LOKUZrstp4Tfn0jwcKiPisIQbsDM
+Message-ID: <CAH-L+nPcm2sohbZUj7Xw5zZM=EuSH3+J=CyBc7CMxM3uMo6Z7w@mail.gmail.com>
+Subject: Re: [PATCH rdma-next 12/13] RDMA/hfi1: Initialize debugfs after probe completes
 To: Leon Romanovsky <leon@kernel.org>
 Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
 	Ira Weiny <iweiny@kernel.org>, Doug Ledford <dledford@redhat.com>, 
@@ -112,7 +111,7 @@ Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, Jason Gunthorp
 	Dennis Dalessandro <dennis.dalessandro@intel.com>
 X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000145360065629cad5"
+	boundary="00000000000098af92065629d5ea"
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-11.26 / 15.00];
 	WHITELIST_DMARC(-7.00)[broadcom.com:D:+];
@@ -120,7 +119,7 @@ X-Spamd-Result: default: False [-11.26 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[broadcom.com,reject];
 	R_DKIM_ALLOW(-0.20)[broadcom.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MIME_GOOD(-0.20)[multipart/signed,text/plain];
 	MAILLIST(-0.15)[generic];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -129,12 +128,12 @@ X-Spamd-Result: default: False [-11.26 / 15.00];
 	FORGED_SENDER(0.00)[kalesh-anakkur.purayil@broadcom.com,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22931-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22932-lists,linux-rdma=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[16];
 	FORWARDED(0.00)[lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+,1:+,2:~];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
 	DKIM_TRACE(0.00)[broadcom.com:+];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
@@ -145,29 +144,30 @@ X-Spamd-Result: default: False [-11.26 / 15.00];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,nvidia.com:email,mail.gmail.com:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,mail.gmail.com:mid,nvidia.com:email,broadcom.com:from_mime,broadcom.com:email,broadcom.com:dkim]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1E0A072EA97
+X-Rspamd-Queue-Id: CB73172EC42
 
---000000000000145360065629cad5
+--00000000000098af92065629d5ea
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 8, 2026 at 4:21=E2=80=AFPM Leon Romanovsky <leon@kernel.org> wr=
+On Wed, Jul 8, 2026 at 4:20=E2=80=AFPM Leon Romanovsky <leon@kernel.org> wr=
 ote:
 >
 > From: Leon Romanovsky <leonro@nvidia.com>
 >
-> rvt_alloc_device() deallocates the IB device when its port array cannot
-> be allocated but then returns the pointer to the released allocation.
-> Callers treat any non-NULL value as valid and dereference it, resulting
-> in a use-after-free.
+> Commit ed6f653fe430 ("staging/rdma/hfi1: Fix debugfs access race") moved
+> debugfs creation after device initialization and IB registration so users
+> cannot access the files before the driver is ready. However, init_one()
+> still creates them before character device creation and SDMA startup
+> finish.
 >
-> Return NULL immediately after deallocation so callers can propagate the
-> allocation failure.
+> Move hfi1_dbg_ibdev_init() to the end of the successful probe path,
+> matching hfi1_dbg_ibdev_exit() as the first action in remove_one().
 >
-> Fixes: ff6acd69518e ("IB/rdmavt: Add device structure allocation")
+> Fixes: ed6f653fe430 ("staging/rdma/hfi1: Fix debugfs access race")
 > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 
 Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
@@ -177,7 +177,7 @@ Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Regards,
 Kalesh AP
 
---000000000000145360065629cad5
+--00000000000098af92065629d5ea
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -271,14 +271,14 @@ hWv2s5x6cJdLio1vP63rDxJS7vH++zMaY0Jcptrx6eAhzfcq+y/TkHJaZ4dWrtbof1yw3z5EpCvT
 YDxV0XFQiCRLNKuZhkVvQ8dtmVhcpiT/mENrWKWOt0DwNEeC/3Fr1ruoyriggbnRmBQt1bC5uxfv
 +CEHcDGCAlcwggJTAgEBMGIwUjELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYt
 c2ExKDAmBgNVBAMTH0dsb2JhbFNpZ24gR0NDIFI2IFNNSU1FIENBIDIwMjMCDBL1bOQzYX9NEUsk
-dDANBglghkgBZQMEAgEFAKCBxzAvBgkqhkiG9w0BCQQxIgQgOfBfO/VscBKyAvvEvwRLmk88bzIR
-QZCGFEyIBS1m+UwwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjYw
-NzA5MDg1NTQ0WjBcBgkqhkiG9w0BCQ8xTzBNMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJ
+dDANBglghkgBZQMEAgEFAKCBxzAvBgkqhkiG9w0BCQQxIgQgWghUyGP0QWnzS4tgxEbHZJp/GzBj
+/JX96LJJBW2Xs/owGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjYw
+NzA5MDg1ODU3WjBcBgkqhkiG9w0BCQ8xTzBNMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJ
 YIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcN
-AQEBBQAEggEAWzcTGaUJNKUxPV9FIJsY1It+MYVpLQrvWlxute0xOyBqk1A2bHnbaQ0aL6bGUWIM
-OF/t1AvpSWPul+WBapWys4xBqB2SLP7WSISnnD5dF+zyoHCDg0KHRy6mWagY62h3zHCsnbHHQCZj
-LQb7+DXgp14NbuITUFJDfUi1ea0rJczxR9xCodJRdU9CXpMsR4Ebr/5XRRIRVxGOJNh8jKowb93F
-ijKw3kE7O2fha12u+Zlf53OfgTV2Xdim6gXC+9nuEHrD1+kTvwrnIHTxx6E7gJdRE74a5slbWeoV
-nERt8ET6l+LYvtfcHvZG0Ic/MLzmUKntNu21pBQ2jNVCyRI60A==
---000000000000145360065629cad5--
+AQEBBQAEggEAGkHaGYRbPKhYPVGChl293tJjMb1osHFHClsEpjfQ+xr7q/Q0GlmX0BbpROb9C0Qf
+bS20G17ePeDqcvAIJD/oNSV7kGnkj0bp7dml+YOlwlxnxdQD8QJZqAt8W3VtRUF1LLJSUH8cThzg
+oFxiI7b89hoUlCLR2hatiV4UVsP4XCniB9vvxZPVOQoDTmWJrvosmbgveseaSiJapsnYq7lsKd2/
+w4dX7PuzCAAlUkJrNphOX/QVVbzfOKREX/RGy2Dke1ifUpVu5Y6jEKjxwKeJu/lgK5qa8qXaYPrT
+hnqUUrfnrI73lqy519dPOcJZu4wYP+YCzfwK0Up+y4pOZnWGhQ==
+--00000000000098af92065629d5ea--
 
