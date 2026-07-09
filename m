@@ -1,73 +1,98 @@
-Return-Path: <linux-rdma+bounces-22926-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22928-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 3J6nNm1NT2rGdwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-22926-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 09:27:41 +0200
+	id I0oiBClST2qleQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-22928-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 09:47:53 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68A6572DAED
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 09:27:41 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CA6872DED1
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 09:47:52 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=auditcode.ai header.s=zmail header.b=GSvt0m0p;
-	dmarc=pass (policy=none) header.from=auditcode.ai;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22926-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22926-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
+	dkim=pass header.d=asu.edu header.s=google header.b="k/R1qZ8E";
+	dmarc=pass (policy=none) header.from=asu.edu;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22928-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22928-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 35DC43025492
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 07:27:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AAA95307C66B
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 07:45:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B727A3CB2DC;
-	Thu,  9 Jul 2026 07:27:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 856BF3C1974;
+	Thu,  9 Jul 2026 07:45:06 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from sender-op-o17.zoho.eu (sender-op-o17.zoho.eu [136.143.169.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A0E33CB911;
-	Thu,  9 Jul 2026 07:27:08 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783582031; cv=pass; b=K7GUQHVQ7ZeycBdj7Shv0b7cPFGRPfTTykkvCXxGC1kJtzFDxtDB2lzuf7yWUuHaIbkHn+KagIt7fVlo3I6/scnnjmUBgicPbF83uqM8XCUkawg9As2jMvqq+ilGTru7kG6KZAgZbiQLQSlx0hBnTRD8jbNwCgp2IB1P+YP7e0o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783582031; c=relaxed/simple;
-	bh=2VOZ1Q8y/ld42IHfECDvgAv3CXosyg8FYfrklNHRoFQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IzCuST5S4u2x5m0sHT5afTqGm73mjh+6KdxvR91E5i5RbpqWgqqMLBVpXrd/0sEFC2Q1QpaPf4M2d746JX9UKGx2fTxP7P7zzemKLH+2Q+KZ1ws+ZV2+kM9TRS6QDRSBYXXaoqcIZFJjmoad1o+mAcXriS74erNTBuNDFjh6xwU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=auditcode.ai; spf=pass smtp.mailfrom=auditcode.ai; dkim=pass (1024-bit key) header.d=auditcode.ai header.i=security@auditcode.ai header.b=GSvt0m0p; arc=pass smtp.client-ip=136.143.169.17
-ARC-Seal: i=1; a=rsa-sha256; t=1783582020; cv=none; 
-	d=zohomail.eu; s=zohoarc; 
-	b=e7FoGYGNK+9V3G703i9kktpYiQj5LzOBQHhcG5sZbTls3dgVJQ/hHf7JEG3XLFnPXM1IPPAHAaCD7ins4InBy5wPOAAnJfx+j7vcdJIbX73eHq0hyWzd6fWWHF4Qy3l0XJcSWB8XsF+u6Yl1Wb+I0KiAjEXMXJtYfZtPcdwUhe8=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-	t=1783582020; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=1RdpyygBue2iLcmMr8lORAPhAaCxeQESuFVtpwaibxI=; 
-	b=QwXVJ08y7SSJ7ty+G8Tq511ss78TsHcx4vPuAd67PZgNhKOEqWl++9rGfmg6mXgML10Hi6Y32i+bNDum3K5qpXrOvDTJ4fZolvC1ddrEQTOPg1Yp5oU7P9NMIumi6YdTZQ46loECzUfz2Bz3zTgY02cnjpNxKuxuzWnGZE1hccM=
-ARC-Authentication-Results: i=1; mx.zohomail.eu;
-	dkim=pass  header.i=auditcode.ai;
-	spf=pass  smtp.mailfrom=security@auditcode.ai;
-	dmarc=pass header.from=<security@auditcode.ai>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1783582020;
-	s=zmail; d=auditcode.ai; i=security@auditcode.ai;
-	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=1RdpyygBue2iLcmMr8lORAPhAaCxeQESuFVtpwaibxI=;
-	b=GSvt0m0pfZoI3DD43Ev6WEx5/+RRtn4HtyuYLSYfzBy6WRmxtvwdRpUKLrYRkw0P
-	w83RQV2auPY9uorsAvuFIa7fFYWTzjvsvFE/EyJW+1NC+MNtqS3BQGM1YrnLuBWL9SI
-	gcCj32Lv6y4niVPZ/m+kVuRw/91PuUbPd7I0hJxY=
-Received: by mx.zoho.eu with SMTPS id 1783582018762841.0455827055187;
-	Thu, 9 Jul 2026 09:26:58 +0200 (CEST)
-From: Ibrahim Hashimov <security@auditcode.ai>
-To: yanjun.zhu@linux.dev,
-	zyjzyj2000@gmail.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77A6D3CCFD4
+	for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2026 07:45:03 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783583106; cv=none; b=d679vVzqXXhfqVIHID6/G99QVorLHfv/xabG8fg+VPSYbfrJ/6dkWPIHEpJvKWVoXkdokf4DqIykMFJAH5yRTVuQYRFGcvsXkbb9Tqtg9PYfXNT8erD0QuAT4RvvHQqdrs54RExaZzssW+nlXR5Km6X3rpWpCg79+v/jFhnydbQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783583106; c=relaxed/simple;
+	bh=ljQxIHA11d7j3UwD5SUG7PWcXQCYFxsNMhqkVbdm2WA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QpkFCKRkOP1dvPADbfQqgW8iBHJcJ1EDm/FS2xshqJV8HbjSByG8F99jmxvXALr1lpZiosBJiAYqc/32SX/NXtuGNG8SBs5x8cQrk6OrFYPekLFYV7ESMDTF1ElUC15MYogM10YoG3L3CwkWbg/ZeSCoBhBQ+FbSiUItGVOb4WI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asu.edu; spf=pass smtp.mailfrom=asu.edu; dkim=pass (2048-bit key) header.d=asu.edu header.i=@asu.edu header.b=k/R1qZ8E; arc=none smtp.client-ip=209.85.210.171
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-8485b80f8f0so288005b3a.1
+        for <linux-rdma@vger.kernel.org>; Thu, 09 Jul 2026 00:45:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=asu.edu; s=google; t=1783583103; x=1784187903; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=j3pmlo/oWq2uNWTooLbzNWToUXky3k5pknmZssX/yPA=;
+        b=k/R1qZ8Eov4b7hTEpg6BojLWtq2FsUkfqz9KCFcoPdTz/2jT9BGUzEHaWyzqE13HfR
+         Vi60NSdYWz8XgMpRizJzpW9NFWnhcIGRuCpMfPeBPVh2/VLyH6Bu27lDDfRN5xT93u88
+         GyTZkyHFh9A8gKji+Lv1SqlnZG5hzD1JR/janhBiI37HI0NvKxL2UMwoqmSKgOtNWj2v
+         Hu754VoCscGCDLn63rPmfpP5DULW5+wDqgLgZ+vUq3CosmMC7JeBr8Lk1c+9acWfcxL7
+         PVJyGHtwacnTd8ZI05Ap1g6BNBtrvRwO5k7TKn3ibxLcNZcBEeM2G5dAudcdGZWkbJ95
+         ENJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783583103; x=1784187903;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=j3pmlo/oWq2uNWTooLbzNWToUXky3k5pknmZssX/yPA=;
+        b=ooAReq0yHTZt/r+tO1Kya3Su6RAVsradPvwSs3os54DkViD4E2KI9NhExK74NfX7Tn
+         CW+cYlS1nrf13r/QOixvlN2lbR6p7xgeDQpnq7wPsY6nvDN18A7xzWva9cziS43Q4xmN
+         ZqTbVXMLs/oGrg/10mKWKu+hEtH1o+NukZocMBbP7Xop6yftARyjVUT5from7k33jonE
+         GDrVtTwtBtcgDsOAry+FnJID9jG4u05u740VLomc7MLYFTaeAJ3jozCfJ7pKWFCTxJES
+         rPQlPZQd9NDp7T58Bs2ozQMi7nKh9ffVLTsz5xaMJ8HMYNOW9YT0/aNcMZ9KOIUCD8q3
+         /kdw==
+X-Forwarded-Encrypted: i=1; AHgh+RrbSBu8P/HkVKJ5+zDAKI0uXq4O3IMT9IwavQ1dP4/NiN5+juCNoFk5Ssg2ZAaZH/rnx5M71Cg0/4ud@vger.kernel.org
+X-Gm-Message-State: AOJu0YzpQrw93M+Yb6Jh0tutp4XfNB1vLym6BsU/HQQrWTamD+ug3mkv
+	hNsodm94xstdOdfUrJVNkryenSxxu8PdKwc0LBjedY8qS9JrXqWO55r5jkEKEeOTKg==
+X-Gm-Gg: AfdE7clhIyJuyuWiUGuMuFfptCqH/+Z9T6XrpCCB+YqGzpmmtPDkrKfBHaEX38W5ACd
+	aiebIgWr9v567uS+Pw98qNN7wvZT9O2c1LG0eGJ2Az7AToile4XYTQQyLuscNecsrlzdqilqlGi
+	O3qDkkVkPGezcAe3jB2jAscHRN+qmQc662G/Xs9UkBXXqafAna/QGg2K4i/wp3CYAwtccgAYkmu
+	aI8nb/0UTN/bII9cUMq4NSO2rTC58LswIdtYw8LfYj03yphJgBI6jVvZYC3RaUAXbKUUK77qVeZ
+	TXrN/faJmC2xieNH2ge0x7dHCr3jjh620H4yCArcWIRWrmTe39f8Ye2KBpWqjHFpeDunLizHeER
+	/dfm5296aiRqJTyQWdrqw9WumRS4OEP+2vKVbIw9SxEB9J7KE0CP/1nLPrhegHF37DuoxNTjcqQ
+	==
+X-Received: by 2002:a05:6a00:1bc9:b0:848:42c4:d8c8 with SMTP id d2e1a72fcca58-848437a26bamr6023748b3a.68.1783583102879;
+        Thu, 09 Jul 2026 00:45:02 -0700 (PDT)
+Received: from p1.. ([2601:600:a402:c8a0:214c:bc6d:954f:ba01])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8483dc66f2asm2501048b3a.24.2026.07.09.00.45.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2026 00:45:02 -0700 (PDT)
+From: Xiang Mei <xmei5@asu.edu>
+To: Allison Henderson <achender@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>
+Cc: netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	rds-devel@oss.oracle.com,
 	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH v2] RDMA/rxe: validate num_sge/cur_sge before indexing wqe->dma.sge[]
-Date: Thu,  9 Jul 2026 09:26:56 +0200
-Message-ID: <20260709072656.9074-1-security@auditcode.ai>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20260708224534.1206-1-security@auditcode.ai>
-References: <20260708224534.1206-1-security@auditcode.ai>
+	Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+	Ka-Cheong Poon <ka-cheong.poon@oracle.com>,
+	bestswngs@gmail.com,
+	Xiang Mei <xmei5@asu.edu>
+Subject: [PATCH net] rds: tcp: hold the net_device across ipv6_chk_addr() in rds_tcp_laddr_check()
+Date: Thu,  9 Jul 2026 00:44:59 -0700
+Message-ID: <20260709074459.326345-1-xmei5@asu.edu>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -75,185 +100,102 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[auditcode.ai,none];
-	R_DKIM_ALLOW(-0.20)[auditcode.ai:s=zmail];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	DMARC_POLICY_ALLOW(-0.50)[asu.edu,none];
+	R_DKIM_ALLOW(-0.20)[asu.edu:s=google];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22926-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[linux.dev,gmail.com,ziepe.ca,kernel.org];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:yanjun.zhu@linux.dev,m:zyjzyj2000@gmail.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:stable@vger.kernel.org,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22928-lists,linux-rdma=lfdr.de];
+	FREEMAIL_CC(0.00)[vger.kernel.org,oss.oracle.com,oracle.com,gmail.com,asu.edu];
+	RCPT_COUNT_TWELVE(0.00)[14];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[security@auditcode.ai,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[auditcode.ai:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	FORWARDED(0.00)[lists@lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER(0.00)[xmei5@asu.edu,linux-rdma@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:achender@kernel.org,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:rds-devel@oss.oracle.com,m:linux-kernel@vger.kernel.org,m:santosh.shilimkar@oracle.com,m:ka-cheong.poon@oracle.com,m:bestswngs@gmail.com,m:xmei5@asu.edu,s:lists@lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[security@auditcode.ai,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[xmei5@asu.edu,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	DKIM_TRACE(0.00)[asu.edu:+];
+	RCVD_COUNT_FIVE(0.00)[5];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	TO_DN_SOME(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[asu.edu:from_mime,asu.edu:email,asu.edu:mid,asu.edu:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 68A6572DAED
+X-Rspamd-Queue-Id: 4CA6872DED1
 
-A user QP's send queue (qp->sq.queue) is a shared ring the userspace
-application writes to directly via mmap (vmalloc_user(), see
-rxe_queue.c). For such a QP, rxe_post_send() takes the qp->is_user
-branch and only schedules the requester task -- it never validates or
-copies the posted WQE:
+rds_tcp_laddr_check() looks up a scoped IPv6 interface with
+dev_get_by_index_rcu(), drops the RCU read-side lock, and only then
+passes the bare struct net_device * into ipv6_chk_addr().
 
-	drivers/infiniband/sw/rxe/rxe_verbs.c:
-		if (qp->is_user) {
-			rxe_sched_task(&qp->send_task);
-			...
-		}
+dev_get_by_index_rcu() only keeps the device alive within the same RCU
+read-side section. After rcu_read_unlock(), a concurrent RTM_DELLINK can
+free the net_device; ipv6_chk_addr() then dereferences the stale pointer
+in __ipv6_chk_addr_and_flags() (e.g. l3mdev_master_dev_rcu(dev)), reading
+freed memory.
 
-The requester then consumes the WQE in place straight out of that
-mmap'd ring:
+Take a reference with dev_hold() before dropping the RCU lock and release
+it with dev_put() after ipv6_chk_addr(), so the device cannot be freed
+while in use. dev_put(NULL) is a no-op, so the scope_id == 0 path is
+unaffected.
 
-	rxe_req.c:	wqe = req_next_wqe(qp);
-	rxe_req.c:	err = copy_data(qp->pd, 0, &wqe->dma,
-					payload_addr(pkt), payload,
-					RXE_FROM_MR_OBJ);
+  BUG: KASAN: slab-use-after-free in __ipv6_chk_addr_and_flags (... net/ipv6/addrconf.c:1998)
+  Read of size 8 at addr ffff8880106ec000 by task exploit/153
+  Call Trace:
+   ...
+   kasan_report (mm/kasan/report.c:595)
+   __ipv6_chk_addr_and_flags (... net/ipv6/addrconf.c:1998)
+   ipv6_chk_addr (net/ipv6/addrconf.c:2031 net/ipv6/addrconf.c:1972)
+   rds_tcp_laddr_check (net/rds/tcp.c:370)
+   rds_bind (net/rds/bind.c:248)
+   __sys_bind (net/socket.c:1920)
+   __x64_sys_bind (net/socket.c:1956)
+   do_syscall_64 (arch/x86/entry/syscall_64.c:63)
+   entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:121)
 
-copy_data() indexes the per-WQE sge array with the attacker-controlled
-cur_sge field and dereferences it (once there is payload to copy):
-
-	rxe_mr.c:	struct rxe_sge *sge = &dma->sge[dma->cur_sge];
-	rxe_mr.c:	...
-	rxe_mr.c:	if (sge->length && (offset < sge->length)) {
-
-dma->sge[] is a flex array whose real backing storage is exactly
-qp->sq.max_sge entries per WQE slot (see rxe_qp.c, wqe_size computed
-from max_sge at QP create time). Since a user QP's WQE bytes are
-entirely attacker-supplied, both wqe->dma.num_sge and wqe->dma.cur_sge
-can be set to arbitrary values independent of each other and of
-max_sge. Only the *kernel*-QP post path bounds num_sge:
-
-	rxe_verbs.c: validate_send_wr()
-		if (num_sge > sq->max_sge) {
-			rxe_err_qp(qp, "num_sge > max_sge\n");
-
-but that function is only reachable from rxe_post_one_send() for
-kernel-owned QPs; it is never consulted for a user QP's raw WQE.
-
-The sibling receive path already has the equivalent guard, with the
-literal comment documenting exactly why it is required:
-
-	rxe_resp.c: get_srq_wqe()
-		/* don't trust user space data */
-		if (unlikely(wqe->dma.num_sge > srq->rq.max_sge)) {
-			...
-			rxe_dbg_qp(qp, "invalid num_sge in SRQ entry\n");
-			return RESPST_ERR_MALFORMED_WQE;
-		}
-
-The send/requester path has no analogous check, so a local,
-unprivileged user who can open /dev/infiniband/uverbs* and create a
-user QP on a soft-RoCE (rxe) link can hand-craft a WQE in the shared
-send queue with an out-of-range wqe->dma.cur_sge (or an oversized
-wqe->dma.num_sge) and ring the send doorbell. rxe_requester() then
-calls copy_data(), which dereferences &dma->sge[cur_sge] out of the
-bounds of the per-WQE sge array -- a vmalloc out-of-bounds *read*
-(confirmed via KASAN: "KASAN: vmalloc-out-of-bounds in copy_data"),
-reliably panicking the kernel (local DoS). sge->addr itself is still
-bounds-checked later by lookup_mr()/rxe_mr_copy(), so the primitive is
-an OOB read of sge metadata, not an arbitrary read/write primitive.
-
-Fix this the same way get_srq_wqe() already does for SRQ entries:
-bound the fields pulled from the (possibly user-mapped) send queue
-entry before they are used to index wqe->dma.sge[], right where the
-requester fetches the next WQE off the ring in rxe_requester(). num_sge
-is capped at qp->sq.max_sge (matching the sibling SRQ check and the
-kernel-QP validate_send_wr() check). cur_sge is bounded only when the
-WQE actually carries payload (wqe->dma.resid): copy_data() dereferences
-dma->sge[cur_sge] only after its own length == 0 early return, so a
-zero-payload WQE never touches the sge array and must not be rejected
--- notably that is the only kind of WQE a max_sge == 0 QP can post
-(qp->sq.max_sge is itself derived from user-supplied max_send_sge /
-max_inline_data and may be 0). Gating on resid rather than num_sge is
-deliberate: payload is wqe->dma.resid, which is independent of num_sge,
-so a WQE with num_sge == 0 but a large resid and an out-of-range
-cur_sge would still reach the sge dereference.
-
-This is a long-standing bug in the rxe (soft-RoCE) driver: the
-qp->is_user bypass in rxe_post_send() and the unbounded
-&dma->sge[dma->cur_sge] indexing in copy_data() have been present
-since the driver was introduced.
-
-Runtime-verified on a v6.19 KASAN (CONFIG_KASAN_VMALLOC=y) stand: a
-reproducer that posts a user QP send WQE with an out-of-range cur_sge
-reliably tripped "KASAN: vmalloc-out-of-bounds in copy_data" (an
-out-of-bounds read) before this patch, and no longer triggers that
-report with the patch applied.
-
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Ibrahim Hashimov <security@auditcode.ai>
-Assisted-by: AuditCode-AI:2026.07
+Fixes: eee2fa6ab322 ("rds: Changing IP address internal representation to struct in6_addr")
+Reported-by: Weiming Shi <bestswngs@gmail.com>
+Assisted-by: Claude:claude-opus-4-8
+Signed-off-by: Xiang Mei <xmei5@asu.edu>
 ---
-v2: address Zhu Yanjun's review of v1
-    (https://lore.kernel.org/linux-rdma/20260708224534.1206-1-security@auditcode.ai/):
-    qp->sq.max_sge can legitimately be 0, and v1's unconditional
-    "cur_sge >= max_sge" check then wrongly rejected a valid zero-payload
-    WQE. Gate the cur_sge bound on wqe->dma.resid instead (copy_data()
-    dereferences dma->sge[] only when there is payload), so zero-payload
-    WQEs -- the only kind a max_sge == 0 QP can post -- are accepted while
-    the out-of-range cur_sge OOB is still rejected. Commit message fixed.
+ net/rds/tcp.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
- drivers/infiniband/sw/rxe/rxe_req.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index 12d03f390b09..363c56a1edbb 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -701,6 +701,28 @@ int rxe_requester(struct rxe_qp *qp)
- 	if (unlikely(!wqe))
- 		goto exit;
- 
-+	/*
-+	 * Don't trust user space data: for a user QP, qp->sq.queue is a
-+	 * raw ring the application writes directly, so this WQE's num_sge
-+	 * and cur_sge are attacker-controlled. copy_data() dereferences
-+	 * dma->sge[cur_sge] without bounding the initial cur_sge against
-+	 * the per-WQE sge array, whose capacity is qp->sq.max_sge (the
-+	 * loop there only bounds subsequent increments, against num_sge).
-+	 * Bound num_sge to that capacity, the way get_srq_wqe() and
-+	 * validate_send_wr() already do, and bound cur_sge only when the
-+	 * WQE actually carries payload (dma.resid): copy_data() returns
-+	 * early on a zero-length copy before it ever touches dma->sge[],
-+	 * so a zero-payload WQE -- the only valid WQE on a max_sge == 0
-+	 * QP -- must not be rejected here.
-+	 */
-+	if (unlikely(wqe->dma.num_sge > qp->sq.max_sge ||
-+		     (wqe->dma.resid &&
-+		      wqe->dma.cur_sge >= qp->sq.max_sge))) {
-+		rxe_dbg_qp(qp, "invalid num_sge/cur_sge in send wqe\n");
-+		wqe->status = IB_WC_LOC_QP_OP_ERR;
-+		goto err;
-+	}
-+
- 	if (rxe_wqe_is_fenced(qp, wqe)) {
- 		qp->req.wait_fence = 1;
- 		goto exit;
+diff --git a/net/rds/tcp.c b/net/rds/tcp.c
+index a1de114d5e2e..204dcdc33c27 100644
+--- a/net/rds/tcp.c
++++ b/net/rds/tcp.c
+@@ -363,12 +363,16 @@ int rds_tcp_laddr_check(struct net *net, const struct in6_addr *addr,
+ 			rcu_read_unlock();
+ 			return -EADDRNOTAVAIL;
+ 		}
++		dev_hold(dev);
+ 		rcu_read_unlock();
+ 	}
+ #if IS_ENABLED(CONFIG_IPV6)
+ 	ret = ipv6_chk_addr(net, addr, dev, 0);
++	dev_put(dev);
+ 	if (ret)
+ 		return 0;
++#else
++	dev_put(dev);
+ #endif
+ 	return -EADDRNOTAVAIL;
+ }
 -- 
-2.50.1 (Apple Git-155)
+2.43.0
 
 
