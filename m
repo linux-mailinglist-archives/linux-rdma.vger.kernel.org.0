@@ -1,213 +1,269 @@
-Return-Path: <linux-rdma+bounces-22918-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22919-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id q8SbOasrT2pLbgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-22918-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 07:03:39 +0200
+	id JMdGBZQxT2qebwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-22919-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 07:28:52 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6363672CAE1
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 07:03:39 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38C7772CC07
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 07:28:51 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kaspersky.com header.s=mail202505 header.b=lzPkDEti;
-	dmarc=pass (policy=reject) header.from=kaspersky.com;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22918-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22918-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=Nvidia.com header.s=selector2 header.b=IgHQPNoV;
+	dmarc=pass (policy=reject) header.from=nvidia.com;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22919-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22919-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F3CEB3025928
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 05:03:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1D694302A6F8
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 05:28:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC76435F603;
-	Thu,  9 Jul 2026 05:03:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DFE53A6B61;
+	Thu,  9 Jul 2026 05:28:41 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx16.kaspersky-labs.com (mx16.kaspersky-labs.com [5.79.125.27])
+Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012037.outbound.protection.outlook.com [52.101.43.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 517091E633C;
-	Thu,  9 Jul 2026 05:03:31 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783573413; cv=none; b=lxXi43yxhggQ9/SQfLjTV+pksopBOdjklxVFUiZDalHeuDveRNNWtjWgvGo5VghAnCxoRlMAN8POYF0s5lUWFc1XxpCspKYbbmMfk+eVkrlvYu49YEZ8CQlbsCFxk9BmzKgu3ikW1MVYKiGlhQfT9pL27r5xEdQUaAgnDL7wnzk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783573413; c=relaxed/simple;
-	bh=gw+euuTjCrFmUIq9T71qCTkRERl0w07qKtqGrccYin4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=U4a4gl/lgcXV5mp1ZKt+tlOKB0hlQ7Mrt5AsJJer7V/nb/nxLs8xv76MRbNOJxyRzP5K7ZqSrTKVPH2cwEU/9azt/AcsKkN2jNyOkFQcl/vI0IlJ2PAvWMKn1XATOBz8XGKXrOny9cUC718LjT4RqitebUoWdr2DzC33944cAWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kaspersky.com; spf=pass smtp.mailfrom=kaspersky.com; dkim=pass (2048-bit key) header.d=kaspersky.com header.i=@kaspersky.com header.b=lzPkDEti; arc=none smtp.client-ip=5.79.125.27
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-	s=mail202505; t=1783573409;
-	bh=qmZDe8r0X/oqBgTFEuKUkTDyfZFKoZREoLtPJMkS/nM=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=lzPkDEtisS1cExrWdLrlMwX+XGemJb1f5R/EO3rqctNz25bqstUlBcrsig02XcfMd
-	 qQRnpz6ptCeR2zGAMf+MU6dWHOdbFRV3FfVjVoHl2M2P50ePlGwmsrEXuO9FEaVikC
-	 mnb8FNVGC9Pk8jRKBVtOlh+nXMYRNU2ECaX1Qwv9xU59tEP8Z3vCqMqO2gcuwemCvf
-	 n1+ZVXzVYhJujToWTRYpeo5qydYriqf7vD/dW3xjdDwISw8uqEc+llwULYMvMU8HXk
-	 nQZx9YXKO/BjBJa69yOKxoJJy8obJe3hvYrFbEUo6lpIz1y4+whhYAUo+oOM7mYrhg
-	 pcez4RRaLLNnQ==
-Received: from relay16.kaspersky-labs.com (localhost [127.0.0.1])
-	by relay16.kaspersky-labs.com (Postfix) with ESMTP id C047FC08804;
-	Thu,  9 Jul 2026 08:03:29 +0300 (MSK)
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-	by mailhub16.kaspersky-labs.com (Postfix) with ESMTPS id 84261C086A9;
-	Thu,  9 Jul 2026 08:03:29 +0300 (MSK)
-Received: from chesnokov.avp.ru (10.16.105.7) by HQMAILSRV2.avp.ru
- (10.64.57.52) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.41; Thu, 9 Jul
- 2026 08:03:28 +0300
-From: <Alexander.Chesnokov@kaspersky.com>
-To: <xuhaoyue1@hisilicon.com>
-CC: David Laight <david.laight.linux@gmail.com>,
-	<lvc-project@linuxtesting.org>, <Oleg.Kazakov@kaspersky.com>,
-	<Pavel.Zhigulin@kaspersky.com>, Wenpeng Liang <liangwenpeng@huawei.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Xi Wang
-	<wangxi11@huawei.com>, Weihang Li <liweihang@huawei.com>,
-	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Alexander
- Chesnokov <Alexander.Chesnokov@kaspersky.com>
-Subject: [PATCH v3] RDMA/hns: Compute HEM index in 64-bit in hns_roce_v2_set_hem()
-Date: Thu, 9 Jul 2026 08:03:27 +0300
-Message-ID: <20260709050327.3547237-1-Alexander.Chesnokov@kaspersky.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A97A32FD7B1;
+	Thu,  9 Jul 2026 05:28:39 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783574921; cv=fail; b=eTEa2ycvj7Bzwz2JQhPBoR9IPO1F/l4eyqzudAK5oVIclJz/kRud8ISvp/QB4kokt6X9nLica5VVhj9e0buCXbKFnEMjGuZNoT+WyfNN/pfTCDMONtV0XB30AGW/bVeZajvqnHGkpm0bcA+fML5klyPAoAXRTp6yFozsO1UsGts=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783574921; c=relaxed/simple;
+	bh=DRwWMlR5FR+BW6Qg4/STx2R2NXoIrEiGUtDVKW+zxyY=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=HDLAtdRu1tQI9D/TA+n8EthBiqtR5i44UntEBgsoUvxwicBfffYHE5yhNYqolkYL04kEuePkVl9R221bB2UHF5F6RtiGM8ke/2zxbxtKVYdG0woB3gDARdD23E0/fc5eyeeIac91j8eSXACIiOxrA2LYAl0/LlDqASYRtsMPv4s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=IgHQPNoV; arc=fail smtp.client-ip=52.101.43.37
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=u20eIQiHdgjRuyu4kF6YUyLWjqeeCXULeR79Iu+ibFIbFknG/nFBPjsb9JXNScx5HoBzhyTqPQEdufvrObGCFR0ygMM21yvo7wqQkM5IOPlgp+HyQjnbm4Ikixsi8H+QBDEPY062cLEfDFE7dFixnAUY7NkDm7bTgmxMoHqaCXHqhfTZrA6Swkjk9GQh0xg21ycRPnSU0TfsBCKbpIwqIX95srDfOCbZB+CkgFvCljiEuuMp/zWQeE3fuF896pNetu0G4wZVD7U+EGpJoXOMn4nt0G9Rx+5yNiQzrixvX2nUuPszYzDcoBHJW721pNWu1rMzmbIf/JWXJfNJiAdp8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zP6Z7lpLRwMp+qw+vNGlPOgFdeJmdF2+GzODby0pfJI=;
+ b=FeRgpCtEH+FtrKiJP0prkGt3XKfiUPfpBAf1MudJ28Nmc+HNvUvNMJJ8+tUEIs6tSkzSWb4FpLBepA359s8bbnBRnzuJbWQGFheqjvn54lKW8Je6yiCJIS23IQW/UDSw0qG8z3Kohlg1b3kWLkODCimVl6Q9+iKt9GhNjTOd7LPwBblkNIRlHre7/R2qWNzaG8xXi8216BG0BF99rP1wljk1Rvudv6iWdHyAq7lozjsP8uo+K0mEWUJzfrKyjOARsOJDlpo+7kkbqOzdyEnS0O2Usv9DjW0p1XeHPDVJts102SLgr6dAeQNu56bltz2LjxP6fl3Anr8hOOrS6hyf3g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zP6Z7lpLRwMp+qw+vNGlPOgFdeJmdF2+GzODby0pfJI=;
+ b=IgHQPNoViSj0rc5f2x+BTfY7zMOdy+AL9IgYHGjkqKMV8FWrBlgWQJYngV7k5jq9umOGygDdRmrYrtPV45qtPrlDH2A4LL8CwRQHzOXDJByEfGdYhYHfWr3OGeC81tavUiQZIiyPMlmpnacn1kMIbdSKijKOnXHCo9ut20KS3NAg7R1hMTFDVcRfwrB4Zy4T3YtcAzrinHG/IlCSsh9fb5SgwtUTfYGY8+y3jCJsmRGGMGqhZpxcNgS1FbgE+H5xRZBTStbSDF7co7MZCMye6JtzEXMm7zyTOqkzLoVG5YlDER6u31ZXx/0Y8acKIrB9nGYWdUL2tzEPheYldIJj8g==
+Received: from MW6PR12MB7086.namprd12.prod.outlook.com (2603:10b6:303:238::20)
+ by CY3PR12MB9678.namprd12.prod.outlook.com (2603:10b6:930:101::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.181.10; Thu, 9 Jul
+ 2026 05:28:36 +0000
+Received: from MW6PR12MB7086.namprd12.prod.outlook.com
+ ([fe80::4eb8:7fcb:fe8d:e95e]) by MW6PR12MB7086.namprd12.prod.outlook.com
+ ([fe80::4eb8:7fcb:fe8d:e95e%6]) with mapi id 15.21.0181.008; Thu, 9 Jul 2026
+ 05:28:36 +0000
+Message-ID: <ad63f6fc-da9c-4850-bcd4-2f3a1324ebae@nvidia.com>
+Date: Thu, 9 Jul 2026 08:28:28 +0300
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v2] net/mlx5e: Use sender devcom for MPV master-up
+To: Manjunath Patil <manjunath.b.patil@oracle.com>,
+ Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
+ Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ netdev@vger.kernel.org
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Patrisious Haddad <phaddad@nvidia.com>,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+References: <20260707233911.3651139-1-manjunath.b.patil@oracle.com>
+Content-Language: en-US
+From: Tariq Toukan <tariqt@nvidia.com>
+In-Reply-To: <20260707233911.3651139-1-manjunath.b.patil@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0449.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:c6::9) To MW6PR12MB7086.namprd12.prod.outlook.com
+ (2603:10b6:303:238::20)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HQMAILSRV2.avp.ru (10.64.57.52) To HQMAILSRV2.avp.ru
- (10.64.57.52)
-X-KSE-ServerInfo: HQMAILSRV2.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.1, Database issued on: 07/09/2026 04:48:57
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 204344 [Jul 08 2026]
-X-KSE-AntiSpam-Info: Version: 6.1.1.22
-X-KSE-AntiSpam-Info: Envelope from: Alexander.Chesnokov@kaspersky.com
-X-KSE-AntiSpam-Info: LuaCore: 112 0.3.112
- 7c8d497b0e572fbfa504a2ee62037c045a8cb4ec
-X-KSE-AntiSpam-Info: {date_rfc_vio_soft_silent}
-X-KSE-AntiSpam-Info: {Tracking_ml_letters}
-X-KSE-AntiSpam-Info: {Tracking_cluster_exceptions}
-X-KSE-AntiSpam-Info: {Tracking_real_kaspersky_domains}
-X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
-X-KSE-AntiSpam-Info: {Tracking_black_eng_exceptions}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: chesnokov.avp.ru:5.0.1,7.1.1;kaspersky.com:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;lore.kernel.org:7.1.1
-X-KSE-AntiSpam-Info: {Tracking_white_helo}
-X-KSE-AntiSpam-Info: FromAlignment: s
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 07/09/2026 04:51:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 7/9/2026 4:11:00 AM
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSMG-AntiPhishing: NotDetected, bases: 2026/07/09 04:16:00
-X-KSMG-AntiSpam-Interceptor-Info: not scanned
-X-KSMG-AntiSpam-Status: not scanned, disabled by settings
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.1.1.8310, bases: 2026/07/09 04:20:00 #28429125
-X-KSMG-AntiVirus-Status: NotDetected, skipped
-X-KSMG-LinksScanning: NotDetected, bases: 2026/07/09 04:16:00
-X-KSMG-Message-Action: skipped
-X-KSMG-Rule-ID: 52
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW6PR12MB7086:EE_|CY3PR12MB9678:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3345f5f4-6aa1-4c99-6c3b-08dedd7aec4a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|23010399003|1800799024|7416014|376014|366016|22082099003|18002099003|56012099006|11063799006|6133799003;
+X-Microsoft-Antispam-Message-Info:
+	G74QUepF4KEf/Rz3P0JDy4YhFoogZYv1rvWSWR3WtsdQbXJn3n5BCvuDY/+Xx3MNPRgt37PcVjNW49ESO7wBOP+0EmK15u3x/h9nvoAh2C9BG0xVzZBl2658cPNAWGxZkuIADaj9M/CuK5LAqVU9V1ivP71LF6pCWOQCERr5bL9O07pT3r0rcMrwZtTv62K8NKM5oduwAVwus97NPjryaT/7dOKRuAJr0+ozXeIGMm20g5bMu50BMMvkBKDiUt+UkxeZIsIC/uusCqWPmoc+RNlnSeihrhqFsqUKVD5gdL223wqZlCBClBHqclmjEMCIhnuwWCM9T4j1oc4RIJlWE2OxC/BqSdNG/qDr1dgEwyAueRl+MDWXdLu5Nx/OlSWiprW4M8Vw3GIHk/EHyRnziM04bOpSsMmX7L7TLjhHv5arlllQyBtOZ7pnOlhUc9GcfmxVkPBJAVqWSbH0XvWY1vwBeeNDW4kHpt84wTRAuXEWHrqVrMKbP2kGu6WpnHRxP2fThC/zx0BDjSsam6+ykr34QrEciD9/Z0gxHbQZIzqe8tK4Hc3IV6hIlY547FP7kbQ6NddlFjTcZ2JhcLmHtVVP6bD7AM/72EfoPBKnrqsvBrK1UTlvjjibZ7RjRhL2lVobi/WQjgDQpCy2naPcUMN2mzmOQtdkTHPJFfQx/9Q=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW6PR12MB7086.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(1800799024)(7416014)(376014)(366016)(22082099003)(18002099003)(56012099006)(11063799006)(6133799003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ays5Ri9wK0hFVW1YZlh6YklYZVRDVS9kVXpIRUNNcWttVDJLdjYvMitZeVVu?=
+ =?utf-8?B?Q3M5bUZqeXhJcnlpZkU2NG5YTGFOczZuUnhEQk5VRmM5TjBxckdTeHpvOTJy?=
+ =?utf-8?B?a3h5YmY5UVo3NHBsVkEwcCtPem5WTXJJK216L0w3cFJ0ZVJOYkFOWFhUY3Q5?=
+ =?utf-8?B?aUZVWHZNZnc1NlRwSmhvejUwMG9pN3RnQnV4MXdtNU1qQ1NqUHdwM21NdHJR?=
+ =?utf-8?B?TUZndVNuOG1yRlBLWC9iZ0FtRDJyUHF2UlRiS2RZOHQ2ZnpsUVQwbkd2WVV1?=
+ =?utf-8?B?akFMdWFtY1JjUGJiMUxMQlFMZVZNbjFxQVAyak1pTHhxUjNRSExDem9IK3JQ?=
+ =?utf-8?B?Ykdjc2dRTnJyaFNPL3ppTXZVT2lFbitQTlp5WkJndHVBdWtoWElNdDhmSm50?=
+ =?utf-8?B?cElSMWI1dGhJbWNPQWJUZVdacGdYTjhWUVRyZ1dmc2JPMmhqb3AwT1BtcU43?=
+ =?utf-8?B?a2cxU2Y1NlRqM3FhQWhLYThsekdieFI1NlhaYnArSGdXbDRDUDVtN2l6eS9q?=
+ =?utf-8?B?WEJnWldVYk0xKzllZWVBT3EwL2ZwSWxYMTVRbXQ1S2FTYWM4Y255OE10em1H?=
+ =?utf-8?B?TWo2OFlJVGxpUmhhSGRTM2NtKzlodGU5YUk0SXdQd3RyRjZTdjNCcmw0TVli?=
+ =?utf-8?B?Q1k3bW1xMEdxanhhT1l4Nm5HQTh3bVdDMzdaUzRlTjZSWmh5SXVuOSsxTFJu?=
+ =?utf-8?B?WFZMNjJkWVhnNWN1Z0hsVEwxejFWNDE1UzY3TENHTENTbU1QdDhWR0trcnl4?=
+ =?utf-8?B?bkVjUU9hLzcwMFc5REVFdXdObGFKdGRBdVVJd3p0dXhvbmRKVGwzSElVSWxK?=
+ =?utf-8?B?RjlvemgvZUZNck90M2VuSFl6bVlUY0RtSUZQMnFycWJJeFNZSDJERGZGc3dE?=
+ =?utf-8?B?UjRTT2hYempUbVJnVzJ0a1FWK3BQK2JMREVnUVYvL3RRK1RiUmdVMktVamhG?=
+ =?utf-8?B?akVvbEhFZGpyY2dJSzhuVHpKbTVWM0pRL0NGK2tkWTh3QzA5ZDhYeFJnNkRD?=
+ =?utf-8?B?T2krbmJwZHdIVFRvODZueXR2UkQwK05TM1ZGRzBOejFPbmI3Y011UlhkLzlr?=
+ =?utf-8?B?bVc1UmM2MEVKTnk1cEZWS1g2OExoWVJ2N21YeERBSWV4cTF1WmRVN2JGUStO?=
+ =?utf-8?B?UVhNc2hCYUdmRW11WjMrNTFPVUlaM1hlMnZBcnVyVlB0RENEbkpKMUdjWm81?=
+ =?utf-8?B?UGlLZyttcTlidnpENDdyam9JZ2lMMWkvM3FLdlRZVktsMlk2T2ZrL3NXQzVE?=
+ =?utf-8?B?SmNrTHkwK0w3V0ZKOSs2Zi9vN3Y1Qlk1NElRNkxXaWJEaG54SHhlYlJoQnp6?=
+ =?utf-8?B?TkxoV1plNEp4YXNFM3F3UHRWOElyNmhZaklVaVE0T1JOdUM2Rlpua3dSeXNG?=
+ =?utf-8?B?U0NzTFo5cXppWlRYbmtxVTd1YTU4Ulk1dk9sb3hFdUlQQWJ5by9TRjBIamVN?=
+ =?utf-8?B?Y1p5V0p5Vk04c2RwVVNZSEJkLzJWSlNlVlgyUFA1dFNBaDFtUDNreEdXRXo5?=
+ =?utf-8?B?djQxbkh6eU9VemNUQjlWaWRmRTZNV2ZaMHh4YXhSdkE5azBVdHY3RTY5NEw0?=
+ =?utf-8?B?U0RPdXJuWFFGS2dVVTJmYzNrZzJWdTc1S2dyWG84MFdzVytnYkh4eE02bzBH?=
+ =?utf-8?B?SWRkbjl0QWYybk9lSmdvUmNCVWJ3YlBXeXJOZmFOWlJjR1ZZdVc1VFRHWWFW?=
+ =?utf-8?B?SUVmZWZkbi9TU2d1UjlZayt6RlpaU3lkb2FGT2Jsc0lVSnVJcmRoWi9nY21l?=
+ =?utf-8?B?VGlEN3VoRldTTW1uTGI4aEdmNlRlYUxSQjBsYllDVS9raFcwTVlzOWRRSUty?=
+ =?utf-8?B?TzBvRXc5TXlhdG0wYjhKUnEzOXZQMnphZXNES1VoSWxhbjQzTmFWc3Y4NHVL?=
+ =?utf-8?B?VGljdzVEWWJWVlo4anUxdWxIZmdxNVNjekgzOTVqdjF0anZkWkg5dEN6cG1F?=
+ =?utf-8?B?UUpoajdKSVI3M3FyWWlKb1p1TWpOaFhvbWVDWGRGQ2dSNVRpVjdRQ0U1Yit2?=
+ =?utf-8?B?TWxqbHAzSTRRNnJ0dnFZQ2tyWm8vb2NQeWV6TXh2Q053alBscHp2UnMrQmZl?=
+ =?utf-8?B?ZWhTdmIxdXN5Z3JNUEZwUWI2M1pLMXZmUnpGVEFUMWsxZi9NMUhEMW9hR2ZG?=
+ =?utf-8?B?aGs3YWg1YWp2MWh2Z01CYW9aeUhKTW5PQ21HOTlBaHdsMXFkdWtYajlJMzA5?=
+ =?utf-8?B?dmJnWkt1cFNtY3VnVlZJUytZQmRYcHR5cEdybERIRTJ4ejJtaFFuZXdmYnpS?=
+ =?utf-8?B?SDhYM2g3MjVQcVZBTUhWRHVKQjdvSDNBOHcrWHFZcHpzZmhBWlBDbkpKVi9a?=
+ =?utf-8?B?ai9pZUNPQXdTbnFDSVhQQnB6eUVTNy90RFRLZ3ZFWWJTd1FDZmUvUT09?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3345f5f4-6aa1-4c99-6c3b-08dedd7aec4a
+X-MS-Exchange-CrossTenant-AuthSource: MW6PR12MB7086.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jul 2026 05:28:35.6875
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yqUL1M1RNkcvutvk0s6yI0+2Mrjkw7HIkAoDG7MyTL4NbQWc1r/jEfikAoJ+Nh9fQI3rJ9Q3wy32SNqlxyUy6Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY3PR12MB9678
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.84 / 15.00];
+X-Spamd-Result: default: False [-5.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[nvidia.com:D:+];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[kaspersky.com,reject];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[kaspersky.com:s=mail202505];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER(0.00)[Alexander.Chesnokov@kaspersky.com,linux-rdma@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	FREEMAIL_CC(0.00)[gmail.com,linuxtesting.org,kaspersky.com,huawei.com,ziepe.ca,kernel.org,vger.kernel.org];
-	FORWARDED(0.00)[lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-22918-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22919-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[15];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
+	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:xuhaoyue1@hisilicon.com,m:david.laight.linux@gmail.com,m:lvc-project@linuxtesting.org,m:Oleg.Kazakov@kaspersky.com,m:Pavel.Zhigulin@kaspersky.com,m:liangwenpeng@huawei.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:wangxi11@huawei.com,m:liweihang@huawei.com,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:Alexander.Chesnokov@kaspersky.com,m:davidlaightlinux@gmail.com,s:lists@lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:manjunath.b.patil@oracle.com,m:saeedm@nvidia.com,m:tariqt@nvidia.com,m:mbloch@nvidia.com,m:leon@kernel.org,m:netdev@vger.kernel.org,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:phaddad@nvidia.com,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:stable@vger.kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[Alexander.Chesnokov@kaspersky.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kaspersky.com:+];
+	FROM_NEQ_ENVFROM(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	FROM_NO_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,kaspersky.com:from_mime,kaspersky.com:email,kaspersky.com:mid,kaspersky.com:dkim]
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,Nvidia.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nvidia.com:from_mime,nvidia.com:email,nvidia.com:mid,oracle.com:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 6363672CAE1
+X-Rspamd-Queue-Id: 38C7772CC07
 
-From: Alexander Chesnokov <Alexander.Chesnokov@kaspersky.com>
 
-In hns_roce_v2_set_hem() the HEM address indices are computed from
-i, j and k (the base-chunk_ba_num decomposition of the 32-bit
-table_idx) in 32-bit arithmetic and then assigned to u64 fields.
-The recombined value always equals table_idx and cannot exceed
-U32_MAX, so this is not a reachable overflow and has no user-visible
-impact. Declare i, j and k as u64 so the calculation is done in
-64-bit and the pattern no longer trips static analyzers.
 
-No functional change intended.
+On 08/07/2026 2:39, Manjunath Patil wrote:
+> After PCIe DPC recovery, mlx5 reloads the affected functions and
+> replays multiport affiliation events. In the reported failure, the
+> first relevant device error was:
+> 
+>    pcieport 0000:10:01.1: DPC: containment event
+>    pcieport 0000:10:01.1: PCIe Bus Error: severity=Uncorrected (Fatal)
+>    pcieport 0000:10:01.1:    [ 5] SDES                   (First)
+> 
+> mlx5 recovered the PCI functions and resumed 0000:11:00.1. During
+> that resume, RDMA multiport binding replayed
+> MLX5_DRIVER_EVENT_AFFILIATION_DONE and mlx5e sent
+> MPV_DEVCOM_MASTER_UP. The host then panicked with:
+> 
+>    BUG: kernel NULL pointer dereference, address: 0000000000000010
+>    RIP: mlx5_devcom_comp_set_ready+0x5/0x40 [mlx5_core]
+>    RDI: 0000000000000000
+> 
+> Call trace included:
+> 
+>    mlx5_devcom_comp_set_ready
+>    mlx5e_devcom_event_mpv
+>    mlx5_devcom_send_event
+>    mlx5_ib_bind_slave_port
+>    mlx5r_mp_probe
+>    mlx5_pci_resume
+> 
+> MPV devcom registration publishes mlx5e private data to the component
+> peer list before mlx5e_devcom_init_mpv() stores the returned component
+> device in priv->devcom. A concurrent master-up event can therefore
+> reach a peer whose private data is visible but whose priv->devcom
+> backpointer is still NULL.
+> 
+> MPV_DEVCOM_MASTER_UP already carries the sender/master mlx5e private
+> data as event_data. The ready bit is stored on the shared devcom
+> component, not on an individual peer. Use the sender devcom when
+> marking the MPV component ready.
+> 
+> This preserves the readiness transition while avoiding a NULL
+> dereference of the peer devcom pointer during affiliation replay after
+> PCI error recovery.
+> 
+> Fixes: bf11485f8419 ("net/mlx5: Register mlx5e priv to devcom in MPV mode")
+> Assisted-by: Codex:gpt-5
+> Signed-off-by: Manjunath Patil <manjunath.b.patil@oracle.com>
+> Cc: stable@vger.kernel.org # 6.7+
+> ---
+> v2:
+> - Drop defensive master_priv/master_priv->devcom check as suggested by Tariq.
+> - Resend as an independent thread per netdev posting rules.
+> 
+>   drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> index 8f2b3abe0092..9b27afeb9b12 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> @@ -211,11 +211,11 @@ static void mlx5e_disable_async_events(struct mlx5e_priv *priv)
+>   
+>   static int mlx5e_devcom_event_mpv(int event, void *my_data, void *event_data)
+>   {
+> -	struct mlx5e_priv *slave_priv = my_data;
+> +	struct mlx5e_priv *master_priv = event_data;
+>   
+>   	switch (event) {
+>   	case MPV_DEVCOM_MASTER_UP:
+> -		mlx5_devcom_comp_set_ready(slave_priv->devcom, true);
+> +		mlx5_devcom_comp_set_ready(master_priv->devcom, true);
+>   		break;
+>   	case MPV_DEVCOM_MASTER_DOWN:
+>   		/* no need for comp set ready false since we unregister after
+> 
+> base-commit: e43ffb69e0438cddd72aaa30898b4dc446f664f8
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
-Suggested-by: David Laight <david.laight.linux@gmail.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 
-Signed-off-by: Alexander Chesnokov <Alexander.Chesnokov@kaspersky.com>
----
-Changes in v3:
-- Drop the Fixes: tag and Cc: stable and reword the subject/commit
-  message: there is no reachable overflow, so this is a robustness
-  cleanup rather than a bug fix (David Laight).
-- Resend as a standalone message, not threaded under the previous
-  version (Leon Romanovsky).
-
-Changes in v2:
-- Declare i, j and k as u64 instead of casting the operands (David Laight).
-
-Previous discussion:
-https://lore.kernel.org/linux-rdma/20260707140938.3106919-1-Alexander.Chesnokov@kaspersky.com/
-https://lore.kernel.org/linux-rdma/20260708092146.3325855-1-Alexander.Chesnokov@kaspersky.com/
-
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 1c180a6b1c07..3469a9a68d3b 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -4238,7 +4238,7 @@ static int hns_roce_v2_set_hem(struct hns_roce_dev *hr_dev,
- 	struct hns_roce_hem_mhop mhop;
- 	struct hns_roce_hem *hem;
- 	unsigned long mhop_obj = obj;
--	int i, j, k;
-+	u64 i, j, k;
- 	int ret = 0;
- 	u64 hem_idx = 0;
- 	u64 l1_idx = 0;
--- 
-2.43.0
-
+Thanks for your patch.
 
