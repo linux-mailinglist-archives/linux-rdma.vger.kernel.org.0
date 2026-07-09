@@ -1,83 +1,83 @@
-Return-Path: <linux-rdma+bounces-22942-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22943-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id IFIIL/hvT2rJggIAu9opvQ
-	(envelope-from <linux-rdma+bounces-22942-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 11:55:04 +0200
+	id eWyNLXRvT2qfggIAu9opvQ
+	(envelope-from <linux-rdma+bounces-22943-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 11:52:52 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD02472F2C2
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 11:55:03 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CF4272F267
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 11:52:52 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=resnulli-us.20251104.gappssmtp.com header.s=20251104 header.b=cUZ2jZs3;
+	dkim=pass header.d=resnulli-us.20251104.gappssmtp.com header.s=20251104 header.b=bMxSyS0j;
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22942-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22942-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22943-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22943-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 51699300252C
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 09:46:55 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 57F37301F582
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 09:52:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34AFA3F7865;
-	Thu,  9 Jul 2026 09:46:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A40313F9F21;
+	Thu,  9 Jul 2026 09:52:35 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A70BD3F12E7
-	for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2026 09:46:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC80E3E4C70
+	for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2026 09:52:33 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783590413; cv=none; b=QAaGoe32QTF1muX4p3gvE30wxD9CjBLn73iUw3AWYN8LtvAspqh7pnMiIZ2NCxWviMaOIaUxI6JYCFvHBL1K1c3t6YVN0QSpmvDfBfeGZbkMVzUZwu1r34Y3afQM+7PR9X5M790QE34GY6jJnoAmzVwzHYmHKP56A9asbv+M4UE=
+	t=1783590755; cv=none; b=UzaAfaCxXNz2JIShtl8GAwY0yIvIlz0K8OUFneFHBpZU8ss8m6cx0pHMEPaNQc1WT0yXzarKNvXP8adu22ji3IxkHHOlBiJ46rLK4vZi8X4d0/GIT6BIz0RSJENQbKUKB3mbzsIFOx9UvYBm9WDl3JLX0I/LgLezYDIh5nsJ9Pw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783590413; c=relaxed/simple;
-	bh=QjxnfdFkEb0Z6vufY3cN0U0+kv71/r1+joErkMeCX14=;
+	s=arc-20240116; t=1783590755; c=relaxed/simple;
+	bh=iQNrGVvv3ujLtkwmKctK+PWCeJB+Z38/i3Nxrwmlsrs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FGM6grBzRUV6ZlmcBmJoqePpqPpadOACkZQ9SXiLkArz2As5AJQF1euHdBdTcvGoyiyZhxxS/NQxYYauofAb/lf9cyOtnoK0r6Thjd05ZWbkT7DI1xvS42CUif6sJlxqaDxYwzzFho1aCVfhCUT8VU8YY24bWg9RnZk1EqkK3B0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=cUZ2jZs3; arc=none smtp.client-ip=209.85.221.46
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-4758bd3731bso458523f8f.0
-        for <linux-rdma@vger.kernel.org>; Thu, 09 Jul 2026 02:46:46 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=sKDFfhPN8mz+NTIv0adJ2xVJIB0O/PwioaX9mcrJ07fo8KI5Gd6itjksCs1XST1CCIxDx4q3swuYDlpXp+KLUrwpyqGHVV0yZP7b/4ROp78oKC4BhmMGSPMDtOorv5c7nLLbmwZwzOdKClkaQVGNkku7DjZq7qbiGa1CG0JPc88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=bMxSyS0j; arc=none smtp.client-ip=209.85.128.41
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-493b77b150aso13103325e9.2
+        for <linux-rdma@vger.kernel.org>; Thu, 09 Jul 2026 02:52:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1783590405; x=1784195205; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :content-type:mime-version:references:message-id:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=jCDpigf6NAvGtv4KCK1nKWmd+1oUaDS0btU+snL4BhY=;
-        b=cUZ2jZs3CBzcw9ITDguBXjdMkWvvAC214XaHjyoq90rBob86KOU/+yQyj1ktffnD9p
-         OpTMwuKs2jJPJn77eRvEO+KuEo3Zqwhfvu5lmVDP2sqxf6ygE0vj3p2h3vK0uNp9/bEO
-         pxLQSFmGbY1KUVaAZtGrd+2gH3TYx5ERTXUJ3qkgJb/44iKHwcmmuP3bk+vAr7CKJ5Dr
-         n1ZJKQ9ryNHX4+Z18cTN6QH62QAnBBNYbRSIH6K0fg0EuDNAUkV58/73PwT3wfgT5J8p
-         flHgTIZEQvAPwBAqpxZYnIgF2ySdUGbBr932kRyWkvf9IVnFT99FOLELz9uDhaw5Es8a
-         Fwlg==
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1783590752; x=1784195552; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=cmUvpg/LGglbFmX5TbG8S8cuP4tLEOPmrTkk7nQFQLo=;
+        b=bMxSyS0jwGsmJ9MuQogJyBz3F63LUvsACq+qyW5SuL5TGiMrFn6oWnP1raMt0zSqOs
+         KPCHAvEOkvHnkgapRFG3coOIo2t7LdYiwODMKtMHP6dhftejtSoBSnC6yt57SoDVYGyS
+         SkhTVmOi6VM6+P3CGSP2ryQE6Iv+vEm5x5RL8J8gMojBQuvog5v3dyC+em/tw/nGQ1rx
+         ewWmylZPOhEYFoL16n5oSCbtFWL0GWF8MDYlBlw3QRnx75eWGNeE4EdAJcgZMd+U8wGb
+         f1z2SUs+qsLUakRRl5k/M/CdjDwr5+6vDIdpXVIdWMeXsbGrfpJmIkoxrfLaCzmfpliB
+         iErw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783590405; x=1784195205;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :content-type:mime-version:references:message-id:subject:cc:to:from
-         :date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=jCDpigf6NAvGtv4KCK1nKWmd+1oUaDS0btU+snL4BhY=;
-        b=Y+zU6DnvghZ8or87auhpP2EoaskLc2s9UMmc2kqGXmxSV94EwCYXXObDIOraLlkd7z
-         cGvfdUV8MrWpmzpgACA/XWESe9XciYajYG/z4h31FACrUA8IU10x66tMVRMOZLRlvaoi
-         8BZKqvrY0qmK6iZNzdK7kKpD3oVGftzl+7uVcGQHlt4KUhuh/eL5XOOkS2Z8oTqHGYfN
-         /FsbVKwLYLzXgh26/zRlmTBNnmwcT660erh6Hxe+HMfkUidmb83EV+IbidOXab28Cp0M
-         TXLP6lWT50Dztcgr7m+JwCoVCvYTBNRW7BDh/xFa8uqb41X0gfw5Wjkqo2GCzt7a9nP0
-         60ow==
-X-Forwarded-Encrypted: i=1; AHgh+RpbarvEAtS5qtLM2p9sh4eJ3vzrdc2hgcsJogjd9dybYU0K4VHCk9+M7qG0gOuq28c6PWj1BFheMXg4@vger.kernel.org
-X-Gm-Message-State: AOJu0YyTx/DIEmdcTUdgfyzeToICod4t0iWB+BmRtUkG2aP0O9k1fMrI
-	qve/Rhzqp1uarCsmI6LjLKcaNQZhb9n/tmkbMAUquFr5uBuQQ9c7/DfCGCayQoXpA0U=
-X-Gm-Gg: AfdE7ck37lW6icCCZN1I8KQVefm1NeVkPMIJKKlv7lGCk1UsZsmi+VTUMRQKmkl+FQw
-	uRBc8t2N5df8fpTqHkXhF7UM7ObZJJWj19yarKZHEAvVX6hu9gcH2fU7YTIZ/P+fXGQ0L4KKHNu
-	RcL7pejJu7iK9mI/Xevpx2JD8HxM6rWa23sAqxlyQI3wiqyRANsrX3YeRikjb6rQese/P0EUHf3
-	kNRiznxQsvrf+Z5jGFeNKvbvy6/6/fkZl3znl+fhTUyZa+fbu9Ja5la50C8prYsDkiHjRPamM86
-	0Ll+qalJUj9/ZrI+aVtyVLm5vt6qTcdCUj/PIhIiA0qbBxn9wQ/WHbjlh14nbJGk01GnRdliIGD
-	vKetryj8v6tDwoWe76/YisVRppAvOtNP1/Vc1vZ5S66zLtrMiKqWwSV5F7WcibBZT8rcjW+j9kF
-	WobFyKLZIuzDSJpG4x/W/XDA==
-X-Received: by 2002:a05:6000:4602:b0:475:f0c2:75ae with SMTP id ffacd0b85a97d-47df7561a22mr2165637f8f.25.1783590404637;
-        Thu, 09 Jul 2026 02:46:44 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1783590752; x=1784195552;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=cmUvpg/LGglbFmX5TbG8S8cuP4tLEOPmrTkk7nQFQLo=;
+        b=gicgW7zqD9WWV4+HPevJjeiiKuQ2h9T4089Aeby+iS2EbZxqJvKH4wxITZm0hG0fqi
+         ntotsXphbdno8lRAjobNFP+Y4Y75udK8QWK9srzRRaEvd+BgLBSbdPqJF5AZ8U4fv7h8
+         qXFTn58P7BPUqYx8thy8poyuqugjgPwF9U1olRYpNA+E2CLB8sWjSZtVtqM0yeXtEs95
+         C0NAXEZXijerr5Qh95s41LSqeg0upKe+bSWW78a6QmphZeRGheP8JkK8BaWrTRW+bcos
+         2ciOUa6PwAvArnS0OOPzAfBaSFeeipT1ZZNUAoMUV82yJNUOmsgQ3b28wgHTt/tHMOqW
+         CfmA==
+X-Forwarded-Encrypted: i=1; AHgh+RrFu9GtbzF1b5QOWh5f5tyCH31vdhoeltju7GKat2FpbE8Wj3X2k8xWwonW1Pzh5H5hJ3/A8l0VmY7b@vger.kernel.org
+X-Gm-Message-State: AOJu0YxnyR8f8WF7O38d2ARr/bY4E3qGoH6pBfxKXCA2hDWq1CGgU+Fg
+	JUI7QJOEloZ56P2yD7r5fFd5O+lrg6xAYNJGeIv+FEZGzxwV8Vwq/nvyum31ki2ox+U=
+X-Gm-Gg: AfdE7ckWcdTMEcjXtiDzybeqkcIZoecSpqlWgMvIRi0SysLpqsdZDqfamLKIy7RYTD3
+	B0ysz101YiizgKVMaUumtTqmviDn6cvIM8JHychvzxELr3qVYDoAHCGaJqyzcrC9rQDEzjxdafR
+	8z15ESxV1JYz3+uZ0zBM0IPvMfEvbQa3RUOArQ/CHJ+FGE4VCR29AWF0f/zrYkDVmJDmRIwNAFE
+	+coEkhGx8oS0Zal5N02tvE6o7SgjYs8HES1hDdPRlJmTysg0zewRcY1mg42GTDgcbMJhMAffT/B
+	W1dAlufQWxpfE0uEKWgVLtdpJPhCIILA5btiTvW0oBtzLNmttrlOuQxyKLmn7h6tqhTDtWVeDep
+	fbn/xj++T+ZelbXkcuR9qSan3BEJhpzq0q13Utw72HP8BwLqO4NgVMOZ0xY6EXAHOB6MJDEfdMV
+	px4dJ+twTUC9muXWdWSFAk62w0vSeivs3e
+X-Received: by 2002:a05:600c:3111:b0:493:aab3:c09c with SMTP id 5b1f17b1804b1-493e6a4a8b1mr61043955e9.28.1783590752378;
+        Thu, 09 Jul 2026 02:52:32 -0700 (PDT)
 Received: from localhost ([140.209.217.211])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47a9de1e736sm53671269f8f.7.2026.07.09.02.46.43
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47a9de1d8cdsm53652344f8f.1.2026.07.09.02.52.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2026 02:46:44 -0700 (PDT)
-Date: Thu, 9 Jul 2026 11:46:40 +0200
+        Thu, 09 Jul 2026 02:52:31 -0700 (PDT)
+Date: Thu, 9 Jul 2026 11:52:28 +0200
 From: Jiri Pirko <jiri@resnulli.us>
 To: Mark Bloch <mbloch@nvidia.com>
 Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
@@ -86,28 +86,28 @@ Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
 	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, netdev@vger.kernel.org, 
 	linux-rdma@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH net-next V5 4/6] devlink: Apply eswitch mode boot defaults
-Message-ID: <ak9thhKgtDBepkcD@FV6GYCPJ69>
+Subject: Re: [PATCH net-next V5 6/6] net/mlx5: Apply devlink eswitch mode
+ boot default on probe
+Message-ID: <ak9un-lCDmhGI9tL@FV6GYCPJ69>
 References: <20260707174527.425134-1-mbloch@nvidia.com>
- <20260707174527.425134-5-mbloch@nvidia.com>
- <ak4Muihtk40r3lfV@FV6GYCPJ69>
- <e9445ff1-87b5-4111-8264-74016634d3bb@nvidia.com>
+ <20260707174527.425134-7-mbloch@nvidia.com>
+ <ak4LVcyKofmtrWcU@FV6GYCPJ69>
+ <7309e57a-89bc-4e4a-97e9-d843b02efa42@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e9445ff1-87b5-4111-8264-74016634d3bb@nvidia.com>
+In-Reply-To: <7309e57a-89bc-4e4a-97e9-d843b02efa42@nvidia.com>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -118,7 +118,7 @@ X-Spamd-Result: default: False [0.34 / 15.00];
 	DMARC_NA(0.00)[resnulli.us];
 	FORGED_SENDER(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
 	RCPT_COUNT_TWELVE(0.00)[14];
-	TAGGED_FROM(0.00)[bounces-22942-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22943-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
@@ -134,235 +134,138 @@ X-Spamd-Result: default: False [0.34 / 15.00];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[FV6GYCPJ69:mid,vger.kernel.org:from_smtp,resnulli.us:from_mime,resnulli-us.20251104.gappssmtp.com:dkim,nvidia.com:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,FV6GYCPJ69:mid,resnulli-us.20251104.gappssmtp.com:dkim,vger.kernel.org:from_smtp,nvidia.com:email,resnulli.us:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: AD02472F2C2
+X-Rspamd-Queue-Id: 2CF4272F267
 
-Thu, Jul 09, 2026 at 07:45:20AM +0200, mbloch@nvidia.com wrote:
+Thu, Jul 09, 2026 at 08:00:19AM +0200, mbloch@nvidia.com wrote:
 >
 >
->On 08/07/2026 11:59, Jiri Pirko wrote:
->> Tue, Jul 07, 2026 at 07:45:25PM +0200, mbloch@nvidia.com wrote:
->>> Apply parsed devlink_eswitch_mode= defaults after devlink registration
->>> and after successful reload.
+>On 08/07/2026 11:34, Jiri Pirko wrote:
+>> Tue, Jul 07, 2026 at 07:45:27PM +0200, mbloch@nvidia.com wrote:
+>>> Apply devlink_eswitch_mode= boot defaults for mlx5 after the initial
+>>> probe finishes device initialization while holding the devlink instance
+>>> lock.
 >>>
->>> devl_register() may still be called before the device is ready for an
->>> eswitch mode change. Keep the registration path passive and let the
->>> regular devl_unlock() path queue the async apply work once the instance
->>> is registered and the default is still pending.
+>>> At this point the devlink instance is registered and mlx5 can perform an
+>>> eswitch mode change. Calling devl_apply_default_esw_mode() also clears
+>>> any pending default apply work queued by devl_register(), so the queued
+>>> work will not apply the same default again.
 >>>
->>> The queueing path runs while the devlink instance lock is held, so the
->>> queued work gets its devlink reference before the caller drops the lock.
->>> The worker then takes the devlink instance lock normally and applies the
->>> default only if the instance is still registered and the default is still
->>> pending.
->> 
->> This is very code-descriptive. What's the benefit of that?
->
->The point is that there is still a window before the queued work
->runs where the user can explicitly set the eswitch mode. If they 
->do, the default will no longer be pending, so the worker will skip
->applying it.
->
->I'll reword.
->
->> 
->> 
+>>> Keep this call in mlx5_init_one() rather than the lower-level
+>>> devl-locked init helper. That helper is also used by devlink reload, and
+>>> devlink core already applies the boot default after a successful
+>>> DRIVER_REINIT reload.
 >>>
->>> For successful reloads that performed DRIVER_REINIT, devlink_reload()
->>> already holds the devlink instance lock and the driver has completed
->>> reload_up(). Clear pending work and apply the default directly from the
->>> reload path instead of queueing work.
+>>> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+>>> ---
+>>> drivers/net/ethernet/mellanox/mlx5/core/main.c | 13 +++++++++++++
+>>> 1 file changed, 13 insertions(+)
 >>>
->>> Preserve the user configured mode when it is set before devlink applies
->>> the default.
+>>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+>>> index 643b4aac2033..0712efea74cc 100644
+>>> --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
+>>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+>>> @@ -1392,6 +1392,17 @@ static void mlx5_unload(struct mlx5_core_dev *dev)
+>>> 	mlx5_free_bfreg(dev, &dev->priv.bfreg);
+>>> }
 >>>
->> 
->> [..]
->> 
->> 
->>> +void devlink_default_esw_mode_apply_locked(struct devlink *devlink)
+>>> +static void mlx5_devl_apply_default_esw_mode(struct mlx5_core_dev *dev)
 >>> +{
->>> +	const struct devlink_ops *ops = devlink->ops;
->>> +	int err;
+>>> +	struct devlink *devlink = priv_to_devlink(dev);
+>>> +
+>>> +	if (!MLX5_ESWITCH_MANAGER(dev))
+>>> +		return;
 >>> +
 >>> +	devl_assert_locked(devlink);
->>> +
->>> +	if (!devlink_default_esw_mode_match(devlink))
->>> +		return;
->>> +
->>> +	if (!ops->eswitch_mode_set) {
->>> +		if (!devlink_default_esw_mode_match_all)
->>> +			devl_warn(devlink,
->>> +				  "devlink_eswitch_mode= selected this device but eswitch mode setting is not supported\n");
->>> +		return;
->>> +	}
->>> +
->>> +	err = devlink_eswitch_mode_set(devlink, devlink_default_esw_mode, NULL);
->>> +	if (err)
->>> +		devl_warn(devlink,
->>> +			  "Couldn't apply default eswitch mode, err %d\n",
->>> +			  err);
+>>> +	devl_apply_default_esw_mode(devlink);
 >>> +}
 >>> +
->>> +void devlink_default_esw_mode_queue_apply_work(struct devlink *devlink)
->> 
->> eswitch/esw - we call it "eswitch" consistently everywhere. Why "esw"
->> here?
->
->Ack
->
->> 
->> 
->> 
->>> +{
->>> +	devl_assert_locked(devlink);
->>> +
->>> +	if (!devlink_default_esw_mode_enabled || !devlink_default_esw_mode_wq)
->>> +		return;
->>> +	if (!devlink->default_esw_mode_apply_pending ||
->>> +	    !__devl_is_registered(devlink))
->>> +		return;
->>> +	if (!devlink_try_get(devlink))
->>> +		return;
->>> +	if (!queue_work(devlink_default_esw_mode_wq,
->>> +			&devlink->default_esw_mode_apply_work))
->>> +		devlink_put(devlink);
->>> +}
->>> +
->>> +static void devlink_default_esw_mode_apply_work(struct work_struct *work)
->>> +{
->>> +	struct devlink *devlink;
->>> +
->>> +	devlink = container_of(work, struct devlink,
->>> +			       default_esw_mode_apply_work);
->>> +
->> 
->> What happens if userspace eswitch mode set happens now? Any userspace
->> attempt should cancel the default apply. I don't see such mechanism in
->> your patches, did I miss it?
->
->devlink_nl_eswitch_set_doit() calls
->devlink_default_esw_mode_apply_pending_clear(), which clears the
->pending bit.
->
->So if a user sets the eswitch mode before the queued default
->work applies it, the worker will see that the default is no longer
->pending and will do nothing
-
-Okay.
-
-
->
->> 
->> 
->> 
->>> +	devl_lock(devlink);
->>> +
->>> +	if (devl_is_registered(devlink) &&
->>> +	    devlink->default_esw_mode_apply_pending) {
->>> +		devlink_default_esw_mode_apply_locked(devlink);
->>> +		devlink->default_esw_mode_apply_pending = false;
->>> +	}
->>> +
->>> +	devl_unlock(devlink);
->>> +	devlink_put(devlink);
->>> +}
->>> +
->>> +void devlink_default_esw_mode_instance_init(struct devlink *devlink)
->> 
->> Why "_instance_"? Care to drop?
->
->Ack
->
->> 
->> 
->>> +{
->>> +	INIT_WORK(&devlink->default_esw_mode_apply_work,
->>> +		  devlink_default_esw_mode_apply_work);
->>> +	devlink->default_esw_mode_apply_pending = true;
->>> +}
->>> +
->>> +void devlink_default_esw_mode_apply_pending_clear(struct devlink *devlink)
->>> +{
->>> +	devl_assert_locked(devlink);
->>> +
->>> +	devlink->default_esw_mode_apply_pending = false;
->>> +}
->>> +
->>> +void devlink_default_esw_mode_instance_cleanup(struct devlink *devlink)
->> 
->> Why "_instance_"? Care to drop?
->
->Ack
->
->> 
->> 
->>> +{
->>> +	if (cancel_work_sync(&devlink->default_esw_mode_apply_work))
->>> +		devlink_put(devlink);
->>> +}
->>> +
->>> static int __init devlink_default_esw_mode_setup(char *str)
+>>> int mlx5_init_one_devl_locked(struct mlx5_core_dev *dev)
 >>> {
->>> 	devlink_default_esw_mode_param = str;
->>> @@ -228,10 +325,21 @@ int __init devlink_default_esw_mode_init(void)
->>> 		return err;
->>> 	}
->>>
->>> +	devlink_default_esw_mode_wq = alloc_workqueue("devlink_default_esw_mode",
->>> +						      WQ_UNBOUND | WQ_MEM_RECLAIM,
->>> +						      0);
->>> +	if (!devlink_default_esw_mode_wq) {
->>> +		devlink_default_esw_mode_param = NULL;
->>> +		devlink_default_esw_mode_nodes_clear();
->>> +		pr_warn("devlink: devlink_eswitch_mode parameter ignored, failed to allocate workqueue\n");
+>>> 	bool light_probe = mlx5_dev_is_lightweight(dev);
+>>> @@ -1471,6 +1482,8 @@ int mlx5_init_one(struct mlx5_core_dev *dev)
+>>> 	err = mlx5_init_one_devl_locked(dev);
+>>> 	if (err)
+>>> 		devl_unregister(devlink);
+>>> +	else
+>>> +		mlx5_devl_apply_default_esw_mode(dev);
 >> 
->> Why you don't "return"  here? I think that we don't need to allow the
->> case wq is not allocated.
+>> I don't understand why this patch is needed at all. Just leave the job
+>> to the devlink core, no? That was the point to not pollute drivers with
+>> code like this. Is it some kind of leftover?
 >
->The function returns right after this block. It is not treated
-
-What I ment was "return error".
-
-
->as a valid “workqueue unavailable” mode, the parsed defaults are
->cleared, the parameter is ignored, and no default eswitch mode will
->be applied.
+>It was discussed with Jakub here:
+>https://lore.kernel.org/all/20260611085440.4fe36bf2@kernel.org/
 >
->I kept it as a non critical failure so we do not abort the whole
->devlink init just because the default-mode workqueue could not be
->allocated.
+>The main reason is timing. If the default is applied only by devlink
+>core, it has to wait until the driver drops the devlink lock.
 
-Why to treat it like this? Is there any other example of such flow in
-devlink? I don't see the benefit, only potential confusion in very
-unlikely case the alloc_workqueue fails. Am I wrong? If not, just bail
-out here.
+I don't follow.
 
+<quote>
+	devl_lock(devlink);
+	if (dev->shd) {
+		err = devl_nested_devlink_set(dev->shd, devlink);
+		if (err)
+			goto unlock;
+	}
+	devl_register(devlink);
+	err = mlx5_init_one_devl_locked(dev);
+	if (err)
+		devl_unregister(devlink);
+unlock:
+	devl_unlock(devlink);
+</quote>
+
+devlink lock is droped right after.
+
+
+
+>For mlx5, that usually happens very late in the init sequence. I
+>wanted drivers to be able to apply the default as soon as the driver
+>is ready for it, because on NICs with a DPU the host PF can remain
+>stuck until the ECPF moves to switchdev.
+>
+>This API is also useful beyond the initial devlink registration path.
+>Follow-up patches will use it for driver controlled paths that are
+>not covered by the devlink core, such as recovery and FW reset.
+>
+>There is also a race window where userspace may take the devlink lock
+>before the core gets a chance to apply the default. Letting the driver
+>explicitly apply the default at the right point avoids that scenario.
+>
+>Thinking about this again, maybe the simpler approach is to apply the
+>default from devl_unlock(). That would avoid the whole workqueue
+>infra.
+>
+>I avoided doing that earlier because applying a default mode as a
+>side effect of devl_unlock() feels a bit odd. But compared to adding
+>dedicated workqueue handling maybe it is the lesser evil here.
+>
+>What do you think?
+
+I was under impression that you need the work to resolve nested locking.
+If not, drop it, sure.
 
 
 >
->That said, I can make this more explicit by returning 0 directly
->from this error path.
+>About the extra API, I still think it's useful and would like to keep
+>it if possible.
 >
 >Mark
 >
+>
 >> 
 >> 
->>> +	}
->>> +
->>> 	return 0;
->>> }
+>> 
+>>> unlock:
+>>> 	devl_unlock(devlink);
+>>> 	return err;
+>>> -- 
+>>> 2.43.0
 >>>
->>> void __init devlink_default_esw_mode_cleanup(void)
->>> {
->>> +	if (devlink_default_esw_mode_wq)
->>> +		destroy_workqueue(devlink_default_esw_mode_wq);
->>> 	devlink_default_esw_mode_nodes_clear();
->>> }
->> 
->> [..]
 >
 
