@@ -1,271 +1,219 @@
-Return-Path: <linux-rdma+bounces-22943-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-22944-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id eWyNLXRvT2qfggIAu9opvQ
-	(envelope-from <linux-rdma+bounces-22943-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 11:52:52 +0200
+	id P3J6BmxxT2pKgwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-22944-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 12:01:16 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CF4272F267
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 11:52:52 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B706872F41F
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Jul 2026 12:01:10 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=resnulli-us.20251104.gappssmtp.com header.s=20251104 header.b=bMxSyS0j;
+	dkim=pass header.d=resnulli-us.20251104.gappssmtp.com header.s=20251104 header.b=tVF77iwP;
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22943-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22943-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-22944-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-22944-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 57F37301F582
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 09:52:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C2C8A302DB4B
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2026 09:55:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A40313F9F21;
-	Thu,  9 Jul 2026 09:52:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E545B3EFFCF;
+	Thu,  9 Jul 2026 09:55:39 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC80E3E4C70
-	for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2026 09:52:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A58603F5BEC
+	for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2026 09:55:37 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783590755; cv=none; b=UzaAfaCxXNz2JIShtl8GAwY0yIvIlz0K8OUFneFHBpZU8ss8m6cx0pHMEPaNQc1WT0yXzarKNvXP8adu22ji3IxkHHOlBiJ46rLK4vZi8X4d0/GIT6BIz0RSJENQbKUKB3mbzsIFOx9UvYBm9WDl3JLX0I/LgLezYDIh5nsJ9Pw=
+	t=1783590939; cv=none; b=WY70zaOGTDPag6p26WFznVW1W78iSLCQhnJgcO7I5O4jTIMOfB+FoeQyyg6w7M4kRYkicTXeiVl/ogmFarZzhtHQZe+HeWKnfZ3pYgugkJdAgtSBeXjQoDodGQgumndhjRvdI46aPMH62GuBlvVGAALBfos6Ux0bSC10DBARN0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783590755; c=relaxed/simple;
-	bh=iQNrGVvv3ujLtkwmKctK+PWCeJB+Z38/i3Nxrwmlsrs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sKDFfhPN8mz+NTIv0adJ2xVJIB0O/PwioaX9mcrJ07fo8KI5Gd6itjksCs1XST1CCIxDx4q3swuYDlpXp+KLUrwpyqGHVV0yZP7b/4ROp78oKC4BhmMGSPMDtOorv5c7nLLbmwZwzOdKClkaQVGNkku7DjZq7qbiGa1CG0JPc88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=bMxSyS0j; arc=none smtp.client-ip=209.85.128.41
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-493b77b150aso13103325e9.2
-        for <linux-rdma@vger.kernel.org>; Thu, 09 Jul 2026 02:52:33 -0700 (PDT)
+	s=arc-20240116; t=1783590939; c=relaxed/simple;
+	bh=6v4UEKMGI0CObOrgOsS9xS28THfpqNdtIwk41b4i1C4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MWtZfK+eKu2rT+6rXGcJrCTyULeQCvPBUOryHtefFhCRyhAz5BQQHLqqe+qR21y6/1D4m29Zx4X9HjSHe/rKwOq3kRnh6PfkSw8iYBO/pg0GvYrhFp5esEuX3qWC58UWbfbeovyIfMsmLFPB95vM38ED5LYO/+QmaPBFoIHem30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=tVF77iwP; arc=none smtp.client-ip=209.85.221.47
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-470174001a0so947945f8f.0
+        for <linux-rdma@vger.kernel.org>; Thu, 09 Jul 2026 02:55:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1783590752; x=1784195552; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=cmUvpg/LGglbFmX5TbG8S8cuP4tLEOPmrTkk7nQFQLo=;
-        b=bMxSyS0jwGsmJ9MuQogJyBz3F63LUvsACq+qyW5SuL5TGiMrFn6oWnP1raMt0zSqOs
-         KPCHAvEOkvHnkgapRFG3coOIo2t7LdYiwODMKtMHP6dhftejtSoBSnC6yt57SoDVYGyS
-         SkhTVmOi6VM6+P3CGSP2ryQE6Iv+vEm5x5RL8J8gMojBQuvog5v3dyC+em/tw/nGQ1rx
-         ewWmylZPOhEYFoL16n5oSCbtFWL0GWF8MDYlBlw3QRnx75eWGNeE4EdAJcgZMd+U8wGb
-         f1z2SUs+qsLUakRRl5k/M/CdjDwr5+6vDIdpXVIdWMeXsbGrfpJmIkoxrfLaCzmfpliB
-         iErw==
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1783590936; x=1784195736; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=FmCpTn/G1BPPqIynBfpobYxeMvV2yASv7FeNNa9VjUc=;
+        b=tVF77iwP1Ox/DAzUEBzdrOQ8mS6gW+oByL/ghjEynEnKN+tjSSSmc/M0RT+qrXQZHw
+         BRK2YhNV4rAqY0PimJRQCX6t8kyx8IRm8j/r/EjpwWFlBCfKAA80psHboQv/KKdI+gH0
+         s3UCnon8+ODyAp+fSGaZvODXKrsZDAW/CCxPZXI9Hgv8bZzhHCPUO45d1tv9RaHr4AaW
+         tbhz/uwntIp7F2ELvMwIrVNi2xcK9mQM1TKCMW+TWnSCf6sQaCNvg0GIP5jMsBlLE2r4
+         iEM5JeRYs6GXj2Wn5/us9A8wLGK1WrOYWk0CkwmWAsA2zt4CFHNK6Cy4qw/ndvMj1iOU
+         MvIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783590752; x=1784195552;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=cmUvpg/LGglbFmX5TbG8S8cuP4tLEOPmrTkk7nQFQLo=;
-        b=gicgW7zqD9WWV4+HPevJjeiiKuQ2h9T4089Aeby+iS2EbZxqJvKH4wxITZm0hG0fqi
-         ntotsXphbdno8lRAjobNFP+Y4Y75udK8QWK9srzRRaEvd+BgLBSbdPqJF5AZ8U4fv7h8
-         qXFTn58P7BPUqYx8thy8poyuqugjgPwF9U1olRYpNA+E2CLB8sWjSZtVtqM0yeXtEs95
-         C0NAXEZXijerr5Qh95s41LSqeg0upKe+bSWW78a6QmphZeRGheP8JkK8BaWrTRW+bcos
-         2ciOUa6PwAvArnS0OOPzAfBaSFeeipT1ZZNUAoMUV82yJNUOmsgQ3b28wgHTt/tHMOqW
-         CfmA==
-X-Forwarded-Encrypted: i=1; AHgh+RrFu9GtbzF1b5QOWh5f5tyCH31vdhoeltju7GKat2FpbE8Wj3X2k8xWwonW1Pzh5H5hJ3/A8l0VmY7b@vger.kernel.org
-X-Gm-Message-State: AOJu0YxnyR8f8WF7O38d2ARr/bY4E3qGoH6pBfxKXCA2hDWq1CGgU+Fg
-	JUI7QJOEloZ56P2yD7r5fFd5O+lrg6xAYNJGeIv+FEZGzxwV8Vwq/nvyum31ki2ox+U=
-X-Gm-Gg: AfdE7ckWcdTMEcjXtiDzybeqkcIZoecSpqlWgMvIRi0SysLpqsdZDqfamLKIy7RYTD3
-	B0ysz101YiizgKVMaUumtTqmviDn6cvIM8JHychvzxELr3qVYDoAHCGaJqyzcrC9rQDEzjxdafR
-	8z15ESxV1JYz3+uZ0zBM0IPvMfEvbQa3RUOArQ/CHJ+FGE4VCR29AWF0f/zrYkDVmJDmRIwNAFE
-	+coEkhGx8oS0Zal5N02tvE6o7SgjYs8HES1hDdPRlJmTysg0zewRcY1mg42GTDgcbMJhMAffT/B
-	W1dAlufQWxpfE0uEKWgVLtdpJPhCIILA5btiTvW0oBtzLNmttrlOuQxyKLmn7h6tqhTDtWVeDep
-	fbn/xj++T+ZelbXkcuR9qSan3BEJhpzq0q13Utw72HP8BwLqO4NgVMOZ0xY6EXAHOB6MJDEfdMV
-	px4dJ+twTUC9muXWdWSFAk62w0vSeivs3e
-X-Received: by 2002:a05:600c:3111:b0:493:aab3:c09c with SMTP id 5b1f17b1804b1-493e6a4a8b1mr61043955e9.28.1783590752378;
-        Thu, 09 Jul 2026 02:52:32 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1783590936; x=1784195736;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=FmCpTn/G1BPPqIynBfpobYxeMvV2yASv7FeNNa9VjUc=;
+        b=oHO301KHd7ggRtA1K66aokEaIIRuFZJmDCGf8YML+yp5oOlX2rinaaW8A7sgzOGZr1
+         Schtft48To5ZbhCilAk3CSMV+h+qM2jW0RMeBbnZf9U2EJZCusd+GfMWhiC4khqkVJCc
+         exLT8zw19td6bNArcwXcmeDAUaEnGFaJwmv5cPKFEosQzySMjfdWb1gI7FvtVnSIUbGY
+         pNIxZq8MbNdwsSX00CQTAfOFSn1aTA24K8+OKhdgG57deR+tODVJnvDho0yB/bBoOwSm
+         O0jWJfgDGTxn2m7Ne3CBwTQpFupvo6tOYwJdSnSCDBx+pusx8uQlyVwG6ldHXRFIx3jf
+         6smw==
+X-Gm-Message-State: AOJu0Yz/adMnHbwrFgAGo5jmQ/dMDIchmZGT+iJEnnYmxJsDN6k0xglw
+	f2nCp69T5RgpH8dmuRqSto0La++y2hynYQrQx4DpaQhAqc1iraMCFOsisX5xNJJ61UeL/TQ6Edk
+	l+1N9
+X-Gm-Gg: AfdE7cmlDrAKWyhSq7qxn1eiI3zKUBVxCMH1stGcoF5sEAeSH6RqODbPwv2XNAJTFoC
+	scQYbRS6T5jXXE4h8QPXLDhqS+rZQa0fvyemrAKL41RUZmcoWaOQsx7Jgz4XYIyv73lbtmKD8xs
+	AMIrAlloRBxPzK/lyHwD5CHtoOA1mkyYuZlVEQWfQ7IUji9gqjl42v7bYYcO/0xv0v1tuU2UzCH
+	ko1i5QKjTQ/9NjRVx8gbBWbQc6QaaiO1x5B793JfHXyu5bMMho7e4np1DFDjrrgvcqC5x5T/fhP
+	N6qdok0kT22nCwtrfDBMBHMfmlcaTlauZaDOXzZNHuqXMXYVCsLmuiO7plU/3HPxFOoEs6hiYO/
+	W4kZ98aeEzBaZkglVqhA3bVmO0GQq5axfXUooHfcaKKBGAxhOBPPKi8Hk4qfeXMha6CQMWrUip8
+	OdfuNvFFgz2W5aIJKLdmruiw==
+X-Received: by 2002:a05:6000:144e:b0:47d:dfea:f729 with SMTP id ffacd0b85a97d-47df07a18bcmr7413288f8f.4.1783590935982;
+        Thu, 09 Jul 2026 02:55:35 -0700 (PDT)
 Received: from localhost ([140.209.217.211])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47a9de1d8cdsm53652344f8f.1.2026.07.09.02.52.31
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47df6a31dd5sm5243415f8f.16.2026.07.09.02.55.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2026 02:52:31 -0700 (PDT)
-Date: Thu, 9 Jul 2026 11:52:28 +0200
+        Thu, 09 Jul 2026 02:55:35 -0700 (PDT)
 From: Jiri Pirko <jiri@resnulli.us>
-To: Mark Bloch <mbloch@nvidia.com>
-Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, netdev@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH net-next V5 6/6] net/mlx5: Apply devlink eswitch mode
- boot default on probe
-Message-ID: <ak9un-lCDmhGI9tL@FV6GYCPJ69>
-References: <20260707174527.425134-1-mbloch@nvidia.com>
- <20260707174527.425134-7-mbloch@nvidia.com>
- <ak4LVcyKofmtrWcU@FV6GYCPJ69>
- <7309e57a-89bc-4e4a-97e9-d843b02efa42@nvidia.com>
+To: linux-rdma@vger.kernel.org
+Cc: cgroups@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	jgg@ziepe.ca,
+	leon@kernel.org,
+	parav@nvidia.com,
+	mbloch@nvidia.com,
+	cmeiohas@nvidia.com,
+	roman.gushchin@linux.dev,
+	bvanassche@acm.org,
+	zyjzyj2000@gmail.com,
+	shuah@kernel.org,
+	tj@kernel.org,
+	mkoutny@suse.com,
+	hannes@cmpxchg.org,
+	alibuda@linux.alibaba.com,
+	dust.li@linux.alibaba.com,
+	sidraya@linux.ibm.com,
+	wenjia@linux.ibm.com
+Subject: [PATCH rdma-next 00/13] RDMA: Make device names unique per net namespace
+Date: Thu,  9 Jul 2026 11:55:19 +0200
+Message-ID: <20260709095532.855647-1-jiri@resnulli.us>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7309e57a-89bc-4e4a-97e9-d843b02efa42@nvidia.com>
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-22944-lists,linux-rdma=lfdr.de];
+	FREEMAIL_CC(0.00)[vger.kernel.org,ziepe.ca,kernel.org,nvidia.com,linux.dev,acm.org,gmail.com,suse.com,cmpxchg.org,linux.alibaba.com,linux.ibm.com];
 	RCVD_TLS_LAST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:mbloch@nvidia.com,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:saeedm@nvidia.com,m:leon@kernel.org,m:tariqt@nvidia.com,m:andrew+netdev@lunn.ch,m:corbet@lwn.net,m:skhan@linuxfoundation.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-doc@vger.kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
 	DMARC_NA(0.00)[resnulli.us];
-	FORGED_SENDER(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	TAGGED_FROM(0.00)[bounces-22943-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:linux-rdma@vger.kernel.org,m:cgroups@vger.kernel.org,m:netdev@vger.kernel.org,m:linux-s390@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:jgg@ziepe.ca,m:leon@kernel.org,m:parav@nvidia.com,m:mbloch@nvidia.com,m:cmeiohas@nvidia.com,m:roman.gushchin@linux.dev,m:bvanassche@acm.org,m:zyjzyj2000@gmail.com,m:shuah@kernel.org,m:tj@kernel.org,m:mkoutny@suse.com,m:hannes@cmpxchg.org,m:alibuda@linux.alibaba.com,m:dust.li@linux.alibaba.com,m:sidraya@linux.ibm.com,m:wenjia@linux.ibm.com,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	FORGED_SENDER(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RSPAMD_EMAILBL_FAIL(0.00)[linux-rdma@vger.kernel.org:query timed out];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
-	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_NONE(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	ALIAS_RESOLVED(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,FV6GYCPJ69:mid,resnulli-us.20251104.gappssmtp.com:dkim,vger.kernel.org:from_smtp,nvidia.com:email,resnulli.us:from_mime]
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[resnulli.us:mid,resnulli.us:from_mime,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nvidia.com:email,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2CF4272F267
+X-Rspamd-Queue-Id: B706872F41F
 
-Thu, Jul 09, 2026 at 08:00:19AM +0200, mbloch@nvidia.com wrote:
->
->
->On 08/07/2026 11:34, Jiri Pirko wrote:
->> Tue, Jul 07, 2026 at 07:45:27PM +0200, mbloch@nvidia.com wrote:
->>> Apply devlink_eswitch_mode= boot defaults for mlx5 after the initial
->>> probe finishes device initialization while holding the devlink instance
->>> lock.
->>>
->>> At this point the devlink instance is registered and mlx5 can perform an
->>> eswitch mode change. Calling devl_apply_default_esw_mode() also clears
->>> any pending default apply work queued by devl_register(), so the queued
->>> work will not apply the same default again.
->>>
->>> Keep this call in mlx5_init_one() rather than the lower-level
->>> devl-locked init helper. That helper is also used by devlink reload, and
->>> devlink core already applies the boot default after a successful
->>> DRIVER_REINIT reload.
->>>
->>> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
->>> ---
->>> drivers/net/ethernet/mellanox/mlx5/core/main.c | 13 +++++++++++++
->>> 1 file changed, 13 insertions(+)
->>>
->>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
->>> index 643b4aac2033..0712efea74cc 100644
->>> --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
->>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
->>> @@ -1392,6 +1392,17 @@ static void mlx5_unload(struct mlx5_core_dev *dev)
->>> 	mlx5_free_bfreg(dev, &dev->priv.bfreg);
->>> }
->>>
->>> +static void mlx5_devl_apply_default_esw_mode(struct mlx5_core_dev *dev)
->>> +{
->>> +	struct devlink *devlink = priv_to_devlink(dev);
->>> +
->>> +	if (!MLX5_ESWITCH_MANAGER(dev))
->>> +		return;
->>> +
->>> +	devl_assert_locked(devlink);
->>> +	devl_apply_default_esw_mode(devlink);
->>> +}
->>> +
->>> int mlx5_init_one_devl_locked(struct mlx5_core_dev *dev)
->>> {
->>> 	bool light_probe = mlx5_dev_is_lightweight(dev);
->>> @@ -1471,6 +1482,8 @@ int mlx5_init_one(struct mlx5_core_dev *dev)
->>> 	err = mlx5_init_one_devl_locked(dev);
->>> 	if (err)
->>> 		devl_unregister(devlink);
->>> +	else
->>> +		mlx5_devl_apply_default_esw_mode(dev);
->> 
->> I don't understand why this patch is needed at all. Just leave the job
->> to the devlink core, no? That was the point to not pollute drivers with
->> code like this. Is it some kind of leftover?
->
->It was discussed with Jakub here:
->https://lore.kernel.org/all/20260611085440.4fe36bf2@kernel.org/
->
->The main reason is timing. If the default is applied only by devlink
->core, it has to wait until the driver drops the devlink lock.
+From: Jiri Pirko <jiri@nvidia.com>
 
-I don't follow.
+RDMA device names are unique system-wide today:
+__ib_device_get_by_name() checks a requested name against every
+registered device regardless of the network namespace it lives in.
+A device in one network namespace therefore cannot use a name already
+taken in another, even in exclusive netns mode (netns_mode=0) where
+the two are otherwise isolated. Net devices have no such restriction -
+their names only need to be unique within a network namespace.
 
-<quote>
-	devl_lock(devlink);
-	if (dev->shd) {
-		err = devl_nested_devlink_set(dev->shd, devlink);
-		if (err)
-			goto unlock;
-	}
-	devl_register(devlink);
-	err = mlx5_init_one_devl_locked(dev);
-	if (err)
-		devl_unregister(devlink);
-unlock:
-	devl_unlock(devlink);
-</quote>
+This series makes RDMA device names unique per network namespace,
+matching net device semantics, and adapts the users that assumed
+system-wide unique names.
 
-devlink lock is droped right after.
+Scoping reuses the existing rdma_dev_access_netns() predicate, so
+behavior only changes in exclusive mode:
+  - shared mode (default): names stay unique system-wide, no change;
+  - exclusive mode: names only need to be unique within a namespace;
+  - CONFIG_NET_NS=n: everything is init_net, names stay system-wide
+    unique.
 
+There are two users that cannot be made per-namespace and are
+documented as known limitations instead of changed:
+  - the rdma_cm configfs tree: configfs has no network namespace
+    support, so it cannot represent two same-named devices;
+  - SELinux ibendport labelling: endports are labelled by (device
+    name, port) from a global policy; distinguishing same-named
+    devices would need net namespace support in the SELinux policy
+    language and tooling.
 
+Tested with the new rxe_netns_names kselftest added in the last patch.
 
->For mlx5, that usually happens very late in the init sequence. I
->wanted drivers to be able to apply the default as soon as the driver
->is ready for it, because on NICs with a DPU the host PF can remain
->stuck until the ECPF moves to switchdev.
->
->This API is also useful beyond the initial devlink registration path.
->Follow-up patches will use it for driver controlled paths that are
->not covered by the devlink core, such as recovery and FW reset.
->
->There is also a race window where userspace may take the devlink lock
->before the core gets a chance to apply the default. Letting the driver
->explicitly apply the default at the right point avoids that scenario.
->
->Thinking about this again, maybe the simpler approach is to apply the
->default from devl_unlock(). That would avoid the whole workqueue
->infra.
->
->I avoided doing that earlier because applying a default mode as a
->side effect of devl_unlock() feels a bit odd. But compared to adding
->dedicated workqueue handling maybe it is the lesser evil here.
->
->What do you think?
+Jiri Pirko (13):
+  RDMA/core: Pass the net namespace to the device name lookups
+  RDMA/core: Handle device name conflicts when changing net namespace
+  RDMA/core: Support renaming a device when changing its net namespace
+  RDMA/nldev: Report net namespace move errors through extack
+  RDMA/nldev: Allow setting the device name while changing net namespace
+  net/smc: Look up the pnetid ib device within the net namespace
+  RDMA/srp: Make the SRP sysfs class net namespace aware
+  RDMA/cgroup: Scope rdma cgroup device visibility to the net namespace
+  RDMA/cma: Document that CM configfs cannot be net namespace scoped
+  RDMA/core: Document the SELinux ibendport net namespace limitation
+  RDMA/core: Make device names unique per net namespace
+  RDMA/rxe: Implement disassociate_ucontext callback
+  RDMA/selftests: Add rxe_netns_names test
 
-I was under impression that you need the work to resolve nested locking.
-If not, drop it, sure.
+ Documentation/ABI/testing/configfs-rdma_cm    |   4 +
+ Documentation/admin-guide/cgroup-v2.rst       |   7 +
+ drivers/infiniband/core/cgroup.c              |  12 +
+ drivers/infiniband/core/cma_configfs.c        |   4 +
+ drivers/infiniband/core/core_priv.h           |  15 +-
+ drivers/infiniband/core/device.c              | 256 +++++++++++++---
+ drivers/infiniband/core/nldev.c               |  26 +-
+ drivers/infiniband/core/security.c            |   6 +
+ drivers/infiniband/sw/rxe/rxe_verbs.c         |   5 +
+ drivers/infiniband/ulp/srp/ib_srp.c           |  16 +-
+ include/linux/cgroup_rdma.h                   |  10 +
+ include/uapi/rdma/rdma_netlink.h              |   5 +-
+ kernel/cgroup/rdma.c                          |  20 +-
+ net/smc/smc_pnet.c                            |  20 +-
+ tools/testing/selftests/rdma/Makefile         |   3 +-
+ tools/testing/selftests/rdma/config           |   2 +
+ .../testing/selftests/rdma/rxe_netns_names.sh | 282 ++++++++++++++++++
+ 17 files changed, 639 insertions(+), 54 deletions(-)
+ create mode 100755 tools/testing/selftests/rdma/rxe_netns_names.sh
 
+-- 
+2.54.0
 
->
->About the extra API, I still think it's useful and would like to keep
->it if possible.
->
->Mark
->
->
->> 
->> 
->> 
->>> unlock:
->>> 	devl_unlock(devlink);
->>> 	return err;
->>> -- 
->>> 2.43.0
->>>
->
 
