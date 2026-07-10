@@ -1,83 +1,83 @@
-Return-Path: <linux-rdma+bounces-23015-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23016-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id PslhIOwoUWrhAAMAu9opvQ
-	(envelope-from <linux-rdma+bounces-23015-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2026 19:16:28 +0200
+	id Cw7rFlspUWr5AAMAu9opvQ
+	(envelope-from <linux-rdma+bounces-23016-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2026 19:18:19 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05FD173CF9F
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2026 19:16:28 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id B98B173CFD6
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2026 19:18:18 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=VUF4YcaC;
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=UVe+s+im;
 	dmarc=pass (policy=none) header.from=gmail.com;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23015-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23015-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23016-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23016-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9DF74301C97C
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2026 17:03:03 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 71EC7301FCA7
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2026 17:06:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA6C743B49E;
-	Fri, 10 Jul 2026 17:03:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2C9DEEC0;
+	Fri, 10 Jul 2026 17:06:49 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5230934404E
-	for <linux-rdma@vger.kernel.org>; Fri, 10 Jul 2026 17:03:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 344D3434408
+	for <linux-rdma@vger.kernel.org>; Fri, 10 Jul 2026 17:06:48 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783702981; cv=none; b=llWtUrCKjYiHO6MVfirbmQp7nuFjfpIJ6pqsqLsRyIno7JDNzg0MlSazj7X/BxlN3beuR+qsZKamypQz6ApPsynHucgVYfRVBzWSiVZAj3PAjNQhjsw9fPECsGdnNyd1aAL+syN+TLqbURJ3sgIs13xsm/bhEnuqdQrYJknQRcw=
+	t=1783703209; cv=none; b=NOnBz/Jxwb3Bgfem51NvrSNZLZSJX2MYl1qENzKI9gsR3lyMdp0JaUGRGS8XtHvOHKTbZnW8/Uxn2ARfS4+gGi1MsXUu0KaaUrI1UXSdSiN3RV9ZZiNEPsASJnyA6GYBkHEONAUiceognL1dDkGQbC3M1NtuUjnsQ5XzxYHYy7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783702981; c=relaxed/simple;
-	bh=aBkOaovDmCOVZZHolmZ5nommSM2U/0R+0JcIuWJu4NU=;
+	s=arc-20240116; t=1783703209; c=relaxed/simple;
+	bh=9lSzgAW8+FmEe+Hp7Rve4vbC7ZImzNSGMC/0E8OnJU8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RXH4IIhfArZUtsZFDiVfYNJMhuGCB1mB0WqhLhaFZJFQJaFKVImKLqa1MlsTA8rqDqVOwkA0IyxkYVOLAhm2rKc2BGbet4MrOX8nrpeWeURAXxrnviCr/zoPZKdudAOTnXcWJaW+EDYLpzwT+VaBl6wQmVBEfkGlUv3gq+Gzhm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VUF4YcaC; arc=none smtp.client-ip=209.85.210.171
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-84864086bfeso1134318b3a.1
-        for <linux-rdma@vger.kernel.org>; Fri, 10 Jul 2026 10:03:00 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=iyWcq3Z+5wCMijL3tkanELPmogc1HIUXHRArTdgM1n7mOE5ADqXEbKgLROXrIHxBxAOGLPihZz3DqIAck0EB8mRPxHkWOuSJYxd5giSLACOi8Zwzzf8wphJWVSV0k3l5V9FTT8hOtKpJ0PWPapgVWxGsQDiyV0mDf+H88U+kaho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UVe+s+im; arc=none smtp.client-ip=209.85.210.171
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-8486ac3f347so1591594b3a.1
+        for <linux-rdma@vger.kernel.org>; Fri, 10 Jul 2026 10:06:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783702980; x=1784307780; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1783703207; x=1784308007; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=eJt4dduVMLAOIcmpuYMBgvu3eT4RLvOgifRZbg/Z4kQ=;
-        b=VUF4YcaCCCyInq90IWtdRjj5gOkVjqBxg2VY1I9myy1ULGQmo/0AQk4vfAcFMi6nD5
-         ThuFDH43hsenbYxtB6HjzqwbXG5AYWA3fjxbseKR5eSxUWP0lzGEraIgM8j8UcPNZdwm
-         pnbiNqd2UpuWKAiny+ZPCBg4dqmKom3clt4LG3Jo2wUmURS7lwYJkk50dG1hS/UXXtSO
-         HRq7T88j7iw+q4FgAeiYCOTS4Gu0dBXaZXV+RhDMRcOy1JU6fLkAP6y7PQtdCKS8k469
-         YHNqxLS7B3BN1nWUTLwxkTOIwLUU+Wzhy622XHjyOHvlilT2phaR0UyPuLRuSkHjY7Tj
-         0YCQ==
+        bh=SpFBfA7wdgGokfuzCR83lopKSZdMUZgccIdXLTCA/gs=;
+        b=UVe+s+imfdj2zLvI6r5wP+Z4/k6qUc5bZgmJ/1j24jXUTjNUo7KCbZe1mKBeoIwdXK
+         GVlHfwzz2SjrPsRBD3JLvfw8xU4FJCAHOBRQdi8mPgMzysC5DZdXKWnzxQQUOJdbF08+
+         A5K56Vu5SJ8cvJURFUyh3RuxGN8s8GHmKJ+5OfaFWXLJueu3xSB8kRYa72YirkSKoFBo
+         jovSI71te5CCZCel7ZKm+LugxzzLMtoJtphYHN6w/22q8BTQQV38nDmifGX2LXp+EY22
+         OHzYbEh7a+IoCc5iIuYuo0+QZZ9jUKNB4dlLkQWdI3q2UxjXMR1G+CftIKNd6uJklOxh
+         4fVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783702980; x=1784307780;
+        d=1e100.net; s=20251104; t=1783703207; x=1784308007;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=eJt4dduVMLAOIcmpuYMBgvu3eT4RLvOgifRZbg/Z4kQ=;
-        b=iXLTbGY/HpWy9CWRpD6AVNmkaoboW2XyyBF4Qld53EuoXGYFnEY5NL19xGBlZlNvZG
-         IKsMCIYe1awYtvrq3uJAzWwB9gIO1v9TsvE77jyqxM9qN2jGqEApJoedaMDkmmzCLb4F
-         PH+OsP/blB1/rWpkZ/RG6E/gbVPDE9CfhagKX8TrPvBw42BykRtz8wPQphfJ7eXBOPqm
-         XI6J7xuFx7hjf+FdD2L93qMHXYaeKNVbI6v+wa6fr/BCE9BxmVz/qVu5Zj5vxV3RPnYh
-         3kQ2aKFgY3vrgzJ4wlTBoymEhTi/JQnHUC0zTFYqDdXtfBqEfBnpItDGz0yA/3tji33M
-         UZxA==
-X-Forwarded-Encrypted: i=1; AHgh+Rr5FLFwB5oRa3pUgIg1/VzIz1scblmiF2RmTAdG+2ksrWgKBK22OpwZmOiVP/qgMrhErOLod60Mi4/X@vger.kernel.org
-X-Gm-Message-State: AOJu0YxV0IR0KY9fYSAO82Eu7pviF5pJbsy3Es/FmjF8PUJ0xd4K68pL
-	orzFD56aH0iK1zZstwzpvbvAv9Qsunjg6W02Jfui7fq1lnjZhcrAM+ZJ
-X-Gm-Gg: AfdE7ckQawHSp0Fzi4+Mc8Luct3ymgPhFXGblgB3xx9LFrkCp+MFJnRcRSCY0NDtxEy
-	BP9oN5QB62p9y5O46e4yG5xRWWqtbU4y/4R+rZQToUO4EwHcEOFSC0iWXzDHf9krSbaSZnL/PA5
-	AUbp/d2sHNj7D8PgCrfA41GNMNgPHnnCtbc0sMlR3nyKg9BdhJvZQnvk33rV4MCdzRgUaFtN5+p
-	hvCwnSoLL271jRimDLPzmFHlyUXKYWElDB0Zff5T2Cn2MylIg050kakadg/tGcFhlgZLJdBmzwh
-	JF83M50tXZiCwRPHHZ172fI0gd3VT9HE2E2vdL8A8dR/Wbb2r1D/yH3A/DjdQEjE6HLWzLxldF4
-	nbcIVBqbi20eoGVFIIGfx4H7Wj/e5vYvjOlZnuX2Wm/e6BrGlfmx+poOUb+1ym12oJsCFPRIVFA
-	SA6FwXNljgRMOnJaU78U6ARaZ0wLEveP0motd145kh0i9NJueuLBQH/gA=
-X-Received: by 2002:a05:6a00:1f13:b0:848:6ba2:4139 with SMTP id d2e1a72fcca58-8486ba24522mr4844235b3a.36.1783702979579;
-        Fri, 10 Jul 2026 10:02:59 -0700 (PDT)
+        bh=SpFBfA7wdgGokfuzCR83lopKSZdMUZgccIdXLTCA/gs=;
+        b=lQnS+iGFWSK5HB4Rao05OZoGawPDYn3D/KepbeTer4GtUD8b4VL6y+ufjHdonqfqpX
+         4zDtunUnDejp7ciFMwZxGSnhV9vB1yxaWfIKclfjLXqNHRZwmFv7LzKrjD4bYy+cW7hx
+         7MwwVl2eDpKzbnilvptfSoVcdm+qPcWJBpJVfz+IJhGsi3FOukGFZsr9wDl5RLLplTXh
+         VjYIVZQIRUhw2HP+gbeuLHPhV1DJuLZahhk5mc0OfYegw1vhMvDW6P4Pa4qbcBoMddrE
+         YYaHPDmHSpd5pDKdvtwnI+PAZoxZ8fx3f/lLU4WT154glevF3WE+3vlfrCZMWCttFGn3
+         8hBg==
+X-Forwarded-Encrypted: i=1; AHgh+RoZyHoagpe+w6YR5FRxj5WIe1PRbhL5kgpV7Sjc2+F9OO8LetmF6lTDcij8gXNEAcAu108w0209ys4Q@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxoe97r3VESgrOBlHZwlDZzqK1TWr+GoTBygsnwUdk5DF8jAj0y
+	N6UOJlLrA0tQYAcX784AiGjbDlVJ2fgy4xLvWkhdh3RCixWn0lYL7zFO
+X-Gm-Gg: AfdE7clN4ZqvDlqrBL3fqhxLOdEI72PMkd9H+JFschAE3Z3pg92eV1zhLn+iiWcztiW
+	OXSr67ZKKeHtxhaLrQUVAzdfuVy13lsCeqqPspGQ99SB8RvHy2OFrTItqynF4rM3VVx2HzX9Avw
+	5DdEkcUwAtqhJq9jEbiIUic4FYSCvg3yOo3zQE9C/wQ5S9KHByQVgMxibdlKpPLhMrs/vHy3es5
+	41nt49WNS6iD5BBI51lyQv23bEmjDvmgE1r6Oy2QLhYpiTYl/qTBWeBVAsswINVFVMYaVqbhCdc
+	N1QKuPypRbWeQPW1leGx98wnURd3WW7uqBKAjXlmlFRz9cxvXq1/h9Ml2F1iQWKalomkqishbSM
+	tWoRdNuergQRadkI9yuEVVpKvMVFRfNH0JQBFHK8FQ1+RxZ4+rWWJTlYf+DH+o2gyEcijB0UrhU
+	X72wEEiblFQgzGomxFp9+mpF8HKfJHy+dOBj1X7XodKoHwLJqAUr+uNcU=
+X-Received: by 2002:a05:6a20:d494:b0:3c0:9acb:400 with SMTP id adf61e73a8af0-3c0f13a6583mr4025578637.37.1783703207546;
+        Fri, 10 Jul 2026 10:06:47 -0700 (PDT)
 Received: from skinsburskii (c-98-225-44-182.hsd1.wa.comcast.net. [98.225.44.182])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8484519580csm4394040b3a.32.2026.07.10.10.02.57
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-ca5b3a2e42bsm5458929a12.30.2026.07.10.10.06.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2026 10:02:58 -0700 (PDT)
-Date: Fri, 10 Jul 2026 10:02:55 -0700
+        Fri, 10 Jul 2026 10:06:46 -0700 (PDT)
+Date: Fri, 10 Jul 2026 10:06:44 -0700
 From: Stanislav Kinsburskii <skinsburskii@gmail.com>
 To: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: airlied@gmail.com, akhilesh@ee.iitb.ac.in, akpm@linux-foundation.org,
@@ -97,11 +97,10 @@ Cc: airlied@gmail.com, akhilesh@ee.iitb.ac.in, akpm@linux-foundation.org,
 	linux-rdma@vger.kernel.org
 Subject: Re: [PATCH v7 2/8] mm/hmm: add hmm_range_fault_unlocked_timeout()
  for mmap lock-drop support
-Message-ID: <alElv0EKjLQXMNK8@skinsburskii>
+Message-ID: <alEmpEv-Q_bQFzNu@skinsburskii>
 References: <178345345668.660027.2952911919681614557.stgit@skinsburskii>
  <178345362182.660027.12809852179204464964.stgit@skinsburskii>
- <20260710162749.GP118978@ziepe.ca>
- <20260710164743.GX118978@ziepe.ca>
+ <20260710163835.GR118978@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -110,7 +109,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260710164743.GX118978@ziepe.ca>
+In-Reply-To: <20260710163835.GR118978@ziepe.ca>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [2.34 / 15.00];
 	MID_END_EQ_FROM_USER_PART(4.00)[];
@@ -118,12 +117,12 @@ X-Spamd-Result: default: False [2.34 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCPT_COUNT_TWELVE(0.00)[39];
-	TAGGED_FROM(0.00)[bounces-23015-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23016-lists,linux-rdma=lfdr.de];
 	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
@@ -144,78 +143,134 @@ X-Spamd-Result: default: False [2.34 / 15.00];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,sashiko.dev:url,vger.kernel.org:from_smtp,skinsburskii:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 05FD173CF9F
+X-Rspamd-Queue-Id: B98B173CFD6
 
-On Fri, Jul 10, 2026 at 01:47:43PM -0300, Jason Gunthorpe wrote:
-> On Fri, Jul 10, 2026 at 01:27:49PM -0300, Jason Gunthorpe wrote:
-> > On Tue, Jul 07, 2026 at 12:47:01PM -0700, Stanislav Kinsburskii wrote:
-> > 
-> > > +int hmm_range_fault_unlocked_timeout(struct hmm_range *range,
-> > > +				     unsigned long timeout)
-> > > +{
-> > > +	struct mm_struct *mm = range->notifier->mm;
-> > > +	unsigned long deadline = 0;
-> > > +	int locked, ret;
-> > > +
-> > > +	if (timeout)
-> > > +		deadline = jiffies + timeout;
-> > > +
-> > > +	do {
-> > > +		if (fatal_signal_pending(current))
-> > > +			return -EINTR;
-> > > +
-> > > +		if (timeout && time_after(jiffies, deadline))
-> > > +			return -EBUSY;
-> > 
-> > I really dislike there is a timeout here, HMM is supposed to be more
-> > deterministic. GUP doesn't have a timeout, what is this about?
+On Fri, Jul 10, 2026 at 01:38:35PM -0300, Jason Gunthorpe wrote:
+> On Tue, Jul 07, 2026 at 12:47:01PM -0700, Stanislav Kinsburskii wrote:
+> > hmm_range_fault() requires the caller to hold the mmap read lock for the
+> > duration of the call. This is incompatible with mappings whose fault
+> > handler may release the mmap lock, notably userfaultfd-managed regions,
+> > where handle_mm_fault() can return VM_FAULT_RETRY or VM_FAULT_COMPLETED
+> > after dropping the lock. Drivers that need to populate device page tables
+> > for such mappings have no way to do so today.
 > 
-> It looks like you've moved the timeout processing related to the mmnu
-> notifier sequence from the callers into this helper. I'm fine with
-> that, but maybe add some comments that this timeout is helping
-> implement the mmu notifiers, and we do expect that the HMM part will
-> not timeout.
-> 
-> Though it is a little hard to see how your stated purpose of enabling
-> userfaultfd is going to work, aren't you pretty much guarenteed to hit
-> a timeout if the userfaultfd process is adversly scheduled? That's
-> going to end up broken.
+> sashiko could not apply v7 for some reason but the remarks on v6
+> seemed meaningful, did you see them were they delt with?
 > 
 
-The main customer for this new feature I have in mind is the MSHV driver
-which backs VMs memory with HMM, requires userfaultfd support for
-post-copy live migration and fast restore and it doesn't timeout.
+Yes, I dealt with them.
 
-I agree, that this current timeout value used by the other callers might
-not be enough to repopulate the mappings with userfaultfd, but there
-drivers would get -EFAULT for uderfaultfd-backed mappings without this
-change anyway, so getting -EBUSY with the change instead doesn't look
-like a significant change to the behaviour from my POV.
-
-> So, maybe the deadline should be resetting after every handled fault?
-> ie the timeout really is only about the mmu notifier and we don't
-> count the time spent handling faults or walking?
+> https://sashiko.dev/#/patchset/178336023903.504354.7500950448226027718.stgit%40skinsburskii
+> 
+> > diff --git a/Documentation/mm/hmm.rst b/Documentation/mm/hmm.rst
+> > index 7d61b7a8b65b..70885f153d03 100644
+> > --- a/Documentation/mm/hmm.rst
+> > +++ b/Documentation/mm/hmm.rst
+> > @@ -208,6 +208,69 @@ invalidate() callback. That lock must be held before calling
+> >  mmu_interval_read_retry() to avoid any race with a concurrent CPU page table
+> >  update.
+> >  
+> > +Dropping the mmap lock during page faults
+> > +=========================================
+> > +
+> > +Some VMAs have fault handlers that need to release the mmap lock while
+> > +servicing a fault (for example, regions managed by ``userfaultfd``).
+> > +``hmm_range_fault()`` cannot be used on such mappings because it must hold the
+> > +mmap lock for the duration of the call. Drivers that need to support them
+> > +should call::
+> 
+> Given the majority of callers use this API it should probably be the
+> focus of the documentation and example, regulate the existing API to a
+> 'BTW if you really need the mmap lock, and you really shouldn't, this
+> exists too'
 > 
 
-The timeout was inherited from existing HMM users rather than introduced
-as a new HMM policy. Some GPU drivers use HMM_RANGE_DEFAULT_TIMEOUT as a
-budget for the whole range population operation, including HMM retries
-and subsequent driver mapping work.
+Sure, I'll update the doc to reflect it this way.
 
-Moving retry handling into the unlocked helper would otherwise hide
-repeated -EBUSY returns from those callers and silently turn their
-bounded operation into an unbounded one. So the timeout argument is
-there to preserve existing caller semantics during conversion.
+> > @@ -32,6 +32,7 @@
+> >  
+> >  struct hmm_vma_walk {
+> >  	struct hmm_range	*range;
+> > +	int			*locked;
+> 
+> Let's use bool if you have to respin this
+> 
 
-I'd say it's up to the caller to provide big enough timeout for
-userfaultfd to succeed.
+Sure.
+
+> > @@ -651,37 +663,33 @@ static int hmm_do_fault(struct mm_struct *mm,
+> >  		fault_flags |= FAULT_FLAG_WRITE;
+> >  	}
+> >  
+> > -	for (; addr < end; addr += PAGE_SIZE)
+> > -		if (handle_mm_fault(vma, addr, fault_flags, NULL) &
+> > -		    VM_FAULT_ERROR)
+> > -			return -EFAULT;
+> > +	for (; addr < end; addr += PAGE_SIZE) {
+> > +		vm_fault_t ret;
+> > +
+> > +		ret = handle_mm_fault(vma, addr, fault_flags, NULL);
+> > +
+> > +		if (ret & (VM_FAULT_COMPLETED | VM_FAULT_RETRY)) {
+> > +			*hmm_vma_walk->locked = 0;
+> > +			return HMM_FAULT_UNLOCKED;
+> > +		}
+> > +
+> > +		if (ret & VM_FAULT_ERROR) {
+> > +			int err = vm_fault_to_errno(ret, 0);
+> > +
+> > +			if (err)
+> > +				return err;
+> > +			BUG();
+> 
+> Linux will be upset if he sees this.  
+> 
+> if (WARN_ON(!err))
+>    err = -EINVAL
+> 
+
+It will. I copied it from GUP.
+I'll change it the way you propose it.
+
+> > +/**
+> > + * hmm_range_fault - try to fault some address in a virtual address range
+> > + * @range:	argument structure
+> > + *
+> > + * Returns 0 on success or one of the following error codes:
+> > + *
+> > + * -EINVAL:	Invalid arguments or mm or virtual address is in an invalid vma
+> > + *		(e.g., device file vma).
+> > + * -ENOMEM:	Out of memory.
+> > + * -EPERM:	Invalid permission (e.g., asking for write and range is read
+> > + *		only).
+> > + * -EBUSY:	The range has been invalidated and the caller needs to wait for
+> > + *		the invalidation to finish.
+> > + * -EFAULT:     A page was requested to be valid and could not be made valid
+> > + *              ie it has no backing VMA or it is illegal to access
+> > + *
+> > + * This is similar to get_user_pages(), except that it can read the page tables
+> > + * without mutating them (ie causing faults).
+> > + *
+> > + * The mmap lock must be held by the caller and will remain held on return.
+> > + * For a variant that allows the mmap lock to be dropped during faults (e.g.,
+> > + * for userfaultfd support), see hmm_range_fault_unlocked_timeout().
+> > + */
+> 
+> Add a comment discourging anyone from using this function and prefer
+> hmm_range_fault_unlocked_timeout()
+> 
+
+Will do.
 
 Thanks,
 Stanislav
 
+> Other than the concern about the timeout and minor nits this looks
+> fine
+> 
 > Jason
 
