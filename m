@@ -1,83 +1,83 @@
-Return-Path: <linux-rdma+bounces-23014-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23015-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Ig1qH/EnUWqoAAMAu9opvQ
-	(envelope-from <linux-rdma+bounces-23014-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2026 19:12:17 +0200
+	id PslhIOwoUWrhAAMAu9opvQ
+	(envelope-from <linux-rdma+bounces-23015-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2026 19:16:28 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id F212273CF31
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2026 19:12:16 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05FD173CF9F
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2026 19:16:28 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=Z1WlVrvZ;
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=VUF4YcaC;
 	dmarc=pass (policy=none) header.from=gmail.com;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23014-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23014-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23015-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23015-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7F5853154618
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2026 16:55:29 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9DF74301C97C
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2026 17:03:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12B3047D950;
-	Fri, 10 Jul 2026 16:48:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA6C743B49E;
+	Fri, 10 Jul 2026 17:03:01 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 235DD47CC6B
-	for <linux-rdma@vger.kernel.org>; Fri, 10 Jul 2026 16:48:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5230934404E
+	for <linux-rdma@vger.kernel.org>; Fri, 10 Jul 2026 17:03:00 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783702129; cv=none; b=DKkmq53cKgIC807AjT3JotKJb7jJsqc1UchrbK2seC7Xpcwc8abT/Q6kKKfHWx3xQjVyvz1HbO6xlI36jaGyB7JrDK5OudkAdcJLd7RBY9zt4Pzmfu8Sg3/5O0SdMY6mguvSK7wCYSRpT6llgYYHxfYXF6UyVf7wncoCWywMxMM=
+	t=1783702981; cv=none; b=llWtUrCKjYiHO6MVfirbmQp7nuFjfpIJ6pqsqLsRyIno7JDNzg0MlSazj7X/BxlN3beuR+qsZKamypQz6ApPsynHucgVYfRVBzWSiVZAj3PAjNQhjsw9fPECsGdnNyd1aAL+syN+TLqbURJ3sgIs13xsm/bhEnuqdQrYJknQRcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783702129; c=relaxed/simple;
-	bh=gpGH/Q6yZYnkzQY2k0xRm/7mc5sBuLAhp6W6fGmbMLk=;
+	s=arc-20240116; t=1783702981; c=relaxed/simple;
+	bh=aBkOaovDmCOVZZHolmZ5nommSM2U/0R+0JcIuWJu4NU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BlDATP3o9fpIQRRCdnHsbKW+aPGwkPXMhW+6pFWuOB0hQDAfDiQbKn5ZRpbKSXIa5C+07tRua5H0qeCpVUenKxx3OnJRfCi2DmVFweVpIalUopp6blkm+h43H8KDgNUY5USHXM2UtADmF7SaIytbqWag1q5ejLIDzonXRxtyuwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z1WlVrvZ; arc=none smtp.client-ip=209.85.210.180
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-84867f07d63so1297011b3a.2
-        for <linux-rdma@vger.kernel.org>; Fri, 10 Jul 2026 09:48:47 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=RXH4IIhfArZUtsZFDiVfYNJMhuGCB1mB0WqhLhaFZJFQJaFKVImKLqa1MlsTA8rqDqVOwkA0IyxkYVOLAhm2rKc2BGbet4MrOX8nrpeWeURAXxrnviCr/zoPZKdudAOTnXcWJaW+EDYLpzwT+VaBl6wQmVBEfkGlUv3gq+Gzhm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VUF4YcaC; arc=none smtp.client-ip=209.85.210.171
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-84864086bfeso1134318b3a.1
+        for <linux-rdma@vger.kernel.org>; Fri, 10 Jul 2026 10:03:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783702127; x=1784306927; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1783702980; x=1784307780; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=h/T7cJaVh+vpdnCnVWowF/GJXIiYthZ82xWXxPXNVVI=;
-        b=Z1WlVrvZUUSrvSnSylau+EjoBytzRjh0FvlcvopGl/53I/6TMyLyo0K3jdbTWmkxnY
-         CeZadAsfKW8dFZdYQ/lr0S7/oM740hhNxhH+JD8OW0CzgH4Rw/btLC30q1Hu166MhLNh
-         iOAA5lxfxwKu8ouM8/DC7ktuG2m/23J210FJXd4R+ZudxAkdEl2raRufro+w0mKvaKAl
-         awCBXUYKVSyqm7+TkzMjFogHg2hkoyoy2YLjogT9vwuj8K8/JONbigrkt1aPBLIvV7a4
-         D+kmxtgEGOHuZeKwUD1isANdpEM6FY+h+Vo5d8V7eWyMjVHIUgDp0glo4ji1AZBWiBB8
-         U8Ug==
+        bh=eJt4dduVMLAOIcmpuYMBgvu3eT4RLvOgifRZbg/Z4kQ=;
+        b=VUF4YcaCCCyInq90IWtdRjj5gOkVjqBxg2VY1I9myy1ULGQmo/0AQk4vfAcFMi6nD5
+         ThuFDH43hsenbYxtB6HjzqwbXG5AYWA3fjxbseKR5eSxUWP0lzGEraIgM8j8UcPNZdwm
+         pnbiNqd2UpuWKAiny+ZPCBg4dqmKom3clt4LG3Jo2wUmURS7lwYJkk50dG1hS/UXXtSO
+         HRq7T88j7iw+q4FgAeiYCOTS4Gu0dBXaZXV+RhDMRcOy1JU6fLkAP6y7PQtdCKS8k469
+         YHNqxLS7B3BN1nWUTLwxkTOIwLUU+Wzhy622XHjyOHvlilT2phaR0UyPuLRuSkHjY7Tj
+         0YCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783702127; x=1784306927;
+        d=1e100.net; s=20251104; t=1783702980; x=1784307780;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=h/T7cJaVh+vpdnCnVWowF/GJXIiYthZ82xWXxPXNVVI=;
-        b=JTez4bf8z2AJsrIWgWfZCSaQTCgi7aJZ30ArpprAe6Iv6ZqRN54roqcfXKvhRKiQK2
-         4uVVOCdwoH87JVHxj2uGCStrI9XrZjkVP3xHMdIt+sh4XHssdH1M/Zwn/RMWPHeBWOCo
-         kwCSRkiJrYHVQD6k+546jBoxZlhKWMMxnmge1d6VyknK58isYpqI58v8cC5K77hNc1B/
-         8wtpzQINO/0E9dqhxS62zLrDSx7gLR8dLAf/vyQhhbo9d6aRAYLJY+QAiE66MljAYlJK
-         tiQWjfSOr35QAdqKTYhMkPP+Y3sHd7rztx7lsB71XgGICIAnZ4hO5l4lrvHl5NB1+Sx0
-         9uwA==
-X-Forwarded-Encrypted: i=1; AHgh+RqI/RVyDFjx495DJQ4MpiZNes1+SKgXE6ajGDwbDEzqHt0gsSfi3xKR/aECdNtRjrmLVCta+49uG9j0@vger.kernel.org
-X-Gm-Message-State: AOJu0YwLXrLSFn92UzvGA39Vg57xyVN8oahI77Jy8b4Ui+JlApzcbdJC
-	YBvwFgTDe6B1p3boOx5cTvK3x2Ykn0z/mvP0rLlOntHoownKLfXRFNGX
-X-Gm-Gg: AfdE7cmPA0eATjQW8kJrluKUyg3jHVQ+gQuc4sASSBt1LHFIa/qyoyKvGk4IbUxlHib
-	cDCIvq8TGwZKebD5PTKnVwRsCoTb19k2JhoGc5VBk/103CM8x5mX7iMQ0a3ErWbcT3mSXgKqztR
-	Sl5N3As2ER1bHzPCD7lq9fRk7LtkTbouOTJPHtrX8MOevqAGCNMfdBKlw5LGa04TCmmw56epgpK
-	HnivMGWuCH38hfmV477zabgqOjUieM0DVX0rt2dLPyO3LFI062l2HOR3HDedNGbXqN0BGSWdD9H
-	+62db1WJcHJ0VARc0RT1MBbRUtJmuyTLw+XgP/MKnwA5HZM6Tt9HViKMT4Wuzsin51F79AoACeR
-	wAOss33JxnZ7bQPtvXNQjgqXFIVDSAwuyxMMNFeOtp4scsWg0A9cydF5IFiYO54aVXzb/AGcz/j
-	DAgWnv2jvirxsaK3SqWNUKZ4aiEbjDSAJny6dqoqzjVbznV//JCENBt4w=
-X-Received: by 2002:a05:6a00:6c9a:b0:848:2f7a:2e57 with SMTP id d2e1a72fcca58-848438a63damr12313317b3a.70.1783702127271;
-        Fri, 10 Jul 2026 09:48:47 -0700 (PDT)
+        bh=eJt4dduVMLAOIcmpuYMBgvu3eT4RLvOgifRZbg/Z4kQ=;
+        b=iXLTbGY/HpWy9CWRpD6AVNmkaoboW2XyyBF4Qld53EuoXGYFnEY5NL19xGBlZlNvZG
+         IKsMCIYe1awYtvrq3uJAzWwB9gIO1v9TsvE77jyqxM9qN2jGqEApJoedaMDkmmzCLb4F
+         PH+OsP/blB1/rWpkZ/RG6E/gbVPDE9CfhagKX8TrPvBw42BykRtz8wPQphfJ7eXBOPqm
+         XI6J7xuFx7hjf+FdD2L93qMHXYaeKNVbI6v+wa6fr/BCE9BxmVz/qVu5Zj5vxV3RPnYh
+         3kQ2aKFgY3vrgzJ4wlTBoymEhTi/JQnHUC0zTFYqDdXtfBqEfBnpItDGz0yA/3tji33M
+         UZxA==
+X-Forwarded-Encrypted: i=1; AHgh+Rr5FLFwB5oRa3pUgIg1/VzIz1scblmiF2RmTAdG+2ksrWgKBK22OpwZmOiVP/qgMrhErOLod60Mi4/X@vger.kernel.org
+X-Gm-Message-State: AOJu0YxV0IR0KY9fYSAO82Eu7pviF5pJbsy3Es/FmjF8PUJ0xd4K68pL
+	orzFD56aH0iK1zZstwzpvbvAv9Qsunjg6W02Jfui7fq1lnjZhcrAM+ZJ
+X-Gm-Gg: AfdE7ckQawHSp0Fzi4+Mc8Luct3ymgPhFXGblgB3xx9LFrkCp+MFJnRcRSCY0NDtxEy
+	BP9oN5QB62p9y5O46e4yG5xRWWqtbU4y/4R+rZQToUO4EwHcEOFSC0iWXzDHf9krSbaSZnL/PA5
+	AUbp/d2sHNj7D8PgCrfA41GNMNgPHnnCtbc0sMlR3nyKg9BdhJvZQnvk33rV4MCdzRgUaFtN5+p
+	hvCwnSoLL271jRimDLPzmFHlyUXKYWElDB0Zff5T2Cn2MylIg050kakadg/tGcFhlgZLJdBmzwh
+	JF83M50tXZiCwRPHHZ172fI0gd3VT9HE2E2vdL8A8dR/Wbb2r1D/yH3A/DjdQEjE6HLWzLxldF4
+	nbcIVBqbi20eoGVFIIGfx4H7Wj/e5vYvjOlZnuX2Wm/e6BrGlfmx+poOUb+1ym12oJsCFPRIVFA
+	SA6FwXNljgRMOnJaU78U6ARaZ0wLEveP0motd145kh0i9NJueuLBQH/gA=
+X-Received: by 2002:a05:6a00:1f13:b0:848:6ba2:4139 with SMTP id d2e1a72fcca58-8486ba24522mr4844235b3a.36.1783702979579;
+        Fri, 10 Jul 2026 10:02:59 -0700 (PDT)
 Received: from skinsburskii (c-98-225-44-182.hsd1.wa.comcast.net. [98.225.44.182])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-847f6b609acsm10408336b3a.1.2026.07.10.09.48.45
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8484519580csm4394040b3a.32.2026.07.10.10.02.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2026 09:48:46 -0700 (PDT)
-Date: Fri, 10 Jul 2026 09:48:44 -0700
+        Fri, 10 Jul 2026 10:02:58 -0700 (PDT)
+Date: Fri, 10 Jul 2026 10:02:55 -0700
 From: Stanislav Kinsburskii <skinsburskii@gmail.com>
 To: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: airlied@gmail.com, akhilesh@ee.iitb.ac.in, akpm@linux-foundation.org,
@@ -97,10 +97,11 @@ Cc: airlied@gmail.com, akhilesh@ee.iitb.ac.in, akpm@linux-foundation.org,
 	linux-rdma@vger.kernel.org
 Subject: Re: [PATCH v7 2/8] mm/hmm: add hmm_range_fault_unlocked_timeout()
  for mmap lock-drop support
-Message-ID: <alEibBRYmWQvf1z1@skinsburskii>
+Message-ID: <alElv0EKjLQXMNK8@skinsburskii>
 References: <178345345668.660027.2952911919681614557.stgit@skinsburskii>
  <178345362182.660027.12809852179204464964.stgit@skinsburskii>
  <20260710162749.GP118978@ziepe.ca>
+ <20260710164743.GX118978@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -109,7 +110,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260710162749.GP118978@ziepe.ca>
+In-Reply-To: <20260710164743.GX118978@ziepe.ca>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [2.34 / 15.00];
 	MID_END_EQ_FROM_USER_PART(4.00)[];
@@ -117,12 +118,12 @@ X-Spamd-Result: default: False [2.34 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCPT_COUNT_TWELVE(0.00)[39];
-	TAGGED_FROM(0.00)[bounces-23014-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23015-lists,linux-rdma=lfdr.de];
 	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
@@ -143,55 +144,77 @@ X-Spamd-Result: default: False [2.34 / 15.00];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,skinsburskii:mid,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: F212273CF31
+X-Rspamd-Queue-Id: 05FD173CF9F
 
-On Fri, Jul 10, 2026 at 01:27:49PM -0300, Jason Gunthorpe wrote:
-> On Tue, Jul 07, 2026 at 12:47:01PM -0700, Stanislav Kinsburskii wrote:
+On Fri, Jul 10, 2026 at 01:47:43PM -0300, Jason Gunthorpe wrote:
+> On Fri, Jul 10, 2026 at 01:27:49PM -0300, Jason Gunthorpe wrote:
+> > On Tue, Jul 07, 2026 at 12:47:01PM -0700, Stanislav Kinsburskii wrote:
+> > 
+> > > +int hmm_range_fault_unlocked_timeout(struct hmm_range *range,
+> > > +				     unsigned long timeout)
+> > > +{
+> > > +	struct mm_struct *mm = range->notifier->mm;
+> > > +	unsigned long deadline = 0;
+> > > +	int locked, ret;
+> > > +
+> > > +	if (timeout)
+> > > +		deadline = jiffies + timeout;
+> > > +
+> > > +	do {
+> > > +		if (fatal_signal_pending(current))
+> > > +			return -EINTR;
+> > > +
+> > > +		if (timeout && time_after(jiffies, deadline))
+> > > +			return -EBUSY;
+> > 
+> > I really dislike there is a timeout here, HMM is supposed to be more
+> > deterministic. GUP doesn't have a timeout, what is this about?
 > 
-> > +int hmm_range_fault_unlocked_timeout(struct hmm_range *range,
-> > +				     unsigned long timeout)
-> > +{
-> > +	struct mm_struct *mm = range->notifier->mm;
-> > +	unsigned long deadline = 0;
-> > +	int locked, ret;
-> > +
-> > +	if (timeout)
-> > +		deadline = jiffies + timeout;
-> > +
-> > +	do {
-> > +		if (fatal_signal_pending(current))
-> > +			return -EINTR;
-> > +
-> > +		if (timeout && time_after(jiffies, deadline))
-> > +			return -EBUSY;
+> It looks like you've moved the timeout processing related to the mmnu
+> notifier sequence from the callers into this helper. I'm fine with
+> that, but maybe add some comments that this timeout is helping
+> implement the mmu notifiers, and we do expect that the HMM part will
+> not timeout.
 > 
-> I really dislike there is a timeout here, HMM is supposed to be more
-> deterministic. GUP doesn't have a timeout, what is this about?
+> Though it is a little hard to see how your stated purpose of enabling
+> userfaultfd is going to work, aren't you pretty much guarenteed to hit
+> a timeout if the userfaultfd process is adversly scheduled? That's
+> going to end up broken.
 > 
 
-The timeout was added because this version makes the unlocked helper own
-the internal retry loop, including -EBUSY retries.
+The main customer for this new feature I have in mind is the MSHV driver
+which backs VMs memory with HMM, requires userfaultfd support for
+post-copy live migration and fast restore and it doesn't timeout.
 
-Several existing HMM users already bound those retries with
-HMM_RANGE_DEFAULT_TIMEOUT, so the timeout argument was meant to avoid
-silently turning those call sites into unbounded waits.
+I agree, that this current timeout value used by the other callers might
+not be enough to repopulate the mappings with userfaultfd, but there
+drivers would get -EFAULT for uderfaultfd-backed mappings without this
+change anyway, so getting -EBUSY with the change instead doesn't look
+like a significant change to the behaviour from my POV.
 
-That said, I agree this mixes driver retry policy into HMM. A cleaner
-split may be to make the new helper timeout-free and have it retry
-internally only when mmap_lock was dropped by the fault path, since that
-is the part HMM must hide for userfaultfd-style faults.
+> So, maybe the deadline should be resetting after every handled fault?
+> ie the timeout really is only about the mmu notifier and we don't
+> count the time spent handling faults or walking?
+> 
 
-If the walk fails with the normal HMM invalidation -EBUSY, the helper
-would return -EBUSY to the caller, preserving the existing driver
-timeout loops and keeping HMM deterministic, closer to GUP.
+The timeout was inherited from existing HMM users rather than introduced
+as a new HMM policy. Some GPU drivers use HMM_RANGE_DEFAULT_TIMEOUT as a
+budget for the whole range population operation, including HMM retries
+and subsequent driver mapping work.
 
-Is it better from your POV?
+Moving retry handling into the unlocked helper would otherwise hide
+repeated -EBUSY returns from those callers and silently turn their
+bounded operation into an unbounded one. So the timeout argument is
+there to preserve existing caller semantics during conversion.
 
-THanks,
+I'd say it's up to the caller to provide big enough timeout for
+userfaultfd to succeed.
+
+Thanks,
 Stanislav
 
 > Jason
