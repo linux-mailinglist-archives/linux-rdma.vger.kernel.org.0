@@ -1,172 +1,217 @@
-Return-Path: <linux-rdma+bounces-23046-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23047-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 8SsjNgS3UWqrHwMAu9opvQ
-	(envelope-from <linux-rdma+bounces-23046-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 11 Jul 2026 05:22:44 +0200
+	id 1XhtLkq+UWrXIAMAu9opvQ
+	(envelope-from <linux-rdma+bounces-23047-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 11 Jul 2026 05:53:46 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E92E7402ED
-	for <lists+linux-rdma@lfdr.de>; Sat, 11 Jul 2026 05:22:44 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1711D7403A2
+	for <lists+linux-rdma@lfdr.de>; Sat, 11 Jul 2026 05:53:46 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=Y+T7qVfQ;
-	dmarc=pass (policy=none) header.from=gmail.com;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23046-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23046-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=bZ56CzrI;
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23047-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23047-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E19F4301624C
-	for <lists+linux-rdma@lfdr.de>; Sat, 11 Jul 2026 03:22:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8AF973021B13
+	for <lists+linux-rdma@lfdr.de>; Sat, 11 Jul 2026 03:53:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF8222E7398;
-	Sat, 11 Jul 2026 03:22:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69B6F2848AA;
+	Sat, 11 Jul 2026 03:53:40 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5761D1DFDE
-	for <linux-rdma@vger.kernel.org>; Sat, 11 Jul 2026 03:22:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20F26625;
+	Sat, 11 Jul 2026 03:53:38 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783740159; cv=none; b=lPGgd9pqTVznnrL8PdYkYyQu0CtJN5xqc707nN7owF83Nawu545Ho4srmWgCw7SyGcHN8Zetw93C1k1GVx0ucdr8N9Op/nLhuzyLXErs0c2nWfdmqEgWkXS6VlIVdLJsEAomvC8nWNQfqu1IKf9wHApkUWBSqkdFjPsC4iP7kYo=
+	t=1783742020; cv=none; b=HJ/xX9QQWamkmmzQhqn5bnovvpD2SVM4tJqiLuc/J4Eqh8P+e/lXIR2xmjLpTAnP2668MitD0B9R4VNYt0Ng2i6ZJcZh7oi+me3iH43wjn4XMVeF/uyaLInm/cUP2A7qfcU25UG4ssd7soJHdUsQ8aS9h6kGbSw8BaDl5rI6MU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783740159; c=relaxed/simple;
-	bh=Sus7BKnPvFUSij7CjYjdJ5SdK+WtzY+EQEDkUmlaEDE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pzm947NXrkeSt9I0y02OwhNTL2cQYYthE/k6yAP4XSceamfekoNT5KNnUtqtJ38iGnzOQ3IFUD3NrlEfh8r13BGZROm/PbJyLDmdfuQ/tlU6BgujBw4U7oFAhsNRcztocVBk/iADbadtZRzGZIAIf/5NaXWTM7gX7vpdyVFOHbw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y+T7qVfQ; arc=none smtp.client-ip=209.85.210.175
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-8423f236418so1166435b3a.1
-        for <linux-rdma@vger.kernel.org>; Fri, 10 Jul 2026 20:22:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783740158; x=1784344958; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=ZoRTmK7mqG76n1GL0uhVSS5eZwslPyOiLYDvdkV1GQU=;
-        b=Y+T7qVfQB2TUolswh+PJg2roQbg2dl792e74RhbyG/9Vj8N3+WvCQ3UIjHx98pcPsv
-         is2mm7ENnYmfoaDc5bE7/gq6fEKu019fp4/gbj9/v0igV96h2UO0N/1BiaC065sk8ylr
-         lF8EDEi7VXvTRm98EXSCwfFSt/ImJ636rlG3ntOjBtH05FFfcE5YWPgnFnTRrAObJ9Oj
-         aqesQhIYU64Em1aYmKWuSyG3xbGMAbIbH0yzO53DzB1Srir/r4KHX5GTvBRArbmp7/7c
-         cUGiE5LIe23VkhT+2v07URqgvcMoex+PNjQ2n70OnLg+zdPTlwfIENkTQvj1WG5PAEtQ
-         DCXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783740158; x=1784344958;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=ZoRTmK7mqG76n1GL0uhVSS5eZwslPyOiLYDvdkV1GQU=;
-        b=JGIqmDZqYiU23EAFTze4rWDV3qsi8V9RXrfYIY/4hOCiI1leKe6IhrWohg7rF78pwj
-         6mu1j5gho7UyPNI0GKc+7oHYmsqSRiKk5hurfBEp9UtWMH9jwShvfnM6azhPYvZG7JBu
-         Oqko22HUKG67mXRXSHZ2SYq5jCWgxcak+/4VkMdmGLY2fMNkMBqdpIEJ8J7+l3TpO1xg
-         e6YHcBj4SXK5Gm53YL/A6YtogquNotUUHDB10d+a9Yg5pGqHaV4E1BbmCQH5p1P5xBvS
-         AaSoPnBbbh74EXMd1oNQXyN05Uz6Ip94nlvjEiAxkjH4AxdDq92ovuHlzA2OvgPEEejj
-         4UzQ==
-X-Forwarded-Encrypted: i=1; AHgh+RqzcBPVSh3xI0NbbPN9vMTe5zzL8SlS321IJCoduV2v8tPzoGyO+4672ov6Ei9yN85N+HHORIgrcTC0@vger.kernel.org
-X-Gm-Message-State: AOJu0YyHph7/2kdu3fAhsNUctko5R4+zzZp2HiNmdpqw3re5f1dbHdS1
-	FXlDXyPlYtyl2vEJrLSCXEWvy923TOcT19TGon/I0xrCbqRC+akEkUKd
-X-Gm-Gg: AfdE7ckz+EljpDJtxfMq4rJRhQUL4NMocy3Cf8myOc4Mc+He1tKXolUeq6Ii6laZ4uJ
-	yvKoqLrIzTD/nsyLmPMIDn1d6jaRc0zkpt5k80XRxurH66QxsiYXov10w2ejFvKspxz/J6u2nBV
-	EuohkaPioZPBKz45B65iN79hgQf/lpzLcbQ0ON7MZNqCN+LKPGlOVQ/a3fhHUzdpa2Sy2QzHa1c
-	8ii7HTxYFez7l5KKi7Wr2CgRZhGFtxxHQogp3Bf5Ob/0jUt9/Nu4+fK1jQE9/VBhBbbtXgHhxpw
-	W2WbU0JoR7li+na+VHevRf44SoCuQpzzLHMFeFX1wJp8jk+Tk2iUzWHI3LFQyCdQzA9pkRTIeXc
-	NjA1jH6DLkS0mt+eUWNSas9QxjVAYyY+Ki/UrBPCQl6qYiRAy+emzfPw7LmGRaNVakepqIw8gSI
-	AIsyRCSMV9rb5moBo6vfxGtSQXTJGVwY3SEf7IlnCCiNe8v3Vx0DD5yvE=
-X-Received: by 2002:a05:6a00:2303:b0:848:2f74:1d68 with SMTP id d2e1a72fcca58-84889750a60mr1542258b3a.78.1783740157808;
-        Fri, 10 Jul 2026 20:22:37 -0700 (PDT)
-Received: from skinsburskii (c-98-225-44-182.hsd1.wa.comcast.net. [98.225.44.182])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-84856e7c8edsm3652647b3a.36.2026.07.10.20.22.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2026 20:22:37 -0700 (PDT)
-Date: Fri, 10 Jul 2026 20:22:33 -0700
-From: Stanislav Kinsburskii <skinsburskii@gmail.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: airlied@gmail.com, akhilesh@ee.iitb.ac.in, corbet@lwn.net,
-	dakr@kernel.org, david@kernel.org, decui@microsoft.com,
-	haiyangz@microsoft.com, jgg@ziepe.ca, kees@kernel.org,
-	kys@microsoft.com, leon@kernel.org, liam@infradead.org,
-	lizhi.hou@amd.com, ljs@kernel.org, longli@microsoft.com,
-	lyude@redhat.com, maarten.lankhorst@linux.intel.com,
-	mamin506@gmail.com, mhocko@suse.com, mripard@kernel.org,
-	nouveau@lists.freedesktop.org, ogabbay@kernel.org, oleg@redhat.com,
-	rppt@kernel.org, shuah@kernel.org, simona@ffwll.ch,
-	skhan@linuxfoundation.org, surenb@google.com, tzimmermann@suse.de,
-	vbabka@kernel.org, wei.liu@kernel.org,
-	dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-	linux-doc@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v8 0/8] mm/hmm: Add mmap lock-drop support for
- userfaultfd-backed mappings
-Message-ID: <alG2-RSitzPWClAX@skinsburskii>
-References: <178371866223.900500.12312667138651735591.stgit@skinsburskii>
- <20260710151151.1e193eedd0cf2591ae392f76@linux-foundation.org>
+	s=arc-20240116; t=1783742020; c=relaxed/simple;
+	bh=lJEHQJ5XaWY96QiPsa9fI1sTZQy+WmQgbc0sTNpR5SQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=SOmhY6NCFKl97R1+JdtwQB53yjhIopoEbUPC/w9BKnD1V/0d+gPSj7TiITk+bnHThW/R2yjk9q/CLi5WrF2nHzo33mrc64cSqkG+iL5nRb9xZkkV04qcJnoKXlDTFwEWY/StVV3W1MJ2lG5+OePbzdIeQpPwQ2P7okQrZvIjVdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bZ56CzrI; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E6C81F000E9;
+	Sat, 11 Jul 2026 03:53:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783742018;
+	bh=EOwelTdL4nOzgVPFS/BBmfP0iFtL0k/Qc7vjkrjb4QQ=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=bZ56CzrI9ybzuoEtN3WaBfTAdeVwUNNhp2F4sCqU66Cg3NztJUv6pGBNEfQgYPViz
+	 yKTGsegqsRJm99wVNuo5kF7cpMALez1ujccvzlWKxd/u8BpvkyAn/Il34fV3F/FvzU
+	 UP/aT6/Mn3JKzk8uo1jdfJyL1zOBcUJ9AORkGCz1Aro3yeR/kZhY2r3hITKSBgoxkQ
+	 Y31ZlduS8DOiK2smGurJ4AokTQN7O/BJIFGGjooc0op1KYQrGlWOy8e4ecmxDVqC03
+	 4lMSv/gSjFdwCpYLX6t0gy/PZI0PWnSTyd1gjg/J3C3ShI4MlzLLF7KcAVAgdjw7rC
+	 h14vSuBpHH70Q==
+Message-ID: <f69ec0975481ad04dc7403834bbb6b93d1092ecb.camel@kernel.org>
+Subject: Re: [PATCH net v2] rds: tcp: hold the RCU lock across
+ ipv6_chk_addr() in rds_tcp_laddr_check()
+From: Allison Henderson <achender@kernel.org>
+To: Xiang Mei <xmei5@asu.edu>, "David S . Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>,  Simon Horman <horms@kernel.org>
+Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
+ rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org, Santosh Shilimkar
+ <santosh.shilimkar@oracle.com>, Ka-Cheong Poon <ka-cheong.poon@oracle.com>,
+  bestswngs@gmail.com
+Date: Fri, 10 Jul 2026 20:53:37 -0700
+In-Reply-To: <20260710223029.1307043-1-xmei5@asu.edu>
+References: <20260710223029.1307043-1-xmei5@asu.edu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3-0ubuntu1.1 
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260710151151.1e193eedd0cf2591ae392f76@linux-foundation.org>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [2.34 / 15.00];
-	MID_END_EQ_FROM_USER_PART(4.00)[];
+X-Spamd-Result: default: False [-5.16 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[39];
-	TAGGED_FROM(0.00)[bounces-23046-lists,linux-rdma=lfdr.de];
-	FREEMAIL_FROM(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-23047-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:xmei5@asu.edu,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:rds-devel@oss.oracle.com,m:linux-kernel@vger.kernel.org,m:santosh.shilimkar@oracle.com,m:ka-cheong.poon@oracle.com,m:bestswngs@gmail.com,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:airlied@gmail.com,m:akhilesh@ee.iitb.ac.in,m:corbet@lwn.net,m:dakr@kernel.org,m:david@kernel.org,m:decui@microsoft.com,m:haiyangz@microsoft.com,m:jgg@ziepe.ca,m:kees@kernel.org,m:kys@microsoft.com,m:leon@kernel.org,m:liam@infradead.org,m:lizhi.hou@amd.com,m:ljs@kernel.org,m:longli@microsoft.com,m:lyude@redhat.com,m:maarten.lankhorst@linux.intel.com,m:mamin506@gmail.com,m:mhocko@suse.com,m:mripard@kernel.org,m:nouveau@lists.freedesktop.org,m:ogabbay@kernel.org,m:oleg@redhat.com,m:rppt@kernel.org,m:shuah@kernel.org,m:simona@ffwll.ch,m:skhan@linuxfoundation.org,m:surenb@google.com,m:tzimmermann@suse.de,m:vbabka@kernel.org,m:wei.liu@kernel.org,m:dri-devel@lists.freedesktop.org,m:linux-mm@kvack.org,m:linux-doc@vger.kernel.org,m:linux-hyperv@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:linux-rdma@vger.kernel.org,s:lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[gmail.com,ee.iitb.ac.in,lwn.net,kernel.org,microsoft.com,ziepe.ca,infradead.org,amd.com,redhat.com,linux.intel.com,suse.com,lists.freedesktop.org,ffwll.ch,linuxfoundation.org,google.com,suse.de,kvack.org,vger.kernel.org];
-	FORGED_SENDER(0.00)[skinsburskii@gmail.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,oss.oracle.com,oracle.com,gmail.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[skinsburskii@gmail.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,skinsburskii:mid,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[asu.edu:email,vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 4E92E7402ED
+X-Rspamd-Queue-Id: 1711D7403A2
 
-On Fri, Jul 10, 2026 at 03:11:51PM -0700, Andrew Morton wrote:
-> On Fri, 10 Jul 2026 14:26:20 -0700 Stanislav Kinsburskii <skinsburskii@gmail.com> wrote:
-> 
-> > This series extends the HMM framework to support userfaultfd-backed memory
-> > by allowing the mmap read lock to be dropped during hmm_range_fault().
-> 
-> Thanks.  This seems fairly mature and mostly-reviewed so I'll give it a
-> spin in mm.git's mm-new branch.
-> 
-> Unfortunately Sashiko wasn't able to apply this or v7.  I'm not sure
-> what base you were using.  Hopefully there's a reason for a v9 so we
-> can retry this.
-> 
+On Fri, 2026-07-10 at 15:30 -0700, Xiang Mei wrote:
+> rds_tcp_laddr_check() looks up a scoped IPv6 interface with
+> dev_get_by_index_rcu(), drops the RCU read-side lock, and only then
+> passes the bare struct net_device * into ipv6_chk_addr().
+>=20
+> dev_get_by_index_rcu() only keeps the device alive within the same RCU
+> read-side section. After rcu_read_unlock(), a concurrent RTM_DELLINK can
+> free the net_device; ipv6_chk_addr() then dereferences the stale pointer
+> in __ipv6_chk_addr_and_flags() (e.g. l3mdev_master_dev_rcu(dev)), reading
+> freed memory.
+>=20
+> Keep the RCU read-side lock held across the ipv6_chk_addr() call instead
+> of dropping it right after the lookup, so the device cannot be freed
+> while it is in use.
+>=20
+>   BUG: KASAN: slab-use-after-free in __ipv6_chk_addr_and_flags (... net/i=
+pv6/addrconf.c:1998)
+>   Read of size 8 at addr ffff8880106ec000 by task exploit/153
+>   Call Trace:
+>    ...
+>    kasan_report (mm/kasan/report.c:595)
+>    __ipv6_chk_addr_and_flags (... net/ipv6/addrconf.c:1998)
+>    ipv6_chk_addr (net/ipv6/addrconf.c:2031 net/ipv6/addrconf.c:1972)
+>    rds_tcp_laddr_check (net/rds/tcp.c:370)
+>    rds_bind (net/rds/bind.c:248)
+>    __sys_bind (net/socket.c:1920)
+>    __x64_sys_bind (net/socket.c:1956)
+>    do_syscall_64 (arch/x86/entry/syscall_64.c:63)
+>    entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:121)
+>=20
 
-I rebased this series on top of mm-new right before sending it out.
-Should I have used a different branch?
 
-Thanks,
-Stanislav
 
-> I have a few niggles, nothing major...
+Thanks Xiang!  Just more thing to make sure your patches gets through. Add =
+a change log here like this:
+
+Changes since v1:
+  Use rcu_read_locks instead of dev_hold/put
+  Rebased on [PATCH net v2] rds: Fix inet6_addr_lst NULL dereference when I=
+Pv6 is disabled
+
+Changes since v2:
+  Add change log
+
+
+Otherwise, it might get bounced if they happen to try your patch first.
+With that fixed:=C2=A0=C2=A0
+Reviewed-by: Allison Henderson <achender@kernel.org>
+
+Thanks!
+Allison
+
+> Thanks Xiang!  Just more thing to make sure your patches gets through. Ad=
+d a change log here like this:
+>=20
+> Changes since v1:
+>   Use rcu_read_locks instead of dev_hold/put
+>   Rebased on [PATCH net v2] rds: Fix inet6_addr_lst NULL dereference when=
+ IPv6 is disabled
+>=20
+> Changes since v2:
+>   Add change log
+>=20
+> Reviewed-by: Allison Henderson <achender@kernel.org>
+> Fixes: eee2fa6ab322 ("rds: Changing IP address internal representation to=
+ struct in6_addr")
+> Reported-by: Weiming Shi <bestswngs@gmail.com>
+> Assisted-by: Claude:claude-opus-4-8
+> Signed-off-by: Xiang Mei <xmei5@asu.edu>
+> ---
+>  net/rds/tcp.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/net/rds/tcp.c b/net/rds/tcp.c
+> index 955d92277d5a..30cfb0087f2c 100644
+> --- a/net/rds/tcp.c
+> +++ b/net/rds/tcp.c
+> @@ -355,23 +355,25 @@ int rds_tcp_laddr_check(struct net *net, const stru=
+ct in6_addr *addr,
+>  	/* If the scope_id is specified, check only those addresses
+>  	 * hosted on the specified interface.
+>  	 */
+> +	rcu_read_lock();
+>  	if (scope_id !=3D 0) {
+> -		rcu_read_lock();
+>  		dev =3D dev_get_by_index_rcu(net, scope_id);
+>  		/* scope_id is not valid... */
+>  		if (!dev) {
+>  			rcu_read_unlock();
+>  			return -EADDRNOTAVAIL;
+>  		}
+> -		rcu_read_unlock();
+>  	}
+>  #if IS_ENABLED(CONFIG_IPV6)
+>  	if (ipv6_mod_enabled()) {
+>  		ret =3D ipv6_chk_addr(net, addr, dev, 0);
+> -		if (ret)
+> +		if (ret) {
+> +			rcu_read_unlock();
+>  			return 0;
+> +		}
+>  	}
+>  #endif
+> +	rcu_read_unlock();
+>  	return -EADDRNOTAVAIL;
+>  }
+> =20
+
 
