@@ -1,252 +1,141 @@
-Return-Path: <linux-rdma+bounces-23053-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23054-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id z/7MGlrEUWr/IQMAu9opvQ
-	(envelope-from <linux-rdma+bounces-23053-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 11 Jul 2026 06:19:38 +0200
+	id 4x38OazYUWonJgMAu9opvQ
+	(envelope-from <linux-rdma+bounces-23054-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 11 Jul 2026 07:46:20 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A37E07404A8
-	for <lists+linux-rdma@lfdr.de>; Sat, 11 Jul 2026 06:19:37 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BCDC7406AA
+	for <lists+linux-rdma@lfdr.de>; Sat, 11 Jul 2026 07:46:20 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=intel.com header.s=Intel header.b=jiW1ZmdX;
-	dmarc=pass (policy=none) header.from=intel.com;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23053-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23053-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	arc=reject ("cv is fail on i=2")
+	dkim=pass header.d=linux-foundation.org header.s=korg header.b=QgCET+Tx;
+	dmarc=none;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23054-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23054-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7AC60302DB5E
-	for <lists+linux-rdma@lfdr.de>; Sat, 11 Jul 2026 04:16:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E04DE301BC3D
+	for <lists+linux-rdma@lfdr.de>; Sat, 11 Jul 2026 05:46:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 071C623BCF7;
-	Sat, 11 Jul 2026 04:16:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91A7F2F363F;
+	Sat, 11 Jul 2026 05:46:10 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31F4914E2F2;
-	Sat, 11 Jul 2026 04:16:41 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783743402; cv=fail; b=ou35GqBgB9qnwb700F66Raoa54b/Lji/m/NzmVbI0Lgu2nZQcjSZDe3E4YT3JW0a0xOBJ6MZnQ7SssFnf1sUeskChUKdulT73PBn3mC5DFjFeMUr+eTQW/QSboxPU/vMotDtIhvTwRjz2tc8AmpPTRxO9b1PHGeNuVkTNKWsJQQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783743402; c=relaxed/simple;
-	bh=PXqaVcOj36uBIlJZ1shLvZd8j7hc4dFuShtdb3aM4/0=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=EqgnGSmcbKGTr9IC4rlYTezvowIC7/z8iUQFH6Mkqx2Kc6+wbD8TB7+Awqtl8px0tzs0EzXckB46aGZE+/iJAFw2xyXN1BA9PDsOcJ2YgyeZnuJpqhUjYE1wgIgXyXI1wOTtvuZyIZ0Ps3zubkgtOb5fx8LjQfd8AhXLVNm5fP8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jiW1ZmdX; arc=fail smtp.client-ip=198.175.65.13
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1783743401; x=1815279401;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=PXqaVcOj36uBIlJZ1shLvZd8j7hc4dFuShtdb3aM4/0=;
-  b=jiW1ZmdXVhZwu3ZUYxHUYAEakXbWzHzjKe9YwrfPGjlSoUdPf4jX7G2w
-   VjsRf/BUdXMqFusDaqlqWzbPXq6MCz+RgfbczBr5eYxYxZDv6LOE6mEQi
-   vA+hQBo4IixRPKfm9x6lMSXPDdPSxwrENbMk9idwrFUQ+krbY4/4MJejw
-   Yvkyo3hR5fJVKzkj3NAphtmuZf19VHWr+6fUJdHZa1QjQjrqvKefxSvwz
-   WXmO7l08ftAg/UZjPmt3OgqrBpnLZbGrhFUQA5tPls/vsCII8+Ev0UlW8
-   gW2FKXFVHRq9fB6dFhTTTv25ctXUf/u/cWFYvcgVQzzdBaPBUlKVrgt2L
-   w==;
-X-CSE-ConnectionGUID: LWz2BNvIS7SPrZGgyPAiXw==
-X-CSE-MsgGUID: vBuKdXB+Sq+dWYCAfNOzFA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11841"; a="95589400"
-X-IronPort-AV: E=Sophos;i="6.25,154,1779174000"; 
-   d="scan'208";a="95589400"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2026 21:16:40 -0700
-X-CSE-ConnectionGUID: DqikGKsPSsyKjRtMpUdxhw==
-X-CSE-MsgGUID: DLOMx09QRomDijz102Q4ew==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.25,154,1779174000"; 
-   d="scan'208";a="251072401"
-Received: from fmsmsx902.amr.corp.intel.com ([10.18.126.91])
-  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2026 21:16:40 -0700
-Received: from FMSMSX903.amr.corp.intel.com (10.18.126.92) by
- fmsmsx902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.43; Fri, 10 Jul 2026 21:16:40 -0700
-Received: from fmsedg902.ED.cps.intel.com (10.1.192.144) by
- FMSMSX903.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.43 via Frontend Transport; Fri, 10 Jul 2026 21:16:40 -0700
-Received: from CH5PR02CU005.outbound.protection.outlook.com (40.107.200.58) by
- edgegateway.intel.com (192.55.55.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.43; Fri, 10 Jul 2026 21:16:39 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=DqnZaoUiFFFI9O3UixZfYMvAE6QPMdmUi12j4PynMNYEfLsEGlI9/S7mBoQrh3DWlwslX2yT7fTGnadeuhvQhSJp4ppwO75ipp0zVlAcjEs4emHFY083xhmqzTu9aD/OjoZ2uN5tRsQOGbeSbY2/T5AqLbRwxbGIrMvouABkT/dg1vOHPF+tuQNQc/ejsn5XLAAL1QBlF+pgYDKtRFhJWrh/tLZiIjT/gWxq+VACQ+xIOpJkLWrLL0TE3nS/Y+gadjMdyleEULMWKOGS9HYFEX+t1hJAf6Agg822J9r/SOm8ZndKqewxoimrd6N6uAvlXZaW4viObilQSquaV+plGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=E5VRnN32hcKy/8AkYoF6OpixZjB405H6D4IDCidoJ6w=;
- b=J/riq39OL7NYaxAdyFYx5jk4vZ42KfV6QuHEBkssWSjrs89bxuC4mSWwHaD+PuLsIKfTqTMx+JpTuHPdE10QppbS6Xwe43WjQnV+qUjzhHt9b6ZvmqxmiDSAaKuxU1ABOJLnRUUnxCPYtoIieQnGM0Be6aqlHrj8jSP26I0iQctBq87JSTcg0jYl+Qjaf/fPRgkXNuRonndqcK94mEIViqxd3XU3Urqfb/tkqQQvW/nKgD+Qaenhf8ZbdzGsWlyqIb7iY+uhXg8BtHhmmOaSI7SZkeWuVMhZnVZNWFtp4qzHt+A2uiDJvpXet4dUYq2VnymIXIMTCJ7w5Aq3OyngNQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from LV3PR11MB8508.namprd11.prod.outlook.com (2603:10b6:408:1b4::8)
- by SA1PR11MB7086.namprd11.prod.outlook.com (2603:10b6:806:2b3::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.181.8; Sat, 11 Jul
- 2026 04:16:31 +0000
-Received: from LV3PR11MB8508.namprd11.prod.outlook.com
- ([fe80::a1e8:1786:e5d1:8e51]) by LV3PR11MB8508.namprd11.prod.outlook.com
- ([fe80::a1e8:1786:e5d1:8e51%5]) with mapi id 15.21.0181.008; Sat, 11 Jul 2026
- 04:16:30 +0000
-Message-ID: <73e4895c-4d07-4841-92eb-2bcb61ca4d38@intel.com>
-Date: Sat, 11 Jul 2026 06:16:24 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2] bnge/bng_re: fix ring ID widths
-To: Vikas Gupta <vikas.gupta@broadcom.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <leonro@nvidia.com>, <jgg@nvidia.com>,
-	<bhargava.marreddy@broadcom.com>, <rahul-rg.gupta@broadcom.com>,
-	<vsrama-krishna.nemani@broadcom.com>, <rajashekar.hudumula@broadcom.com>,
-	<ajit.khaparde@broadcom.com>, Siva Reddy Kallam <siva.kallam@broadcom.com>,
-	Dharmender Garg <dharmender.garg@broadcom.com>, "Yendapally Reddy Dhananjaya
- Reddy" <yendapally.reddy@broadcom.com>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<andrew+netdev@lunn.ch>, <horms@kernel.org>
-References: <20260704164747.1995227-1-vikas.gupta@broadcom.com>
- <c108a5ec-8740-431e-849d-581c136f404d@intel.com>
- <CAHLZf_tTVipQZ_MX-gud5GhqHE7KDV=44N=17mZgsrWoJfa_Gw@mail.gmail.com>
-From: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Content-Language: en-US
-In-Reply-To: <CAHLZf_tTVipQZ_MX-gud5GhqHE7KDV=44N=17mZgsrWoJfa_Gw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: DUZPR01CA0249.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:4b5::10) To LV3PR11MB8508.namprd11.prod.outlook.com
- (2603:10b6:408:1b4::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F9304499B4;
+	Sat, 11 Jul 2026 05:46:08 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783748770; cv=none; b=u0iNxxxeFpZvGA3hKOz8ORjkzhEjPRryUa0/q6mhPoAskxKNYi936Au1YwVkWyruR/xnkYygZosxHxJ53L1PGNM8TpvvAxZIxHNfEIzbDOSwVu0YJX7p4PPpIYUPS4EC9zP5qLu9En5AJYMVugWbbofSP32ee0GOadMv3jScd/Y=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783748770; c=relaxed/simple;
+	bh=f5jTLoe3Zo1gc5ZUKEpY3XEPQiWZo5Y531JTyQooH8M=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=kKx1hxY/E/dt5WNvdLytiZIWspUxsJUFIUDQ53Lv002AVPXPqDEBJ73U5gopdSXwUj+kkiT5v0/kkLPI5/0iykpvnDttUXAdXIXhxsmmjRpAY5mr9SAhCeopnVfH32enivKJxKAhntFzWqlbpkdv71HOZmHI7zB0lI8NhlCwKEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=QgCET+Tx; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBB7E1F000E9;
+	Sat, 11 Jul 2026 05:46:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux-foundation.org; s=korg; t=1783748768;
+	bh=EaiPorL9ahIoJjJNitVwjgM9ztVnjvN7foqXLiq04lM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=QgCET+Tx8Bz0jrdks+rAbU8mUQHeVPcVhmNjnY9QEy3j0IQt8dtIhIBSKEh+5N9As
+	 WQNaEldSNdp9DDaqnyfla/F2QwjYqb48w5VbRYV51VDzIlmiP+A0SWtLpP3PLpBuAV
+	 qLAHT72ptNutim6kRtqCLNoKDrjqrESrQiMjB/7M=
+Date: Fri, 10 Jul 2026 22:46:06 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Stanislav Kinsburskii <skinsburskii@gmail.com>
+Cc: airlied@gmail.com, akhilesh@ee.iitb.ac.in, corbet@lwn.net,
+ dakr@kernel.org, david@kernel.org, decui@microsoft.com,
+ haiyangz@microsoft.com, jgg@ziepe.ca, kees@kernel.org, kys@microsoft.com,
+ leon@kernel.org, liam@infradead.org, lizhi.hou@amd.com, ljs@kernel.org,
+ longli@microsoft.com, lyude@redhat.com, maarten.lankhorst@linux.intel.com,
+ mamin506@gmail.com, mhocko@suse.com, mripard@kernel.org,
+ nouveau@lists.freedesktop.org, ogabbay@kernel.org, oleg@redhat.com,
+ rppt@kernel.org, shuah@kernel.org, simona@ffwll.ch,
+ skhan@linuxfoundation.org, surenb@google.com, tzimmermann@suse.de,
+ vbabka@kernel.org, wei.liu@kernel.org, dri-devel@lists.freedesktop.org,
+ linux-mm@kvack.org, linux-doc@vger.kernel.org,
+ linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v8 4/8] mshv: Use hmm_range_fault_unlocked_timeout() for
+ region faults
+Message-Id: <20260710224606.69235ab5c49b5987fd33e924@linux-foundation.org>
+In-Reply-To: <alG1JwgUK44dCiN4@skinsburskii>
+References: <178371866223.900500.12312667138651735591.stgit@skinsburskii>
+	<178371881034.900500.5214601525971121683.stgit@skinsburskii>
+	<20260710151216.0397a6f9ac5c7b4ccd274cc1@linux-foundation.org>
+	<alG1JwgUK44dCiN4@skinsburskii>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3PR11MB8508:EE_|SA1PR11MB7086:EE_
-X-MS-Office365-Filtering-Correlation-Id: a16ded9e-5dc0-4a32-2696-08dedf032f38
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|23010399003|366016|376014|1800799024|7416014|4143699003|11063799006|56012099006|22082099003|18002099003;
-X-Microsoft-Antispam-Message-Info: +fvIeWTKiNhCS2VKFdxZkGswfEDjEb0mC2ZGAqW4sQb8EMhgUNPBlZz8l6jr3ymslUpO/U0WrQBQNyj1okonfb2IetNNbakDHg7dyBMO3wMlSvBpgEJanLV948Enk07A1QzWNoIjZAUU/pPoOueqTZ3P5dFjk0NxQl1gIBhc0IsgWc/7L5Xf+hZsTbPGWe9KjAv31f6SMbElDBiIHVYO6HyH7ixi6JLu6TvgEs0KJG8Bo4krYhL1ycqJq1X0Wi9T5arvXUvOpEaBh75ae3qWPG13FGxt060QX+QaWtA5qqmEno37gFD5taf2Zdq+FYbUgOvbsl5WLzVxN5R1ug1CBBDFbvmwIV3ElMpNSNlH/xYxkUPOKzGSidt4PcHG7k0rkDm5WZa+ktAMeye6q/Q9aFfXLOdmQ42bLdK0sFWCV44nNItXLfqm/VYICNWYHF2iLN5gQZjPSgA7FgAjknmIjnWwdLsH2VTgKAlxORfGeD2RuzIG0Y8bcQWhwaKmV3qHm3ynuwzKZEmIjp3jpKzL/kIzMk3GGwMBUYJnm0X0+gnfdPei5Ubhu3dOQ4HAT4LjGYnxCfExCEf+wDkRwJJTzJthcGZwA5RAkgwy0PuN6jqKSWGhCtDFE3Ljvvet0Mo86w9xLCX1VEUcRcuZ1YBGmwEZyYAUdPreQtB8qPSsxvA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8508.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(366016)(376014)(1800799024)(7416014)(4143699003)(11063799006)(56012099006)(22082099003)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d2t1YVFkbXFqNk9aYW94aWlGbzlsbHMzNEhuRFRpTWpsSkVSRHdMTmhYNmFF?=
- =?utf-8?B?elNMVVluakw3VzNMNS9rSDEzQjUrQVBnOUVJcVRNM3pSMzZhcVBjTjFHQ2pM?=
- =?utf-8?B?QXFMTWJsTWtDZ2dkYVd1UHQyUjRqcDVReG5lZ0ppWXU4N2VuUXZDdWYrUHRD?=
- =?utf-8?B?SXRmTXZoRElZMlNIeHBPTEFGWjlPdFJOV1Q3WStIK0h6YXV3NGMzRk9jamNW?=
- =?utf-8?B?TzZoeDQ5T3JqbUpOSUZsc2xSZnFNaUNBM3FWZjBMaVNJK1p4dnd0SmFQSnVB?=
- =?utf-8?B?Y3I2eEJqVmhqaWdxSlBFNWxENFc4aUIzNjFFQzdzV1hobW5QRGozMUhRaTM0?=
- =?utf-8?B?c3hxUlo2L1gybVgrM1ZJZ1Q1SHAvNmhkVTZlREY4ZlRmQkgzcmNOZXF1ck5V?=
- =?utf-8?B?WkliMUhRSGx3bzFNZlkvdE9oTEZnOEhTenczd3VOdUFVUzluMnlGN1h3WW9N?=
- =?utf-8?B?cE04SzVBdWE3LzJnREcxWk1JL1dzR3N3TVJFTmlGaUUwdkNBVXBkSXMxcFJq?=
- =?utf-8?B?cGoxbitvL0NmN3hhVzR0VndxU3lhMTFFSkxUajZyUVNNRU1ROGF0dy83WnZJ?=
- =?utf-8?B?SHFIb1pNUFN2TWxHVXZHQ1QweHVLL2U0bHcyWG1aL05FWWZwUFFBckt3Rk9z?=
- =?utf-8?B?czFXa1BUeWg5ZkNLWTVmQlNzQ2N6clVZTGp2eXFUODJBN2s1S1h3d1V6Y1I0?=
- =?utf-8?B?Z0NMRG9Falo0cXdTejdxS1JvdGlKZERicjZ5RHR0TDlGSU1RWEVvQldtcS9a?=
- =?utf-8?B?MHZjVENaeHZNOGVyckxSMGVWWVdMRTd5Y2JzTUJ0RkpyMTdkKzc2Z1FQTE12?=
- =?utf-8?B?MytLYmhYTG1neWZXNjNQNVFHdC8xR0F5ZjNtaDhCVXNpY3hGSkRKaGFkbUw4?=
- =?utf-8?B?dmh6cEI2M1ducC92aTBiQjZZaXI4VmovblJwc3ppZWR5VFN4QVMzcUpVM01r?=
- =?utf-8?B?cWhaZFhIK1RJR3hUUDB4eTJGclBUNW0rKzFRc0xScWFnaWFKNDRnUWxBcjlk?=
- =?utf-8?B?Q3d1TkNnMklJclRwRXluaDFRS0pUWGNLUXRvRENSdkQwMTlxQ1J3ZlZJR2s0?=
- =?utf-8?B?aFRsUEVMRnplYVk4VGk1WHIvQml0eEJQb24wWmF1UmFsWndyc1FsbTBtNTBP?=
- =?utf-8?B?OVU0ckJzZEI2NUlhL2FUekM3dkJDUXliTVhUYUdLRmNLS2hEZFJiUXpYVFc1?=
- =?utf-8?B?Z1o1YWN4cTdsMEpMQ3JUZHM5ZjF0QU9FUjlDSlpjQUx6Q3ZvOHY2V3VTQ0xR?=
- =?utf-8?B?aDBjY1RHMGZ1WmRURUZUWXcrMmhiTDZMSU54S0Fqa1hTcno0VlhyUUpHYi9Y?=
- =?utf-8?B?aXpxWGoyaDZsR0Yxd0R1ODY3RFRkL2hTSW9HRHRRWTgrbk5tTUcvS09xSWxF?=
- =?utf-8?B?QzV3NzIxVUN5c2Q0Y1g2QmMzcStXVWlOV2wwS0hCdTQvb1lieFlsUkZHMUJL?=
- =?utf-8?B?NWxjSHQ3MnZsRW5WVmNNVGQ1cmgreXVCampzejFmVkRNOUtxV2R3aExhTmQz?=
- =?utf-8?B?SzV0SjgvQ01lRlFwSGdSMWs0VDlyclBQbVpaSXJ6QkJhRXByRG14Wm5iUFZM?=
- =?utf-8?B?TU43WGlYNTI0K25QdVp2ajRCNTVicEMxakVoSm1UWE90NVhjODNjNW9BeCtx?=
- =?utf-8?B?SnhNamxVVFBDeHdCRmNaSHh0WnFSNEhGbnRMWERLUVp1dlhGWGFlc2RxSDla?=
- =?utf-8?B?cWtwQVYwd3BqWUxjaG1mdDg2Nnp2VDErZ1hJbWxQTGNseHVJdnI3aDVjcmFi?=
- =?utf-8?B?RTg5RkdNQ0VTc1U4bGJkR0tFMGNLRXUzM2JpNkk2cmFZQnBvRXlMT29aT1BQ?=
- =?utf-8?B?eHpaSXJYMGRuSHVBaHNsamk4MG1Za1FGUkRuOXNtcTFQUzR2S25nNmV4Vnpq?=
- =?utf-8?B?S1JZYXRWT0FiSWJ3bWhhNHFoc1FqQThNQ2lhM2FxY2pDUHpzVnMrZU5yTVpG?=
- =?utf-8?B?OTJ1K0RJS1pvaHdIMEFrSWVkMEpCOGJpUlRSOXlLRXJFT2hHYTEwdlZvV3dr?=
- =?utf-8?B?eTFyMER1T2RHcDRhdzJWOUxWSEk3TUZndFNETVZBbXVRTlhzYzdndHd1WWpi?=
- =?utf-8?B?S2dFQnZtYmZhOFFFSWd0RUJQMFJZT0Rzc2tXdmtseHA2VHBsdnJvemtyVGp2?=
- =?utf-8?B?L1NFS2pXN05xSjNEV2g3cFMwdUlDcWFNU3VOUjFhSjB3dEFEc2t4aWdVMjhT?=
- =?utf-8?B?dnk5Q0MzMi9SZnZLeXlWajRPSGp1SElqQ2dkWFJzU3I1TjY2YmJ0dEk0NHVE?=
- =?utf-8?B?SWFvV0RiZG9IcXBwdyt3RXRsamZHdEFmS1NOdUdYWEVVdGQzUXhUMjd3SCtS?=
- =?utf-8?B?YmlnMDlrTFNISXFLcGlzb0F0KzhrYkxibnk4WUhDVDA4NE9KMjZVNEZOVTlQ?=
- =?utf-8?Q?CAZPvoHKZdjZ7JVc=3D?=
-X-Exchange-RoutingPolicyChecked: fecdYJOj9eRNAnTpUnvTUD4jkZ43Rjy14aI3eSmak/CgojYTo4hMdF+g/bZlV1yn3k5OTlRDoMJDQa7zAxSabbBO+9h2eq7EBK98kNyFxRqwtOBye3bh+gS0+uK4z77PN/C0lHdH9YDlfwyAKs1rqUzzgv9ZebGKzqeg6iRB3xaXhxKq4qh3Un5zb6gGpxcTobxzZGIhJrDRU+JfXEgMHSG/8angaz5gx3zl6PqKQgbQgBS+zcf/vVCIqVVDhP11UKSD/Tf514GYguRNBfYkdkqC17iNytjcAASHUbstp/eOsxWRpK7xLkSgKXakodfZNR6GjuQSBHTucqS+7m980g==
-X-MS-Exchange-CrossTenant-Network-Message-Id: a16ded9e-5dc0-4a32-2696-08dedf032f38
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8508.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2026 04:16:30.4895
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wvziUWFDVlLS8IyNBIBePZwooHDJ3S/1X7HJ9J2LFH7h4n+ltDFE6mG07dArdimhZnYOYvGyIWZkl2RsOPHz3K0J3zhpPPzqJ1mAlm1deho=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB7086
-X-OriginatorOrg: intel.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.66 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[intel.com:d:+,kernel.org:s:+];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+X-Spamd-Result: default: False [-1.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MV_CASE(0.50)[];
+	R_DKIM_ALLOW(-0.20)[linux-foundation.org:s=korg];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23053-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER(0.00)[przemyslaw.kitszel@intel.com,linux-rdma@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:vikas.gupta@broadcom.com,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:leonro@nvidia.com,m:jgg@nvidia.com,m:bhargava.marreddy@broadcom.com,m:rahul-rg.gupta@broadcom.com,m:vsrama-krishna.nemani@broadcom.com,m:rajashekar.hudumula@broadcom.com,m:ajit.khaparde@broadcom.com,m:siva.kallam@broadcom.com,m:dharmender.garg@broadcom.com,m:yendapally.reddy@broadcom.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:andrew+netdev@lunn.ch,m:horms@kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:from_mime,intel.com:email,intel.com:mid,intel.com:dkim,vger.kernel.org:from_smtp];
-	DKIM_TRACE(0.00)[intel.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[przemyslaw.kitszel@intel.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:skinsburskii@gmail.com,m:airlied@gmail.com,m:akhilesh@ee.iitb.ac.in,m:corbet@lwn.net,m:dakr@kernel.org,m:david@kernel.org,m:decui@microsoft.com,m:haiyangz@microsoft.com,m:jgg@ziepe.ca,m:kees@kernel.org,m:kys@microsoft.com,m:leon@kernel.org,m:liam@infradead.org,m:lizhi.hou@amd.com,m:ljs@kernel.org,m:longli@microsoft.com,m:lyude@redhat.com,m:maarten.lankhorst@linux.intel.com,m:mamin506@gmail.com,m:mhocko@suse.com,m:mripard@kernel.org,m:nouveau@lists.freedesktop.org,m:ogabbay@kernel.org,m:oleg@redhat.com,m:rppt@kernel.org,m:shuah@kernel.org,m:simona@ffwll.ch,m:skhan@linuxfoundation.org,m:surenb@google.com,m:tzimmermann@suse.de,m:vbabka@kernel.org,m:wei.liu@kernel.org,m:dri-devel@lists.freedesktop.org,m:linux-mm@kvack.org,m:linux-doc@vger.kernel.org,m:linux-hyperv@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:linux-rdma@vger.kernel.org,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	DMARC_NA(0.00)[linux-foundation.org];
+	FORGED_SENDER(0.00)[akpm@linux-foundation.org,linux-rdma@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[39];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23054-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[linux-foundation.org:+];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[akpm@linux-foundation.org,linux-rdma@vger.kernel.org];
+	FREEMAIL_CC(0.00)[gmail.com,ee.iitb.ac.in,lwn.net,kernel.org,microsoft.com,ziepe.ca,infradead.org,amd.com,redhat.com,linux.intel.com,suse.com,lists.freedesktop.org,ffwll.ch,linuxfoundation.org,google.com,suse.de,kvack.org,vger.kernel.org];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	RCVD_COUNT_SEVEN(0.00)[10]
+	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: A37E07404A8
+X-Rspamd-Queue-Id: 7BCDC7406AA
 
-On 7/10/26 16:25, Vikas Gupta wrote:
-> On Fri, Jul 10, 2026 at 3:36 PM Przemek Kitszel
-> <przemyslaw.kitszel@intel.com> wrote:
->>
->> On 7/4/26 18:47, Vikas Gupta wrote:
->>> Firmware requires more than 16 bits to address TX ring IDs for its
->>> internal QP management. Widen the associated HSI ring ID fields to
->>> 32 bits. The values firmware assigns remain within 24 bits, bounded
->>> by the hardware doorbell XID field.
->>>
->>> RX, completion, and NQ ring IDs are unaffected and remain 16-bit.
->>
->> Here you mention Rx is unaffected. But you touch multiple places that
->> are Rx specific (some comments below).
+On Fri, 10 Jul 2026 20:14:47 -0700 Stanislav Kinsburskii <skinsburskii@gmail.com> wrote:
+
+> > > +	mutex_lock(&region->mreg_mutex);
+> > > +
+> > > +	if (mmu_interval_read_retry(range.notifier, range.notifier_seq)) {
+> > > +		mutex_unlock(&region->mreg_mutex);
+> > > +		cond_resched();
+> > > +		goto again;
+> > > +	}
+> > > +
+> > 
+> > If the calling process has realtime scheduling policy and either a)
+> > we're uniprocessor or b) this process and the holder of
+> > interval_sub->invalidate_seq are both pinned to the same CPU then
+> > cond_resched() won't do anything, and this might be an infinite loop?
 > 
-> The fw_ring_id field belongs to bnge_ring_struct, a common struct
-> shared by all ring types. Widening it to u32 applies uniformly across
-> TX, RX, CP, and NQ rings at the struct level.
-> I believe the commit message is incomplete but the intent was that
-> firmware assigns values within 16-bit range for all ring types
-> except TX, which requires the wider field.
-> Please let me know if this clarifies.
+> Yes, looks like it might.
+> What can be done to prevent this?
 
-Thank you, it does clarify.
+Well the best way is remove the polling loop and use a proper sleep/wakeup
+mechanism - mutex_lock()/prepare_to_wait()/etc.
 
-Would be nice to extend commit message to include that and also the
-info about HW not yet being released. Not sure if it is worth v2 though.
-
-Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+If the polling loop is to be retained then maybe msleep(1) or
+usleep_range()?
 
