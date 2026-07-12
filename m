@@ -1,77 +1,62 @@
-Return-Path: <linux-rdma+bounces-23074-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23075-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id OjxtMgl6U2oObQMAu9opvQ
-	(envelope-from <linux-rdma+bounces-23074-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2026 13:27:05 +0200
+	id EfCHEzt6U2oQbQMAu9opvQ
+	(envelope-from <linux-rdma+bounces-23075-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2026 13:27:55 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C9C8744804
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2026 13:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AA26874480D
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2026 13:27:54 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=lgFqAe2C;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=krV6uiyo;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23074-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23074-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23075-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23075-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F14F5302803C
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2026 11:26:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1C4D8303CE14
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2026 11:26:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45B8A39EB40;
-	Sun, 12 Jul 2026 11:26:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8AF23909A9;
+	Sun, 12 Jul 2026 11:26:56 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 113A72D739C;
-	Sun, 12 Jul 2026 11:26:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86B7E3A874C;
+	Sun, 12 Jul 2026 11:26:55 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783855613; cv=none; b=LPDfUmgrQ7x05OzdAaRJoldbRugqnpDol3ol37Urp3Btk5aLb0HI9nRHhFXYZTNkTMygaE2SHDsWw0U/4bd7EFce6ujEMOhNLcyD4CBl/2ibSvZ5noyHwk7GZ1dh9LdX7vIe0vwd5mnZjsKZHIf4CuVGBIHHclINpt0teWSY5Ds=
+	t=1783855616; cv=none; b=q1NRHy3Us1CIob9xbFsmM0XlmILk9RuZt3//KNwreNvTAaa/3Oce2szowK/8oS9l3krMMd/jRCxO+N5aeK9e+ZokOAw8ibfMrjSS4wt3UbaICS9jE5chu3DSWTKgbRIcG/zDvK1Pw2Ahg4y+MseeuzyLYtZnsDQ5cLuv60GR8FI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783855613; c=relaxed/simple;
-	bh=5meUdDzwydXQ3rn5I09AMKpb9ZGJt+ZElLq06IkrLBE=;
+	s=arc-20240116; t=1783855616; c=relaxed/simple;
+	bh=NJFmXhs56sl0Ki/0UiUrVlqQmLNmiAf2fTGNjZrlWcU=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=lEqHQHxEkYtNgRuY9vK09IEt/HDXSmPQtWHcSJotJSGJpUAJWGTH5nTCFCELhoP6qf9uX54hm5YDHrt/EsuiJiHFhArk1NRvR/1SLJ4iK5/GMEuQ3q/KEWQAw7NjOLVIWg+SLdge3KMDq5j4wOEpQ17/iB2Aw1lSLWYXWWvjZFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lgFqAe2C; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1620A1F000E9;
-	Sun, 12 Jul 2026 11:26:51 +0000 (UTC)
+	 MIME-Version:Content-Type; b=WTzlIa4LreHltfCouXkXu5X6HhlPNPRYJ3kq23Ot+0R3L6M98Z0INIWXaiLLUvQ09NRS+HqbENERyksYMNz8AnZDcp/uC6ZtZJ9pCoOBUce/1HYDMmv+PWE8dcX+yjIStpSNfp559EP470WSsLH6+hwWUC4fN3GNlx9y2S8hKZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=krV6uiyo; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 855E41F000E9;
+	Sun, 12 Jul 2026 11:26:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783855611;
-	bh=Sin8W3ZSdHD4q1m7BeezG3ErJ60L00G8/X/y0SdGqTc=;
+	s=k20260515; t=1783855615;
+	bh=uOxqoWTWI956EmPvMQ8dXeVRuoljNi7+z9lw6eF6Zpw=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=lgFqAe2CIAhPszW7dLMvqr/QHmYXAz3go05mHZWk7bZTEA8XothagfswALI5CEJ+i
-	 0/zcwFmx/MAUOlv2WC/s2epj24ecaWmboGbGvQFSdkK58uukgz+cR8GGOYWXCHQ2UQ
-	 ZKH8Or6D2OdtehEd1jt2vcB+LrwffQROFEPVGjMCcHoZwOVQl75cb6nVcjzXwAc9CI
-	 HaUN6hFMiEY2zLm5f1c1uZA2/oLkMFHGILLE6ifVt49j0qVxUnTpvSBzjAFj83prdl
-	 EgQ7u5uBRLisFcNsfJQku5o7hx2GUEttIF240YZwZL+pN2JdzlSIQqfYsT2osBP/xC
-	 xwxSzyJO8l3FQ==
+	b=krV6uiyonq/iKHDZYZW/XFK1kalPAauIYBhWbNaFXStu8u30WXYEKsjd9+peXkCPb
+	 CwF1LIWpS8W5sWuCZIQ1D9LvVXyH5zNPxEYfydCRGy0kjZZd3AP1beggj357vowUYx
+	 CyMSSzITzabn7vWI3+tb0pC2//JZiAHLH7RaqAqhDl7sqZLPwvIfUHyoEZaQ8Nvw0f
+	 77Locj0Hw8Ekht3cNSqXw7qaBC6hEXmJRhTRnDE2ij/hQLb1B+OarCoaYdpKs3NwmN
+	 gvdqwAfBmK5f7AdCq+bQqViAyGTqnK/8EeqXcsSV3Y6NaOIRqyYUWjzqhl1AH3nUbt
+	 ggUl2CGgpi7tQ==
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, mkalderon@marvell.com, 
- zyjzyj2000@gmail.com, sagi@grimberg.me, mgurtovoy@nvidia.com, 
- haris.iqbal@ionos.com, jinpu.wang@ionos.com, bvanassche@acm.org, 
- kbusch@kernel.org, Jens Axboe <axboe@kernel.dk>, 
- Christoph Hellwig <hch@lst.de>, kch@nvidia.com, smfrench@gmail.com, 
- linkinjeon@kernel.org, metze@samba.org, tom@talpey.com, cel@kernel.org, 
- jlayton@kernel.org, neil@brown.name, okorniev@redhat.com, 
- Dai.Ngo@oracle.com, trondmy@kernel.org, anna@kernel.org, 
- achender@kernel.org, davem@davemloft.net, edumazet@google.com, 
- kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, kees@kernel.org, 
- michaelgur@nvidia.com, edwards@nvidia.com, phaddad@nvidia.com, 
- eadavis@qq.com, yishaih@nvidia.com, kalesh-anakkur.purayil@broadcom.com, 
- andriy.shevchenko@linux.intel.com, clm@meta.com, ebadger@purestorage.com, 
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
- target-devel@vger.kernel.org, linux-nvme@lists.infradead.org, 
- linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
- linux-nfs@vger.kernel.org, netdev@vger.kernel.org, rds-devel@oss.oracle.com, 
- Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-In-Reply-To: <20260709055211.2498307-1-ernis@linux.microsoft.com>
-References: <20260709055211.2498307-1-ernis@linux.microsoft.com>
-Subject: Re: [PATCH v10 rdma-next] RDMA: Change capability fields in
- ib_device_attr from int to u32
-Message-Id: <178385560887.1568177.15189396813808538811.b4-ty@kernel.org>
-Date: Sun, 12 Jul 2026 07:26:48 -0400
+To: Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+ Allison Henderson <achender@kernel.org>
+Cc: Bob Pearson <rpearsonhpe@gmail.com>, Ian Ziemba <ian.ziemba@hpe.com>, 
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20260711165419.13486-1-achender@kernel.org>
+References: <20260711165419.13486-1-achender@kernel.org>
+Subject: Re: [PATCH for-rc] RDMA/rxe: don't re-execute the current packet
+ after the QP moved to error state
+Message-Id: <178385561233.1568177.12923180855822763346.b4-ty@kernel.org>
+Date: Sun, 12 Jul 2026 07:26:52 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -86,59 +71,56 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:jgg@ziepe.ca,m:mkalderon@marvell.com,m:zyjzyj2000@gmail.com,m:sagi@grimberg.me,m:mgurtovoy@nvidia.com,m:haris.iqbal@ionos.com,m:jinpu.wang@ionos.com,m:bvanassche@acm.org,m:kbusch@kernel.org,m:axboe@kernel.dk,m:hch@lst.de,m:kch@nvidia.com,m:smfrench@gmail.com,m:linkinjeon@kernel.org,m:metze@samba.org,m:tom@talpey.com,m:cel@kernel.org,m:jlayton@kernel.org,m:neil@brown.name,m:okorniev@redhat.com,m:Dai.Ngo@oracle.com,m:trondmy@kernel.org,m:anna@kernel.org,m:achender@kernel.org,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:kees@kernel.org,m:michaelgur@nvidia.com,m:edwards@nvidia.com,m:phaddad@nvidia.com,m:eadavis@qq.com,m:yishaih@nvidia.com,m:kalesh-anakkur.purayil@broadcom.com,m:andriy.shevchenko@linux.intel.com,m:clm@meta.com,m:ebadger@purestorage.com,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:target-devel@vger.kernel.org,m:linux-nvme@lists.infradead.org,m:linux-cifs@vger.kernel.org,m:
- samba-technical@lists.samba.org,m:linux-nfs@vger.kernel.org,m:netdev@vger.kernel.org,m:rds-devel@oss.oracle.com,m:ernis@linux.microsoft.com,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23075-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:zyjzyj2000@gmail.com,m:jgg@ziepe.ca,m:achender@kernel.org,m:rpearsonhpe@gmail.com,m:ian.ziemba@hpe.com,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,kernel.org];
+	FREEMAIL_CC(0.00)[gmail.com,hpe.com,vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_THREE(0.00)[4];
+	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-23074-lists,linux-rdma=lfdr.de];
-	FREEMAIL_TO(0.00)[ziepe.ca,marvell.com,gmail.com,grimberg.me,nvidia.com,ionos.com,acm.org,kernel.org,kernel.dk,lst.de,samba.org,talpey.com,brown.name,redhat.com,oracle.com,davemloft.net,google.com,qq.com,broadcom.com,linux.intel.com,meta.com,purestorage.com,vger.kernel.org,lists.infradead.org,lists.samba.org,oss.oracle.com,linux.microsoft.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[50];
+	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	TAGGED_RCPT(0.00)[linux-rdma];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 5C9C8744804
+X-Rspamd-Queue-Id: AA26874480D
 
 
-On Wed, 08 Jul 2026 22:51:29 -0700, Erni Sri Satya Vennela wrote:
-> The capability counter fields in struct ib_device_attr are declared
-> as signed int, but these values are inherently non-negative. Drivers
-> maintain their cached caps as u32 and assign them directly into these
-> int fields; if a cap exceeds INT_MAX the implicit narrowing yields a
-> negative value visible to the IB core.
-> 
-> Change the signed int capability fields to u32 to match the
-> underlying nature of the data. Also update consumers across the IB
-> core, ULPs, NVMe-oF target, RDS, and NFS/RDMA so the new u32 values
-> are not forced back through signed int or u8 via min()/min_t() or
-> narrowing local variables.
+On Sat, 11 Jul 2026 09:54:19 -0700, Allison Henderson wrote:
+> When do_complete() finds the QP in the error state it returns
+> RESPST_CHK_RESOURCE.  Before commit 49dc9c1f0c7e ("RDMA/rxe: Cleanup
+> reset state handling in rxe_resp.c") this was the flush loop:
+> check_resource() had an error-state branch that fetched each remaining
+> recv WQE and completed it with IB_WC_WR_FLUSH_ERR, without touching
+> the current packet.  That commit removed the error-state branch from
+> check_resource() (draining is now done at rxe_receiver() entry) but
+> kept the do_complete() error-state return.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] RDMA: Change capability fields in ib_device_attr from int to u32
-      https://git.kernel.org/rdma/rdma/c/eebd08d91ddbd6
+[1/1] RDMA/rxe: don't re-execute the current packet after the QP moved to error state
+      https://git.kernel.org/rdma/rdma/c/15ae32c4a3551c
 
 Best regards,
 -- 
