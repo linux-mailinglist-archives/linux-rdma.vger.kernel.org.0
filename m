@@ -1,70 +1,77 @@
-Return-Path: <linux-rdma+bounces-23077-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23078-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id ol6lMvWGU2p7bgMAu9opvQ
-	(envelope-from <linux-rdma+bounces-23077-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2026 14:22:13 +0200
+	id PR8HDdCaU2rTcAMAu9opvQ
+	(envelope-from <linux-rdma+bounces-23078-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2026 15:46:56 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E3747449F5
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2026 14:22:13 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BF64744DBE
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2026 15:46:55 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=auditcode.ai header.s=zmail header.b=imAvRM8o;
-	dmarc=pass (policy=none) header.from=auditcode.ai;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23077-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23077-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
+	dkim=pass header.d=amazon.com header.s=amazoncorp2 header.b=sNEJgkkT;
+	dmarc=pass (policy=quarantine) header.from=amazon.com;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23078-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23078-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id A9671300D175
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2026 12:22:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 181E83039838
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2026 13:44:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18BC43A7F7E;
-	Sun, 12 Jul 2026 12:22:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E86F3A0E99;
+	Sun, 12 Jul 2026 13:44:20 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from sender-op-o17.zoho.eu (sender-op-o17.zoho.eu [136.143.169.17])
+Received: from pdx-out-014.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-014.esa.us-west-2.outbound.mail-perimeter.amazon.com [35.83.148.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C05A43AA9CA;
-	Sun, 12 Jul 2026 12:22:05 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783858927; cv=pass; b=D2pkT+BQq3OoqhuWJIwhVK+Fwc8s+iJBFr+8FMxgFyTYTXeJE1GlPKTwF765XLN9OpEzuKtEphP4ZbVBBPYF+wAn4dSD1xDeIW4P++DO4gkTmXQMp/aop4bejtTY2BAwEKWLOfHzV8J4BRvpD5w390gOtkBRFLRmez/vf89uUvw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783858927; c=relaxed/simple;
-	bh=t6tQHsqws6xa4fMtVf6HCdaDC+vv7nmcKjRxRtC4p38=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=h0L4ZdYd5Vskn9/bujCl32o18QnLUL/bevRu66TbtQmeTgIYfJLZxJPBkke6mJS4QYTRILv3DvA39dFpZ2g7GO8hrq0tlPfMq0EtSMBtXPJE4RkFQ9Y692mmfA+zrYpR6yfEIKjTkca/42p4gIAwLeztoGF6Yn5rmBjuItxzMNU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=auditcode.ai; spf=pass smtp.mailfrom=auditcode.ai; dkim=pass (1024-bit key) header.d=auditcode.ai header.i=security@auditcode.ai header.b=imAvRM8o; arc=pass smtp.client-ip=136.143.169.17
-ARC-Seal: i=1; a=rsa-sha256; t=1783858914; cv=none; 
-	d=zohomail.eu; s=zohoarc; 
-	b=eTp7owvI6JOhRL219Iuclm/YWVQDg+Iei+Nd7M84+n0h1AG2HdEHghvbW57zARQHkr1Mo215l/7o0MtM+9x0Fiark/JZcFD81NHuPOjWHM58IgOrP3gNVw9b5JJueF7gQ4YCrTnnm+YrfoaHW7m0c+XZjoihyFx+Dp01er7smdg=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-	t=1783858914; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=OKvwEhWsKuNbp5fDca1ITiaM7pUXWpNEFSHsDwKFfR0=; 
-	b=NUNn2UwIIa9CwhOJm8d0BvsX9gEWv4xyMeTv6jmRbetJT2cjQkMkXIFeh0O4dDEl45DsQ52ygcHatADINobL+U4qpuqtuxdkYQ21uwdmAINnRNCvtgkACwn49c3ub/MT0iDHZizwlkwLj++8RpViR3vIdPjBZTpf3RDnTUfyRdk=
-ARC-Authentication-Results: i=1; mx.zohomail.eu;
-	dkim=pass  header.i=auditcode.ai;
-	spf=pass  smtp.mailfrom=security@auditcode.ai;
-	dmarc=pass header.from=<security@auditcode.ai>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1783858914;
-	s=zmail; d=auditcode.ai; i=security@auditcode.ai;
-	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=OKvwEhWsKuNbp5fDca1ITiaM7pUXWpNEFSHsDwKFfR0=;
-	b=imAvRM8obVKT48COGaqeKr0IEK6BpqctNWfurHankPU2jEqOdBxPAJVC9xoG/Mmt
-	SAIb/IQl5RTkaXMsZFKLT4xXghsNUaSP5UzD4+I2155NG6lPpxIk0+UKwehSibGFQWU
-	er3eUzOn3hDIhyAzqMki0a4jTUbt1u8T2+dNptXo=
-Received: by mx.zoho.eu with SMTPS id 1783858911707645.6397057912544;
-	Sun, 12 Jul 2026 14:21:51 +0200 (CEST)
-From: Ibrahim Hashimov <security@auditcode.ai>
-To: yanjun.zhu@linux.dev,
-	zyjzyj2000@gmail.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH v3] RDMA/rxe: validate num_sge/cur_sge before indexing wqe->dma.sge[]
-Date: Sun, 12 Jul 2026 14:21:49 +0200
-Message-ID: <20260712122149.78142-1-security@auditcode.ai>
-X-Mailer: git-send-email 2.50.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D17D39656D
+	for <linux-rdma@vger.kernel.org>; Sun, 12 Jul 2026 13:44:19 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783863860; cv=none; b=F00C971LWVe39wuNLNjR919mytb3tN0GK5JtmNBywF3/ats8QzNljg6RyabOWgcS9kebJemcaCc3amSprHno3TrQ4OeJ5dtjXHaJZd6eM+9a9TUYHBSZZos/XcQNNCDsu2VGx/jlFJj0XYn8H9Fwu97B5vHtZCuinDbqH3k0XDg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783863860; c=relaxed/simple;
+	bh=KMrff/r7xAfLqJGtjtEEe+D7TvluO453zcqeQ/YFTUs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JJb3GVMirS4gALs2Y/W+ZxG1I0Q5gpfvHPhN8Ov6NLE3kIXCKlECEf8FdYJrHpaacAwJ3UzyG7ifFPd1cJ1rLOSZKhetMCcjzTPicfZPnMa4awMgRBS/47kaXUVutMrzeuxGI+QmIOI4ZoNW4a4BgtesKYUniiuU4y7OeUpCp6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=sNEJgkkT; arc=none smtp.client-ip=35.83.148.184
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1783863859; x=1815399859;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Y6CT9cuBen6IcdtNNPdnGn2sKcV3d+5ekhk6ovY2dlI=;
+  b=sNEJgkkTOTr1Si1G+woFAZY5Te2hpQtdpXQqv/gEnV+XKQ4hqykNjsXw
+   kphE3DAl/cwX5VW8QAGIJuyZhEdUwP4YrmWPBJiFQJ1x9pOYxAi1gHjXu
+   qTUFWDWds7DuYjDAgkeu3HY4AIllkvOTKBMeuLkzhSfg6ylFLV/+0sHS2
+   dc+uOeZkr/1zfIHS5C1qXdAGZvW9T2YhIF6/uZrEl9j8xRH/BAitO6XNe
+   raFUug6LJgD60chjTXPRxHrvyJhrCvX/9tx7FD2Q1NSR384Dzm/rkczy7
+   5W8aOlwVSDhThM+0/6i9goY0XKN4y8ExB0TSk9rMeetooY4hiBi54xErI
+   Q==;
+X-CSE-ConnectionGUID: ehcQMCAfTUOnG0oDbKY9Ag==
+X-CSE-MsgGUID: yOWgq6qWRbemtQmkMtofrg==
+X-IronPort-AV: E=Sophos;i="6.25,154,1779148800"; 
+   d="scan'208";a="23305470"
+Received: from ip-10-5-9-48.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.9.48])
+  by internal-pdx-out-014.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2026 13:44:16 +0000
+Received: from EX19MTAUWA002.ant.amazon.com [205.251.233.178:29775]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.11.68:2525] with esmtp (Farcaster)
+ id d5b65652-e2b6-408f-9980-0dcc4c3a36ea; Sun, 12 Jul 2026 13:44:16 +0000 (UTC)
+X-Farcaster-Flow-ID: d5b65652-e2b6-408f-9980-0dcc4c3a36ea
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.43;
+ Sun, 12 Jul 2026 13:44:16 +0000
+Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
+ (10.253.103.172) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.43; Sun, 12 Jul 2026
+ 13:44:14 +0000
+From: Michael Margolin <mrgolin@amazon.com>
+To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>
+Subject: [PATCH for-next 0/2] RDMA/efa: Add support for 0xefa4 devices
+Date: Sun, 12 Jul 2026 13:44:11 +0000
+Message-ID: <20260712134413.19226-1-mrgolin@amazon.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -72,99 +79,60 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D039UWB004.ant.amazon.com (10.13.138.57) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-10.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
+	WHITELIST_SPF_DKIM(-3.00)[amazon.com:d:+,kernel.org:s:+];
 	MID_CONTAINS_FROM(1.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[auditcode.ai,none];
-	R_DKIM_ALLOW(-0.20)[auditcode.ai:s=zmail];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23077-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:jgg@nvidia.com,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:sleybo@amazon.com,m:matua@amazon.com,m:gal.pressman@linux.dev,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[linux.dev,gmail.com,ziepe.ca,kernel.org];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:yanjun.zhu@linux.dev,m:zyjzyj2000@gmail.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:stable@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[security@auditcode.ai,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[auditcode.ai:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[security@auditcode.ai,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[mrgolin@amazon.com,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-23078-lists,linux-rdma=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[mrgolin@amazon.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[amazon.com:+];
 	TO_DN_NONE(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,auditcode.ai:from_mime,auditcode.ai:email,auditcode.ai:mid,auditcode.ai:dkim,vger.kernel.org:from_smtp,linux.dev:email]
+	ALIAS_RESOLVED(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_FIVE(0.00)[6];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 3E3747449F5
+X-Rspamd-Queue-Id: 9BF64744DBE
 
-For a user QP, qp->sq.queue is a ring the application writes directly,
-so rxe_post_send() takes the is_user branch and only schedules send_task
-without validating the WQE. rxe_requester() consumes it in place via
-req_next_wqe() and calls copy_data(), which indexes
-&wqe->dma.sge[cur_sge] with the attacker-controlled num_sge/cur_sge.
-Only the kernel path bounds num_sge (validate_send_wr()); the user WQE
-is never checked, so a local unprivileged user can post a WQE with an
-out-of-range cur_sge or oversized num_sge and force an out-of-bounds
-read of the per-WQE sge array in copy_data() (vmalloc OOB read, local
-DoS).
+Make a minor device interface change needed for new EFA devices and
+enable support for 0xefa4 PCI ID.
 
-Bound num_sge to qp->sq.max_sge in rxe_requester() before use, the way
-get_srq_wqe() already guards SRQ entries, and bound cur_sge only when
-the WQE carries payload (dma.resid): copy_data() returns early on a
-zero-length copy before touching dma->sge[], so a zero-payload WQE --
-the only kind a max_sge == 0 QP can post -- stays valid.
+Anas Mousa (1):
+  RDMA/efa: Add EFA 0xefa4 PCI ID
 
-Reproduced under KASAN; the vmalloc-out-of-bounds in copy_data() is gone.
+Michael Margolin (1):
+  RDMA/efa: Extend page-shift field in MR registration
 
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Cc: stable@vger.kernel.org
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-Signed-off-by: Ibrahim Hashimov <security@auditcode.ai>
-Assisted-by: AuditCode-AI:2026.07
----
-v3: rewrite the commit message to describe the rxe_post_send() -> rxe_requester() -> copy_data() call flow directly and terse per Leon's review; resend as a standalone patch (not in-reply-to the previous series). No code change from v2; carries Zhu Yanjun's Reviewed-by.
- drivers/infiniband/sw/rxe/rxe_req.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ drivers/infiniband/hw/efa/efa_admin_cmds_defs.h | 6 +++---
+ drivers/infiniband/hw/efa/efa_main.c            | 2 ++
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index 12d03f390b09..24f5c044363f 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -701,6 +701,21 @@ int rxe_requester(struct rxe_qp *qp)
- 	if (unlikely(!wqe))
- 		goto exit;
- 
-+	/*
-+	 * Don't trust user space data: a user QP's WQE comes from an mmap'd
-+	 * ring, so num_sge/cur_sge are attacker-controlled. Bound num_sge like
-+	 * get_srq_wqe(); bound cur_sge only when payload exists (dma.resid),
-+	 * since copy_data() skips dma->sge[] on a zero-length copy (all a
-+	 * max_sge == 0 QP can post).
-+	 */
-+	if (unlikely(wqe->dma.num_sge > qp->sq.max_sge ||
-+		     (wqe->dma.resid &&
-+		      wqe->dma.cur_sge >= qp->sq.max_sge))) {
-+		rxe_dbg_qp(qp, "invalid num_sge/cur_sge in send wqe\n");
-+		wqe->status = IB_WC_LOC_QP_OP_ERR;
-+		goto err;
-+	}
-+
- 	if (rxe_wqe_is_fenced(qp, wqe)) {
- 		qp->req.wait_fence = 1;
- 		goto exit;
 -- 
-2.50.1 (Apple Git-155)
+2.47.3
 
 
