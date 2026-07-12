@@ -1,78 +1,63 @@
-Return-Path: <linux-rdma+bounces-23068-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23069-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id C1psAl1VU2qfZwMAu9opvQ
-	(envelope-from <linux-rdma+bounces-23068-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2026 10:50:37 +0200
+	id WsnBHFtXU2rZZwMAu9opvQ
+	(envelope-from <linux-rdma+bounces-23069-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2026 10:59:07 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70EC374432F
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2026 10:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 00B5874436F
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2026 10:59:06 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=e9uXBDi5;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=lL1lbCY1;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23068-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23068-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23069-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23069-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C17BD3015CB7
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2026 08:50:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2A6AF301113B
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2026 08:59:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 110DE3988EB;
-	Sun, 12 Jul 2026 08:50:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 089603911BD;
+	Sun, 12 Jul 2026 08:59:01 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F05573749ED;
-	Sun, 12 Jul 2026 08:50:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DB8823BCF7;
+	Sun, 12 Jul 2026 08:58:59 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783846213; cv=none; b=ALanhynf/bJOG+/JrzwtjNIQvR/Kps6qi2HKgqMjmmCl6Ve/VxgMveUkKRjxTEF1RD3dhanNEE4ZAKXLsz8ywKV/mGzjOcV2rbB5u3jhNgVm0ccWnaX4jU93Rq75YzgY6DvZ0rw69PyzcXQwjHhXtvn6Zxw5yQ8gOlUrBA1a+iA=
+	t=1783846740; cv=none; b=WWcdwefUVs4ZyWakpkVzebNTR0gMr/CkZXFTZriPPAEoKYYIP9JEDrgjuMqFSKURWI0DaXrj9x7BnezVAiZsBcWFMgHGeUivBH/RQ1dbcE1vLPy0UqVvkrYMhvD/ugBLtPO/7EfU7ThxW9wTNo+GoFBKQexasd8oNFA3Ez3GuXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783846213; c=relaxed/simple;
-	bh=uIIfZjlpmIYUKgbV/gdQ5KaZ4+f5OBXWaH+NZ9I5MWo=;
+	s=arc-20240116; t=1783846740; c=relaxed/simple;
+	bh=uRLQLRyxwtHE5O1pVBAZbAghFo7A6NH9F7/p5s8u9B0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RR8oNRdEwZ/5eKNntC42IOE1cCE2R92ycsiKMKyyRLEjRa2miw1yaI1sZamY3F7fgCBH7RL0YryzTkgFY3H6fVieBtRdH7CPjcX00V4aGuwrkPATXsM6/bJVux/oorMJTZB6yxo1zC2UBGFCyXNZl/BP578ZmWdZkF/vkKzfsZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e9uXBDi5; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 927001F000E9;
-	Sun, 12 Jul 2026 08:50:08 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=VSQAPS/SKLn3rHLl/9EBLY25F9qGUrnGypeIdTTLNjR1g4kV+CHSB7i+/87M+dpVw9UJ7EVhE/YePpE3ksbbc0Ksjo+B3MeqFOw2eBFkuS5F8KIFxt0CXNL8vX/PS0QsYW5pAX59p0VwDHBq32Fwbv8Vy1/167uOU7hgNORmNgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lL1lbCY1; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88DEC1F000E9;
+	Sun, 12 Jul 2026 08:58:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783846210;
-	bh=3/WQDuqK/NjChhbBxD3JTeFauC+f/uWS/uyRXi7bvcA=;
+	s=k20260515; t=1783846739;
+	bh=J64ehip8Tb1bFN8XDylGiqy4Rg9r8gPvbRiDoeEVIVA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=e9uXBDi5t/Gg6bKf6bIWllf5kORgw+CsndL1cYQve78SVa/u4E+4W6PQh+wiIIDfF
-	 HdQ90R/K5XGn2MxrLR26hp+2ogq51C53RFkdnbRBI/IysdiTo7mZ1galQHJPe/qpg2
-	 St/PmancZXHAe7eEllyoKCUDpTxfGEA1lAj8vzfZOEwODq4tPMCO38o/JVDtGKonDN
-	 RbSBunSXd1ifaECsK+KY93bmateqV7gfwJXJuFRYzhSO451APa5GhGT88+OAEVTVr2
-	 SuYvRd+gveLivi6QRyOt+1ClObAW9U8xA+DbU1sQnwGm+Wq+Ehcjj264X/qycRr9Sz
-	 H0uaVmkwnxqpw==
-Date: Sun, 12 Jul 2026 11:50:03 +0300
+	b=lL1lbCY1I8kLeRQDlHoC50SDVImNz/MPH+BaENVBc8RswfONoeLeLpPoMgo5pJ4+N
+	 7af8tGB3FPJiYrfT6ounX2pYSoiaFRpOLmTWiFylsTpBZ3zW5rLdXdX2FWkLf1gQON
+	 6T8K6ED+AgwpdfqQllNeU+EZVr/Aty06WR3ZVdu7M+EIAkOXYOvLiyhU2ilMKL83Z2
+	 gjLCf+TKTf7P6s9CwlAorB69U208V3myOy5DmBoawQoaepOYp3SxkoP0Ekg2S81VKF
+	 x6g2lvQ+tOybB4uMorkyEjAAHJq+N8O2Jc5ecgun2Utpa0IxZPO0e9FFaDxy9RiaYE
+	 gNefQ2Sx/b0hA==
+Date: Sun, 12 Jul 2026 11:58:55 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, mkalderon@marvell.com,
-	zyjzyj2000@gmail.com, sagi@grimberg.me, mgurtovoy@nvidia.com,
-	haris.iqbal@ionos.com, jinpu.wang@ionos.com, bvanassche@acm.org,
-	kbusch@kernel.org, Jens Axboe <axboe@kernel.dk>,
-	Christoph Hellwig <hch@lst.de>, kch@nvidia.com, smfrench@gmail.com,
-	linkinjeon@kernel.org, metze@samba.org, tom@talpey.com,
-	cel@kernel.org, jlayton@kernel.org, neil@brown.name,
-	okorniev@redhat.com, Dai.Ngo@oracle.com, trondmy@kernel.org,
-	anna@kernel.org, achender@kernel.org, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	horms@kernel.org, kees@kernel.org, michaelgur@nvidia.com,
-	edwards@nvidia.com, phaddad@nvidia.com, eadavis@qq.com,
-	yishaih@nvidia.com, kalesh-anakkur.purayil@broadcom.com,
-	andriy.shevchenko@linux.intel.com, clm@meta.com,
-	ebadger@purestorage.com, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, target-devel@vger.kernel.org,
-	linux-nvme@lists.infradead.org, linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org, linux-nfs@vger.kernel.org,
-	netdev@vger.kernel.org, rds-devel@oss.oracle.com,
-	Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH v10 rdma-next] RDMA: Change capability fields in
- ib_device_attr from int to u32
-Message-ID: <20260712085003.GC33197@unreal>
-References: <20260709055211.2498307-1-ernis@linux.microsoft.com>
+To: "yanjun.zhu" <yanjun.zhu@linux.dev>
+Cc: Ibrahim Hashimov <security@auditcode.ai>, zyjzyj2000@gmail.com,
+	jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2] RDMA/rxe: fix responder UAF on
+ IB_QP_MAX_DEST_RD_ATOMIC modify_qp
+Message-ID: <20260712085855.GD33197@unreal>
+References: <20260708224550.1281-1-security@auditcode.ai>
+ <20260709072651.9040-1-security@auditcode.ai>
+ <821c7993-b99d-42eb-be3f-0c2b9ac33340@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -81,25 +66,24 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260709055211.2498307-1-ernis@linux.microsoft.com>
+In-Reply-To: <821c7993-b99d-42eb-be3f-0c2b9ac33340@linux.dev>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-4.66 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-23069-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23068-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_CC(0.00)[ziepe.ca,marvell.com,gmail.com,grimberg.me,nvidia.com,ionos.com,acm.org,kernel.org,kernel.dk,lst.de,samba.org,talpey.com,brown.name,redhat.com,oracle.com,davemloft.net,google.com,qq.com,broadcom.com,linux.intel.com,meta.com,purestorage.com,vger.kernel.org,lists.infradead.org,lists.samba.org,oss.oracle.com];
+	FREEMAIL_CC(0.00)[auditcode.ai,gmail.com,ziepe.ca,vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:ernis@linux.microsoft.com,m:jgg@ziepe.ca,m:mkalderon@marvell.com,m:zyjzyj2000@gmail.com,m:sagi@grimberg.me,m:mgurtovoy@nvidia.com,m:haris.iqbal@ionos.com,m:jinpu.wang@ionos.com,m:bvanassche@acm.org,m:kbusch@kernel.org,m:axboe@kernel.dk,m:hch@lst.de,m:kch@nvidia.com,m:smfrench@gmail.com,m:linkinjeon@kernel.org,m:metze@samba.org,m:tom@talpey.com,m:cel@kernel.org,m:jlayton@kernel.org,m:neil@brown.name,m:okorniev@redhat.com,m:Dai.Ngo@oracle.com,m:trondmy@kernel.org,m:anna@kernel.org,m:achender@kernel.org,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:kees@kernel.org,m:michaelgur@nvidia.com,m:edwards@nvidia.com,m:phaddad@nvidia.com,m:eadavis@qq.com,m:yishaih@nvidia.com,m:kalesh-anakkur.purayil@broadcom.com,m:andriy.shevchenko@linux.intel.com,m:clm@meta.com,m:ebadger@purestorage.com,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:target-devel@vger.kernel.org,m:linux-nvme@lists.infradead.org,m:l
- inux-cifs@vger.kernel.org,m:samba-technical@lists.samba.org,m:linux-nfs@vger.kernel.org,m:netdev@vger.kernel.org,m:rds-devel@oss.oracle.com,m:jgg@nvidia.com,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:yanjun.zhu@linux.dev,m:security@auditcode.ai,m:zyjzyj2000@gmail.com,m:jgg@ziepe.ca,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:stable@vger.kernel.org,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -107,137 +91,159 @@ X-Spamd-Result: default: False [-4.66 / 15.00];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[50];
+	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	ALIAS_RESOLVED(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,unreal:mid,nvidia.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,samba.org:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,unreal:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 70EC374432F
+X-Rspamd-Queue-Id: 00B5874436F
 
-On Wed, Jul 08, 2026 at 10:51:29PM -0700, Erni Sri Satya Vennela wrote:
-> The capability counter fields in struct ib_device_attr are declared
-> as signed int, but these values are inherently non-negative. Drivers
-> maintain their cached caps as u32 and assign them directly into these
-> int fields; if a cap exceeds INT_MAX the implicit narrowing yields a
-> negative value visible to the IB core.
+On Thu, Jul 09, 2026 at 11:24:32AM -0700, yanjun.zhu wrote:
+> On 7/9/26 12:26 AM, Ibrahim Hashimov wrote:
+> > rxe_qp_from_attr()'s IB_QP_MAX_DEST_RD_ATOMIC branch frees and
+> > reallocates qp->resp.resources[] (the rd_atomic resource array used by
+> > the responder to track in-flight RDMA READ/ATOMIC/FLUSH requests)
+> > completely outside of the IB_QP_STATE handling above it. Unlike every
+> > other place that tears this array down -- rxe_qp_reset(), reached only
+> > under IB_QP_STATE, always calls rxe_disable_task(&qp->recv_task) /
+> > rxe_disable_task(&qp->send_task) to drain the responder and requester
+> > tasks before touching per-QP state, then re-enables them -- this branch
+> > runs with the responder task (rxe_receiver(), scheduled as recv_task on
+> > the rxe_wq workqueue) fully live and unlocked. A userspace modify_qp()
+> > that sets only IB_QP_MAX_DEST_RD_ATOMIC (no state change, so
+> > __qp_chk_state()/ib_modify_qp_is_ok() never runs and qp->state_lock is
+> > never taken here) can therefore race the responder in two ways:
+> > 
+> >   1. free_rd_atomic_resources() calls kfree(qp->resp.resources) and
+> >      alloc_rd_atomic_resources() kzalloc_objs()'s a new array while
+> >      rxe_prepare_res()/find_resource() in rxe_resp.c are concurrently
+> >      walking &qp->resp.resources[i] with no lock held -- a straight
+> >      free-vs-read race on the array itself.
+> > 
+> >   2. free_rd_atomic_resources() only NULLs qp->resp.resources; it never
+> >      clears qp->resp.res, the raw pointer *into* that array that
+> >      rxe_resp.c caches across a multi-packet RDMA READ/ATOMIC/FLUSH
+> >      reply (set at rxe_resp.c read/atomic/flush-reply sites, cleared
+> >      only on the normal completion paths). If a modify_qp() races a
+> >      resource still referenced by qp->resp.res, the array is freed out
+> >      from under the cached pointer and the next reply packet dereferences
+> >      it -- independent of the kfree/kzalloc_objs() window in (1).
+> > 
+> > Reproduced with KASAN: a single process driving one RC QP pair in rxe
+> > loopback, one thread pumping large multi-packet IBV_WR_RDMA_READs
+> > against qpB while a second thread hammers
+> > ibv_modify_qp(qpB, IB_QP_MAX_DEST_RD_ATOMIC), reliably (~11s) produces
+> > 
+> >    BUG: KASAN: slab-use-after-free in rxe_receiver+0x4f78/0x89e0 [rdma_rxe]
+> >    Workqueue: rxe_wq do_work [rdma_rxe]
+> > 
+> > with the freed kmalloc-1k object being the rd_atomic resource array
+> > freed by the modify_qp() thread while the recv_task kworker reads it.
+> > An identical run modifying only IB_QP_MIN_RNR_TIMER (no resource free)
+> > is clean.
+> > 
+> > Fix both races the same way rxe_qp_reset() already handles tearing down
+> > this exact array: quiesce the responder task around the free/realloc by
+> > calling rxe_disable_task(&qp->recv_task) before free_rd_atomic_resources()
+> > and rxe_enable_task(&qp->recv_task) only after alloc_rd_atomic_resources()
+> > has succeeded, so rxe_receiver() cannot observe the array mid-free/
+> > mid-realloc. On the alloc-failure path the responder is deliberately
+> > left quiesced: qp->resp.resources is NULL at that point and
+> > rxe_prepare_res()/find_resource() would dereference it, so recv_task
+> > must not be re-enabled until a fresh array has been installed. And
+> > close the still-open window for (2) at the source: have
+> > free_rd_atomic_resources() clear qp->resp.res along with
+> > qp->resp.resources, exactly like the existing completion paths in
+> > rxe_resp.c (check_rkey()/duplicate_request()/RESPST_CLEANUP) already do
+> > when a resource's lifetime ends, so a drained-and-resumed responder
+> > restarts at RESPST_CHK_PSN against the fresh array instead of replaying
+> > a stale reference into the old one.
+> > 
+> > Only qp->recv_task is drained: qp->resp.resources / qp->resp.res are
+> > touched exclusively by the responder (rxe_resp.c); the requester
+> > (send_task / rxe_sender()) never reads them, so there is no need to
+> > widen this beyond what rxe_qp_reset() would drain for the equivalent
+> > state.
+> > 
+> > Verified on the same v6.19 KASAN stand: with this fix applied, the
+> > identical differential reproducer drives sustained MAX_DEST_RD_ATOMIC
+> > storms against qpB well past the ~11s pre-fix time-to-first-splat with
+> > zero KASAN reports, versus reliably tripping the slab-use-after-free in
+> > rxe_receiver() described above before the fix.
+> > 
+> > Fixes: 8700e3e7c485 ("Soft RoCE driver")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Ibrahim Hashimov <security@auditcode.ai>
+> > Assisted-by: AuditCode-AI:2026.07
+> > ---
+> > v2: address Zhu Yanjun's review of v1
+> >      (https://lore.kernel.org/linux-rdma/20260708224550.1281-1-security@auditcode.ai/):
+> >      only re-enable recv_task after alloc_rd_atomic_resources() succeeds, so
+> >      the responder is not resumed against a NULL qp->resp.resources on the
+> >      ENOMEM path (rxe_prepare_res()/find_resource() would dereference it).
+> >      No change to the successful path; fix description updated accordingly.
+> > 
+> >   drivers/infiniband/sw/rxe/rxe_qp.c | 16 +++++++++++++++-
+> >   1 file changed, 15 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+> > index f3dff1aea96a..e39fb144cbbb 100644
+> > --- a/drivers/infiniband/sw/rxe/rxe_qp.c
+> > +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+> > @@ -172,6 +172,7 @@ static void free_rd_atomic_resources(struct rxe_qp *qp)
+> >   		}
+> >   		kfree(qp->resp.resources);
+> >   		qp->resp.resources = NULL;
+> > +		qp->resp.res = NULL;
+> >   	}
+> >   }
+> > @@ -709,11 +710,24 @@ int rxe_qp_from_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask,
+> >   		qp->attr.max_dest_rd_atomic = max_dest_rd_atomic;
+> > +		/*
+> > +		 * This branch is not gated by IB_QP_STATE, so the responder
+> > +		 * task is live here. Quiesce it the way rxe_qp_reset() does
+> > +		 * before swapping the rd_atomic resource array, so
+> > +		 * rxe_receiver() cannot race the free/realloc.
+> > +		 */
+> > +		rxe_disable_task(&qp->recv_task);
+> >   		free_rd_atomic_resources(qp);
+> > -
+> >   		err = alloc_rd_atomic_resources(qp, max_dest_rd_atomic);
+> > +		/*
+> > +		 * On failure the responder stays quiesced: qp->resp.resources
+> > +		 * is NULL now, and rxe_prepare_res()/find_resource() would
+> > +		 * dereference it, so do not re-enable recv_task until a fresh
+> > +		 * array has been installed.
+> > +		 */
+> >   		if (err)
+> >   			return err;
+> > +		rxe_enable_task(&qp->recv_task);
 > 
-> Change the signed int capability fields to u32 to match the
-> underlying nature of the data. Also update consumers across the IB
-> core, ULPs, NVMe-oF target, RDS, and NFS/RDMA so the new u32 values
-> are not forced back through signed int or u8 via min()/min_t() or
-> narrowing local variables.
-> 
-> The nvmet-rdma consumer of max_srq clamps it against
-> ib_device.num_comp_vectors, which stays a signed int, so that site
-> uses min_t() instead of min() to handle the signed/unsigned mismatch.
-> 
-> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-> Acked-by: Stefan Metzmacher <metze@samba.org> # smbdirect
-> ---
-> Changes in v10:
-> * Convert max_srq to u32. Use min_t() against the still-signed ib_device.num_comp_vectors.
-> * Update commit message.
-> * Change rdma_restrack_count() to return u32 and make fill_res_info()'s curr and max u64.
-> Changes in v9:
-> * Switch the srq_size module parameter accessors to param_get_uint and
->   kstrtouint()/param_set_uint() so they match the now-unsigned
->   nvmet_rdma_srq_size variable.
-> Changes in v8:
-> * Convert the remaining non-negative counter fields max_ee_rd_atom,
->   max_ee_init_rd_atom, max_ee, max_rdd, max_raw_ipv6_qp and max_srq_wr
->   to u32; keep max_srq as int (its consumer compares it against
->   ib_device.num_comp_vectors, still int).
-> * Drop all remaining min_t() where plain min() now works.
-> * Make the srq_size module parameters unsigned int so the srq_size min()
->   stays a plain min().
-> * Replace the ternary-inside-min() with the simpler "if (x) x--;".
-> * Reorder the send_queue_depth min() to min(value, CONST) to match the
->   sibling site.
-> * Restore reverse xmas-tree declaration order.
-> * Collapse the min()/min3() assignments that now fit onto a single line
->   within 100 columns.
-> * Print the now-u32 fields with %u instead of %d.
-> Changes in v7:
-> * Drop min_t() in all sites where a plain min() (or min3()) works
->   cleanly
-> * Guard nvme/host/rdma.c num_inline_segments computation against a
->   device reporting max_send_sge == 0, so the u32 subtract
->   cannot wrap to UINT_MAX.
-> * Use %u when printing the newly-u32 capability fields
->   in diagnostic messages.
-> Changes in v6:
-> * Fix subject prefix: net-next -> rdma-next.
-> Changes in v5:
-> * Add U8_MAX clamps in iser_verbs, nvme/host, nvme/target, isert,
-> * rds/ib_cm, smbdirect/connect and smbdirect/accept where u32 capability
->   fields were directly narrowed into u8 rdma_conn_param fields without
->   clamping.
-> * Guard the inline_sge_count calculation in nvmet_rdma_find_get_device()
->   to prevent u32 underflow when both max_sge_rd and max_recv_sge are
-> zero.
-> * Expand type migration to 9 additional fields (max_mw, max_raw_ethy_qp,
->   max_mcast_grp, max_mcast_qp_attach, max_total_mcast_qp_attach, max_ah,
->   max_srq, max_srq_wr, max_srq_sge)
-> * Fix min_t(int,...) in svc_rdma_transport; min_t(u32,...) in ipoib,
->   srpt, nvme/target, rds/ib, rtrs-clt, rtrs-srv, xprtrdma/verbsdd.
-> * Fix frwr_ops.c u32 underflow guard (reorder check before subtraction)
-> * Change sc_max_send_sges to unsigned int, inline_sge_count to u32
-> * Fix %d -> %u in rxe_qp, rxe_srq, ipoib_cm, ib_isert,
-> * svc_rdma_transport
-> * Update commit message.
-> Changes in v4:
-> * Drop clamping the values in mana_ib_query_device, instead update
->   the props values from int to u32.
-> Changes in v3:
-> * Drop clamping from mana_ib_gd_query_adapter_caps(). The internal u32
->   caps cache does not need to be clamped.
-> * Move all clamping exclusively to mana_ib_query_device(), which is the
->   only place the cached u32 values are narrowed into the signed int
->   fields of struct ib_device_attr.
-> * Reframe commit message: this is a u32-to-int type boundary fix, not a
->   CVM/untrusted-hardware hardening patch.
-> Changes in v2:
-> * Update patch title.
-> ---
->  drivers/infiniband/core/cq.c               |  3 +-
->  drivers/infiniband/core/nldev.c            |  3 +-
->  drivers/infiniband/core/restrack.c         |  2 +-
->  drivers/infiniband/hw/qedr/verbs.c         |  2 +-
->  drivers/infiniband/sw/rxe/rxe_qp.c         | 22 ++++-----
->  drivers/infiniband/sw/rxe/rxe_srq.c        | 16 +++----
->  drivers/infiniband/ulp/ipoib/ipoib_cm.c    | 10 ++---
->  drivers/infiniband/ulp/ipoib/ipoib_verbs.c |  3 +-
->  drivers/infiniband/ulp/iser/iser_verbs.c   |  5 +--
->  drivers/infiniband/ulp/isert/ib_isert.c    |  7 ++-
->  drivers/infiniband/ulp/rtrs/rtrs-clt.c     | 11 ++---
->  drivers/infiniband/ulp/rtrs/rtrs-srv.c     | 11 ++---
->  drivers/infiniband/ulp/srp/ib_srp.c        |  2 +-
->  drivers/infiniband/ulp/srpt/ib_srpt.c      | 21 +++++----
->  drivers/nvme/host/rdma.c                   |  8 ++--
->  drivers/nvme/target/rdma.c                 | 26 ++++++-----
->  fs/smb/smbdirect/accept.c                  |  5 ++-
->  fs/smb/smbdirect/connect.c                 |  5 ++-
->  fs/smb/smbdirect/connection.c              |  8 ++--
->  include/linux/sunrpc/svc_rdma.h            |  4 +-
->  include/rdma/ib_verbs.h                    | 52 +++++++++++-----------
->  include/rdma/restrack.h                    |  2 +-
->  net/rds/ib.c                               | 10 ++---
->  net/rds/ib_cm.c                            | 10 ++---
->  net/sunrpc/xprtrdma/frwr_ops.c             |  7 +--
->  net/sunrpc/xprtrdma/svc_rdma_transport.c   |  5 +--
->  net/sunrpc/xprtrdma/verbs.c                |  2 +-
->  27 files changed, 129 insertions(+), 133 deletions(-)
+> Thanks a lot. I am fine with this commit. Please Leon and Jason comment on
+> this commit.
 
-This patch touches too many areas to delay it further. Let's merge it
-now and improve it later, if needed.
+1. Please send patches as a standalone series, not as a reply to
+   the previous one.
+
+2. Write commit messages in a clear and sensible way so they are
+   easy for humans to understand. Keep them short and direct, and
+   describe the function call flow instead of producing AI prose.
 
 Thanks
+
+> 
+> Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> 
+> Zhu Yanjun
+> 
+> >   	}
+> >   	if (mask & IB_QP_EN_SQD_ASYNC_NOTIFY)
+> 
 
