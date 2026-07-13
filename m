@@ -1,205 +1,164 @@
-Return-Path: <linux-rdma+bounces-23132-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23133-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id yjcMMs/zVGqThwAAu9opvQ
-	(envelope-from <linux-rdma+bounces-23132-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 16:18:55 +0200
+	id duNbMMn6VGpEiQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-23133-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 16:48:41 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61F5F74C47B
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 16:18:55 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF95A74C94B
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 16:48:40 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=A1awWfYH;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23132-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23132-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=google.com header.s=20251104 header.b=mbMcYpft;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23133-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23133-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=google.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 6F7C53088EBE
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 14:09:01 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id D305A301BB25
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 14:22:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAB09438022;
-	Mon, 13 Jul 2026 14:07:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 512D143440F;
+	Mon, 13 Jul 2026 14:22:04 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50EBE43802F
-	for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 14:07:46 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783951669; cv=none; b=mPkAc3qOknU8M7CIOCpfRmVYxjBLrijPza8FmgAeLYo3AqRjoYe4DnW6fAqb1Re2uR3DIA0+ou/JuoCeCuXsfjh0J1HGNcVOmfK+BZFuWeJf3l+gg0JPBDpolARmwi7FSYbkDSLuBeKU2Hjqeme7LfS+SR4VdL6MYLU83OIw4S0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783951669; c=relaxed/simple;
-	bh=FFPww0XzWUBRk8G9ZVyzjUx0Yq5zNSm6eB/zv/qXF5c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cbyWmjdikbxDoMJQiNAyYlaqsRZJLDnbT2xtEsQQWcUwuNOTQRdkIVd7IV8qiPfgaSOBeZ/EoCP/oSKmC3O/IFo/LADv5/PMa808CRacGBKeLfUnZP/WvAjrs6oZMP7vh/4SdDly085IoHigQBOEfrubyilv5n8FZRqkfkgLMA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A1awWfYH; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 786E71F000E9;
-	Mon, 13 Jul 2026 14:07:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783951665;
-	bh=ntw3goZdAM05lAG1AKRisVn1zZdb8jrCzgeqQS/qYJ8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=A1awWfYHHuZyUoN/ydlQePN4+1bby4cDEVsk7HwYkj30oAV1ctzH6ABdyw5xWhXSc
-	 b0aDNe8eTWJ5O10qOGZLQOwrx7hF1PalL3Evr+xDdfsNBW1qjtJvrK8k8hZsO7D36x
-	 0zj0Oj8+HnVtt1vzMf17VqJo0a2KRn2sTWtVFvsn6yqDcPt5vcKBabOmhCKArOlLyk
-	 k8hn5FO1PW5ot649LmcNrbHH2e5utlrN4rN4WAd6X58DWJKvOvrwtc8Nwrmqepgkm3
-	 0cwBiVG/U9ET+o64YWs4eBFGhSVYf5T79Yuof5oeUOtObsLfQiLhQ9caVWswuIsNZA
-	 /+hNm9JgZl2wg==
-Date: Mon, 13 Jul 2026 17:07:36 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Kamal Heib <kheib@redhat.com>
-Cc: linux-rdma@vger.kernel.org, Abhijit Gangurde <abhijit.gangurde@amd.com>,
-	Allen Hubbe <allen.hubbe@amd.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: [PATCH rdma-rc 0/2] RDMA/ionic: Fix NULL pointer dereferences
-Message-ID: <20260713140736.GN33197@unreal>
-References: <20260709220353.729951-1-kheib@redhat.com>
- <20260712091326.GG33197@unreal>
- <alPrQa9ZgDaGuPYo@lima-fedora43>
- <20260713091733.GJ33197@unreal>
- <alTICI1PQ_7D7_ea@lima-fedora43>
- <20260713113521.GM33197@unreal>
- <alTc3yfXNyGyzjCw@lima-fedora43>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C70703D091D
+	for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 14:22:02 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783952524; cv=pass; b=kEQbh2ESEatlfgRk8yOk1yDic7efIRpJ7cFhujmmFfOgUUWqJ7EItAXIMcWOhgzo0Et5fRsjkfuNu9Amrf/YQfcwzs4N678ozSoXdxkOE0JMcwpBXidGcU+IsiCctKkexeYb8zrw7qwe+LYK0AiDWCLHkvpPoMN/RTSjpd/5M3s=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783952524; c=relaxed/simple;
+	bh=+8aCNjO6idn1FztFD/o7UxjwPCou6GcYvMWm2B5he7U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qoeZCQlLtntbOpZWqfHw6UB2DJ8h24dyTlszJuAdsNRpPvmixTaXcTsRSAKn5FnLUT76HpT/yrbQWoPVBAYOHRD2vu/bkn9UCqSSJKgfcON2hOM8ZkcS/oSO5EOwAIqinyK9yEFVMsE41RV/xTdnPbupRNebwBkLwbyEkfxrfOQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mbMcYpft; arc=pass smtp.client-ip=209.85.210.45
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-7eb64085c45so1953464a34.2
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 07:22:02 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1783952522; cv=none;
+        d=google.com; s=arc-20260327;
+        b=mOa87Cm4bmEYljkrsWjf9GI1nO3pG8FQiQQPYjD1+3f7/wfW0h0U7h3HhIT53jRlsV
+         NlFBJ7oK4uQ7UamHTSOD8Yt64usQ1CITcyS7Ju3Uc5UDcs0TbIphiaZ5Krrsl23WcURR
+         jJuahDVE9dmZnf53F461ks+wlyVRR1qxtiGB7uc5wQAAP7nqT4/WOYu16pc7DOYFWDEJ
+         5cbj39Ol5Ro58GC+HxZzH5Z4DJOML/tZKUZFVMu7U0tJMQ3IfY3wDa6ho7MMqBhHnokX
+         /gIoUZK9nDJIuEhOa/yvfwCNQPpdlcZl1xlMP4o68okpQwY+MEAIfXnbKOfnMVQpDF9j
+         oEDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=+8aCNjO6idn1FztFD/o7UxjwPCou6GcYvMWm2B5he7U=;
+        fh=irwTEyaDiSnbaFYVL8uunjLC0JYoF3PFHthQo2GdJiM=;
+        b=KEkEfH0QP+H4nlx9XYFVJoC9Y5soXXgJhURsbgrbUK83JTfpAEecC5wGbz2sf8EWvt
+         blDO8dk2ATQhFAankrDV50POm7GT8rRnxQ9h4gA865F30zXo7rIsEiJrfeBdEkbDyzhi
+         LpU+tGs36ApAafSgwlOheKs3qSOPIDWce+ezpxU2YtFS5GDTgDMviCnY9lewX0PJF1el
+         N6qklwNFJppu+M//MTIsqfWBTNDXKYENB7NjwumxHSv9CDAjKvTOI8xsVEMFJgxhcKcq
+         ELPhR2mHeb3oSthc2DyJC2xWZl0n8DxJy76mi5N+mhDTSW3X11/iCPSItoTCDFqO3q93
+         okbw==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1783952522; x=1784557322; darn=vger.kernel.org;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=+8aCNjO6idn1FztFD/o7UxjwPCou6GcYvMWm2B5he7U=;
+        b=mbMcYpftkDZ2ZtLZh4m0AogZrclCBh2dI5bsx34XXCKC89vh/6RvkLRc7r9AQTt6WG
+         aJHic08kjKADhXf3TDme7J2Kry1G5J8sqoiZmeSCt/BY9gLrYNcXcZHqZWbeospx0k40
+         rbLv22rd0CnrxjY7KssB1n5e110n8KzfVjKep1iO/pKmvTQ0M3U4gv1szdw7EfwhsjY0
+         JUN45n2CEZlsvF8QUhfPaMKWi0IosrjZ/KU6t9a77G2JXPI/KgSG5rGW7Q0q4yQL+3gY
+         OFLWJF/WOIuCbBAwLd7HIFSB6WDfQ7ylba+ALeE9VPfv+Ml5tkUuCkk1ENSt6EsZtrPH
+         dP1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783952522; x=1784557322;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=+8aCNjO6idn1FztFD/o7UxjwPCou6GcYvMWm2B5he7U=;
+        b=JU3MlYqk7KvbaLUErdJH7mM67HrqKsEU+vftlTl42Ebjso3NL4CSo9IzcOP7QpgnYR
+         DXLyavGT5gbwuWfxY+BDaTdQ/M3hynkokIBZT1Oa0y/0fZrB9jJk9I+4Lh2nqV9zjfKP
+         BzGE+PGcA5RHWkzxfM2qv7dG/PpYrPTWbPPWF9mK5KI8GPT9ZXoFxeYe2IwpAiJkle1q
+         QszTYl2Ni57JaZORrl+0YYDtC/SI1VEaunBEWRIvTKz3+0Q3QjAVFsGjNIxZftbfchEp
+         JPUJuqxz9woSg8IKyADc2QeBRsSJbrCWSFwAxYouIeOOWBITA4TJRjcFnRaIBeIT7zcT
+         bP1Q==
+X-Forwarded-Encrypted: i=1; AFNElJ+1jio1PPtlBaofTvc3my7Jk5UdMVc/cI6Ft45TV2e2Cxjrh5BRZ3TefvtqurZOWwK6DDOn7Nc6bkdR@vger.kernel.org
+X-Gm-Message-State: AOJu0YzW8HWhiViWqZ9qra+jsKrl9NOjSUv5j9Qx7rJNFXhICsKixZhR
+	CxRBm9fNGdpTqQAYghlVpp+vhf0Hw/Pp4fZV2gVWcbaeHcnZnjlofAQw8/FmF+PVaRYzvqmThNq
+	seJtdNuxPo86pciqeaLd/GMTm/R+Qrnd0RzRvKrPf
+X-Gm-Gg: AfdE7clVmbUsA+3HtLPrLzuGcj/b2jUz8PRdxCgXx3PGUFbHGDjMFyjIwy0u9TIuyuN
+	SNshsOzL2BQE9ZICYGcpDBGW+lrifFWomFjS8gCjb3xmb5+YVyd3dt4i9hSbFh2b3IA8QXOGTeX
+	042G6SDHodn6LPNQ3VdLKAQIT7n5hW35aB0eiAijKSExmr7b9K5aYvt5J+L9cp/cqF9vUkiwAqo
+	tlRD8UkZqbWvuYkeUz9DwEuu/Q0NMznSLi1oaZv4OweIL7a/HKFndKSw7z7vilODns6o6eb0w==
+X-Received: by 2002:a05:6808:1b0a:b0:497:e619:56a with SMTP id
+ 5614622812f47-4a42ae75c67mr6356591b6e.25.1783952520941; Mon, 13 Jul 2026
+ 07:22:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alTc3yfXNyGyzjCw@lima-fedora43>
+References: <20260713-fix-destroy-no-udata-v1-0-fcca2e34fd57@nvidia.com> <20260713-fix-destroy-no-udata-v1-1-fcca2e34fd57@nvidia.com>
+In-Reply-To: <20260713-fix-destroy-no-udata-v1-1-fcca2e34fd57@nvidia.com>
+From: Jacob Moroni <jmoroni@google.com>
+Date: Mon, 13 Jul 2026 10:21:49 -0400
+X-Gm-Features: AVVi8Ceov_xTc7vx5G47OmxMYew4NiGS4svgZ9NnqFn3IOne2mO01SvVqYQIyGE
+Message-ID: <CAHYDg1S5jpZY=CRmbcH8MYHzyV4ro4MdzJ2gAj2fhaFfQo-yXA@mail.gmail.com>
+Subject: Re: [PATCH rdma-next 1/2] RDMA/bnxt_re: Validate udata before
+ destroying resources
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Selvin Xavier <selvin.xavier@broadcom.com>, 
+	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Michael Margolin <mrgolin@amazon.com>, Gal Pressman <gal.pressman@linux.dev>, 
+	Yossi Leybovich <sleybo@amazon.com>, Cheng Xu <chengyou@linux.alibaba.com>, 
+	Kai Shen <kaishen@linux.alibaba.com>, Chengchang Tang <tangchengchang@huawei.com>, 
+	Junxian Huang <huangjunxian6@hisilicon.com>, 
+	Tatyana Nikolova <tatyana.e.nikolova@intel.com>, Long Li <longli@microsoft.com>, 
+	Konstantin Taranov <kotaranov@microsoft.com>, Yishai Hadas <yishaih@nvidia.com>, 
+	Michal Kalderon <mkalderon@marvell.com>, Nelson Escobar <neescoba@cisco.com>, 
+	Satish Kharat <satishkh@cisco.com>, Bernard Metzler <bernard.metzler@linux.dev>, 
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-hyperv@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.66 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:kheib@redhat.com,m:linux-rdma@vger.kernel.org,m:abhijit.gangurde@amd.com,m:allen.hubbe@amd.com,m:jgg@ziepe.ca,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:leon@kernel.org,m:selvin.xavier@broadcom.com,m:kalesh-anakkur.purayil@broadcom.com,m:jgg@ziepe.ca,m:mrgolin@amazon.com,m:gal.pressman@linux.dev,m:sleybo@amazon.com,m:chengyou@linux.alibaba.com,m:kaishen@linux.alibaba.com,m:tangchengchang@huawei.com,m:huangjunxian6@hisilicon.com,m:tatyana.e.nikolova@intel.com,m:longli@microsoft.com,m:kotaranov@microsoft.com,m:yishaih@nvidia.com,m:mkalderon@marvell.com,m:neescoba@cisco.com,m:satishkh@cisco.com,m:bernard.metzler@linux.dev,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-hyperv@vger.kernel.org,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[jmoroni@google.com,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	TAGGED_FROM(0.00)[bounces-23133-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-23132-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
+	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jmoroni@google.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[google.com:+];
+	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,unreal:mid]
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,mail.gmail.com:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 61F5F74C47B
+X-Rspamd-Queue-Id: AF95A74C94B
 
-On Mon, Jul 13, 2026 at 08:41:03AM -0400, Kamal Heib wrote:
-> On Mon, Jul 13, 2026 at 02:35:21PM +0300, Leon Romanovsky wrote:
-> > On Mon, Jul 13, 2026 at 07:12:08AM -0400, Kamal Heib wrote:
-> > > On Mon, Jul 13, 2026 at 12:17:33PM +0300, Leon Romanovsky wrote:
-> > > > On Sun, Jul 12, 2026 at 03:30:09PM -0400, Kamal Heib wrote:
-> > > > > On Sun, Jul 12, 2026 at 12:13:26PM +0300, Leon Romanovsky wrote:
-> > > > > > On Thu, Jul 09, 2026 at 06:03:51PM -0400, Kamal Heib wrote:
-> > > > > > > Fix two potential NULL pointer dereferences in the ionic driver by
-> > > > > > > adding the missing NULL checks before dereferencing netdev pointers.
-> > > > > > 
-> > > > > > How is it possible to have ionic IB driver without netdev?
-> > > > > > 
-> > > > > > Thanks
-> > > > > >
-> > > > > 
-> > > > > Thanks for your review, after taking a deeper look:
-> > > > > 
-> > > > > For Patch 2 (ionic_create_ibdev): You are right. Since lif is embedded in
-> > > > > netdev via netdev_priv() and they are allocated/freed together,
-> > > > > lif->netdev cannot be NULL if lif is valid, Please drop this patch.
-> > > > > 
-> > > > > For Patch 1 (ionic_query_device): This one should remain.
-> > > > > ib_device_get_netdev() is a core RDMA API that explicitly returns NULL in
-> > > > > multiple code paths:
-> > > > > 
-> > > > > - Invalid port: if (!rdma_is_port_valid(ib_dev, port)) return NULL;
-> > > > > - No port_data: if (!ib_dev->port_data) return NULL;
-> > > > > - NULL netdev pointer stored in port_data
-> > > > > 
-> > > > > Also, the return value from ib_device_get_netdev() is being checked in
-> > > > > multiple places in both drivers and the RDMA core.
-> > > > > 
-> > > > > Let me know what you think?
-> > > > 
-> > > > I think that you shouldn't copy/paste answers from your favorite AI tool.
-> > > > 
-> > > > Thanks
-> > > >
-> > > 
-> > > With all due respect..., Your response is not contributing to the
-> > > discussion about the patch, if you don't like the change or you think
-> > > that it is not justified, you can say so.
-> > 
-> > Kamal,
-> > 
-> > You pasted a response from Claude/Codex while at the same time, you are expecting
-> > me to spend time and effort explaining why all of it does not apply to the current
-> > code.
-> >
-> 
-> Lean,
-> 
-> AI is havely used in multiple kernel development areas including RDMA.
-> Also, I think you should already know that from the company that you
-> work for...
-> 
-> Many respected kernel developers already using AI as productivity tool,
-> Judging a patch based on whether AI may have used or not is not a
-> valid argument, again if you don't like the change or you think it is
-> not justified, you can say so.
+These changes look good but there is also a call to ib_respond_empty_udata
+in bnxt_re_resize_cq (but that method does take input data).
 
-Like Jason wrote, we have no issue with patches developed with the
-assistance of AI. We do, however, object to AI-generated emails and
-replies.
+Is that one a problem? I guess the resize could complete but the upper
+layers would think it failed if the ib_respond_empty_udata call fails?
 
-Thanks
-
-> 
-> 
-> > Thanks
-> > 
-> > > 
-> > > > > 
-> > > > > Thanks,
-> > > > > Kamal
-> > > > > 
-> > > > > > > 
-> > > > > > > Kamal Heib (2):
-> > > > > > >   RDMA/ionic: Fix potential NULL pointer dereference in
-> > > > > > >     ionic_query_device
-> > > > > > >   RDMA/ionic: Fix potential NULL pointer dereference in
-> > > > > > >     ionic_create_ibdev
-> > > > > > > 
-> > > > > > >  drivers/infiniband/hw/ionic/ionic_ibdev.c | 8 ++++++++
-> > > > > > >  1 file changed, 8 insertions(+)
-> > > > > > > 
-> > > > > > > -- 
-> > > > > > > 2.55.0
-> > > > > > > 
-> > > > > > > 
-> > > > > > 
-> > > > > 
-> > > > 
-> > > 
-> > 
-> 
+Reviewed-by: Jacob Moroni <jmoroni@google.com>
 
