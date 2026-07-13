@@ -1,153 +1,187 @@
-Return-Path: <linux-rdma+bounces-23159-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23160-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id GXevNpYdVWqIkAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-23159-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 19:17:10 +0200
+	id kjtQBGRRVWpKmwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-23160-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 22:58:12 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CA4874DF10
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 19:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 57EB874F292
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 22:58:11 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=google.com header.s=20251104 header.b=NXlXVjJJ;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23159-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23159-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=reject) header.from=google.com;
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=NgBrxDlp;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23160-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23160-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=gmail.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 46209307FA77
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 17:13:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 13921308B813
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 20:58:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE1DA344DB9;
-	Mon, 13 Jul 2026 17:13:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C68F35DA43;
+	Mon, 13 Jul 2026 20:58:01 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yx1-f73.google.com (mail-yx1-f73.google.com [74.125.224.73])
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 893D0224F3
-	for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 17:13:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C93BC35E1AE
+	for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 20:57:59 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783962804; cv=none; b=RPj01jODZFvRHdJ2u0MeZUXVfzwqx2zg54rg/1eEumdKBpNSKNRaO9foVVk0251FL1LO7oaIFxrTir/yUdLzBu+7+jC6Azf/tZ7lfdNIjEOGgLV5NJ5WwWrM1IMha25f/Z8e77W5XQKcjfJFIzIdKlf16vJRBil78PmSNVm2fvM=
+	t=1783976281; cv=none; b=rTlGo2WTUcW+F5/zKN74LlJhrFJt28ejmpmHkrlbLgxKN83C0bAFWsBjEMCvD3CXbpxuJqcEfGh1CvqzSs0qg1ATNXjwkrvVshIkpJYHchiP1bpLjzUid/47Mt7IzbeJXKwCBFzQ2L5jJQueEFwx/Tyl3m7/8GRcr1SlEiBi974=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783962804; c=relaxed/simple;
-	bh=2aH6SvmLqRy6tJIdiVqp8KaMrpYIdczAVjN4CKeFIaI=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=plPTfRIPB/1ZBckv1wtQ4Jy9QBduXj2SgAFi8YTxbH7ayUvKnPau8JuRU+80arkE4CwQSf+aMcmbJxfqw3WKXkOFRJ0qPvPNyrrRF51K4qumjMMr0+c1opkUa20BNvPZEE8UBt1couOOzkkEThy7CcN5x5LMAPhrnwuKMQ+bW/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NXlXVjJJ; arc=none smtp.client-ip=74.125.224.73
-Received: by mail-yx1-f73.google.com with SMTP id 956f58d0204a3-667faef9726so218811d50.2
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 10:13:23 -0700 (PDT)
+	s=arc-20240116; t=1783976281; c=relaxed/simple;
+	bh=D3eahPIAIk1fvhyOZkYEJP6bQ6n0at+bhFjOvvkmzpo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZUnr3sIqyRU0OHbp1QRBE77py2vECuVMuh3dnW7GuSbw/J/qBE20TWvNn/84STTt+8KZWZ/1qus83jiGVfEqeBTbEkzV9rlEBSLUUsDjXAIltTMtQvf4Xd3AVLhSVqJcepNDSVCFRd+ub387/ke+3fdn2JgX92l6SQ5tRS0F4Sg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NgBrxDlp; arc=none smtp.client-ip=209.85.216.54
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-384c94c9414so272113a91.3
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 13:57:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1783962803; x=1784567603; darn=vger.kernel.org;
-        h=content-type:cc:to:from:subject:message-id:references:mime-version
-         :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=kU9dUOIyZYAZxGiTvzJIgU4ETB+OZTGRaJ+al97KaCo=;
-        b=NXlXVjJJ8PmRgwn//EwLxGp1C3PcKs/zMIyzaXV8Um6/IXVaWbAnDMId0sS8WdnVGK
-         0T03NwlGZ16YhibY3xnW1RPXDWWmm3dkpZtVMGvBi6PguqK7r6qN3WcbAnGx8zJXlPJl
-         yjL3DqdDgnSLDMBjWKZxBO3zRQ1hXhachcs2UyQ9IMFaknkCbwP2ASChzcIYYHJS1Lf9
-         Bpjhz0CSj32BbGTCdD6Rkp1oeDqeVlZSXs/JJlKjmqi9YLH/9dh3jDYIP4b8u8jEUtaZ
-         XIv9A7xoUfhRYmUZ8xuXuRN1Gqx3FpPC7E8gbZur8n1H1ZilDMpILzZz2w36sb8y4FQG
-         OrWw==
+        d=gmail.com; s=20251104; t=1783976279; x=1784581079; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :content-type:mime-version:references:message-id:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=oNqruOZIzwruIpGvkzB4DJORZxeTGWU0clCn+vXfCzI=;
+        b=NgBrxDlpDoknd6Zv5Ca/Oeewg5yuANlXmHDRnnhqXDWhgDP2P44OrR0s0/MTMy34mZ
+         n3zXMmcIfGoNR7Sd680LfEr1/geQl8EGetahP7W6fUt1MxIqIdI/L1VUVBggJAmQ51v0
+         jXoSwvwvp/CrIoMSWg71PL3DRpm2hdJGate6aUcUOOKGl8xTstjSeqi6gEKS96UO7Zjd
+         lb2a22B/uNSSHg5FZmQ48yi/TVkiA9sVtHA1/za6mSwdA5n6CL1pr/nmcJGtyJ1Z/Prh
+         VUKEcE5b/3E9zbq5R57HBRuSsc33Y7ePwJV08k/0UBOriBpPl9MhiDN0KZiEmLww+N0n
+         mgVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783962803; x=1784567603;
-        h=content-type:cc:to:from:subject:message-id:references:mime-version
-         :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=kU9dUOIyZYAZxGiTvzJIgU4ETB+OZTGRaJ+al97KaCo=;
-        b=YsS9pnMnN0osEzyskQs2UQVb7breMSfh+chqLWznReSZxOZxY1yMBxMfcZkbOD8qXc
-         CeBFNnn75HF7X4zaBaeZTZWsoRa4bLkg6mhz5wYu594i+xuePYxXRoc85orTg1RQBZ37
-         J46sok92JRl60Wr4vDspchoJS7UpsWxMfGTfqiZA5TRveoUE8jNuQH95WnngBTT1pQ1Q
-         MJ7uc1Qz0eECbYxv9dNiF6dHlDDHel3wMqEuheGRiY47csJsC0Nm/N9gpdx5b35bkOZ/
-         gKI74W9tCv9g0fnrcVFhLXEdmqRS1+R2lMdB+tff62iRDwxTGtskoVFMEU2uWsRfRF3b
-         9FXw==
-X-Gm-Message-State: AOJu0Yx2LcCDLs/Rvl8rC5gur68WoB/eS/YtvGATqdEqXcQnkmAMW2C8
-	5recgIsLXjIwMpBYati+lMaW7wb1pSpAvSIvEq0ESknxeQL2iC8GVBkTx/n4AOEX8NFaekM9ZDW
-	enRrbEYBtOA==
-X-Received: from yxdv9.prod.google.com ([2002:a05:690e:449:b0:661:4901:1901])
- (user=jmoroni job=prod-delivery.src-stubby-dispatcher) by 2002:a53:eacf:0:b0:667:c39b:5466
- with SMTP id 956f58d0204a3-667d7bab744mr4816950d50.63.1783962802554; Mon, 13
- Jul 2026 10:13:22 -0700 (PDT)
-Date: Mon, 13 Jul 2026 17:12:57 +0000
-In-Reply-To: <20260713171257.3131493-1-jmoroni@google.com>
+        d=1e100.net; s=20251104; t=1783976279; x=1784581079;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :content-type:mime-version:references:message-id:subject:cc:to:from
+         :date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=oNqruOZIzwruIpGvkzB4DJORZxeTGWU0clCn+vXfCzI=;
+        b=FN0HRDUz3Ax5Z0MDmlJUOHsRuMlQY5d+UheFHV6b551rqX6B19BMX189Ap82GuL4hR
+         fgpzBRetnrOmumFWWYsAt1v/Z9Zop7UB1hhLoCKFMgCeBxjrb6Ds8ByMJoUSLWRDGSkc
+         YBb4DYv3kDQk8jL4LPKlAlwu1/hfM3oDoA8r+Wuik2pNC7de5YMXyQ48JCalYpkC2UIg
+         tu9ReUCHCksEgu/pf3rBqu/tPG+Nxa9twZBbwVkbA1Bu08xC4NBhgSuPVz2lVnDhFwZU
+         MZIAwEySOCJ+2gZC0tsTyJni3PLF1ZdsLwx5m/Mlt3jW+L2fj+NS87IHecbxI6e8qf+O
+         8YgA==
+X-Forwarded-Encrypted: i=1; AHgh+Rr05gYbXnNrF1pPKLOZsgR598cSoyBUZLiTnOkVLG+pRfzeA4qIfvqm8HgU1Ix2JGI2lIHrwE5mY3Qn@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzogi+qlWtl1Kx/wItxmuAzKc+6j85zrwWdwglSP7bnRmvNL2+z
+	Wlbx13kPLFT2KkCZApZhRrvKlN2dvePzOP+HNsLP0h4PEj3MzqzHEm0k
+X-Gm-Gg: AfdE7cm6aYc6hVnprNKesL34Ll9VPsidFuNq7v33lxXnsAvS/KlQfnaR0vYsSfX/yk4
+	9gmH9iLn6hVlJJIin420XbEdMcU9xQmzh9CCLFeZdf5kP6qJkdgcxljRP5Y6L1OIHg2CSTgtw/R
+	Y9j9+bJ8PnFEVL0Ng969FPEPZxy5BJ3h7mpcE7d2a5UWD/lHMaVjm8Xtnuj6yEHlv+iP0W5mw8d
+	xMGpOc4HGj1Nd+kFhISLeHKEhbv9i8GJGb3jf/aGWSM0uZsA8klKobp04tz3Qfk1Ssin7dYRdKw
+	aPonClum6hmwhmwLM9zfpEwnrP/q3x1g8Nf/J1N7FpdTBEtVjvfKLSOjWLs6eW13ONBWmThz/QH
+	AfwmUHeiOnojPWdec0skqvfKa0g3RstL/qFl0uaV7ZDDggtHOj9kEDVbqIzBrRjYdVw+fXhqfRg
+	t7xwVLOmkzyL895rkOIbzDU1Ww9blmo8gS4jXfewjiT48yDY+eHLu/wmXAmpHJ+Y5+XQ==
+X-Received: by 2002:a17:90a:d88b:b0:381:528a:808c with SMTP id 98e67ed59e1d1-38dc75e3d4fmr9572711a91.12.1783976279067;
+        Mon, 13 Jul 2026 13:57:59 -0700 (PDT)
+Received: from skinsburskii (c-98-225-44-182.hsd1.wa.comcast.net. [98.225.44.182])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-38e172b6ce6sm403816a91.1.2026.07.13.13.57.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2026 13:57:58 -0700 (PDT)
+Date: Mon, 13 Jul 2026 13:57:55 -0700
+From: Stanislav Kinsburskii <skinsburskii@gmail.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: airlied@gmail.com, akhilesh@ee.iitb.ac.in, corbet@lwn.net,
+	dakr@kernel.org, david@kernel.org, decui@microsoft.com,
+	haiyangz@microsoft.com, jgg@ziepe.ca, kees@kernel.org,
+	kys@microsoft.com, leon@kernel.org, liam@infradead.org,
+	lizhi.hou@amd.com, ljs@kernel.org, longli@microsoft.com,
+	lyude@redhat.com, maarten.lankhorst@linux.intel.com,
+	mamin506@gmail.com, mhocko@suse.com, mripard@kernel.org,
+	nouveau@lists.freedesktop.org, ogabbay@kernel.org, oleg@redhat.com,
+	rppt@kernel.org, shuah@kernel.org, simona@ffwll.ch,
+	skhan@linuxfoundation.org, surenb@google.com, tzimmermann@suse.de,
+	vbabka@kernel.org, wei.liu@kernel.org,
+	dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+	linux-doc@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v8 0/8] mm/hmm: Add mmap lock-drop support for
+ userfaultfd-backed mappings
+Message-ID: <alVRU38lMfvmUFqJ@skinsburskii>
+References: <178371866223.900500.12312667138651735591.stgit@skinsburskii>
+ <20260710151151.1e193eedd0cf2591ae392f76@linux-foundation.org>
+ <alG2-RSitzPWClAX@skinsburskii>
+ <20260710224950.53bcb43ce7e564f07a1f6a8c@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20260713171257.3131493-1-jmoroni@google.com>
-X-Mailer: git-send-email 2.55.0.795.g602f6c329a-goog
-Message-ID: <20260713171257.3131493-7-jmoroni@google.com>
-Subject: [PATCH rdma-next v4 6/6] RDMA/irdma: Enable uverbs_robust_udata
- compliance flag
-From: Jacob Moroni <jmoroni@google.com>
-To: tatyana.e.nikolova@intel.com, jgg@ziepe.ca, leon@kernel.org
-Cc: linux-rdma@vger.kernel.org, Jacob Moroni <jmoroni@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260710224950.53bcb43ce7e564f07a1f6a8c@linux-foundation.org>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [2.34 / 15.00];
+	MID_END_EQ_FROM_USER_PART(4.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	MV_CASE(0.50)[];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:tatyana.e.nikolova@intel.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:jmoroni@google.com,s:lists@lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[39];
+	TAGGED_FROM(0.00)[bounces-23160-lists,linux-rdma=lfdr.de];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[jmoroni@google.com,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:airlied@gmail.com,m:akhilesh@ee.iitb.ac.in,m:corbet@lwn.net,m:dakr@kernel.org,m:david@kernel.org,m:decui@microsoft.com,m:haiyangz@microsoft.com,m:jgg@ziepe.ca,m:kees@kernel.org,m:kys@microsoft.com,m:leon@kernel.org,m:liam@infradead.org,m:lizhi.hou@amd.com,m:ljs@kernel.org,m:longli@microsoft.com,m:lyude@redhat.com,m:maarten.lankhorst@linux.intel.com,m:mamin506@gmail.com,m:mhocko@suse.com,m:mripard@kernel.org,m:nouveau@lists.freedesktop.org,m:ogabbay@kernel.org,m:oleg@redhat.com,m:rppt@kernel.org,m:shuah@kernel.org,m:simona@ffwll.ch,m:skhan@linuxfoundation.org,m:surenb@google.com,m:tzimmermann@suse.de,m:vbabka@kernel.org,m:wei.liu@kernel.org,m:dri-devel@lists.freedesktop.org,m:linux-mm@kvack.org,m:linux-doc@vger.kernel.org,m:linux-hyperv@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:linux-rdma@vger.kernel.org,s:lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-23159-lists,linux-rdma=lfdr.de];
+	FREEMAIL_CC(0.00)[gmail.com,ee.iitb.ac.in,lwn.net,kernel.org,microsoft.com,ziepe.ca,infradead.org,amd.com,redhat.com,linux.intel.com,suse.com,lists.freedesktop.org,ffwll.ch,linuxfoundation.org,google.com,suse.de,kvack.org,vger.kernel.org];
+	FORGED_SENDER(0.00)[skinsburskii@gmail.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
 	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jmoroni@google.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[google.com:+];
+	FROM_NEQ_ENVFROM(0.00)[skinsburskii@gmail.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[skinsburskii:mid,vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2CA4874DF10
+X-Rspamd-Queue-Id: 57EB874F292
 
-The irdma driver has been audited to confirm that:
+On Fri, Jul 10, 2026 at 10:49:50PM -0700, Andrew Morton wrote:
+> On Fri, 10 Jul 2026 20:22:33 -0700 Stanislav Kinsburskii <skinsburskii@gmail.com> wrote:
+> 
+> > On Fri, Jul 10, 2026 at 03:11:51PM -0700, Andrew Morton wrote:
+> > > On Fri, 10 Jul 2026 14:26:20 -0700 Stanislav Kinsburskii <skinsburskii@gmail.com> wrote:
+> > > 
+> > > > This series extends the HMM framework to support userfaultfd-backed memory
+> > > > by allowing the mmap read lock to be dropped during hmm_range_fault().
+> > > 
+> > > Thanks.  This seems fairly mature and mostly-reviewed so I'll give it a
+> > > spin in mm.git's mm-new branch.
+> > > 
+> > > Unfortunately Sashiko wasn't able to apply this or v7.  I'm not sure
+> > > what base you were using.  Hopefully there's a reason for a v9 so we
+> > > can retry this.
+> > > 
+> > 
+> > I rebased this series on top of mm-new right before sending it out.
+> > Should I have used a different branch?
+> 
+> mm-new is good - Sashiko attempts that.  But it's changing rapidly at
+> this point in the development cycle.
+> 
 
-1. Methods which do not accept udata input perform an explicit
-   check for no (or zero value) input.
-2. Methods which do accept input perform the correct validation
-   to ensure that additional udata beyond the kernel's current
-   ABI definition is zero, and to enforce the required minimum
-   length.
-3. Methods which do not return udata responses use the proper
-   helper.
+I’d like to send another revision addressing a few comments and also
+replace the `max/max_t` check with something simpler.
 
-Signed-off-by: Jacob Moroni <jmoroni@google.com>
----
- drivers/infiniband/hw/irdma/verbs.c | 1 +
- 1 file changed, 1 insertion(+)
+Which branch should I base it on so that Sashiko can apply it
+successfully?
 
-diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index e87c879cecd..e544a6abcbb 100644
---- a/drivers/infiniband/hw/irdma/verbs.c
-+++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -5552,6 +5552,7 @@ static const struct ib_device_ops irdma_dev_ops = {
- 	.owner = THIS_MODULE,
- 	.driver_id = RDMA_DRIVER_IRDMA,
- 	.uverbs_abi_ver = IRDMA_ABI_VER,
-+	.uverbs_robust_udata = 1,
- 
- 	.alloc_hw_port_stats = irdma_alloc_hw_port_stats,
- 	.alloc_mr = irdma_alloc_mr,
--- 
-2.55.0.795.g602f6c329a-goog
+Or would it be better to send fixups against `mm-new`?
 
+Thanks, Stanislav
 
