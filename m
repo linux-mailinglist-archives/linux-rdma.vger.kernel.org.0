@@ -1,141 +1,154 @@
-Return-Path: <linux-rdma+bounces-23092-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23093-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id fQ3bJKmdVGogoQMAu9opvQ
-	(envelope-from <linux-rdma+bounces-23092-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 10:11:21 +0200
+	id IXpMBJKdVGoYoQMAu9opvQ
+	(envelope-from <linux-rdma+bounces-23093-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 10:10:58 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AB3074885B
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 10:11:21 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEB4B748844
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 10:10:56 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=GdAfMVNg;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=H8XIKnF0;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23092-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23092-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23093-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23093-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8D0A1304CA53
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 08:08:24 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 513ED30086B2
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 08:10:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEF8C3A63F2;
-	Mon, 13 Jul 2026 08:08:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 845B93A63F2;
+	Mon, 13 Jul 2026 08:10:46 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77BB939EF14;
-	Mon, 13 Jul 2026 08:08:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30AF13A5E90;
+	Mon, 13 Jul 2026 08:10:44 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783930103; cv=none; b=lnF51uRsSTOLvZ6fAOVP7enAGyw688+5lSPBjSJwKu4zIxtOh/CSKBRfeFrX8i+Wxa8UESdmpDi9PFWGXELaD+g07+14mU7PaXubmHr+pg1VrHIBo1WInirpK0S6gbwg1AHHzMNzaA/5bkUm6+Hf81NiWeK/vXCsZyLjsDpZo1o=
+	t=1783930246; cv=none; b=Ejszz9k/6vGGI3pr/yRq4aFSblFIVsn7gchq+4XynV24i/ESwManSjTWENi+L8thi89OwaDRx5BrGM8lWNCM968Sy2OceyJt6bwBykIKYENxhRruLqCGPjIojWmjM6aTbsGnlDDyFeqPEbQDXPQ+NUSjhnYOoQ8xgQP+DoaPOrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783930103; c=relaxed/simple;
-	bh=uLT7HWzsI84MdeWJhgNF4lDj6foDO+aRXB+64HHmnzM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FpkSMwYs4BlrzDxdERcVUYLi+SpytyV2zQilEggUpY20TYZvkaWgroXyHVsVGqPgNypsZL2P0Zl0DsbVIdAUrWSwoSew7KUtuLRW6kqcOl+LR8u1NhKfxoqJ+0tRaybE5HYQZMCRdsNRrPvQyd0WGvEgBhnC4rUYL3vfk9y55R4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GdAfMVNg; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 300321F00A3F;
-	Mon, 13 Jul 2026 08:08:20 +0000 (UTC)
+	s=arc-20240116; t=1783930246; c=relaxed/simple;
+	bh=GVcKOX0LlfnbpnsJTSyxmzLg8GMyp3OdbGpoxVlBdCo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mHd4a6h2TeeEGEumfAF3Zr/gs3malQ09OLJDhZchf0ytv2k113zOBu9h7SrbLKWi4ync/k3Yc7xn2573bFBk4VYnqHyWI7BeSneP11kzvU7nHbBDB9PbGl20HlcEFgDcmP00Lf/PB+KQZ5xYEpp/ijplhumCB96c5DiYh53dh4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H8XIKnF0; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D096B1F00A3A;
+	Mon, 13 Jul 2026 08:10:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783930102;
-	bh=pYNE2/vvUsYohUa/Lltav4piWNiMdY9CO+/H9wkxZu4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=GdAfMVNgR8cuLk8qti7w7tFiS+cVjrHBaRfIfI16N7YleLCkgNNDKTR2IiKInO4c6
-	 eW9VJ5OusGVuvE0MMMM9XOpH4pjsk5xCKr6LvMGCz+vk4dvRN61vLAEpk+WaHlEJEI
-	 //NNe2+dXOmZlic/YjAAXICikCfFE5GnaDlfO466oe1mo4YQW6dHhRGZpuHwRdGfxA
-	 6hQbvqZw0NUq7B/TEs1Xgj3yqpw16mqxbvQ37tN57fFAjVjHNYdMGIZoEBwypS3kzt
-	 6jNC3LDIvlOFikYUaPKzfq5rh67MM6n05mLl/Iq9Mf+68Njd1ghRQqrsLAmciNBt0k
-	 RewQpcHA4rrAg==
-Date: Mon, 13 Jul 2026 11:08:16 +0300
+	s=k20260515; t=1783930244;
+	bh=G40+xK1whqtapmB7GENINsvXeUCc45CyUBk101aOg9Q=;
+	h=From:To:Cc:Subject:Date;
+	b=H8XIKnF0nMGs6D+BoDZB0R/BGmxEXi1vAuLR8iBg6W8p9dpj5dOgbDnLijOS8333G
+	 QWIISzTYM+UXEb44Qud7lSNxFENBLaP3umLyMJlqhpHNIEJM8EHe+u8iuH4aPiZIfu
+	 m/xj5urXX8udv1FEJYSHhcQm5A6OiS5joIofNnufRqnf/S2Qi70UM0dpM/LwuDAm3E
+	 e0JfXvUI8Kr4AtsR5QcYIBwa81yfpgVRdlq8+3BoHrgt2Np5jcAJghV8G8AlTnVXqH
+	 SoKqH8JKXioxb4Rgh2IQ+e02AsMiPp6TVImEFT0gh2FPkwiOpQLOwxq0B1Sf9nuaTX
+	 vIudN9XBOCuXg==
 From: Leon Romanovsky <leon@kernel.org>
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: Zhiping Zhang <zhipingz@meta.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Saeed Mahameed Michael <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
-	Michael Guralnik <michaelgur@nvidia.com>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH net v2] net/mlx5: free mlx5_st_idx_data on final dealloc
-Message-ID: <20260713080816.GA327832@unreal>
-References: <20260702222507.1234467-1-zhipingz@meta.com>
- <9e4e455b-c10b-447e-9fe6-80672f26fd8a@redhat.com>
+To: Selvin Xavier <selvin.xavier@broadcom.com>,
+	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Michael Margolin <mrgolin@amazon.com>,
+	Gal Pressman <gal.pressman@linux.dev>,
+	Yossi Leybovich <sleybo@amazon.com>,
+	Cheng Xu <chengyou@linux.alibaba.com>,
+	Kai Shen <kaishen@linux.alibaba.com>,
+	Chengchang Tang <tangchengchang@huawei.com>,
+	Junxian Huang <huangjunxian6@hisilicon.com>,
+	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
+	Long Li <longli@microsoft.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Michal Kalderon <mkalderon@marvell.com>,
+	Nelson Escobar <neescoba@cisco.com>,
+	Satish Kharat <satishkh@cisco.com>,
+	Bernard Metzler <bernard.metzler@linux.dev>
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hyperv@vger.kernel.org
+Subject: [PATCH rdma-next 0/2] RDMA: Small batch of cleanups
+Date: Mon, 13 Jul 2026 11:10:33 +0300
+Message-ID: <20260713-fix-destroy-no-udata-v1-0-fcca2e34fd57@nvidia.com>
+X-Mailer: git-send-email 2.55.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9e4e455b-c10b-447e-9fe6-80672f26fd8a@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+X-Change-ID: 20260712-fix-destroy-no-udata-dfa990b985ea
+X-Mailer: b4 0.15-dev-18f8f
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.66 / 15.00];
+X-Spamd-Result: default: False [-5.16 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:pabeni@redhat.com,m:zhipingz@meta.com,m:jgg@ziepe.ca,m:saeedm@nvidia.com,m:tariqt@nvidia.com,m:mbloch@nvidia.com,m:michaelgur@nvidia.com,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:stable@vger.kernel.org,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-23092-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:selvin.xavier@broadcom.com,m:kalesh-anakkur.purayil@broadcom.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:mrgolin@amazon.com,m:gal.pressman@linux.dev,m:sleybo@amazon.com,m:chengyou@linux.alibaba.com,m:kaishen@linux.alibaba.com,m:tangchengchang@huawei.com,m:huangjunxian6@hisilicon.com,m:tatyana.e.nikolova@intel.com,m:longli@microsoft.com,m:kotaranov@microsoft.com,m:yishaih@nvidia.com,m:mkalderon@marvell.com,m:neescoba@cisco.com,m:satishkh@cisco.com,m:bernard.metzler@linux.dev,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-hyperv@vger.kernel.org,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-23093-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	TO_DN_SOME(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,meta.com:email,unreal:mid,vger.kernel.org:from_smtp,nvidia.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,nvidia.com:mid,nvidia.com:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2AB3074885B
+X-Rspamd-Queue-Id: EEB4B748844
 
-On Fri, Jul 10, 2026 at 01:25:45PM +0200, Paolo Abeni wrote:
-> On 7/3/26 12:24 AM, Zhiping Zhang wrote:
-> > Workloads that repeatedly allocate and release mkeys carrying TPH
-> > steering-tag hints (e.g. churning RDMA MRs) leak one
-> > struct mlx5_st_idx_data per cycle; kmemleak flags it as unreferenced
-> > and the kmalloc slab grows over time.
-> > 
-> > When the last reference to an ST table entry is dropped,
-> > mlx5_st_dealloc_index() removed the entry from idx_xa but the backing
-> > mlx5_st_idx_data allocation was never freed.
-> > 
-> > Free idx_data after the xa_erase() so the lifetime of the bookkeeping
-> > struct matches the lifetime of the ST entry it tracks.
-> > 
-> > Cc: stable@vger.kernel.org
-> > Fixes: 888a7776f4fb ("net/mlx5: Add support for device steering tag")
-> > Reviewed-by: Michael Gur <michaelgur@nvidia.com>
-> > Signed-off-by: Zhiping Zhang <zhipingz@meta.com>
-> @Leon, @Saeed, @Tariq: just in case this fell under the radar, it's
-> waiting for your ack.
+This series contains two independent cleanups. One fixes the problematic placemen
+ of a newly introduced in-kernel API, which should be called at the beginning of
+destroy functions and not at the end. The other removes a redundant memset().
 
-Tariq and I completed this on Jul 5 and Jul 6.
+Thanks.
 
-https://lore.kernel.org/linux-rdma/20260705141920.GI15188@unreal/
-https://lore.kernel.org/linux-rdma/0bb37f75-c94a-4a10-b115-186b71daf14f@nvidia.com/
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+Leon Romanovsky (2):
+      RDMA/bnxt_re: Validate udata before destroying resources
+      RDMA: Remove redundant memset() from query_device callbacks
 
-Thanks
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c     | 21 ++++++++++-----------
+ drivers/infiniband/hw/efa/efa_verbs.c        |  1 -
+ drivers/infiniband/hw/erdma/erdma_verbs.c    |  2 --
+ drivers/infiniband/hw/hns/hns_roce_main.c    |  2 --
+ drivers/infiniband/hw/irdma/verbs.c          |  1 -
+ drivers/infiniband/hw/mana/main.c            |  1 -
+ drivers/infiniband/hw/mlx4/main.c            |  2 --
+ drivers/infiniband/hw/mlx5/main.c            |  1 -
+ drivers/infiniband/hw/mthca/mthca_provider.c |  2 --
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c  |  1 -
+ drivers/infiniband/hw/qedr/verbs.c           |  2 --
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.c |  1 -
+ drivers/infiniband/sw/siw/siw_verbs.c        |  2 --
+ 13 files changed, 10 insertions(+), 29 deletions(-)
+---
+base-commit: 15ae32c4a3551c4c9da457370bdfdd65d171e512
+change-id: 20260712-fix-destroy-no-udata-dfa990b985ea
 
-> 
-> Thanks,
-> 
-> Paolo
-> 
+Best regards,
+--  
+Leon Romanovsky <leonro@nvidia.com>
+
 
