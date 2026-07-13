@@ -1,73 +1,73 @@
-Return-Path: <linux-rdma+bounces-23154-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23155-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id /2o9OIUdVWqBkAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-23154-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 19:16:53 +0200
+	id LpSBMYgdVWqCkAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-23155-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 19:16:56 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D05974DEF5
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 19:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FB6C74DEF8
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 19:16:56 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=google.com header.s=20251104 header.b=ma8JmQ5q;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23154-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23154-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=google.com header.s=20251104 header.b=WTogYdg+;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23155-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23155-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=reject) header.from=google.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0C3BD3040A8A
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 17:13:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BEF763045A82
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 17:13:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCFAD3438BD;
-	Mon, 13 Jul 2026 17:13:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F1063446A7;
+	Mon, 13 Jul 2026 17:13:15 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mail-qt1-f201.google.com (mail-qt1-f201.google.com [209.85.160.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35618224F3
-	for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 17:13:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6796224F3
+	for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 17:13:13 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783962792; cv=none; b=XoRQyfXkDbwvhV3jt/R5wmSCijO2oPP8hVUnmiF21F0NbxaTfkBALT0iK3kuzf4nQ5RrQgrmqAXf/o6dWLw1qwUBMlW0PJr3wKt94eZhUxw81Uhr2qZYCFZqXZidXc0NruJg5nTat7ipsT8uHGAt0UzgbRbXD7X4spWkznihDFM=
+	t=1783962795; cv=none; b=QKo6KFtRMbgU3pcNXvglW3pIZOsrtpxF8cB1C7ROBRtC+HEXrKJN1WRTx4M7Or7oIlPB2M8V3ENRgFjtJyn7w2pRjPSAb28LTGjfUi+mvu/JAi4atYW8WGS6BYTfU1w5qwTJwkBv+9eibxM52J0k2wvNWjrEM3acYUL3sUsAvCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783962792; c=relaxed/simple;
-	bh=xsxwODBGAPyFp4Ft6IyXswY7HDJNqazdx1HBkEQhSYM=;
+	s=arc-20240116; t=1783962795; c=relaxed/simple;
+	bh=/AynH1IgEOOw3Fj4yIhJDk4W40R+SwvoiT8GNCd6ypM=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Ah9VPmED68KBWCqWdgnVN1rB5m2Vrz0uJTduRk8scip8F5yFfeR6hh4j3/SRss1KEA51EqIWVcV2oGz6T+An7Ur0V/CUgWzajUsaHpHu6jN2eTNMzAoqXJDScu3fFXS/7z1P5Klv6ni53OcfJWOjnj2X15XkyqqF3vP1BqmoROw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ma8JmQ5q; arc=none smtp.client-ip=209.85.160.201
-Received: by mail-qt1-f201.google.com with SMTP id d75a77b69052e-51bf321d786so1373091cf.1
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 10:13:10 -0700 (PDT)
+	 To:Cc:Content-Type; b=mf8+g2tItucxrnnh0tbFlAX1HNUfr5iQnfMhUdYuctk7IyA6uwkrrF3te9Qo470lmHMNgcTQOQdNeV7y7VQCdYExobsBwVVf3iCcKYHg5XSF1D0eyymBmCSx6iVfWYs/eiXUniu2LY2fdXYA8q6ZTvQVImVH6ca52Nv/EJZnBgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WTogYdg+; arc=none smtp.client-ip=209.85.160.201
+Received: by mail-qt1-f201.google.com with SMTP id d75a77b69052e-51c1c7f135bso1770211cf.0
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 10:13:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1783962790; x=1784567590; darn=vger.kernel.org;
+        d=google.com; s=20251104; t=1783962793; x=1784567593; darn=vger.kernel.org;
         h=content-type:cc:to:from:subject:message-id:references:mime-version
          :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=tcutcPBX8LiIp5sHYqcCqsSfwMVQC2Ex7o3EgEMr/Co=;
-        b=ma8JmQ5qcx8FcfRcwlVpvvgkQGG6GZrKcEukq+p9PMgPqP8DNT2NnhKKg2JaWJi+lH
-         An/5M8cu5Ezi1dEdi6rYoL8kyQo0oGDua8i/T61ZluercMzdEqtRpZNcvyf2X/V6G1CU
-         hdVgwHi1imtxznjgpcAF8Q0Dx7tdFwW0CMuQSxCmor+FeppMpCdnAtbp4UYLLdgZP00a
-         dRs0zeHk4rRHibMrfQVCpE/6Ir23M5YpGpKJj/ki3GtuRx99nxinELjK+cXyDvVIAXdY
-         iw7RXY306GfAO2kCxkw6V9VBIfRmIuYi1qYJauccYoA0fTiznF8F3tlnFci/dbwzpIHO
-         Ofmw==
+        bh=0DD005DMu2gcrkTBF375bRlQ0ikpiRHpVKPPTNM5Jnk=;
+        b=WTogYdg+AklvG4L7K6Ynfrnor6EfnbXY5GsZ5KZXF0VCe0EmXLG6xOLlZXUv9s6NUw
+         Ttj/3p6HOmA7+sdnnnDENql9+KQLT+1jC/7EboqRR+G6LZN23hGl8YnyZmm6zt2NSowC
+         pdhpyBnLSWT71zbuHNzpLtuVsmyaHk0YYOf0uhxyZ9yJQfWMHj6j/EUrMnsccsNp7umh
+         umbGZR+2+r10+y1NS/AT9LQLcUZI/xIoX8LssERTN9RURCb0EZVSBnC2vTkVzPp+QKlP
+         O27lPer/XCaQRa+d2Fy0djGXnBIyou1CtrvnKbebGC0xH1qf8ieyZDsNmJKOmWc3gnH6
+         k1MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783962790; x=1784567590;
+        d=1e100.net; s=20251104; t=1783962793; x=1784567593;
         h=content-type:cc:to:from:subject:message-id:references:mime-version
          :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=tcutcPBX8LiIp5sHYqcCqsSfwMVQC2Ex7o3EgEMr/Co=;
-        b=DlVHbl2vMHXBt2m30jKlUFaf9vD8rcRquJJIFXXAH1dOY/jTmK7NqxTSve/Wa1vhJZ
-         YLd3BbYGJJCuCM900tedhAH8oYlH0X0NFQNt8WmLpdpSSf9YycGKyvvgUShP7i9Fdr6y
-         FgA3x5p8RqOmXnYiQuFP8GNwVlU9ohT0jpkWdynY/f4Dc7z4MiB9sOe5ETFPgjqy4F8z
-         KqmxG/zMKgqYZk4bm8iZCCQ+n776DWdPWaomJKOUDgwO0E6c8USdSRI3531RySvd5BU5
-         ElsKJT7sBJ2fgtkvs6fB5VU1FaqTHhMLGXmFpJfeOlXeC3xoKENypyGR0rmheP6JZVqM
-         5Z5w==
-X-Gm-Message-State: AOJu0YxC9wNM4NH7tKK4yMINvPRPnSMzuNwExfyn5BwcJRcDAXMJivl8
-	yg9N02QrMFPb+i+wCYK3nywGSSd9V/EPrcKrBDXhMSVa301G2MN4OVxkX5n+iVRcGN7q2uhSMJJ
-	7+KssyRfr9A==
-X-Received: from qtkb9.prod.google.com ([2002:ac8:7fc9:0:b0:51c:e93:45f5])
- (user=jmoroni job=prod-delivery.src-stubby-dispatcher) by 2002:ac8:5f96:0:b0:517:905d:dc72
- with SMTP id d75a77b69052e-51cbf05bc66mr97810111cf.18.1783962789729; Mon, 13
- Jul 2026 10:13:09 -0700 (PDT)
-Date: Mon, 13 Jul 2026 17:12:52 +0000
+        bh=0DD005DMu2gcrkTBF375bRlQ0ikpiRHpVKPPTNM5Jnk=;
+        b=VHvlTVjTlS/IaanD8hk7P4FRgtvRDRbqeDx6224kRc5XzdS5UqzkltxrVu2L6ZFpNF
+         P2pKe/wRkXT+dPnr174gpBqIkKRwP2k+qkXwJWPbZNXMQnaQBy80SGt4IWHF+Uyt1wod
+         sVSfhBWCLy/TjqiLiTpQiI883yvBnOXv5IqwBwq3dopo2aDEoF8nHk4ZCYfPZdcD60g0
+         IQQMVK+hTCwQI3lUjBYY3CEsI4tFPDwZC2nTEkV1NQdjgGNEqBCUWX0Pgj+6V7CNrCfU
+         QKAWlxsQCaKEGUKBBriyf1hMBD9gUbdSnYmKBSmtv/+TnR/WxCVIcM/tR+FCMDE0EVli
+         rOcg==
+X-Gm-Message-State: AOJu0Yxfj1ivtIaJvajhWlkHx/+/NEZ1tbD/JneUQzZboarzolIK/epB
+	gZOP5pDNBpBL7kIzQCtdm+7kFb2FBTFqX6lrwxDeuvaQ7dNOgsnMc2HY1Q9dRYBa5u0uDIEnodG
+	OxmZYzIzSYw==
+X-Received: from qtbhx4.prod.google.com ([2002:a05:622a:6684:b0:51c:afcd:4647])
+ (user=jmoroni job=prod-delivery.src-stubby-dispatcher) by 2002:ac8:5954:0:b0:517:90d2:598b
+ with SMTP id d75a77b69052e-51cbf1b5c96mr97641551cf.39.1783962792359; Mon, 13
+ Jul 2026 10:13:12 -0700 (PDT)
+Date: Mon, 13 Jul 2026 17:12:53 +0000
 In-Reply-To: <20260713171257.3131493-1-jmoroni@google.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -77,8 +77,9 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20260713171257.3131493-1-jmoroni@google.com>
 X-Mailer: git-send-email 2.55.0.795.g602f6c329a-goog
-Message-ID: <20260713171257.3131493-2-jmoroni@google.com>
-Subject: [PATCH rdma-next v4 1/6] RDMA/irdma: Add checks for no udata
+Message-ID: <20260713171257.3131493-3-jmoroni@google.com>
+Subject: [PATCH rdma-next v4 2/6] RDMA/irdma: Clear udata response buffers
+ where necessary
 From: Jacob Moroni <jmoroni@google.com>
 To: tatyana.e.nikolova@intel.com, jgg@ziepe.ca, leon@kernel.org
 Cc: linux-rdma@vger.kernel.org, Jacob Moroni <jmoroni@google.com>
@@ -94,16 +95,16 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:tatyana.e.nikolova@intel.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:jmoroni@google.com,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER(0.00)[jmoroni@google.com,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:tatyana.e.nikolova@intel.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:jmoroni@google.com,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-23154-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23155-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCPT_COUNT_FIVE(0.00)[5];
 	FORGED_SENDER_FORWARDING(0.00)[];
@@ -116,186 +117,93 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 5D05974DEF5
+X-Rspamd-Queue-Id: 5FB6C74DEF8
 
-Several methods do not accept udata input and do not provide
-a udata response. Use the ib_no_udata_io helper to check that
-the input buffers are empty and to zero fill any user response
-buffers. For methods that do provide a response, enforce the
-input buffer is empty using ib_is_udata_in_empty.
+Methods that may accept udata input but do not provide a
+udata response should use the ib_respond_empty_udata()
+helper to ensure that user response buffers are cleared.
 
-The irdma rdma-core provider as well as the legacy i40iw
-provider were both checked to ensure they never passed any
-udata to these ops.
+Since the ib_respond_empty_udata() call itself can fail if
+the user intentionally provides a bogus output buffer, it is
+called at the beginning of the method to fail early before
+mutating any state that would be difficult to unwind.
+
+Additionally, add missing bounds validation for udata->outlen
+in irdma_create_srq() to ensure it is large enough to hold the
+response struct as per its original (and so far, only) definition.
 
 Signed-off-by: Jacob Moroni <jmoroni@google.com>
 ---
- drivers/infiniband/hw/irdma/verbs.c | 66 +++++++++++++++++++++++++++--
- 1 file changed, 62 insertions(+), 4 deletions(-)
+ drivers/infiniband/hw/irdma/verbs.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
 diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index 965fec124bc..db297974214 100644
+index db297974214..c002dd6ead4 100644
 --- a/drivers/infiniband/hw/irdma/verbs.c
 +++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -407,6 +407,10 @@ static int irdma_alloc_pd(struct ib_pd *pd, struct ib_udata *udata)
- 	u32 pd_id = 0;
- 	int err;
+@@ -1316,6 +1316,11 @@ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 	u8 issue_modify_qp = 0;
+ 	int ret = 0;
  
-+	err = ib_is_udata_in_empty(udata);
++	/* Clear the response buffer (if any). It may be updated again later. */
++	ret = ib_respond_empty_udata(udata);
++	if (ret)
++		return ret;
++
+ 	ctx_info = &iwqp->ctx_info;
+ 	roce_info = &iwqp->roce_info;
+ 	udp_info = &iwqp->udp_info;
+@@ -1676,6 +1681,10 @@ int irdma_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr, int attr_mask,
+ 	int err;
+ 	unsigned long flags;
+ 
++	err = ib_respond_empty_udata(udata);
 +	if (err)
 +		return err;
 +
- 	if (udata && udata->outlen < IRDMA_ALLOC_PD_MIN_RESP_LEN)
+ 	if (udata) {
+ 		/* udata inlen/outlen can be 0 when supporting legacy libi40iw */
+ 		if ((udata->inlen && udata->inlen < IRDMA_MODIFY_QP_MIN_REQ_LEN) ||
+@@ -2095,6 +2104,10 @@ static int irdma_resize_cq(struct ib_cq *ibcq, unsigned int entries,
+ 	if (entries > rf->max_cqe)
  		return -EINVAL;
  
-@@ -445,6 +449,11 @@ static int irdma_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
- {
- 	struct irdma_pd *iwpd = to_iwpd(ibpd);
- 	struct irdma_device *iwdev = to_iwdev(ibpd->device);
-+	int ret;
-+
-+	ret = ib_no_udata_io(udata);
-+	if (ret)
-+		return ret;
- 
- 	irdma_free_rsrc(iwdev->rf, iwdev->rf->allocated_pds, iwpd->sc_pd.pd_id);
- 
-@@ -537,11 +546,10 @@ static int irdma_setup_push_mmap_entries(struct irdma_ucontext *ucontext,
- }
- 
- /**
-- * irdma_destroy_qp - destroy qp
-+ * _irdma_destroy_qp - destroy qp
-  * @ibqp: qp's ib pointer also to get to device's qp address
-- * @udata: user data
-  */
--static int irdma_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
-+static void _irdma_destroy_qp(struct ib_qp *ibqp)
- {
- 	struct irdma_qp *iwqp = to_iwqp(ibqp);
- 	struct irdma_device *iwdev = iwqp->iwdev;
-@@ -573,6 +581,22 @@ static int irdma_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
- 	if (iwqp->sc_qp.qp_uk.qp_id == 1)
- 		iwdev->rf->hwqp1_rsvd = false;
- 	irdma_free_qp_rsrc(iwqp);
-+}
-+
-+/**
-+ * irdma_destroy_qp - destroy qp
-+ * @ibqp: qp's ib pointer also to get to device's qp address
-+ * @udata: user data
-+ */
-+static int irdma_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
-+{
-+	int ret;
-+
-+	ret = ib_no_udata_io(udata);
++	ret = ib_respond_empty_udata(udata);
 +	if (ret)
 +		return ret;
 +
-+	_irdma_destroy_qp(ibqp);
+ 	if (!iwcq->user_mode) {
+ 		entries += 2;
  
- 	return 0;
- }
-@@ -1127,7 +1151,7 @@ static int irdma_create_qp(struct ib_qp *ibqp,
- 
- 		err_code = ib_respond_udata(udata, uresp);
- 		if (err_code) {
--			irdma_destroy_qp(&iwqp->ibqp, udata);
-+			_irdma_destroy_qp(&iwqp->ibqp);
- 			return err_code;
- 		}
- 	}
-@@ -1981,6 +2005,11 @@ static int irdma_destroy_srq(struct ib_srq *ibsrq, struct ib_udata *udata)
+@@ -2395,6 +2408,7 @@ static int irdma_create_srq(struct ib_srq *ibsrq,
+ 			    struct ib_srq_init_attr *initattrs,
+ 			    struct ib_udata *udata)
+ {
++#define IRDMA_CREATE_SRQ_MIN_RESP_LEN offsetofend(struct irdma_create_srq_resp, srq_size)
  	struct irdma_device *iwdev = to_iwdev(ibsrq->device);
- 	struct irdma_srq *iwsrq = to_iwsrq(ibsrq);
- 	struct irdma_sc_srq *srq = &iwsrq->sc_srq;
-+	int ret;
-+
-+	ret = ib_no_udata_io(udata);
-+	if (ret)
-+		return ret;
+ 	struct ib_srq_attr *attr = &initattrs->attr;
+ 	struct irdma_pd *iwpd = to_iwpd(ibsrq->pd);
+@@ -2415,6 +2429,9 @@ static int irdma_create_srq(struct ib_srq *ibsrq,
+ 	if (initattrs->srq_type != IB_SRQT_BASIC)
+ 		return -EOPNOTSUPP;
  
- 	irdma_srq_wq_destroy(iwdev->rf, srq);
- 	irdma_srq_free_rsrc(iwdev->rf, iwsrq);
-@@ -2001,6 +2030,11 @@ static int irdma_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
- 	struct irdma_sc_ceq *ceq = dev->ceq[cq->ceq_id];
- 	struct irdma_ceq *iwceq = container_of(ceq, struct irdma_ceq, sc_ceq);
- 	unsigned long flags;
-+	int ret;
++	if (udata && udata->outlen < IRDMA_CREATE_SRQ_MIN_RESP_LEN)
++		return -EINVAL;
 +
-+	ret = ib_no_udata_io(udata);
-+	if (ret)
-+		return ret;
- 
- 	spin_lock_irqsave(&iwcq->lock, flags);
- 	if (!list_empty(&iwcq->cmpl_generated))
-@@ -2235,6 +2269,10 @@ static int irdma_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
- 	struct cqp_cmds_info *cqp_info;
- 	int status;
- 
-+	status = ib_no_udata_io(udata);
-+	if (status)
-+		return status;
-+
- 	if (attr_mask & IB_SRQ_MAX_WR)
+ 	if (!(uk_attrs->feature_flags & IRDMA_FEATURE_SRQ) ||
+ 	    attr->max_sge > uk_attrs->max_hw_wq_frags)
  		return -EINVAL;
+@@ -3607,6 +3624,10 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
+ 	if (dmah)
+ 		return ERR_PTR(-EOPNOTSUPP);
  
-@@ -3080,6 +3118,10 @@ static int irdma_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata)
- 	int err_code;
- 	u32 stag;
- 
-+	err_code = ib_no_udata_io(udata);
-+	if (err_code)
-+		return err_code;
-+
- 	stag = irdma_create_stag(iwdev);
- 	if (!stag)
- 		return -ENOMEM;
-@@ -3831,6 +3873,10 @@ static struct ib_mr *irdma_rereg_user_mr(struct ib_mr *ib_mr, int flags,
- 	struct ib_umem_dmabuf *umem_dmabuf;
- 	int ret;
- 
-+	ret = ib_no_udata_io(udata);
-+	if (ret)
-+		return ERR_PTR(ret);
++	err = ib_respond_empty_udata(udata);
++	if (err)
++		return ERR_PTR(err);
 +
  	if (len > iwdev->rf->sc_dev.hw_attrs.max_mr_size)
  		return ERR_PTR(-EINVAL);
  
-@@ -4023,6 +4069,10 @@ static int irdma_dereg_mr(struct ib_mr *ib_mr, struct ib_udata *udata)
- 	bool dmabuf_revocable = iwmr->region && iwmr->region->is_dmabuf;
- 	int ret;
- 
-+	ret = ib_no_udata_io(udata);
-+	if (ret)
-+		return ret;
-+
- 	if (iwmr->type != IRDMA_MEMREG_TYPE_MEM) {
- 		if (iwmr->region) {
- 			struct irdma_ucontext *ucontext;
-@@ -5344,6 +5394,10 @@ static int irdma_create_user_ah(struct ib_ah *ibah,
- 	struct irdma_ah *parent_ah;
- 	int err;
- 
-+	err = ib_is_udata_in_empty(udata);
-+	if (err)
-+		return err;
-+
- 	if (udata->outlen < IRDMA_CREATE_AH_MIN_RESP_LEN)
- 		return -EINVAL;
- 
-@@ -5395,6 +5449,10 @@ static int irdma_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *attr,
- 	struct irdma_device *iwdev = to_iwdev(ibah->pd->device);
- 	int err;
- 
-+	err = ib_no_udata_io(udata);
-+	if (err)
-+		return err;
-+
- 	err = irdma_setup_ah(ibah, attr);
- 	if (err)
- 		return err;
 -- 
 2.55.0.795.g602f6c329a-goog
 
