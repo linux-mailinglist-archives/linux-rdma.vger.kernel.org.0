@@ -1,76 +1,76 @@
-Return-Path: <linux-rdma+bounces-23083-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23084-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Q+IGDtB6VGrzmQMAu9opvQ
-	(envelope-from <linux-rdma+bounces-23083-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 07:42:40 +0200
+	id 1pBlDWh7VGr/mQMAu9opvQ
+	(envelope-from <linux-rdma+bounces-23084-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 07:45:12 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id B268B747505
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 07:42:39 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92D2E747520
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 07:45:11 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=intel.com header.s=Intel header.b=V0rvh3NE;
+	dkim=pass header.d=intel.com header.s=Intel header.b="fucNh/52";
 	dmarc=pass (policy=none) header.from=intel.com;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23083-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23083-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23084-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23084-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 2CE903001D58
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 05:42:39 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 11332301A2BF
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 05:45:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25213360EDE;
-	Mon, 13 Jul 2026 05:42:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 383A7274B2A;
+	Mon, 13 Jul 2026 05:45:08 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE7B0EACD
-	for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 05:42:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B317360EC6
+	for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 05:45:05 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783921355; cv=none; b=lqAKPRkjjLurMW9Ekpgz2Fo9N5Bov7Wfa7ZomhXdQ+3mr2tZkuMYbiLvwraQxhXW33i4QUDErTIhVoJBAklqSJTB/4/3QC3zt/C9ca44tWshmTO6NfLAmdCrvVAp5KhxBYTp13il7YyzCQvgBUnn8WbngxeWa7QssACogWK+RWM=
+	t=1783921507; cv=none; b=f1EonrH2bMJ8+nSTpv+AOzeuqUYtCDZuMVrfzl5GVQrxVpEE8lGt9tbI58SH7+NXgLc1/EmrEnHeMrWYGLgj2D545JRHnLiK8YBPZs8kllrm9LawZgstZ+izU1i7ziYkXkf0n/b7GhPzDJtup6iU4HBh5ZGOc8Grm83kqso6JrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783921355; c=relaxed/simple;
-	bh=iehA4BVD3IGjHeCt8ROhl3LlqNonmNOrubntvkl8tQo=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=MPoQOcymbtYjfwZLHnQCNtyi3+L6wXbk6HuTu5A4PjaSE5jGfFNKgTABotkWfZXN4ojTXPmPMfDZQh0Z1SU8+kX9WppO9o/Fb1Jmi8vC4yE27PY1w7Q3X/HVL1NHggPfL55gGAA6r88R+DfNgxZU8zteX8uVYR3Yd7IB8Ol+0b8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=V0rvh3NE; arc=none smtp.client-ip=198.175.65.13
+	s=arc-20240116; t=1783921507; c=relaxed/simple;
+	bh=VLeXyO+t5U7L/1UekbXSM4uakm7KAKuYSl6khDTOwxs=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=KokMNs/oDZjhIpPKR/n9lw/kSBGhKWwT/+x3r1m1JjwXslyINvbaQyOWnqz49fpHJKKlvxRBT1MdpxbjClK4q+4IxsbgKsuR5zv6eg5G/uf29t850kscVIdWaW1jWnuFBhY/loWjsvhzQFtS1rEjmE6h0A9/339YdHInHivLbOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fucNh/52; arc=none smtp.client-ip=198.175.65.15
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1783921354; x=1815457354;
+  t=1783921506; x=1815457506;
   h=date:from:to:cc:subject:message-id;
-  bh=iehA4BVD3IGjHeCt8ROhl3LlqNonmNOrubntvkl8tQo=;
-  b=V0rvh3NEUdKxdKP27uHk8ZnvJgY4syFFSGpbHiNvieaGBuYlIzo8uvjC
-   zEAm9wDPG4ZWksUduRJtCqbSBgF1ChpFdbNiFIcYPCpMvAsY2VYyI9D4J
-   qKQRG12TVYZYW594Bwcj2/RrvgPa9EX+xbHLWcZZmj8DSFB/Odv3Hi+Mj
-   rnhtwgNjtV5nzQPwx49mpoQmoTYS8X2MXEQ3kYROfcyxLjeHCMBsko7FW
-   2IhVi0VFqbtTy1zh8fHtELa9QBvL557iT3oytwN4L5fw5ZeonuMBRpgEO
-   w3feu8kEBZdO6PvMgt4KITU7PuQJPu5bvMASDtS5ptz5fTcJR/0dOY0lZ
-   Q==;
-X-CSE-ConnectionGUID: mv7pWeYOQW+PYEnfgBd/Yw==
-X-CSE-MsgGUID: m7M9nM5MThiA5JIZFh6tPQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11841"; a="95670224"
+  bh=VLeXyO+t5U7L/1UekbXSM4uakm7KAKuYSl6khDTOwxs=;
+  b=fucNh/52aUrPa+3dAJDzUTq7HxBNp8ZatOiP5soWsnP/tiNnkn+6+UXO
+   OahYO5dI58E876WzOHSsycf27ziBqK9KTk1x1Z0s9nF/d0QKgxkB0DvMT
+   RQjQ1EMPmfT8aIlXVOcXAY74UGKecUmPoHdAg4dnUp7Z8hzP/43s4N2Xr
+   V9caWGsLAjtwPInKmcYjSbiZKuTFZiPbvlBv9S5WGA85sqxeOzDaoS/J0
+   JqOMZLIhAyZnVMWhmUjfLezABi61LvdxoJjVsOljspx5WAc1I+uRHBGsw
+   4w7cMNaaygJIEOQd0Kng685juQUiaZNs38Pv8aAy+Zdn+36fWMDVoZN0I
+   g==;
+X-CSE-ConnectionGUID: AY/6LjpyTyedk3lUuBgmiw==
+X-CSE-MsgGUID: Gn8aywG3RaSI9YziYQ3V7A==
+X-IronPort-AV: E=McAfee;i="6800,10657,11841"; a="88204861"
 X-IronPort-AV: E=Sophos;i="6.25,154,1779174000"; 
-   d="scan'208";a="95670224"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2026 22:42:22 -0700
-X-CSE-ConnectionGUID: 29rOwlcuT2yPf1swpmFi1g==
-X-CSE-MsgGUID: CBfTWRNBRPGMD7PNttFsrw==
+   d="scan'208";a="88204861"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2026 22:45:05 -0700
+X-CSE-ConnectionGUID: eK3wgHLsQ3Ch5zBYBa3MDQ==
+X-CSE-MsgGUID: nPiXhBaoS6yWw17q8cJBDQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.25,154,1779174000"; 
-   d="scan'208";a="252066853"
+   d="scan'208";a="256090836"
 Received: from lkp-server02.sh.intel.com (HELO ea128546eb3d) ([10.239.97.151])
-  by fmviesa007.fm.intel.com with ESMTP; 12 Jul 2026 22:42:20 -0700
+  by orviesa009.jf.intel.com with ESMTP; 12 Jul 2026 22:45:03 -0700
 Received: from kbuild by ea128546eb3d with local (Exim 4.98.2)
 	(envelope-from <lkp@intel.com>)
-	id 1wj9Qn-00000000LPS-1ynQ;
-	Mon, 13 Jul 2026 05:42:17 +0000
-Date: Mon, 13 Jul 2026 13:41:52 +0800
+	id 1wj9TI-00000000LPu-3k5v;
+	Mon, 13 Jul 2026 05:44:54 +0000
+Date: Mon, 13 Jul 2026 13:44:24 +0800
 From: kernel test robot <lkp@intel.com>
-To: Leon Romanovsky <leonro@nvidia.com>
+To: Leon Romanovsky <leon@kernel.org>
 Cc: Doug Ledford <dledford@redhat.com>,
  Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [rdma:wip/leon-for-rc] BUILD SUCCESS
- 31b7c700670830a0e8a4cdcd451c88a13cc5dc48
-Message-ID: <202607131340.DU7yRgLy-lkp@intel.com>
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ 15ae32c4a3551c4c9da457370bdfdd65d171e512
+Message-ID: <202607131312.6hGqBwKl-lkp@intel.com>
 User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -85,17 +85,17 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23083-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23084-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS(0.00)[m:leonro@nvidia.com,m:dledford@redhat.com,m:jgg+lists@ziepe.ca,m:linux-rdma@vger.kernel.org,m:jgg@ziepe.ca,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:leon@kernel.org,m:dledford@redhat.com,m:jgg+lists@ziepe.ca,m:linux-rdma@vger.kernel.org,m:jgg@ziepe.ca,s:lists@lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_THREE(0.00)[4];
@@ -108,16 +108,16 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[6];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma,lists];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:from_mime,intel.com:dkim,intel.com:mid,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,intel.com:from_mime,intel.com:dkim,intel.com:mid,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: B268B747505
+X-Rspamd-Queue-Id: 92D2E747520
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-rc
-branch HEAD: 31b7c700670830a0e8a4cdcd451c88a13cc5dc48  RDMA/ipoib: Drain RCU callbacks during module teardown
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: 15ae32c4a3551c4c9da457370bdfdd65d171e512  RDMA/rxe: Avoid reprocessing the current packet after the QP enters the error state
 
-elapsed time: 728m
+elapsed time: 731m
 
 configs tested: 201
 configs skipped: 5
