@@ -1,187 +1,198 @@
-Return-Path: <linux-rdma+bounces-23160-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23161-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id kjtQBGRRVWpKmwAAu9opvQ
-	(envelope-from <linux-rdma+bounces-23160-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 22:58:12 +0200
+	id O5u6MXJbVWoynQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-23161-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 23:41:06 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57EB874F292
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 22:58:11 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43D5474F501
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 23:41:06 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=NgBrxDlp;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23160-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23160-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
+	dkim=pass header.d=meta.com header.s=s2048-2025-q2 header.b="bJLRzCw/";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23161-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23161-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=meta.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 13921308B813
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 20:58:03 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 14E2E3029616
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 21:41:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C68F35DA43;
-	Mon, 13 Jul 2026 20:58:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0607362157;
+	Mon, 13 Jul 2026 21:40:58 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C93BC35E1AE
-	for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 20:57:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F39335F185
+	for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 21:40:57 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783976281; cv=none; b=rTlGo2WTUcW+F5/zKN74LlJhrFJt28ejmpmHkrlbLgxKN83C0bAFWsBjEMCvD3CXbpxuJqcEfGh1CvqzSs0qg1ATNXjwkrvVshIkpJYHchiP1bpLjzUid/47Mt7IzbeJXKwCBFzQ2L5jJQueEFwx/Tyl3m7/8GRcr1SlEiBi974=
+	t=1783978858; cv=none; b=owF49rc/CQPVUWGUi9xQyMPkoUDVNi6S06ypXVFeqdQs5+uUuvlYAElGF8+koMhGAx9y+jpUFUASPJ3eOZWWaIsKIcIdJx/cz8HknE9V7d/TnxCVcg1YXvAPvJBvibywo2CoNGszvO2EmAhZFMEI3Zy6IaPlti95HtiMsVGhu/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783976281; c=relaxed/simple;
-	bh=D3eahPIAIk1fvhyOZkYEJP6bQ6n0at+bhFjOvvkmzpo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZUnr3sIqyRU0OHbp1QRBE77py2vECuVMuh3dnW7GuSbw/J/qBE20TWvNn/84STTt+8KZWZ/1qus83jiGVfEqeBTbEkzV9rlEBSLUUsDjXAIltTMtQvf4Xd3AVLhSVqJcepNDSVCFRd+ub387/ke+3fdn2JgX92l6SQ5tRS0F4Sg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NgBrxDlp; arc=none smtp.client-ip=209.85.216.54
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-384c94c9414so272113a91.3
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 13:57:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783976279; x=1784581079; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :content-type:mime-version:references:message-id:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=oNqruOZIzwruIpGvkzB4DJORZxeTGWU0clCn+vXfCzI=;
-        b=NgBrxDlpDoknd6Zv5Ca/Oeewg5yuANlXmHDRnnhqXDWhgDP2P44OrR0s0/MTMy34mZ
-         n3zXMmcIfGoNR7Sd680LfEr1/geQl8EGetahP7W6fUt1MxIqIdI/L1VUVBggJAmQ51v0
-         jXoSwvwvp/CrIoMSWg71PL3DRpm2hdJGate6aUcUOOKGl8xTstjSeqi6gEKS96UO7Zjd
-         lb2a22B/uNSSHg5FZmQ48yi/TVkiA9sVtHA1/za6mSwdA5n6CL1pr/nmcJGtyJ1Z/Prh
-         VUKEcE5b/3E9zbq5R57HBRuSsc33Y7ePwJV08k/0UBOriBpPl9MhiDN0KZiEmLww+N0n
-         mgVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783976279; x=1784581079;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :content-type:mime-version:references:message-id:subject:cc:to:from
-         :date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=oNqruOZIzwruIpGvkzB4DJORZxeTGWU0clCn+vXfCzI=;
-        b=FN0HRDUz3Ax5Z0MDmlJUOHsRuMlQY5d+UheFHV6b551rqX6B19BMX189Ap82GuL4hR
-         fgpzBRetnrOmumFWWYsAt1v/Z9Zop7UB1hhLoCKFMgCeBxjrb6Ds8ByMJoUSLWRDGSkc
-         YBb4DYv3kDQk8jL4LPKlAlwu1/hfM3oDoA8r+Wuik2pNC7de5YMXyQ48JCalYpkC2UIg
-         tu9ReUCHCksEgu/pf3rBqu/tPG+Nxa9twZBbwVkbA1Bu08xC4NBhgSuPVz2lVnDhFwZU
-         MZIAwEySOCJ+2gZC0tsTyJni3PLF1ZdsLwx5m/Mlt3jW+L2fj+NS87IHecbxI6e8qf+O
-         8YgA==
-X-Forwarded-Encrypted: i=1; AHgh+Rr05gYbXnNrF1pPKLOZsgR598cSoyBUZLiTnOkVLG+pRfzeA4qIfvqm8HgU1Ix2JGI2lIHrwE5mY3Qn@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzogi+qlWtl1Kx/wItxmuAzKc+6j85zrwWdwglSP7bnRmvNL2+z
-	Wlbx13kPLFT2KkCZApZhRrvKlN2dvePzOP+HNsLP0h4PEj3MzqzHEm0k
-X-Gm-Gg: AfdE7cm6aYc6hVnprNKesL34Ll9VPsidFuNq7v33lxXnsAvS/KlQfnaR0vYsSfX/yk4
-	9gmH9iLn6hVlJJIin420XbEdMcU9xQmzh9CCLFeZdf5kP6qJkdgcxljRP5Y6L1OIHg2CSTgtw/R
-	Y9j9+bJ8PnFEVL0Ng969FPEPZxy5BJ3h7mpcE7d2a5UWD/lHMaVjm8Xtnuj6yEHlv+iP0W5mw8d
-	xMGpOc4HGj1Nd+kFhISLeHKEhbv9i8GJGb3jf/aGWSM0uZsA8klKobp04tz3Qfk1Ssin7dYRdKw
-	aPonClum6hmwhmwLM9zfpEwnrP/q3x1g8Nf/J1N7FpdTBEtVjvfKLSOjWLs6eW13ONBWmThz/QH
-	AfwmUHeiOnojPWdec0skqvfKa0g3RstL/qFl0uaV7ZDDggtHOj9kEDVbqIzBrRjYdVw+fXhqfRg
-	t7xwVLOmkzyL895rkOIbzDU1Ww9blmo8gS4jXfewjiT48yDY+eHLu/wmXAmpHJ+Y5+XQ==
-X-Received: by 2002:a17:90a:d88b:b0:381:528a:808c with SMTP id 98e67ed59e1d1-38dc75e3d4fmr9572711a91.12.1783976279067;
-        Mon, 13 Jul 2026 13:57:59 -0700 (PDT)
-Received: from skinsburskii (c-98-225-44-182.hsd1.wa.comcast.net. [98.225.44.182])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-38e172b6ce6sm403816a91.1.2026.07.13.13.57.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2026 13:57:58 -0700 (PDT)
-Date: Mon, 13 Jul 2026 13:57:55 -0700
-From: Stanislav Kinsburskii <skinsburskii@gmail.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: airlied@gmail.com, akhilesh@ee.iitb.ac.in, corbet@lwn.net,
-	dakr@kernel.org, david@kernel.org, decui@microsoft.com,
-	haiyangz@microsoft.com, jgg@ziepe.ca, kees@kernel.org,
-	kys@microsoft.com, leon@kernel.org, liam@infradead.org,
-	lizhi.hou@amd.com, ljs@kernel.org, longli@microsoft.com,
-	lyude@redhat.com, maarten.lankhorst@linux.intel.com,
-	mamin506@gmail.com, mhocko@suse.com, mripard@kernel.org,
-	nouveau@lists.freedesktop.org, ogabbay@kernel.org, oleg@redhat.com,
-	rppt@kernel.org, shuah@kernel.org, simona@ffwll.ch,
-	skhan@linuxfoundation.org, surenb@google.com, tzimmermann@suse.de,
-	vbabka@kernel.org, wei.liu@kernel.org,
-	dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-	linux-doc@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v8 0/8] mm/hmm: Add mmap lock-drop support for
- userfaultfd-backed mappings
-Message-ID: <alVRU38lMfvmUFqJ@skinsburskii>
-References: <178371866223.900500.12312667138651735591.stgit@skinsburskii>
- <20260710151151.1e193eedd0cf2591ae392f76@linux-foundation.org>
- <alG2-RSitzPWClAX@skinsburskii>
- <20260710224950.53bcb43ce7e564f07a1f6a8c@linux-foundation.org>
+	s=arc-20240116; t=1783978858; c=relaxed/simple;
+	bh=+pxD5k7mIuoIfPyIAdkRZhf8dNXAZs1a8TEGYu19aSY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cLUzqNFCG36Oh8Z/V6LuQT0A9rj8p8ysrESAKpUCf7qWK+mNP77ZkjGn9LAfJEwwb7QdGQIH4+xkqWa+Gji5SbyfVXVdJJdFf1JXZTyJIYhHy/rFuZgfJ0XkQqAzysHOhTsGMUkI/kkK6gbFaztrmRxlW3ijbYL7YpSW9GRunNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=bJLRzCw/; arc=none smtp.client-ip=67.231.145.42
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 66DJ9qV73104455
+	for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 14:40:56 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=s2048-2025-q2; bh=e/Qd4NYOi1yVYkgD50
+	jVlqte4xmtaIr5xmOMJIUWSBU=; b=bJLRzCw/5kmvggnfNZ7GZGShBTjZ5+XUTM
+	R3fdc1odRaFD6iwGDM8aD6/yFJP72XmKiWVipU9TjZ92a3shsTLbvExFOx3mYWpJ
+	z41Vq0FRQ/9FJjFO4jwFsGguN1mpJ7hC84UlTsrl2a2TafV9E9UXpnVplfOrvjO3
+	5jBgemVwADJURFGHCl/YUg8mAlZI+GVnBTEmG22WiennCtsS5aALhquQbsqN4JJW
+	G+sfxpSv4FNSkENTrYRw/ImfMRD0YvkRuvX2YrOwJTvo4ZN1rE2IgRXD4utj4f1y
+	5SZdiq409SfR1exzzzzbozm9xUZMw1Bwa3d51w/1zMKMFyHBlFjg==
+Received: from mail.thefacebook.com ([163.114.134.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4fbh514h5d-4
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 14:40:56 -0700 (PDT)
+Received: from twshared10463.03.snb2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c08b:78::c78f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.2562.41; Mon, 13 Jul 2026 21:40:54 +0000
+Received: by devbig259.ftw1.facebook.com (Postfix, from userid 664516)
+	id 54AC441FE14FD; Mon, 13 Jul 2026 14:40:30 -0700 (PDT)
+From: Zhiping Zhang <zhipingz@meta.com>
+To: Bjorn Helgaas <bhelgaas@google.com>, <linux-pci@vger.kernel.org>
+CC: Christian Konig <christian.koenig@amd.com>,
+        Alex Williamson
+	<alex@shazbot.org>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Zhiping Zhang <zhipingz@meta.com>
+Subject: [PATCH v1] PCI/TPH: fold reserved completer encoding in get_rp_completer_type()
+Date: Mon, 13 Jul 2026 14:40:25 -0700
+Message-ID: <20260713214026.793795-1-zhipingz@meta.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260710224950.53bcb43ce7e564f07a1f6a8c@linux-foundation.org>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzEzMDIyMiBTYWx0ZWRfX2YWCYpD6gu/Z
+ /JC0FDcwD4NlMxXvufJY7A/Tsgb9TWKkv/C95HkrFA5jlDPIAeBMVqdQIEDmHK2jQFlocsIOmAh
+ 34jQIbOsfPhnoR93fxQSaxGWwd1scCiRtP4w8CWRkwWJK8gSNzV4KwrF31H8vF0cqeseQaKk09s
+ qyaEhEk7XPh1mAZfmTKrJqv+ypqWoTGoa89X5MVtalkPngU45nhIZjZQ38Ql3afUoc+A+5WDOqZ
+ aZ9QUQYDsW0uxgada+olULVlKnGJH4P24CJx/BhkGInWD1n/tCO4ewnU27HwL63OtlSBKmrCI0q
+ NFG+qprAS3P1iSaH5rplZmgmlKoFFJgiKMzet/7nUV+jkRP0qjN6rpeGvwcXmZo879oJO17TNTy
+ EyNOP62ADP2amMxdQR9AqVTR0SxmiaxvcAnpzEPg7K/sKpc77SsjA2xwAe9xdWzI15iZtfRZHBz
+ N4HVVCgSGNZiaEQH+wQ==
+X-Authority-Analysis: v=2.4 cv=I4VVgtgg c=1 sm=1 tr=0 ts=6a555b68 cx=c_pps
+ a=CB4LiSf2rd0gKozIdrpkBw==:117 a=CB4LiSf2rd0gKozIdrpkBw==:17
+ a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=7x6HtfJdh03M6CCDgxCd:22
+ a=8elwO82fXORLTBIkMd32:22 a=VabnemYjAAAA:8 a=SdC2vBNBQt3qShdCGKMA:9
+ a=gKebqoRLp9LExxC7YDUY:22
+X-Proofpoint-GUID: 6web7WdmPJIBrT5s02RWrOVawitbO1gd
+X-Proofpoint-ORIG-GUID: 6web7WdmPJIBrT5s02RWrOVawitbO1gd
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzEzMDIyMiBTYWx0ZWRfX0ecOr6jpmat/
+ ce/H8yqp5aDVzMJIjUuwDFrd3qNuudUsbZa2m2m+L5K5pjZYxexOpi6qGIyeuxFg5OhiEhklLo6
+ PUoaILMgxwGj2FHvZnZqzQLm9Vy2miQ=
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-07-13_05,2026-07-10_01,2025-10-01_01
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [2.34 / 15.00];
-	MID_END_EQ_FROM_USER_PART(4.00)[];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[meta.com:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[meta.com,reject];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[meta.com:s=s2048-2025-q2];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[39];
-	TAGGED_FROM(0.00)[bounces-23160-lists,linux-rdma=lfdr.de];
-	FREEMAIL_FROM(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-23161-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:airlied@gmail.com,m:akhilesh@ee.iitb.ac.in,m:corbet@lwn.net,m:dakr@kernel.org,m:david@kernel.org,m:decui@microsoft.com,m:haiyangz@microsoft.com,m:jgg@ziepe.ca,m:kees@kernel.org,m:kys@microsoft.com,m:leon@kernel.org,m:liam@infradead.org,m:lizhi.hou@amd.com,m:ljs@kernel.org,m:longli@microsoft.com,m:lyude@redhat.com,m:maarten.lankhorst@linux.intel.com,m:mamin506@gmail.com,m:mhocko@suse.com,m:mripard@kernel.org,m:nouveau@lists.freedesktop.org,m:ogabbay@kernel.org,m:oleg@redhat.com,m:rppt@kernel.org,m:shuah@kernel.org,m:simona@ffwll.ch,m:skhan@linuxfoundation.org,m:surenb@google.com,m:tzimmermann@suse.de,m:vbabka@kernel.org,m:wei.liu@kernel.org,m:dri-devel@lists.freedesktop.org,m:linux-mm@kvack.org,m:linux-doc@vger.kernel.org,m:linux-hyperv@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:linux-rdma@vger.kernel.org,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:bhelgaas@google.com,m:linux-pci@vger.kernel.org,m:christian.koenig@amd.com,m:alex@shazbot.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:zhipingz@meta.com,s:lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[zhipingz@meta.com,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[gmail.com,ee.iitb.ac.in,lwn.net,kernel.org,microsoft.com,ziepe.ca,infradead.org,amd.com,redhat.com,linux.intel.com,suse.com,lists.freedesktop.org,ffwll.ch,linuxfoundation.org,google.com,suse.de,kvack.org,vger.kernel.org];
-	FORGED_SENDER(0.00)[skinsburskii@gmail.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	DKIM_TRACE(0.00)[meta.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[skinsburskii@gmail.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[zhipingz@meta.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,meta.com:from_mime,meta.com:mid,meta.com:email,meta.com:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	TO_DN_SOME(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[skinsburskii:mid,vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 57EB874F292
+X-Rspamd-Queue-Id: 43D5474F501
 
-On Fri, Jul 10, 2026 at 10:49:50PM -0700, Andrew Morton wrote:
-> On Fri, 10 Jul 2026 20:22:33 -0700 Stanislav Kinsburskii <skinsburskii@gmail.com> wrote:
-> 
-> > On Fri, Jul 10, 2026 at 03:11:51PM -0700, Andrew Morton wrote:
-> > > On Fri, 10 Jul 2026 14:26:20 -0700 Stanislav Kinsburskii <skinsburskii@gmail.com> wrote:
-> > > 
-> > > > This series extends the HMM framework to support userfaultfd-backed memory
-> > > > by allowing the mmap read lock to be dropped during hmm_range_fault().
-> > > 
-> > > Thanks.  This seems fairly mature and mostly-reviewed so I'll give it a
-> > > spin in mm.git's mm-new branch.
-> > > 
-> > > Unfortunately Sashiko wasn't able to apply this or v7.  I'm not sure
-> > > what base you were using.  Hopefully there's a reason for a v9 so we
-> > > can retry this.
-> > > 
-> > 
-> > I rebased this series on top of mm-new right before sending it out.
-> > Should I have used a different branch?
-> 
-> mm-new is good - Sashiko attempts that.  But it's changing rapidly at
-> this point in the development cycle.
-> 
+get_rp_completer_type() returns the Root Port's "TPH Completer
+Supported" field (bits 13:12 of Device Capabilities 2) verbatim. The
+0b10 encoding is reserved, but pcie_enable_tph() feeds the raw value
+into the requester type:
 
-I’d like to send another revision addressing a few comments and also
-replace the `max/max_t` check with something simpler.
+	pdev->tph_req_type =3D min(pdev->tph_req_type, rp_req_type);
 
-Which branch should I base it on so that Sashiko can apply it
-successfully?
+and later writes tph_req_type to the TPH Requester Enable field, which
+only defines 0b00 (disable), 0b01 (TPH only) and 0b11 (extended TPH).
+If a Root Port ever presents the reserved 0b10, that value could be
+written back to hardware, risking undefined behavior.
 
-Or would it be better to send fixups against `mm-new`?
+Fold the reserved encoding into "not supported" so only the three
+defined values can propagate.
 
-Thanks, Stanislav
+Fixes: f69767a1ada3 ("PCI: Add TLP Processing Hints (TPH) support")
+Signed-off-by: Zhiping Zhang <zhipingz@meta.com>
+---
+ drivers/pci/tph.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pci/tph.c b/drivers/pci/tph.c
+index 655ffd60e62f..28c8d6676fc2 100644
+--- a/drivers/pci/tph.c
++++ b/drivers/pci/tph.c
+@@ -196,7 +196,14 @@ u16 pcie_tph_get_st_table_size(struct pci_dev *pdev)
+ }
+ EXPORT_SYMBOL(pcie_tph_get_st_table_size);
+=20
+-/* Return device's Root Port completer capability */
++/*
++ * Return device's Root Port completer capability.
++ *
++ * The "TPH Completer Supported" field (bits 13:12 of Device Capabilitie=
+s 2)
++ * has a reserved 0b10 encoding. Fold it into "not supported" so only th=
+e
++ * three defined values can propagate into pdev->tph_req_type via the mi=
+n()
++ * in pcie_enable_tph().
++ */
+ static u8 get_rp_completer_type(struct pci_dev *pdev)
+ {
+ 	struct pci_dev *rp;
+@@ -211,7 +218,14 @@ static u8 get_rp_completer_type(struct pci_dev *pdev=
+)
+ 	if (ret)
+ 		return 0;
+=20
+-	return FIELD_GET(PCI_EXP_DEVCAP2_TPH_COMP_MASK, reg);
++	switch (FIELD_GET(PCI_EXP_DEVCAP2_TPH_COMP_MASK, reg)) {
++	case PCI_EXP_DEVCAP2_TPH_COMP_TPH_ONLY:
++		return PCI_EXP_DEVCAP2_TPH_COMP_TPH_ONLY;
++	case PCI_EXP_DEVCAP2_TPH_COMP_EXT_TPH:
++		return PCI_EXP_DEVCAP2_TPH_COMP_EXT_TPH;
++	default:
++		return PCI_EXP_DEVCAP2_TPH_COMP_NONE;
++	}
+ }
+=20
+ /* Write tag to ST table - Return 0 if OK, otherwise -errno */
+--=20
+2.53.0-Meta
+
 
