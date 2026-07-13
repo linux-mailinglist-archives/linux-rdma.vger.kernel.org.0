@@ -1,61 +1,104 @@
-Return-Path: <linux-rdma+bounces-23130-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23098-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id x3KnAqHlVGrXggAAu9opvQ
-	(envelope-from <linux-rdma+bounces-23130-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 15:18:25 +0200
+	id asiVLUKlVGrxogMAu9opvQ
+	(envelope-from <linux-rdma+bounces-23098-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 10:43:46 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06E7A74B73A
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 15:18:24 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15051748DAC
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 10:43:46 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=kPLpl8ST;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23130-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23130-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.dev;
+	dkim=pass header.d=broadcom.com header.s=google header.b="avwb4/bs";
+	dmarc=pass (policy=reject) header.from=broadcom.com;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23098-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23098-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 3DB5C302D8C4
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 13:13:35 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 79E2C303A262
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 08:36:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3B241C314;
-	Mon, 13 Jul 2026 13:13:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B36843B3898;
+	Mon, 13 Jul 2026 08:36:46 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f100.google.com (mail-qv1-f100.google.com [209.85.219.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5E6541DEDD
-	for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 13:13:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E733B2FFD
+	for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 08:36:44 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783948392; cv=none; b=M1UtI2McwuUH3gDzd6MPga/f2xccCpEG/5Hmvy6w6RBtDS4b3+mB23RGnO34yenNiJz8CZSW8qXiJtWNqT4izpxbMpb9Zz2SH6f2GHX+FMnbff/NrOREwBc61iXnfFUDw2sdJgG4I+w2Y0WLA0eW2EZzOq3iB8z+GIULzq5BSSM=
+	t=1783931806; cv=none; b=cKnhJjv4e7brSjb6OYlbB4XQMbmImfdFJM6aEDXdmeSDVAhRgKrKeY/cgApfFmE+G4DMVN0+9IUa3S/QkoigxiWIezSUyu7k8sfc9zLekc1eWLgFf8uAN9gU7upIbikwvQYJeP7hMw4SQM+taxL38pv96veSdKXnsSua2esB40M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783948392; c=relaxed/simple;
-	bh=4oU5vwBqC2s/OF/BgDvlhZIxT9V5eYNC6nP5Ld7hIpo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DpYrXMlj9kJMSQDdfcEaZHak90vIb+eFqRoHDgLnKcrCrRsxH0HQWqx+StQP2NECdefsbGb3ivbNbevBh3wirg5wWolgQhJXKlnuB8/I1DFgFzE7jveyCavq/Rp1q0QqvL6KWZcsI34HkVk/k9wYF+CnZcRuRrd9t+Y/s7ldB3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kPLpl8ST; arc=none smtp.client-ip=95.215.58.182
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1783948389;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z0mFihgDhXIZEpH6Gz5fyyFppsNsRX070ZVmoxYxoXc=;
-	b=kPLpl8ST14cpQM7/xvabVO301L57dUGlUm983QBLU1u6wp3X2YD+ddU5ekGzzwxggSXjXP
-	fsd6GwN0WQxRWQFHZdF7/nL5m18drfwh2N5zzvVLCrdA3JKdh1T+sy5N0C0grWxPckhYSr
-	pbKDJStVm8uDEvuAJE1N84bpkvBz8Hw=
-From: Tao Cui <cui.tao@linux.dev>
-To: dsahern@kernel.org,
-	leonro@nvidia.com
+	s=arc-20240116; t=1783931806; c=relaxed/simple;
+	bh=HG+/qk28NkqEENH9vSIfpCPrNpYsek3dWwcck0jISjM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IPlJuPSSgq88TLE/rOKNSCxYF/vzbcpUSCaXevWRiCzolK7I1hFQm+JVKZgh/gPHTIh5iYTm3QcWJ5LSzDt4GxCalAcnW65SQRFckVXfE4uY16JZt6yiDTy7EQ1/9OQItclFGBz12ivj7Mj6sY4dM8cP6+TH7hf+1EjLVKHSZC8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=avwb4/bs; arc=none smtp.client-ip=209.85.219.100
+Received: by mail-qv1-f100.google.com with SMTP id 6a1803df08f44-8e5be46f663so17583866d6.0
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 01:36:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783931804; x=1784536604;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=ladGK4bGXxd5ziYDhdNILHhc2GXSWCy3TRc/PfJYMck=;
+        b=X4In6cu7+akHHxhOsYnAjK4kVgyGQoqfF6H0vNsJr6g+mS+2n0s3C/lxyvHJrAqajH
+         xaWzIsveoN3psnCKjj9AEMJdG27FTYV33zbmYokG+8HS1SU83iFUvbLzRJcGRXEy0Br0
+         H4BiKhm3h2Lupm4J5RnU/8Yq3QVMFpmCO62Tz/dQnKVG+9u2o7X9r111gQL8/f/ii7DI
+         xFfPaTvornXJe4v/wNJldqQSZqIdpTIL8Ojiv3XExNlp8OicKDzaFtgjnOb6gBkdkD9D
+         ApNrtUDxr90W7FSElaY+vWEGih4BIZRHHfmPrtp5RRW03uyDSUvwQ520lr/zeiDBwq8P
+         DCiw==
+X-Gm-Message-State: AOJu0YwjzkmzA+4ntTkTzW5/QcoZIEpUyHedNowhW0O33ILlbhPGCaUE
+	O21MsFW5ggxRjocHQvJenZlaujgfX/2SLsMF2bxMQmEH/G8qeFbBRrmDbDk6ADrW1Udl3SKrpzO
+	lQ9qlgXLMN2GfM1aR407njfYLuVrnUUcNicdbk6yHWwiPQYVChVA0b5gy5s/YJ5hwVQBc5a77nX
+	wKtv7H9FORyv81NuW4qlRdbd0gc+bFfzZofMwizm7EbsN5L5Nw55Cq8xoVOmBOEiDYc8oUKJh2E
+	XQntdNlFbGXMWojNQ==
+X-Gm-Gg: AfdE7cnjzfjuQkZYmtoMaSqatgVMDieqar6Uc+ZyOIpQtgSHgrYkOO1qkc6jEHmeWU4
+	7a6eFEnNGRuS7nqFtaRs0r5RCPgptMB6z3TEY8MBfRryZrILi0iBIkra+oXohkd0X357wJHHT/I
+	tEPOPFm81O7Jd66UuTjTQsZ66zR2jvRLts+CRARkoioR7Ee0JUIKGvf/y7ZD8vxKf0FIyW10fC2
+	ipTm4KHHndJAcg9ZGJzmgdT+DIj1MQMbyzYyA4DV9BlMlNCRvsYkg/N/bvLRMimBQNCAIKJw7OH
+	8B+gQKwlocXX16Cs9GM4xUHu8PI8X0LSNGvz+3vFj+wKoLKn+m57pfD6xhyltBJh4AEIN7LEcbt
+	5HFog5+v8t5Pfwkt4Kigxk/+YBnqP49wCbhQCEftifRJpxYAercTLkXB+t1DHKve0DXPDFcfX4x
+	y8iyORCnR2navZ5AlSZR6iB1sIbuS3TU03XgTFnZLlDJHUNnUAzg==
+X-Received: by 2002:ac8:7c56:0:b0:51c:555:7dea with SMTP id d75a77b69052e-51cbf0e196cmr82082391cf.30.1783931803849;
+        Mon, 13 Jul 2026 01:36:43 -0700 (PDT)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-116.dlp.protect.broadcom.com. [144.49.247.116])
+        by smtp-relay.gmail.com with ESMTPS id 6a1803df08f44-8ffd5bbce4bsm6595906d6.2.2026.07.13.01.36.43
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 13 Jul 2026 01:36:43 -0700 (PDT)
+X-Relaying-Domain: broadcom.com
+X-CFilter-Loop: Reflected
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-2ca5d2474c7so82714955ad.2
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 01:36:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1783931802; x=1784536602; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=ladGK4bGXxd5ziYDhdNILHhc2GXSWCy3TRc/PfJYMck=;
+        b=avwb4/bselpZxa271ZcNzubqpDMGZM58LdDklK7xJtdUAjfhDIaFGbwRA30sSVeJ/h
+         VUO6TLE/XvQdmIP/YHZMpOoWJo0/boybjwTYAzNAAQ9EzgQ5w1PkFXngqdLWkNp8RaXj
+         UA7J+Po7D1EZPe9luG2FwV+P0SmapUh8FY9DA=
+X-Received: by 2002:a17:903:388c:b0:2c9:e9c4:82c1 with SMTP id d9443c01a7336-2ce9ec0ef3amr81934675ad.26.1783931802518;
+        Mon, 13 Jul 2026 01:36:42 -0700 (PDT)
+X-Received: by 2002:a17:903:388c:b0:2c9:e9c4:82c1 with SMTP id d9443c01a7336-2ce9ec0ef3amr81934435ad.26.1783931801942;
+        Mon, 13 Jul 2026 01:36:41 -0700 (PDT)
+Received: from dhcp-10-123-156-114.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ccc9d3bbaesm95005385ad.57.2026.07.13.01.36.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2026 01:36:41 -0700 (PDT)
+From: Selvin Xavier <selvin.xavier@broadcom.com>
+To: leon@kernel.org,
+	jgg@ziepe.ca
 Cc: linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Tao Cui <cuitao@kylinos.cn>
-Subject: [PATCH iproute2-next v6 2/2] rdma: display resource limits in curr/max format
-Date: Mon, 13 Jul 2026 21:12:38 +0800
-Message-ID: <20260713131238.955962-3-cui.tao@linux.dev>
-In-Reply-To: <20260713131238.955962-1-cui.tao@linux.dev>
-References: <20260713131238.955962-1-cui.tao@linux.dev>
+	andrew.gospodarek@broadcom.com,
+	kalesh-anakkur.purayil@broadcom.com,
+	sriharsha.basavapatna@broadcom.com,
+	alhouseenyousef@gmail.com,
+	Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH for-next v3 0/4]  RDMA/bnxt_re: Update the toggle page handling of CQ and SRQ
+Date: Mon, 13 Jul 2026 06:58:26 -0700
+Message-Id: <20260713135830.1934471-1-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -63,107 +106,86 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[broadcom.com:D:+];
+	DATE_IN_FUTURE(4.00)[5];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[broadcom.com,reject];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[broadcom.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_SOME(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,broadcom.com,gmail.com];
+	TAGGED_FROM(0.00)[bounces-23098-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23130-lists,linux-rdma=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:dsahern@kernel.org,m:leonro@nvidia.com,m:linux-rdma@vger.kernel.org,m:netdev@vger.kernel.org,m:cuitao@kylinos.cn,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[cui.tao@linux.dev,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:leon@kernel.org,m:jgg@ziepe.ca,m:linux-rdma@vger.kernel.org,m:andrew.gospodarek@broadcom.com,m:kalesh-anakkur.purayil@broadcom.com,m:sriharsha.basavapatna@broadcom.com,m:alhouseenyousef@gmail.com,m:selvin.xavier@broadcom.com,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[selvin.xavier@broadcom.com,linux-rdma@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
+	FROM_NEQ_ENVFROM(0.00)[selvin.xavier@broadcom.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[broadcom.com:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cui.tao@linux.dev,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,linux.dev:from_mime,linux.dev:dkim,linux.dev:mid,kylinos.cn:email]
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 06E7A74B73A
+X-Rspamd-Queue-Id: 15051748DAC
 
-From: Tao Cui <cuitao@kylinos.cn>
+Based on the suggestion from Jason (
+https://patchwork.kernel.org/project/linux-rdma/patch/20260615224751.232802-5-selvin.xavier@broadcom.com/)
+, adding the uverb object to retrieve the CQ an SRQ structures while getting the
+toggle mem. To work with older rdma-core, retain the existing code with
+modification.
 
-Parse the new RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_MAX netlink attribute
-to show resource limits alongside current counts in curr/max format:
+The rdma-core pull request is here: https://github.com/linux-rdma/rdma-core/pull/1761
 
-  Before: 0: mlx5_0: qp 123  cq 45  mr 200  pd 10
-  After:  0: mlx5_0: qp 123/131072  cq 45/65536  mr 200/1000000  pd 10/32768
+Please review and apply the series.
 
-JSON output provides both current and max fields per resource type
-(e.g. "qp": 123, "qp-max": 131072). Backward compatible: no output
-change when kernel lacks the new attribute.
+Thanks,
+Selvin Xavier
 
-Signed-off-by: Tao Cui <cuitao@kylinos.cn>
-Link: https://lore.kernel.org/all/20260615003646.168704-1-cui.tao@linux.dev/
----
- rdma/res.c   | 21 ++++++++++++++++++++-
- rdma/utils.c |  1 +
- 2 files changed, 21 insertions(+), 1 deletion(-)
+v2 -> v3:
+ - Patch2 fixes toggle-page lifetime by making the rdma_user_mmap_entry
+   the sole owner of the page
+ - Patch 3 adds a reference to the uobject in the legacy path to avoid
+   the usage of the page va after the resource destroy.
 
-diff --git a/rdma/res.c b/rdma/res.c
-index 062f0007..046935e2 100644
---- a/rdma/res.c
-+++ b/rdma/res.c
-@@ -55,7 +55,26 @@ static int res_print_summary(struct nlattr **tb)
- 
- 		name = mnl_attr_get_str(nla_line[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_NAME]);
- 		curr = mnl_attr_get_u64(nla_line[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_CURR]);
--		res_print_u64(name, curr, nla_line[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_CURR]);
-+		if (nla_line[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_MAX]) {
-+			uint64_t max;
-+			char max_name[64];
-+
-+			max = mnl_attr_get_u64(
-+				nla_line[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_MAX]);
-+			snprintf(max_name, sizeof(max_name), "%s-max", name);
-+			print_u64(PRINT_JSON, name, NULL, curr);
-+			print_u64(PRINT_JSON, max_name, NULL, max);
-+			if (!is_json_context()) {
-+				char buf[64];
-+
-+				snprintf(buf, sizeof(buf), "%s %" PRIu64 "/%" PRIu64 " ",
-+					 name, curr, max);
-+				pr_out("%s", buf);
-+			}
-+		} else {
-+			res_print_u64(name, curr,
-+				      nla_line[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_CURR]);
-+		}
- 	}
- 	return 0;
- }
-diff --git a/rdma/utils.c b/rdma/utils.c
-index 87003b2c..90ea1c55 100644
---- a/rdma/utils.c
-+++ b/rdma/utils.c
-@@ -480,6 +480,7 @@ static const enum mnl_attr_data_type nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
- 	[RDMA_NLDEV_ATTR_EVENT_TYPE] = MNL_TYPE_U8,
- 	[RDMA_NLDEV_SYS_ATTR_MONITOR_MODE] = MNL_TYPE_U8,
- 	[RDMA_NLDEV_ATTR_STAT_OPCOUNTER_ENABLED] = MNL_TYPE_U8,
-+	[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_MAX] = MNL_TYPE_U64,
- };
- 
- static int rd_attr_check(const struct nlattr *attr, int *typep)
+v1->v2 :
+    - Fix the error cleanup for SRQ and CQ create paths
+    - Fix a synchronization issue for the legacy path which can cause a
+      UAF
+
+Selvin Xavier (4):
+  RDMA/bnxt_re: Replace per-device hash tables with per-context XArrays
+  RDMA/bnxt_re: Defer toggle page free to rdma_user_mmap_entry teardown
+  RDMA/bnxt_re: Fix toggle page UAF in GET_TOGGLE_MEM with mmap entry
+    refcount
+  RDMA/bnxt_re: Add uverbs object handle path for CQ/SRQ toggle page
+
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h  |   5 -
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 108 +++++++++++---
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h |   8 +-
+ drivers/infiniband/hw/bnxt_re/main.c     |   4 -
+ drivers/infiniband/hw/bnxt_re/uapi.c     | 176 ++++++++++++++---------
+ include/uapi/rdma/bnxt_re-abi.h          |   4 +
+ 6 files changed, 211 insertions(+), 94 deletions(-)
+
 -- 
-2.43.0
+2.39.3
 
 
