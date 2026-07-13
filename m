@@ -1,191 +1,121 @@
-Return-Path: <linux-rdma+bounces-23149-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23150-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id f9Q2OcEYVWqvjwAAu9opvQ
-	(envelope-from <linux-rdma+bounces-23149-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 18:56:33 +0200
+	id IxofKFwZVWrBjwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-23150-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 18:59:08 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id A037374DCA4
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 18:56:33 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA27674DCE0
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 18:59:07 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=pZ6p7Hie;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23149-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23149-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=GXP3A8eJ;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23150-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23150-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 6F8CF30254D3
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 16:56:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2E1823055551
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 16:58:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5A45331EC0;
-	Mon, 13 Jul 2026 16:56:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF2F1331EB5;
+	Mon, 13 Jul 2026 16:58:35 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F393081D6
-	for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 16:56:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EA2326E165;
+	Mon, 13 Jul 2026 16:58:34 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783961777; cv=none; b=h5fO+PPRHW9rqPaXYa3Ui3cj5+5OOfn13jk1kJOIPa3kCj4he9pTdUu66KlDe0T024Ur7UdP1+KxCAe9ftSXQkjtqvUvfg/XmbVWDIafKvTyOan9D/kwjFSXaJFg346iIORLcuHJFFbsjXSHp2s8fkbRo6TYvtMhP+Y1sgt1hoA=
+	t=1783961915; cv=none; b=oSg020pHraeMjdk4E13xBhhgnOk7/jbMvxbBrQ9YzoAzGCJo7leboS70IrPliWlxfqEj5CmNaE0ihLqQp+gKTuOPqtJaUIoyYL6aOLwpyRr2d/xX7ksTHvdZOTMirQNETD01fwcqsBuNkbW15Ri00FzVS16Z78WFZIRc5mGcotQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783961777; c=relaxed/simple;
-	bh=wYe7kym3kczWr73lptfB1bTj81zD5wvAqQaXYZ4DW5M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IwpLszAuZcRowUgzyIkDfyO4/Fw730uR1YlbVnUHkUv4rlkVr8VcF0aAhpjcT7zQgCjGNPUtZmz8+TIFf/wPwjs+ODhzMoskYRu6dl11X48iOh410zLlYUMyXqSz5x35WY7fK9qaeZ6tNVZXzw0goHE4EAcjrktbzqqttxxxsDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=pZ6p7Hie; arc=none smtp.client-ip=209.85.216.44
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-388b404ea89so105081a91.0
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 09:56:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783961775; x=1784566575; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :content-type:mime-version:references:message-id:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=+wyTThpzWI663yfCX7yR0ohXV0bj+fwjL2+oCBrswHw=;
-        b=pZ6p7Hie+ZuMyCjYswdbNFYtHYwpTiPQJeBxQDgIy7EmtqA3YwrisiUmulxHWcgh7p
-         mSzANG/LXXobjGulyTi2kSjzBvp+JDDbq1wXipDZgrSJWUj1crZjkt2sxlTMK/zueLf7
-         5yPmfr75fWWklrWpWcDCcHrcGG157arPtZtcY2FARd/IaVTlv1jRZfHH+eqHXs12qk3G
-         A1xBemqKnmwrdUlPtwZs8SH4WDWAbkeFi8shvGawPWatfrORXtRU+Zq89GODYbZc/wYa
-         2Pe75HEhtpy9RKIUzBPRBHmH6bodAKIQlnOkVGuH4YWIkHJyDGjDsclp+F/R+JU8qqkD
-         UxpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783961775; x=1784566575;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :content-type:mime-version:references:message-id:subject:cc:to:from
-         :date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=+wyTThpzWI663yfCX7yR0ohXV0bj+fwjL2+oCBrswHw=;
-        b=jPbYap/5Nu3siGP/8gkFy6Rw+G7QuAlan/SGuCMslMYokBxxqdRM6TrytEs/NCE5ou
-         ItICC5Dh5ZVtvwW+O4M+ZZ3tjps1zfmyPTJUUvZCkFCGfzRZcth6k08FYpe5xd0EmNN4
-         I7s4/snaHEXZRlbNULQB2rzbAmgR+sEE7TFK+Fscm/Gw8wsIyE+W43OKQ4FwGlwQgJ0N
-         cuGYbiEDpZtuM/cxztcY6RBPbDHDdVTbCf/D8HvegEjnT5KWIcNQA2pSnhLgtYCqm0et
-         hAtrQq9o4Ry61LoV7rJz833c10WCMEP+y00oSZV75HMdGKosjKp5PMyNa/+s08KjOh6q
-         nEfA==
-X-Forwarded-Encrypted: i=1; AHgh+RqM0gXfl94CJrQSkB3POTwUVimBq5D6YzdXuC1mVNgwm5Dv06gWOA0WfvIDOq3Bw11WU3cb50EVUKcx@vger.kernel.org
-X-Gm-Message-State: AOJu0YxR6AyjoXHKstXYs2AVuhkwDzTKmCOphO6VpeZAVkXRe5GwzMYT
-	I56TXKyL4vihT4vr4oPx5Eip+3E3KMeIJMUaTGqrB0FAQLGJoIqwG4S0
-X-Gm-Gg: AfdE7ckNqAkfoTQpO9eTmYXApPavCR6QQsZhUV4qLqTKdtU78V6zNUFbaeNxMcKkHsl
-	GJitXmRRa5mLpfqnkm6B6Xrx4/SOfRtQoSn+ai2QL6NoMVe4l9R73ZdR7c9BtSmruA7MaAagqeg
-	nW4avQUmNxnzGRUeuGkYLWnpi81E10y8F0DQUVv1MDRGp7DZGgSFc+loxvH7eaCV/R6o7TViFTX
-	dnpDvctSeb3NqamgzFNfp1Aj8zrnzW+dONMDPvJSioobtkkoYkmrji8ut+cj9dME+eQK8z2+0yL
-	GhVvKH8hOY6D9+EDEe/qXE1hie5u8dkBa9SPzINrAiJxNo1+jJ2+Xwj6b1nBbqhWBsOw9oKAWVD
-	2U2465KR78CjYdGyUh2qokvEgVpjoQtJ7FCchne2QTZ5AGs1NQqVjCE4LcLH31lIdoalR8KbMbJ
-	cVSxt8glXnGCjgPe0VEnLqIlXXuQKavQyVnCwT4e1QriKLIugR9iDzuVI=
-X-Received: by 2002:a17:90b:57cb:b0:36b:769c:c037 with SMTP id 98e67ed59e1d1-38dc81978ecmr7351194a91.5.1783961775319;
-        Mon, 13 Jul 2026 09:56:15 -0700 (PDT)
-Received: from skinsburskii (c-98-225-44-182.hsd1.wa.comcast.net. [98.225.44.182])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-38e1745a596sm180718a91.15.2026.07.13.09.56.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2026 09:56:14 -0700 (PDT)
-Date: Mon, 13 Jul 2026 09:56:12 -0700
-From: Stanislav Kinsburskii <skinsburskii@gmail.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: airlied@gmail.com, akhilesh@ee.iitb.ac.in, corbet@lwn.net,
-	dakr@kernel.org, david@kernel.org, decui@microsoft.com,
-	haiyangz@microsoft.com, jgg@ziepe.ca, kees@kernel.org,
-	kys@microsoft.com, leon@kernel.org, liam@infradead.org,
-	lizhi.hou@amd.com, ljs@kernel.org, longli@microsoft.com,
-	lyude@redhat.com, maarten.lankhorst@linux.intel.com,
-	mamin506@gmail.com, mhocko@suse.com, mripard@kernel.org,
-	nouveau@lists.freedesktop.org, ogabbay@kernel.org, oleg@redhat.com,
-	rppt@kernel.org, shuah@kernel.org, simona@ffwll.ch,
-	skhan@linuxfoundation.org, surenb@google.com, tzimmermann@suse.de,
-	vbabka@kernel.org, wei.liu@kernel.org,
-	dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-	linux-doc@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v8 4/8] mshv: Use hmm_range_fault_unlocked_timeout() for
- region faults
-Message-ID: <alUYrESVcHR_p-S_@skinsburskii>
-References: <178371866223.900500.12312667138651735591.stgit@skinsburskii>
- <178371881034.900500.5214601525971121683.stgit@skinsburskii>
- <20260710151216.0397a6f9ac5c7b4ccd274cc1@linux-foundation.org>
- <alG1JwgUK44dCiN4@skinsburskii>
- <20260710224606.69235ab5c49b5987fd33e924@linux-foundation.org>
+	s=arc-20240116; t=1783961915; c=relaxed/simple;
+	bh=41LNvfl7nzywguoI/dIUECYIGy5Q9V7Cjxc3djCPsi8=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=U0aJqO4K/MvMTji2jmA8BRLYU6WAli4NXFP70yAUAiGPL9w91lp/npib2eQfsxDR6VvhiN13NU8IQ9TGnIJdioTAe6jbEy0ctaA7J1ZD7HMoSKIbwC7EV/p/78Sn4LzYgzQ01j/xD7pttiUVmz9W554xxNnLPjhEjHu4C6Bct5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GXP3A8eJ; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89C291F000E9;
+	Mon, 13 Jul 2026 16:58:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783961914;
+	bh=wSejJnyfdLyFdD/lgL1N6KK1dEiBT0efOAQgTJ/QwGU=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc;
+	b=GXP3A8eJCXJ7lAqQgOPSvptycamZlbay4wCE6/NNwo7fRf1xjByW/PK+5zJpxpAf+
+	 VYWEddouDn23pSFYB5YlFr1e5cApZE+CSU6PyIEtyM+X1IdkenO8ZPFaPR4fgmfPaR
+	 2vw37DEarUACvs/SyoSASQJZEuYVglGRJP0zCZ4Z4MMQ5T42iIYWDe3cNAoiNkRGCC
+	 3dZE7Lvoyx01tIx06lJFZV6N1Ps3yH/4lWPE7oxwRzufLek25tup2Hf7jaSJd8PNnq
+	 2KgeL4yHwY7gGtEVnLbFEUdSfRlFsmbtchGBLQf3uynWQxz65CPYDR2rgHEd5bYgPd
+	 a1sknU5FzxFaA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 199CC3924F84;
+	Mon, 13 Jul 2026 16:58:11 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20260713130149.GA3130810@nvidia.com>
+References: <20260713130149.GA3130810@nvidia.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20260713130149.GA3130810@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: 3cda0dfe8c651dcbb9e38977905d3d3b1750c4ab
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 0fd8b67e27ff7115b98aa09b9a22eb06e5370d2b
+Message-Id: <178396188962.2325401.7879971320175383252.pr-tracker-bot@kernel.org>
+Date: Mon, 13 Jul 2026 16:58:09 +0000
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260710224606.69235ab5c49b5987fd33e924@linux-foundation.org>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [2.34 / 15.00];
-	MID_END_EQ_FROM_USER_PART(4.00)[];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[39];
-	TAGGED_FROM(0.00)[bounces-23149-lists,linux-rdma=lfdr.de];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:airlied@gmail.com,m:akhilesh@ee.iitb.ac.in,m:corbet@lwn.net,m:dakr@kernel.org,m:david@kernel.org,m:decui@microsoft.com,m:haiyangz@microsoft.com,m:jgg@ziepe.ca,m:kees@kernel.org,m:kys@microsoft.com,m:leon@kernel.org,m:liam@infradead.org,m:lizhi.hou@amd.com,m:ljs@kernel.org,m:longli@microsoft.com,m:lyude@redhat.com,m:maarten.lankhorst@linux.intel.com,m:mamin506@gmail.com,m:mhocko@suse.com,m:mripard@kernel.org,m:nouveau@lists.freedesktop.org,m:ogabbay@kernel.org,m:oleg@redhat.com,m:rppt@kernel.org,m:shuah@kernel.org,m:simona@ffwll.ch,m:skhan@linuxfoundation.org,m:surenb@google.com,m:tzimmermann@suse.de,m:vbabka@kernel.org,m:wei.liu@kernel.org,m:dri-devel@lists.freedesktop.org,m:linux-mm@kvack.org,m:linux-doc@vger.kernel.org,m:linux-hyperv@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:linux-rdma@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:jgg@nvidia.com,m:torvalds@linux-foundation.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:leonro@nvidia.com,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23150-lists,linux-rdma=lfdr.de];
+	TO_DN_SOME(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[gmail.com,ee.iitb.ac.in,lwn.net,kernel.org,microsoft.com,ziepe.ca,infradead.org,amd.com,redhat.com,linux.intel.com,suse.com,lists.freedesktop.org,ffwll.ch,linuxfoundation.org,google.com,suse.de,kvack.org,vger.kernel.org];
-	FORGED_SENDER(0.00)[skinsburskii@gmail.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER(0.00)[pr-tracker-bot@kernel.org,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[skinsburskii@gmail.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	FROM_NEQ_ENVFROM(0.00)[pr-tracker-bot@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	TO_DN_SOME(0.00)[];
+	FROM_NO_DN(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[skinsburskii:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: A037374DCA4
+X-Rspamd-Queue-Id: EA27674DCE0
 
-On Fri, Jul 10, 2026 at 10:46:06PM -0700, Andrew Morton wrote:
-> On Fri, 10 Jul 2026 20:14:47 -0700 Stanislav Kinsburskii <skinsburskii@gmail.com> wrote:
-> 
-> > > > +	mutex_lock(&region->mreg_mutex);
-> > > > +
-> > > > +	if (mmu_interval_read_retry(range.notifier, range.notifier_seq)) {
-> > > > +		mutex_unlock(&region->mreg_mutex);
-> > > > +		cond_resched();
-> > > > +		goto again;
-> > > > +	}
-> > > > +
-> > > 
-> > > If the calling process has realtime scheduling policy and either a)
-> > > we're uniprocessor or b) this process and the holder of
-> > > interval_sub->invalidate_seq are both pinned to the same CPU then
-> > > cond_resched() won't do anything, and this might be an infinite loop?
-> > 
-> > Yes, looks like it might.
-> > What can be done to prevent this?
-> 
-> Well the best way is remove the polling loop and use a proper sleep/wakeup
-> mechanism - mutex_lock()/prepare_to_wait()/etc.
-> 
-> If the polling loop is to be retained then maybe msleep(1) or
-> usleep_range()?
+The pull request you sent on Mon, 13 Jul 2026 10:01:49 -0300:
 
-Well, running MSHV - or, I suppose, any other VM - on a uniprocessor host
-would not be very efficient.
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-I’m not sure whether this corner case needs to be handled explicitly.
-But even if it does, supporting or explicitly forbidding it would be a
-separate change. As Jason noted, this is not a regression introduced by
-this series.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/0fd8b67e27ff7115b98aa09b9a22eb06e5370d2b
 
-Thanks,
-Stanislav
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
