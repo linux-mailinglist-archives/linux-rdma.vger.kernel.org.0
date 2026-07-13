@@ -1,424 +1,216 @@
-Return-Path: <linux-rdma+bounces-23117-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23118-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id VkYBI1TIVGrBSwAAu9opvQ
-	(envelope-from <linux-rdma+bounces-23117-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 13:13:24 +0200
+	id +GyyKS3IVGq6SwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-23118-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 13:12:45 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF40B74A355
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 13:13:23 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id A33E574A335
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 13:12:44 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=oracle.com header.s=corp-2025-04-25 header.b=Cgce6k4J;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23117-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23117-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=reject) header.from=oracle.com;
+	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=GO6fWCEW;
+	dkim=pass header.d=redhat.com header.s=google header.b=jxYPlO2i;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23118-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23118-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=redhat.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 20239303F99F
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 11:11:58 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id D046130091E0
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 11:12:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D202B383991;
-	Mon, 13 Jul 2026 11:11:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96A3938655B;
+	Mon, 13 Jul 2026 11:12:38 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A604381EBB;
-	Mon, 13 Jul 2026 11:11:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2895F385D73
+	for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 11:12:34 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783941114; cv=none; b=JzaC2hDS1zLrhKvzPCe/H+L1qpZIH8mNWROTdBJeNcCLiUjXHnM65cvMoCp2jcBmr3yvUL4j2qAO2xKWG0eLMJxTCb7iTQj+yIQGuVG8MhnZnXGeV/pmuHQetpRpqA1YiKmw3NX9j0ID9V6aVNQn3/PElHUxQ/Wf1Lzz+Et0KL8=
+	t=1783941158; cv=none; b=ex8YW8x5dfZQbewT/TqqJsYHfXvcaSrEIQHCxYh5pI9A46oS1A3yGpVcoPA6cNRGaquKSivR0kqKrwNoFwxzBpEFjSxLZuHzZMKG3Bl5S6/ShMHLyWHlcEXIAUI34MbA1DdXFEsD9XHxlJSnzq3Ji7LQUshJnJOV1D0oMO4j/HM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783941114; c=relaxed/simple;
-	bh=Qrc6nlJln6BSiGD1sKzgMMyAaAV5cuNLY5oslgJb2MI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LLrUw2EMZkzDddqLPZ+GtC2BIjAIrrV851tbM07HdhB3oViXm4z6ypm1FotjYOsS5ydPgIlO7Be49hdzrZFA2uh+kK5fO6XACdLDwYOgSb8GyydFpvsLVOC78G3xyQt6gAmQ6Gz7lns31h8eRvnW6mNx8+ViPrZvkud6wY9x/RA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Cgce6k4J; arc=none smtp.client-ip=205.220.165.32
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 66D2dHqi399937;
-	Mon, 13 Jul 2026 11:11:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=corp-2025-04-25; bh=q3mG1fngXj7heK9K93ZW66+C9umr1
-	0Ub5mv9YvnTz8I=; b=Cgce6k4JacWirLOaIzcaJEnnpMsTcH+XyU1e9lqJm+PGb
-	AoefWI+DMgj7ksMpbpkqHDlem7mXCMRF30EMaTu7EFxVIbYeGVD9ViIkZ6hcFFL2
-	LJJEGPFlWrOlxV8izH8/u+lf5fYXLWXgc2L6qOmnAnLYnLKaXdLl2/7QXtSi+vDr
-	gjgr1r7XfwT+uF1SiA2p7X6bQp8bURCoVLHJMzmlReSvKHPRS61eP9dfYKaNHw5T
-	Cn2zz6jSzJTzIek4NkRwvxj5eZPYbZXtYbJXWM8DBDEXU/vjMQTMdfCiWSmi8H3a
-	9G344Nkf0g0G/3Kmvr0a5COBedMSLR/1qCf1Vzogw==
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4fbeedhya5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 13 Jul 2026 11:11:48 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.7/8.18.1.7) with ESMTP id 66DB8XdR036694;
-	Mon, 13 Jul 2026 11:11:47 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4fbc9q615y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 13 Jul 2026 11:11:46 +0000 (GMT)
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.1.12) with ESMTP id 66DBBkq8008415;
-	Mon, 13 Jul 2026 11:11:46 GMT
-Received: from pkannoju-dev-build.osdevelopmeniad.oraclevcn.com (pkannoju-dev-build.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.252.59])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 4fbc9q615t-1;
-	Mon, 13 Jul 2026 11:11:46 +0000 (GMT)
-From: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
-To: yishaih@nvidia.com, jgg@ziepe.ca, leon@kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
-Subject: [PATCH v3] IB/mlx4: Fix stale CM id_map entries when RTU is never received
-Date: Mon, 13 Jul 2026 11:11:42 +0000
-Message-ID: <20260713111142.1206710-1-praveen.kannoju@oracle.com>
-X-Mailer: git-send-email 2.43.7
+	s=arc-20240116; t=1783941158; c=relaxed/simple;
+	bh=CItpHnwrptgQs9p4S4xJCBnXWCOQgo7NSd6Jft9/1xw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=He2bRGFJZeKNdudyioEXkJtntBAu+5EbhBvuVd8vDo2cb3gLcCc69uAelI76A/cA5AuxJfzCyZ6mkUtHSCuIv5V3+zZbR2gYOrgZux3Mh5fnxB+8aPuKvk+owDKvbU8KPHOCq0/qNO9CR3K8Vy6mqD1mvBv+csrolAOLx3DJecM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GO6fWCEW; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=jxYPlO2i; arc=none smtp.client-ip=170.10.129.124
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1783941153;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zwYzQhwaHfNPvezY7xd9aZaXwQI1INvyxV9tum5BbrM=;
+	b=GO6fWCEWD7PNQbrRCMVX3O5E3QCoALGFgn6jAE6hI/K1dj9SUsbHXW1qaiO/P5tL9zoUbw
+	W3WEPner1Pq68RZ2oS8FdaniM75wGobKaKK2R5k42RSU7lGWfC2VtArBsnIR8kxPlwWE6x
+	FIIvlQ5uroIK+Mx0ZvejySLXo/lBg1A=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-175-SA5CcXqfOHKQt4nTStBaqg-1; Mon, 13 Jul 2026 07:12:21 -0400
+X-MC-Unique: SA5CcXqfOHKQt4nTStBaqg-1
+X-Mimecast-MFC-AGG-ID: SA5CcXqfOHKQt4nTStBaqg_1783941140
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-92e8004d60eso626956785a.1
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 04:12:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1783941140; x=1784545940; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=zwYzQhwaHfNPvezY7xd9aZaXwQI1INvyxV9tum5BbrM=;
+        b=jxYPlO2ibnBAwu9pTaEEaePg6uTPXtq1EMZX82DaOoQTmMOaHYQN3ov220UKC2n931
+         zPLmveOW17RStGJoT9F5vxa1u4iuN9EPukCdNp4zxcVKqfvb33qieZrP74n5djjjXFwn
+         LeIJ3AcL+vx+TLtyfupQ/t1DagELz1YcvZpnzIXS/Dt3dMwDOjmT1PjQfDL7WSBJ/eAb
+         rHpkMqr8Bk5T499uRgBn2cYzstFenSRVcAJrQMBin3J3k4R+opD3joojGAaUPtfQAHbU
+         s5KkSzCjgw7WcZz0iSN4PItNlosenpSgBZijVSHn8ya76bcR1EdpH5CPVl2RVGBqTz8u
+         hOMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783941140; x=1784545940;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=zwYzQhwaHfNPvezY7xd9aZaXwQI1INvyxV9tum5BbrM=;
+        b=JOfhJUlsxBAOaYD646V6a2udjOBrhgkw5pKprzpd3Lgz6Abd7orNXuz4x/juI0OA3J
+         iCt/07LGiWbitgW66SGpxdmkQtbvJTCFibKAqgzqhJygk3+0sLwvi8DnvpMrxWCM5nh/
+         JoRSZ/Lf9cIl6usn82raIS4Wi9W0MYOh7ljIzyWnN7UWdMiJyFtbNSyB1W6gft/l7U+o
+         rEKI1f3nhS8IWBhbb3EjWzxaHzKWh9v7XkDUiNEjV6eDIzSpI1ON3JrrfH/H31lU0UhI
+         LMfciQbnWE52n5wTa6QCv/Xt4Ew48/izy8MxnS44jzftsF0JUNyM+QZf4sZdygxBl3lB
+         QLxg==
+X-Gm-Message-State: AOJu0YwHsCba3ow3MvdIOTpw53/817k574JxYqZ0ZxV4tLoDDS0c1qlu
+	9VkiT8FkqjDe+GYTKWl9LrTXx5rCFJVMR6VZFVQlqzZoErg5S4g0v4S5bZGb8WKuSj/5KzKEDOO
+	X+0dcSYDqrzGVw1ke8lwu3q93FaMwDV+/5Apb+RIgX8h5QNGgsPsvSvKhHPOq8ws=
+X-Gm-Gg: AfdE7cnL5qduncBCLGFpFfz+1uBFMA6vk/OX5nVQSxFoAS3VQtwtu0CSNhOXL7bEG9w
+	CXu9IUOZ/Imqzm85p2QNsJcs7Q9Etmy8ty3IRCLXrLAkqff2onMmtJmLvTMCDi6IHopWoMZJVnF
+	NQDBPhDDP9NRE+z44B5ocJB7tQUGa3TcCUxy7uih0fW3p/WKHrxoeTRspOv0tmVdnzQiZUhlvh+
+	J2GTuyMlqIxJ/8zHv0lz5xc896bedwRnWVcxxxY02NdshEBN6ZUhUJwJpA3HHmBa9pli3VvOh4T
+	OvxNBBA3gxTkWjFw/y8+avQH5Crxcs4niCHFgIOGxZFzKgX9mO7gfgppEV1riQv2WEgNwW79Drb
+	NzHAjNE2np+/S4s/CPXBzRiqjEnlbE9mPc10ugUw/PEjAHOXSG/q7D3FbfWp+bdY+MVGHwExU2j
+	m79mMI4wWogg==
+X-Received: by 2002:a05:620a:6cc1:b0:92e:305a:d729 with SMTP id af79cd13be357-92ef2aebfd3mr867462085a.7.1783941140414;
+        Mon, 13 Jul 2026 04:12:20 -0700 (PDT)
+X-Received: by 2002:a05:620a:6cc1:b0:92e:305a:d729 with SMTP id af79cd13be357-92ef2aebfd3mr867459385a.7.1783941139989;
+        Mon, 13 Jul 2026 04:12:19 -0700 (PDT)
+Received: from lima-fedora43 ([142.126.90.92])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-92ee5b4b1bbsm1061178285a.2.2026.07.13.04.12.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2026 04:12:19 -0700 (PDT)
+Date: Mon, 13 Jul 2026 07:12:08 -0400
+From: Kamal Heib <kheib@redhat.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: linux-rdma@vger.kernel.org, Abhijit Gangurde <abhijit.gangurde@amd.com>,
+	Allen Hubbe <allen.hubbe@amd.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: [PATCH rdma-rc 0/2] RDMA/ionic: Fix NULL pointer dereferences
+Message-ID: <alTICI1PQ_7D7_ea@lima-fedora43>
+References: <20260709220353.729951-1-kheib@redhat.com>
+ <20260712091326.GG33197@unreal>
+ <alPrQa9ZgDaGuPYo@lima-fedora43>
+ <20260713091733.GJ33197@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-07-13_02,2026-07-10_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0
- spamscore=0 bulkscore=0 phishscore=0 lowpriorityscore=0 mlxlogscore=999
- suspectscore=0 malwarescore=0 adultscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.19.0-2606160000 definitions=main-2607130116
-X-Authority-Analysis: v=2.4 cv=d+bFDxjE c=1 sm=1 tr=0 ts=6a54c7f4 b=1 cx=c_pps
- a=qoll8+KPOyaMroiJ2sR5sw==:117 a=qoll8+KPOyaMroiJ2sR5sw==:17
- a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=jiCTI4zE5U7BLdzWsZGv:22
- a=RD47p0oAkeU5bO7t-o6f:22 a=VwQbUJbxAAAA:8 a=yPCof4ZbAAAA:8 a=UqCG9HQmAAAA:8
- a=Qwf4xDF1JrWRajezon4A:9 a=5yU3S35YU4bGjq-dph-N:22 a=Bho9c0fBagfJEIQBS7DQ:22
- cc=ntf awl=host:12222
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzEzMDExNiBTYWx0ZWRfXzgAXwdmwao/R
- 8LyeD9GRcm41YRTFosg5PJNNlrb9dimi0aIo2CG6aL06bo1DndLAGWhFBgb48jE1J96xE5jKdWX
- PYMRiXkRBeTyTJoCb/uXcMggAHTp9JlR+xeDJzOPBRt3rPFmlMTNkr4vjSbI2G/q1D7dTFklhqm
- NmqeMZCS7NO433QzW2i51QJA5d8Ww8TVC1WLOzEunwLPGiaOSo9YfGWr/RGtEwiN39e1WksMmkI
- SutPmQATtFIrMY+Dz2N5n7Lifg/wwYbxLfphrR3DvgwPoTEjleNUSqDnJ5UvLBlAgqD4UalQ9oS
- 4goi37BlJA3+9PyBmj4a8qwSqXUkOMpYkA1rjiffeVe0sVgoTJk3hkQyOsVWD5PorwAn9sHX7WN
- /yWzEA6V/NwCKcixnp4rdiynGv9DbcAXel1HuetUFrjGs9khWzmd7C6oZG6W3I7qf4Gcmlw25zR
- 8m51cfFezadIdrk7twJi0nfTORmyQJFIjBtzBr+w=
-X-Proofpoint-GUID: SMLEcoraRbCdhRhHmkHq2F9o6hyaAn99
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNzEzMDExNiBTYWx0ZWRfXyYaok3Xk3+a1
- PM1dJAQv+FNDMrUHnORyNwvqLj2yzyvO63g/xeR5Epm/jB/g8AL8PcEZzTnDSOSse8QcdZqZDA5
- vo8FCh3UBT4z6UyFcSP6VWEzXcFRzQguV5JJutyNXeTFbjUZFzuW
-X-Proofpoint-ORIG-GUID: SMLEcoraRbCdhRhHmkHq2F9o6hyaAn99
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260713091733.GJ33197@unreal>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-7.66 / 15.00];
-	WHITELIST_DMARC(-7.00)[oracle.com:D:+];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[oracle.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[oracle.com:s=corp-2025-04-25];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23117-lists,linux-rdma=lfdr.de];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER(0.00)[praveen.kannoju@oracle.com,linux-rdma@vger.kernel.org];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:yishaih@nvidia.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:praveen.kannoju@oracle.com,s:lists@lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[praveen.kannoju@oracle.com,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-23118-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[oracle.com:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,oracle.com:from_mime,oracle.com:mid,oracle.com:email,oracle.com:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FORGED_SENDER(0.00)[kheib@redhat.com,linux-rdma@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:leon@kernel.org,m:linux-rdma@vger.kernel.org,m:abhijit.gangurde@amd.com,m:allen.hubbe@amd.com,m:jgg@ziepe.ca,s:lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kheib@redhat.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCVD_COUNT_SEVEN(0.00)[9]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: EF40B74A355
+X-Rspamd-Queue-Id: A33E574A335
 
-mlx4_ib_multiplex_cm_handler() allocates an id_map_entry for CM
-transactions, but the entry is normally released only on DREQ or REJ
-flows.
+On Mon, Jul 13, 2026 at 12:17:33PM +0300, Leon Romanovsky wrote:
+> On Sun, Jul 12, 2026 at 03:30:09PM -0400, Kamal Heib wrote:
+> > On Sun, Jul 12, 2026 at 12:13:26PM +0300, Leon Romanovsky wrote:
+> > > On Thu, Jul 09, 2026 at 06:03:51PM -0400, Kamal Heib wrote:
+> > > > Fix two potential NULL pointer dereferences in the ionic driver by
+> > > > adding the missing NULL checks before dereferencing netdev pointers.
+> > > 
+> > > How is it possible to have ionic IB driver without netdev?
+> > > 
+> > > Thanks
+> > >
+> > 
+> > Thanks for your review, after taking a deeper look:
+> > 
+> > For Patch 2 (ionic_create_ibdev): You are right. Since lif is embedded in
+> > netdev via netdev_priv() and they are allocated/freed together,
+> > lif->netdev cannot be NULL if lif is valid, Please drop this patch.
+> > 
+> > For Patch 1 (ionic_query_device): This one should remain.
+> > ib_device_get_netdev() is a core RDMA API that explicitly returns NULL in
+> > multiple code paths:
+> > 
+> > - Invalid port: if (!rdma_is_port_valid(ib_dev, port)) return NULL;
+> > - No port_data: if (!ib_dev->port_data) return NULL;
+> > - NULL netdev pointer stored in port_data
+> > 
+> > Also, the return value from ib_device_get_netdev() is being checked in
+> > multiple places in both drivers and the RDMA core.
+> > 
+> > Let me know what you think?
+> 
+> I think that you shouldn't copy/paste answers from your favorite AI tool.
+> 
+> Thanks
+>
 
-In the duplicate REP handling scenario, cm_dup_rep_handler() may be
-invoked when the remote side receives a REP for which no matching
-cm_id_priv exists. In such cases the CM handshake never reaches RTU, and
-the sender side may never receive either DREQ or REJ cleanup events.
+With all due respect..., Your response is not contributing to the
+discussion about the patch, if you don't like the change or you think
+that it is not justified, you can say so.
 
-As a result, the allocated id_map_entry remains indefinitely, resulting in
-a stale mapping leak.
+> > 
+> > Thanks,
+> > Kamal
+> > 
+> > > > 
+> > > > Kamal Heib (2):
+> > > >   RDMA/ionic: Fix potential NULL pointer dereference in
+> > > >     ionic_query_device
+> > > >   RDMA/ionic: Fix potential NULL pointer dereference in
+> > > >     ionic_create_ibdev
+> > > > 
+> > > >  drivers/infiniband/hw/ionic/ionic_ibdev.c | 8 ++++++++
+> > > >  1 file changed, 8 insertions(+)
+> > > > 
+> > > > -- 
+> > > > 2.55.0
+> > > > 
+> > > > 
+> > > 
+> > 
+> 
 
-Fix this by arming an RTU-abandon cleanup timeout when the id_map_entry is
-allocated. The timeout uses the mlx4 CM workqueue and the existing
-schedule_delayed() path, so later DREQ/REJ cleanup can shorten the pending
-timeout with mod_delayed_work().
-
-Track whether a pending cleanup timeout is still waiting for RTU. RTU
-cancels only that initial timeout; if DREQ/REJ has already converted it to
-normal teardown cleanup, a late or duplicate RTU does not cancel the
-teardown timer. If the RTU timeout callback has already started, leave the
-entry on the timeout path and make the RTU packet lose that race.
-
-Hold id_map_lock while looking up the entry, canceling the RTU timeout,
-scheduling teardown cleanup, and copying the id values needed by the CM
-handlers. The delayed-work callback rechecks scheduled_delete under the
-same lock before removing and freeing the entry, avoiding use-after-free
-when RTU races with timeout execution.
-
-Signed-off-by: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
----
-v1: https://lore.kernel.org/linux-rdma/20260507154755.452008-1-praveen.kannoju@oracle.com/T/#u
-v2: https://lore.kernel.org/linux-rdma/BL0PR10MB282074FA0D571F5072DFCB4B8CF12@BL0PR10MB2820.namprd10.prod.outlook.com/T/#t
-
-Changes in v3:
-- Replace "Lock should be taken before called" comments with
-  lockdep_assert_held(&sriov->id_map_lock).
-
-Changes in v2:
-- Queue the RTU-abandon timeout on the mlx4 CM workqueue through
-  schedule_delayed() and use mod_delayed_work() so DREQ/REJ cleanup can
-  shorten a pending RTU timeout.
-- Track RTU-abandon cleanup separately from normal DREQ/REJ cleanup so a
-  late or duplicate RTU does not cancel a teardown timer.
-- Hold id_map_lock while looking up id_map entries, canceling or updating
-  delayed work, and copying CM IDs needed by the handlers.
-- Make RTU lose the race when the timeout callback has already started.
-
- drivers/infiniband/hw/mlx4/cm.c | 98 ++++++++++++++++++++++++++++++---------
- 1 file changed, 75 insertions(+), 23 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx4/cm.c b/drivers/infiniband/hw/mlx4/cm.c
-index 63a868a..f7905df 100644
---- a/drivers/infiniband/hw/mlx4/cm.c
-+++ b/drivers/infiniband/hw/mlx4/cm.c
-@@ -40,6 +40,7 @@
- #include "mlx4_ib.h"
- 
- #define CM_CLEANUP_CACHE_TIMEOUT  (30 * HZ)
-+#define CM_RTU_TIMEOUT		  (60 * HZ)
- 
- struct id_map_entry {
- 	struct rb_node node;
-@@ -48,6 +49,7 @@ struct id_map_entry {
- 	u32 pv_cm_id;
- 	int slave_id;
- 	int scheduled_delete;
-+	bool rtu_timeout;
- 	struct mlx4_ib_dev *dev;
- 
- 	struct list_head list;
-@@ -184,6 +186,10 @@ static void id_map_ent_timeout(struct work_struct *work)
- 	struct rb_root *sl_id_map = &sriov->sl_id_map;
- 
- 	spin_lock(&sriov->id_map_lock);
-+	if (!ent->scheduled_delete) {
-+		spin_unlock(&sriov->id_map_lock);
-+		return;
-+	}
- 	if (!xa_erase(&sriov->pv_id_table, ent->pv_cm_id))
- 		goto out;
- 	found_ent = id_map_find_by_sl_id(&dev->ib_dev, ent->slave_id, ent->sl_cm_id);
-@@ -228,8 +234,12 @@ static void sl_id_map_add(struct ib_device *ibdev, struct id_map_entry *new)
- 	rb_insert_color(&new->node, sl_id_map);
- }
- 
-+static void schedule_delayed(struct ib_device *ibdev, struct id_map_entry *id,
-+			     unsigned long timeout, bool rtu_timeout);
-+
- static struct id_map_entry *
--id_map_alloc(struct ib_device *ibdev, int slave_id, u32 sl_cm_id)
-+id_map_alloc(struct ib_device *ibdev, int slave_id, u32 sl_cm_id,
-+	     u32 *pv_cm_id)
- {
- 	int ret;
- 	struct id_map_entry *ent;
-@@ -242,6 +252,7 @@ id_map_alloc(struct ib_device *ibdev, int slave_id, u32 sl_cm_id)
- 	ent->sl_cm_id = sl_cm_id;
- 	ent->slave_id = slave_id;
- 	ent->scheduled_delete = 0;
-+	ent->rtu_timeout = false;
- 	ent->dev = to_mdev(ibdev);
- 	INIT_DELAYED_WORK(&ent->timeout, id_map_ent_timeout);
- 
-@@ -251,6 +262,8 @@ id_map_alloc(struct ib_device *ibdev, int slave_id, u32 sl_cm_id)
- 		spin_lock(&sriov->id_map_lock);
- 		sl_id_map_add(ibdev, ent);
- 		list_add_tail(&ent->list, &sriov->cm_list);
-+		*pv_cm_id = ent->pv_cm_id;
-+		schedule_delayed(ibdev, ent, CM_RTU_TIMEOUT, true);
- 		spin_unlock(&sriov->id_map_lock);
- 		return ent;
- 	}
-@@ -261,48 +274,47 @@ id_map_alloc(struct ib_device *ibdev, int slave_id, u32 sl_cm_id)
- 	return ERR_PTR(-ENOMEM);
- }
- 
- static struct id_map_entry *
- id_map_get(struct ib_device *ibdev, int *pv_cm_id, int slave_id, int sl_cm_id)
- {
- 	struct id_map_entry *ent;
- 	struct mlx4_ib_sriov *sriov = &to_mdev(ibdev)->sriov;
- 
--	spin_lock(&sriov->id_map_lock);
-+	lockdep_assert_held(&sriov->id_map_lock);
- 	if (*pv_cm_id == -1) {
- 		ent = id_map_find_by_sl_id(ibdev, slave_id, sl_cm_id);
- 		if (ent)
- 			*pv_cm_id = (int) ent->pv_cm_id;
- 	} else
- 		ent = xa_load(&sriov->pv_id_table, *pv_cm_id);
--	spin_unlock(&sriov->id_map_lock);
- 
- 	return ent;
- }
- 
--static void schedule_delayed(struct ib_device *ibdev, struct id_map_entry *id)
-+static void schedule_delayed(struct ib_device *ibdev, struct id_map_entry *id,
-+			     unsigned long timeout, bool rtu_timeout)
- {
- 	struct mlx4_ib_sriov *sriov = &to_mdev(ibdev)->sriov;
- 	unsigned long flags;
- 
--	spin_lock(&sriov->id_map_lock);
-+	lockdep_assert_held(&sriov->id_map_lock);
- 	spin_lock_irqsave(&sriov->going_down_lock, flags);
- 	/*make sure that there is no schedule inside the scheduled work.*/
--	if (!sriov->is_going_down && !id->scheduled_delete) {
-+	if (!sriov->is_going_down || id->scheduled_delete) {
- 		id->scheduled_delete = 1;
--		queue_delayed_work(cm_wq, &id->timeout, CM_CLEANUP_CACHE_TIMEOUT);
--	} else if (id->scheduled_delete) {
--		/* Adjust timeout if already scheduled */
--		mod_delayed_work(cm_wq, &id->timeout, CM_CLEANUP_CACHE_TIMEOUT);
-+		id->rtu_timeout = rtu_timeout;
-+		mod_delayed_work(cm_wq, &id->timeout, timeout);
- 	}
- 	spin_unlock_irqrestore(&sriov->going_down_lock, flags);
--	spin_unlock(&sriov->id_map_lock);
- }
- 
- #define REJ_REASON(m) be16_to_cpu(((struct cm_generic_msg *)(m))->rej_reason)
- int mlx4_ib_multiplex_cm_handler(struct ib_device *ibdev, int port, int slave_id,
- 		struct ib_mad *mad)
- {
-+	struct mlx4_ib_sriov *sriov = &to_mdev(ibdev)->sriov;
- 	struct id_map_entry *id;
-+	u32 pv_cm_id_to_set = 0;
- 	u32 sl_cm_id;
- 	int pv_cm_id = -1;
- 
-@@ -312,10 +323,15 @@ int mlx4_ib_multiplex_cm_handler(struct ib_device *ibdev, int port, int slave_id
- 	    mad->mad_hdr.attr_id == CM_SIDR_REQ_ATTR_ID ||
- 	    (mad->mad_hdr.attr_id == CM_REJ_ATTR_ID && REJ_REASON(mad) == IB_CM_REJ_TIMEOUT)) {
- 		sl_cm_id = get_local_comm_id(mad);
-+		spin_lock(&sriov->id_map_lock);
- 		id = id_map_get(ibdev, &pv_cm_id, slave_id, sl_cm_id);
-+		if (id)
-+			pv_cm_id_to_set = id->pv_cm_id;
-+		spin_unlock(&sriov->id_map_lock);
- 		if (id)
- 			goto cont;
--		id = id_map_alloc(ibdev, slave_id, sl_cm_id);
-+		id = id_map_alloc(ibdev, slave_id, sl_cm_id,
-+				  &pv_cm_id_to_set);
- 		if (IS_ERR(id)) {
- 			mlx4_ib_warn(ibdev, "%s: id{slave: %d, sl_cm_id: 0x%x} Failed to id_map_alloc\n",
- 				__func__, slave_id, sl_cm_id);
-@@ -326,7 +342,25 @@ int mlx4_ib_multiplex_cm_handler(struct ib_device *ibdev, int port, int slave_id
- 		return 0;
- 	} else {
- 		sl_cm_id = get_local_comm_id(mad);
-+		spin_lock(&sriov->id_map_lock);
- 		id = id_map_get(ibdev, &pv_cm_id, slave_id, sl_cm_id);
-+		if (id) {
-+			if (mad->mad_hdr.attr_id == CM_RTU_ATTR_ID &&
-+			    id->rtu_timeout) {
-+				id->rtu_timeout = false;
-+				if (cancel_delayed_work(&id->timeout))
-+					id->scheduled_delete = 0;
-+				else
-+					id = NULL;
-+			}
-+			if (id)
-+				pv_cm_id_to_set = id->pv_cm_id;
-+			if (id && mad->mad_hdr.attr_id == CM_DREQ_ATTR_ID)
-+				schedule_delayed(ibdev, id,
-+						 CM_CLEANUP_CACHE_TIMEOUT,
-+						 false);
-+		}
-+		spin_unlock(&sriov->id_map_lock);
- 	}
- 
- 	if (!id) {
-@@ -336,10 +370,7 @@ int mlx4_ib_multiplex_cm_handler(struct ib_device *ibdev, int port, int slave_id
- 	}
- 
- cont:
--	set_local_comm_id(mad, id->pv_cm_id);
--
--	if (mad->mad_hdr.attr_id == CM_DREQ_ATTR_ID)
--		schedule_delayed(ibdev, id);
-+	set_local_comm_id(mad, pv_cm_id_to_set);
- 	return 0;
- }
- 
-@@ -429,7 +460,10 @@ int mlx4_ib_demux_cm_handler(struct ib_device *ibdev, int port, int *slave,
- 	struct mlx4_ib_sriov *sriov = &to_mdev(ibdev)->sriov;
- 	u32 rem_pv_cm_id = get_local_comm_id(mad);
- 	u32 pv_cm_id;
-+	u32 sl_cm_id = 0;
- 	struct id_map_entry *id;
-+	int pv_cm_id_int;
-+	int slave_id = 0;
- 	int sts;
- 
- 	if (mad->mad_hdr.attr_id == CM_REQ_ATTR_ID ||
-@@ -457,7 +491,28 @@ int mlx4_ib_demux_cm_handler(struct ib_device *ibdev, int port, int *slave,
- 	}
- 
- 	pv_cm_id = get_remote_comm_id(mad);
--	id = id_map_get(ibdev, (int *)&pv_cm_id, -1, -1);
-+	pv_cm_id_int = pv_cm_id;
-+	spin_lock(&sriov->id_map_lock);
-+	id = id_map_get(ibdev, &pv_cm_id_int, -1, -1);
-+	if (id) {
-+		if (mad->mad_hdr.attr_id == CM_RTU_ATTR_ID &&
-+		    id->rtu_timeout) {
-+			id->rtu_timeout = false;
-+			if (cancel_delayed_work(&id->timeout))
-+				id->scheduled_delete = 0;
-+			else
-+				id = NULL;
-+		}
-+		if (id && slave)
-+			slave_id = id->slave_id;
-+		if (id)
-+			sl_cm_id = id->sl_cm_id;
-+		if (id && (mad->mad_hdr.attr_id == CM_DREQ_ATTR_ID ||
-+			   mad->mad_hdr.attr_id == CM_REJ_ATTR_ID))
-+			schedule_delayed(ibdev, id,
-+					 CM_CLEANUP_CACHE_TIMEOUT, false);
-+	}
-+	spin_unlock(&sriov->id_map_lock);
- 
- 	if (!id) {
- 		if (mad->mad_hdr.attr_id == CM_REJ_ATTR_ID &&
-@@ -472,12 +527,8 @@ int mlx4_ib_demux_cm_handler(struct ib_device *ibdev, int port, int *slave,
- 	}
- 
- 	if (slave)
--		*slave = id->slave_id;
--	set_remote_comm_id(mad, id->sl_cm_id);
--
--	if (mad->mad_hdr.attr_id == CM_DREQ_ATTR_ID ||
--	    mad->mad_hdr.attr_id == CM_REJ_ATTR_ID)
--		schedule_delayed(ibdev, id);
-+		*slave = slave_id;
-+	set_remote_comm_id(mad, sl_cm_id);
- 
- 	return 0;
- }
 
