@@ -1,318 +1,286 @@
-Return-Path: <linux-rdma+bounces-23102-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23131-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id clGoAFGlVGr7ogMAu9opvQ
-	(envelope-from <linux-rdma+bounces-23102-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 10:44:01 +0200
+	id E9vYGHr0VGrDhwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-23131-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 16:21:46 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AA0E748DCB
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 10:44:00 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE3B474C511
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 16:21:45 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=broadcom.com header.s=google header.b=LhOxxhai;
-	dmarc=pass (policy=reject) header.from=broadcom.com;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23102-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23102-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="H4n/nlOz";
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=UDB1CXcH;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="H4n/nlOz";
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=UDB1CXcH;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23131-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23131-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=suse.de;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D86963055C58
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 08:36:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DDB483035B7C
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 14:02:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67776399CEC;
-	Mon, 13 Jul 2026 08:36:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7616643C056;
+	Mon, 13 Jul 2026 14:01:01 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f98.google.com (mail-pj1-f98.google.com [209.85.216.98])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C31903B3898
-	for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 08:36:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA47B43B3CA
+	for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 14:00:58 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783931819; cv=none; b=QJ1AAFt3/0qZfiCUMKrftkBrP3KEFIzJHZrV9m5NbX/QYouXLdt7tDHWIiVHN8za8vPl1FdqZ2Rk4w5Wsd5fAeL2f5twc0w2F4ErEXVx0LebX9n5VQcNOniOL9XCVb27P0YwfeDNu+43lMYf04+RnPcUSosn474wr6pSY2/nwKY=
+	t=1783951261; cv=none; b=sfvbCkqhF8e8bTNjFhz7Ddxt6jSbHUZvUcYF/B/FppZIgn1gAeggOvdwKphraZqpbqorVX7Pl3Y8RgZMYBtMUCVk6glGCHzGuSbX5Y+ozrLuDG+/yMjJX3GJqECeOnbcFRPVyhOY1XZoSjQDNSLUX7BfGwTlMmTHZlmVi7kw9lQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783931819; c=relaxed/simple;
-	bh=v6Py6piCLbfjk3Yz1PDMFjs0/S0Nk54JNZXcdkQfEOc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lr+Sc7leytETcyD4SX65XHNHTDLJHQsd1dx10OQjYPOZJSQb5XO2R05NZcVmKGGKSC8soqZBZiq1QKqYHVG7ggRDboVPR+xyVm8Z/gk6gyKgtPyIGm7WnYOqsaLrRhym+GPwCCShSQQ55nMW4etDndxp/fiAtGfaAeo2gEwL6cw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=LhOxxhai; arc=none smtp.client-ip=209.85.216.98
-Received: by mail-pj1-f98.google.com with SMTP id 98e67ed59e1d1-38175907a56so2990096a91.0
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 01:36:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783931817; x=1784536617;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:dkim-signature:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=U+gbVVFnkRkL5gRb9a5Pe4EqjjItfnauRx3Kz+IJN7s=;
-        b=Z57RFhJqZd+3tgJLvXK9jzAPwP7w1uBP/Wokcmm5WJ022uhJVBm2ZD9TCYBFK9Cykr
-         Yb55Wwak92k/ozlOgh52mHqfu9Y2M3pzDxT2akhafxEzoEL6BwiJO74pXejCb3Jg5yAY
-         0MMeyoPXfIYkDOZAjEMMr2qosNjWAxHuBhSM+tDQOBBdsAnAU/+45qxQpLm1MsX+PHSz
-         qqyk+FhycAcNli3gAd1HavX3r9/nfI7rh06ntsmPY87X4WzI+L4YXf98YpC0YC+m5h8p
-         j4rpOJjeEefPedacN73QT01QCzcAjVfc+dsH+X3c3JVyo+iAnxrbTXMhen3WuzwPNBwK
-         xOIg==
-X-Gm-Message-State: AOJu0Yze8CGPhb5v0zZfLRj6LNcxHVkStARdNJL8Rdm++QCljSgL5Ckx
-	4Vv/0qHpe8UhdI4yDAPKz4mBjGVbhrBdUU5BAvdM2OJnbsx9DRJrfsY3Uda1wAK87FaUbGD5QEo
-	3PuKFE6hYQ079yWAp1NcpElPVOc6oqyb//CeFNdhWEByRjG6njIDLvTLv2q0uKaQcqcwQg8O28b
-	AyXzPFyprq6zhDu48utTiRwLaT+310SqKOuavNQdxR3FTqbX0WVws9bbuEGzgvHTpkzFmrf6JFF
-	+xuqk9F5wbL/pZVIg==
-X-Gm-Gg: AfdE7clHrZOmUtuX0mIRxCEP8z8sqFfgOlL1La4hqldwgxn9EjOaIDLVvFiBjBunjuF
-	Q1jH6f9FKVeWVQEnBJ6gQ2cqUgeyn0tHzNTKM9UITPGwIBwGMHk6V9X7RRI1soPBuyBKS5kzdRe
-	tBU9gGM1eAjvWKj1DTkWjo3EyEdtEch33jOa0QOe9iGvVl2T8cM3+GwMa09edQzsmFJMuF1lRZs
-	JBgdrcNbJ6CbMDnX7VtVgx4MBJ1uJ2JwxB7Ls4kR0RykDU/muTn1fyDIpMISBZCvMeBO7usTX5y
-	pWbplMM16wJ2D/cS7YMt1KKtyXYvCTttez+G+lDWo8rKhAh7WOqsLvVYSbPTQzdnq/dTQc0TR8s
-	pvzrFii2qYCSiGAbU6uDM4bxSlJNA8JKVizzMDaru7tPIBwAwGKAKoOjKjFf8qozFHAE2ol8dFq
-	K2j5S8Ql2YOn7dd4SAAOYRerCdipuhpLAktfPN5UZZVeIKGyqLfQ==
-X-Received: by 2002:a17:90b:3d86:b0:36a:caf2:3815 with SMTP id 98e67ed59e1d1-38d15876f4amr13797476a91.15.1783931816848;
-        Mon, 13 Jul 2026 01:36:56 -0700 (PDT)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-117.dlp.protect.broadcom.com. [144.49.247.117])
-        by smtp-relay.gmail.com with ESMTPS id 5a478bee46e88-31174a86714sm1026585eec.27.2026.07.13.01.36.56
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 13 Jul 2026 01:36:56 -0700 (PDT)
-X-Relaying-Domain: broadcom.com
-X-CFilter-Loop: Reflected
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-2cce14a21faso50404515ad.0
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2026 01:36:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1783931815; x=1784536615; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=U+gbVVFnkRkL5gRb9a5Pe4EqjjItfnauRx3Kz+IJN7s=;
-        b=LhOxxhai2u4KREzhWSAhEuZdiA7z5z2m0mHNJ8CQ+uQdQuuZ22R1KNwQjPDdTxl2Cv
-         Kdy82Txgc18v1RwXeFSeVX4AWpS0bLay7+6KchpIzF0wl9ozf48UUrZ/p2kLnOaOwfPa
-         We514cGw5Ra8PScfzuUXmtzIAfmJ57KkNPc6A=
-X-Received: by 2002:a17:903:2b0d:b0:2ca:e496:5f19 with SMTP id d9443c01a7336-2cea18375e9mr71685495ad.19.1783931815173;
-        Mon, 13 Jul 2026 01:36:55 -0700 (PDT)
-X-Received: by 2002:a17:903:2b0d:b0:2ca:e496:5f19 with SMTP id d9443c01a7336-2cea18375e9mr71685305ad.19.1783931814636;
-        Mon, 13 Jul 2026 01:36:54 -0700 (PDT)
-Received: from dhcp-10-123-156-114.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ccc9d3bbaesm95005385ad.57.2026.07.13.01.36.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2026 01:36:54 -0700 (PDT)
-From: Selvin Xavier <selvin.xavier@broadcom.com>
-To: leon@kernel.org,
-	jgg@ziepe.ca
-Cc: linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com,
-	kalesh-anakkur.purayil@broadcom.com,
-	sriharsha.basavapatna@broadcom.com,
-	alhouseenyousef@gmail.com,
-	Selvin Xavier <selvin.xavier@broadcom.com>,
-	Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH for-next v3 4/4] RDMA/bnxt_re: Add uverbs object handle path for CQ/SRQ toggle page
-Date: Mon, 13 Jul 2026 06:58:30 -0700
-Message-Id: <20260713135830.1934471-5-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20260713135830.1934471-1-selvin.xavier@broadcom.com>
-References: <20260713135830.1934471-1-selvin.xavier@broadcom.com>
+	s=arc-20240116; t=1783951261; c=relaxed/simple;
+	bh=RRYwRbyEte7BfcMFt3ythO47XNbGmg72CFl/wCmqVnw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dgleTXGSVz3DMaG9eV9phaLMODKFLLvVsKWHQiSbji8VPKLG/yQR24SL4nOjE7XYlpaajSwBbwObQWmfUOjugj09wGb4oPMLuHxshM6t43srGs8HHBF7fLcKDhF4j/WDgbnq0Goa801jVzLdB9YyrqzFz6z5P4na9RSqD1G4h8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=H4n/nlOz; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=UDB1CXcH; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=H4n/nlOz; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=UDB1CXcH; arc=none smtp.client-ip=195.135.223.131
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 88EDB3E14;
+	Mon, 13 Jul 2026 14:00:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1783951256; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vcWXpKMSq59reI46D3PoMFlhf4bMsFOmDLO8bdkAy90=;
+	b=H4n/nlOzSbC6kEf08Mt5PCFch2SnG8tyBuOt05AtDFm3Sezfdg5yX593HaKA6aTuamPcwD
+	htbNFckzP54JbOfP4QSOBVCw/FrvgILSk8fo38hIutmTDtgGvUw8lBAOJFoO8skDLsbz9y
+	32wqjJELZLybOJ5KxnKomeAhyZCck9E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1783951256;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vcWXpKMSq59reI46D3PoMFlhf4bMsFOmDLO8bdkAy90=;
+	b=UDB1CXcHnCErcMegyp3uKFCagjRC+Png4e+SXpAjIKzmoie60e4uuOQZJlcwnWORqsY78F
+	7F2WW9VZXXdIhlCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1783951256; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vcWXpKMSq59reI46D3PoMFlhf4bMsFOmDLO8bdkAy90=;
+	b=H4n/nlOzSbC6kEf08Mt5PCFch2SnG8tyBuOt05AtDFm3Sezfdg5yX593HaKA6aTuamPcwD
+	htbNFckzP54JbOfP4QSOBVCw/FrvgILSk8fo38hIutmTDtgGvUw8lBAOJFoO8skDLsbz9y
+	32wqjJELZLybOJ5KxnKomeAhyZCck9E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1783951256;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vcWXpKMSq59reI46D3PoMFlhf4bMsFOmDLO8bdkAy90=;
+	b=UDB1CXcHnCErcMegyp3uKFCagjRC+Png4e+SXpAjIKzmoie60e4uuOQZJlcwnWORqsY78F
+	7F2WW9VZXXdIhlCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 40CF3779AE;
+	Mon, 13 Jul 2026 14:00:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id RWCfDZPvVGoTEQAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Mon, 13 Jul 2026 14:00:51 +0000
+Message-ID: <2256daf4-d03c-4a57-9d72-7a388d823f18@suse.de>
+Date: Mon, 13 Jul 2026 16:00:37 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/13 RFC net-next] net: ipv4: introduce CONFIG_IPV4 to
+ decouple the IPv4 stack
+To: Arnd Bergmann <arnd@arndb.de>, Netdev <netdev@vger.kernel.org>
+Cc: "David S . Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, David Ahern <dsahern@kernel.org>,
+ Simon Horman <horms@kernel.org>, Ido Schimmel <idosch@nvidia.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ Andrew Lunn <andrew+netdev@lunn.ch>,
+ Anthony L Nguyen <anthony.l.nguyen@intel.com>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Elad Nachman <enachman@marvell.com>, Saeed Mahameed <saeedm@nvidia.com>,
+ Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+ Petr Machata <petrm@nvidia.com>, Edward Cree <ecree.xilinx@gmail.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Arend van Spriel <arend.vanspriel@broadcom.com>,
+ Miri Korenblit <miriam.rachel.korenblit@intel.com>,
+ Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+ Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+ Chaitanya Kulkarni <kch@nvidia.com>, Saurav Kashyap <skashyap@marvell.com>,
+ Javed Hasan <jhasan@marvell.com>, GR-QLogic-Storage-Upstream@marvell.com,
+ "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Nilesh Javali <njavali@marvell.com>,
+ Manish Rangankar <mrangankar@marvell.com>, Varun Prakash
+ <varun@chelsio.com>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
+ Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>,
+ Chuck Lever <cel@kernel.org>, Jeff Layton <jlayton@kernel.org>,
+ NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>,
+ Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+ Marek Lindner <marek.lindner@mailbox.org>,
+ Simon Wunderlich <sw@simonwunderlich.de>,
+ Antonio Quartulli <antonio@mandelbit.com>,
+ Sven Eckelmann <sven@narfation.org>,
+ Nikolay Aleksandrov <razor@blackwall.org>,
+ Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>,
+ Phil Sutter <phil@nwl.cc>, Johannes Berg <johannes@sipsolutions.net>,
+ Matthieu Baerts <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>,
+ Geliang Tang <geliang@kernel.org>, Julian Anastasov <ja@ssi.bg>,
+ Aaron Conole <aconole@redhat.com>, Eelco Chaudron <echaudro@redhat.com>,
+ Ilya Maximets <i.maximets@ovn.org>, Allison Henderson <achender@kernel.org>,
+ Jamal Hadi Salim <jhs@mojatatu.com>, Jiri Pirko <jiri@resnulli.us>,
+ Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+ Xin Long <lucien.xin@gmail.com>, "D. Wythe" <alibuda@linux.alibaba.com>,
+ Dust Li <dust.li@linux.alibaba.com>, Sidraya Jayagond
+ <sidraya@linux.ibm.com>, Wenjia Zhang <wenjia@linux.ibm.com>,
+ Mahanta Jambigi <mjambigi@linux.ibm.com>, Tony Lu
+ <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
+ Jon Maloy <jmaloy@redhat.com>,
+ Steffen Klassert <steffen.klassert@secunet.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ Vikas Gupta <vikas.gupta@broadcom.com>,
+ Rajashekar Hudumula <rajashekar.hudumula@broadcom.com>,
+ Justin Chen <justin.chen@broadcom.com>,
+ Bhargava Marreddy <bhargava.marreddy@broadcom.com>,
+ Nicolai Buchwitz <nb@tipi-net.de>,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ Heiner Kallweit <hkallweit1@gmail.com>, Krzysztof Kozlowski
+ <krzk@kernel.org>, Russell King <rmk+kernel@armlinux.org.uk>,
+ Yao Zi <me@ziyao.cc>, Yanteng Si <siyanteng@cqsoftware.com.cn>,
+ Maxime Chevallier <maxime.chevallier@bootlin.com>,
+ Julian Braha <julianbraha@gmail.com>, Joey Lu <a0987203069@gmail.com>,
+ Shangjuan Wei <weishangjuan@eswincomputing.com>,
+ Chen-Yu Tsai <wens@kernel.org>, Inochi Amaoto <inochiama@gmail.com>,
+ "Lad, Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Qingfang Deng <qingfang.deng@linux.dev>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Eric Biggers <ebiggers@kernel.org>,
+ Ethan Nelson-Moore <enelsonmoore@gmail.com>, Ard Biesheuvel
+ <ardb@kernel.org>, Dmitry Safonov <0x7f454c46@gmail.com>,
+ Kuniyuki Iwashima <kuniyu@google.com>, Alyssa Ross <hi@alyssa.is>,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+ "open list:NETRONOME ETHERNET DRIVERS" <oss-drivers@corigine.com>,
+ linux-net-drivers@amd.com, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-wireless@vger.kernel.org,
+ brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
+ linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+ target-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+ b.a.t.m.a.n@lists.open-mesh.org,
+ "open list:ETHERNET BRIDGE" <bridge@lists.linux.dev>,
+ netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+ mptcp@lists.linux.dev, lvs-devel@vger.kernel.org, dev@openvswitch.org,
+ rds-devel@oss.oracle.com, linux-sctp@vger.kernel.org,
+ linux-s390@vger.kernel.org,
+ "open list:TIPC NETWORK LAYER" <tipc-discussion@lists.sourceforge.net>
+References: <20260712013941.4570-1-fmancera@suse.de>
+ <20260712013941.4570-2-fmancera@suse.de>
+ <12ffac6a-649a-4e4a-8d12-0b48171e1d95@app.fastmail.com>
+Content-Language: en-US
+From: Fernando Fernandez Mancera <fmancera@suse.de>
+In-Reply-To: <12ffac6a-649a-4e4a-8d12-0b48171e1d95@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Flag: NO
+X-Spam-Score: -1.01
+X-Spam-Level: 
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.66 / 15.00];
-	WHITELIST_DMARC(-7.00)[broadcom.com:D:+];
-	DATE_IN_FUTURE(4.00)[5];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[broadcom.com,reject];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[broadcom.com:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,broadcom.com,gmail.com,nvidia.com];
-	TAGGED_FROM(0.00)[bounces-23102-lists,linux-rdma=lfdr.de];
+	FREEMAIL_CC(0.00)[davemloft.net,google.com,kernel.org,redhat.com,nvidia.com,ziepe.ca,lunn.ch,intel.com,marvell.com,gmail.com,foss.st.com,broadcom.com,kernel.dk,lst.de,grimberg.me,hansenpartnership.com,oracle.com,chelsio.com,zeniv.linux.org.uk,suse.cz,auristor.com,brown.name,talpey.com,mailbox.org,simonwunderlich.de,mandelbit.com,narfation.org,blackwall.org,netfilter.org,strlen.de,nwl.cc,sipsolutions.net,ssi.bg,ovn.org,mojatatu.com,resnulli.us,linux.alibaba.com,linux.ibm.com,secunet.com,gondor.apana.org.au,tipi-net.de,armlinux.org.uk,ziyao.cc,cqsoftware.com.cn,bootlin.com,eswincomputing.com,bp.renesas.com,linux.dev,linuxfoundation.org,alyssa.is,vger.kernel.org,lists.osuosl.org,corigine.com,amd.com,st-md-mailman.stormreply.com,lists.infradead.org,lists.linux.dev,lists.open-mesh.org,openvswitch.org,oss.oracle.com,lists.sourceforge.net];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:leon@kernel.org,m:jgg@ziepe.ca,m:linux-rdma@vger.kernel.org,m:andrew.gospodarek@broadcom.com,m:kalesh-anakkur.purayil@broadcom.com,m:sriharsha.basavapatna@broadcom.com,m:alhouseenyousef@gmail.com,m:selvin.xavier@broadcom.com,m:jgg@nvidia.com,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[selvin.xavier@broadcom.com,linux-rdma@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-23131-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[selvin.xavier@broadcom.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[broadcom.com:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,nvidia.com:email];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:arnd@arndb.de,m:netdev@vger.kernel.org,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:dsahern@kernel.org,m:horms@kernel.org,m:idosch@nvidia.com,m:jgg@ziepe.ca,m:leon@kernel.org,m:andrew+netdev@lunn.ch,m:anthony.l.nguyen@intel.com,m:przemyslaw.kitszel@intel.com,m:enachman@marvell.com,m:saeedm@nvidia.com,m:tariqt@nvidia.com,m:mbloch@nvidia.com,m:petrm@nvidia.com,m:ecree.xilinx@gmail.com,m:mcoquelin.stm32@gmail.com,m:alexandre.torgue@foss.st.com,m:arend.vanspriel@broadcom.com,m:miriam.rachel.korenblit@intel.com,m:kbusch@kernel.org,m:axboe@kernel.dk,m:hch@lst.de,m:sagi@grimberg.me,m:kch@nvidia.com,m:skashyap@marvell.com,m:jhasan@marvell.com,m:GR-QLogic-Storage-Upstream@marvell.com,m:James.Bottomley@hansenpartnership.com,m:martin.petersen@oracle.com,m:njavali@marvell.com,m:mrangankar@marvell.com,m:varun@chelsio.com,m:viro@zeniv.linux.org.uk,m:brauner@kernel.org,m:jack@suse.cz,m:dhowells@redhat.com,m:marc.dionne@auristor.com,m
+ :trondmy@kernel.org,m:anna@kernel.org,m:cel@kernel.org,m:jlayton@kernel.org,m:neil@brown.name,m:okorniev@redhat.com,m:Dai.Ngo@oracle.com,m:tom@talpey.com,m:marek.lindner@mailbox.org,m:sw@simonwunderlich.de,m:antonio@mandelbit.com,m:sven@narfation.org,m:razor@blackwall.org,m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:johannes@sipsolutions.net,m:matttbe@kernel.org,m:martineau@kernel.org,m:geliang@kernel.org,m:ja@ssi.bg,m:aconole@redhat.com,m:echaudro@redhat.com,m:i.maximets@ovn.org,m:achender@kernel.org,m:jhs@mojatatu.com,m:jiri@resnulli.us,m:marcelo.leitner@gmail.com,m:lucien.xin@gmail.com,m:alibuda@linux.alibaba.com,m:dust.li@linux.alibaba.com,m:sidraya@linux.ibm.com,m:wenjia@linux.ibm.com,m:mjambigi@linux.ibm.com,m:tonylu@linux.alibaba.com,m:guwen@linux.alibaba.com,m:jmaloy@redhat.com,m:steffen.klassert@secunet.com,m:herbert@gondor.apana.org.au,m:vikas.gupta@broadcom.com,m:rajashekar.hudumula@broadcom.com,m:justin.chen@broadcom.com,m:bhargava.marreddy@broadcom.com,m:nb@tipi
+ -net.de,m:florian.fainelli@broadcom.com,m:hkallweit1@gmail.com,m:krzk@kernel.org,m:rmk+kernel@armlinux.org.uk,m:me@ziyao.cc,m:siyanteng@cqsoftware.com.cn,m:maxime.chevallier@bootlin.com,m:julianbraha@gmail.com,m:a0987203069@gmail.com,m:weishangjuan@eswincomputing.com,m:wens@kernel.org,m:inochiama@gmail.com,m:prabhakar.mahadev-lad.rj@bp.renesas.com,s:lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER(0.00)[fmancera@suse.de,linux-rdma@vger.kernel.org];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[suse.de:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fmancera@suse.de,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	RCPT_COUNT_GT_50(0.00)[134];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev,kernel];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:from_mime,suse.de:dkim,suse.de:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 6AA0E748DCB
+X-Rspamd-Queue-Id: AE3B474C511
 
-The current GET_TOGGLE_MEM ioctl requires the caller to supply
-a type enum and a raw hardware queue ID (RES_ID). The kernel
-looks up the CQ or SRQ by that ID without verifying that the
-caller owns the resource.
+On 7/12/26 1:01 PM, Arnd Bergmann wrote:
+> On Sun, Jul 12, 2026, at 03:38, Fernando Fernandez Mancera wrote:
+>> Historically, the IPv4 protocol has been linked to the core INET
+>> subsystem. Because shared infrastructure like the TCP/UDP engine,
+>> routing or INET hashtables live inside net/ipv4/, it has been impossible
+>> to compile a kernel with only IPv6 support.
+>>
+>> This patch introduces the CONFIG_IPV4 Kconfig symbol, which is set to
+>> 'def_bool y' for now. This does not allow to completely disable the
+>> IPv4 stack yet but it lays the necessary build-system work for that
+>> goal.
+> 
+> I expect this will cause additional (trivial) build regression in the
+> next step when randconfig builds run into obscure corner cases, either
+> with INET=y IPV4=n IPV6=y or with INET=y IPV4=n IPV6=n.
+> 
+> I can probably give your patch (with IPV4 visible or disabled) an
+> early go on the randconfig tree to find these more quickly.
+> If I run into regressions, should I just add more 'depends on IPV4',
+> or do you have other plans?
+> 
 
-Add a new, preferred code path that accepts standard uverbs
-object handles (BNXT_RE_TOGGLE_MEM_CQ_HANDLE /
-BNXT_RE_TOGGLE_MEM_SRQ_HANDLE) instead. The uverbs core validates
-that the handle belongs to the calling context as part of resolving
-it, so this path no longer needs the driver's own XArray lookup for
-ownership checking. As with the legacy path, the toggle_entry's own
-mmap-entry refcount (not a CQ/SRQ uobject reference) is what pins
-the toggle page for the life of the GET_TOGGLE_MEM handle.
+Yes, I have a job running randconfig and verifying nothing breaks. If 
+something breaks and it isn't core networking stack I would just make 
+the Kconfig symbol depend on IPv4.
 
-Only newer rdma-core versions support this path, if the
-driver reports the supported resp mask
-(BNXT_RE_UCNTX_CMASK_TOGGLE_MEM_UOBJ_SUPPORT).
-The existing TYPE + RES_ID path is retained for backward
-compatibility with older rdma-core.
+Then later we will have more time to write a dedicate patch so it does 
+not depend on IPv4.
 
-Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/ib_verbs.c |  2 +
- drivers/infiniband/hw/bnxt_re/uapi.c     | 55 +++++++++++++++++++++---
- include/uapi/rdma/bnxt_re-abi.h          |  4 ++
- 3 files changed, 56 insertions(+), 5 deletions(-)
+> Should we have some logic to ensure that at least one of IPV4 or
+> IPV6 is enabled? I think this would work
+> 
+> config IPV4
+>        bool "The IPv4 protocol" if IPV6
+>        default INET
+> 
+> which only allows turning IPV4 off if IPV6 has enabled.
+> 
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 9ee2cd0fcda8..a65f0c9ee6d7 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -4862,6 +4862,8 @@ int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata)
- 	if (_is_modify_qp_rate_limit_supported(dev_attr->dev_cap_flags2))
- 		resp.comp_mask |= BNXT_RE_UCNTX_CMASK_QP_RATE_LIMIT_ENABLED;
- 
-+	resp.comp_mask |= BNXT_RE_UCNTX_CMASK_TOGGLE_MEM_UOBJ_SUPPORT;
-+
- 	if (udata->inlen) {
- 		rc = ib_copy_validate_udata_in_cm(
- 			udata, ureq, comp_mask,
-diff --git a/drivers/infiniband/hw/bnxt_re/uapi.c b/drivers/infiniband/hw/bnxt_re/uapi.c
-index c13497b187b5..c740059ff1ed 100644
---- a/drivers/infiniband/hw/bnxt_re/uapi.c
-+++ b/drivers/infiniband/hw/bnxt_re/uapi.c
-@@ -237,16 +237,52 @@ static int UVERBS_HANDLER(BNXT_RE_METHOD_GET_TOGGLE_MEM)(struct uverbs_attr_bund
- 	if (IS_ERR(ib_uctx))
- 		return PTR_ERR(ib_uctx);
- 
-+	uctx = container_of(ib_uctx, struct bnxt_re_ucontext, ib_uctx);
-+
-+	/* New path: updated libbnxt_re passes the CQ or SRQ uverbs handle */
-+	if (uverbs_attr_is_valid(attrs, BNXT_RE_TOGGLE_MEM_CQ_HANDLE)) {
-+		struct bnxt_re_cq *cq;
-+
-+		res_uobj = uverbs_attr_get_uobject(attrs,
-+						   BNXT_RE_TOGGLE_MEM_CQ_HANDLE);
-+		if (IS_ERR(res_uobj))
-+			return PTR_ERR(res_uobj);
-+		cq = container_of(res_uobj->object, struct bnxt_re_cq, ib_cq);
-+		if (!cq->toggle_entry)
-+			return -EOPNOTSUPP;
-+		mmap_offset = rdma_user_mmap_get_offset(&cq->toggle_entry->rdma_entry);
-+		if (!mmap_offset)
-+			return -EOPNOTSUPP;
-+		kref_get(&cq->toggle_entry->rdma_entry.ref);
-+		toggle_entry = cq->toggle_entry;
-+		goto alloc_tmem;
-+	} else if (uverbs_attr_is_valid(attrs, BNXT_RE_TOGGLE_MEM_SRQ_HANDLE)) {
-+		struct bnxt_re_srq *srq;
-+
-+		res_uobj = uverbs_attr_get_uobject(attrs,
-+						   BNXT_RE_TOGGLE_MEM_SRQ_HANDLE);
-+		if (IS_ERR(res_uobj))
-+			return PTR_ERR(res_uobj);
-+		srq = container_of(res_uobj->object, struct bnxt_re_srq, ib_srq);
-+		if (!srq->toggle_entry)
-+			return -EOPNOTSUPP;
-+		mmap_offset = rdma_user_mmap_get_offset(&srq->toggle_entry->rdma_entry);
-+		if (!mmap_offset)
-+			return -EOPNOTSUPP;
-+		kref_get(&srq->toggle_entry->rdma_entry.ref);
-+		toggle_entry = srq->toggle_entry;
-+		goto alloc_tmem;
-+	}
-+
- 	err = uverbs_get_const(&res_type, attrs, BNXT_RE_TOGGLE_MEM_TYPE);
- 	if (err)
- 		return err;
--
--	uctx = container_of(ib_uctx, struct bnxt_re_ucontext, ib_uctx);
- 	err = uverbs_copy_from(&res_id, attrs, BNXT_RE_TOGGLE_MEM_RES_ID);
- 	if (err)
- 		return err;
- 
- 	/*
-+	 * Legacy path: old libbnxt_re sends TYPE + RES_ID.
- 	 * Hold xa_lock across xa_load + kref_get so that a concurrent
- 	 * bnxt_re_destroy_cq/srq cannot call __xa_erase and remove the
- 	 * toggle_entry between our load and our reference on it.
-@@ -290,6 +326,7 @@ static int UVERBS_HANDLER(BNXT_RE_METHOD_GET_TOGGLE_MEM)(struct uverbs_attr_bund
- 	if (!mmap_offset)
- 		return -EOPNOTSUPP;
- 
-+alloc_tmem:
- 	tmem = kzalloc_obj(*tmem);
- 	if (!tmem) {
- 		rdma_user_mmap_entry_put(&toggle_entry->rdma_entry);
-@@ -336,10 +373,10 @@ DECLARE_UVERBS_NAMED_METHOD(BNXT_RE_METHOD_GET_TOGGLE_MEM,
- 					    UA_MANDATORY),
- 			    UVERBS_ATTR_CONST_IN(BNXT_RE_TOGGLE_MEM_TYPE,
- 						 enum bnxt_re_get_toggle_mem_type,
--						 UA_MANDATORY),
-+						 UA_OPTIONAL),
- 			    UVERBS_ATTR_PTR_IN(BNXT_RE_TOGGLE_MEM_RES_ID,
- 					       UVERBS_ATTR_TYPE(u32),
--					       UA_MANDATORY),
-+					       UA_OPTIONAL),
- 			    UVERBS_ATTR_PTR_OUT(BNXT_RE_TOGGLE_MEM_MMAP_PAGE,
- 						UVERBS_ATTR_TYPE(u64),
- 						UA_MANDATORY),
-@@ -348,7 +385,15 @@ DECLARE_UVERBS_NAMED_METHOD(BNXT_RE_METHOD_GET_TOGGLE_MEM,
- 						UA_MANDATORY),
- 			    UVERBS_ATTR_PTR_OUT(BNXT_RE_TOGGLE_MEM_MMAP_LENGTH,
- 						UVERBS_ATTR_TYPE(u32),
--						UA_MANDATORY));
-+						UA_MANDATORY),
-+			    UVERBS_ATTR_IDR(BNXT_RE_TOGGLE_MEM_CQ_HANDLE,
-+					    UVERBS_OBJECT_CQ,
-+					    UVERBS_ACCESS_READ,
-+					    UA_OPTIONAL),
-+			    UVERBS_ATTR_IDR(BNXT_RE_TOGGLE_MEM_SRQ_HANDLE,
-+					    UVERBS_OBJECT_SRQ,
-+					    UVERBS_ACCESS_READ,
-+					    UA_OPTIONAL));
- 
- DECLARE_UVERBS_NAMED_METHOD_DESTROY(BNXT_RE_METHOD_RELEASE_TOGGLE_MEM,
- 				    UVERBS_ATTR_IDR(BNXT_RE_RELEASE_TOGGLE_MEM_HANDLE,
-diff --git a/include/uapi/rdma/bnxt_re-abi.h b/include/uapi/rdma/bnxt_re-abi.h
-index a4599d7b736a..c0ee9ce389ac 100644
---- a/include/uapi/rdma/bnxt_re-abi.h
-+++ b/include/uapi/rdma/bnxt_re-abi.h
-@@ -57,6 +57,8 @@ enum {
- 	BNXT_RE_UCNTX_CMASK_POW2_DISABLED = 0x10ULL,
- 	BNXT_RE_UCNTX_CMASK_MSN_TABLE_ENABLED = 0x40,
- 	BNXT_RE_UCNTX_CMASK_QP_RATE_LIMIT_ENABLED = 0x80ULL,
-+	 /* Some reserved fields to manage compatibility with Out of tree drivers */
-+	BNXT_RE_UCNTX_CMASK_TOGGLE_MEM_UOBJ_SUPPORT = 0x400000ULL,
- };
- 
- enum bnxt_re_wqe_mode {
-@@ -218,6 +220,8 @@ enum bnxt_re_var_toggle_mem_attrs {
- 	BNXT_RE_TOGGLE_MEM_MMAP_PAGE,
- 	BNXT_RE_TOGGLE_MEM_MMAP_OFFSET,
- 	BNXT_RE_TOGGLE_MEM_MMAP_LENGTH,
-+	BNXT_RE_TOGGLE_MEM_CQ_HANDLE,
-+	BNXT_RE_TOGGLE_MEM_SRQ_HANDLE,
- };
- 
- enum bnxt_re_toggle_mem_attrs {
--- 
-2.39.3
+I do wonder, should we? I mean, I didn't try it off but I don't see why 
+we should not allow a pure L2 system..
 
+Thanks,
+Fernando.
 
