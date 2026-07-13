@@ -1,90 +1,90 @@
-Return-Path: <linux-rdma+bounces-23139-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23143-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id WMeZBJsGVWpUjAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-23139-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 17:39:07 +0200
+	id Xq2DLOsGVWptjAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-23143-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 17:40:27 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7698D74D24F
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 17:39:06 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55D6074D2A8
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 17:40:27 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=Nvidia.com header.s=selector2 header.b=aYgH89eU;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23139-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23139-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=Nvidia.com header.s=selector2 header.b=OSwit6CY;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23143-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23143-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=reject) header.from=nvidia.com;
 	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8B35D302418E
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 15:38:40 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 071393042415
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2026 15:39:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDA1A3546C0;
-	Mon, 13 Jul 2026 15:38:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01E2B35202D;
+	Mon, 13 Jul 2026 15:38:58 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from PH7PR06CU001.outbound.protection.outlook.com (mail-westus3azon11010050.outbound.protection.outlook.com [52.101.201.50])
+Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11013031.outbound.protection.outlook.com [40.93.196.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 411A82EA468;
-	Mon, 13 Jul 2026 15:38:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F8C938D40D;
+	Mon, 13 Jul 2026 15:38:55 +0000 (UTC)
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783957117; cv=fail; b=Dzlw3ie8EySYhQ/Sx8USQxn+LsuEQEyAtUBfIYSdtrMAW8pSL77QdmcUKEIJ8hZCj2hH5y59m+jcDl0r5aV7F+JBTW2BV6t3VD8eu3MhGJIfYApDLzg7F88IDz3aDBYc0KJm6HkpaCsWIfVkyDbPZqbbOHQ7eb/eQgfYNckdJnY=
+	t=1783957137; cv=fail; b=V2cMFWGAZFQZ9VpraGi/cOqsCP9JEJvg4KBXe9TpoTI6PKVWwPxAsxI1aMXRXf0+Gftkdm6kRHdEuRS9bPxMipVzd3xrOnPVrWBXuqXzHBmuM33j51sYgjMa74jj9k/Y3scs7sgT1BZ2FEiWQuWqIq2q7JMW7ztXA5V1b8giw5A=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783957117; c=relaxed/simple;
-	bh=OO30wvV6LH37hxt4MXjxegRbNqSrQx/xuWXGWRUsOss=;
-	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type:To:CC; b=pBzIaCc+krPdR0lipMsncU0SLH3sqP9NBCZOHngQ0XImQVcukDrFFE9GJ3kMuY8F5QGpA2LQgGacaWZcUwiSn+PcH93RZdHaIyYlRlEyuk3vVMGcIOGVMmFY8htsAltnuQK+1kQS4b+r78ZXlT1l2yo6BSYVQmfnlS81uc9sFcg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=aYgH89eU; arc=fail smtp.client-ip=52.101.201.50
+	s=arc-20240116; t=1783957137; c=relaxed/simple;
+	bh=bKivjUzM0g23lOmBD116hSY8WJi3eYKFOeneDCEWtus=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
+	 In-Reply-To:To:CC; b=ZQXqPGoOd56el+k2dsYfPQkX5FxbXuzPhbElxFDTTVwFyT2pzgYw9XtQKmjTr/3O3JCWw+KFqcZQCfFU3T9eTZbEQgm0cd2x60jHYTra1xPcCgzdgp7SBhXKB4d/5y0NDUHZaZ4onHaw2tu5nFQVoqT1hNv8JiwLxEQ/wptgUs4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=OSwit6CY; arc=fail smtp.client-ip=40.93.196.31
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=i/dPbC1KU7OZnuyrOKSWH+KVP9YBDT1N6u/GK0fFavvy2L30DJ5CXBgBL7BYv3F+g5KP5NB9sM1n0+DZYjoozaaaTrdAujB/GVRiA6M8TeYpgwc72jlqQxfUB51nHGY1bDHCTs/7XKdpfBLQzWdhLwaV6qNe7HMbFYGxzX0G0+vdqgxe4SaOOPBZ3ZfyI5HuB7+lHXFQcT93QJHBxS+td2+SybM8kXhWDPkL4MTW1lsRxLtWs6zaFPRD6wwLl+QVb634jJt0/B9zuMqHznvxYPDOQtbCnfGDLnBOjvLDwjqcAxa2SvD0TBJ9+mvyJA7B+SYrLSWIZ4QmOsBg0lNqyw==
+ b=doYnWE0bLMFvA/YkERfeT57vkH4luvlHQSXAfbAQ2FI7alZ0aomnRPZZ+UFcTPvUdji2kIwbEF9PzmJw9r/1Qn0FV3P/LDKsw/IWABhoCgH72SmH5IHJNJJR2M6CHe1MWD3KC0afLNyBt9KO/lsmB/tMVaf3QHzPCcEVuEywci9eV1LMevAbS4lhFa2DOX+y1IzHVhWMu9rcHSiSeiKydIgdSCSBgFERvtpy2hmgNyxT67WYigISEaXOaAeLw721zq8pQRTUokM2thz8Y1CQTbNRMT1I/Ilu0ayVhi9uHls6YssvAwEC0uM0/ahQcrtqww7Zd/FQws/9Z5VWND2zrQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XGgF9HpxmoGqgetb1TVDIudYDYteqvfKqcZ461uAdac=;
- b=kYZKxJABgw7q9HmYJvFxADPs5yRzhK0h0FkFIc40oPIRTzCwumH+kcWyNU/t31POx8L4q6ATo15D6sqX11ldQIxiDhQt77t9owEEng4e9sXJkUa25WmqBTbkz9MkDGqj/3ysl8djyamSb2K2+wCVL6hBg4/EJYbLHElmIXiLGDzGIobValKBQAab2ptSXN9CEeiy/LsiwucTde0MHdyOLbDGm5xYzk/AAfTggPNBlmM41UY10wjYpSEb49OmiiSKA7JHFOEbwFFXVjvlHgS29JVrho2vuRXpEGydOkPDpng0whwiPhM3+n6NUFVdhqO3R2qrsLZdYxB3s+wkONCzXA==
+ bh=50DUI5+fmglrMPplk6TKjghnc5ITV/0t5rR9Jq91HyE=;
+ b=Cqm2CJ/pqyzsfl6jMo7Yu50xJtwtcKeLZGzwPkOW7+rviCxLoYcR+ptTsyTtNhABBtIO7WACUA3oJ2mfyzBCcYQyPsHphxu8vbqIqIZpwqtXcJUduGcCJbNtIW6b/CHIyiAZu7/4IDrGyvDG5ezoXUgLHXVmxmUzqh75LfjWcOV/pClyl3l9sNeobE44GayfR0kBpFy5j18C/G2tI7TT4LcSBmW4Mh0e+Io3A9Pd3tC8Kl7k2SSKIUcbIAmzJ0i2KI4T54uqz9vrW18EU2sTx4WWB+k9m6clfbW1tclNP1UptUqEXylGLNumAPQNSjP16sjjX8Iz1x2KXm0jRlgPag==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XGgF9HpxmoGqgetb1TVDIudYDYteqvfKqcZ461uAdac=;
- b=aYgH89eUcTByr+LiINzLO7DLZ5lRdONLDwrRtYggnFhsCkbqE6ZY0rHpSshzLvvbItIpkL4HNVgxo4LwKT7zVRbz/XNcIy4TruRAoD4qOu7s8hq4TXvcrw70eVT+JclNaZMUEDjgI5mBmGxzc5kR5+8NkOkCsNJyHEDGgae4q/jG302BX0nyuzPQm0raa0EwDV0PmdiM4fJU60fyCjVvDELgi6eqB1xP5MCAvRIp39OUbpgzobYcXHfa1fueDjc3EEj0RiChxkg7aDFZ4SOHVmeGG/pB7HVcuTQ+oeWn2Rz/gQD8cAM1Mm6jUt0q9rkBnWa4KhpYip7c5Elf6MqJoQ==
-Received: from SJ0PR03CA0191.namprd03.prod.outlook.com (2603:10b6:a03:2ef::16)
- by IA0PR12MB7554.namprd12.prod.outlook.com (2603:10b6:208:43e::19) with
+ bh=50DUI5+fmglrMPplk6TKjghnc5ITV/0t5rR9Jq91HyE=;
+ b=OSwit6CY6mZW8Rd+yovdaYVOTvyJ4nDpl+ZZ3Pm6VKptP1fI52nS9KgYlz1VtD/gFEa8qTpnf77a5jDz5uUZttlR0hWVPdWrOpoByGWOTpOOU78y3kWtIkI96RQ1EJ8xoR/7mPIw6QDt+1/FTzwyhvS0qq7feK5eroKj9X2REdKYzaL5NTozo7xZ1PiqqjW2OIBRKrbCpgWLKw/6AGFUM8amSGDJHJdERmdyrWJP6bn3MB5RlA0ts/V8ia8Ed8vUXlNOpNX9jZ13tB6izPeCZs5ETIeHflCYITQ/9vgcwrA0biq1XcEKZIllEZuihDGptp1KfoYQpqxOO7ZzfZzXYA==
+Received: from BLAPR03CA0153.namprd03.prod.outlook.com (2603:10b6:208:32f::19)
+ by IA1PR12MB7710.namprd12.prod.outlook.com (2603:10b6:208:422::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.202.18; Mon, 13 Jul
- 2026 15:38:29 +0000
-Received: from SJ1PEPF00002310.namprd03.prod.outlook.com
- (2603:10b6:a03:2ef:cafe::82) by SJ0PR03CA0191.outlook.office365.com
- (2603:10b6:a03:2ef::16) with Microsoft SMTP Server (version=TLS1_3,
+ 2026 15:38:34 +0000
+Received: from BL02EPF0001A0FD.namprd03.prod.outlook.com
+ (2603:10b6:208:32f:cafe::9f) by BLAPR03CA0153.outlook.office365.com
+ (2603:10b6:208:32f::19) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.21.202.19 via Frontend Transport; Mon,
- 13 Jul 2026 15:38:27 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ 13 Jul 2026 15:38:34 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- SJ1PEPF00002310.mail.protection.outlook.com (10.167.242.164) with Microsoft
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ BL02EPF0001A0FD.mail.protection.outlook.com (10.167.242.104) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.223.9 via Frontend Transport; Mon, 13 Jul 2026 15:38:27 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ 15.21.223.9 via Frontend Transport; Mon, 13 Jul 2026 15:38:34 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 13 Jul
- 2026 08:38:10 -0700
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ 2026 08:38:14 -0700
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 13 Jul
- 2026 08:38:09 -0700
+ 2026 08:38:14 -0700
 Received: from [10.135.59.1] (10.127.8.10) by mail.nvidia.com (10.129.68.10)
  with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Mon, 13
- Jul 2026 08:38:05 -0700
+ Jul 2026 08:38:10 -0700
 From: Edward Srouji <edwards@nvidia.com>
-Subject: [PATCH rdma-next v2 0/8] RDMA/core: Fix restrack UAF in destroy
- flows
-Date: Mon, 13 Jul 2026 18:37:59 +0300
-Message-ID: <20260713-restrack-uaf-fix-resub-v2-0-bbe8bb270d51@nvidia.com>
+Date: Mon, 13 Jul 2026 18:38:00 +0300
+Subject: [PATCH rdma-next v2 1/8] RDMA/core: Add
+ rdma_restrack_begin/abort/commit_del() operations
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -93,11 +93,9 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAFcGVWoC/4WNTQ7CIBCFr9LM2jEUEY0r72G6wGGwEyM10JKap
- ncXewGX7+97C2ROwhkuzQKJi2QZYhV61wD1Lj4YxVcNWmmrTqrFxHlMjp44uYBB5p8x3dEGczB
- Mx7MxBHX8TlzDDXyD5F8OI88jdDXqJY9D+myXpd0K/+ilRYVkrSLvjA/aXWMRL25Pwwu6dV2/H
- KfancgAAAA=
-X-Change-ID: 20260701-restrack-uaf-fix-resub-6f434ec5844c
+Message-ID: <20260713-restrack-uaf-fix-resub-v2-1-bbe8bb270d51@nvidia.com>
+References: <20260713-restrack-uaf-fix-resub-v2-0-bbe8bb270d51@nvidia.com>
+In-Reply-To: <20260713-restrack-uaf-fix-resub-v2-0-bbe8bb270d51@nvidia.com>
 To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, "Dennis
  Dalessandro" <dennis.dalessandro@cornelisnetworks.com>, Gal Pressman
 	<galpress@amazon.com>, Steve Wise <larrystevenwise@gmail.com>, Mark Bloch
@@ -108,52 +106,52 @@ CC: <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Edward
  Srouji" <edwards@nvidia.com>, Patrisious Haddad <phaddad@nvidia.com>,
 	"Michael Guralnik" <michaelgur@nvidia.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1783957085; l=3657;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783957085; l=8159;
  i=edwards@nvidia.com; s=20251029; h=from:subject:message-id;
- bh=OO30wvV6LH37hxt4MXjxegRbNqSrQx/xuWXGWRUsOss=;
- b=UtFLvqVIAaOJwdr0icBhKJbzQB4v8+OzrJdjGGSIZd/c5CYNX/UVib5Tub1XU/bfdU2SQvpeH
- HLj+ysXxdaQCG+H0whHVYAxfoZP61HQvKXW/bfxlo1o8Z/6NYRi4NNI
+ bh=Fhd9ofQ4UhlctRydb08h40+6v+kEcr4Jn1BfnBNxazA=;
+ b=QAWTL+9mIBH74xfF0At/CxRBBasITl9mAYj1+y/lkgkchKYNGXcfjlsiqyyG8Y815biYZOoKm
+ uXU+exmFTJpBS9wgB4YMhw3Se9OgRDN1kRIVeb+TYrYy4ywWPSEAa3H
 X-Developer-Key: i=edwards@nvidia.com; a=ed25519;
  pk=VME+d2WbMZT5AY+AolKh2XIdrnXWUwwzz/XLQ3jXgDM=
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF00002310:EE_|IA0PR12MB7554:EE_
-X-MS-Office365-Filtering-Correlation-Id: a42096c6-50c2-4ea4-a382-08dee0f4c85c
+X-MS-TrafficTypeDiagnostic: BL02EPF0001A0FD:EE_|IA1PR12MB7710:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3804c46c-6ab3-4c7c-e0a0-08dee0f4ccc2
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|23010399003|82310400026|1800799024|36860700016|376014|921020|13003099007|18002099003|6133799003|11063799006|56012099006;
+	BCL:0;ARA:13230040|82310400026|1800799024|36860700016|23010399003|376014|921020|18002099003|22082099003|6133799003|56012099006|11063799006;
 X-Microsoft-Antispam-Message-Info:
-	OeoNQ5rKUpsZNQsnnX/gpZlXcKHQ0ZorL8zUzAWbACxyWXk7en1rlYF1a7VIuHsY061WJCXkszR0zYCpwy0i5pHwjsWL1NFYLOEkOWyQcNy2H3kp0SLr0vkIOhoSZBQee0zZc8bJrikRokFSvjP83chRQqOhkrTt9AVwcejJm472fbudnNJaO4MhaiN6Sw6QBRricCS3Ru0U73b/QT9KMwoiLaWiNAg60F6J2QYFoWIGulU60ZFOjCSmkz/x4yzlvI2or2ylfTxPQRtcDy8LqKbp3JhPYwInc6nI8p6/kg0VVsOr24PHDTe2a/nTc4auNAz+HAdVfOyJx/cRn2ofj1YBSeLDYOAPlb+FC3mrIZ8jKtMz1N1Pb737L/A2MKNIBaqoFw9gxTZ7tYOs/WY7k2/Dl0ReQAW8IC+Xq0rjHVp/eAWbVqpcy5zqmUzIEAZ0gfq0tGHOEunTFvCVsHJhp6uwaLns1mGjkt8yhHRkIcHc4Qji/zPfgVEwIe6O3hKaWYyYwC819xAae4Q86Md3pyTfYiin2lKYqDtAxSLwXilpmJJcSfb7SVwt+E0f6+UjX9r1MYbDQKtcY5RlqeXHcSBuue6X0ugVo7l+XV23gBHs6h2h7g5zcG05mPkCexNdBWSUUPTOAuHrDqZFNHK5p3bSBmjaNyhu4vbA06AMY1thjjiWKardzN5jhT6rS2aF6Nb0iNbKL34HwR+hCYpgV2QBljciEmsVl9WhC6NwLWkv8gPyfBDLje4a0iuhcee+
+	ijwUSgscbNB4p+CHADRB9u4Rb+Z8sa3vESTtOv43NYxFlwgB7H4eUDTt6lMryfyufZzXzJ8WIib8n1bik6+0N/EO+PjrIjXVOXbe7ZtgknS5riZdFD6T0Xdeo3z7sGd7qMM9RjqWinKXHcCV790/zA+MEau8iNH+5DnIlh4ggpHEmIcA/B1VIflnJBEqYiAk6nQFo+ifhwyEqVuwIcFNSiP4+mU73hwJB2Wn6UGLvCeYHLsMFaBlY+hHrcdQxZYB7pxxgKQOk7tHKm2QRNbVHUlKKHfq31QbZGJ6m1sK5Xw7OER/t54F9C97ACL5UoEGo7RDiLkPv05STdo4V63xMwetPInz0IJDHu9smyWR0gICDnXZLsvrcQgfkIHo7zVpAsSdQ/a1hcE/Wj9oYP57FHTKHqSG83XXMPPFF5LjpLOM2wREnysdJF6cX6TgeT5VAl/DkWlLOUOimkCBajRPOVM8OEgcgXbxTqIakVB5ZsmyQBY9CThxe51jioIl19OFiPquQfY5L9kwxwwZ40E6xOJqeaA2JC1t6tU8JxZ8/ZmQt3bZNDkdeBZEJP4xay4V1z/wFKTtlHKJVGJGa49W3QhD3Oceu5r9glWgJBAiZSsLp71Y4CgI0xPJH3T5SskCqEsOtnSPA373/q2gJTxCjiG0ZxoeDMNX5qLJfSnGJ8FEXHs9iWXf9EFtr87X/lN+5spRlljyq/VDnMkbbtQLNIS8zrf3WIQhNrt/Y/pjhCbpWxbTvinyY1PIU9PHs0FL
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(23010399003)(82310400026)(1800799024)(36860700016)(376014)(921020)(13003099007)(18002099003)(6133799003)(11063799006)(56012099006);DIR:OUT;SFP:1101;
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(36860700016)(23010399003)(376014)(921020)(18002099003)(22082099003)(6133799003)(56012099006)(11063799006);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	QOB0UXV6jOoL8iuafdlOPdOnrHII74chQVL78+B/nmWWBStWn1QLDIK3u8tZBntcWS07JOjHQt+WGFwryMeJ4hzU7LhE+XVo6Z0mOyXt8zSqfYwK497pIdO92ZI5tph1ZlJR9vBVO6L5LDEsl14o57KPqSS3YPi1PPh5hBkMAq1YqmZC83NiND7+2QCcoR3TJeI0QzJTsb+maUOs3b3aVNfcGHd9+YgOeHToEDdYWM/q8Ur64iAnhdXGlmFyLNbOqnWpx0isFEFEtgPYPki7ODppWQGJg34ZKEJAPH72lduNEZT3JGs2AOjx8YK97UMjCA04WZBGM/ikMejCE1X28P5mtF5b4PkcV5dCMdNq5u1L1xit3rgfdxBfArmLTJiD3TIEqDIsiOVNpI69WkNFX65FqUlyNcqh5y/2rszpMHICQPZwAnz/AEJK0a6hS1xq
+	26ZaMjC503HYnU5Y4v2sAN7AilcnC0s9MD6B4tvd07gj0qGe0HRGVzR/MGmksvPQgIVm8eSV1rw75LxEOHVlzhqoRac6VADLl3X+71/tpoxg78JADoHPVNFrn1XOWiCwwjU8BIRCBWkLQHIPH4pR9D+8HIWmT1Hoa210gkFs0KCC9t/0M9hwKCE3a0Y3yJDs5vnp/D5KCcJSuYVnXwgCU+M5RSCzHdG/JTIS+XX3dJhhHMfJeMQhkqMVD3Un7HunFq0MJJheiEvUEyfAGBBiJorsPI9OL9Z31FHYUCXIfiLLpZ6xQSw9kmZUTJa/VY+Z7xKJ4mYyk238neagW4+cZ7VhuaBj2vLpMGq1SM7dfAhNJERwCqN/0imCbOhk6RGzuwiAYIasdjRg4ANmJz8cTdXzONlDm7Se9DV160SkYunptc9FBznm9v537lDedoyP
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2026 15:38:27.0890
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2026 15:38:34.3295
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a42096c6-50c2-4ea4-a382-08dee0f4c85c
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3804c46c-6ab3-4c7c-e0a0-08dee0f4ccc2
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SJ1PEPF00002310.namprd03.prod.outlook.com
+	BL02EPF0001A0FD.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7554
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7710
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-7.16 / 15.00];
 	WHITELIST_DMARC(-7.00)[nvidia.com:D:+];
 	ARC_REJECT(1.00)[cv is fail on i=2];
 	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23139-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23143-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS(0.00)[m:jgg@ziepe.ca,m:leon@kernel.org,m:dennis.dalessandro@cornelisnetworks.com,m:galpress@amazon.com,m:larrystevenwise@gmail.com,m:markb@mellanox.com,m:netao@nvidia.com,m:markzhang@nvidia.com,m:markz@mellanox.com,m:majd@mellanox.com,m:yishaih@nvidia.com,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:edwards@nvidia.com,m:phaddad@nvidia.com,m:michaelgur@nvidia.com,s:lists@lfdr.de];
 	FORGED_SENDER(0.00)[edwards@nvidia.com,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -171,83 +169,295 @@ X-Spamd-Result: default: False [-7.16 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCVD_COUNT_SEVEN(0.00)[9]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 7698D74D24F
+X-Rspamd-Queue-Id: 55D6074D2A8
 
-The resource-tracking (restrack) database is the back-end for the netlink
-"rdma resource show" interface which pins objects with
-rdma_restrack_get().
+From: Patrisious Haddad <phaddad@nvidia.com>
 
-QP/CQ/SRQ/PD/DMAH/counter destroy paths currently call
-rdma_restrack_del() at the very end of ib_destroy_*_user() (or its
-equivalent), i.e. after device->ops.destroy_*() has already freed the
-vendor object. A concurrent netlink dump can therefore look the entry
-up, take a reference via rdma_restrack_get(), and then dereference
-already freed memory - most visibly through ib_query_qp() during
-fill_res_qp_entry_query(), which produced the crash logged in patch 2.
+Add rdma_restrack_abort_del(), rdma_restrack_begin_del() and
+rdma_restrack_commit_del() functions to allow deleting a resource from
+the xarray to effectively prevent future access to it and wait for all
+current users to finish while preserving its index in the xarray to
+allow to re-insert it if needed with guaranteed success.
 
-Fix this by splitting the delete into a begin/commit/abort sequence:
-begin_del() parks the entry as XA_ZERO_ENTRY (so lookups return NULL),
-drops the birth reference and waits for in-flight readers to drain,
-while keeping the index reserved. The destroy paths run begin_del()
-first, then commit_del() on success or abort_del() on error.
-abort_del() re-inserts into the reserved slot, so it needs no allocation
-and cannot fail.
+This is a preparatory change for subsequent patches in the series
+which will use these functions to fix the cleanup flow.
 
-An earlier submission [1] carried the two preparatory cleanups that
-removed broken restrack tracking for DCT and raw-packet RSS QPs (whose
-IDs are never actually installed in the xarray) and those have been
-picked up.  This series is a standalone resend of the remaining fixes,
-rebased on top of rdma-next and reworked according to Jason's feedback.
-
-There is a small race between rdma_restrack_begin_del() and
-rdma_restrack_add() for a new QP with the same ID, whereas if
-rdma_restrack_begin() was called, then the provider destroys that QP,
-and recreates a new one with the same ID and calls rdma_restrack_add()
-before rdma_restrack_commit_del() can be called, the addition of the new
-QP to restrack would fail, the new QP creation would succeed but it
-simply wont be tracked.
-This wasn't fixed as the race-window is really small and the worst case
-scenario is an untracked QP and fixing that would needlessly clutter the
-code.
-
-[1] https://lore.kernel.org/linux-rdma/20260607-restrack-uaf-fix-v1-0-d72e45eb76c2@nvidia.com/
-
+Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
 Signed-off-by: Edward Srouji <edwards@nvidia.com>
 ---
-Changes in v2:
-- Collapsed the "no_track" case in rdma_restrack_begin_del() and
-  rdma_restrack_abort_del() into the shared drain/restore helpers,
-  removing the duplicated put/wait. No functional change.
-- Link to v1: https://lore.kernel.org/r/20260701-restrack-uaf-fix-resub-v1-0-c660cda4df2a@nvidia.com
+ drivers/infiniband/core/restrack.c | 165 +++++++++++++++++++++++++++++--------
+ drivers/infiniband/core/restrack.h |   3 +
+ 2 files changed, 135 insertions(+), 33 deletions(-)
 
----
-Patrisious Haddad (8):
-      RDMA/core: Add rdma_restrack_begin/abort/commit_del() operations
-      RDMA/core: Fix use after free in ib_query_qp()
-      RDMA/core: Fix potential use after free in ib_destroy_cq_user()
-      RDMA/core: Fix potential use after free in ib_destroy_srq_user()
-      RDMA/core: Fix potential use after free in counter_release()
-      RDMA/core: Fix potential use after free in ib_free_cq()
-      RDMA/core: Fix potential use after free in uverbs_free_dmah()
-      RDMA/core: Fix potential use after free in ib_dealloc_pd_user()
+diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
+index cfee2071586c16e3dfc4e21e5d58f8488dfb277f..0d7e40f63c8a00fe53441b3d2ff14ea5fd72e82b 100644
+--- a/drivers/infiniband/core/restrack.c
++++ b/drivers/infiniband/core/restrack.c
+@@ -129,6 +129,46 @@ static void rdma_restrack_attach_task(struct rdma_restrack_entry *res,
+ 	res->user = true;
+ }
+ 
++static struct rdma_restrack_root *res_to_rt(struct rdma_restrack_entry *res)
++{
++	struct ib_device *dev = res_to_dev(res);
++
++	if (WARN_ON(!dev))
++		return NULL;
++
++	return &dev->res[res->type];
++}
++
++static void restrack_drain_res(struct rdma_restrack_root *rt,
++			       struct rdma_restrack_entry *res)
++{
++	if (rt) {
++		struct rdma_restrack_entry *old;
++
++		old = xa_cmpxchg(&rt->xa, res->id, res, XA_ZERO_ENTRY,
++				 GFP_KERNEL);
++		WARN_ON(old != res);
++	}
++
++	rdma_restrack_put(res);
++	wait_for_completion(&res->comp);
++}
++
++static void restrack_restore_res(struct rdma_restrack_root *rt,
++				 struct rdma_restrack_entry *res)
++{
++	reinit_completion(&res->comp);
++	kref_init(&res->kref);
++
++	if (rt) {
++		struct rdma_restrack_entry *old;
++
++		old = xa_cmpxchg(&rt->xa, res->id, XA_ZERO_ENTRY, res,
++				 GFP_KERNEL);
++		WARN_ON(old);
++	}
++}
++
+ /**
+  * rdma_restrack_set_name() - set the task for this resource
+  * @res:  resource entry
+@@ -177,22 +217,23 @@ void rdma_restrack_new(struct rdma_restrack_entry *res,
+ EXPORT_SYMBOL(rdma_restrack_new);
+ 
+ /**
+- * rdma_restrack_add() - add object to the resource tracking database
++ * rdma_restrack_add() - add object to the resource tracking database.
++ * If this resource reuses an ID of a resource that was already destroyed
++ * after calling rdma_restrack_begin() but didn't yet call
++ * rdma_restrack_commit_del() it can result in an untracked QP.
+  * @res:  resource entry
+  */
+ void rdma_restrack_add(struct rdma_restrack_entry *res)
+ {
+-	struct ib_device *dev = res_to_dev(res);
+ 	struct rdma_restrack_root *rt;
+ 	int ret = 0;
+ 
+-	if (!dev)
+-		return;
+-
+ 	if (res->no_track)
+ 		goto out;
+ 
+-	rt = &dev->res[res->type];
++	rt = res_to_rt(res);
++	if (!rt)
++		return;
+ 
+ 	if (res->type == RDMA_RESTRACK_QP) {
+ 		/* Special case to ensure that LQPN points to right QP */
+@@ -229,6 +270,28 @@ void rdma_restrack_add(struct rdma_restrack_entry *res)
+ }
+ EXPORT_SYMBOL(rdma_restrack_add);
+ 
++/**
++ * rdma_restrack_abort_del() - re-add object to the resource tracking database
++ * it can only be used after rdma_restrack_begin_del().
++ * @res:  resource entry
++ */
++void rdma_restrack_abort_del(struct rdma_restrack_entry *res)
++{
++	struct rdma_restrack_root *rt = NULL;
++
++	if (!res->valid)
++		return;
++
++	if (!res->no_track) {
++		rt = res_to_rt(res);
++		if (!rt)
++			return;
++	}
++
++	restrack_restore_res(rt, res);
++}
++EXPORT_SYMBOL(rdma_restrack_abort_del);
++
+ int __must_check rdma_restrack_get(struct rdma_restrack_entry *res)
+ {
+ 	return kref_get_unless_zero(&res->kref);
+@@ -265,7 +328,7 @@ static void restrack_release(struct kref *kref)
+ 	struct rdma_restrack_entry *res;
+ 
+ 	res = container_of(kref, struct rdma_restrack_entry, kref);
+-	if (res->task) {
++	if (res->task && !res->valid) {
+ 		put_task_struct(res->task);
+ 		res->task = NULL;
+ 	}
+@@ -291,37 +354,20 @@ EXPORT_SYMBOL(rdma_restrack_put);
+  */
+ void rdma_restrack_sync(struct rdma_restrack_entry *res)
+ {
+-	struct rdma_restrack_entry *old;
+ 	struct rdma_restrack_root *rt;
+-	struct task_struct *task;
+-	struct ib_device *dev;
+ 
+ 	if (!res->valid || res->no_track)
+ 		return;
+ 
+-	dev = res_to_dev(res);
+-	if (WARN_ON(!dev))
++	rt = res_to_rt(res);
++	if (!rt)
+ 		return;
+ 
+-	rt = &dev->res[res->type];
+ 	if (WARN_ON(xa_get_mark(&rt->xa, res->id, RESTRACK_DD)))
+ 		return;
+ 
+-	old = xa_cmpxchg(&rt->xa, res->id, res, XA_ZERO_ENTRY, GFP_KERNEL);
+-	if (WARN_ON(old != res))
+-		return;
+-
+-	task = res->task;
+-	if (task)
+-		get_task_struct(task);
+-	rdma_restrack_put(res);
+-	wait_for_completion(&res->comp);
+-	reinit_completion(&res->comp);
+-	if (task)
+-		res->task = task;
+-	kref_init(&res->kref);
+-
+-	xa_cmpxchg(&rt->xa, res->id, XA_ZERO_ENTRY, res, GFP_KERNEL);
++	restrack_drain_res(rt, res);
++	restrack_restore_res(rt, res);
+ }
+ EXPORT_SYMBOL(rdma_restrack_sync);
+ 
+@@ -333,7 +379,6 @@ void rdma_restrack_del(struct rdma_restrack_entry *res)
+ {
+ 	struct rdma_restrack_entry *old;
+ 	struct rdma_restrack_root *rt;
+-	struct ib_device *dev;
+ 
+ 	if (!res->valid) {
+ 		if (res->task) {
+@@ -346,12 +391,10 @@ void rdma_restrack_del(struct rdma_restrack_entry *res)
+ 	if (res->no_track)
+ 		goto out;
+ 
+-	dev = res_to_dev(res);
+-	if (WARN_ON(!dev))
++	rt = res_to_rt(res);
++	if (!rt)
+ 		return;
+ 
+-	rt = &dev->res[res->type];
+-
+ 	old = xa_erase(&rt->xa, res->id);
+ 	WARN_ON(old != res);
+ 
+@@ -359,5 +402,61 @@ void rdma_restrack_del(struct rdma_restrack_entry *res)
+ 	res->valid = false;
+ 	rdma_restrack_put(res);
+ 	wait_for_completion(&res->comp);
++	if (res->task) {
++		put_task_struct(res->task);
++		res->task = NULL;
++	}
+ }
+ EXPORT_SYMBOL(rdma_restrack_del);
++
++/**
++ * rdma_restrack_begin_del() - invalidate the object from the resource tracking
++ * database but preserve its index in the array.
++ * Since this preserves the index in the array until rdma_restrack_commit_del()
++ * is called, if rdma_restrack_add() is called in between with an old QP ID it
++ * can result in an untracked QP.
++ * @res:  resource entry
++ */
++void rdma_restrack_begin_del(struct rdma_restrack_entry *res)
++{
++	struct rdma_restrack_root *rt = NULL;
++
++	if (!res->valid)
++		return;
++
++	if (!res->no_track) {
++		rt = res_to_rt(res);
++		if (!rt)
++			return;
++	}
++
++	restrack_drain_res(rt, res);
++}
++EXPORT_SYMBOL(rdma_restrack_begin_del);
++
++/**
++ * rdma_restrack_commit_del() - delete object from the resource tracking
++ * database and free the task.
++ * @res:  resource entry
++ */
++void rdma_restrack_commit_del(struct rdma_restrack_entry *res)
++{
++	struct rdma_restrack_root *rt;
++
++	if (!res->valid || res->no_track)
++		goto out;
++
++	rt = res_to_rt(res);
++	if (!rt)
++		return;
++
++	xa_erase(&rt->xa, res->id);
++
++out:
++	res->valid = false;
++	if (res->task) {
++		put_task_struct(res->task);
++		res->task = NULL;
++	}
++}
++EXPORT_SYMBOL(rdma_restrack_commit_del);
+diff --git a/drivers/infiniband/core/restrack.h b/drivers/infiniband/core/restrack.h
+index 75b8d1005a984b21896e296ac6ace1415a90905f..2df78e084e107c517a2468982add74ce3562e5f2 100644
+--- a/drivers/infiniband/core/restrack.h
++++ b/drivers/infiniband/core/restrack.h
+@@ -26,8 +26,11 @@ struct rdma_restrack_root {
+ int rdma_restrack_init(struct ib_device *dev);
+ void rdma_restrack_clean(struct ib_device *dev);
+ void rdma_restrack_add(struct rdma_restrack_entry *res);
++void rdma_restrack_abort_del(struct rdma_restrack_entry *res);
+ void rdma_restrack_del(struct rdma_restrack_entry *res);
+ void rdma_restrack_sync(struct rdma_restrack_entry *res);
++void rdma_restrack_begin_del(struct rdma_restrack_entry *res);
++void rdma_restrack_commit_del(struct rdma_restrack_entry *res);
+ void rdma_restrack_new(struct rdma_restrack_entry *res,
+ 		       enum rdma_restrack_type type);
+ void rdma_restrack_set_name(struct rdma_restrack_entry *res,
 
- drivers/infiniband/core/counters.c              |   5 +-
- drivers/infiniband/core/cq.c                    |   2 +-
- drivers/infiniband/core/restrack.c              | 165 +++++++++++++++++++-----
- drivers/infiniband/core/restrack.h              |   3 +
- drivers/infiniband/core/uverbs_std_types_dmah.c |   7 +-
- drivers/infiniband/core/verbs.c                 |  28 +++-
- 6 files changed, 165 insertions(+), 45 deletions(-)
----
-base-commit: dc59e4fea9d83f03bad6bddf3fa2e52491777482
-change-id: 20260701-restrack-uaf-fix-resub-6f434ec5844c
-
-Best regards,
 -- 
-Edward Srouji <edwards@nvidia.com>
+2.49.0
 
 
