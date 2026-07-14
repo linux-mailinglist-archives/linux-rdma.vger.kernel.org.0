@@ -1,79 +1,81 @@
-Return-Path: <linux-rdma+bounces-23198-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23199-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id wp34F+hHVmoG2wAAu9opvQ
-	(envelope-from <linux-rdma+bounces-23198-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 16:30:00 +0200
+	id 41tMIu5HVmoI2wAAu9opvQ
+	(envelope-from <linux-rdma+bounces-23199-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 16:30:06 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 708BD755D0B
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 16:29:59 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F11B755D17
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 16:30:06 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=resnulli-us.20251104.gappssmtp.com header.s=20251104 header.b=fHw8f9x8;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23198-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23198-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=resnulli-us.20251104.gappssmtp.com header.s=20251104 header.b=Rw5eW6pp;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23199-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23199-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id AAC69301DEA7
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 14:29:42 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id DD1343032421
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 14:29:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE18547DD78;
-	Tue, 14 Jul 2026 14:29:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EFAE47ECC5;
+	Tue, 14 Jul 2026 14:29:42 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D444647DD5F
-	for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 14:29:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83E0847D927
+	for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 14:29:36 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784039377; cv=none; b=H+OpxAnbNoos5p07z1bdWsCRGuBxm6+exPFE0jHuAojzoph2+YV6pkOMfh3bk8TjxbazdMdxs2lekqLCBIvx6r/ycr22BdsAOuhE0mDhTxep0Ee/zRU3905IcUDImO2EtJS7tL4Bq9uykH20aq72/cpdO05Nxoz13SbM/1rMzs4=
+	t=1784039381; cv=none; b=fQNM2LzvZLoamB0CTUaD/+pYWCMMIQM2Wrux+WzoOINctelm0AIhBznCtAR75x0uMz7E/dROSkV2xTIYDZH9Jpoy0uVOlmiX6bzBb49cceATrUi15MvpNtbFa0Gl4HoQLNeZpb83X4JvejX9XaaG7HFip6GbariW/tW3l+l/kkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784039377; c=relaxed/simple;
-	bh=HV4KXx3jCDo5tnyS2SR083CFGU4A98rHzoR25fN+NeY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=u5ZXO3PfOM068/SW9XWXK02dGMW7rBzjaXr1uFWbDb0x/svvTkVo60W3PneGlMMovLD7kCM8LvDZvDw7G0GRwaoQhUmvG+iGMxI3NIcPXNEX7ZvtZYvWHI8fvhws0hXyNcMZmayyIxH07O1jPtwgcqFqk7eYguarx/25KJPSgCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=fHw8f9x8; arc=none smtp.client-ip=209.85.128.45
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-493e4cccd8dso5204205e9.2
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 07:29:32 -0700 (PDT)
+	s=arc-20240116; t=1784039381; c=relaxed/simple;
+	bh=fj0Q6ihUmYqKUkY8KaHXFWF5Aioa8BtTYy9MtuieBMI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=hX9TKHvqC+usMQIX7d7Ruk+LqMcYD8Mf2MfsXxIwRlEcFJaCOh5/vLTTXPyymRPe52Ho7K/rMme7hkFCwyjUnICsYqUAaBl1SzKNhvh03P9Mpxyzirtnx2My0tA55epWLJZQHf/jqjRxDzCUn+G1LWOAFRecU1hFFu8XPysyqsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=Rw5eW6pp; arc=none smtp.client-ip=209.85.221.47
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-4720f3bf164so529075f8f.1
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 07:29:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1784039371; x=1784644171; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=nvrKYD5ArwJczv3P3+Ce5/GBU6hZFow7WIOmjK2Noeg=;
-        b=fHw8f9x8RZOOPQd8Mm2kUYt4NWzctTLq5X2G/diUH3e100eOXh2xfWHZC3lMNsx2Xl
-         FbHBTlfuqaVpv2pAX5O0iXv/ivF0qRh6D4/xBC1qfrSPafw2ykft9iy4nAitxLt9VFn2
-         +VcUlbWF/2sg7v3RViTMXZMVlHDYt0BdhY7bFIYOrVcGv3JUF5qFn524qP9RJm92lZ2q
-         oTeXvc80c5HvgK7A4q4tlRkcAcxcwuejvsEgKMP1HufBI3gnJvqcg0gKx2SggDVQ74FE
-         m4Zux397TbjkfELO+lLOP91U2j2ysQ1gdg6q/QFv7IYn9N9ps20LShRH8GY5it15bbgR
-         ksig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784039371; x=1784644171;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1784039375; x=1784644175; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=nvrKYD5ArwJczv3P3+Ce5/GBU6hZFow7WIOmjK2Noeg=;
-        b=JlyEXdJyEGRvHbOs92/1tCqXrD8lbQNErrVJrIgTTJMdCI5gBvyS5t0nrZ8KvY6liT
-         pMuK39kW1aZYOaiJ3ONdVZCsb9lH3oi2MNc9vJZBznbY3P0Qcb2EhafIJ82ebK0bnlPc
-         MIH8OnidCzmo2rXnc9LEqu8siwb3hJb/vuFbLNjhjDKyonhfIjswYow6V19PIPScN6LL
-         GHg9dRb0NyI16Y5xVoBX4E5lTJdFS9L4yMFtvq9lUIC+gYd1kQl2Ck/1Ko+greBiZ75m
-         mUhxWUMmX1steu0MUwUByUdqgwdOfTGfnNjwvCbxtTL/HVXlsmu8XlgQsq8NXYOBqJIt
-         6T7g==
-X-Gm-Message-State: AOJu0YzLaREVT/WlIa5ZkIAYvoS4or6+KRCG7sxM1KVfWpgT3hOTlCix
-	cS9uKOtVCGvadsmNB9EvsYAIAPb4Sj3TRlbM8wNiN9gJ7PfEb109Ux1+pkPYCYBDFrHry81OcIV
-	RfIOY
-X-Gm-Gg: AfdE7ckeqgfI3Ob2/200gKguJ3N03LZhoKDtsK78zAP2fJTWpkCWLqW1d5fB2Wy/gg7
-	LhmMYfaOFvmEUSwUfl+Neu88wTpE/nromWDejtWEcIxxEx1H5bqu0QrO3hTTPqwp6il+TSCXow2
-	aPpvLTO5PGCDHYu7mpCEEtZnW/63x3I+/RuvEZS8fHbMwBJPuzDmBR7hwJsaq0WDpvxCoL+vGTE
-	h0CaxSO2BCeDT5WMrRrno5/8MEkj7ZIB6qMMoeXOc+E//DtVIaF4YygA8w/BroxYzWsXYVXZyaQ
-	P7Qbuw3M9KGGTQ5Dt+G7afW4JcwOZoxqbb4YGEQLxkSV06Ecw3uPIwYD6EYmER1OwMKQuXqwSMh
-	2d3Yy8i9wzOXq2FsS2Gw3mEiZDgKxNaBTNCRp1DGA50n8+MMoTeEATAoP79Q319JK4lrFRuxMmZ
-	9Hg/rQpiKozS7E33tYF8AHJA==
-X-Received: by 2002:a05:600c:8108:b0:495:39a9:f8bb with SMTP id 5b1f17b1804b1-49539a9f8cbmr17623035e9.27.1784039370894;
-        Tue, 14 Jul 2026 07:29:30 -0700 (PDT)
+        bh=q+RolV7SjzshTN5zqSzxTVIaSTGOodHrW0P7odUB/p4=;
+        b=Rw5eW6ppmDIrndA6q1mBhiSrnWhnU2hXHfxl2KFtVK1zkFOxQ43DK6GNmKOJP0oX5q
+         r3vwazSVBJXfppL7Hoi94Ew9DpoaJut7vGKVwOYJ8an9S2GM0nQ7Oe3jGQcJVXuqWiua
+         P9pqV36DnvKqa+LewDRIhJTP2Qfnov4Trpk3SgB/Znf3aIF8a7Jb+Fft3Etng1+OQBG8
+         nlajd3Mu024JqN050emv6K2zEa6bKNEL0URvLDxBJSz9kSUx1T2f51I0X3H0sB40oVht
+         z7O38q89XSmUmFTTh3hg/YndietSfsrcqhAaQtd3sKVGd6Yzniz2akLTlCOK6RLGw8lW
+         /4gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1784039375; x=1784644175;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=q+RolV7SjzshTN5zqSzxTVIaSTGOodHrW0P7odUB/p4=;
+        b=KsuMVa27LNkqkTISObxcuUmouJjCy28QF14jOEXe7RkKF5duU/S6VNF4iQ+RmWnL1E
+         KqvEjFkWL4Y1doMHQJ7NswtsdYybcNG8TL+8qEBUXnqRUH1NblcL2d7tC/o66Vv94ASP
+         s2ZQROfsbLZwZUbXch/CFjjFYV55cg4FKIeqfx5TN1LsV90ntjS78vK2as6S8wHlcpjH
+         hhGaF/rNsOur4f7u3mH8WCydfl+3DXXikLG768DepI3LQD09Vsm3hC019Y18Pc2QfZO5
+         9HAe8/EKyf02MlSkAzsL2K4dPaLbtAl8b2v6doilKD8VvSQdGnth9KuqdtZutJrzVhTb
+         aJ8Q==
+X-Gm-Message-State: AOJu0YzW42m7AiHAkaewjmxMtWhXuYLSCTAAtDTNUWD28d8BECZVFLH0
+	rIhq6OEisVKrv5Yiqm2idOhqdmCPVpVb6O7b6vgAlNxtp/+Qq4Tfa732aCmSfljMHM7Gxf9lZjz
+	KAwKs
+X-Gm-Gg: AfdE7ckxHri1bhSgAlDUzU0mOH6eFYD7EbnazdY6MKWMcCYEXaFeh1FKIeKdvqthl+S
+	8T1bHibW8y7yPDzes6kl27g/kpGJWVdF+RQDOxFDxVpENDj/oX3qaO8uVvSjSqDYDeijBr+mYuv
+	v5RNAOIq8vwlkdonz7QA/LClQep8Ev/7tZiax3zoIO5yi0BT8tQOXNvN/H1ve1IwFWsmLoNoHxy
+	QD9TNwnsQ2P5lf5TE7FhujGTH/G3iEKDMhQjn7GL2LWx1rYFsJZl8MUaLD6J8F9Pvm7LOEb3DUW
+	HlvE4NDey7kU5ZqVk5sWMY7piimd0SvfUD18ReJhTiAe61zjTJa2T7SmrLxPMwj2pN02V9NQbkL
+	dqb6q6HT5YWMmXlFhVSulR1DlLJzGBk0cVlLCNBt2N4o1ohFhweI6R3fMcTukmYlEUCCB/Ca2T2
+	c6PBKR4+ssk+ljvKi9mbEJWQ==
+X-Received: by 2002:a05:6000:1866:b0:478:7019:e5ef with SMTP id ffacd0b85a97d-47ef6986d21mr22449614f8f.21.1784039374656;
+        Tue, 14 Jul 2026 07:29:34 -0700 (PDT)
 Received: from localhost ([140.209.217.211])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49506a1fbcesm81645145e9.0.2026.07.14.07.29.30
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47f464c9cc3sm8626412f8f.35.2026.07.14.07.29.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2026 07:29:30 -0700 (PDT)
+        Tue, 14 Jul 2026 07:29:34 -0700 (PDT)
 From: Jiri Pirko <jiri@resnulli.us>
 To: linux-rdma@vger.kernel.org
 Cc: cgroups@vger.kernel.org,
@@ -98,10 +100,12 @@ Cc: cgroups@vger.kernel.org,
 	wenjia@linux.ibm.com,
 	yanjun.zhu@linux.dev,
 	cui.tao@linux.dev
-Subject: [PATCH rdma-next v2 00/14] RDMA: Make device names unique per net namespace
-Date: Tue, 14 Jul 2026 16:29:13 +0200
-Message-ID: <20260714142927.1298897-1-jiri@resnulli.us>
+Subject: [PATCH rdma-next v2 01/14] RDMA/core: Pass the net namespace to the device name lookups
+Date: Tue, 14 Jul 2026 16:29:14 +0200
+Message-ID: <20260714142927.1298897-2-jiri@resnulli.us>
 X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260714142927.1298897-1-jiri@resnulli.us>
+References: <20260714142927.1298897-1-jiri@resnulli.us>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -115,11 +119,11 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23198-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23199-lists,linux-rdma=lfdr.de];
 	FREEMAIL_CC(0.00)[vger.kernel.org,ziepe.ca,kernel.org,nvidia.com,linux.dev,acm.org,gmail.com,suse.com,cmpxchg.org,linux.alibaba.com,linux.ibm.com];
 	RCVD_TLS_LAST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
@@ -130,7 +134,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FORGED_SENDER(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	RCPT_COUNT_TWELVE(0.00)[23];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
@@ -143,80 +147,91 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	TO_DN_NONE(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[resnulli-us.20251104.gappssmtp.com:dkim,nvidia.com:email,resnulli.us:from_mime,resnulli.us:mid,vger.kernel.org:from_smtp,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[resnulli-us.20251104.gappssmtp.com:dkim,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,nvidia.com:email,vger.kernel.org:from_smtp,resnulli.us:from_mime,resnulli.us:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 708BD755D0B
+X-Rspamd-Queue-Id: 3F11B755D17
 
 From: Jiri Pirko <jiri@nvidia.com>
 
-RDMA device names are unique system-wide today:
-__ib_device_get_by_name() checks a requested name against every
-registered device regardless of the network namespace it lives in.
-A device in one network namespace therefore cannot use a name already
-taken in another, even in exclusive netns mode (netns_mode=0) where
-the two are otherwise isolated. Net devices have no such restriction -
-their names only need to be unique within a network namespace.
+Prepare for per-netns RDMA device names by passing the target net
+namespace through the name lookup and allocation helpers. Keep current
+global uniqueness behaviour.
 
-This series makes RDMA device names unique per network namespace,
-matching net device semantics, and adapts the users that assumed
-system-wide unique names.
+Signed-off-by: Jiri Pirko <jiri@nvidia.com>
+---
+ drivers/infiniband/core/device.c | 26 ++++++++++++++++++--------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
 
-Scoping reuses the existing rdma_dev_access_netns() predicate, so
-behavior only changes in exclusive mode:
-  - shared mode (default): names stay unique system-wide, no change;
-  - exclusive mode: names only need to be unique within a namespace;
-  - CONFIG_NET_NS=n: everything is init_net, names stay system-wide
-    unique.
-
-There are two users that cannot be made per-namespace and are
-documented as known limitations instead of changed:
-  - the rdma_cm configfs tree: configfs has no network namespace
-    support, so it cannot represent two same-named devices;
-  - SELinux ibendport labelling: endports are labelled by (device
-    name, port) from a global policy; distinguishing same-named
-    devices would need net namespace support in the SELinux policy
-    language and tooling.
-
-Tested with the new rxe_netns_names kselftest added in the last patch.
-
-Jiri Pirko (14):
-  RDMA/core: Pass the net namespace to the device name lookups
-  RDMA/core: Handle device name conflicts when changing net namespace
-  RDMA/core: Support renaming a device when changing its net namespace
-  RDMA/nldev: Report net namespace move errors through extack
-  RDMA/nldev: Allow setting the device name while changing net namespace
-  net/smc: Look up the pnetid ib device within the net namespace
-  RDMA/srp: Make the SRP sysfs class net namespace aware
-  RDMA/cgroup: Disambiguate devices across net namespaces
-  RDMA/cma: Document that CM configfs cannot be net namespace scoped
-  RDMA/core: Document the SELinux ibendport net namespace limitation
-  RDMA/core: Make device names unique per net namespace
-  RDMA/rxe: Allow queue VMAs to outlive ucontexts
-  RDMA/rxe: Implement disassociate_ucontext callback
-  RDMA/selftests: Add rxe_netns_names test
-
- Documentation/ABI/testing/configfs-rdma_cm    |   4 +
- Documentation/admin-guide/cgroup-v1/rdma.rst  |   8 +
- Documentation/admin-guide/cgroup-v2.rst       |  15 +-
- drivers/infiniband/core/cgroup.c              |   1 +
- drivers/infiniband/core/cma_configfs.c        |   4 +
- drivers/infiniband/core/core_priv.h           |   3 +-
- drivers/infiniband/core/device.c              | 245 ++++++++++++---
- drivers/infiniband/core/nldev.c               |  26 +-
- drivers/infiniband/core/security.c            |   6 +
- drivers/infiniband/sw/rxe/rxe_mmap.c          |  35 +--
- drivers/infiniband/sw/rxe/rxe_verbs.c         |   5 +
- drivers/infiniband/ulp/srp/ib_srp.c           |  16 +-
- include/linux/cgroup_rdma.h                   |   1 +
- include/uapi/rdma/rdma_netlink.h              |   5 +-
- kernel/cgroup/rdma.c                          |  71 ++++-
- net/smc/smc_pnet.c                            |  20 +-
- tools/testing/selftests/rdma/Makefile         |   3 +-
- tools/testing/selftests/rdma/config           |   2 +
- .../testing/selftests/rdma/rxe_netns_names.sh | 282 ++++++++++++++++++
- 19 files changed, 653 insertions(+), 99 deletions(-)
- create mode 100755 tools/testing/selftests/rdma/rxe_netns_names.sh
-
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index b8193e077a74..de610f52c9b2 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -351,7 +351,8 @@ void ib_device_put(struct ib_device *device)
+ }
+ EXPORT_SYMBOL(ib_device_put);
+ 
+-static struct ib_device *__ib_device_get_by_name(const char *name)
++static struct ib_device *__ib_device_get_by_name(const char *name,
++						 const struct net *net)
+ {
+ 	struct ib_device *device;
+ 	unsigned long index;
+@@ -395,7 +396,7 @@ int ib_device_rename(struct ib_device *ibdev, const char *name)
+ 		return 0;
+ 	}
+ 
+-	if (__ib_device_get_by_name(name)) {
++	if (__ib_device_get_by_name(name, rdma_dev_net(ibdev))) {
+ 		up_write(&devices_rwsem);
+ 		return -EEXIST;
+ 	}
+@@ -435,7 +436,8 @@ int ib_device_set_dim(struct ib_device *ibdev, u8 use_dim)
+ 	return 0;
+ }
+ 
+-static int alloc_name(struct ib_device *ibdev, const char *name)
++/* Pick a free index for the '%d' style @name pattern. */
++static int alloc_name_id(struct net *net, const char *name)
+ {
+ 	struct ib_device *device;
+ 	unsigned long index;
+@@ -462,15 +464,22 @@ static int alloc_name(struct ib_device *ibdev, const char *name)
+ 	}
+ 
+ 	rc = ida_alloc(&inuse, GFP_KERNEL);
+-	if (rc < 0)
+-		goto out;
+-
+-	rc = dev_set_name(&ibdev->dev, name, rc);
+ out:
+ 	ida_destroy(&inuse);
+ 	return rc;
+ }
+ 
++static int alloc_name(struct ib_device *ibdev, const char *name)
++{
++	int id;
++
++	id = alloc_name_id(rdma_dev_net(ibdev), name);
++	if (id < 0)
++		return id;
++
++	return dev_set_name(&ibdev->dev, name, id);
++}
++
+ static void ib_device_release(struct device *device)
+ {
+ 	struct ib_device *dev = container_of(device, struct ib_device, dev);
+@@ -1223,7 +1232,8 @@ static int assign_name(struct ib_device *device, const char *name)
+ 	if (ret)
+ 		goto out;
+ 
+-	if (__ib_device_get_by_name(dev_name(&device->dev))) {
++	if (__ib_device_get_by_name(dev_name(&device->dev),
++				    rdma_dev_net(device))) {
+ 		ret = -ENFILE;
+ 		goto out;
+ 	}
 -- 
 2.54.0
 
