@@ -1,84 +1,84 @@
-Return-Path: <linux-rdma+bounces-23235-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23236-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id hzS4HsO2VmrjAQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-23235-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 00:22:59 +0200
+	id mnU1E4y2VmrWAQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-23236-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 00:22:04 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 168D575930C
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 00:22:59 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE9007592E9
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 00:22:03 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=J1iGNVTW;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23235-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23235-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=e46TpYuY;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23236-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23236-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=none) header.from=gmail.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 41D5231308EE
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 22:21:41 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id ED4F9303E9DB
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 22:21:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A69923DD502;
-	Tue, 14 Jul 2026 22:21:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3ED40961C;
+	Tue, 14 Jul 2026 22:21:47 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3369F377AB4
-	for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 22:21:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3AAA35F615
+	for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 22:21:44 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784067699; cv=none; b=sACdfWJw3R1DLmgZX2h1HoBflgBj82HBdpEsCaHorsvv125+lJsojamAdBWFUsbFKPHqfiIKxGysd7S+TGkbcvHqleMg2a1rcVX1Twrs6L1kQ+qntvzLdsHTyimAIzzdL4vjrnpLAP4R4LQpyC8LQE5MuFLRrerEXbHbulBV9OY=
+	t=1784067707; cv=none; b=B2wJs2tcC60F7G313SMggphE1/o35VGs7w8YIApMo9Hr/RXIXfyLfSnccJwSib/sRZSFsgW4LAOqiZ3/mvQDzPMTqeQy5KYHqnBsLli9vwi3kgG9gqXXMwlj1acqiXYhzcM1RYa6vcEutb+TBwDU+aZ2PMgADtb204W3NntMeco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784067699; c=relaxed/simple;
-	bh=yfrRBEA8+1jTOU/Ov53fj/3O/42x9krywkX8bMxjRO4=;
+	s=arc-20240116; t=1784067707; c=relaxed/simple;
+	bh=A4Er1bYo7B9F/Fh0sK6T9CFPqwFBZai4b02cKx2Qk+I=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bunlJ4RhvTQZhAm/leO0j/OuxVdCSdhfwaUpcUMJMkqNzoK1NvgRWSne08GEfAiEqpDMpW7FkrhEhl6jp7D9u6GDKHJnU6026TYC5Ox7wZKzTdIMv1rvKLgr9i7cusH8c410aNDs8B4GRb0rI3yS/ECLSG5oD4QuRgiFhx8JFCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J1iGNVTW; arc=none smtp.client-ip=209.85.210.175
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-8487b7b4066so4753646b3a.1
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 15:21:38 -0700 (PDT)
+	 MIME-Version:Content-Type; b=Va7wz20Vt40NwLTCXf+qDwBEEvXp3viNNpJ7txiXpacwX4GHwluZgTvKOpEyr1uTj7+C619TjqZo0CmNkdhVK4zTug0TuMfwy2EDiXe/prGOT02uHhTc4IpfYpb/GX8kzYJa5Z8QVRJjrzZgVNIopTatAgrRHSlJkBXzcDaUg6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e46TpYuY; arc=none smtp.client-ip=209.85.210.169
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-8487b7b3fc8so4340210b3a.3
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 15:21:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1784067697; x=1784672497; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1784067704; x=1784672504; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:mime-version:user-agent
          :references:in-reply-to:message-id:date:cc:to:from:subject:from:to
          :cc:subject:date:message-id:reply-to:content-type;
-        bh=s/XP8nJGTiSx4jpNVu3XVkKeZD1kh7QswKhz9rXqGp8=;
-        b=J1iGNVTWEe0KyQiu+5OStpLUutxVy8Gh9wWoQqtFoamqdxqxQgOIATZL8pqk99cj+b
-         7l6aQCg6jdHL8gyDaVYC9sqCgYg/0R9/RHxBFnbBnExH2oQAbtjFZjJEBVoilbCdReTX
-         DdAxpnjAGK4/gSJMJTtBTcQYK8tUgNVHu716ES7B65rFzOhchWzw30Ydk1AYvD4InDsk
-         5wtJjKtyarYR2MA6ao6ruIK1W+IfJZYyql/phkA2JinAzCV0JLyzSyYr0jZuu8xUxDOo
-         0ByrR1ob3xk3/w90uoAzs9o945rEBI0DraCcd99SGGqJdHlEe4A1fyXHtk4DA1qcBceV
-         MXaQ==
+        bh=O6UyZtJMGWyTXwkf9Ut71gXKM+acqkuQS9WqdrHTITA=;
+        b=e46TpYuYIxYIhKkASg9LCbTW93foWXhS3iWCTwgoxIytDClVqta+oJc+jdS0lX/WFS
+         aonGRXYzGXEa1xyqv4TfG1T9EKB3KiZIgceQ7+LKrF867I5jExmtTGm6Fa/u4orDXx1L
+         veodExEc+DzuNqsQkMlP9uvRJB+gjlzNWqVdxj9RhvAmgSRWEP3hqu3h9qZONko5J6oi
+         bvN6K8c8dY+mqslrhZ7zmUn/4DZfz0+f0d0YRx2VRZrnmpzZC603qmtEUt/SN29UvHSB
+         e++K3ZsNlcgBgRjqNEuR6Yec1BqkHDOIKo0nPEk6DuaCROAPG+ngUwRJc7EG0BL6p3Gy
+         679w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784067697; x=1784672497;
+        d=1e100.net; s=20251104; t=1784067704; x=1784672504;
         h=content-transfer-encoding:content-type:mime-version:user-agent
          :references:in-reply-to:message-id:date:cc:to:from:subject:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=s/XP8nJGTiSx4jpNVu3XVkKeZD1kh7QswKhz9rXqGp8=;
-        b=Nv57EUqHMyJYb8vMUv/0ACLwRYPSlwsyU85mgW3aw0EkZzPW/WQQMhsyeEFo66EqQn
-         BYPZtVdyAi+81rMXt9/0IwLld//bR1PpazQSikVtj3vyjUFoRKHpiZkm/GBtoZosSNV+
-         qXE4kUlA+5i+5EaGJdoNNVlV3SFPbscLIJ98JT90BJn74MV6gEZjEADTincAMQpB64Uv
-         /79tWrsC87DPqdMJCv71dA4G3aIGnDiHP25VydTiCQOwiou+pDy7F+Er1NYo0sG7PtLh
-         sXx0PG0L/yV7pQaE1ILIIiB2et7fXlQkgHdMr0s/UcLPGgpC7dEkvYk13R8xM1UdgaeZ
-         RCKA==
-X-Forwarded-Encrypted: i=1; AHgh+Rpn5nwvF9sApGSYjkA45xTbYBIsc7bBgQmqgpG8AVqDHstq+ANBW2/W6s/Z4jQ/kyOKK97Jj/qS0vj6@vger.kernel.org
-X-Gm-Message-State: AOJu0YwHACl3q9sbDZIn71lpI5ZBQmbqGKWXMevRcbnEuuVQSwEPI4pS
-	OMitM4JAkYnmR4EJ0WLTZn/Cijp3yfgFFg4xStqoyT0rZPzsdXLtWB2q
-X-Gm-Gg: AfdE7cmU4jkXjCVq/JwZMfy1tR99vBROyO1vDJCtOS9X/exmQou6WsSM0VrIWFgdaaN
-	yxNgw0XNQMwvCNTNrB4YwzGevcMmszFSipkjOvMFUIwYOqRgTlNc/PdpFHjTE0nW3+SFQmNQnXM
-	89LGA/5SBjbqcxHMLizw23XRctfGeMg1MBm58USqZBZVzJLT3+m/uzwvjQdnFIMvX1oNXLnTWY9
-	ztc1cZ3RQreRutytTkK0a8ycOq877q61tXSUQ3YDj6b1I3/X50Ela5TjnRa4m8EvxlR7jg0pT3Q
-	L9/qnF//8k9RN1WReqCJ1uY55vPMMnKWsD8vn+TJxlo3ieDX52rIgSwbN2u9hYjL98VJn9IldQw
-	whMqWfjKLBRLo4N6D7xRmb0QRMjsRB7dQI350pEzy4CDFxBlK/K/vP+c+kundQWep8Mro6HwNHg
-	maKCJOOpQpmlOxWMKCQoSmaJDPpQuCMCtwiq0WHwly5Ku5xpRgMw1dgPs2k7jgPJyEd36zRA==
-X-Received: by 2002:a05:6a00:4b13:b0:847:8dec:141f with SMTP id d2e1a72fcca58-84a672ea3bfmr293017b3a.51.1784067697563;
-        Tue, 14 Jul 2026 15:21:37 -0700 (PDT)
+        bh=O6UyZtJMGWyTXwkf9Ut71gXKM+acqkuQS9WqdrHTITA=;
+        b=cpDEHgsLUbLz+B1FMcXiRCaXBCob6yHtr6Jni/yoRsbSSBo89XH2rcB78PSA7lQhT8
+         C4bHEIi32y0FMnnv/LCD5UkY+LDiqBcF8hNR9+jrxN5O2ZXITWuOaAJLbe6Pt9MbKlpQ
+         RRv/GDkuUav+br4CdoMHzHoUjYO6B7ppQHP20CR6+uQ0q0tdNrO0D4HQgusXxGDwDbju
+         6HRI+lEqYefbHi1FBatJrpwmLUdkEAsIlEyWgr7nlDzIMPM4gPjQNOzN5YEDDCLFeI+c
+         5Xu/f3GjYfn2ufXLRjt+rqfedyV1ojlL8nU0Hj3Zjkvp3f+gbfES8xxX/EeSlxwK/foi
+         2ZGg==
+X-Forwarded-Encrypted: i=1; AHgh+RoyMRpSXqYAbcAMuObe7457WkJkQc8n48MxXdFYKVvKEyRNgJg4nNH2hiM4g/sUUbslXQQqQoXHs2xT@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw1KzU7UsnRa+yjVkANo9usssFVGR2RdY+mXLPVo1JJ+QTRk7lD
+	iRZA/9rgCKcqmTCXSM0x7ffEEDomnkH/W+vrULgI224o9TiOShKL3s/K
+X-Gm-Gg: AfdE7ck4p256LC2/fY/0m61ShNiYnfRE2d5qxIdtj0/mP2d6uVqQuKkbsde4TMx9055
+	Pm7Cw9m5q8osNUcw4X10wBJ3LT0XxVYVVrjd16901llevytJh1yVTii+/8vYP0p/Xx4AA0xXm5C
+	Nemi3cH8wLRAPckyrX5BaB2l+1yKvuHXjoShqMe2tWHvvGA69fzhNF5BKheV7tyxKzQwu29DkjD
+	tFfeJodmuMnAN6jzk1KOBz3fxj+KOHf7BN2uoi85ecT+cHUfyxWPLSSYL4GN1a9wkZXGVOFBO12
+	s184UqwYVMdO/FrWmsNCBsvb6wE2VFFZTLgGNux2mRbsYPx6rBT9Y4v3M1q5cyy7T4bW/XB9jLP
+	4R3MEJ1DGeXS/mXfKPW6fj5J1YxguZSMH96m2DujZovPoBuUViR3+0W3skaP29UvcT3ODMhneAc
+	cHDZrzxDNZsjJpTjVVSb2I1L7c/J6kFYFB6wcJyLnTvK2mthzwCefskOT6ZzU=
+X-Received: by 2002:a05:6a00:1819:b0:848:4742:90a6 with SMTP id d2e1a72fcca58-84a5140d4b5mr4845081b3a.15.1784067704431;
+        Tue, 14 Jul 2026 15:21:44 -0700 (PDT)
 Received: from [192.168.0.160] (c-98-225-44-182.hsd1.wa.comcast.net. [98.225.44.182])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-84a4f238f75sm2119769b3a.9.2026.07.14.15.21.36
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-84a4ff2ea4csm2010807b3a.23.2026.07.14.15.21.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2026 15:21:37 -0700 (PDT)
-Subject: [PATCH v2 2/4] fixup! drm/nouveau: use
- hmm_range_fault_unlocked_timeout() for SVM faults
+        Tue, 14 Jul 2026 15:21:44 -0700 (PDT)
+Subject: [PATCH v2 3/4] fixup! accel/amdxdna: use
+ hmm_range_fault_unlocked_timeout() for range population
 From: Stanislav Kinsburskii <skinsburskii@gmail.com>
 To: airlied@gmail.com, akhilesh@ee.iitb.ac.in, akpm@linux-foundation.org,
  corbet@lwn.net, dakr@kernel.org, david@kernel.org, jgg@ziepe.ca,
@@ -92,8 +92,8 @@ To: airlied@gmail.com, akhilesh@ee.iitb.ac.in, akpm@linux-foundation.org,
 Cc: dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
  linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org
-Date: Tue, 14 Jul 2026 15:21:35 -0700
-Message-ID: <178406769581.1106335.2090301352195900623.stgit@skinsburskii>
+Date: Tue, 14 Jul 2026 15:21:42 -0700
+Message-ID: <178406770278.1106335.17232929459598625570.stgit@skinsburskii>
 In-Reply-To: <178406760622.1106335.2379450382728057793.stgit@skinsburskii>
 References: <178406760622.1106335.2379450382728057793.stgit@skinsburskii>
 User-Agent: StGit/0.19
@@ -112,7 +112,7 @@ X-Spamd-Result: default: False [2.34 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -122,12 +122,12 @@ X-Spamd-Result: default: False [2.34 / 15.00];
 	FREEMAIL_TO(0.00)[gmail.com,ee.iitb.ac.in,linux-foundation.org,lwn.net,kernel.org,ziepe.ca,infradead.org,amd.com,redhat.com,linux.intel.com,suse.com,lists.freedesktop.org,ffwll.ch,linuxfoundation.org,google.com,suse.de];
 	FORGED_SENDER(0.00)[skinsburskii@gmail.com,linux-rdma@vger.kernel.org];
 	RCPT_COUNT_TWELVE(0.00)[34];
-	TAGGED_FROM(0.00)[bounces-23235-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23236-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
@@ -140,62 +140,67 @@ X-Spamd-Result: default: False [2.34 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,skinsburskii:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[skinsburskii:mid,vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 168D575930C
+X-Rspamd-Queue-Id: BE9007592E9
 
-nouveau_range_fault() now uses hmm_range_fault_unlocked_timeout() for
-the HMM fault path. Pass the remaining SVM fault timeout into HMM as a
-positive relative timeout instead of open-coding the HMM retry loop in
-nouveau.
+aie2_populate_range() now uses hmm_range_fault_unlocked_timeout() to let
+HMM own mmap_lock acquisition and retry handling while populating an
+invalid user mapping. The timeout passed to that helper is a relative
+HMM retry budget, not an absolute deadline.
 
-Keep the outer absolute timeout around nouveau's
-mmu_interval_read_retry() loop. HMM's timeout only bounds retries while
-HMM is walking and faulting the range. Once HMM returns successfully, a
-continuous stream of mmu-notifier invalidations can still make
-mmu_interval_read_retry() restart the operation. This path runs from the
-GPU fault worker, so fatal signals for the faulting userspace task cannot
-be relied on to break that outer loop.
+Pass HMM_RANGE_DEFAULT_TIMEOUT directly to the HMM helper instead of
+computing the remaining time from a local absolute deadline. The broader
+command submission path still keeps its existing timeout around repeated
+range population attempts, while each HMM fault attempt receives a fresh
+retry budget for HMM's internal mmu-notifier retries.
 
-Use time_after_eq() before the HMM call so the remaining timeout passed
-to HMM is always positive. This preserves the old timeout behavior at the
-expiry boundary and avoids passing 0, which means retry indefinitely, to
-hmm_range_fault_unlocked_timeout().
+Keep the existing driver-visible timeout errno by translating -EBUSY
+from hmm_range_fault_unlocked_timeout() to -ETIME on return.
 
 Signed-off-by: Stanislav Kinsburskii <skinsburskii@gmail.com>
 ---
- drivers/gpu/drm/nouveau/nouveau_svm.c |   14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ drivers/accel/amdxdna/aie2_ctx.c |   12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouveau/nouveau_svm.c
-index 4cfb6eb7c771..58735446d783 100644
---- a/drivers/gpu/drm/nouveau/nouveau_svm.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
-@@ -678,14 +678,20 @@ static int nouveau_range_fault(struct nouveau_svmm *svmm,
- 	range.end = notifier->notifier.interval_tree.last + 1;
+diff --git a/drivers/accel/amdxdna/aie2_ctx.c b/drivers/accel/amdxdna/aie2_ctx.c
+index 548ba4315554..21f2817751f9 100644
+--- a/drivers/accel/amdxdna/aie2_ctx.c
++++ b/drivers/accel/amdxdna/aie2_ctx.c
+@@ -1037,7 +1037,7 @@ static int aie2_populate_range(struct amdxdna_gem_obj *abo)
+ 	bool found;
+ 	int ret;
  
- 	while (true) {
--		if (time_after(jiffies, timeout)) {
-+		long remaining = timeout - jiffies;
-+
-+		/*
-+		 * The HMM timeout only bounds retries while HMM is walking and
-+		 * faulting the range. This fault is handled by a kernel worker,
-+		 * so fatal signals from the faulting process cannot stop an
-+		 * endless stream of invalidations here.
-+		 */
-+		if (time_after_eq(jiffies, timeout)) {
- 			ret = -EBUSY;
- 			goto out;
- 		}
+-	timeout = jiffies + msecs_to_jiffies(HMM_RANGE_DEFAULT_TIMEOUT);
++	timeout = msecs_to_jiffies(HMM_RANGE_DEFAULT_TIMEOUT);
+ again:
+ 	found = false;
+ 	down_write(&xdna->notifier_lock);
+@@ -1062,13 +1062,9 @@ static int aie2_populate_range(struct amdxdna_gem_obj *abo)
+ 		return -EFAULT;
+ 	}
  
--		ret = hmm_range_fault_unlocked_timeout(&range,
--						       max(timeout - jiffies,
--							   1L));
-+		ret = hmm_range_fault_unlocked_timeout(&range, remaining);
- 		if (ret)
- 			goto out;
+-	ret = hmm_range_fault_unlocked_timeout(&mapp->range,
+-			max_t(long, timeout - jiffies, 1));
+-	if (ret) {
+-		if (ret == -EBUSY)
+-			ret = -ETIME;
++	ret = hmm_range_fault_unlocked_timeout(&mapp->range, timeout);
++	if (ret)
+ 		goto put_mm;
+-	}
  
+ 	down_write(&xdna->notifier_lock);
+ 	if (mmu_interval_read_retry(&mapp->notifier, mapp->range.notifier_seq)) {
+@@ -1086,7 +1082,7 @@ static int aie2_populate_range(struct amdxdna_gem_obj *abo)
+ put_mm:
+ 	amdxdna_umap_put(mapp);
+ 	mmput(mm);
+-	return ret;
++	return ret == -EBUSY ? -ETIME : ret;
+ }
+ 
+ int aie2_cmd_submit(struct amdxdna_hwctx *hwctx, struct amdxdna_sched_job *job, u64 *seq)
 
 
 
