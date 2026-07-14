@@ -1,155 +1,168 @@
-Return-Path: <linux-rdma+bounces-23183-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23184-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id C4lLF8PtVWrjwAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-23183-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 10:05:23 +0200
+	id fffKCIzxVWpfwgAAu9opvQ
+	(envelope-from <linux-rdma+bounces-23184-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 10:21:32 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11E1475229C
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 10:05:22 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21F8C75254F
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 10:21:31 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.alibaba.com header.s=default header.b=JAu2Ukq7;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23183-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23183-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.alibaba.com;
+	dkim=pass header.d=wanadoo.fr header.s=t20230301 header.b="DpSq/w7p";
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23184-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23184-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=wanadoo.fr;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9713D3020127
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 08:05:20 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 84733301965D
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 08:20:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D06663F0AA0;
-	Tue, 14 Jul 2026 08:05:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F8083FA5CB;
+	Tue, 14 Jul 2026 08:20:51 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.smtpout.orange.fr (smtp-65.smtpout.orange.fr [80.12.242.65])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21326145B3F;
-	Tue, 14 Jul 2026 08:05:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA1D03FADFA
+	for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 08:20:33 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784016316; cv=none; b=liisoo5PEsFDLtgoRbQ06ewCYIlpe9yBgYiQbrURzcuCiUAKbWfFgCJ3ybYfmOcYvOMhBUWzeAOMVwj0+a0yf+6n+VkC61QtSEH54nnNYp0c1J+LPD5qKT8Atv3A/uxG15Qd8mTWeYQzEH4KBb550/9bQpBIqEIFPOYnjHnAs9w=
+	t=1784017245; cv=none; b=FxtfzgSlXQRqJgnyf9QgjzNp7mCm8EQd1mRrZCmxATX9wzllPw5mIiF/bU8VhNBVIuVI92FtV/i/lwzUIaZliP49D2tiJJH7WTZsVxFbZf9PF/FpZN00Xs2BOHnIPK8tksi3VLQjuiXyqnIaxiXDI6pn9duJjfXcvDpaVyC6WWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784016316; c=relaxed/simple;
-	bh=TiLVHWKy4mlkeS41lVKDXWkDRcTjPNnk1QZCzNu8HGI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rhX4W4UOW2EzU/rDryAPeZ1l6QgUPBjj5rw7TCVEAdtZBK/5N01+zLdqBRbTgTptjX39gF2MkbkWwfYOn8zCW6kL1rC9hpoc9Bd7GruJujPvUV+sJVy/EJTGhMauulWzJMdMBuUEt5kjTQvzEmRU2RJVICd0N6eVJvhIg7pMR1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=JAu2Ukq7; arc=none smtp.client-ip=115.124.30.119
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1784016307; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=XcY9oAzuAkEa1Ucn4QLvsDCT9v6MfjC/iYTifozKeGQ=;
-	b=JAu2Ukq7luEl7zWZrpMjgntfqDBfZyrZWmAEHpV28RQ24dgSH+f/nTcJ4m2ZdOz7QK5MIIcVrGkdOChWFfR4V2uUQrq8v7rTGMPR20Fz+YJAoHn5N5E3QCnxnkYLRffRIP08j/C290j3CzJQWcEUD7nc2Y+PZ5v96dy5lAob590=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033032089153;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0X73dCz._1784016306;
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0X73dCz._1784016306 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Tue, 14 Jul 2026 16:05:06 +0800
-Date: Tue, 14 Jul 2026 16:05:06 +0800
-From: Dust Li <dust.li@linux.alibaba.com>
-To: "D. Wythe" <alibuda@linux.alibaba.com>, mjambigi@linux.ibm.com,
-	wenjia@linux.ibm.com, wintera@linux.ibm.com,
-	tonylu@linux.alibaba.com, guwen@linux.alibaba.com
-Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-	pabeni@redhat.com, edumazet@google.com, sidraya@linux.ibm.com,
-	jaka@linux.ibm.com
-Subject: Re: [PATCH net-next v3 1/3] net/smc: clear the correct v2 slot and
- buffer in smc_wr_tx_put_slot()
-Message-ID: <alXtstsR477AuKPD@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20260710033356.16460-1-alibuda@linux.alibaba.com>
- <20260710033356.16460-2-alibuda@linux.alibaba.com>
+	s=arc-20240116; t=1784017245; c=relaxed/simple;
+	bh=XpGwfVzGTr8hfVpHkoISJqYbxLSDQRxHKBbcsKa0Ac4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=C/LAtwjiT3vHXECF6M9VjaCRXTKMmKeo3xDc0kHI9ci8pDQpCWxXtAZKNxw6aTHKqc5v1R1V514ZCC7XSMRIJl8K7D51sxQi/K0qOM5XS/X9yoYsEKvih8lVWDr9kxV0lxpZFB7OFSHGNGjMR4iE+CUy7j1tOIHVIMxa08/B9/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=DpSq/w7p; arc=none smtp.client-ip=80.12.242.65
+Received: from device-97.home ([10.65.86.67])
+	by smtp.orange.fr with ESMTP
+	id jYMJwPZcFrxb3jYMJwue9c; Tue, 14 Jul 2026 10:19:19 +0200
+Received: from device-97.home ([IPv6:2a01:cb10:785:b00:26fb:aefb:6cd2:db0e])
+	by smtp.orange.fr with ESMTPSA
+	id jYMAw5vkXDzLkjYMAw0U3a; Tue, 14 Jul 2026 10:19:11 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1784017151;
+	bh=GMJi+gTFGDUXh/gZorteniOi+++0sQzYcGVvcoNPxrQ=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=DpSq/w7pH9YcOc3VZZLFDFh3xoK1JRH0w3xjJ7n5f+RCO61LD7abrFq0xJKkieIsf
+	 9F+hgS3Pvs2PBdRKHDQbIiavUQQh9mH+SA/0ep10vuL6Qhxurq/zUVgU6OvnODGx+R
+	 qwXJnwfPgEW87sIU8cKHabV0R01tB97MThIDjr9qlYHdG2HUAR5EkNxuk0RmcuBano
+	 ivGyJlPcmhIRrCZQO0QEgU/q/GuLeF2DWl3VbCwoRqN8sWfJQLILQx2UpjlURZl9Gs
+	 TQNv/1KT6hzlqy7ZGx887PyIZfIUadWw/5BQclHJoE3HIljH49mcG2isPFQifKvD2+
+	 5jHSDGLn9mkYQ==
+X-ME-Helo: device-97.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 14 Jul 2026 10:19:11 +0200
+X-ME-IP: 2a01:cb10:785:b00:26fb:aefb:6cd2:db0e
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Leon Romanovsky <leon@kernel.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH] RDMA/mlx5: Constify struct ib_frmr_pool_ops and dma_buf_attach_ops
+Date: Tue, 14 Jul 2026 10:19:06 +0200
+Message-ID: <22f2263c04cc94e242cee712e6e6d82b86ac353d.1784017128.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.55.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260710033356.16460-2-alibuda@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-12.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
-	WHITELIST_SPF_DKIM(-3.00)[alibaba.com:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[wanadoo.fr,quarantine];
+	R_DKIM_ALLOW(-0.20)[wanadoo.fr:s=t20230301];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	REPLYTO_DOM_EQ_TO_DOM(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[dust.li@linux.alibaba.com,linux-rdma@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	TO_DN_SOME(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:alibuda@linux.alibaba.com,m:mjambigi@linux.ibm.com,m:wenjia@linux.ibm.com,m:wintera@linux.ibm.com,m:tonylu@linux.alibaba.com,m:guwen@linux.alibaba.com,m:kuba@kernel.org,m:davem@davemloft.net,m:netdev@vger.kernel.org,m:linux-s390@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:pabeni@redhat.com,m:edumazet@google.com,m:sidraya@linux.ibm.com,m:jaka@linux.ibm.com,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[vger.kernel.org,wanadoo.fr];
+	FREEMAIL_FROM(0.00)[wanadoo.fr];
+	TAGGED_FROM(0.00)[bounces-23184-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:leon@kernel.org,m:jgg@ziepe.ca,m:linux-kernel@vger.kernel.org,m:kernel-janitors@vger.kernel.org,m:christophe.jaillet@wanadoo.fr,m:linux-rdma@vger.kernel.org,s:lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER(0.00)[christophe.jaillet@wanadoo.fr,linux-rdma@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-23183-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	HAS_REPLYTO(0.00)[dust.li@linux.alibaba.com];
-	FORGED_SENDER_FORWARDING(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dust.li@linux.alibaba.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
-	ALIAS_RESOLVED(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[christophe.jaillet@wanadoo.fr,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[wanadoo.fr:+];
+	RCVD_COUNT_FIVE(0.00)[5];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ALIAS_RESOLVED(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.alibaba.com:from_mime,linux.alibaba.com:mid,linux.alibaba.com:dkim,linux.alibaba.com:replyto,alibaba.com:email,vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 11E1475229C
+X-Rspamd-Queue-Id: 21F8C75254F
 
-On 2026-07-10 11:33:54, D. Wythe wrote:
->smc_wr_tx_put_slot() tries to reset the v2 pending slot and buffer with
->memset(&link->wr_tx_v2_pend, 0, sizeof(link->wr_tx_v2_pend)) and the
->equivalent for wr_tx_buf_v2. Both are pointers, so this zeroes the 8-byte
->pointer variable instead of the structure it points to. The pending slot
->and buffer are therefore never actually cleared, and the pointers get
->overwritten with NULL.
->
->Pass the pointers directly and use sizeof(*pointer) so the intended
->structures are cleared.
->
->Fixes: 8799e310fb3f ("net/smc: add v2 support to the work request layer")
->Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+'struct ib_frmr_pool_ops' and 'struct dma_buf_attach_ops' are not modified
+in this driver.
 
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+Constifying these structures moves some data to a read-only section, so
+increases overall security, especially when the structure holds some
+function pointers.
 
-Best regards,
-Dust
+While at it, change a '1' into a 'true' into the mlx5_ib_dmabuf_attach_ops
+structure. The 'allow_peer2peer' field is a bool and other usages of
+'struct dma_buf_attach_ops' prefer using true/false.
 
+On a x86_64, with allmodconfig, as an example:
+Before:
+======
+   text	   data	    bss	    dec	    hex	filename
+  77631	  10392	    320	  88343	  15917	drivers/infiniband/hw/mlx5/mr.o
 
->---
-> net/smc/smc_wr.c | 8 ++++----
-> 1 file changed, 4 insertions(+), 4 deletions(-)
->
->diff --git a/net/smc/smc_wr.c b/net/smc/smc_wr.c
->index 59c92b46945c..6b5add922993 100644
->--- a/net/smc/smc_wr.c
->+++ b/net/smc/smc_wr.c
->@@ -288,10 +288,10 @@ int smc_wr_tx_put_slot(struct smc_link *link,
-> 	} else if (link->lgr->smc_version == SMC_V2 &&
-> 		   pend->idx == link->wr_tx_cnt) {
-> 		/* Large v2 buffer */
->-		memset(&link->wr_tx_v2_pend, 0,
->-		       sizeof(link->wr_tx_v2_pend));
->-		memset(&link->lgr->wr_tx_buf_v2, 0,
->-		       sizeof(link->lgr->wr_tx_buf_v2));
->+		memset(link->wr_tx_v2_pend, 0,
->+		       sizeof(*link->wr_tx_v2_pend));
->+		memset(link->lgr->wr_tx_buf_v2, 0,
->+		       sizeof(*link->lgr->wr_tx_buf_v2));
-> 		return 1;
-> 	}
-> 
->-- 
->2.45.0
+After:
+=====
+   text	   data	    bss	    dec	    hex	filename
+  77759	  10264	    320	  88343	  15917	drivers/infiniband/hw/mlx5/mr.o
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Compile tested only.
+---
+ drivers/infiniband/hw/mlx5/mr.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index e6b74955d95d..00e13028762a 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -339,7 +339,7 @@ static int mlx5r_build_frmr_key(struct ib_device *device,
+ 	return 0;
+ }
+ 
+-static struct ib_frmr_pool_ops mlx5r_frmr_pool_ops = {
++static const struct ib_frmr_pool_ops mlx5r_frmr_pool_ops = {
+ 	.create_frmrs = mlx5r_create_mkeys,
+ 	.destroy_frmrs = mlx5r_destroy_mkeys,
+ 	.build_key = mlx5r_build_frmr_key,
+@@ -898,8 +898,8 @@ static void mlx5_ib_dmabuf_invalidate_cb(struct dma_buf_attachment *attach)
+ 	ib_umem_dmabuf_unmap_pages(umem_dmabuf);
+ }
+ 
+-static struct dma_buf_attach_ops mlx5_ib_dmabuf_attach_ops = {
+-	.allow_peer2peer = 1,
++static const struct dma_buf_attach_ops mlx5_ib_dmabuf_attach_ops = {
++	.allow_peer2peer = true,
+ 	.invalidate_mappings = mlx5_ib_dmabuf_invalidate_cb,
+ };
+ 
+-- 
+2.55.0
+
 
