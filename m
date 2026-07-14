@@ -1,81 +1,81 @@
-Return-Path: <linux-rdma+bounces-23207-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23208-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 0mIhCKxJVmqR2wAAu9opvQ
-	(envelope-from <linux-rdma+bounces-23207-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 16:37:32 +0200
+	id 4P/iJNVIVmpd2wAAu9opvQ
+	(envelope-from <linux-rdma+bounces-23208-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 16:33:57 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE54A755EDF
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 16:37:31 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83B39755E1F
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 16:33:56 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=resnulli-us.20251104.gappssmtp.com header.s=20251104 header.b=I7Cipxac;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23207-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23207-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=resnulli-us.20251104.gappssmtp.com header.s=20251104 header.b=tIplLQKz;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23208-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23208-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E209A310580F
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 14:30:33 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id A43BB30237FA
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 14:30:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71D2044BCAC;
-	Tue, 14 Jul 2026 14:30:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6914136D9FE;
+	Tue, 14 Jul 2026 14:30:14 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 804A4442135
-	for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 14:30:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FAE447DFA9
+	for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 14:30:11 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784039409; cv=none; b=pYOSCZ24WRYE8QT6qHXpg6Vpgd0YJ5Y86T8sS24h+Hx1WVY1oiJJ7jWsb88icbFHSmPxx+obO8aTjbu+bjz9ysm1yzRB3dKCVYVKLEfX35SuROhGtccm0fiKlsu+jZhIJO9JLjotqWSxLMdnWM3kw4ilex1SdSjO9a9R920Hduk=
+	t=1784039414; cv=none; b=bzrX5nLxavN3C2RWnj/OBawcOIdNdp3JVHDB+xkkKEqqzEaCRVZfo5WV/yeIEPueYkYfX+oJnEcsSnss7/0Y1UnpoM1RelCg3/WV5AbfWF+fDGX2MAexXRRQAZdYfFjGtvzbfczpwwikofi6UhronxKTa4/K8qyQCTbWzQ70rhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784039409; c=relaxed/simple;
-	bh=BtV4YlWqSeeVkZLMl7O/Z8uUv5IQpghIyehpmENCIJs=;
+	s=arc-20240116; t=1784039414; c=relaxed/simple;
+	bh=2JgBpAWc31ZSpkYiSaZDvjmnHKEA4A5V63g6j0fsopU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=B9MhDJ8GFhaDFIxvlxzYqCtf+PuOrJgrvgyEnNXWH9xwTd1POSv/q0q7H6ObJ8xpQrnfHVNvh8e1k3QlS1lLVZjwoQM/I6R/5vaMQuEtrJpskcbU3RYSocBgDQsG/kDLfFOD+OjKuZICGrzSd8iQjXE9qTbX9chlCbh13/rMn8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=I7Cipxac; arc=none smtp.client-ip=209.85.221.41
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-47de008b020so579457f8f.1
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 07:30:07 -0700 (PDT)
+	 MIME-Version; b=g7JG0Flvsg1awyWhV96ELeATrpc+XOqVUfH+a6jkBldh/vZGmIMyKz6ZVfhujlUW3C1B4MJLPctLziC5mbT1hDY322NZeOHocpPLmvOjR6Ty4OmvM+7tTx323y5NpcpF/Nx9T3UEWzd6hP02NrQZopgLp9COeiVjJ2OjX0BX52c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=tIplLQKz; arc=none smtp.client-ip=209.85.221.48
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-47de008b020so579531f8f.1
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 07:30:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1784039406; x=1784644206; darn=vger.kernel.org;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1784039409; x=1784644209; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=FMAXl1cpFneAc8qw41p6eJ7Eq0JeDqgZ4KunEwtw9x4=;
-        b=I7CipxacfACQpBFzIV0kdiLsjH5YL5uPNxzHlbHayWvwPnGxpp1AO0dMJrbzcxvSUl
-         aCylOdGhA3eFZXX4JRiJp07w6lK/t9MQxdIZqq3/3WC99zUtr6HpuzPg8iDpn/7RfEzJ
-         s8AuqXVNyt+oRczuvATMLob05+A+bqb1SXzWcwQRp8KZZsrmavsbOPjpNyTlOPnVoQ1Z
-         6S36h90AoKqJaFoKIQr3fSvoV5fZre8VuL/0h/VROorQBUc4MCatVt6O6vTBaHLBT/2G
-         jlrdJPB8XDtAAcO3DeEsbp23rLvH0yJ/z4rqIeOhY5QxVSJpr2JH30/qwQ4CEz1x96yt
-         rDXg==
+        bh=jsn8I3x6C8T9FLWqok7MXQBFznxd0+GMkoGzBjmbnHQ=;
+        b=tIplLQKz7ETUgWcKFbHl0CWUrXenVkiXEyO3ng32niwGV71m/oIlqG0zutHaXUDmTn
+         YXtlbK43Zle+QsSGZvahavbXjyKpupb2yhLdTwQbwyu+aE9aBLPKB3MzuH0tBTFbi0Fo
+         w28wbfwUYeOoAbbs+DS1Ue++EkO7RQuVFmDxcSdN4t7lZTR1biPzQzSHco/so5vimC5y
+         l0qcL1mvsChAugvRgeaMTPj6i43RpPrLaqRnILoJihFe1XIWbF0x3xz0Ge0wsW+I1E4d
+         TGcE3lOQNqAJlhvSQ+hwOpokRo4GvE9inrTL/mcdyaB1TF1T59c/Ci8fOGj0LoYRID2V
+         AgDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784039406; x=1784644206;
+        d=1e100.net; s=20251104; t=1784039409; x=1784644209;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=FMAXl1cpFneAc8qw41p6eJ7Eq0JeDqgZ4KunEwtw9x4=;
-        b=pOS7hRuMB0SuiIhLi7zkR3nXu0kV1KphS+XMHG2tnNJVEEAyIrCPLbBmP58WM4V69k
-         hpcrvqwzmvNcVFSw4n4HNTZ3pPO48zqeZyUOcCZslrvhiu1lrzxMv+9epPX5qX47XyxM
-         UohXNlrACmsLObsPQHPd2s4TtXsKt7QRF8e/tLz9Zt9WJVEAuIh8NrkCYfMNTtOav4Pq
-         gWrw6oRCLB9CmqS6gwkgolLA3uYcqyovyyMcE/rdtkn9vLDtxMHkYu2XTN7bKjZ0s84Z
-         ACxzu+NBhkHcodp9VUHmjIjkoKqhUnC0p3I5OxfGiEJqglpZ5uRB5tE5sl2PtQDo4+BY
-         bl3Q==
-X-Gm-Message-State: AOJu0YyRRiQKn1WPFwl0TpuFlTE5AYQ41d1CBn/AoLZUYv0IIjQaEtgF
-	64OMhgPUkZ6uRN5hk8p7OpdtJ6LmVZZ0bB+hZCzV6oOgWxsiLn0BXIeU+0wXehbFp/c+ZiJDM3t
-	6u8KN
-X-Gm-Gg: AfdE7cldJQqkv18GQat6EPVTxSEPewdKUzw52GZaEB9Yswjd/Cf1LV4UGn5MLQTxuay
-	6+WE/3aFsepI/nIdMi3d2H2K1rgV+Le7jzRNg2sS9znCZtseOo44WZoQiMo4OD0JHFZqPyzKqjP
-	6OCsG0BOOg0l1HtK2v612MMiZp2VXQzcPIfbVM7zxfTXpcBiW0zqcdlYiKhalWgs/V1Ux3+0wbi
-	b+rKpWxz/l9vcfkfxXp34nBz6FkqN/Nmjdeay84bV/0GtHnk23IQbGGMFba4AOCH+iRaBYAYEFN
-	4o6Np7mRgpG1a1LWVycnOoVuRy10lCfv9FEynW3cYOkvsoFaOKfxkT5XZXavMnAfpA5VulDmP/R
-	8Y5pQzsJbki603cGEy23x5LWACeP92qsKiAfYAVFAVciFuINefz0Yapw+1qinfvbsS1NgSxxvth
-	yIwDx+nEkiqe7SeHQIjfMBaA==
-X-Received: by 2002:a05:6000:184d:b0:474:3708:c8 with SMTP id ffacd0b85a97d-47f2dcc0d79mr16328082f8f.15.1784039405669;
-        Tue, 14 Jul 2026 07:30:05 -0700 (PDT)
+        bh=jsn8I3x6C8T9FLWqok7MXQBFznxd0+GMkoGzBjmbnHQ=;
+        b=keNN0doJGyO2loUAuC/V8PW/uTWxgn3f5SrKeOAwgFOBd7cUK/xC3eCb9cHwySEytS
+         T8JL5SUOjW2eGlm+6j9M4+70NCetc5iCHhdtd5oDJ8E4PlEssN1E2iQjhSKY/Mtqp8Mg
+         FgA2xzpzH7yy4lGMlVB6KxGY98Ximi7D2MB3qmsb+rhY7B4am5E41CWaamSYbuxrBo4W
+         pxR1kl7fak7XFXPqbCtJqsNXAgdv/gHYL/liubnbYtjT3I7EPX6lOvvIf3VEcoGXG4HI
+         UAVmnoRNeazVsS/UMcYzweq93dWjI0Jq0Bxu3IvCaO4AWfxrxPAvMB4jjoAmz4cUHakN
+         AOlQ==
+X-Gm-Message-State: AOJu0YzS1//x+/Dhg0PhtYDxX/89LiCGkVSdZGPAzFkjJXkKuuDL2WdB
+	TNvoDwXxkhWjKCaPfkHDtHWC4Px3ACMkuEgrNIEV4Fr2YsN9J78cpQZKhu1aiXC4JZ1LqIukBDr
+	4/cW6
+X-Gm-Gg: AfdE7cl9W56ZmBDuZyf/0GTCjpBzuYVldIBk/+hz/2gmaj2BuijqQu8fz2dUMe8Y4rS
+	2grFZr8sOgioVlMkMXbmws/NDCaLK1bG6B5akSsuxKtgBXDuv0IkzrhIe2H1Lmm8A+O1UM7E0tu
+	umvZQD7fxfh2pYFca11jtIff9loOHVRSM/DFb68ygYMKjLvn8RU0G6pXErhqXSF5+0poH2ytnP3
+	Fo7bnYrhvHECa2Ix3hIIyU/Qamed2hJvs2cFkVLfTHbW5TmpaMdb9K8kV4cAnum+C2unirqXrpr
+	pBSHiUbKMWPvmIKrkKp640GMq6qJEuGbNDbYdpZxIheGiBq26TDmH14BS55ftf1OrzX+rE9d8RQ
+	HCMYj5GD7T2IvkxWBEgJBbG/zTZ+MbQTkF0UHHFAQDRis2MI/+oPYnTdtGhYejU+sxcYpmww9D7
+	CwphKj3l2ih09b3sFeNsUrZQ==
+X-Received: by 2002:a05:6000:480b:b0:46f:1b89:999 with SMTP id ffacd0b85a97d-47ef69910b9mr23198373f8f.30.1784039409490;
+        Tue, 14 Jul 2026 07:30:09 -0700 (PDT)
 Received: from localhost ([140.209.217.211])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47f4634e029sm9366983f8f.3.2026.07.14.07.30.04
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47f4635082csm9292456f8f.7.2026.07.14.07.30.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2026 07:30:05 -0700 (PDT)
+        Tue, 14 Jul 2026 07:30:08 -0700 (PDT)
 From: Jiri Pirko <jiri@resnulli.us>
 To: linux-rdma@vger.kernel.org
 Cc: cgroups@vger.kernel.org,
@@ -100,9 +100,9 @@ Cc: cgroups@vger.kernel.org,
 	wenjia@linux.ibm.com,
 	yanjun.zhu@linux.dev,
 	cui.tao@linux.dev
-Subject: [PATCH rdma-next v2 09/14] RDMA/cma: Document that CM configfs cannot be net namespace scoped
-Date: Tue, 14 Jul 2026 16:29:22 +0200
-Message-ID: <20260714142927.1298897-10-jiri@resnulli.us>
+Subject: [PATCH rdma-next v2 10/14] RDMA/core: Document the SELinux ibendport net namespace limitation
+Date: Tue, 14 Jul 2026 16:29:23 +0200
+Message-ID: <20260714142927.1298897-11-jiri@resnulli.us>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260714142927.1298897-1-jiri@resnulli.us>
 References: <20260714142927.1298897-1-jiri@resnulli.us>
@@ -119,11 +119,11 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23207-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23208-lists,linux-rdma=lfdr.de];
 	FREEMAIL_CC(0.00)[vger.kernel.org,ziepe.ca,kernel.org,nvidia.com,linux.dev,acm.org,gmail.com,suse.com,cmpxchg.org,linux.alibaba.com,linux.ibm.com];
 	RCVD_TLS_LAST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
@@ -134,7 +134,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FORGED_SENDER(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	RCPT_COUNT_TWELVE(0.00)[23];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
@@ -147,51 +147,37 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	TO_DN_NONE(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,resnulli.us:from_mime,resnulli.us:mid,resnulli-us.20251104.gappssmtp.com:dkim,nvidia.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[resnulli.us:from_mime,resnulli.us:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,vger.kernel.org:from_smtp,nvidia.com:email,resnulli-us.20251104.gappssmtp.com:dkim]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: CE54A755EDF
+X-Rspamd-Queue-Id: 83B39755E1F
 
 From: Jiri Pirko <jiri@nvidia.com>
 
-Document the rdma_cm configfs limitation: configfs is global, so same-named
-RDMA devices in different net namespaces cannot both be represented there.
+Document that SELinux ibendport labels use a global (device name, port)
+key, so same-named RDMA devices in different net namespaces share a label.
 
 Signed-off-by: Jiri Pirko <jiri@nvidia.com>
 ---
- Documentation/ABI/testing/configfs-rdma_cm | 4 ++++
- drivers/infiniband/core/cma_configfs.c     | 4 ++++
- 2 files changed, 8 insertions(+)
+ drivers/infiniband/core/security.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/ABI/testing/configfs-rdma_cm b/Documentation/ABI/testing/configfs-rdma_cm
-index 74f9506f42e7..739f7b6a1259 100644
---- a/Documentation/ABI/testing/configfs-rdma_cm
-+++ b/Documentation/ABI/testing/configfs-rdma_cm
-@@ -12,6 +12,10 @@ Description: 	Interface is used to configure RDMA-cable HCAs in respect to
- 		for this HCA has to be created:
- 		mkdir -p /config/rdma_cm/<hca>
+diff --git a/drivers/infiniband/core/security.c b/drivers/infiniband/core/security.c
+index 9af31d1d9d70..a82c46965416 100644
+--- a/drivers/infiniband/core/security.c
++++ b/drivers/infiniband/core/security.c
+@@ -700,6 +700,12 @@ int ib_mad_agent_security_setup(struct ib_mad_agent *agent,
+ 	if (qp_type != IB_QPT_SMI)
+ 		return 0;
  
-+		Note: configfs has no network namespace support, so this
-+		interface cannot represent two devices that share a name in
-+		different network namespaces (possible in exclusive netns mode).
-+
- 
- What: 		/config/rdma_cm/<hca>/ports/<port-num>/default_roce_mode
- Date: 		November 29, 2015
-diff --git a/drivers/infiniband/core/cma_configfs.c b/drivers/infiniband/core/cma_configfs.c
-index 891e52afb8f4..c389d4e37b6b 100644
---- a/drivers/infiniband/core/cma_configfs.c
-+++ b/drivers/infiniband/core/cma_configfs.c
-@@ -65,6 +65,10 @@ static struct cma_dev_port_group *to_dev_port_group(struct config_item *item)
- 	return container_of(group, struct cma_dev_port_group, group);
- }
- 
-+/*
-+ * configfs is not net namespace aware, so a name shared by devices in
-+ * different namespaces resolves to the first match here.
-+ */
- static bool filter_by_name(struct ib_device *ib_dev, void *cookie)
- {
- 	return !strcmp(dev_name(&ib_dev->dev), cookie);
++	/*
++	 * SELinux labels an endport by (device name, port) from a global
++	 * policy. If devices in different net namespaces share a name, they get
++	 * the same label; distinguishing them would need net namespace support
++	 * in the policy language and tooling.
++	 */
+ 	spin_lock(&mad_agent_list_lock);
+ 	ret = security_ib_endport_manage_subnet(agent->security,
+ 						dev_name(&agent->device->dev),
 -- 
 2.54.0
 
