@@ -1,179 +1,197 @@
-Return-Path: <linux-rdma+bounces-23218-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23219-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id UbUMB5FiVmom4gAAu9opvQ
-	(envelope-from <linux-rdma+bounces-23218-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 18:23:45 +0200
+	id dnwZOdtyVmoT5wAAu9opvQ
+	(envelope-from <linux-rdma+bounces-23219-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 19:33:15 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3E5A756E58
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 18:23:44 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EC55757789
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 19:33:15 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.alibaba.com header.s=default header.b=mVPloanl;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23218-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23218-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.alibaba.com;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=NQbym8GK;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23219-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23219-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9183F3142771
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 16:20:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D657D308A53D
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 17:30:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C54444ADD9B;
-	Tue, 14 Jul 2026 16:20:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 093AF30567F;
+	Tue, 14 Jul 2026 17:30:41 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B4C13AD1C;
-	Tue, 14 Jul 2026 16:20:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B985E2EB859;
+	Tue, 14 Jul 2026 17:30:39 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784046054; cv=none; b=Vr5LIiD4yxFM8XtTB1SAYWnu5dJB/6QvaAglbec3dAmBjwLU/NMzSR4bfJK8R/zrdEDio+b8dyunbHX/Llaiebx6LCQdzpF94kGnXx2ad2gacFRZ2IPRy5nIxAVelS48vKXsSTLPStU0K6M/EL4Y7GOgzOudzGrythRt+CzLNBI=
+	t=1784050240; cv=none; b=VOlVIdCw64pOk7DtQvfyZkSYgskhee/mFt5SxxI2LLvNrb0M4G8875tifLtRLXvFx/2Mgf+V1+FNTEZUtieqe/pOz1eJftlFskxNKw5j31/fDoO2sClo1dOogsj+dEgtxCQ43PZHuf4Tq+EJ3CtlFxP6rvoDLJQ7/Q6R+FeO3t8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784046054; c=relaxed/simple;
-	bh=e+W3ydYo5hqo1n1JHrVTRBBxe/WDbbgTlNposaeYIic=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kgvWz69owq182gL1CMhT75BqYn2Oo/lYaPE4ZP6kdKbcVb9P9j0v1XXULeTkhnP1T/RcA/YSdIYBYg8/TTH5CkHAJdKEGUd2Z5hjGsMOxviceIeFzZOZNK8C1Kyd1NJVzoaH6oKrB5RHg3IBogcvJMvVYvLghdjYg+7Wv1gqjNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=mVPloanl; arc=none smtp.client-ip=115.124.30.130
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1784046043; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=L5HDedMOkOv2o1qYbYljTVZQzB0Jz5OVt0Sh6QKTHBo=;
-	b=mVPloanlYZWJSONEEZCOS648Un42/XvTxr7VTNll9htZC4ARFOxm/o89ayuXcax015kt08bDjLnnRzqHXIJWQ++f5KMjBtqoKh6LJPm2Hp9GU0rQjuLJ6eu8EKda1Acp2S7DHos4+CGG/tPeCrTqM16Q8goxYUnwHkGaVbYMbLQ=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037033178;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0X75Dk4z_1784046042;
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0X75Dk4z_1784046042 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Wed, 15 Jul 2026 00:20:43 +0800
-Date: Wed, 15 Jul 2026 00:20:42 +0800
-From: Dust Li <dust.li@linux.alibaba.com>
-To: hexlabsecurity@proton.me, "David S. Miller" <davem@davemloft.net>,
-	Sidraya Jayagond <sidraya@linux.ibm.com>,
-	Eric Dumazet <edumazet@google.com>,
-	"D. Wythe" <alibuda@linux.alibaba.com>,
-	Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>,
-	Wenjia Zhang <wenjia@linux.ibm.com>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Stefan Raspl <raspl@linux.ibm.com>, Wen Gu <guwen@linux.alibaba.com>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	Mahanta Jambigi <mjambigi@linux.ibm.com>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Ursula Braun <ubraun@linux.ibm.com>, linux-s390@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net v4 3/3] net/smc: bound the send length to the send
- buffer in smc_tx_sendmsg()
-Message-ID: <alZh2puH6EMlyE__@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20260705-b4-disp-28a1bbca-v4-0-be089b98acc6@proton.me>
- <20260705-b4-disp-28a1bbca-v4-3-be089b98acc6@proton.me>
+	s=arc-20240116; t=1784050240; c=relaxed/simple;
+	bh=NCSxxIN+16TO8oaSsaNS2Mogz4ThQYqHl2gC/sOvu2I=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Jet3MPPSwTI+YlvjaiLJENEXFmL+LK3/B22rPVkMyt+viVM1eMFLzq99akE7T8uhzGBwOJ+BmS/sQ97kmYAAnPRnt9VvMTX6nkGpx5bsi7W4P9SUJe/j2YXFXtuCTeoETIvyWB/EpjtI/VSIHG2KbHD8VOWwhd9ZZCPEZu9NpUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NQbym8GK; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B07391F000E9;
+	Tue, 14 Jul 2026 17:30:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1784050239;
+	bh=mEGj/NqZol7hv1wLOMTOXP7Nm1D+jQYiyzR3lYzmyeg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=NQbym8GKyZCVW7eFWE0P6wJQs4eFFBrXWzv/Vn30JvafBupWkudY06xJpu8/zeGb0
+	 aufCHFeb9q6wzS1hPb5qUBTdJz6bRl4syheFDQhcyEEduH0DK2sM+lTmxckvAjPFAE
+	 7L80lSbyYi7v0kvlB1VXQVGShIc1vuC+TCRUH187Ph/KUCCc/QCTFukXC0CndOwx4F
+	 fAamgw3+yC3oDX90WF3jWNpHIyy90rmdB9sW6121os3z3dcwo+mNGEqVb6cPr90B/D
+	 aHx5RhURW+L0tpOYZc0YbUaumI5ZKv/g5UgcX4sVbxzlYfnFscaRXEVR3gVM88G2if
+	 WvShQevZ48RAA==
+From: Simon Horman <horms@kernel.org>
+To: tariqt@nvidia.com
+Cc: Simon Horman <horms@kernel.org>,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	aleksandr.loktionov@intel.com,
+	borisp@nvidia.com,
+	cmi@nvidia.com,
+	cratiu@nvidia.com,
+	daniel.zahka@gmail.com,
+	dtatulea@nvidia.com,
+	gal@nvidia.com,
+	jacob.e.keller@intel.com,
+	jianbol@nvidia.com,
+	lkayal@nvidia.com,
+	leon@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	mbloch@nvidia.com,
+	raeds@nvidia.com,
+	rrameshbabu@nvidia.com,
+	saeedm@nvidia.com,
+	sdf@fomichev.me,
+	sdf.kernel@gmail.com,
+	willemdebruijn.kernel@gmail.com
+Subject: Re: [PATCH net-next 13/15] net/mlx5e: psp: Make PSP steering config dynamic
+Date: Tue, 14 Jul 2026 18:30:21 +0100
+Message-ID: <20260714173021.1862773-1-horms@kernel.org>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260707130858.969928-14-tariqt@nvidia.com>
+References: <20260707130858.969928-14-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260705-b4-disp-28a1bbca-v4-3-be089b98acc6@proton.me>
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-12.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
-	WHITELIST_SPF_DKIM(-3.00)[alibaba.com:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-23219-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS(0.00)[m:hexlabsecurity@proton.me,m:davem@davemloft.net,m:sidraya@linux.ibm.com,m:edumazet@google.com,m:alibuda@linux.alibaba.com,m:kuba@kernel.org,m:horms@kernel.org,m:wenjia@linux.ibm.com,m:pabeni@redhat.com,m:raspl@linux.ibm.com,m:guwen@linux.alibaba.com,m:linux-kernel@vger.kernel.org,m:netdev@vger.kernel.org,m:mjambigi@linux.ibm.com,m:tonylu@linux.alibaba.com,m:ubraun@linux.ibm.com,m:linux-s390@vger.kernel.org,m:linux-rdma@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[dust.li@linux.alibaba.com,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23218-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[18];
+	FORGED_RECIPIENTS(0.00)[m:tariqt@nvidia.com,m:horms@kernel.org,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:netdev@vger.kernel.org,m:pabeni@redhat.com,m:aleksandr.loktionov@intel.com,m:borisp@nvidia.com,m:cmi@nvidia.com,m:cratiu@nvidia.com,m:daniel.zahka@gmail.com,m:dtatulea@nvidia.com,m:gal@nvidia.com,m:jacob.e.keller@intel.com,m:jianbol@nvidia.com,m:lkayal@nvidia.com,m:leon@kernel.org,m:linux-kernel@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:mbloch@nvidia.com,m:raeds@nvidia.com,m:rrameshbabu@nvidia.com,m:saeedm@nvidia.com,m:sdf@fomichev.me,m:sdf.kernel@gmail.com,m:willemdebruijn.kernel@gmail.com,m:andrew@lunn.ch,m:danielzahka@gmail.com,m:sdfkernel@gmail.com,m:willemdebruijnkernel@gmail.com,s:lists@lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[28];
 	FORWARDED(0.00)[lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[horms@kernel.org,linux-rdma@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dust.li@linux.alibaba.com,linux-rdma@vger.kernel.org];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	HAS_REPLYTO(0.00)[dust.li@linux.alibaba.com];
+	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,lunn.ch,davemloft.net,google.com,vger.kernel.org,redhat.com,intel.com,nvidia.com,gmail.com,fomichev.me];
+	ALIAS_RESOLVED(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,alibaba.com:email,proton.me:email,linux.alibaba.com:from_mime,linux.alibaba.com:mid,linux.alibaba.com:dkim,linux.alibaba.com:replyto]
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,nvidia.com:email,sashiko.dev:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: A3E5A756E58
+X-Rspamd-Queue-Id: 6EC55757789
 
-On 2026-07-05 02:54:07, Bryam Vargas via B4 Relay wrote:
->From: Bryam Vargas <hexlabsecurity@proton.me>
->
->On the SMC-D DMB-merge (nocopy) path, smc_cdc_msg_recv_action()
->advances conn->sndbuf_space from the peer's wire-controlled consumer
->cursor via smc_curs_diff(), which can return more than sndbuf_desc->len;
->a forged cursor drives sndbuf_space past the send buffer, and over many
->CDC messages overflows the signed counter negative. smc_tx_sendmsg()
->reads it as the write space and does a wrap-around copy whose second
->chunk is not re-bounded to sndbuf_desc->len, spilling the local
->sender's outbound data past the send buffer at a peer-controlled
->length: a heap out-of-bounds write. The nearby len > sndbuf_desc->len
->test only feeds SMC_STAT_RMB_TX_SIZE_SMALL on the user length; it does
->not bound the copy.
->
->Bound the write space to sndbuf_desc->len at the consumer, treating a
->negative (sign-overflowed) value as out of range too, so the copy can
->never exceed the ring. This enforces the documented
->0 <= sndbuf_space <= sndbuf_desc->len invariant where it is race-free
->against the CDC tasklet; conforming peers are unaffected.
->
->Fixes: cc0ab806fc52 ("net/smc: adapt cursor update when sndbuf and peer DMB are merged")
->Cc: stable@vger.kernel.org
->Signed-off-by: Bryam Vargas <hexlabsecurity@proton.me>
+This is an AI-generated review of your patch. The human sending this
+email has considered the AI review valid, or at least plausible.
+Full review at: https://sashiko.dev
+---
+--- Patch [13]: [PATCH net-next 13/15] net/mlx5e: psp: Make PSP steering config dynamic ---
+commit 133d9a32cbf9c1b939ae4ca8473c41624c313951
+Author: Cosmin Ratiu <cratiu@nvidia.com>
 
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+net/mlx5e: psp: Make PSP steering config dynamic
 
-Best regards,
-Dust
+This commit changes PSP steering tables to only be created when PSP
+configuration is enabled on a device, instead of at device initialization
+time. This avoids imposing steering overhead on all UDP packets when PSP
+is not being used.
 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h
+> index b526b3898c22e..3f212e46fc2f9 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h
+> @@ -220,18 +220,7 @@ static inline void mlx5e_accel_tx_finish(struct mlx5e_txqsq *sq,
+>  
+>  static inline int mlx5e_accel_init_rx(struct mlx5e_priv *priv)
+>  {
+> -	int err;
+> -
+> -	err = mlx5_accel_psp_fs_init_rx_tables(priv);
+> -	if (err)
+> -		goto out;
+> -
+> -	err = mlx5e_ktls_init_rx(priv);
+> -	if (err)
+> -		mlx5_accel_psp_fs_cleanup_rx_tables(priv);
+> -
+> -out:
+> -	return err;
+> +	return mlx5e_ktls_init_rx(priv);
+>  }
+>  
+>  static inline void mlx5e_accel_cleanup_rx(struct mlx5e_priv *priv)
+> @@ -242,12 +231,6 @@ static inline void mlx5e_accel_cleanup_rx(struct mlx5e_priv *priv)
+>  
+>  static inline int mlx5e_accel_init_tx(struct mlx5e_priv *priv)
+>  {
+> -	int err;
+> -
+> -	err = mlx5_accel_psp_fs_init_tx_tables(priv);
+> -	if (err)
+> -		return err;
+> -
+>  	return mlx5e_ktls_init_tx(priv);
+>  }
 
->---
-> net/smc/smc_tx.c | 13 +++++++++++++
-> 1 file changed, 13 insertions(+)
->
->diff --git a/net/smc/smc_tx.c b/net/smc/smc_tx.c
->index 3144b4b1fe29..5916f02060fb 100644
->--- a/net/smc/smc_tx.c
->+++ b/net/smc/smc_tx.c
->@@ -233,6 +233,19 @@ int smc_tx_sendmsg(struct smc_sock *smc, struct msghdr *msg, size_t len)
-> 		/* initialize variables for 1st iteration of subsequent loop */
-> 		/* could be just 1 byte, even after smc_tx_wait above */
-> 		writespace = atomic_read(&conn->sndbuf_space);
->+		/* sndbuf_space is advanced from the peer's wire-controlled
->+		 * consumer cursor on the SMC-D DMB-merge path; a forged cursor
->+		 * can inflate it past the send buffer, or overflow the signed
->+		 * accumulator to a negative value across many CDC messages
->+		 * (which a plain "> len" check would miss before the size_t
->+		 * cast below turns it huge).  Bound it to the send buffer in
->+		 * either case so the wrap-around write cannot run past
->+		 * sndbuf_desc->len.  This enforces the documented
->+		 * 0 <= sndbuf_space <= sndbuf_desc->len invariant at the
->+		 * producer, race-free against the CDC tasklet.
->+		 */
->+		if (writespace < 0 || writespace > conn->sndbuf_desc->len)
->+			writespace = conn->sndbuf_desc->len;
-> 		/* not more than what user space asked for */
-> 		copylen = min_t(size_t, send_remaining, writespace);
-> 		/* determine start of sndbuf */
->
->-- 
->2.43.0
->
+[Severity: Critical]
+Does removing the unconditional table creation here prevent PSP tables
+from being restored on device attach or resume?
+
+Since mlx5_accel_psp_fs_cleanup_tx_tables() is still called during device
+detach or suspend, the PSP steering tables are destroyed. However, because
+mlx5e_accel_init_tx() no longer recreates them, the tables appear to remain
+missing after a suspend/resume or detach/attach cycle.
+
+Because software psp_assoc structures remain bound to active sockets, could
+this leave the device in a state where the hardware TX steering table (which
+contains the CRYPTO_ENCRYPT action) is missing?
+
+If so, would this cause egress traffic to bypass encryption and be
+transmitted in plaintext?
 
