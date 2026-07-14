@@ -1,261 +1,155 @@
-Return-Path: <linux-rdma+bounces-23182-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23183-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id LhDrMJfrVWrNvwAAu9opvQ
-	(envelope-from <linux-rdma+bounces-23182-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 09:56:07 +0200
+	id C4lLF8PtVWrjwAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-23183-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 10:05:23 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BC077521CB
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 09:56:07 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11E1475229C
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 10:05:22 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=Wo371wp4;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23182-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23182-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.dev;
+	dkim=pass header.d=linux.alibaba.com header.s=default header.b=JAu2Ukq7;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23183-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23183-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=linux.alibaba.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 165123011A5F
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 07:56:07 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9713D3020127
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 08:05:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D7AF3E1D04;
-	Tue, 14 Jul 2026 07:56:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D06663F0AA0;
+	Tue, 14 Jul 2026 08:05:16 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01BF03F210C
-	for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 07:56:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21326145B3F;
+	Tue, 14 Jul 2026 08:05:12 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784015764; cv=none; b=daQIKsccH5K0S5vR84yUh1FVw2CgFWCGevXyf2gSldQvGAg/8VyEcR8mUP6qReDrNGj/RxcNWYsEHsqZ8jjHlF1iUkvu+zwoqSeCPKVBYO4eCqpcwoscYhO3StNArH3UyxxO0gQ2k8AePPtUCKY8QCAiN7g21FZ3MseoPeSW7Aw=
+	t=1784016316; cv=none; b=liisoo5PEsFDLtgoRbQ06ewCYIlpe9yBgYiQbrURzcuCiUAKbWfFgCJ3ybYfmOcYvOMhBUWzeAOMVwj0+a0yf+6n+VkC61QtSEH54nnNYp0c1J+LPD5qKT8Atv3A/uxG15Qd8mTWeYQzEH4KBb550/9bQpBIqEIFPOYnjHnAs9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784015764; c=relaxed/simple;
-	bh=mulvhTCe7dHE9wfxj7MjbGJtwKROwRLTZrQjguvcJWE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DYqoIZi4LekeyfOQqOW4rkoC7JNi0HfRlTfrKZ1xpZ6sg8soKfBQuDHXb5hHTx7xUZ0/FjqztNb5Ug8Q5ucHOOfI7vHTxL7AsBKHGQNxzn3yaiotvxPEULt52jhuNKk2IZwPL1y18VoHD/j8PF81Ptjb+tbjLZk4E+zLYHpuKW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Wo371wp4; arc=none smtp.client-ip=91.218.175.178
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1784015750;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QfbaPE2qlPGSNlqfzxGPAsE50t0yUtiDQHijkOK6WWc=;
-	b=Wo371wp45LnZd7dV80czFAEebfJ0HGAJr0BgmPFjn/skXNWLvt44wTBVcf9QCGbGhCkGg5
-	HpY99WQbJgG9lHCrtpRyk9DUgY7Bv91U72r6Js7HE+zgI8drEsLy/LQTVTQ91ZKoly0ARp
-	Kn7WS7BdvlfZyYSjJgjaBXnUAUXiFxM=
-From: Chenguang Zhao <chenguang.zhao@linux.dev>
-To: leon@kernel.org,
-	jgg@ziepe.ca,
-	saeedm@nvidia.com,
-	tariqt@nvidia.com,
-	mbloch@nvidia.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org,
-	chenguang.zhao@linux.dev,
-	Chenguang Zhao <zhaochenguang@kylinos.cn>
-Subject: [PATCH v2] RDMA/core: quiesce CQ polling before device shutdown on reboot
-Date: Tue, 14 Jul 2026 15:55:58 +0800
-Message-Id: <20260714075558.1420384-1-chenguang.zhao@linux.dev>
-In-Reply-To: <20260702073422.279820-1-chenguang.zhao@linux.dev>
-References: <20260702073422.279820-1-chenguang.zhao@linux.dev>
+	s=arc-20240116; t=1784016316; c=relaxed/simple;
+	bh=TiLVHWKy4mlkeS41lVKDXWkDRcTjPNnk1QZCzNu8HGI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rhX4W4UOW2EzU/rDryAPeZ1l6QgUPBjj5rw7TCVEAdtZBK/5N01+zLdqBRbTgTptjX39gF2MkbkWwfYOn8zCW6kL1rC9hpoc9Bd7GruJujPvUV+sJVy/EJTGhMauulWzJMdMBuUEt5kjTQvzEmRU2RJVICd0N6eVJvhIg7pMR1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=JAu2Ukq7; arc=none smtp.client-ip=115.124.30.119
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1784016307; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=XcY9oAzuAkEa1Ucn4QLvsDCT9v6MfjC/iYTifozKeGQ=;
+	b=JAu2Ukq7luEl7zWZrpMjgntfqDBfZyrZWmAEHpV28RQ24dgSH+f/nTcJ4m2ZdOz7QK5MIIcVrGkdOChWFfR4V2uUQrq8v7rTGMPR20Fz+YJAoHn5N5E3QCnxnkYLRffRIP08j/C290j3CzJQWcEUD7nc2Y+PZ5v96dy5lAob590=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033032089153;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0X73dCz._1784016306;
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0X73dCz._1784016306 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Tue, 14 Jul 2026 16:05:06 +0800
+Date: Tue, 14 Jul 2026 16:05:06 +0800
+From: Dust Li <dust.li@linux.alibaba.com>
+To: "D. Wythe" <alibuda@linux.alibaba.com>, mjambigi@linux.ibm.com,
+	wenjia@linux.ibm.com, wintera@linux.ibm.com,
+	tonylu@linux.alibaba.com, guwen@linux.alibaba.com
+Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+	pabeni@redhat.com, edumazet@google.com, sidraya@linux.ibm.com,
+	jaka@linux.ibm.com
+Subject: Re: [PATCH net-next v3 1/3] net/smc: clear the correct v2 slot and
+ buffer in smc_wr_tx_put_slot()
+Message-ID: <alXtstsR477AuKPD@linux.alibaba.com>
+Reply-To: dust.li@linux.alibaba.com
+References: <20260710033356.16460-1-alibuda@linux.alibaba.com>
+ <20260710033356.16460-2-alibuda@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260710033356.16460-2-alibuda@linux.alibaba.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-12.16 / 15.00];
+	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
+	WHITELIST_SPF_DKIM(-3.00)[alibaba.com:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23182-lists,linux-rdma=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:leon@kernel.org,m:jgg@ziepe.ca,m:saeedm@nvidia.com,m:tariqt@nvidia.com,m:mbloch@nvidia.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:linux-rdma@vger.kernel.org,m:netdev@vger.kernel.org,m:chenguang.zhao@linux.dev,m:zhaochenguang@kylinos.cn,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[chenguang.zhao@linux.dev,linux-rdma@vger.kernel.org];
+	REPLYTO_DOM_EQ_TO_DOM(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER(0.00)[dust.li@linux.alibaba.com,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	TO_DN_SOME(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:alibuda@linux.alibaba.com,m:mjambigi@linux.ibm.com,m:wenjia@linux.ibm.com,m:wintera@linux.ibm.com,m:tonylu@linux.alibaba.com,m:guwen@linux.alibaba.com,m:kuba@kernel.org,m:davem@davemloft.net,m:netdev@vger.kernel.org,m:linux-s390@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:pabeni@redhat.com,m:edumazet@google.com,m:sidraya@linux.ibm.com,m:jaka@linux.ibm.com,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23183-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
+	HAS_REPLYTO(0.00)[dust.li@linux.alibaba.com];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[chenguang.zhao@linux.dev,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
+	PRECEDENCE_BULK(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dust.li@linux.alibaba.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.alibaba.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,vger.kernel.org:from_smtp,kylinos.cn:email,linux.dev:from_mime,linux.dev:dkim,linux.dev:mid]
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.alibaba.com:from_mime,linux.alibaba.com:mid,linux.alibaba.com:dkim,linux.alibaba.com:replyto,alibaba.com:email,vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 9BC077521CB
+X-Rspamd-Queue-Id: 11E1475229C
 
-From: Chenguang Zhao <zhaochenguang@kylinos.cn>
+On 2026-07-10 11:33:54, D. Wythe wrote:
+>smc_wr_tx_put_slot() tries to reset the v2 pending slot and buffer with
+>memset(&link->wr_tx_v2_pend, 0, sizeof(link->wr_tx_v2_pend)) and the
+>equivalent for wr_tx_buf_v2. Both are pointers, so this zeroes the 8-byte
+>pointer variable instead of the structure it points to. The pending slot
+>and buffer are therefore never actually cleared, and the pointers get
+>overwritten with NULL.
+>
+>Pass the pointers directly and use sizeof(*pointer) so the intended
+>structures are cleared.
+>
+>Fixes: 8799e310fb3f ("net/smc: add v2 support to the work request layer")
+>Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
 
-On reboot -f with NFS over RDMA, mlx5 shutdown can tear the device
-down while ib-comp-wq still polls live CQs, leading to UAF in
-wr_cqe->done().
-Mark the device shutting down before teardown, and skip CQ poll/arm
-and SYS_ERROR completion delivery while that flag is set.
+Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
 
-Signed-off-by: Chenguang Zhao <zhaochenguang@kylinos.cn>
----
-1. Set the SHUTTING_DOWN flag at the mlx5 PCI/SF shutdown entry.
+Best regards,
+Dust
 
-2. Skip SYS_ERROR notifications during shutdown to avoid the
-   internal error path re-arming CQs.
 
-3. Make mlx5_ib_poll_cq / mlx5_ib_arm_cq return immediately while
-   that flag is set, so completions are no longer delivered.
-
- drivers/infiniband/hw/mlx5/cq.c                       |  6 ++++++
- drivers/infiniband/hw/mlx5/main.c                     | 11 +++++++++++
- drivers/net/ethernet/mellanox/mlx5/core/health.c      |  3 +++
- drivers/net/ethernet/mellanox/mlx5/core/main.c        |  1 +
- .../net/ethernet/mellanox/mlx5/core/sf/dev/driver.c   |  1 +
- include/linux/mlx5/driver.h                           |  6 ++++++
- 6 files changed, 28 insertions(+)
-
-diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
-index 49b4bf148a4a..584445e6d2fc 100644
---- a/drivers/infiniband/hw/mlx5/cq.c
-+++ b/drivers/infiniband/hw/mlx5/cq.c
-@@ -618,6 +618,9 @@ int mlx5_ib_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc)
- 	int soft_polled = 0;
- 	int npolled;
- 
-+	if (mlx5_core_is_shutting_down(mdev))
-+		return 0;
-+
- 	spin_lock_irqsave(&cq->lock, flags);
- 	if (mdev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR) {
- 		/* make sure no soft wqe's are waiting */
-@@ -653,6 +656,9 @@ int mlx5_ib_arm_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags)
- 	unsigned long irq_flags;
- 	int ret = 0;
- 
-+	if (mlx5_core_is_shutting_down(mdev))
-+		return 0;
-+
- 	spin_lock_irqsave(&cq->lock, irq_flags);
- 	if (cq->notify_flags != IB_CQ_NEXT_COMP)
- 		cq->notify_flags = flags & IB_CQ_SOLICITED_MASK;
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 02809114fc79..265c95129fad 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -2976,6 +2976,9 @@ static void mlx5_ib_handle_internal_error(struct mlx5_ib_dev *ibdev)
- 	unsigned long flags_cq;
- 	unsigned long flags;
- 
-+	if (mlx5_core_is_shutting_down(ibdev->mdev))
-+		return;
-+
- 	INIT_LIST_HEAD(&cq_armed_list);
- 
- 	/* Go over qp list reside on that ibdev, sync with create/destroy qp.*/
-@@ -3200,6 +3203,9 @@ static void mlx5_ib_handle_sys_error_event(struct work_struct *_work)
- 	struct mlx5_ib_dev *ibdev = work->dev;
- 	struct ib_event ibev;
- 
-+	if (mlx5_core_is_shutting_down(ibdev->mdev))
-+		goto out;
-+
- 	ibev.event = IB_EVENT_DEVICE_FATAL;
- 	mlx5_ib_handle_internal_error(ibdev);
- 	ibev.element.port_num = (u8)(unsigned long)work->param;
-@@ -3222,10 +3228,15 @@ static int mlx5_ib_sys_error_event(struct notifier_block *nb,
- 				   unsigned long event, void *param)
- {
- 	struct mlx5_ib_event_work *work;
-+	struct mlx5_ib_dev *ibdev;
- 
- 	if (event != MLX5_DEV_EVENT_SYS_ERROR)
- 		return NOTIFY_DONE;
- 
-+	ibdev = container_of(nb, struct mlx5_ib_dev, sys_error_events);
-+	if (mlx5_core_is_shutting_down(ibdev->mdev))
-+		return NOTIFY_OK;
-+
- 	work = kmalloc_obj(*work, GFP_ATOMIC);
- 	if (!work)
- 		return NOTIFY_DONE;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-index aeeb136f5ebc..d9cc42c4c310 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-@@ -202,6 +202,9 @@ static void enter_error_state(struct mlx5_core_dev *dev, bool force)
- 		mlx5_cmd_flush(dev);
- 	}
- 
-+	if (mlx5_core_is_shutting_down(dev))
-+		return;
-+
- 	mlx5_notifier_call_chain(dev->priv.events, MLX5_DEV_EVENT_SYS_ERROR, (void *)1);
- }
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-index 643b4aac2033..078114bfb357 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -2192,6 +2192,7 @@ static void shutdown(struct pci_dev *pdev)
- 	int err;
- 
- 	mlx5_core_info(dev, "Shutdown was called\n");
-+	set_bit(MLX5_INTERFACE_STATE_SHUTTING_DOWN, &dev->intf_state);
- 	set_bit(MLX5_BREAK_FW_WAIT, &dev->intf_state);
- 	mlx5_drain_fw_reset(dev);
- 	mlx5_drain_health_wq(dev);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/sf/dev/driver.c b/drivers/net/ethernet/mellanox/mlx5/core/sf/dev/driver.c
-index 4391ef0bab5d..6f8242bfb455 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/sf/dev/driver.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/sf/dev/driver.c
-@@ -111,6 +111,7 @@ static void mlx5_sf_dev_shutdown(struct auxiliary_device *adev)
- 	struct mlx5_sf_dev *sf_dev = container_of(adev, struct mlx5_sf_dev, adev);
- 	struct mlx5_core_dev *mdev = sf_dev->mdev;
- 
-+	set_bit(MLX5_INTERFACE_STATE_SHUTTING_DOWN, &mdev->intf_state);
- 	set_bit(MLX5_BREAK_FW_WAIT, &mdev->intf_state);
- 	mlx5_drain_health_wq(mdev);
- 	mlx5_unload_one(mdev, false);
-diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
-index b1871c0821d0..a9efc37cd254 100644
---- a/include/linux/mlx5/driver.h
-+++ b/include/linux/mlx5/driver.h
-@@ -653,8 +653,14 @@ enum mlx5_device_state {
- enum mlx5_interface_state {
- 	MLX5_INTERFACE_STATE_UP = BIT(0),
- 	MLX5_BREAK_FW_WAIT = BIT(1),
-+	MLX5_INTERFACE_STATE_SHUTTING_DOWN = BIT(2),
- };
- 
-+static inline bool mlx5_core_is_shutting_down(struct mlx5_core_dev *dev)
-+{
-+	return test_bit(MLX5_INTERFACE_STATE_SHUTTING_DOWN, &dev->intf_state);
-+}
-+
- enum mlx5_pci_status {
- 	MLX5_PCI_STATUS_DISABLED,
- 	MLX5_PCI_STATUS_ENABLED,
--- 
-2.25.1
-
+>---
+> net/smc/smc_wr.c | 8 ++++----
+> 1 file changed, 4 insertions(+), 4 deletions(-)
+>
+>diff --git a/net/smc/smc_wr.c b/net/smc/smc_wr.c
+>index 59c92b46945c..6b5add922993 100644
+>--- a/net/smc/smc_wr.c
+>+++ b/net/smc/smc_wr.c
+>@@ -288,10 +288,10 @@ int smc_wr_tx_put_slot(struct smc_link *link,
+> 	} else if (link->lgr->smc_version == SMC_V2 &&
+> 		   pend->idx == link->wr_tx_cnt) {
+> 		/* Large v2 buffer */
+>-		memset(&link->wr_tx_v2_pend, 0,
+>-		       sizeof(link->wr_tx_v2_pend));
+>-		memset(&link->lgr->wr_tx_buf_v2, 0,
+>-		       sizeof(link->lgr->wr_tx_buf_v2));
+>+		memset(link->wr_tx_v2_pend, 0,
+>+		       sizeof(*link->wr_tx_v2_pend));
+>+		memset(link->lgr->wr_tx_buf_v2, 0,
+>+		       sizeof(*link->lgr->wr_tx_buf_v2));
+> 		return 1;
+> 	}
+> 
+>-- 
+>2.45.0
 
