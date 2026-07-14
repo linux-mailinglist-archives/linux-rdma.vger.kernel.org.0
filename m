@@ -1,95 +1,62 @@
-Return-Path: <linux-rdma+bounces-23189-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23190-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id VXLkKS0mVmpO0AAAu9opvQ
-	(envelope-from <linux-rdma+bounces-23189-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 14:06:05 +0200
+	id 1fJMLvwrVmqw0gAAu9opvQ
+	(envelope-from <linux-rdma+bounces-23190-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 14:30:52 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 382EF754422
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 14:06:05 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33A4F754907
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 14:30:52 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=resnulli-us.20251104.gappssmtp.com header.s=20251104 header.b=xloPNrV3;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23189-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23189-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=none;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=O3Au0MbC;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23190-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23190-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 6A3273065E6C
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 12:02:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 12235303748C
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 12:19:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2619838C2AE;
-	Tue, 14 Jul 2026 12:02:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 894A543E9F9;
+	Tue, 14 Jul 2026 12:19:50 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1428C36F8F3
-	for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 12:02:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44CE23D3CE6
+	for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 12:19:48 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784030553; cv=none; b=kzmQ7JrtHSz3EAWeUOhs8VEQr7DtN4IaCf6nXyq5azPRIMxGNzOXhAl2E4Hfbb1B2Zl3fenMjPlL6ILMRSJFkgvYx2m28LS+d0s+L5t/ROI/eOjuBu6zydXzofT2roNsMNWEHrDsu58cuzNsx9KQSk31UExNewsdyPqJP29H0rA=
+	t=1784031590; cv=none; b=n9ewZwMCopew5LDhIs27h71L1A3iroP0JY6BidIJuigikejIzwTpFTjOt7m60Cf/QRcJ0Dsk42Vumx0Qd6tHJn/9RlC+szF4kWDzgHWDQQ0ST/VG5soJyFNwtkksDy5sxt+AGYB/RYmVtr+i6EZ/GzwPvfcIPJt2bJuslJThOBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784030553; c=relaxed/simple;
-	bh=MxGbzJ1EXIdULAavSutQBPVkV2UhDVudqdZG1CWBmp8=;
+	s=arc-20240116; t=1784031590; c=relaxed/simple;
+	bh=y/ZoBo4jqjK2u7yyV2dT274h6pS6jqasM0Sj/X/gQhg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q9rAdlyxlBy5BbRMLgUSRxLRpXy6DlZtHw2f1WUQWdf3L51Fu9Tg9vnkXLqpIlJ8hPxYFsRbaFqzKgYReeWwTD+YYcMpHZOsP7nXDuKdcyYL6YiK25kvsGdebmE9fpFVbRQGxxl7G4aIm0Ypjw7jwMTD86B97AjmFmKtdcQXOlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=xloPNrV3; arc=none smtp.client-ip=209.85.128.48
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-493ec555a26so27143995e9.0
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 05:02:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1784030549; x=1784635349; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=MxGbzJ1EXIdULAavSutQBPVkV2UhDVudqdZG1CWBmp8=;
-        b=xloPNrV3q0dsouuiGc5bUzJJ6bnxilhSIXwGOplClvayzzm6Ah2r3bsykgU0U2Os+e
-         wOWh+yiGW8fcuU5rky5Evy6iXTIQKcCkSFXY8KZImeB1J8C08m2oKYln9lIIznjY1Zct
-         DJX0fzJ6KIV/CB93zTxcQbxy5cryxF3hXYiE/Li2nG8xF4M4cWevWZ1KIRG6WJpccxlI
-         wfj9ddFB7N8Z4YP/NXHbxO3jvLO2x3sFRT5C/kD7Gl/jWquGXSRwOWmBIekE8R82irLb
-         mvwtasVMxsK6/qlM5kwsHk9QiM+vbfmJsl5eDdtTO9E2m77O18rBN/wyfvOu+wigyu/q
-         3tlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784030549; x=1784635349;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=MxGbzJ1EXIdULAavSutQBPVkV2UhDVudqdZG1CWBmp8=;
-        b=LwcUXMrV3c8YLazWzsqMIf5TXqFFO0cNYSskEffh9OoLXap3lr0OB6gF3P2jwtCUDQ
-         SYqpg53t5uYUMazvNt/FXFVWiE6xg7V+apL4jqlpy2nFU+3cbVMCcpjzJ+i5LhmCX4g2
-         UTDnglhpF1pQgB8u/p8xN4nww1zXwZOKF/h6476MoK+NakO3q/q6kzlYKTn/oBzoLxCr
-         h47haff807WCxVCxumMmkAAVdk3By6g1a/0SFFM3wv7jkZfsBAqYlUDDUCn/CdHzTIHs
-         JDMdFHO0sJn0N1QermC7X9evYOUvhqlChKTuQ69YM4vcFW8dOST2R8IPd6PZPNSHJL6x
-         ll/g==
-X-Forwarded-Encrypted: i=1; AHgh+RqROLGFSsQUQIF5F8SEcnR32ZcQiWJ4dckvBmYrmLxhQs3BWdPaFcMk3exHpaBmJOugYGoYz68niAWG@vger.kernel.org
-X-Gm-Message-State: AOJu0YwxFQC+TOqibuQNk0K9IhIRyLB5Xe+2fiOqc9acDwdLC+QQUuko
-	X727eM0y91vYC8QwVajVTe1DnjK5gkFLqluyyRmsBaU6UuWof3P6wcqS54utj0e71aI=
-X-Gm-Gg: AfdE7ckA7QqKpm/wmm9aWzulYs9yjI1x1N4nT2yctunWp4vfA25fVbDEc+q3omfBSxi
-	JgcZ7ion/AWVswCTNccKRQ7wQsE2tXCwqQjEkrNID6zMB/uBUeVsdTQJujBYJFGC+Vx8O3nOKJ5
-	DktPray/yVA2Eyx6IUbmn5P6f62dVUgYvvNDORALrkV/4w3a0fjhEu+o3jlmO6ZcM8+DEu3EKw9
-	NawAguA1ZyHIHcKPERhl9P+kl2Xl4Im48BBlbU92XNGt5fuxM1Bw/g9IjICNunFbGLvic+dr6Qw
-	PsYD7e8BckesVwMtV0ENSumCKeZJXePYxtBctO56djyJox2xAXw/qEAEiSg3VvzdVHOmB5wvMrD
-	oaB4iHUVhfWtPGA9ihS6WMyOJaqcyTpOVx4md3LyPFa7HZ8X7/7zVslObmbnMKGVSazDCQMvRGv
-	dR4SHir/CRhvc+yW9onXijCA==
-X-Received: by 2002:a05:600c:6b17:b0:492:4a56:690b with SMTP id 5b1f17b1804b1-493f8834e5emr94066915e9.35.1784030548728;
-        Tue, 14 Jul 2026 05:02:28 -0700 (PDT)
-Received: from localhost ([140.209.217.211])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47f4635ac2esm7854172f8f.13.2026.07.14.05.02.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2026 05:02:28 -0700 (PDT)
-Date: Tue, 14 Jul 2026 14:02:24 +0200
-From: Jiri Pirko <jiri@resnulli.us>
-To: Mark Bloch <mbloch@nvidia.com>
-Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, netdev@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH net-next V6 4/4] devlink: Apply eswitch mode boot defaults
-Message-ID: <alYkm08MpcIXnFl9@FV6GYCPJ69>
-References: <20260714061731.531849-1-mbloch@nvidia.com>
- <20260714061731.531849-5-mbloch@nvidia.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q0qOI+A9u/W7HCeZ6POVBzU5FHrCvDnoU6GucEFL4fvRKkQdiOiXMBs6M3885hAAmYWUzurSKp/CyazV8yUo334JdZr4nMeuPpGHebX+5KTzD64z5R4KsFeNaiPlEjDCmZZR2kfozplqqi6WHfY/Dhx43o+z7s9tlxgT6OYfFdo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O3Au0MbC; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C5F01F000E9;
+	Tue, 14 Jul 2026 12:19:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1784031588;
+	bh=GgFwEpsrkGWUXnPMSVT43eFMaUI7iGaM+J9DQYQo1+Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=O3Au0MbCU/nnR8V2fW1QvrEMU1cLEx8exzNHorTVbOc9seIOk4nNnvlAdSIh7kj8N
+	 I48E9pxMn+21J8szg39kYmBrMJLVkAo+mmlFG1HUYeh56nqyEECA4PnstCjnXkF/oq
+	 vBq6fEyH5+KuDLvzGkzBp6WuJ0IkbG4K1ogjQtvsx40Tb4ONb+DsCQmSKSuYc7ZFKJ
+	 wRWeG/bf4XVdYt1IdmBUhxuxtjKrUP52JAlVQDfvVMi6q+S3CBTjDtYmLZtCrNExJN
+	 u2oTc8CuAL7BaHPSfvWdc8zxZkMVtp4RnCcEHP1bKYrD1bzsO4Gmtd94SYhRS0Nq5Y
+	 G3JOXiF1RCsmw==
+Date: Tue, 14 Jul 2026 15:19:44 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Selvin Xavier <selvin.xavier@broadcom.com>
+Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com, kalesh-anakkur.purayil@broadcom.com,
+	sriharsha.basavapatna@broadcom.com, alhouseenyousef@gmail.com
+Subject: Re: [PATCH for-next v3 1/4] RDMA/bnxt_re: Replace per-device hash
+ tables with per-context XArrays
+Message-ID: <20260714121944.GC19233@unreal>
+References: <20260713135830.1934471-1-selvin.xavier@broadcom.com>
+ <20260713135830.1934471-2-selvin.xavier@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -98,75 +65,95 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260714061731.531849-5-mbloch@nvidia.com>
+In-Reply-To: <20260713135830.1934471-2-selvin.xavier@broadcom.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-4.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-23190-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:mbloch@nvidia.com,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:saeedm@nvidia.com,m:leon@kernel.org,m:tariqt@nvidia.com,m:andrew+netdev@lunn.ch,m:corbet@lwn.net,m:skhan@linuxfoundation.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-doc@vger.kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
-	DMARC_NA(0.00)[resnulli.us];
-	FORGED_SENDER(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	TAGGED_FROM(0.00)[bounces-23189-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:selvin.xavier@broadcom.com,m:jgg@ziepe.ca,m:linux-rdma@vger.kernel.org,m:andrew.gospodarek@broadcom.com,m:kalesh-anakkur.purayil@broadcom.com,m:sriharsha.basavapatna@broadcom.com,m:alhouseenyousef@gmail.com,s:lists@lfdr.de];
+	FREEMAIL_CC(0.00)[ziepe.ca,vger.kernel.org,broadcom.com,gmail.com];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	TAGGED_RCPT(0.00)[linux-rdma];
 	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,vger.kernel.org:from_smtp,nvidia.com:email,FV6GYCPJ69:mid,resnulli-us.20251104.gappssmtp.com:dkim]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 382EF754422
+X-Rspamd-Queue-Id: 33A4F754907
 
-Tue, Jul 14, 2026 at 08:17:30AM +0200, mbloch@nvidia.com wrote:
->Apply parsed devlink_eswitch_mode= defaults after devlink registration
->and after successful reload.
->
->Mark the default mode as pending when a devlink instance is allocated.
->Before devl_unlock() releases the instance lock, apply a pending default
->when the instance is registered.
->
->Clear the pending state before calling into the driver so the boot
->default remains a one-shot operation even if the mode change fails.
->
->For successful reloads that performed DRIVER_REINIT, devlink_reload()
->already holds the devlink instance lock and the driver has completed
->reload_up(). Clear the pending state and apply the default directly from
->the reload path.
->
->Treat an explicit user eswitch mode request as consuming the pending
->default mode.
->
+On Mon, Jul 13, 2026 at 06:58:27AM -0700, Selvin Xavier wrote:
+> The CQ and SRQ hash tables (cq_hash, srq_hash) on struct bnxt_re_dev
+> were used exclusively to look up a toggle-page pointer from a
+> user-space-supplied hardware queue ID in the GET_TOGGLE_MEM
+> ioctl handler. This approach has couple of problems. First,
+> because the tables are per-device, any user can look up another
+> user's CQ or SRQ by guessing the hardware queue ID. Second,
+> concurrent add and remove operations on the hash table are not
+> protected by any lock, leaving a race window.
+> 
+> The correct fix is to retrieve the CQ and SRQ objects via the uverbs
+> object handle, which gives built-in ownership verification and reference
+> pinning for the duration of the ioctl. That is added in the next patch of
+> this series.
+> 
+> To maintain backward compatibility with older rdma-core versions that
+> do not send a uverbs object handle, the driver must continue to support
+> the existing TYPE + RES_ID lookup path. This patch replaces the per-device
+> hash tables with per-ucontext XArrays (cq_xa and srq_xa on struct
+> bnxt_re_ucontext), which narrows the lookup scope to the calling context,
+> eliminating the cross-user visibility. Also adds Xarray locking mechanism
+> for synchronization.
+> 
+> The GET_TOGGLE_MEM ioctl handler is updated to call xa_load()
+> in place of the now-removed bnxt_re_search_for_cq()/
+> bnxt_re_search_for_srq() helpers. No ABI changes are required.
+> 
+> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> ---
+>  drivers/infiniband/hw/bnxt_re/bnxt_re.h  |  5 --
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 76 ++++++++++++++++++------
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.h |  6 +-
+>  drivers/infiniband/hw/bnxt_re/main.c     |  4 --
+>  drivers/infiniband/hw/bnxt_re/uapi.c     | 75 ++++++++---------------
+>  5 files changed, 87 insertions(+), 79 deletions(-)
 
-Looks fine to me now. One nit below:
+<...>
 
+> +		if (uctx) {
+> +			xa_lock(&uctx->srq_xa);
+> +			__xa_erase(&uctx->srq_xa, srq->qplib_srq.id);
+> +			xa_unlock(&uctx->srq_xa);
 
-[..]
+Something very minor, there is no need in this lock->__erase->unlock
+pattern, use xa_erase() directly as it will perform locking internally.
 
->+void devlink_default_esw_mode_instance_init(struct devlink *devlink)
+> +			free_page((unsigned long)srq->uctx_srq_page);
 
+It is worth to get rid of get_zeroed_page/free_page too.
+https://lore.kernel.org/linux-rdma/20260713-b4-rdma-v2-0-65d2a1a5180c@kernel.org/T/#t
 
-Forgotten "instance" here. With this fixed, feel free to add my
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-
-[..]
+Thanks
 
