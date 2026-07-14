@@ -1,242 +1,225 @@
-Return-Path: <linux-rdma+bounces-23229-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23230-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id qZs3OomYVmrq+gAAu9opvQ
-	(envelope-from <linux-rdma+bounces-23229-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 22:14:01 +0200
+	id K88LEOSoVmpd/wAAu9opvQ
+	(envelope-from <linux-rdma+bounces-23230-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 23:23:48 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65171758A8E
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 22:14:01 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 994E7758F53
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 23:23:47 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=pC1DnLXs;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23229-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23229-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
+	dkim=pass header.d=asu.edu header.s=google header.b=azP2SjXs;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23230-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23230-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=asu.edu;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 64978303E20E
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 20:14:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5E6B73022601
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 21:23:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58F9963B9;
-	Tue, 14 Jul 2026 20:13:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD487427A1A;
+	Tue, 14 Jul 2026 21:23:43 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B45B9412BED
-	for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 20:13:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3464140D590
+	for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 21:23:42 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784060037; cv=none; b=DRbWGKAK8ZXsIMwyTSNw9WDZiPU4Lk+49nNHcGopzcGJ2jrBA1QMU4/srJtiTp09xQEfEj0BiHIiqssUaUMLzg+h+/Nye1iQxAfBaDY/z9i2OWBljuVMq5qrbtn7X5FLEsucaqL1MMnQmg4F8Bb0X4DB9NhP0l/mKOPuQq+qZTE=
+	t=1784064223; cv=none; b=Z4fLIXSH0+4oYMiGFSlskkkFc+3UoQSkgf4YRQ6ERPV/vzN722R7SxiVhjFFM+TmPM+w8XbjDCH04ymxfRwRVfhZJ8iB2sop/Zw1SIFvRiUQvWq9g0lf1iemF6Do0leGuJd1bxOUQ640wfBfbs4T6eV1AG856pfMWuEI6aYkhwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784060037; c=relaxed/simple;
-	bh=Q8uBbE9XdPRVXQaZ0ExTI42TK7zcMOJJhXBlrcrT8a4=;
-	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=G/fKc7b+iPy1wTr/L8gVCHtY4+eZWftM/D9FMnCGsIwV9IOqKTidt6Vqh8JovCQzwNCyqocK0HIOfIhSxG7VWy7AlnWv0s8YlfMEjnbkH+8YZg5C4zro7Y5QDK6B/ta+AtfcVKck+iH5HNG2T36syKzC9FBt/8k19+1EYtufMiM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=pC1DnLXs; arc=none smtp.client-ip=209.85.214.178
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2ceab75934dso40739555ad.2
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 13:13:55 -0700 (PDT)
+	s=arc-20240116; t=1784064223; c=relaxed/simple;
+	bh=n9Yz/38hoJril5dCerx/HxGEMGg/Te0wQ4wLGv6TztA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NiGovidSiPRKn88GtZZ7+d3GZg/hH+i1CPOvzqleq7a87L99fxR6Sy1Et05uZb59a1+U/4MHvz+R1Q4sFbYhvq1tufNhcM5Q3G+XADzQNRk935CcofJ1Zo9qEIpLNzHjVp1cqmPcRPc22gxx6yxr/jDARtnoIcRYGb638SyD4Zk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asu.edu; spf=pass smtp.mailfrom=asu.edu; dkim=pass (2048-bit key) header.d=asu.edu header.i=@asu.edu header.b=azP2SjXs; arc=none smtp.client-ip=209.85.210.174
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-84862b0d5f8so1332597b3a.3
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 14:23:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1784060035; x=1784664835; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:mime-version:user-agent
-         :references:in-reply-to:message-id:date:cc:to:from:subject:from:to
-         :cc:subject:date:message-id:reply-to:content-type;
-        bh=EUZJ2b06rpE59kyPt/lRc7T/ATHNB4Peeih6JEYSOE8=;
-        b=pC1DnLXsM9pmrYwdczi94TaLLqpfQzcoJ8YoVM1oFGZFe07rDd/ZCswe0khlgNZrJ1
-         bnZTQhA9whkBaPIDABjABX27M3zaGGfUO76Dkj5z00rDODdddWT6Euq7TCJeurqS0iI3
-         +eHgc2AwQ67JCkvEgbI1biks0xb/SD55hvZpvaIsGXP9UULODby2vYd0uE/y1WHYsLXo
-         KP8oZnUlz/rrrGvauR7PVCczqYe+AYH80h0j9wQGrBsbXdSvplOqRnTqBfpFTMMQNRpz
-         1jD00Q96/vaw21V2zPNgvEJegojwXZXA6TOPslb58rOSvT4N87aKlLO+AFVZUacP7NV4
-         RIqQ==
+        d=asu.edu; s=google; t=1784064221; x=1784669021; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=b1344qgK1KXfGz8odnjT3G64QkGD5RQr6ifbgVRduQo=;
+        b=azP2SjXsmGbkjgyYUH/HUxQFlR8JTnNFIsymrhIsgh5OWS0mZ9cjS7UmTg2rYJbvdp
+         cKcG7J3F9XOr1QFWuu95SXGhYMii0kAjWIlm1FI3p5BRIC4VWB6eEoQT5nScdH1EQMLW
+         pCYDteB+Mfn+fSj1widPhnA1dww7TY/P9sl26mWRtx+X6XMbpk812MhVOU1bjsXpTsEj
+         FG3XbUQ4iuB2pnKy4dhBBFxbn4+VV2CVTGbsP/nU7UZSiaFz7Ip1YXrURc4vdLROJB8M
+         mU29d+903RXOpoZOSbHgxuolM6VNZWgJbzIgBFiljK3vR7DpXSYRNmJoluHOo1lCCrH4
+         F4WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784060035; x=1784664835;
-        h=content-transfer-encoding:content-type:mime-version:user-agent
-         :references:in-reply-to:message-id:date:cc:to:from:subject:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=EUZJ2b06rpE59kyPt/lRc7T/ATHNB4Peeih6JEYSOE8=;
-        b=R+p8vSz9F3sqqh7SIztRKQCxIFraJ5q5aJokfocX50sY50e1gVNt4i3onzk0s8QH6o
-         all0z2JQ4aVP1X8jZbWYczp8CBXXTg3QHQA1mEQknuE6ID/bV4N9eJ0mVI+2S9VnQ8EE
-         jA0X8pCaQ/Z4mCMQaGSFwfkrN1Wxco0PpP+vGLWzDDQCj9otAbXSZE626SJvYNSbSpx2
-         9lHq9ZL0TpXpJ5PGCpcZNRwELFDJaVJU75fhUnjNpf5alXM28gAtzS4J/yiSwfJq16kQ
-         ZL5XCVohgwCxDGtCf59zvGbLijJ1h+tbAXCj77oKw+TWNgUSxkHtlUFYSKWvBbdiNjkX
-         qNmQ==
-X-Forwarded-Encrypted: i=1; AHgh+RoBUcHMav3DIzy5UfTtINaqJ7hE2NVnkPGw375ByG+y3PmklnLm05jnQBMrZa2nmWhyNc6JJHMZ0zGM@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyx3STxy9kLR5dZbqRURIL108E/TMrZmpI54SHeinWyDx4EkGGT
-	HY54W165CSqP5bUR1LpsGiVwVDqTHVVyOFpF/jD25HkcRKPQcoDU6R1u
-X-Gm-Gg: AfdE7cnZdOMlOo36DyAeBjMydWGdHIE6oqZeQeOhDIBOfdNfvRoelLgshstwJOvY1XR
-	GH+6BprM/2d0Y+M6wgXLe9aYhrqHBaJx2sXpAHmm9zrkeKNisBFO4GmtFEoKHB1YqlQStDxGr8J
-	CFs53N0w0cZRsBs4RNryWbuKV9Rd0kZVQtq69PIctPFOb5pB4+T27zl8E3o/t7VO6KQ9LohFi1p
-	h7RlOrbQWFdQneQQ2U72O1ViWt9Uuy21zazaUmORakuI2Hhxj63ne9hRDmUCferBYtlxwzFCEes
-	UexWthr0eyqb3g2damjeWqf54RnQWda/IrXj8spYs2pdJ4jH+9d7zpvyhpDj9ZTnHj4Q7tZlASM
-	7lmtT8u/AmK4WYrPpnI0SObyvUkTCByK0nxNLMLHAJpvBMtC+nee4xZJUOB+rRfybHU/MKXObu+
-	1WrORSxN+2gGiIn7WFIyi/kllypooONXORpUoL+47UJJ1BzRas/hlEdUu6E/MZtVeJLRliww==
-X-Received: by 2002:a17:902:fc8f:b0:2c9:97a8:afe5 with SMTP id d9443c01a7336-2ce9f27e6dbmr139524545ad.40.1784060035193;
-        Tue, 14 Jul 2026 13:13:55 -0700 (PDT)
-Received: from [192.168.0.160] (c-98-225-44-182.hsd1.wa.comcast.net. [98.225.44.182])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ccc9bdb877sm120937885ad.14.2026.07.14.13.13.53
+        d=1e100.net; s=20251104; t=1784064221; x=1784669021;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=b1344qgK1KXfGz8odnjT3G64QkGD5RQr6ifbgVRduQo=;
+        b=aS/EtefJCYp6aB6Y758qbICG4DLnhrA1NNsoT+Kk6wyu+wbW7BennBUjd7bF5tlFrW
+         9lSVFDesXiw9Cug1OHKfVL7p+O7tBoINRcYG6L0czoLu3WlP5UsfQf12nPWuclPiio/K
+         gllYvKY1yF0Wvxv4qtnXuIi9pqpceVPFPiVVMOFo7nZLbymmNrJS+8A2bq7v/kH5kZG6
+         0CUj9cVjIlvFytAA8xUBA2HID1A+CKGWh0s8JCcV/+joO6z/LWW54cr6ogKjdiawS1Us
+         zQP0be9b71AiwcAr0LzDIh3jSLO+zV8SszOJ7HxbaV3Cmdr7dGSIUFeMW+vuN//F6yn2
+         LIVA==
+X-Forwarded-Encrypted: i=1; AHgh+Rq+NI5/RKioF01xSToeJYHnFYDF+kAa6q6VA7V3l8OwV74lKEWv8ctTXGGw+nkAXCDlmrO9dtE45lTf@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw23WwVT6BCvTTX95Eu8Rl303Fr0xwHAVooLoW3DwAT99UqkLhf
+	98mqiQ24u3mkRhsoJs29monUHER98pmvrvMA8EfN8/PBkBJbQ1kcDebu+Hrbpj61NA==
+X-Gm-Gg: AfdE7clDsvvIj5SqFSBiXDi7X6pTVDRSJ2mRBwCZkB8siBREvFXXsz7ETy26F97pONl
+	RJjKxp7pYky4YbxQ76EGhc1dE3rhN2f4/fs5ihhRatIqcQ7+VhdzB00qmYMqVk5mFWjurIVgR4H
+	V4K8HY7Qv5eAy5psv4HIDhha4HomL8Wr+u2obUB7bu/c4fIDnY9MfKFN9KnervfJI5QN0Hk8GzV
+	+LVTljlkztjZ5xN3QMEFJhKBBkIytwjn13mA9PGuQIwRhBc2m54TTzqdH2v6eZ4kagTE2qgIU86
+	ikf2bcHkEZOEszNnCywZM/OLMA6aNezBPXJCY0TlP2t+szESEXsQbFOFAY5/YSvIaw4DRZbs/Ej
+	2d+TUJerIcGMRNYsbUZ0p/32b9DtRdhG9ticoFg04EaftukloRKP/u4AoYdRhaSXGDhkhFZ+5T+
+	BxUpkWBmY/SQ==
+X-Received: by 2002:a05:6a00:27a5:b0:847:e2c7:59c5 with SMTP id d2e1a72fcca58-848896bb796mr14050225b3a.49.1784064221414;
+        Tue, 14 Jul 2026 14:23:41 -0700 (PDT)
+Received: from p1.. ([172.56.106.206])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-84a4f7dc8e7sm2018325b3a.47.2026.07.14.14.23.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2026 13:13:54 -0700 (PDT)
-Subject: [PATCH 4/4] fixup! drm/gpusvm: use hmm_range_fault_unlocked_timeout()
- for range faults
-From: Stanislav Kinsburskii <skinsburskii@gmail.com>
-To: airlied@gmail.com, akhilesh@ee.iitb.ac.in, akpm@linux-foundation.org,
- corbet@lwn.net, dakr@kernel.org, david@kernel.org, jgg@ziepe.ca,
- kees@kernel.org, leon@kernel.org, liam@infradead.org, lizhi.hou@amd.com,
- ljs@kernel.org, lyude@redhat.com, maarten.lankhorst@linux.intel.com,
- mamin506@gmail.com, mhocko@suse.com, mripard@kernel.org,
- nouveau@lists.freedesktop.org, ogabbay@kernel.org, oleg@redhat.com,
- rppt@kernel.org, shuah@kernel.org, simona@ffwll.ch,
- skhan@linuxfoundation.org, skinsburskii@gmail.com, surenb@google.com,
- tzimmermann@suse.de, vbabka@kernel.org
-Cc: dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org
-Date: Tue, 14 Jul 2026 13:13:53 -0700
-Message-ID: <178406003318.1082778.16211328573488321338.stgit@skinsburskii>
-In-Reply-To: <178405975214.1082778.5193079941156341151.stgit@skinsburskii>
-References: <178405975214.1082778.5193079941156341151.stgit@skinsburskii>
-User-Agent: StGit/0.19
+        Tue, 14 Jul 2026 14:23:41 -0700 (PDT)
+From: Xiang Mei <xmei5@asu.edu>
+To: Allison Henderson <achender@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>
+Cc: netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	rds-devel@oss.oracle.com,
+	linux-kernel@vger.kernel.org,
+	Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+	Ka-Cheong Poon <ka-cheong.poon@oracle.com>,
+	bestswngs@gmail.com,
+	Xiang Mei <xmei5@asu.edu>
+Subject: [PATCH net v3] rds: tcp: hold the RCU lock across ipv6_chk_addr() in rds_tcp_laddr_check()
+Date: Tue, 14 Jul 2026 14:22:39 -0700
+Message-ID: <20260714212239.1511269-1-xmei5@asu.edu>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [2.34 / 15.00];
-	MID_END_EQ_FROM_USER_PART(4.00)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[asu.edu,none];
+	R_DKIM_ALLOW(-0.20)[asu.edu:s=google];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:airlied@gmail.com,m:akhilesh@ee.iitb.ac.in,m:akpm@linux-foundation.org,m:corbet@lwn.net,m:dakr@kernel.org,m:david@kernel.org,m:jgg@ziepe.ca,m:kees@kernel.org,m:leon@kernel.org,m:liam@infradead.org,m:lizhi.hou@amd.com,m:ljs@kernel.org,m:lyude@redhat.com,m:maarten.lankhorst@linux.intel.com,m:mamin506@gmail.com,m:mhocko@suse.com,m:mripard@kernel.org,m:nouveau@lists.freedesktop.org,m:ogabbay@kernel.org,m:oleg@redhat.com,m:rppt@kernel.org,m:shuah@kernel.org,m:simona@ffwll.ch,m:skhan@linuxfoundation.org,m:skinsburskii@gmail.com,m:surenb@google.com,m:tzimmermann@suse.de,m:vbabka@kernel.org,m:dri-devel@lists.freedesktop.org,m:linux-mm@kvack.org,m:linux-doc@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:linux-rdma@vger.kernel.org,s:lists@lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	SUBJECT_HAS_EXCLAIM(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,ee.iitb.ac.in,linux-foundation.org,lwn.net,kernel.org,ziepe.ca,infradead.org,amd.com,redhat.com,linux.intel.com,suse.com,lists.freedesktop.org,ffwll.ch,linuxfoundation.org,google.com,suse.de];
-	FORGED_SENDER(0.00)[skinsburskii@gmail.com,linux-rdma@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[34];
-	TAGGED_FROM(0.00)[bounces-23229-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-23230-lists,linux-rdma=lfdr.de];
+	FREEMAIL_CC(0.00)[vger.kernel.org,oss.oracle.com,oracle.com,gmail.com,asu.edu];
+	RCPT_COUNT_TWELVE(0.00)[14];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER(0.00)[xmei5@asu.edu,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:achender@kernel.org,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:rds-devel@oss.oracle.com,m:linux-kernel@vger.kernel.org,m:santosh.shilimkar@oracle.com,m:ka-cheong.poon@oracle.com,m:bestswngs@gmail.com,m:xmei5@asu.edu,s:lists@lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[skinsburskii@gmail.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TO_DN_NONE(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[xmei5@asu.edu,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[asu.edu:+];
+	RCVD_COUNT_FIVE(0.00)[5];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[skinsburskii:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 65171758A8E
+X-Rspamd-Queue-Id: 994E7758F53
 
-The timeout passed to hmm_range_fault_unlocked_timeout() is a relative
-retry budget for HMM's internal mmu-notifier retry loop. drm_gpusvm was
-still keeping an absolute deadline around the outer driver retry logic
-and passing the remaining time into HMM.
+rds_tcp_laddr_check() looks up a scoped IPv6 interface with
+dev_get_by_index_rcu(), drops the RCU read-side lock, and only then
+passes the bare struct net_device * into ipv6_chk_addr().
 
-Pass HMM_RANGE_DEFAULT_TIMEOUT directly to
-hmm_range_fault_unlocked_timeout() on each HMM fault attempt instead.
-If HMM succeeds but the later drm_gpusvm-side mmu_interval_read_retry()
-check observes an invalidation, retry with a fresh HMM retry budget.
+dev_get_by_index_rcu() only keeps the device alive within the same RCU
+read-side section. After rcu_read_unlock(), a concurrent RTM_DELLINK can
+free the net_device; ipv6_chk_addr() then dereferences the stale pointer
+in __ipv6_chk_addr_and_flags() (e.g. l3mdev_master_dev_rcu(dev)), reading
+freed memory.
 
-This keeps the timeout focused on repeated notifier retries inside HMM,
-while avoiding an outer deadline that also accounts unrelated driver-side
-work after HMM has made progress.
+Keep the RCU read-side lock held across the ipv6_chk_addr() call instead
+of dropping it right after the lookup, so the device cannot be freed
+while it is in use.
 
-Signed-off-by: Stanislav Kinsburskii <skinsburskii@gmail.com>
+  BUG: KASAN: slab-use-after-free in __ipv6_chk_addr_and_flags (... net/ipv6/addrconf.c:1998)
+  Read of size 8 at addr ffff8880106ec000 by task exploit/153
+  Call Trace:
+   ...
+   kasan_report (mm/kasan/report.c:595)
+   __ipv6_chk_addr_and_flags (... net/ipv6/addrconf.c:1998)
+   ipv6_chk_addr (net/ipv6/addrconf.c:2031 net/ipv6/addrconf.c:1972)
+   rds_tcp_laddr_check (net/rds/tcp.c:370)
+   rds_bind (net/rds/bind.c:248)
+   __sys_bind (net/socket.c:1920)
+   __x64_sys_bind (net/socket.c:1956)
+   do_syscall_64 (arch/x86/entry/syscall_64.c:63)
+   entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:121)
+
+Changes since v1:
+  Use rcu_read_locks instead of dev_hold/put
+  Rebased on [PATCH net v2] rds: Fix inet6_addr_lst NULL dereference when IPv6 is disabled
+
+Changes since v2:
+  Add change log
+
+Fixes: eee2fa6ab322 ("rds: Changing IP address internal representation to struct in6_addr")
+Reported-by: Weiming Shi <bestswngs@gmail.com>
+Assisted-by: Claude:claude-opus-4-8
+Signed-off-by: Xiang Mei <xmei5@asu.edu>
+Reviewed-by: Allison Henderson <achender@kernel.org>
 ---
- drivers/gpu/drm/drm_gpusvm.c |   21 ++++++---------------
- 1 file changed, 6 insertions(+), 15 deletions(-)
+v2: Use rcu_read_locks and rebase on rds: Fix inet6_addr_lst NULL 
+    dereference when IPv6 is disabled
+v3: Add change log to commit message as Allison suggested
 
-diff --git a/drivers/gpu/drm/drm_gpusvm.c b/drivers/gpu/drm/drm_gpusvm.c
-index b8f2dd9982f5..76e8a0028c7f 100644
---- a/drivers/gpu/drm/drm_gpusvm.c
-+++ b/drivers/gpu/drm/drm_gpusvm.c
-@@ -852,8 +852,7 @@ enum drm_gpusvm_scan_result drm_gpusvm_scan_mm(struct drm_gpusvm_range *range,
- 		.end = end,
- 		.dev_private_owner = dev_private_owner,
- 	};
--	unsigned long timeout =
--		jiffies + msecs_to_jiffies(HMM_RANGE_DEFAULT_TIMEOUT);
-+	unsigned long timeout = msecs_to_jiffies(HMM_RANGE_DEFAULT_TIMEOUT);
- 	enum drm_gpusvm_scan_result state = DRM_GPUSVM_SCAN_UNPOPULATED, new_state;
- 	unsigned long *pfns;
- 	unsigned long npages = npages_in_range(start, end);
-@@ -867,8 +866,7 @@ enum drm_gpusvm_scan_result drm_gpusvm_scan_mm(struct drm_gpusvm_range *range,
- 	hmm_range.hmm_pfns = pfns;
- 
- retry:
--	err = hmm_range_fault_unlocked_timeout(&hmm_range,
--					       max(timeout - jiffies, 1L));
-+	err = hmm_range_fault_unlocked_timeout(&hmm_range, timeout);
- 	if (err)
- 		goto err_free;
- 
-@@ -1459,8 +1457,7 @@ int drm_gpusvm_get_pages(struct drm_gpusvm *gpusvm,
- 		.dev_private_owner = ctx->device_private_page_owner,
- 	};
- 	void *zdd;
--	unsigned long timeout =
--		jiffies + msecs_to_jiffies(HMM_RANGE_DEFAULT_TIMEOUT);
-+	unsigned long timeout = msecs_to_jiffies(HMM_RANGE_DEFAULT_TIMEOUT);
- 	unsigned long i, j;
- 	unsigned long npages = npages_in_range(pages_start, pages_end);
- 	unsigned long num_dma_mapped;
-@@ -1478,9 +1475,6 @@ int drm_gpusvm_get_pages(struct drm_gpusvm *gpusvm,
- 		return -EINVAL;
- 
- retry:
--	if (time_after(jiffies, timeout))
--		return -EBUSY;
--
- 	hmm_range.notifier_seq = mmu_interval_read_begin(notifier);
- 	if (drm_gpusvm_pages_valid_unlocked(gpusvm, svm_pages))
- 		goto set_seqno;
-@@ -1495,8 +1489,7 @@ int drm_gpusvm_get_pages(struct drm_gpusvm *gpusvm,
+
+ net/rds/tcp.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/net/rds/tcp.c b/net/rds/tcp.c
+index 955d92277d5a..30cfb0087f2c 100644
+--- a/net/rds/tcp.c
++++ b/net/rds/tcp.c
+@@ -355,23 +355,25 @@ int rds_tcp_laddr_check(struct net *net, const struct in6_addr *addr,
+ 	/* If the scope_id is specified, check only those addresses
+ 	 * hosted on the specified interface.
+ 	 */
++	rcu_read_lock();
+ 	if (scope_id != 0) {
+-		rcu_read_lock();
+ 		dev = dev_get_by_index_rcu(net, scope_id);
+ 		/* scope_id is not valid... */
+ 		if (!dev) {
+ 			rcu_read_unlock();
+ 			return -EADDRNOTAVAIL;
+ 		}
+-		rcu_read_unlock();
  	}
+ #if IS_ENABLED(CONFIG_IPV6)
+ 	if (ipv6_mod_enabled()) {
+ 		ret = ipv6_chk_addr(net, addr, dev, 0);
+-		if (ret)
++		if (ret) {
++			rcu_read_unlock();
+ 			return 0;
++		}
+ 	}
+ #endif
++	rcu_read_unlock();
+ 	return -EADDRNOTAVAIL;
+ }
  
- 	hmm_range.hmm_pfns = pfns;
--	err = hmm_range_fault_unlocked_timeout(&hmm_range,
--				max_t(long, timeout - jiffies, 1));
-+	err = hmm_range_fault_unlocked_timeout(&hmm_range, timeout);
- 	mmput(mm);
- 	if (err)
- 		goto err_free;
-@@ -1718,8 +1711,7 @@ int drm_gpusvm_range_evict(struct drm_gpusvm *gpusvm,
- 		.end = drm_gpusvm_range_end(range),
- 		.dev_private_owner = NULL,
- 	};
--	unsigned long timeout =
--		jiffies + msecs_to_jiffies(HMM_RANGE_DEFAULT_TIMEOUT);
-+	unsigned long timeout = msecs_to_jiffies(HMM_RANGE_DEFAULT_TIMEOUT);
- 	unsigned long *pfns;
- 	unsigned long npages = npages_in_range(drm_gpusvm_range_start(range),
- 					       drm_gpusvm_range_end(range));
-@@ -1734,8 +1726,7 @@ int drm_gpusvm_range_evict(struct drm_gpusvm *gpusvm,
- 		return -ENOMEM;
- 
- 	hmm_range.hmm_pfns = pfns;
--	err = hmm_range_fault_unlocked_timeout(&hmm_range,
--				max_t(long, timeout - jiffies, 1));
-+	err = hmm_range_fault_unlocked_timeout(&hmm_range, timeout);
- 
- 	kvfree(pfns);
- 	mmput(mm);
-
+-- 
+2.43.0
 
 
