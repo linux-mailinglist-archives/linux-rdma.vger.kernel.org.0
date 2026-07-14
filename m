@@ -1,225 +1,276 @@
-Return-Path: <linux-rdma+bounces-23230-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23231-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id K88LEOSoVmpd/wAAu9opvQ
-	(envelope-from <linux-rdma+bounces-23230-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 23:23:48 +0200
+	id xNNwMsipVmqY/wAAu9opvQ
+	(envelope-from <linux-rdma+bounces-23231-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 23:27:36 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 994E7758F53
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 23:23:47 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C44F758FC6
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 23:27:36 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=asu.edu header.s=google header.b=azP2SjXs;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23230-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23230-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=asu.edu header.s=google header.b=kb768rMH;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23231-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23231-lists+linux-rdma=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=none) header.from=asu.edu;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5E6B73022601
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 21:23:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 54B8C30BA2BE
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2026 21:25:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD487427A1A;
-	Tue, 14 Jul 2026 21:23:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DBED42BEAD;
+	Tue, 14 Jul 2026 21:24:59 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3464140D590
-	for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 21:23:42 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784064223; cv=none; b=Z4fLIXSH0+4oYMiGFSlskkkFc+3UoQSkgf4YRQ6ERPV/vzN722R7SxiVhjFFM+TmPM+w8XbjDCH04ymxfRwRVfhZJ8iB2sop/Zw1SIFvRiUQvWq9g0lf1iemF6Do0leGuJd1bxOUQ640wfBfbs4T6eV1AG856pfMWuEI6aYkhwU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784064223; c=relaxed/simple;
-	bh=n9Yz/38hoJril5dCerx/HxGEMGg/Te0wQ4wLGv6TztA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NiGovidSiPRKn88GtZZ7+d3GZg/hH+i1CPOvzqleq7a87L99fxR6Sy1Et05uZb59a1+U/4MHvz+R1Q4sFbYhvq1tufNhcM5Q3G+XADzQNRk935CcofJ1Zo9qEIpLNzHjVp1cqmPcRPc22gxx6yxr/jDARtnoIcRYGb638SyD4Zk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asu.edu; spf=pass smtp.mailfrom=asu.edu; dkim=pass (2048-bit key) header.d=asu.edu header.i=@asu.edu header.b=azP2SjXs; arc=none smtp.client-ip=209.85.210.174
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-84862b0d5f8so1332597b3a.3
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 14:23:41 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29E56427A1A
+	for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 21:24:55 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1784064299; cv=pass; b=E8/wL2XYFnbgSQqUYHINMY8kjaJz17ERa6hsJ+jXk3uBVCrXAWdecAogG0FtylbtsYHBeR0ZhFhCzEIPdENudrw3S68/6qcgqKz9ImEYje7Hg+5uTEQHYoq8Gqna/E081FpZ6vIZ7ljZcfJ3ClM/amXSHNOJeE4HLoMtgnZ9rDw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1784064299; c=relaxed/simple;
+	bh=5lEL8ncm6HpX+/UGi6fEjiqgrC5SrckOfqT3dPhdPCA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=S5xmfWnztnaWwhDbeXVL9cVeS5HlHBxdImRKGqnhtYf263mFDZOFCdN7ZN8C56mvNq1JeK9v/FOxzyYv9mrQCc+guB96rnEZnM+1dVxjpyytO6ui7tifQpgUg0SZtXfgTRFs0ZeecXlcJcFg/+HBiNszTkQpMtQeYDEdWR9Qtis=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asu.edu; spf=pass smtp.mailfrom=asu.edu; dkim=pass (2048-bit key) header.d=asu.edu header.i=@asu.edu header.b=kb768rMH; arc=pass smtp.client-ip=209.85.216.48
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-3847e8b0f3aso3976682a91.3
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2026 14:24:55 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1784064295; cv=none;
+        d=google.com; s=arc-20260327;
+        b=DOrGTlnks+PFIcgDJa0BQFfDwksSj2FP4IibZ+X+Dyjn8J8jcJ2g0argXHht0WdMEO
+         szCqBjOAGZ4gxRtyeg4SkSNxuQYItifEVuyf3iCLESsfl5OhdsaRDXBB3vUZV8Di2ANM
+         60nqvXDPw68qscJWuqFOizXt0NCqfqN5t6Dd+Fs3LI6Dj8wY1a2Eun9X4ES90y8j3SSS
+         RF8Dyngv46vW6iTCP12aeflYJcQ1BvnOHkxaa0uuvleTbPpt++XhHREAHeyHxw8Wopj+
+         aqQ0IDv5/43sTS1BmC6t4eLUysgkWyNUrOZD6kJtMEL2Ji4zo0yTZNPpdUlrC0O7w+ty
+         DKQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=fKdbGRuewpi7ZMpE9C7ytuL9gIr5Wnu61fkfFllAAco=;
+        fh=wI0BhoypGkCDwNR01klpZsW4WqX+XyidKyoQi0lQFa8=;
+        b=NNmsu38zGSzrLJRfJFfmAdP2C8mEvOes91vre4CS42VpmFYNXAttkFknW7/fObNMNC
+         1b8PZebzXDbg7diojDBCOck2bmDyGIlsXGf+WsZXbw/io5Wj7lg68mvHDESxsROq+HJA
+         TK6Wm0hjy7sQcWZwyWyM+DcGsiTbwkumB7v84BEwCzj9yownbz8q2RjEMvUn3VEAfgaI
+         /GHyZLZ8Mq+uYRd1TgcMZiD8LorsaUcI1+8hkUd/4QOkZsHlBQQDFx70WMW2+JOX1AiU
+         UwiUFT8sigBGrXAxK0gpaPcB+yVLPKmthrhkmOuEP7m9Hn+oTZfTJgI7zW3Rfq68weTg
+         rVGQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=asu.edu; s=google; t=1784064221; x=1784669021; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=b1344qgK1KXfGz8odnjT3G64QkGD5RQr6ifbgVRduQo=;
-        b=azP2SjXsmGbkjgyYUH/HUxQFlR8JTnNFIsymrhIsgh5OWS0mZ9cjS7UmTg2rYJbvdp
-         cKcG7J3F9XOr1QFWuu95SXGhYMii0kAjWIlm1FI3p5BRIC4VWB6eEoQT5nScdH1EQMLW
-         pCYDteB+Mfn+fSj1widPhnA1dww7TY/P9sl26mWRtx+X6XMbpk812MhVOU1bjsXpTsEj
-         FG3XbUQ4iuB2pnKy4dhBBFxbn4+VV2CVTGbsP/nU7UZSiaFz7Ip1YXrURc4vdLROJB8M
-         mU29d+903RXOpoZOSbHgxuolM6VNZWgJbzIgBFiljK3vR7DpXSYRNmJoluHOo1lCCrH4
-         F4WQ==
+        d=asu.edu; s=google; t=1784064295; x=1784669095; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=fKdbGRuewpi7ZMpE9C7ytuL9gIr5Wnu61fkfFllAAco=;
+        b=kb768rMHCzIUv3YNEOOpJvF5oYlMBPoXuR1ImlPI4kNsZDO8kZYAsakHK8s426roPt
+         oUQAchpiX/CtEgZvWCGcA5NtixsdnHuuWc+nuWj64asQC1TxIV0eP32aa30LMvJuurah
+         gY9TAQYhrvMVZEiiRc58RKUvyEF5Fz6RyZawX53maDMUt6xiLNYmZLH6b62pZZk9nJlK
+         rwmxbn6rXxk8yGTvr9FEVxshOOZWnB/sGxrXGwTOavh67guQkm/GeYbzZp9BmRAfHsRm
+         3beMgZD0SLy8kerKaOQEFV8YSt0jSJOBFb1qJljl2t05ppnD6cfXoIgySP06ZQRiPoJT
+         32Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784064221; x=1784669021;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=b1344qgK1KXfGz8odnjT3G64QkGD5RQr6ifbgVRduQo=;
-        b=aS/EtefJCYp6aB6Y758qbICG4DLnhrA1NNsoT+Kk6wyu+wbW7BennBUjd7bF5tlFrW
-         9lSVFDesXiw9Cug1OHKfVL7p+O7tBoINRcYG6L0czoLu3WlP5UsfQf12nPWuclPiio/K
-         gllYvKY1yF0Wvxv4qtnXuIi9pqpceVPFPiVVMOFo7nZLbymmNrJS+8A2bq7v/kH5kZG6
-         0CUj9cVjIlvFytAA8xUBA2HID1A+CKGWh0s8JCcV/+joO6z/LWW54cr6ogKjdiawS1Us
-         zQP0be9b71AiwcAr0LzDIh3jSLO+zV8SszOJ7HxbaV3Cmdr7dGSIUFeMW+vuN//F6yn2
-         LIVA==
-X-Forwarded-Encrypted: i=1; AHgh+Rq+NI5/RKioF01xSToeJYHnFYDF+kAa6q6VA7V3l8OwV74lKEWv8ctTXGGw+nkAXCDlmrO9dtE45lTf@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw23WwVT6BCvTTX95Eu8Rl303Fr0xwHAVooLoW3DwAT99UqkLhf
-	98mqiQ24u3mkRhsoJs29monUHER98pmvrvMA8EfN8/PBkBJbQ1kcDebu+Hrbpj61NA==
-X-Gm-Gg: AfdE7clDsvvIj5SqFSBiXDi7X6pTVDRSJ2mRBwCZkB8siBREvFXXsz7ETy26F97pONl
-	RJjKxp7pYky4YbxQ76EGhc1dE3rhN2f4/fs5ihhRatIqcQ7+VhdzB00qmYMqVk5mFWjurIVgR4H
-	V4K8HY7Qv5eAy5psv4HIDhha4HomL8Wr+u2obUB7bu/c4fIDnY9MfKFN9KnervfJI5QN0Hk8GzV
-	+LVTljlkztjZ5xN3QMEFJhKBBkIytwjn13mA9PGuQIwRhBc2m54TTzqdH2v6eZ4kagTE2qgIU86
-	ikf2bcHkEZOEszNnCywZM/OLMA6aNezBPXJCY0TlP2t+szESEXsQbFOFAY5/YSvIaw4DRZbs/Ej
-	2d+TUJerIcGMRNYsbUZ0p/32b9DtRdhG9ticoFg04EaftukloRKP/u4AoYdRhaSXGDhkhFZ+5T+
-	BxUpkWBmY/SQ==
-X-Received: by 2002:a05:6a00:27a5:b0:847:e2c7:59c5 with SMTP id d2e1a72fcca58-848896bb796mr14050225b3a.49.1784064221414;
-        Tue, 14 Jul 2026 14:23:41 -0700 (PDT)
-Received: from p1.. ([172.56.106.206])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-84a4f7dc8e7sm2018325b3a.47.2026.07.14.14.23.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2026 14:23:41 -0700 (PDT)
-From: Xiang Mei <xmei5@asu.edu>
-To: Allison Henderson <achender@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>
-Cc: netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com,
-	linux-kernel@vger.kernel.org,
-	Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-	Ka-Cheong Poon <ka-cheong.poon@oracle.com>,
-	bestswngs@gmail.com,
-	Xiang Mei <xmei5@asu.edu>
-Subject: [PATCH net v3] rds: tcp: hold the RCU lock across ipv6_chk_addr() in rds_tcp_laddr_check()
-Date: Tue, 14 Jul 2026 14:22:39 -0700
-Message-ID: <20260714212239.1511269-1-xmei5@asu.edu>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20251104; t=1784064295; x=1784669095;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=fKdbGRuewpi7ZMpE9C7ytuL9gIr5Wnu61fkfFllAAco=;
+        b=IhX0iEQCvVZknz+VJLCRC7ti2DBY9sfeHSYmnu83Q0uHIO12Gjyr3UjoISIM2aRiwt
+         tJGkLMhQNRQmP/NilwPBk9rpVIgPl10K/V0TDQOOpAZ8xqoJC89L9jLEIJGGlavSEnJ+
+         aI0NxBfR45Ba9WSCc038q10OribjCZSLoGDF0LRtkTpmNuI85sFBIL1wUCFMvd1+5KAI
+         ecKu/YOCxfdG2oguTpM/6jf/hwRWsK/jkAx8mBwEm3wnkMVcCkqPHS5sVzlA9cSuhIp2
+         yHRe6kmI975Ski+Inq+9ukqFyOgY/Mw2pib/j0fnSXUXQ8mkwIzQ4O0xWXJSiCghxP5E
+         fPJw==
+X-Forwarded-Encrypted: i=1; AHgh+RrWQSHFkfLgaAEpef67H44cobDZagUrtPNTmCuBBpPqHc7E4Nre2nn2TesCdR5EJW7u31ah/ii1moP8@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyy0ktXr0ymJ87apnXS9Ehvd4f9LRY94GElhkCQ+Fro2oxM2hWR
+	9twl4d8kUZRli8H7689IuK31hHY2TNcLYZot/CUs61AcLP0Zo10WfmnC6l+jvCFbi0kdcWCjhOA
+	hWXmfTmc8pUY7FgKG7dYVPa1VbCqtugTay4itKtCd
+X-Gm-Gg: AfdE7cn8yXo4n9ORPyViEJQKEzh8CaH0Bcq+HK4M/1K7zdi0grL11gkts3+TkRKV4S5
+	NYK3WH88R2A+jpoJbrfDo6tAvRYpo0OGAMxzT4lWhcMbEk2Rr05f2E6tGlJBzta3P0DWg4rJ557
+	xTKy6W48bGkzqRqVvKMSYi0VklRmgu7G4jIgk5Xrxl2LznmPOB+d7hnAvAFREJmmfq9KiR2TmVv
+	3vncOLPy6eJ2g6WFtlHrNGSsdfT8D9oHAES8UOkG7H2mGz7VQ9L5pgpvqynH5Gq9fdCsZ3CBYSA
+	gC+7T+Z56u4K581DCa3sQfD3NZdHUJI=
+X-Received: by 2002:a17:90b:4a11:b0:37f:9ce1:cdb0 with SMTP id
+ 98e67ed59e1d1-38e2a0a78c1mr306534a91.30.1784064295348; Tue, 14 Jul 2026
+ 14:24:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20260710223029.1307043-1-xmei5@asu.edu> <f69ec0975481ad04dc7403834bbb6b93d1092ecb.camel@kernel.org>
+In-Reply-To: <f69ec0975481ad04dc7403834bbb6b93d1092ecb.camel@kernel.org>
+From: Xiang Mei <xmei5@asu.edu>
+Date: Tue, 14 Jul 2026 14:24:43 -0700
+X-Gm-Features: AUfX_my-bnGdv6WApj0EccK6Wy1KqN5vNEqE9wuIXjURuJDWYgC0SW6HQ5GQbGg
+Message-ID: <CAPpSM+QU=3CwxRavThhaeoFbiqECzDdPvV9C5StCfRK6aMn3zQ@mail.gmail.com>
+Subject: Re: [PATCH net v2] rds: tcp: hold the RCU lock across ipv6_chk_addr()
+ in rds_tcp_laddr_check()
+To: Allison Henderson <achender@kernel.org>
+Cc: "David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, 
+	linux-kernel@vger.kernel.org, 
+	Santosh Shilimkar <santosh.shilimkar@oracle.com>, Ka-Cheong Poon <ka-cheong.poon@oracle.com>, 
+	bestswngs@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW(-0.50)[asu.edu,none];
 	R_DKIM_ALLOW(-0.20)[asu.edu:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23230-lists,linux-rdma=lfdr.de];
-	FREEMAIL_CC(0.00)[vger.kernel.org,oss.oracle.com,oracle.com,gmail.com,asu.edu];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:achender@kernel.org,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:rds-devel@oss.oracle.com,m:linux-kernel@vger.kernel.org,m:santosh.shilimkar@oracle.com,m:ka-cheong.poon@oracle.com,m:bestswngs@gmail.com,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23231-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER(0.00)[xmei5@asu.edu,linux-rdma@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:achender@kernel.org,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:rds-devel@oss.oracle.com,m:linux-kernel@vger.kernel.org,m:santosh.shilimkar@oracle.com,m:ka-cheong.poon@oracle.com,m:bestswngs@gmail.com,m:xmei5@asu.edu,s:lists@lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[xmei5@asu.edu,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[asu.edu:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FORGED_SENDER(0.00)[xmei5@asu.edu,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FREEMAIL_CC(0.00)[davemloft.net,google.com,kernel.org,redhat.com,vger.kernel.org,oss.oracle.com,oracle.com,gmail.com];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[xmei5@asu.edu,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[asu.edu:+];
 	ALIAS_RESOLVED(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp,asu.edu:from_mime,asu.edu:email,asu.edu:dkim,mail.gmail.com:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 994E7758F53
+X-Rspamd-Queue-Id: 4C44F758FC6
 
-rds_tcp_laddr_check() looks up a scoped IPv6 interface with
-dev_get_by_index_rcu(), drops the RCU read-side lock, and only then
-passes the bare struct net_device * into ipv6_chk_addr().
+On Fri, Jul 10, 2026 at 8:53=E2=80=AFPM Allison Henderson <achender@kernel.=
+org> wrote:
+>
+> On Fri, 2026-07-10 at 15:30 -0700, Xiang Mei wrote:
+> > rds_tcp_laddr_check() looks up a scoped IPv6 interface with
+> > dev_get_by_index_rcu(), drops the RCU read-side lock, and only then
+> > passes the bare struct net_device * into ipv6_chk_addr().
+> >
+> > dev_get_by_index_rcu() only keeps the device alive within the same RCU
+> > read-side section. After rcu_read_unlock(), a concurrent RTM_DELLINK ca=
+n
+> > free the net_device; ipv6_chk_addr() then dereferences the stale pointe=
+r
+> > in __ipv6_chk_addr_and_flags() (e.g. l3mdev_master_dev_rcu(dev)), readi=
+ng
+> > freed memory.
+> >
+> > Keep the RCU read-side lock held across the ipv6_chk_addr() call instea=
+d
+> > of dropping it right after the lookup, so the device cannot be freed
+> > while it is in use.
+> >
+> >   BUG: KASAN: slab-use-after-free in __ipv6_chk_addr_and_flags (... net=
+/ipv6/addrconf.c:1998)
+> >   Read of size 8 at addr ffff8880106ec000 by task exploit/153
+> >   Call Trace:
+> >    ...
+> >    kasan_report (mm/kasan/report.c:595)
+> >    __ipv6_chk_addr_and_flags (... net/ipv6/addrconf.c:1998)
+> >    ipv6_chk_addr (net/ipv6/addrconf.c:2031 net/ipv6/addrconf.c:1972)
+> >    rds_tcp_laddr_check (net/rds/tcp.c:370)
+> >    rds_bind (net/rds/bind.c:248)
+> >    __sys_bind (net/socket.c:1920)
+> >    __x64_sys_bind (net/socket.c:1956)
+> >    do_syscall_64 (arch/x86/entry/syscall_64.c:63)
+> >    entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:121)
+> >
+>
+>
+>
+> Thanks Xiang!  Just more thing to make sure your patches gets through. Ad=
+d a change log here like this:
+>
+> Changes since v1:
+>   Use rcu_read_locks instead of dev_hold/put
+>   Rebased on [PATCH net v2] rds: Fix inet6_addr_lst NULL dereference when=
+ IPv6 is disabled
+>
+> Changes since v2:
+>   Add change log
+>
+>
+> Otherwise, it might get bounced if they happen to try your patch first.
+> With that fixed:
+> Reviewed-by: Allison Henderson <achender@kernel.org>
+>
+> Thanks!
+> Allison
+>
+Thanks for the tips; I learned it!
 
-dev_get_by_index_rcu() only keeps the device alive within the same RCU
-read-side section. After rcu_read_unlock(), a concurrent RTM_DELLINK can
-free the net_device; ipv6_chk_addr() then dereferences the stale pointer
-in __ipv6_chk_addr_and_flags() (e.g. l3mdev_master_dev_rcu(dev)), reading
-freed memory.
+v3 is ready:
+https://lore.kernel.org/netdev/20260714212239.1511269-1-xmei5@asu.edu/T/#u
 
-Keep the RCU read-side lock held across the ipv6_chk_addr() call instead
-of dropping it right after the lookup, so the device cannot be freed
-while it is in use.
-
-  BUG: KASAN: slab-use-after-free in __ipv6_chk_addr_and_flags (... net/ipv6/addrconf.c:1998)
-  Read of size 8 at addr ffff8880106ec000 by task exploit/153
-  Call Trace:
-   ...
-   kasan_report (mm/kasan/report.c:595)
-   __ipv6_chk_addr_and_flags (... net/ipv6/addrconf.c:1998)
-   ipv6_chk_addr (net/ipv6/addrconf.c:2031 net/ipv6/addrconf.c:1972)
-   rds_tcp_laddr_check (net/rds/tcp.c:370)
-   rds_bind (net/rds/bind.c:248)
-   __sys_bind (net/socket.c:1920)
-   __x64_sys_bind (net/socket.c:1956)
-   do_syscall_64 (arch/x86/entry/syscall_64.c:63)
-   entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:121)
-
-Changes since v1:
-  Use rcu_read_locks instead of dev_hold/put
-  Rebased on [PATCH net v2] rds: Fix inet6_addr_lst NULL dereference when IPv6 is disabled
-
-Changes since v2:
-  Add change log
-
-Fixes: eee2fa6ab322 ("rds: Changing IP address internal representation to struct in6_addr")
-Reported-by: Weiming Shi <bestswngs@gmail.com>
-Assisted-by: Claude:claude-opus-4-8
-Signed-off-by: Xiang Mei <xmei5@asu.edu>
-Reviewed-by: Allison Henderson <achender@kernel.org>
----
-v2: Use rcu_read_locks and rebase on rds: Fix inet6_addr_lst NULL 
-    dereference when IPv6 is disabled
-v3: Add change log to commit message as Allison suggested
-
-
- net/rds/tcp.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/net/rds/tcp.c b/net/rds/tcp.c
-index 955d92277d5a..30cfb0087f2c 100644
---- a/net/rds/tcp.c
-+++ b/net/rds/tcp.c
-@@ -355,23 +355,25 @@ int rds_tcp_laddr_check(struct net *net, const struct in6_addr *addr,
- 	/* If the scope_id is specified, check only those addresses
- 	 * hosted on the specified interface.
- 	 */
-+	rcu_read_lock();
- 	if (scope_id != 0) {
--		rcu_read_lock();
- 		dev = dev_get_by_index_rcu(net, scope_id);
- 		/* scope_id is not valid... */
- 		if (!dev) {
- 			rcu_read_unlock();
- 			return -EADDRNOTAVAIL;
- 		}
--		rcu_read_unlock();
- 	}
- #if IS_ENABLED(CONFIG_IPV6)
- 	if (ipv6_mod_enabled()) {
- 		ret = ipv6_chk_addr(net, addr, dev, 0);
--		if (ret)
-+		if (ret) {
-+			rcu_read_unlock();
- 			return 0;
-+		}
- 	}
- #endif
-+	rcu_read_unlock();
- 	return -EADDRNOTAVAIL;
- }
- 
--- 
-2.43.0
-
+Xiang
+> > Thanks Xiang!  Just more thing to make sure your patches gets through. =
+Add a change log here like this:
+> >
+> > Changes since v1:
+> >   Use rcu_read_locks instead of dev_hold/put
+> >   Rebased on [PATCH net v2] rds: Fix inet6_addr_lst NULL dereference wh=
+en IPv6 is disabled
+> >
+> > Changes since v2:
+> >   Add change log
+> >
+> > Reviewed-by: Allison Henderson <achender@kernel.org>
+> > Fixes: eee2fa6ab322 ("rds: Changing IP address internal representation =
+to struct in6_addr")
+> > Reported-by: Weiming Shi <bestswngs@gmail.com>
+> > Assisted-by: Claude:claude-opus-4-8
+> > Signed-off-by: Xiang Mei <xmei5@asu.edu>
+> > ---
+> >  net/rds/tcp.c | 8 +++++---
+> >  1 file changed, 5 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/net/rds/tcp.c b/net/rds/tcp.c
+> > index 955d92277d5a..30cfb0087f2c 100644
+> > --- a/net/rds/tcp.c
+> > +++ b/net/rds/tcp.c
+> > @@ -355,23 +355,25 @@ int rds_tcp_laddr_check(struct net *net, const st=
+ruct in6_addr *addr,
+> >       /* If the scope_id is specified, check only those addresses
+> >        * hosted on the specified interface.
+> >        */
+> > +     rcu_read_lock();
+> >       if (scope_id !=3D 0) {
+> > -             rcu_read_lock();
+> >               dev =3D dev_get_by_index_rcu(net, scope_id);
+> >               /* scope_id is not valid... */
+> >               if (!dev) {
+> >                       rcu_read_unlock();
+> >                       return -EADDRNOTAVAIL;
+> >               }
+> > -             rcu_read_unlock();
+> >       }
+> >  #if IS_ENABLED(CONFIG_IPV6)
+> >       if (ipv6_mod_enabled()) {
+> >               ret =3D ipv6_chk_addr(net, addr, dev, 0);
+> > -             if (ret)
+> > +             if (ret) {
+> > +                     rcu_read_unlock();
+> >                       return 0;
+> > +             }
+> >       }
+> >  #endif
+> > +     rcu_read_unlock();
+> >       return -EADDRNOTAVAIL;
+> >  }
+> >
+>
 
