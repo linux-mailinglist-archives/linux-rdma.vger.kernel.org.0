@@ -1,319 +1,399 @@
-Return-Path: <linux-rdma+bounces-23252-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23253-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id JgEzDXMsV2qzGwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-23252-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 08:45:07 +0200
+	id qI4GHU8xV2q7HAEAu9opvQ
+	(envelope-from <linux-rdma+bounces-23253-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 09:05:51 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 880DB75B30D
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 08:45:06 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D069F75B47F
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 09:05:50 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=163.com header.s=s110527 header.b=ipP7f2kc;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23252-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23252-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=163.com;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=Jjo+aiA+;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23253-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23253-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3502F300C5BF
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 06:42:10 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1010F3014436
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 07:05:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E901431A56C;
-	Wed, 15 Jul 2026 06:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AB2330C608;
+	Wed, 15 Jul 2026 07:05:46 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3693931353C
-	for <linux-rdma@vger.kernel.org>; Wed, 15 Jul 2026 06:42:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3D5942BC34;
+	Wed, 15 Jul 2026 07:05:44 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784097728; cv=none; b=hNMZq0p5DmWQkePTGxzlT9bQ0SGOyPZGDj8zf7VX7/htc5adUuKZrl22JRTeAsPgQcjfXSNO3JlPCNN5JuwBF8rbdtYC1yYqMWWUr8BNgB81Tw8SvvvLLuuTBxxAFr0rxliKOpXZC2hmYnXWj7xaA/zIZGgvzTcdOyTglhKerEg=
+	t=1784099146; cv=none; b=KdOLaxapPKkwWyMk4ksjZ1D42XLoRuEfkumUb8+HNuDp7bQIZPdm2tf2ogzW9gmVqmucpZRLSllDfVAifmGqa+GVIkXgehlPQ7Bg0FFqQ2PxEOPWVfXR3F1U5i2d880ZAy1oFAWWghhelSnnQvq8g0VJn7UgM6DoCu8PlCI/NIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784097728; c=relaxed/simple;
-	bh=rBLGuU/UBeTVlSDCyWSLBkNaMGuSkWwvYhR8ki2ViHA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=G6m/6fDrgikt+IwPTSyQ9hy+xRfrZ8XZrRN6q19/4CcbRYWtFCmdt5+nQAGVpgWFL32nHCPJ9VLcUoNBzR12HvJLlimZU7NM9/kDPQNMIi4Si5kO3+EMcip5t2ztgp1ahoLpWYpdzVqOgQudUQhP/tcT9gTQxo5VtNnpmBr5gAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=ipP7f2kc; arc=none smtp.client-ip=117.135.210.2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=mH
-	92X5E20VCV29YiLTTc7ShOS6E0fS7VGemdYBtNkbs=; b=ipP7f2kc3HRILS6K01
-	FrkbpCPMIIYQ06+seL/FmkeUdVmd0Tcu31MKl6Hx92ijzEkl12245GAvMCYXIDC/
-	fl07Xf2KpjLqKjrziESFDG5zrmLm3twwODbOzI0MtI4hG62O9Q5tzcM/rpQXeNzB
-	XyLTWPctHPvUZHaPRMBLASvCg=
-Received: from xwm-TianYi510Pro-14IMB.. (unknown [])
-	by gzga-smtp-mtada-g0-3 (Coremail) with SMTP id _____wDXfmGoK1dqaAedJg--.173S2;
-	Wed, 15 Jul 2026 14:41:44 +0800 (CST)
-From: weimin xiong <15927021679@163.com>
-To: linux-rdma@vger.kernel.org
-Cc: jgg@nvidia.com,
-	zyjzyj2000@gmail.com,
-	xiongweimin <xiongweimin@kylinos.cn>
-Subject: [PATCH v3] RDMA/rxe: Hold netdev reference for transmit skbs
-Date: Wed, 15 Jul 2026 14:41:49 +0800
-Message-ID: <20260715064149.283009-1-15927021679@163.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260714015554.174436-1-15927021679@163.com>
-References: <20260714015554.174436-1-15927021679@163.com>
+	s=arc-20240116; t=1784099146; c=relaxed/simple;
+	bh=I8ty1h5nbfufNOATqGAiDyDSWGohSkv3Naiwna3mylc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JVhwJwonFj3O6QZSoyCbGJeyD3y2NZIwO38+IJ34ZVTDfyBHCMQ0sqMTsiaBxbLgY8YnGuoSv4NaK07adgsmQuFJ8Koj1Tj3Pnr+wxtrNXD3wrDGBQf2Xbp1+NMX6GresTo3RPo1m8CIRUz37rh7qX0ZxXJZIWJSwN79gQ00+MA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jjo+aiA+; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 142361F000E9;
+	Wed, 15 Jul 2026 07:05:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1784099144;
+	bh=L9j/qXi7i7tV67rN0hz2c6Jpu6Rio4yZfVPXCNq4jAU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=Jjo+aiA+7ap6SOGbImHj6R8L4BHe6aymFOizTub5nQW9Fwu2EwbhhNpyAGA8+kyTH
+	 JvcbGwlqIgVW8frS5YtWGCVP9q6Y9iEixvx6Nokrl052cDt+mjVWC3yD4yse70rECK
+	 mv9a2JdS7Xw0n0YuTZS2UbJXB4jGcCVdbdshMm8wwqmJMt+XyKl8S+Dnh1f3uxbaHk
+	 DPxYNK8UeaIT4jQ/xQpsYLm0WxOA/73KwEd2g76wOkebt6ii5m56Vay4uVITjpu6S7
+	 vtmUlsCl/Cu9PH6+yh8QQtvpua8Cw99B954F0+9g6UWTLYhmwYorkiSdahAZfosL+v
+	 U1TtCnruC/63Q==
+Date: Wed, 15 Jul 2026 10:05:40 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+Cc: yishaih@nvidia.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] IB/mlx4: Fix stale CM id_map entries when RTU is
+ never received
+Message-ID: <20260715070540.GB21348@unreal>
+References: <20260713111142.1206710-1-praveen.kannoju@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDXfmGoK1dqaAedJg--.173S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3Jw48CFyftrykWF1DAF4kCrg_yoWxuw15pF
-	4UGay5Kr4xXa129Fn0yrWUZFWay3W8Ja98KF9Fq34Yvrn8Cw47WFsxuryUZF45CFZ5Gw4a
-	qF1jyr98Ga1fGFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UK-erUUUUU=
-X-CM-SenderInfo: jprvmjixqsilmxzbiqqrwthudrp/xtbC8whl7WpXK6iLOwAA39
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260713111142.1206710-1-praveen.kannoju@oracle.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-4.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[163.com,none];
-	R_DKIM_ALLOW(-0.20)[163.com:s=s110527];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23252-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:praveen.kannoju@oracle.com,m:yishaih@nvidia.com,m:jgg@ziepe.ca,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[15927021679@163.com,linux-rdma@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:linux-rdma@vger.kernel.org,m:jgg@nvidia.com,m:zyjzyj2000@gmail.com,m:xiongweimin@kylinos.cn,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[163.com:+];
-	FREEMAIL_FROM(0.00)[163.com];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[15927021679@163.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[nvidia.com,gmail.com,kylinos.cn];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23253-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,kylinos.cn:email]
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,oracle.com:email,unreal:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 880DB75B30D
+X-Rspamd-Queue-Id: D069F75B47F
 
-From: xiongweimin <xiongweimin@kylinos.cn>
+On Mon, Jul 13, 2026 at 11:11:42AM +0000, Praveen Kumar Kannoju wrote:
+> mlx4_ib_multiplex_cm_handler() allocates an id_map_entry for CM
+> transactions, but the entry is normally released only on DREQ or REJ
+> flows.
+> 
+> In the duplicate REP handling scenario, cm_dup_rep_handler() may be
+> invoked when the remote side receives a REP for which no matching
+> cm_id_priv exists. In such cases the CM handshake never reaches RTU, and
+> the sender side may never receive either DREQ or REJ cleanup events.
+> 
+> As a result, the allocated id_map_entry remains indefinitely, resulting in
+> a stale mapping leak.
+> 
+> Fix this by arming an RTU-abandon cleanup timeout when the id_map_entry is
+> allocated. The timeout uses the mlx4 CM workqueue and the existing
+> schedule_delayed() path, so later DREQ/REJ cleanup can shorten the pending
+> timeout with mod_delayed_work().
+> 
+> Track whether a pending cleanup timeout is still waiting for RTU. RTU
+> cancels only that initial timeout; if DREQ/REJ has already converted it to
+> normal teardown cleanup, a late or duplicate RTU does not cancel the
+> teardown timer. If the RTU timeout callback has already started, leave the
+> entry on the timeout path and make the RTU packet lose that race.
+> 
+> Hold id_map_lock while looking up the entry, canceling the RTU timeout,
+> scheduling teardown cleanup, and copying the id values needed by the CM
+> handlers. The delayed-work callback rechecks scheduled_delete under the
+> same lock before removing and freeing the entry, avoiding use-after-free
+> when RTU races with timeout execution.
+> 
+> Signed-off-by: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+> ---
+> v1: https://lore.kernel.org/linux-rdma/20260507154755.452008-1-praveen.kannoju@oracle.com/T/#u
+> v2: https://lore.kernel.org/linux-rdma/BL0PR10MB282074FA0D571F5072DFCB4B8CF12@BL0PR10MB2820.namprd10.prod.outlook.com/T/#t
+> 
+> Changes in v3:
+> - Replace "Lock should be taken before called" comments with
+>   lockdep_assert_held(&sriov->id_map_lock).
+> 
+> Changes in v2:
+> - Queue the RTU-abandon timeout on the mlx4 CM workqueue through
+>   schedule_delayed() and use mod_delayed_work() so DREQ/REJ cleanup can
+>   shorten a pending RTU timeout.
+> - Track RTU-abandon cleanup separately from normal DREQ/REJ cleanup so a
+>   late or duplicate RTU does not cancel a teardown timer.
+> - Hold id_map_lock while looking up id_map entries, canceling or updating
+>   delayed work, and copying CM IDs needed by the handlers.
+> - Make RTU lose the race when the timeout callback has already started.
+> 
+>  drivers/infiniband/hw/mlx4/cm.c | 98 ++++++++++++++++++++++++++++++---------
+>  1 file changed, 75 insertions(+), 23 deletions(-)
 
-rxe_init_packet() assigns skb->dev from an RCU-protected GID attribute
-without holding a netdev reference. If the netdev is unregistered before
-the skb is freed, subsequent accesses to skb->dev are unsafe.
+I wanted to apply this patch, but it has merge conflicts. Please
+rebase it onto the latest rdma-next.
 
-Hold a reference with dev_hold() when the skb is initialized and release
-it from the transmit destructor or via rxe_put_skb() on error paths that
-run before the destructor is installed.
+As you are probably the only person using this device in that mode, I
+will take it as-is after the rebase. Strictly speaking, however, the
+lock around id_map_get() does not make much sense. There is no
+reference counting on the returned ID, so it can disappear immediately
+after the lock is released.
 
-skb->dev can change on the TX path (VLAN/bond/tunnel, ip_finish_output2,
-etc.), so put must use the same netdev that was held. Stash that pointer
-in skb_shinfo()->destructor_arg: skb->cb is already used by
-rxe_pkt_info and is rewritten by IP control blocks.
+Thanks.
 
-To avoid blocking netdev unregistration on held skbs, flush all QPs to
-the error state on NETDEV_GOING_DOWN and NETDEV_UNREGISTER so pending TX
-work is drained and references can be dropped.
-
-Signed-off-by: xiongweimin <xiongweimin@kylinos.cn>
----
-v3:
-- put the held netdev from destructor_arg, not live skb->dev
-  (skb->dev may be rewritten by the TX stack)
-
-v2:
-- rebase on current mainline so the patch applies cleanly
-- flush all QPs on NETDEV_GOING_DOWN and NETDEV_UNREGISTER to
-  release pending TX skbs before netdev unregister
----
- drivers/infiniband/sw/rxe/rxe_loc.h  |  1 +
- drivers/infiniband/sw/rxe/rxe_net.c  | 68 ++++++++++++++++++++++++++--
- drivers/infiniband/sw/rxe/rxe_req.c  |  2 +-
- drivers/infiniband/sw/rxe/rxe_resp.c |  4 +-
- 4 files changed, 68 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index 64d636bf8..7c3cc48e8 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -92,6 +92,7 @@ void rxe_mw_cleanup(struct rxe_pool_elem *elem);
- /* rxe_net.c */
- struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
- 				int paylen, struct rxe_pkt_info *pkt);
-+void rxe_put_skb(struct sk_buff *skb);
- int rxe_prepare(struct rxe_av *av, struct rxe_pkt_info *pkt,
- 		struct sk_buff *skb);
- int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index 3741b2c4b..86c9b19f6 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -429,6 +429,29 @@ int rxe_prepare(struct rxe_av *av, struct rxe_pkt_info *pkt,
- 	return err;
- }
- 
-+/*
-+ * skb->dev may be rewritten on the TX path (VLAN/bond/tunnel, etc.).
-+ * The netdev we held in rxe_init_packet() is kept in destructor_arg so
-+ * that put always matches hold. skb->cb cannot be used: it is already
-+ * occupied by struct rxe_pkt_info and rewritten by IP control blocks.
-+ */
-+static void rxe_skb_set_held_ndev(struct sk_buff *skb, struct net_device *ndev)
-+{
-+	dev_hold(ndev);
-+	skb->dev = ndev;
-+	skb_shinfo(skb)->destructor_arg = ndev;
-+}
-+
-+static void rxe_skb_put_held_ndev(struct sk_buff *skb)
-+{
-+	struct net_device *ndev = skb_shinfo(skb)->destructor_arg;
-+
-+	if (ndev) {
-+		skb_shinfo(skb)->destructor_arg = NULL;
-+		dev_put(ndev);
-+	}
-+}
-+
- static void rxe_skb_tx_dtor(struct sk_buff *skb)
- {
- 	struct rxe_qp *qp = skb->sk->sk_user_data;
-@@ -441,6 +464,18 @@ static void rxe_skb_tx_dtor(struct sk_buff *skb)
- 
- 	rxe_put(qp);
- 	sock_put(skb->sk);
-+	rxe_skb_put_held_ndev(skb);
-+}
-+
-+/*
-+ * Free an skb that still holds a netdev reference from rxe_init_packet()
-+ * and does not yet have rxe_skb_tx_dtor() installed. Once the TX
-+ * destructor is set, callers must use kfree_skb() instead.
-+ */
-+void rxe_put_skb(struct sk_buff *skb)
-+{
-+	rxe_skb_put_held_ndev(skb);
-+	kfree_skb(skb);
- }
- 
- static int rxe_send(struct sk_buff *skb, struct rxe_pkt_info *pkt)
-@@ -529,7 +564,7 @@ int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
- 	goto done;
- 
- drop:
--	kfree_skb(skb);
-+	rxe_put_skb(skb);
- 	err = 0;
- done:
- 	return err;
-@@ -574,8 +609,7 @@ struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
- 
- 	skb_reserve(skb, hdr_len + LL_RESERVED_SPACE(ndev));
- 
--	/* FIXME: hold reference to this netdev until life of this skb. */
--	skb->dev	= ndev;
-+	rxe_skb_set_held_ndev(skb, ndev);
- 	rcu_read_unlock();
- 
- 	if (av->network_type == RXE_NETWORK_TYPE_IPV4)
-@@ -710,6 +744,28 @@ void rxe_set_port_state(struct rxe_dev *rxe)
- 	dev_put(ndev);
- }
- 
-+/*
-+ * Move all QPs to the error state so pending send/recv work is drained and
-+ * in-flight TX skbs (which hold a netdev reference) can be released. Called
-+ * from the netdev notifier so unregister cannot stall on held skbs.
-+ */
-+static void rxe_flush_qps(struct rxe_dev *rxe)
-+{
-+	struct rxe_pool_elem *elem;
-+	struct rxe_qp *qp;
-+	unsigned long index;
-+
-+	rcu_read_lock();
-+	xa_for_each(&rxe->qp_pool.xa, index, elem) {
-+		if (!elem || !kref_get_unless_zero(&elem->ref_cnt))
-+			continue;
-+		qp = elem->obj;
-+		rxe_qp_error(qp);
-+		rxe_put(qp);
-+	}
-+	rcu_read_unlock();
-+}
-+
- static int rxe_notify(struct notifier_block *not_blk,
- 		      unsigned long event,
- 		      void *arg)
-@@ -721,7 +777,12 @@ static int rxe_notify(struct notifier_block *not_blk,
- 		return NOTIFY_OK;
- 
- 	switch (event) {
-+	case NETDEV_GOING_DOWN:
-+		/* Start draining TX queues before the netdev disappears. */
-+		rxe_flush_qps(rxe);
-+		break;
- 	case NETDEV_UNREGISTER:
-+		rxe_flush_qps(rxe);
- 		ib_unregister_device_queued(&rxe->ib_dev);
- 		rxe_net_del(&rxe->ib_dev);
- 		break;
-@@ -735,7 +796,6 @@ static int rxe_notify(struct notifier_block *not_blk,
- 			rxe_counter_inc(rxe, RXE_CNT_LINK_DOWNED);
- 		break;
- 	case NETDEV_REBOOT:
--	case NETDEV_GOING_DOWN:
- 	case NETDEV_CHANGEADDR:
- 	case NETDEV_CHANGENAME:
- 	case NETDEV_FEAT_CHANGE:
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index 12d03f390..927ef68de 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -796,7 +796,7 @@ int rxe_requester(struct rxe_qp *qp)
- 			wqe->status = IB_WC_LOC_PROT_ERR;
- 		else
- 			wqe->status = IB_WC_LOC_QP_OP_ERR;
--		kfree_skb(skb);
-+		rxe_put_skb(skb);
- 		if (ah)
- 			rxe_put(ah);
- 		goto err;
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index d8cbdfa70..ee3630e4b 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -866,7 +866,7 @@ static struct sk_buff *prepare_ack_packet(struct rxe_qp *qp,
- 
- 	err = rxe_prepare(&qp->pri_av, ack, skb);
- 	if (err) {
--		kfree_skb(skb);
-+		rxe_put_skb(skb);
- 		return NULL;
- 	}
- 
-@@ -994,7 +994,7 @@ static enum resp_states read_reply(struct rxe_qp *qp,
- 	err = rxe_mr_copy(mr, res->read.va, payload_addr(&ack_pkt),
- 			  payload, RXE_FROM_MR_OBJ);
- 	if (err) {
--		kfree_skb(skb);
-+		rxe_put_skb(skb);
- 		state = RESPST_ERR_RKEY_VIOLATION;
- 		goto err_out;
- 	}
--- 
-2.43.0
-
-
-No virus found
-		Checked by Hillstone Network AntiVirus
-
+> 
+> diff --git a/drivers/infiniband/hw/mlx4/cm.c b/drivers/infiniband/hw/mlx4/cm.c
+> index 63a868a..f7905df 100644
+> --- a/drivers/infiniband/hw/mlx4/cm.c
+> +++ b/drivers/infiniband/hw/mlx4/cm.c
+> @@ -40,6 +40,7 @@
+>  #include "mlx4_ib.h"
+>  
+>  #define CM_CLEANUP_CACHE_TIMEOUT  (30 * HZ)
+> +#define CM_RTU_TIMEOUT		  (60 * HZ)
+>  
+>  struct id_map_entry {
+>  	struct rb_node node;
+> @@ -48,6 +49,7 @@ struct id_map_entry {
+>  	u32 pv_cm_id;
+>  	int slave_id;
+>  	int scheduled_delete;
+> +	bool rtu_timeout;
+>  	struct mlx4_ib_dev *dev;
+>  
+>  	struct list_head list;
+> @@ -184,6 +186,10 @@ static void id_map_ent_timeout(struct work_struct *work)
+>  	struct rb_root *sl_id_map = &sriov->sl_id_map;
+>  
+>  	spin_lock(&sriov->id_map_lock);
+> +	if (!ent->scheduled_delete) {
+> +		spin_unlock(&sriov->id_map_lock);
+> +		return;
+> +	}
+>  	if (!xa_erase(&sriov->pv_id_table, ent->pv_cm_id))
+>  		goto out;
+>  	found_ent = id_map_find_by_sl_id(&dev->ib_dev, ent->slave_id, ent->sl_cm_id);
+> @@ -228,8 +234,12 @@ static void sl_id_map_add(struct ib_device *ibdev, struct id_map_entry *new)
+>  	rb_insert_color(&new->node, sl_id_map);
+>  }
+>  
+> +static void schedule_delayed(struct ib_device *ibdev, struct id_map_entry *id,
+> +			     unsigned long timeout, bool rtu_timeout);
+> +
+>  static struct id_map_entry *
+> -id_map_alloc(struct ib_device *ibdev, int slave_id, u32 sl_cm_id)
+> +id_map_alloc(struct ib_device *ibdev, int slave_id, u32 sl_cm_id,
+> +	     u32 *pv_cm_id)
+>  {
+>  	int ret;
+>  	struct id_map_entry *ent;
+> @@ -242,6 +252,7 @@ id_map_alloc(struct ib_device *ibdev, int slave_id, u32 sl_cm_id)
+>  	ent->sl_cm_id = sl_cm_id;
+>  	ent->slave_id = slave_id;
+>  	ent->scheduled_delete = 0;
+> +	ent->rtu_timeout = false;
+>  	ent->dev = to_mdev(ibdev);
+>  	INIT_DELAYED_WORK(&ent->timeout, id_map_ent_timeout);
+>  
+> @@ -251,6 +262,8 @@ id_map_alloc(struct ib_device *ibdev, int slave_id, u32 sl_cm_id)
+>  		spin_lock(&sriov->id_map_lock);
+>  		sl_id_map_add(ibdev, ent);
+>  		list_add_tail(&ent->list, &sriov->cm_list);
+> +		*pv_cm_id = ent->pv_cm_id;
+> +		schedule_delayed(ibdev, ent, CM_RTU_TIMEOUT, true);
+>  		spin_unlock(&sriov->id_map_lock);
+>  		return ent;
+>  	}
+> @@ -261,48 +274,47 @@ id_map_alloc(struct ib_device *ibdev, int slave_id, u32 sl_cm_id)
+>  	return ERR_PTR(-ENOMEM);
+>  }
+>  
+>  static struct id_map_entry *
+>  id_map_get(struct ib_device *ibdev, int *pv_cm_id, int slave_id, int sl_cm_id)
+>  {
+>  	struct id_map_entry *ent;
+>  	struct mlx4_ib_sriov *sriov = &to_mdev(ibdev)->sriov;
+>  
+> -	spin_lock(&sriov->id_map_lock);
+> +	lockdep_assert_held(&sriov->id_map_lock);
+>  	if (*pv_cm_id == -1) {
+>  		ent = id_map_find_by_sl_id(ibdev, slave_id, sl_cm_id);
+>  		if (ent)
+>  			*pv_cm_id = (int) ent->pv_cm_id;
+>  	} else
+>  		ent = xa_load(&sriov->pv_id_table, *pv_cm_id);
+> -	spin_unlock(&sriov->id_map_lock);
+>  
+>  	return ent;
+>  }
+>  
+> -static void schedule_delayed(struct ib_device *ibdev, struct id_map_entry *id)
+> +static void schedule_delayed(struct ib_device *ibdev, struct id_map_entry *id,
+> +			     unsigned long timeout, bool rtu_timeout)
+>  {
+>  	struct mlx4_ib_sriov *sriov = &to_mdev(ibdev)->sriov;
+>  	unsigned long flags;
+>  
+> -	spin_lock(&sriov->id_map_lock);
+> +	lockdep_assert_held(&sriov->id_map_lock);
+>  	spin_lock_irqsave(&sriov->going_down_lock, flags);
+>  	/*make sure that there is no schedule inside the scheduled work.*/
+> -	if (!sriov->is_going_down && !id->scheduled_delete) {
+> +	if (!sriov->is_going_down || id->scheduled_delete) {
+>  		id->scheduled_delete = 1;
+> -		queue_delayed_work(cm_wq, &id->timeout, CM_CLEANUP_CACHE_TIMEOUT);
+> -	} else if (id->scheduled_delete) {
+> -		/* Adjust timeout if already scheduled */
+> -		mod_delayed_work(cm_wq, &id->timeout, CM_CLEANUP_CACHE_TIMEOUT);
+> +		id->rtu_timeout = rtu_timeout;
+> +		mod_delayed_work(cm_wq, &id->timeout, timeout);
+>  	}
+>  	spin_unlock_irqrestore(&sriov->going_down_lock, flags);
+> -	spin_unlock(&sriov->id_map_lock);
+>  }
+>  
+>  #define REJ_REASON(m) be16_to_cpu(((struct cm_generic_msg *)(m))->rej_reason)
+>  int mlx4_ib_multiplex_cm_handler(struct ib_device *ibdev, int port, int slave_id,
+>  		struct ib_mad *mad)
+>  {
+> +	struct mlx4_ib_sriov *sriov = &to_mdev(ibdev)->sriov;
+>  	struct id_map_entry *id;
+> +	u32 pv_cm_id_to_set = 0;
+>  	u32 sl_cm_id;
+>  	int pv_cm_id = -1;
+>  
+> @@ -312,10 +323,15 @@ int mlx4_ib_multiplex_cm_handler(struct ib_device *ibdev, int port, int slave_id
+>  	    mad->mad_hdr.attr_id == CM_SIDR_REQ_ATTR_ID ||
+>  	    (mad->mad_hdr.attr_id == CM_REJ_ATTR_ID && REJ_REASON(mad) == IB_CM_REJ_TIMEOUT)) {
+>  		sl_cm_id = get_local_comm_id(mad);
+> +		spin_lock(&sriov->id_map_lock);
+>  		id = id_map_get(ibdev, &pv_cm_id, slave_id, sl_cm_id);
+> +		if (id)
+> +			pv_cm_id_to_set = id->pv_cm_id;
+> +		spin_unlock(&sriov->id_map_lock);
+>  		if (id)
+>  			goto cont;
+> -		id = id_map_alloc(ibdev, slave_id, sl_cm_id);
+> +		id = id_map_alloc(ibdev, slave_id, sl_cm_id,
+> +				  &pv_cm_id_to_set);
+>  		if (IS_ERR(id)) {
+>  			mlx4_ib_warn(ibdev, "%s: id{slave: %d, sl_cm_id: 0x%x} Failed to id_map_alloc\n",
+>  				__func__, slave_id, sl_cm_id);
+> @@ -326,7 +342,25 @@ int mlx4_ib_multiplex_cm_handler(struct ib_device *ibdev, int port, int slave_id
+>  		return 0;
+>  	} else {
+>  		sl_cm_id = get_local_comm_id(mad);
+> +		spin_lock(&sriov->id_map_lock);
+>  		id = id_map_get(ibdev, &pv_cm_id, slave_id, sl_cm_id);
+> +		if (id) {
+> +			if (mad->mad_hdr.attr_id == CM_RTU_ATTR_ID &&
+> +			    id->rtu_timeout) {
+> +				id->rtu_timeout = false;
+> +				if (cancel_delayed_work(&id->timeout))
+> +					id->scheduled_delete = 0;
+> +				else
+> +					id = NULL;
+> +			}
+> +			if (id)
+> +				pv_cm_id_to_set = id->pv_cm_id;
+> +			if (id && mad->mad_hdr.attr_id == CM_DREQ_ATTR_ID)
+> +				schedule_delayed(ibdev, id,
+> +						 CM_CLEANUP_CACHE_TIMEOUT,
+> +						 false);
+> +		}
+> +		spin_unlock(&sriov->id_map_lock);
+>  	}
+>  
+>  	if (!id) {
+> @@ -336,10 +370,7 @@ int mlx4_ib_multiplex_cm_handler(struct ib_device *ibdev, int port, int slave_id
+>  	}
+>  
+>  cont:
+> -	set_local_comm_id(mad, id->pv_cm_id);
+> -
+> -	if (mad->mad_hdr.attr_id == CM_DREQ_ATTR_ID)
+> -		schedule_delayed(ibdev, id);
+> +	set_local_comm_id(mad, pv_cm_id_to_set);
+>  	return 0;
+>  }
+>  
+> @@ -429,7 +460,10 @@ int mlx4_ib_demux_cm_handler(struct ib_device *ibdev, int port, int *slave,
+>  	struct mlx4_ib_sriov *sriov = &to_mdev(ibdev)->sriov;
+>  	u32 rem_pv_cm_id = get_local_comm_id(mad);
+>  	u32 pv_cm_id;
+> +	u32 sl_cm_id = 0;
+>  	struct id_map_entry *id;
+> +	int pv_cm_id_int;
+> +	int slave_id = 0;
+>  	int sts;
+>  
+>  	if (mad->mad_hdr.attr_id == CM_REQ_ATTR_ID ||
+> @@ -457,7 +491,28 @@ int mlx4_ib_demux_cm_handler(struct ib_device *ibdev, int port, int *slave,
+>  	}
+>  
+>  	pv_cm_id = get_remote_comm_id(mad);
+> -	id = id_map_get(ibdev, (int *)&pv_cm_id, -1, -1);
+> +	pv_cm_id_int = pv_cm_id;
+> +	spin_lock(&sriov->id_map_lock);
+> +	id = id_map_get(ibdev, &pv_cm_id_int, -1, -1);
+> +	if (id) {
+> +		if (mad->mad_hdr.attr_id == CM_RTU_ATTR_ID &&
+> +		    id->rtu_timeout) {
+> +			id->rtu_timeout = false;
+> +			if (cancel_delayed_work(&id->timeout))
+> +				id->scheduled_delete = 0;
+> +			else
+> +				id = NULL;
+> +		}
+> +		if (id && slave)
+> +			slave_id = id->slave_id;
+> +		if (id)
+> +			sl_cm_id = id->sl_cm_id;
+> +		if (id && (mad->mad_hdr.attr_id == CM_DREQ_ATTR_ID ||
+> +			   mad->mad_hdr.attr_id == CM_REJ_ATTR_ID))
+> +			schedule_delayed(ibdev, id,
+> +					 CM_CLEANUP_CACHE_TIMEOUT, false);
+> +	}
+> +	spin_unlock(&sriov->id_map_lock);
+>  
+>  	if (!id) {
+>  		if (mad->mad_hdr.attr_id == CM_REJ_ATTR_ID &&
+> @@ -472,12 +527,8 @@ int mlx4_ib_demux_cm_handler(struct ib_device *ibdev, int port, int *slave,
+>  	}
+>  
+>  	if (slave)
+> -		*slave = id->slave_id;
+> -	set_remote_comm_id(mad, id->sl_cm_id);
+> -
+> -	if (mad->mad_hdr.attr_id == CM_DREQ_ATTR_ID ||
+> -	    mad->mad_hdr.attr_id == CM_REJ_ATTR_ID)
+> -		schedule_delayed(ibdev, id);
+> +		*slave = slave_id;
+> +	set_remote_comm_id(mad, sl_cm_id);
+>  
+>  	return 0;
+>  }
 
