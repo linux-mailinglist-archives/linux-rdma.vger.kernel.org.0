@@ -1,356 +1,212 @@
-Return-Path: <linux-rdma+bounces-23260-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23261-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 46ZQBZJDV2o8IQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-23260-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 10:23:46 +0200
+	id N+e1OOBDV2pQIQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-23261-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 10:25:04 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 521B075BD54
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 10:23:45 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F8C375BD75
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 10:25:04 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=USoR8eU3;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23260-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23260-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.dev;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=microsoft.com header.s=selector2 header.b=FEAlnCjJ;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23261-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23261-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=microsoft.com;
+	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7D03B301BA6A
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 08:23:20 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B59AF3017F9E
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 08:23:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09C8D3CCFAF;
-	Wed, 15 Jul 2026 08:23:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A21923C3C0E;
+	Wed, 15 Jul 2026 08:23:44 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from OSPPR02CU001.outbound.protection.outlook.com (mail-norwayeastazon11023134.outbound.protection.outlook.com [40.107.159.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD2003644A4
-	for <linux-rdma@vger.kernel.org>; Wed, 15 Jul 2026 08:23:16 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784103798; cv=none; b=XZ2AvFmml+sTj+MGtpuQ/+UlaVSkqHjMRi+VpjpEjTdVMqBLQS15amv9ByULVALT+fnpFkgJUYUWf4Q+PnrpN/e1F3fFd4Stp/aWOMmNsJ4BmUX/fWkIAjGhF+o3Kwh0CUVvLgQQgd5u6T+NBxKjiuMnig8rmP34gFQjtZM1kQY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784103798; c=relaxed/simple;
-	bh=+yBiwYsDCaFrykmcJte+gpnU5qUq6P7KjJr4GQPLQIo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=j5YHX+b/9A8s0zZOC61Rk9tzEm8IYT+U7aNEYGq3Iktuw+OJLzoVJVOSjELOODGQYXyJYS85RIRNw4odCBLmc0zzIMi9oPI9ZtEPhbgu079GL2sorjB84scdRYyf1DSfPqgi1XTZsg6+/vprooOsLk3QsP/kqulnAFAxJ1Aypck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=USoR8eU3; arc=none smtp.client-ip=91.218.175.172
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1784103794;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=yWiQvOiX+Bg27MtnHGvpBDMG36SjZtJuIrt7mr7Z8kI=;
-	b=USoR8eU3YnBFK2C3Zw8/+jGfZI+pyTqZ0OqWKFsjWrXhT08MaDgYmkss0psvEWMbnAs1PS
-	FDX6r7w84TXGae+N2+kUeu1R7LlLECeE/xsj7KlnxQAvdRU82lDsrehKJH/hvLSpLsG0Vy
-	fXh5Y74087L/xLaLxMpXmwk2jRkfeZc=
-From: Chenguang Zhao <chenguang.zhao@linux.dev>
-To: jgg@ziepe.ca,
-	leon@kernel.org,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org,
-	chenguang.zhao@linux.dev,
-	tariqt@nvidia.com,
-	mbloch@nvidia.com,
-	dtatulea@nvidia.com,
-	shayd@nvidia.com,
-	moshe@nvidia.com,
-	Chenguang Zhao <zhaochenguang@kylinos.cn>
-Subject: [PATCH rdma-next v3] RDMA/mlx5: quiesce CQ polling before device shutdown on reboot
-Date: Wed, 15 Jul 2026 16:23:07 +0800
-Message-Id: <20260715082307.1593915-1-chenguang.zhao@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19D2F2FFF9D;
+	Wed, 15 Jul 2026 08:23:42 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1784103824; cv=fail; b=i/pxDsElZsviZmSPnnsGmMocADzDaPChGEzeJr/mF+raYFYmKim5oGp0G5DWTUsoyfDNodlK0k9zx5qSGLOsO9ov+bDMBT1XzjbfKyEaaAS5lVsdWJakZOoKMpqhP46lOsCBjpTaHTw2WPG2IFhQuYrnNvKKGUQIxHkIjUFR7X4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1784103824; c=relaxed/simple;
+	bh=bDwczlr8qfN1J+oM+npuQN0jMZ7Iqvf71ACHnNfJVqA=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=JORZzW/H+eAFzK684dOer/sAIA9Bme8u9ulU22FMIwfoOV2dAVR4uuUPyI9eBThbicW5aZvBiNttnkh5cLyFZ0CM4MoJRsm793d2eGG1zMmUMB2tUperhABqBDFkbfyCq0t4L5trqJLxA1WGjItVLF9mluBv+7Tux0fzlonuGQs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=FEAlnCjJ; arc=fail smtp.client-ip=40.107.159.134
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=tL9nPr2z98Dm34sAES/L0XYICviKFSz5RAnwvqpDQi2aBjEF7sFEBhMuVPibioQ8Hwxe+KgqCWiDyQR805MQ0Ph+X+RseQBWe3LMxmdPr9D9+CVo55srh74SpmoLpslFsDxwK73uew70d7FileYtQx7LJ7wTKmhgG4YOIys4HMIWOR7NwMwsEPKqkZ87H6mnuhpt2ovsY6iN6G1xisjLGoiJ7Gnd8jge3abqwGLep1OnzbsLgWCmvhw9utLJmwUcKbKNvxfbyoZwr+NJQpyOVClKRMzpnOMG69/SrYcjpKieoKvlPbY2RZqQEDzF7ovXDO6d4VwYqn3NwUleupINEw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bDwczlr8qfN1J+oM+npuQN0jMZ7Iqvf71ACHnNfJVqA=;
+ b=L1BdDH4WpwPSRrY5M1syP2LF6ECX5Y2wn89lJ7aKxnO+Gz0P4OM92WDG5HOKlZ7GjT7HVGCWGhq3rW0P0D/dTYb9z3HcaV+XuzQ45dZeWPd8UxxFwiRtAGwrSmeDDsphl7LLh6FsC1vc9OIYjXBWJ6Y+T5RdX2EiVkoslCb6jzZFE9q6/Sb7DiEFbhB9U4MyhalGE2KVBgukt144OSKdcTLJv4DuS5r3ng5eP1QA4T1D20+yB3LUa/PnVSOz9stL1gi6bQRX/T7QSgJXWy8ps7eMlg9MZsupLbG6YJtvrO6X3+iPywCH5EcfPvS+l1XL8D4zCyxSdpFck4i9x4LKGQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bDwczlr8qfN1J+oM+npuQN0jMZ7Iqvf71ACHnNfJVqA=;
+ b=FEAlnCjJYbmHVEZxjdRlWkN4e/b8FMYTA7MXHRY10tJ5FZqWMbxtZBodOh7qv5UtJtFcFaHqPnWMHd/MhjXxp4t6FdV7xsc+rIvZXkF8s2A39pm7v/Qg+L4uhx5mBv9yDpqqHhGHlupDe/zhz6lDm0K4pFsCO/qk3p+ul5FwaDY=
+Received: from DU8PR83MB0975.EURPRD83.prod.outlook.com (2603:10a6:10:5cb::5)
+ by PA1PR83MB0824.EURPRD83.prod.outlook.com (2603:10a6:102:484::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.245.3; Wed, 15 Jul
+ 2026 08:23:37 +0000
+Received: from DU8PR83MB0975.EURPRD83.prod.outlook.com
+ ([fe80::b11f:dc15:ff12:53e]) by DU8PR83MB0975.EURPRD83.prod.outlook.com
+ ([fe80::b11f:dc15:ff12:53e%6]) with mapi id 15.21.0245.003; Wed, 15 Jul 2026
+ 08:23:37 +0000
+From: Konstantin Taranov <kotaranov@microsoft.com>
+To: Leon Romanovsky <leon@kernel.org>, Konstantin Taranov
+	<kotaranov@linux.microsoft.com>
+CC: Long Li <longli@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v3] RDMA/mana_ib: Adopt robust udata
+Thread-Topic: [PATCH rdma-next v3] RDMA/mana_ib: Adopt robust udata
+Thread-Index: AQHdFDM8BhQi0NgFuU+a20E8rnfGzw==
+Date: Wed, 15 Jul 2026 08:23:37 +0000
+Message-ID:
+ <DU8PR83MB0975BDB75B8FDFCE95E8C9ECB4F82@DU8PR83MB0975.EURPRD83.prod.outlook.com>
+References: <20260714123113.3792099-1-kotaranov@linux.microsoft.com>
+ <20260715080701.GC21348@unreal>
+In-Reply-To: <20260715080701.GC21348@unreal>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=25f0eaa1-b174-469b-9649-536b6e29cf3b;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2026-07-15T08:17:06Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
+ 3, 0, 1;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU8PR83MB0975:EE_|PA1PR83MB0824:EE_
+x-ms-office365-filtering-correlation-id: e62b9cd1-d484-4551-3fe7-08dee24a5e98
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|23010399003|376014|1800799024|366016|18002099003|22082099003|4143699003|11063799006|38070700021|56012099006;
+x-microsoft-antispam-message-info:
+ w8ZoAaqoHpDlGXarA8+4v63SJEUWyto9EBoWvZMdooM97imfFNvjXXFMe2G4VN4jvxbBKmss9g/enS1Lh1N/Fh8WaYQJ+2vHOlsszCMeRAhlcUNB2ROafWi0x2Q+MjeBsLlN2L6OKY5AOqhK+EyHtkF9KUCEVavYEl1ZNuiGp3q4VoAokH0IEQXhtc/F1YdJsuDLFBZxNrNHYoXcEz3psJXgxUJU/0SdDqIYHF7Pvn4tUarryMxZQWf9obsaFyd1EyLYv6abplL1DBRw6C6Ovgzl3n3+JOO1G9y3NM56VRBk8ZpSNT5bBUGa0toie/p7TNl0r4z6pnqNI3qrjuN5a9SprkhABOed91l+CsuGCso8v79AzUBBZ5ELVK6a1Ny3vdEG7L+nIHB3SkmfnFsh/TrwujhtHxgN28V7hKjGtH9+u9v75/6qOXL/7toZnJhDnmzzaS01wYuIl3tb1qYwkY440ozIuxKJ2fNDhq6sF12aptYS4ZSrSoW49GTYUN0HVgjNPO9s+jxVLcbNnXik73tH0A71ryIAtZebQlAWYSyRtiAl+HCq7+Z9AVCBR1Z/M2KRlO6sjVam2Iqx6oMTwbJ/WLX3nx48RXFFVvBCbzW/2vX9ex1xIJNt8pP7d6DNvvuT15tLJvtH6kn0ZvcUTnwuk4Iyh0K5lPc/jWh6VKXEi1MUirPqccUpyTbpcKiYKwNTGUWwBX0ug5L1BL+o/yOhudKubxzGr1J/4t/+6vY=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU8PR83MB0975.EURPRD83.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(376014)(1800799024)(366016)(18002099003)(22082099003)(4143699003)(11063799006)(38070700021)(56012099006);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?S2owWW1HYnRsMjlqUTZuTUMyOXJmcE0vVFJuMnJKcUNKWElHL0tWdWEyZDU4?=
+ =?utf-8?B?T0RWU3JoQ3IyVWZreURuQnlOQkhPdHA5SktwdS84RCtRMjhPeVBSaVY3Y1pU?=
+ =?utf-8?B?enBQWHdSbHMzcTllMFdoVW96ZVNpd2VyaWVuZmxYeVowVlBGRTl1OHJWZnUw?=
+ =?utf-8?B?MWtaK2dkY21hZ1kvV3F0NzVPRTR5UytBVnRDb2ViZlhtTUo3YXVXclRGRWhy?=
+ =?utf-8?B?V3ZodkhKWmVERlJqZFBMM2hVTXNsVmVzZUFsUDhYSUJnanpNeFFQMWRQR0pu?=
+ =?utf-8?B?Rjlta1NNZUdnVDVxa1AwOXkvblVscEJkS2pNYXc3MEJ0eGF1SURJdW1wVVVG?=
+ =?utf-8?B?M2VXUGtidEtNQ1BBNTNPSFlVa2dzdC81Ym1JUXFtZ1JVS01CdTRnVy9PaDFr?=
+ =?utf-8?B?dU56QXBERVdJM08xd0swaVdSRHNrSzEwUzRCRkZvLy9lckwwbHZtcDNKRmN5?=
+ =?utf-8?B?Y0VjWkx2TzFxOWwwZUxkMWJzb1o2L1Y1Q25DK25TL2c2VDc3VlBKRmp5cFQ3?=
+ =?utf-8?B?R1pkQ1ZDRjJCVXpScmV2ODFiY2lscGFUa0JPeEpuUXVPTlkvRjBXVTlSbDFv?=
+ =?utf-8?B?MHRoSTRuSHd4Wk53c3RnVjJRMHJ3Ty9JK0dZL2RTNW1Tb0VyNlBSK0dzemxX?=
+ =?utf-8?B?TGRmdStyMVpsMExJRmE0SFRrb2pZbkRJVk9mS0xBbWoyVlBxRGFuY0RBZ2Za?=
+ =?utf-8?B?OUZCL0t1VytCT2hIWWQ2NWFYRmthYWF3OUNQT1FFQ1hkVHFnMldqejlmWHB2?=
+ =?utf-8?B?MnFQYkk3TjkwMkRWR2pOZitnMmxxUlhRNlBqM3VKVldnUS9IVkNrYk9WYkNX?=
+ =?utf-8?B?ZmtNaExFbHhUMXV1OGRIQnRvallHOTczQWpIZnJnemx6UHpVRTY3djM3Yjhk?=
+ =?utf-8?B?UEwxWUtQNTk2eEc3NGRvY1ZraVdhNDRLeGNJeTN3RkRBbnRFdlpXNnE4TmhV?=
+ =?utf-8?B?RTczZjhrM04wakNBOTBEa1Nhc2ZYZlVGWVBLSUptQXY1VS8yOXRIVnQ4RlJZ?=
+ =?utf-8?B?NTVmTzFKMUhmTTRqOEVTQW1JSHlzb3FBZ2E0ZzU0NWZjemJrK0VzQ1NFY0Uv?=
+ =?utf-8?B?NnNNNlpnZkdBbHhkTFhOZWo3R01iYzZvN043OTBSRFkwdHpVMHJvQzhxNGFL?=
+ =?utf-8?B?Z1BmdllCU0gzUnBBQVM3aHNQaXVFYm5CSGVnNjAwUktOeVJVTi9UMVkyZlkv?=
+ =?utf-8?B?NTdwa0QxVm5XVDdEbkhTMU90NndyR29aUUdtUDc2SG5sREp4eDBlV0NyUHBO?=
+ =?utf-8?B?ZWFxTTR1VnZpUmZyWkErRjNSR3o2NmFrRXBYWXdCekpBZ3doNzBNSEF3aklI?=
+ =?utf-8?B?cHJTaEpUVFphQytjOXdSNUs1MzdVeUZFekZjaDFDK0JLZXJZMXBoVmQ5TjJL?=
+ =?utf-8?B?bUJoUGFGNEgrOG1kV2hteWhocEk5enE5SWY1ek9hRzNhQTF6RHFacXdYV3Az?=
+ =?utf-8?B?eHRYVTRRcHNkdFYzY0cxUis5SkI0MURGVFlJdS9ZTEl5NWY1MVcvVlRPRHdx?=
+ =?utf-8?B?a2tmYTZwa01JYUdpRllJcEdkdkRub3pja1N2TklOK1lyeHdSbWx3Smt2U0Ew?=
+ =?utf-8?B?dDJOV2EwM2Z0cjRTdlhSUGduZzBkekl1QUJEL2hiaGNUMU1KaDZiRW1CaEZp?=
+ =?utf-8?B?SFNJOHg5R291Y2l4TmVDcTBQOCszY0NycFVhbUllek9Ja1VhK1pGN2pNeEo3?=
+ =?utf-8?B?M0RyRm5EcEErNUZ6QlRoUWRzRzZLNURGbjl3bDRXbHY2cFY4Y2phSjdQM0Zm?=
+ =?utf-8?B?dFM4cE9Udk5SRTcyOHkrRmZFdXVKZHlQZlNtUFZNRHg1UUtVakNpVDB2eFdP?=
+ =?utf-8?B?SjNFdWVxOTFxeHRXZjdGTlZWV2R3NzdOWGJ3YWpvciswZ25IWkp0cVVLVHkr?=
+ =?utf-8?B?cDlOUENod0FaUjZkd2IrRDZjdU12NXhKSlc2WjEvYnVZL0R5MHgyNHl4RHJG?=
+ =?utf-8?B?aE1IS2NKdkxoZjc0MlpuS054U0ZQaUtDZmFvQnRXMnNmanlRZ2pKNFVwSGN5?=
+ =?utf-8?B?WDdIRE12MUlwNTdEUy9mRUozZXJ0dmljQ05NMXpRMkM5UiszS3ZPbkpvd0Jt?=
+ =?utf-8?B?STZWSmFUcnJaNEprUk84WElaUGxGTXk1alFLT1J4TnNrNnVpUFNMa1dHNkJX?=
+ =?utf-8?B?RGJFY2tENVAyNUJMU1pVV0hQaE9JWHpLejRqcHJ5bmZIY2hTVXk0Vmx3NXlv?=
+ =?utf-8?B?OE83cmNJbldXeHJhU0JDNEdHSzJRUWY3TlN3SXJ4T1BwczFGUGZSQ3RoSlo0?=
+ =?utf-8?B?Z3BQZ3E5MGFvejc3ZG1OVDhxRjhnPT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU8PR83MB0975.EURPRD83.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e62b9cd1-d484-4551-3fe7-08dee24a5e98
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jul 2026 08:23:37.5165
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Q8gtKVo2rdpgFfZLkmdEDW2DqrgyUTKy0+zi5Ctp4mc2plB6AYX4eXr2bzZoGluZqrkfvzvp7HtKVxGaOK20GA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA1PR83MB0824
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+X-Spamd-Result: default: False [-2.06 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[microsoft.com:d:+,kernel.org:s:+];
+	MIME_BASE64_TEXT_BOGUS(1.00)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[microsoft.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[microsoft.com:s=selector2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	MIME_BASE64_TEXT(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TAGGED_FROM(0.00)[bounces-23260-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	FORWARDED(0.00)[lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER(0.00)[chenguang.zhao@linux.dev,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:leon@kernel.org,m:kotaranov@linux.microsoft.com,m:longli@microsoft.com,m:jgg@ziepe.ca,m:linux-rdma@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:jgg@ziepe.ca,m:leon@kernel.org,m:andrew+netdev@lunn.ch,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:linux-rdma@vger.kernel.org,m:netdev@vger.kernel.org,m:chenguang.zhao@linux.dev,m:tariqt@nvidia.com,m:mbloch@nvidia.com,m:dtatulea@nvidia.com,m:shayd@nvidia.com,m:moshe@nvidia.com,m:zhaochenguang@kylinos.cn,m:andrew@lunn.ch,s:lists@lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[kotaranov@microsoft.com,linux-rdma@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[chenguang.zhao@linux.dev,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-23261-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
+	DKIM_TRACE(0.00)[microsoft.com:+];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kotaranov@microsoft.com,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_FIVE(0.00)[6];
 	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:from_mime,linux.dev:dkim,linux.dev:mid,vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,kylinos.cn:email]
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[DU8PR83MB0975.EURPRD83.prod.outlook.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 521B075BD54
+X-Rspamd-Queue-Id: 4F8C375BD75
 
-From: Chenguang Zhao <zhaochenguang@kylinos.cn>
-
-On reboot -f with NFS over RDMA, mlx5 shutdown can tear the device
-down while ib-comp-wq still polls live CQs, leading to UAF in
-wr_cqe->done().
-
-Mark the device shutting down before teardown, flush completion
-workqueues so in-flight pollers observe the flag, skip SYS_ERROR
-completion delivery, and make poll/arm CQ a no-op under the CQ lock
-while shutting down.
-
-Signed-off-by: Chenguang Zhao <zhaochenguang@kylinos.cn>
----
-changelog:
- - Fix the race on MLX5_INTERFACE_STATE_SHUTTING_DOWN: set the
-   flag, then flush ib-comp / mlx5_ib event workqueues via an
-   mlx5_ib quiesce hook before fast_unload/teardown.
- - Check shutting-down under cq->lock in mlx5_ib_poll_cq/arm_cq.
- - Export ib_comp_wq and ib_comp_unbound_wq so modular mlx5_ib
-   can flush them.
-
-v2:
- https://lore.kernel.org/all/20260714075558.1420384-1-chenguang.zhao@linux.dev/
-
-v1:
- https://lore.kernel.org/all/20260702073422.279820-1-chenguang.zhao@linux.dev/
-
- drivers/infiniband/core/device.c              |  2 ++
- drivers/infiniband/hw/mlx5/cq.c               | 11 ++++++++++
- drivers/infiniband/hw/mlx5/main.c             | 20 +++++++++++++++++++
- .../net/ethernet/mellanox/mlx5/core/health.c  |  3 +++
- .../net/ethernet/mellanox/mlx5/core/main.c    | 10 ++++++++++
- .../mellanox/mlx5/core/sf/dev/driver.c        |  3 +++
- include/linux/mlx5/driver.h                   | 11 ++++++++++
- 7 files changed, 60 insertions(+)
-
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index b8193e077a74..6c3377bd53df 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -56,7 +56,9 @@ MODULE_DESCRIPTION("core kernel InfiniBand API");
- MODULE_LICENSE("Dual BSD/GPL");
- 
- struct workqueue_struct *ib_comp_wq;
-+EXPORT_SYMBOL_GPL(ib_comp_wq);
- struct workqueue_struct *ib_comp_unbound_wq;
-+EXPORT_SYMBOL_GPL(ib_comp_unbound_wq);
- struct workqueue_struct *ib_wq;
- EXPORT_SYMBOL_GPL(ib_wq);
- static struct workqueue_struct *ib_unreg_wq;
-diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
-index 49b4bf148a4a..5d951c186cb3 100644
---- a/drivers/infiniband/hw/mlx5/cq.c
-+++ b/drivers/infiniband/hw/mlx5/cq.c
-@@ -619,6 +619,10 @@ int mlx5_ib_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc)
- 	int npolled;
- 
- 	spin_lock_irqsave(&cq->lock, flags);
-+	if (mlx5_core_is_shutting_down(mdev)) {
-+		spin_unlock_irqrestore(&cq->lock, flags);
-+		return 0;
-+	}
- 	if (mdev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR) {
- 		/* make sure no soft wqe's are waiting */
- 		if (unlikely(!list_empty(&cq->wc_list)))
-@@ -654,6 +658,10 @@ int mlx5_ib_arm_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags)
- 	int ret = 0;
- 
- 	spin_lock_irqsave(&cq->lock, irq_flags);
-+	if (mlx5_core_is_shutting_down(mdev)) {
-+		spin_unlock_irqrestore(&cq->lock, irq_flags);
-+		return 0;
-+	}
- 	if (cq->notify_flags != IB_CQ_NEXT_COMP)
- 		cq->notify_flags = flags & IB_CQ_SOLICITED_MASK;
- 
-@@ -661,6 +669,9 @@ int mlx5_ib_arm_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags)
- 		ret = 1;
- 	spin_unlock_irqrestore(&cq->lock, irq_flags);
- 
-+	if (mlx5_core_is_shutting_down(mdev))
-+		return ret;
-+
- 	mlx5_cq_arm(&cq->mcq,
- 		    (flags & IB_CQ_SOLICITED_MASK) == IB_CQ_SOLICITED ?
- 		    MLX5_CQ_DB_REQ_NOT_SOL : MLX5_CQ_DB_REQ_NOT,
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 02809114fc79..dfc805892684 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -84,6 +84,13 @@ static LIST_HEAD(mlx5_ib_dev_list);
-  */
- static DEFINE_MUTEX(mlx5_ib_multiport_mutex);
- 
-+static void mlx5_ib_shutdown_quiesce(void)
-+{
-+	flush_workqueue(ib_comp_wq);
-+	flush_workqueue(ib_comp_unbound_wq);
-+	flush_workqueue(mlx5_ib_event_wq);
-+}
-+
- struct mlx5_ib_dev *mlx5_ib_get_ibdev_from_mpi(struct mlx5_ib_multiport_info *mpi)
- {
- 	struct mlx5_ib_dev *dev;
-@@ -2976,6 +2983,9 @@ static void mlx5_ib_handle_internal_error(struct mlx5_ib_dev *ibdev)
- 	unsigned long flags_cq;
- 	unsigned long flags;
- 
-+	if (mlx5_core_is_shutting_down(ibdev->mdev))
-+		return;
-+
- 	INIT_LIST_HEAD(&cq_armed_list);
- 
- 	/* Go over qp list reside on that ibdev, sync with create/destroy qp.*/
-@@ -3200,6 +3210,9 @@ static void mlx5_ib_handle_sys_error_event(struct work_struct *_work)
- 	struct mlx5_ib_dev *ibdev = work->dev;
- 	struct ib_event ibev;
- 
-+	if (mlx5_core_is_shutting_down(ibdev->mdev))
-+		goto out;
-+
- 	ibev.event = IB_EVENT_DEVICE_FATAL;
- 	mlx5_ib_handle_internal_error(ibdev);
- 	ibev.element.port_num = (u8)(unsigned long)work->param;
-@@ -3222,10 +3235,15 @@ static int mlx5_ib_sys_error_event(struct notifier_block *nb,
- 				   unsigned long event, void *param)
- {
- 	struct mlx5_ib_event_work *work;
-+	struct mlx5_ib_dev *ibdev;
- 
- 	if (event != MLX5_DEV_EVENT_SYS_ERROR)
- 		return NOTIFY_DONE;
- 
-+	ibdev = container_of(nb, struct mlx5_ib_dev, sys_error_events);
-+	if (mlx5_core_is_shutting_down(ibdev->mdev))
-+		return NOTIFY_OK;
-+
- 	work = kmalloc_obj(*work, GFP_ATOMIC);
- 	if (!work)
- 		return NOTIFY_DONE;
-@@ -5529,6 +5547,7 @@ static int __init mlx5_ib_init(void)
- 	if (ret)
- 		goto drv_err;
- 
-+	mlx5_rdma_shutdown_quiesce = mlx5_ib_shutdown_quiesce;
- 	return 0;
- 
- drv_err:
-@@ -5547,6 +5566,7 @@ static int __init mlx5_ib_init(void)
- 
- static void __exit mlx5_ib_cleanup(void)
- {
-+	mlx5_rdma_shutdown_quiesce = NULL;
- 	mlx5_data_direct_driver_unregister();
- 	auxiliary_driver_unregister(&mlx5r_driver);
- 	auxiliary_driver_unregister(&mlx5r_mp_driver);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-index aeeb136f5ebc..d9cc42c4c310 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-@@ -202,6 +202,9 @@ static void enter_error_state(struct mlx5_core_dev *dev, bool force)
- 		mlx5_cmd_flush(dev);
- 	}
- 
-+	if (mlx5_core_is_shutting_down(dev))
-+		return;
-+
- 	mlx5_notifier_call_chain(dev->priv.events, MLX5_DEV_EVENT_SYS_ERROR, (void *)1);
- }
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-index 643b4aac2033..51de0b4570aa 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -2186,12 +2186,22 @@ static int mlx5_try_fast_unload(struct mlx5_core_dev *dev)
- 	return 0;
- }
- 
-+void (*mlx5_rdma_shutdown_quiesce)(void);
-+EXPORT_SYMBOL_GPL(mlx5_rdma_shutdown_quiesce);
-+
- static void shutdown(struct pci_dev *pdev)
- {
- 	struct mlx5_core_dev *dev  = pci_get_drvdata(pdev);
- 	int err;
- 
- 	mlx5_core_info(dev, "Shutdown was called\n");
-+	set_bit(MLX5_INTERFACE_STATE_SHUTTING_DOWN, &dev->intf_state);
-+	/*
-+	 * Ensure in-flight CQ pollers observe SHUTTING_DOWN before
-+	 * fast_unload tears the device down.
-+	 */
-+	if (mlx5_rdma_shutdown_quiesce)
-+		mlx5_rdma_shutdown_quiesce();
- 	set_bit(MLX5_BREAK_FW_WAIT, &dev->intf_state);
- 	mlx5_drain_fw_reset(dev);
- 	mlx5_drain_health_wq(dev);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/sf/dev/driver.c b/drivers/net/ethernet/mellanox/mlx5/core/sf/dev/driver.c
-index 4391ef0bab5d..d9735e492971 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/sf/dev/driver.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/sf/dev/driver.c
-@@ -111,6 +111,9 @@ static void mlx5_sf_dev_shutdown(struct auxiliary_device *adev)
- 	struct mlx5_sf_dev *sf_dev = container_of(adev, struct mlx5_sf_dev, adev);
- 	struct mlx5_core_dev *mdev = sf_dev->mdev;
- 
-+	set_bit(MLX5_INTERFACE_STATE_SHUTTING_DOWN, &mdev->intf_state);
-+	if (mlx5_rdma_shutdown_quiesce)
-+		mlx5_rdma_shutdown_quiesce();
- 	set_bit(MLX5_BREAK_FW_WAIT, &mdev->intf_state);
- 	mlx5_drain_health_wq(mdev);
- 	mlx5_unload_one(mdev, false);
-diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
-index b1871c0821d0..d81d13169828 100644
---- a/include/linux/mlx5/driver.h
-+++ b/include/linux/mlx5/driver.h
-@@ -653,8 +653,14 @@ enum mlx5_device_state {
- enum mlx5_interface_state {
- 	MLX5_INTERFACE_STATE_UP = BIT(0),
- 	MLX5_BREAK_FW_WAIT = BIT(1),
-+	MLX5_INTERFACE_STATE_SHUTTING_DOWN = BIT(2),
- };
- 
-+/* Optional hook installed by mlx5_ib to flush CQ poll work after the
-+ * SHUTTING_DOWN flag is set and before teardown continues.
-+ */
-+extern void (*mlx5_rdma_shutdown_quiesce)(void);
-+
- enum mlx5_pci_status {
- 	MLX5_PCI_STATUS_DISABLED,
- 	MLX5_PCI_STATUS_ENABLED,
-@@ -1220,6 +1226,11 @@ static inline bool mlx5_core_is_pf(const struct mlx5_core_dev *dev)
- 	return dev->coredev_type == MLX5_COREDEV_PF;
- }
- 
-+static inline bool mlx5_core_is_shutting_down(struct mlx5_core_dev *dev)
-+{
-+	return test_bit(MLX5_INTERFACE_STATE_SHUTTING_DOWN, &dev->intf_state);
-+}
-+
- static inline bool mlx5_core_is_vf(const struct mlx5_core_dev *dev)
- {
- 	return dev->coredev_type == MLX5_COREDEV_VF;
--- 
-2.25.1
-
+PiANCj4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS91YXBpL3JkbWEvbWFuYS1hYmkuaA0KPiA+IGIv
+aW5jbHVkZS91YXBpL3JkbWEvbWFuYS1hYmkuaCBpbmRleCBhNzViZjMyYjguLjgzMzZiZjUxYiAx
+MDA2NDQNCj4gPiAtLS0gYS9pbmNsdWRlL3VhcGkvcmRtYS9tYW5hLWFiaS5oDQo+ID4gKysrIGIv
+aW5jbHVkZS91YXBpL3JkbWEvbWFuYS1hYmkuaA0KPiA+IEBAIC0yNSw3ICsyNSw3IEBAIGVudW0g
+bWFuYV9pYl9jcmVhdGVfY3FfZmxhZ3Mgew0KPiA+DQo+ID4gIHN0cnVjdCBtYW5hX2liX2NyZWF0
+ZV9jcSB7DQo+ID4gIAlfX2FsaWduZWRfdTY0IGJ1Zl9hZGRyOw0KPiA+IC0JX191MTYJZmxhZ3M7
+DQo+ID4gKwlfX3UxNgljb21wX21hc2s7DQo+IA0KPiBUaGlzIGNoYW5nZSBpcyB1bnJlbGF0ZWQg
+dG8gdGhlIHBhdGNoLg0KDQpJdCBpcyByZWxhdGVkLiBJdCB3YXMgZG9uZSBmb3IgdGhpcyBjaGFu
+Z2U6DQotCQllcnIgPSBpYl9jb3B5X3ZhbGlkYXRlX3VkYXRhX2luKHVkYXRhLCB1Y21kLCBidWZf
+YWRkcik7DQorCQllcnIgPSBpYl9jb3B5X3ZhbGlkYXRlX3VkYXRhX2luX2NtKHVkYXRhLCB1Y21k
+LCBidWZfYWRkciwNCisJCQkJCQkgICBNQU5BX0lCX0NSRUFURV9STklDX0NRKTsNCg0KVGhlIGhl
+bHBlciBpYl9jb3B5X3ZhbGlkYXRlX3VkYXRhX2luX2NtKCkgZXhwZWN0cyB0aGF0IGZpZWxkIHRv
+IGJlIG5hbWVkIGNvbXBfbWFzay4NClRoaXMgaGVscGVyIHdhcyB1c2VkIHRvIGVuc3VyZSB0aGF0
+IHRoZSBrZXJuZWwgcHJvY2Vzc2VzIG9ubHkga25vd24gZmxhZ3MuDQpTbyBpZiB3ZSBhZGQgYW5v
+dGhlciBmbGFnLCB0aGUgb2xkIGtlcm5lbCBzaG91bGQgZmFpbCBpdC4gaWJfY29weV92YWxpZGF0
+ZV91ZGF0YV9pbigpIHdhcyBub3QgY2hlY2tpbmcgdGhlDQpzdXBwb3J0ZWQgZmxhZ3MuDQpNeSB1
+bmRlcnN0YW5kaW5nIHRoYXQgZW5mb3JjaW5nIHN0cmljdCBjaGVja3MgaXMgYSByZXF1aXJlbWVu
+dCBmb3IgdGhlIHJvYnVzdCB1ZGF0YS4NCkkgaGF2ZSBhbHNvIHVwZGF0ZWQgdGhlIHJkbWEtY29y
+ZSBQUiB0aGF0IHJlbmFtZXMgZmxhZ3MgdG8gY29tcF9tYXNrLg0KDQpLb25zdGFudGluDQo+IA0K
+PiBUaGFua3MNCj4gDQo+ID4gIAlfX3UxNglyZXNlcnZlZDA7DQo+ID4gIAlfX3UzMglyZXNlcnZl
+ZDE7DQo+ID4gIH07DQo+ID4gLS0NCj4gPiAyLjQzLjANCj4gPg0K
 
