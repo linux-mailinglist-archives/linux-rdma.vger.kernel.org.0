@@ -1,470 +1,286 @@
-Return-Path: <linux-rdma+bounces-23248-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-23250-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id irW5Eyr/VmptEAEAu9opvQ
-	(envelope-from <linux-rdma+bounces-23248-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 05:31:54 +0200
+	id lQC2HOwNV2qjEgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-23250-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 06:34:52 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDB9975A4AA
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 05:31:53 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0880B75A7A4
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 06:34:52 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23248-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23248-lists+linux-rdma=lfdr.de@vger.kernel.org";
-	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=microsoft.com (policy=reject);
+	dkim=pass header.d=kernel.org header.s=k20201202 header.b=sUyrUB8e;
+	spf=pass (mail.lfdr.de: domain of "linux-rdma+bounces-23250-lists+linux-rdma=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-rdma+bounces-23250-lists+linux-rdma=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 12CBD3065B96
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 03:30:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 79C6130425AD
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2026 04:34:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCF4C3B1031;
-	Wed, 15 Jul 2026 03:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DC841FECCD;
+	Wed, 15 Jul 2026 04:34:43 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 159BA3AE1B4;
-	Wed, 15 Jul 2026 03:30:12 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C13231A21;
+	Wed, 15 Jul 2026 04:34:42 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784086227; cv=none; b=jpUZtse6jRofUNBpR/HEbRuM7pvqhj4L0giEX2U/4X7H5kL02IiSuOqAUcVAiU0kAXkCh5FtJrOHnL1VpCruYclADX1yzqchpjzUS3RLlr2faE6vIt1We3bIgziAsNa6BsqDZcuZWbtXROx9ICG1ZpBocnvpQIy+gb05JQnP+ls=
+	t=1784090083; cv=none; b=KBtfjALDZSMsRlGCSJ78H0xulMQggvs/E8wShDcB3hfExMXcDJajU4kq87nx2VnDtzIz+qwPbujbgbh6tHHRdkV7amUXq74rHSD24QFC+5preUfucVouo38fBp5THnyFUBtVR2lU43pc4T+hchS2k6WTw18dY1iOnU3EVpr+kkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784086227; c=relaxed/simple;
-	bh=fi6f805HbMZ9082j95m+67d/nZ2j9AQpOZt/QzumQ8o=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tSMxj8exglu3saQUI0n5OvdzOWsWI+5gKh2kNqY5PcX2TkfEgTiQsrt6EL61xc3veQgy5O8VJ3zmXgoaWoHGBGGTV31zX/qOfjAfBctJmqAl/tGD68d1RKWAre+cMtv4wOaurJbBAP6Jj7Z4kSvhDLB8fy0vJjSqjtg9N3eVMRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; arc=none smtp.client-ip=13.77.154.182
-Received: by linux.microsoft.com (Postfix, from userid 1202)
-	id 2B27320B7171; Tue, 14 Jul 2026 20:30:04 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2B27320B7171
-From: Long Li <longli@microsoft.com>
-To: Long Li <longli@microsoft.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	"K . Y . Srinivasan" <kys@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	shradhagupta@linux.microsoft.com,
-	Simon Horman <horms@kernel.org>
-Cc: netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 7/7] net: mana: add dynamic HWC queue depth with reinit path
-Date: Tue, 14 Jul 2026 20:29:41 -0700
-Message-ID: <20260715032942.3945317-8-longli@microsoft.com>
-X-Mailer: git-send-email 2.43.7
-In-Reply-To: <20260715032942.3945317-1-longli@microsoft.com>
-References: <20260715032942.3945317-1-longli@microsoft.com>
+	s=arc-20240116; t=1784090083; c=relaxed/simple;
+	bh=rH+f3KaxbEK3Yk7pODNj76lVdviFxGc5DFDvPRSqoBA=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=umgTB3l8ZZalM+biDoYpgBDmf14wUPQIpugcNN/a5NfLS3wK7JQ+/81A5i/KuGjuaG0dL3ysWvLOscbF5xlNET5l9lcfvdwmuzmywDQp20SXGBX59tA8udjDvLKvcgDWXBpfSrBt/ajs1Dtl72j2WFfRCC+2Ci7X2nrd/o9KE+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sUyrUB8e; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8ECB1C2BCB7;
+	Wed, 15 Jul 2026 04:34:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1784090082;
+	bh=rH+f3KaxbEK3Yk7pODNj76lVdviFxGc5DFDvPRSqoBA=;
+	h=From:Date:Subject:To:Cc:Reply-To:From;
+	b=sUyrUB8eir7gHAuvp5pg37VL0xsZrwzXixr9oZ9xhQT/KIQ4Np7NmW0wLvK3Ar3Je
+	 7llnD8E9fembGx3Cecc/c2Ein8OiFwschIb+TW5foitRQcIsdcyuBNlFJM4hzA3v1B
+	 NcPS2PonIXunDfnUQAeuwNd/krI2YAmcuJVe6u7GbFN7Wq2Jq6n80BRkv+CTw2g4RB
+	 n/Tr8KcYPRnppvXEX6VwvdpGgn+wGfGW1aqZDgu6fcTN9Le3cBv/70NsUsDL7xUOo0
+	 tq3WsiS/Ci+Hg2sD0RsBB9UYkr9sR1gCU1Q3+sHj1CR/hBs6W8sxTLGcLheJl9ERqH
+	 rDrEcIx0uYPvQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68733C4450A;
+	Wed, 15 Jul 2026 04:34:42 +0000 (UTC)
+From: Bryam Vargas via B4 Relay <devnull+hexlabsecurity.proton.me@kernel.org>
+Date: Tue, 14 Jul 2026 23:34:42 -0500
+Subject: [PATCH net v2] net/smc: order the CDC receive path against buffer
+ publication
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260714-b4-disp-835288a6-v2-1-581555ef2145@proton.me>
+X-B4-Tracking: v=1; b=H4sIAOENV2oC/x3MTQqAIBBA4avErBvI6UfpKtHCcqzZWGhEEN49a
+ fkt3nshcRROMFYvRL4lyREKqK5g3W3YGMUVAzU0NFp1uHToJJ1o2p6MsQMqr8l747TVCkp2Rvb
+ y/MsJAl8w5/wBB6Gs1mcAAAA=
+To: Sidraya Jayagond <sidraya@linux.ibm.com>, 
+ Wenjia Zhang <wenjia@linux.ibm.com>, Dust Li <dust.li@linux.alibaba.com>, 
+ "D. Wythe" <alibuda@linux.alibaba.com>, Paolo Abeni <pabeni@redhat.com>, 
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+ Mahanta Jambigi <mjambigi@linux.ibm.com>, Wen Gu <guwen@linux.alibaba.com>, 
+ Eric Dumazet <edumazet@google.com>, Tony Lu <tonylu@linux.alibaba.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Simon Horman <horms@kernel.org>, linux-s390@vger.kernel.org, 
+ linux-rdma@vger.kernel.org
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1784090081; l=7310;
+ i=hexlabsecurity@proton.me; s=proton; h=from:subject:message-id;
+ bh=2xz4cjDnqoAG1H/FZ06+DlrFtR6erHNnU+ZElifwqQs=;
+ b=1ZcEFXlHow9qiTEgF62ozWBR3XP1RmBrt3w4BuchwclJvBZ5VwhHh4vUPYdZCfZpWAYZSDbXU
+ 1vUitCp2sylCks4GvsFDSIS0P7jVG+BS99BotcywZGX1OQAQ8mlklP1
+X-Developer-Key: i=hexlabsecurity@proton.me; a=ed25519;
+ pk=dmppBMZNLLoPzxHi9l8tZDzEZUunPbgsYqIZYXeUrL0=
+X-Endpoint-Received: by B4 Relay for hexlabsecurity@proton.me/proton with
+ auth_id=814
+X-Original-From: Bryam Vargas <hexlabsecurity@proton.me>
+Reply-To: hexlabsecurity@proton.me
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [3.04 / 15.00];
-	DMARC_POLICY_REJECT(2.00)[microsoft.com : SPF not aligned (relaxed), No valid DKIM,reject];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-5.16 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23248-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:longli@microsoft.com,m:kotaranov@microsoft.com,m:kuba@kernel.org,m:davem@davemloft.net,m:pabeni@redhat.com,m:edumazet@google.com,m:andrew+netdev@lunn.ch,m:jgg@ziepe.ca,m:leon@kernel.org,m:haiyangz@microsoft.com,m:kys@microsoft.com,m:wei.liu@kernel.org,m:decui@microsoft.com,m:shradhagupta@linux.microsoft.com,m:horms@kernel.org,m:netdev@vger.kernel.org,m:linux-rdma@vger.kernel.org,m:linux-hyperv@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[longli@microsoft.com,linux-rdma@vger.kernel.org];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:sidraya@linux.ibm.com,m:wenjia@linux.ibm.com,m:dust.li@linux.alibaba.com,m:alibuda@linux.alibaba.com,m:pabeni@redhat.com,m:davem@davemloft.net,m:kuba@kernel.org,m:mjambigi@linux.ibm.com,m:guwen@linux.alibaba.com,m:edumazet@google.com,m:tonylu@linux.alibaba.com,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:horms@kernel.org,m:linux-s390@vger.kernel.org,m:linux-rdma@vger.kernel.org,s:lists@lfdr.de];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[longli@microsoft.com,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER(0.00)[devnull@kernel.org,linux-rdma@vger.kernel.org];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-23250-lists,linux-rdma=lfdr.de,hexlabsecurity.proton.me];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	R_DKIM_NA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[devnull@kernel.org,linux-rdma@vger.kernel.org];
+	REPLYTO_DOM_NEQ_FROM_DOM(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	TAGGED_RCPT(0.00)[linux-rdma];
+	HAS_REPLYTO(0.00)[hexlabsecurity@proton.me];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,sashiko.dev:url]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: BDB9975A4AA
+X-Rspamd-Queue-Id: 0880B75A7A4
 
-The HWC is first established at a bootstrap queue depth of 1.  Query the
-device's maximum supported depth and, if larger, tear down and rebuild
-the HWC queues at that depth before re-establishing the channel, so more
-management commands can be in flight.  Advertise
-GDMA_DRV_CAP_FLAG_1_DYN_HWC_QUEUE_DEPTH so the firmware enables this only
-when the driver supports it.
+From: Bryam Vargas <hexlabsecurity@proton.me>
 
-mana_hwc_destroy_queues() tears down the CQ first, which deregisters the
-EQ IRQ (mana_gd_deregister_irq() + synchronize_rcu()) so no interrupt
-handler can touch the queues, then the TXQ, RXQ and inflight resources.
+The SMC CDC receive handlers dereference conn->rmb_desc, and on the
+SMC-D DMB-nocopy path conn->sndbuf_desc, but both are published after
+the connection is already reachable to a peer: rmb_desc after
+smc_conn_create() registers it in the link group's token tree,
+sndbuf_desc after __smc_buf_create() arms the ISM tasklet via
+smc_ism_set_conn().  A CDC in that window reaches the handlers with the
+buffer unset.  The store is plain, so a handler can load it as NULL, or
+on a weakly ordered CPU see it non-NULL while its buffer is still
+uninitialised -- a host crash or a stale-buffer read.
 
-Validate the device-reported dimensions before they size DMA
-allocations: enforce the request/response header minimums, ensure
-q_depth * max_msg_size plus alignment fits in u32, and cap CQ depth to
-U16_MAX/2.  Carry the depth as u32 -- the device field is 24-bit, so
-truncating to u16 on receipt could wrap a large value to a small depth
-and silently pass these checks.
+Publish both buffers with smp_store_release() and consume them with
+smp_load_acquire(), bailing while unset as the handlers already do for
+a killed or out-of-sync connection.  Conforming peers are unaffected.
 
-If reinit fails, fall back to the bootstrap-depth channel when its
-teardown succeeded; if teardown also failed, hardware mappings may still
-be active, so abort channel creation instead.
-
-Signed-off-by: Long Li <longli@microsoft.com>
+Closes: https://sashiko.dev/#/patchset/20260711-b4-disp-c36a9798-v1-1-340b0c6053fb@proton.me?part=1
+Cc: stable@vger.kernel.org
+Signed-off-by: Bryam Vargas <hexlabsecurity@proton.me>
 ---
- .../net/ethernet/microsoft/mana/hw_channel.c  | 223 +++++++++++++++++-
- include/net/mana/gdma.h                       |   4 +
- include/net/mana/hw_channel.h                 |   2 +-
- 3 files changed, 218 insertions(+), 11 deletions(-)
+v2: order both CDC-reachable buffers with smp_store_release()/smp_load_acquire()
+    instead of the plain NULL guard v1 used.  The rmb_desc ordering is what the
+    Sashiko review of v1 asked for (the Closes: link above); the sndbuf_desc case
+    (SMC-D DMB-nocopy, smc_cdc_msg_recv_action()) is the same-window sibling found
+    by inspection -- smcd_buf_attach() sets the ghost sndbuf_desc after
+    smc_ism_set_conn() already armed the tasklet.  Release/acquire closes the NULL
+    deref on all arches and the stale-buffer read on weakly ordered ones.
+    v1: https://lore.kernel.org/all/20260711-b4-disp-c36a9798-v1-1-340b0c6053fb@proton.me/
 
-diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-index 9ba4e75a4dd3..3d0f17de3442 100644
---- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
-+++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-@@ -214,7 +214,12 @@ static void mana_hwc_init_event_handler(void *ctx, struct gdma_queue *q_self,
- 			break;
- 
- 		case HWC_INIT_DATA_QUEUE_DEPTH:
--			hwc->hwc_init_q_depth_max = (u16)val;
-+			/* HWC_INIT_DATA_QUEUE_DEPTH is a 24-bit field.  Keep
-+			 * the full device-reported value here; it is clamped
-+			 * and validated in mana_hwc_create_channel() rather
-+			 * than silently truncated to u16.
-+			 */
-+			hwc->hwc_init_q_depth_max = val;
- 			break;
- 
- 		case HWC_INIT_DATA_MAX_REQUEST:
-@@ -784,7 +789,7 @@ static int mana_hwc_test_channel(struct hw_channel_context *hwc, u16 q_depth,
- 	return err;
- }
- 
--static int mana_hwc_establish_channel(struct gdma_context *gc, u16 *q_depth,
-+static int mana_hwc_establish_channel(struct gdma_context *gc, u32 *q_depth,
- 				      u32 *max_req_msg_size,
- 				      u32 *max_resp_msg_size)
+Happy to split this: the sndbuf_desc hunks only apply where the DMB-nocopy path
+exists and can carry their own Fixes: tag for a cleaner stable backport, while the
+rmb_desc ordering predates the git history here.  No Fixes: added -- please add
+whichever you prefer.
+
+Both orderings are modelled with LKMM message-passing litmus tests (herd7): plain
+accesses allow the "pointer published, buffer stale" outcome and flag a data race;
+smp_store_release()/smp_load_acquire() forbid it.  The patched build was exercised
+over an SMC-D loopback under KASAN with no regression; the rmb_desc NULL-deref arm
+is reproduced with an in-kernel KASAN model faulting at the ->cpu_addr / ->len
+offsets.  af_smc runs over an RDMA fabric or an ISM device, so the weak-memory arm
+is model-level; litmus tests and reproducer available on request.
+---
+ net/smc/smc_cdc.c  | 29 +++++++++++++++++++++++++----
+ net/smc/smc_core.c | 16 ++++++++++++++--
+ 2 files changed, 39 insertions(+), 6 deletions(-)
+
+diff --git a/net/smc/smc_cdc.c b/net/smc/smc_cdc.c
+index 32d6d03df321..2cd0ee7b51c2 100644
+--- a/net/smc/smc_cdc.c
++++ b/net/smc/smc_cdc.c
+@@ -332,6 +332,7 @@ static void smc_cdc_msg_recv_action(struct smc_sock *smc,
  {
-@@ -862,6 +867,12 @@ static int mana_hwc_init_queues(struct hw_channel_context *hwc, u16 q_depth,
- {
- 	int err;
+ 	union smc_host_cursor cons_old, prod_old;
+ 	struct smc_connection *conn = &smc->conn;
++	struct smc_buf_desc *sndbuf_desc;
+ 	int diff_cons, diff_prod, diff_tx;
  
-+	/* CQ depth is q_depth * 2 (SQ + RQ) passed as u16 to create_cq.
-+	 * Cap to prevent u16 truncation.
+ 	smc_curs_copy(&prod_old, &conn->local_rx_ctrl.prod, conn);
+@@ -353,12 +354,20 @@ static void smc_cdc_msg_recv_action(struct smc_sock *smc,
+ 		 * peer RMB, then update tx_curs_fin and sndbuf_space
+ 		 * here since peer has already consumed the data.
+ 		 */
++		/* Pair with smp_store_release() in smcd_buf_attach(): the ghost
++		 * sndbuf_desc is attached after the connection is reachable to
++		 * the ISM device, so acquire it and skip the update while it is
++		 * unset -- avoids a NULL deref and a load of an uninitialised
++		 * buffer.
++		 */
++		sndbuf_desc = smp_load_acquire(&conn->sndbuf_desc);
+ 		if (conn->lgr->is_smcd &&
+-		    smc_ism_support_dmb_nocopy(conn->lgr->smcd)) {
++		    smc_ism_support_dmb_nocopy(conn->lgr->smcd) &&
++		    sndbuf_desc) {
+ 			/* Calculate consumed data and
+ 			 * increment free send buffer space.
+ 			 */
+-			diff_tx = smc_curs_diff(conn->sndbuf_desc->len,
++			diff_tx = smc_curs_diff(sndbuf_desc->len,
+ 						&conn->tx_curs_fin,
+ 						&conn->local_rx_ctrl.cons);
+ 			/* increase local sndbuf space and fin_curs */
+@@ -443,13 +452,21 @@ static void smcd_cdc_rx_tsklet(struct tasklet_struct *t)
+ {
+ 	struct smc_connection *conn = from_tasklet(conn, t, rx_tsklet);
+ 	struct smcd_cdc_msg *data_cdc;
++	struct smc_buf_desc *rmb_desc;
+ 	struct smcd_cdc_msg cdc;
+ 	struct smc_sock *smc;
+ 
+ 	if (!conn || conn->killed)
+ 		return;
++	/* Pair with smp_store_release() in __smc_buf_create(): the connection
++	 * is published before its RMB is allocated, so bail while rmb_desc is
++	 * unset to avoid a NULL deref and a load of an uninitialised buffer.
 +	 */
-+	if (q_depth > U16_MAX / 2)
-+		q_depth = U16_MAX / 2;
-+
- 	err = mana_hwc_init_inflight_msg(hwc, q_depth);
- 	if (err)
- 		return err;
-@@ -902,13 +913,62 @@ static int mana_hwc_init_queues(struct hw_channel_context *hwc, u16 q_depth,
- 	return err;
- }
++	rmb_desc = smp_load_acquire(&conn->rmb_desc);
++	if (!rmb_desc)
++		return;
  
-+/* Tear down all HWC queues and free associated resources.  Used on
-+ * the reinit-with-higher-queue-depth path and reinit fallback.
-+ *
-+ * PRECONDITION: must be called only during channel bring-up in
-+ * mana_hwc_create_channel(), before the channel is published to
-+ * senders.  There the setup thread is effectively single-threaded
-+ * (serialized against teardown by the PCI/PM device_lock or, on the
-+ * service path, GC_IN_SERVICE, with the data path not yet probed),
-+ * channel_up is still false, caller_ctx is not yet allocated, and
-+ * active_senders is 0 — so no concurrent request/response user can
-+ * touch these queues.  That is why this skips the hwc_lock-protected
-+ * driver_data clear + active_senders drain that
-+ * mana_hwc_destroy_channel() needs for the runtime teardown race;
-+ * only the CQ-first ordering below (to fence off a pending interrupt)
-+ * is required.  Calling this on a live, published channel would be a
-+ * use-after-free.
-+ */
-+static void mana_hwc_destroy_queues(struct hw_channel_context *hwc)
-+{
-+	struct gdma_context *gc = hwc->gdma_dev->gdma_context;
-+
-+	/* Destroy CQ first to deregister the EQ from the interrupt
-+	 * handler list before freeing caller_ctx, TXQ, or RXQ memory.
-+	 * A pending interrupt handler could still reach handle_resp()
-+	 * which dereferences caller_ctx.
+-	data_cdc = (struct smcd_cdc_msg *)conn->rmb_desc->cpu_addr;
++	data_cdc = (struct smcd_cdc_msg *)rmb_desc->cpu_addr;
+ 	smcd_curs_copy(&cdc.prod, &data_cdc->prod, conn);
+ 	smcd_curs_copy(&cdc.cons, &data_cdc->cons, conn);
+ 	smc = container_of(conn, struct smc_sock, conn);
+@@ -483,7 +500,11 @@ static void smc_cdc_rx_handler(struct ib_wc *wc, void *buf)
+ 	lgr = smc_get_lgr(link);
+ 	read_lock_bh(&lgr->conns_lock);
+ 	conn = smc_lgr_find_conn(ntohl(cdc->token), lgr);
+-	if (!conn || conn->out_of_sync) {
++	/* Pair with smp_store_release() in __smc_buf_create(): bail while the
++	 * RMB is unset (smc_cdc_msg_recv_action() dereferences it) to avoid a
++	 * NULL deref and a stale-buffer read in the connection setup window.
 +	 */
-+	if (hwc->cq) {
-+		mana_hwc_destroy_cq(gc, hwc->cq);
-+		hwc->cq = NULL;
-+	}
-+
-+	kfree(hwc->caller_ctx);
-+	hwc->caller_ctx = NULL;
-+
-+	if (hwc->txq) {
-+		mana_hwc_destroy_wq(hwc, hwc->txq);
-+		hwc->txq = NULL;
-+	}
-+
-+	if (hwc->rxq) {
-+		mana_hwc_destroy_wq(hwc, hwc->rxq);
-+		hwc->rxq = NULL;
-+	}
-+
-+	mana_gd_free_res_map(&hwc->inflight_msg_res);
-+	hwc->num_inflight_msg = 0;
-+}
-+
- int mana_hwc_create_channel(struct gdma_context *gc)
- {
- 	u32 max_req_msg_size, max_resp_msg_size;
- 	struct gdma_dev *gd = &gc->hwc;
- 	struct hw_channel_context *hwc;
-+	struct gdma_queue __rcu **old_cq_table;
- 	unsigned long flags;
--	u16 q_depth_max;
-+	u32 q_depth_max;
- 	int err;
- 
- 	hwc = kzalloc_obj(*hwc);
-@@ -956,8 +1016,130 @@ int mana_hwc_create_channel(struct gdma_context *gc)
- 		goto out;
++	if (!conn || conn->out_of_sync || !smp_load_acquire(&conn->rmb_desc)) {
+ 		read_unlock_bh(&lgr->conns_lock);
+ 		return;
+ 	}
+diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
+index cf6b620fef05..d94b728c0d68 100644
+--- a/net/smc/smc_core.c
++++ b/net/smc/smc_core.c
+@@ -2499,7 +2499,13 @@ static int __smc_buf_create(struct smc_sock *smc, bool is_smcd, bool is_rmb)
  	}
  
-+	/* The channel was bootstrapped at a minimal queue depth.  If the
-+	 * device reports a higher maximum, tear down and rebuild with
-+	 * the larger depth so more HWC commands can be in flight.
-+	 */
-+	if (q_depth_max > HW_CHANNEL_VF_BOOTSTRAP_QUEUE_DEPTH) {
-+		/* q_depth_max now carries the full device-reported value
-+		 * (HWC_INIT_DATA_QUEUE_DEPTH is 24-bit).  Clamp it to the
-+		 * depth the rest of the driver supports — create_cq() takes
-+		 * q_depth * 2 as a u16 — before the overflow check below, so
-+		 * an over-large but otherwise-valid depth is reduced to the
-+		 * maximum instead of wrapping or being rejected.
+ 	if (is_rmb) {
+-		conn->rmb_desc = buf_desc;
++		/* Publish with release semantics: the connection is already in
++		 * the link group's token tree, so a concurrent CDC receive
++		 * handler must observe a fully initialised buffer once it sees
++		 * a non-NULL rmb_desc.  Pairs with the smp_load_acquire() in
++		 * the CDC receive path.
 +		 */
-+		if (q_depth_max > U16_MAX / 2)
-+			q_depth_max = U16_MAX / 2;
-+
-+		/* Sanity-check device-reported values before using them
-+		 * to size DMA allocations.  Enforce protocol minimums
-+		 * for message sizes and check that q_depth * max_msg_size
-+		 * plus alignment headroom fits in u32 (for
-+		 * mana_hwc_alloc_dma_buf's MANA_PAGE_ALIGN).
-+		 */
-+		if (!max_req_msg_size || !max_resp_msg_size ||
-+		    max_req_msg_size < sizeof(struct gdma_req_hdr) ||
-+		    max_resp_msg_size < sizeof(struct gdma_resp_hdr) ||
-+		    (u64)q_depth_max * max_req_msg_size >
-+			U32_MAX - MANA_PAGE_SIZE ||
-+		    (u64)q_depth_max * max_resp_msg_size >
-+			U32_MAX - MANA_PAGE_SIZE) {
-+			dev_err(hwc->dev,
-+				"HWC: invalid dims q=%u req=%u resp=%u\n",
-+				q_depth_max, max_req_msg_size,
-+				max_resp_msg_size);
-+			q_depth_max = HW_CHANNEL_VF_BOOTSTRAP_QUEUE_DEPTH;
-+			goto skip_reinit;
-+		}
-+
-+		err = mana_smc_teardown_hwc(&gc->shm_channel, false);
-+		if (err) {
-+			/* Keep using the bootstrap-depth channel. */
-+			dev_err(hwc->dev,
-+				"Failed to teardown HWC for reinit: %d\n",
-+				err);
-+			q_depth_max = HW_CHANNEL_VF_BOOTSTRAP_QUEUE_DEPTH;
-+			goto skip_reinit;
-+		}
-+
-+		hwc->setup_active = false;
-+
-+		/* Destroy queues first — mana_gd_destroy_cq inside
-+		 * unpublishes the CQ from cq_table via
-+		 * rcu_assign_pointer(NULL) + synchronize_rcu.
-+		 * Must happen while cq_table is still valid.
-+		 */
-+		mana_hwc_destroy_queues(hwc);
-+
-+		old_cq_table = rcu_replace_pointer(gc->cq_table, NULL, true);
-+		synchronize_rcu();
-+		vfree(old_cq_table);
-+
-+		err = mana_hwc_init_queues(hwc, q_depth_max,
-+					   max_req_msg_size,
-+					   max_resp_msg_size);
-+		if (err) {
-+			dev_err(hwc->dev, "Failed to reinit HWC: %d\n", err);
-+			goto reinit_fallback;
-+		}
-+
-+		err = mana_hwc_establish_channel(gc, &q_depth_max,
-+						 &max_req_msg_size,
-+						 &max_resp_msg_size);
-+		if (err) {
-+			dev_err(hwc->dev, "Failed to re-establish HWC: %d\n",
-+				err);
-+			/* establish_channel does internal teardown on
-+			 * failure.  If teardown succeeded (setup_active
-+			 * cleared), MST entries are invalidated and we
-+			 * can try the bootstrap fallback.  If teardown
-+			 * also failed (setup_active still set), hardware
-+			 * mappings may still be active — skip fallback.
-+			 */
-+			if (hwc->setup_active)
-+				goto out;
-+			goto reinit_fallback;
-+		}
-+	}
-+
-+	goto skip_reinit;
-+
-+reinit_fallback:
-+	/* Restore bootstrap-depth channel so the device remains functional.
-+	 * Free cq_table if it was allocated by a partially successful
-+	 * establish attempt.
++		smp_store_release(&conn->rmb_desc, buf_desc);
+ 		conn->rmbe_size_comp = bufsize_comp;
+ 		smc->sk.sk_rcvbuf = bufsize * 2;
+ 		atomic_set(&conn->bytes_to_rcv, 0);
+@@ -2599,7 +2605,13 @@ int smcd_buf_attach(struct smc_sock *smc)
+ 	buf_desc->cpu_addr =
+ 		(u8 *)buf_desc->cpu_addr + sizeof(struct smcd_cdc_msg);
+ 	buf_desc->len -= sizeof(struct smcd_cdc_msg);
+-	conn->sndbuf_desc = buf_desc;
++	/* Publish with release semantics: the connection is already reachable
++	 * to the ISM device (smc_ism_set_conn() ran in __smc_buf_create()), so
++	 * the CDC receive tasklet must observe a fully initialised ghost buffer
++	 * once it sees a non-NULL sndbuf_desc.  Pairs with smp_load_acquire()
++	 * in smc_cdc_msg_recv_action().
 +	 */
-+	dev_warn(hwc->dev, "HWC reinit failed, falling back to bootstrap depth\n");
-+
-+	mana_hwc_destroy_queues(hwc);
-+
-+	old_cq_table = rcu_replace_pointer(gc->cq_table, NULL, true);
-+	synchronize_rcu();
-+	vfree(old_cq_table);
-+
-+	err = mana_hwc_init_queues(hwc, HW_CHANNEL_VF_BOOTSTRAP_QUEUE_DEPTH,
-+				   HW_CHANNEL_MAX_REQUEST_SIZE,
-+				   HW_CHANNEL_MAX_RESPONSE_SIZE);
-+	if (err) {
-+		dev_err(hwc->dev, "Failed to restore bootstrap HWC: %d\n", err);
-+		goto out;
-+	}
-+
-+	err = mana_hwc_establish_channel(gc, &q_depth_max, &max_req_msg_size,
-+					 &max_resp_msg_size);
-+	if (err) {
-+		dev_err(hwc->dev, "Failed to re-establish bootstrap HWC: %d\n",
-+			err);
-+		goto out;
-+	}
-+
-+skip_reinit:
-+
-+	/* No RCU needed: still in mana_hwc_create_channel, the
-+	 * pointer has not been published to concurrent senders yet.
-+	 */
- 	err = mana_hwc_test_channel(gc->hwc.driver_data,
--				    HW_CHANNEL_VF_BOOTSTRAP_QUEUE_DEPTH,
-+				    hwc->num_inflight_msg,
- 				    max_req_msg_size, max_resp_msg_size);
- 	if (err) {
- 		dev_err(hwc->dev, "Failed to test HWC: %d\n", err);
-@@ -972,6 +1154,10 @@ int mana_hwc_create_channel(struct gdma_context *gc)
- 
- void mana_hwc_destroy_channel(struct gdma_context *gc)
- {
-+	/* This is the only destroy entry point.  driver_data is read
-+	 * plainly here (teardown is serialised against other teardown);
-+	 * it is cleared under hwc_lock below before hwc is freed.
-+	 */
- 	struct hw_channel_context *hwc = gc->hwc.driver_data;
- 	struct gdma_queue __rcu **old_cq_table;
- 	unsigned long flags;
-@@ -1011,10 +1197,21 @@ void mana_hwc_destroy_channel(struct gdma_context *gc)
- 	 * on the init EQE arriving.
- 	 *
- 	 * The return value is intentionally not checked.  This is the
--	 * terminal cleanup path — resources must be freed regardless.
--	 * If teardown fails, hardware may still have active MST entries,
--	 * but the EQ deregistration and IOMMU unmapping below prevent
--	 * stale hardware accesses from reaching kernel memory.
-+	 * terminal cleanup path (device removal, suspend, or init
-+	 * failure) — resources must be freed regardless.  If teardown
-+	 * fails, hardware may still have active MST entries, but:
-+	 *
-+	 *  - Interrupts: mana_hwc_destroy_cq() below calls
-+	 *    mana_gd_deregister_irq() which removes the HWC EQ from
-+	 *    the interrupt dispatch list via list_del_rcu() +
-+	 *    synchronize_rcu().  After that, no interrupt handler can
-+	 *    invoke handle_resp() or access CQ/RQ buffers — even if
-+	 *    the IRQ is shared with data path queues.
-+	 *
-+	 *  - DMA: mana_hwc_destroy_wq() frees DMA buffers via
-+	 *    dma_free_coherent() which unmaps the IOVA from the
-+	 *    IOMMU.  Any stale hardware DMA to the old address
-+	 *    faults at the IOMMU, not in kernel memory.
- 	 */
- 	if (hwc->setup_active) {
- 		int td_err = mana_smc_teardown_hwc(&gc->shm_channel, false);
-@@ -1042,6 +1239,9 @@ void mana_hwc_destroy_channel(struct gdma_context *gc)
- 				 * them (unsafe).
- 				 *
- 				 * but leak all DMA buffers to prevent corruption.
-+				 * Also leak the EQ IRQ registration since freeing
-+				 * it safely requires accessing queue structures we're
-+				 * leaving allocated.
- 				 */
- 
- 				dev_warn(gc->dev,
-@@ -1061,8 +1261,11 @@ void mana_hwc_destroy_channel(struct gdma_context *gc)
- 	}
- 
- 	/* After SMC teardown, no more hardware events should arrive.
--	 * Force-complete any remaining in-flight senders so they can
--	 * exit and drop their refs.
-+	 * If teardown failed, handle_resp() may still race with this
-+	 * loop via a late interrupt — this is safe because the per-slot
-+	 * refcount model tolerates a concurrent complete() and both
-+	 * paths (handle_resp and this loop) will correctly drop their
-+	 * respective refs without double-releasing the slot.
- 	 */
- 	if (hwc->caller_ctx) {
- 		struct hwc_caller_ctx *ctx;
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index 01e845237b6a..a4eac6f7c366 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -708,6 +708,9 @@ enum {
- /* Driver supports dynamic interrupt moderation - DIM */
- #define GDMA_DRV_CAP_FLAG_1_DYN_INTERRUPT_MODERATION BIT(28)
- 
-+/* Driver supports dynamic queue depth for HWC */
-+#define GDMA_DRV_CAP_FLAG_1_DYN_HWC_QUEUE_DEPTH BIT(29)
-+
- #define GDMA_DRV_CAP_FLAGS1 \
- 	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
- 	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
-@@ -723,6 +726,7 @@ enum {
- 	 GDMA_DRV_CAP_FLAG_1_PROBE_RECOVERY | \
- 	 GDMA_DRV_CAP_FLAG_1_HANDLE_STALL_SQ_RECOVERY | \
- 	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECOVERY | \
-+	 GDMA_DRV_CAP_FLAG_1_DYN_HWC_QUEUE_DEPTH | \
- 	 GDMA_DRV_CAP_FLAG_1_EQ_MSI_UNSHARE_MULTI_VPORT | \
- 	 GDMA_DRV_CAP_FLAG_1_DYN_INTERRUPT_MODERATION)
- 
-diff --git a/include/net/mana/hw_channel.h b/include/net/mana/hw_channel.h
-index bc62d1ce7bd4..fb9725e30c8c 100644
---- a/include/net/mana/hw_channel.h
-+++ b/include/net/mana/hw_channel.h
-@@ -197,7 +197,7 @@ struct hw_channel_context {
- 	u32 max_req_msg_size;
- 	u32 max_resp_msg_size;
- 
--	u16 hwc_init_q_depth_max;
-+	u32 hwc_init_q_depth_max;
- 	u32 hwc_init_max_req_msg_size;
- 	u32 hwc_init_max_resp_msg_size;
- 
++	smp_store_release(&conn->sndbuf_desc, buf_desc);
+ 	conn->sndbuf_desc->used = 1;
+ 	atomic_set(&conn->sndbuf_space, conn->sndbuf_desc->len);
+ 	return 0;
+
+---
+base-commit: 3f1f755366687d051174739fb99f7d560202f60b
+change-id: 20260714-b4-disp-835288a6-1f72ff8d7a71
+
+Best regards,
 -- 
-2.43.0
+Bryam Vargas <hexlabsecurity@proton.me>
+
 
 
